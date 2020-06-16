@@ -492,7 +492,9 @@ create table eki_user_profile
   show_lex_meaning_relation_source_lang_words boolean default true,
   show_meaning_relation_first_word_only boolean default true,
   show_meaning_relation_meaning_id boolean default true,
-  show_meaning_relation_word_datasets boolean default true
+  show_meaning_relation_word_datasets boolean default true,
+  searchable_tags varchar(100) array,
+  active_tag varchar(100)
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 
@@ -907,6 +909,23 @@ create table layer_state
 );
 alter sequence layer_state_id_seq restart with 10000;
 
+create table tag
+(
+  name varchar(100) primary key,
+  set_automatically boolean default false,
+  order_by bigserial
+);
+
+create table lexeme_tag
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  tag_name varchar(100) references tag(name) on delete cascade not null,
+  created_on timestamp not null default statement_timestamp(),
+  unique(lexeme_id, tag_name)
+);
+alter sequence lexeme_tag_id_seq restart with 10000;
+
 create table lexeme_frequency
 (
   id bigserial primary key,
@@ -1183,6 +1202,8 @@ create index lexeme_process_state_code_idx on lexeme(process_state_code);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index layer_state_lexeme_id_idx on layer_state(lexeme_id);
 create index layer_state_layer_name_idx on layer_state(layer_name);
+create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
+create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
 create index definition_meaning_id_idx on definition(meaning_id);
 create index definition_lang_idx on definition(lang);
 create index definition_complexity_idx on definition(complexity);

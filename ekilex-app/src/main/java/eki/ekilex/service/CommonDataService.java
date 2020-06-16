@@ -244,4 +244,9 @@ public class CommonDataService implements SystemConstant {
 		return allDomainOrigins;
 	}
 
+	@Transactional
+	public List<String> getTags() {
+		return commonDataDbService.getTags();
+	}
+
 }

@@ -238,6 +238,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
 			List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
 			List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
+			List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 
 			List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 			List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
@@ -263,6 +264,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			lexeme.setSourceLinks(lexemeSourceLinks);
 			lexeme.setCollocationPosGroups(collocationPosGroups);
 			lexeme.setSecondaryCollocations(secondaryCollocations);
+			lexeme.setTags(tags);
 
 			permCalculator.applyCrud(meaning, userRole);
 			meaning.setFreeforms(meaningFreeforms);

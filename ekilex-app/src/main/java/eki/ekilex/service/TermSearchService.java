@@ -194,6 +194,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
+			List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 
 			Word word = lexeme.getWord();
 			permCalculator.applyCrud(word, userRole);
@@ -219,6 +220,7 @@ public class TermSearchService extends AbstractSearchService {
 			lexeme.setClassifiersExist(classifiersExist);
 			lexeme.setSourceLinks(lexemeSourceLinks);
 			lexeme.setLexemeRelations(lexemeRelations);
+			lexeme.setTags(lexemeTags);
 			lexemes.add(lexeme);
 		}
 

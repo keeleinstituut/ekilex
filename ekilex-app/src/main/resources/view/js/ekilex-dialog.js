@@ -156,3 +156,7 @@ $(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteSourceLinkDlg_]", f
 	initAddSourceLinkDlg($(this));
 	initSourceNameAutocomplete($(this));
 });
+
+$(document).on("show.bs.modal", "[id^=addLexemeTagDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});

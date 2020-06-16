@@ -11,10 +11,15 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Kuva seaded</h5>
+        <h5 class="card-title">Seaded</h5>
       </div>
       <div class="card-body">
-        <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectMeaningRelationPrefsDlg">Muuda tähenduste seoste kuva seadeid</button>
+        <div>
+          <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectMeaningRelationPrefsDlg">Muuda tähenduste seoste kuva seadeid</button>
+        </div>
+        <div class="mt-3">
+          <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectTagPrefsDlg">Muuda siltide seadeid</button>
+        </div>
       </div>
     </div>
     <div class="card mt-4 shadow">
@@ -77,5 +82,6 @@
   </div>
   <div th:replace="userprofiledialog :: #addApplicationDlg"></div>
   <div th:replace="userprofiledialog :: #selectMeaningRelationPrefsDlg"></div>
+  <div th:replace="userprofiledialog :: #selectTagPrefsDlg"></div>
 </body>
 </html>

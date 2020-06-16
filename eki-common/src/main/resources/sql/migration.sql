@@ -156,3 +156,33 @@ where d.complexity = 'ANY'
              where d2.value_prese = d.value_prese
                and d2.complexity in ('DETAIL', 'DETAIL1')
                and d2.meaning_id = d.meaning_id);
+
+update freeform ff set complexity = 'DETAIL' from meaning_freeform mff where ff.complexity is null and ff.type = 'PUBLIC_NOTE' and ff.id = mff.freeform_id;
+update freeform ff set complexity = 'DETAIL' from lexeme_freeform lff where ff.complexity is null and ff.type = 'PUBLIC_NOTE' and ff.id = lff.freeform_id;
+
+create table tag
+(
+  name varchar(100) primary key,
+  set_automatically boolean default false,
+  order_by bigserial
+);
+
+create table lexeme_tag
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  tag_name varchar(100) references tag(name) on delete cascade not null,
+  created_on timestamp not null default statement_timestamp(),
+  unique(lexeme_id, tag_name)
+);
+alter sequence lexeme_tag_id_seq restart with 10000;
+
+create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
+create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
+
+insert into tag select distinct process_state_code from lexeme where process_state_code != 'avalik';
+insert into lexeme_tag (lexeme_id, tag_name) select l.id, l.process_state_code from lexeme l where l.process_state_code != 'avalik';
+insert into process_state (code, datasets) values ('mitteavalik', '{}');
+update lexeme set process_state_code = 'mitteavalik' where process_state_code != 'avalik';
+alter table eki_user_profile add column searchable_tags varchar(100) array;
+alter table eki_user_profile add column active_tag varchar(100);

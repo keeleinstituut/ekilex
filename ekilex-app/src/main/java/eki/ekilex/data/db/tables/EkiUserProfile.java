@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = -1259976613;
+    private static final long serialVersionUID = -962359306;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -110,6 +110,16 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     public final TableField<EkiUserProfileRecord, String> PREFERRED_LAYER_NAME = createField(DSL.name("preferred_layer_name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
+     * The column <code>public.eki_user_profile.searchable_tags</code>.
+     */
+    public final TableField<EkiUserProfileRecord, String[]> SEARCHABLE_TAGS = createField(DSL.name("searchable_tags"), org.jooq.impl.SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.active_tag</code>.
+     */
+    public final TableField<EkiUserProfileRecord, String> ACTIVE_TAG = createField(DSL.name("active_tag"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * Create a <code>public.eki_user_profile</code> table reference
      */
     public EkiUserProfile() {
@@ -169,7 +179,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
     @Override
     public List<ForeignKey<EkiUserProfileRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY);
+        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_FKEY);
     }
 
     public EkiUser ekiUser() {
@@ -178,6 +188,10 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
     public DatasetPermission datasetPermission() {
         return new DatasetPermission(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY);
+    }
+
+    public Tag tag() {
+        return new Tag(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_FKEY);
     }
 
     @Override
@@ -207,11 +221,11 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row14<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String, String[], String> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 }

@@ -2,6 +2,10 @@ $(document).on("show.bs.modal", "#selectMeaningRelationPrefsDlg", function() {
 	initSelectMeaningRelationPrefsDlg($(this));
 });
 
+$(document).on("show.bs.modal", "#selectTagPrefsDlg", function() {
+	initSelectTagPrefsDlg($(this));
+});
+
 function initSelectMeaningRelationPrefsDlg(dlg) {
 	dlg.find(".classifier-select").selectpicker({
 		width: '100%'
@@ -10,6 +14,12 @@ function initSelectMeaningRelationPrefsDlg(dlg) {
 	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
 		validateAndSubmitMeaningRelationPrefsForm(dlg);
+	});
+}
+
+function initSelectTagPrefsDlg(dlg) {
+	dlg.find('select[name="searchableTags"]').selectpicker({
+		width: '100%'
 	});
 }
 

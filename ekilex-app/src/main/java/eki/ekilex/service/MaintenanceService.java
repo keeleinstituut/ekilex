@@ -31,6 +31,7 @@ public class MaintenanceService implements SystemConstant {
 		clearClassifCache();
 		clearDatasetCache();
 		clearUserCache();
+		clearTagCache();
 	}
 
 	private void clearClassifCache() {
@@ -45,6 +46,10 @@ public class MaintenanceService implements SystemConstant {
 		cacheManager.getCache(CACHE_KEY_USER).clear();
 	}
 
+	private void clearTagCache() {
+		cacheManager.getCache(CACHE_KEY_TAG).clear();
+	}
+
 	@CacheEvict(allEntries = true, value = {CACHE_KEY_CLASSIF, CACHE_KEY_DATASET})
 	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
 	public void classifCacheEvict() {
@@ -53,6 +58,11 @@ public class MaintenanceService implements SystemConstant {
 	@CacheEvict(allEntries = true, value = CACHE_KEY_USER)
 	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_5MIN, initialDelay = 5000)
 	public void userCacheEvict() {
+	}
+
+	@CacheEvict(allEntries = true, value = CACHE_KEY_TAG)
+	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
+	public void tagCacheEvict() {
 	}
 
 	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)

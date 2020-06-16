@@ -90,6 +90,9 @@ public class EditController extends AbstractPageController {
 		case "lexeme_pos":
 			cudService.createLexemePos(itemData.getId(), itemValue);
 			break;
+		case "lexeme_tag":
+			cudService.createLexemeTag(itemData.getId(), itemValue);
+			break;
 		case "meaning_domain":
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemValue);
 			cudService.createMeaningDomain(itemData.getId2(), meaningDomain);
@@ -456,6 +459,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "lexeme_pos":
 			cudService.deleteLexemePos(id, valueToDelete);
+			break;
+		case "lexeme_tag":
+			cudService.deleteLexemeTag(id, valueToDelete);
 			break;
 		case "lexeme_deriv":
 			cudService.deleteLexemeDeriv(id, valueToDelete);

@@ -59,6 +59,7 @@ import eki.ekilex.data.db.tables.LexemeProcessLog;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
@@ -89,6 +90,7 @@ import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
+import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.UsageType;
@@ -165,7 +167,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -968215027;
+    private static final long serialVersionUID = -36038217;
 
     /**
      * The reference instance of <code>public</code>
@@ -448,6 +450,11 @@ public class Public extends SchemaImpl {
     public final LexemeSourceLink LEXEME_SOURCE_LINK = LexemeSourceLink.LEXEME_SOURCE_LINK;
 
     /**
+     * The table <code>public.lexeme_tag</code>.
+     */
+    public final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
+
+    /**
      * The table <code>public.lifecycle_log</code>.
      */
     public final LifecycleLog LIFECYCLE_LOG = LifecycleLog.LIFECYCLE_LOG;
@@ -596,6 +603,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.source_lifecycle_log</code>.
      */
     public final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
+
+    /**
+     * The table <code>public.tag</code>.
+     */
+    public final Tag TAG = Tag.TAG;
 
     /**
      * The table <code>public.temp_ds_import_pk_map</code>.
@@ -886,6 +898,7 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_REGISTER_ORDER_BY_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.LEXEME_TAG_ID_SEQ,
             Sequences.LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
@@ -913,6 +926,7 @@ public class Public extends SchemaImpl {
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.SOURCE_LIFECYCLE_LOG_ID_SEQ,
+            Sequences.TAG_ORDER_BY_SEQ,
             Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
             Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
@@ -999,6 +1013,7 @@ public class Public extends SchemaImpl {
             LexemeRegion.LEXEME_REGION,
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
+            LexemeTag.LEXEME_TAG,
             LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
             MeaningDomain.MEANING_DOMAIN,
@@ -1029,6 +1044,7 @@ public class Public extends SchemaImpl {
             Source.SOURCE,
             SourceFreeform.SOURCE_FREEFORM,
             SourceLifecycleLog.SOURCE_LIFECYCLE_LOG,
+            Tag.TAG,
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
             UsageType.USAGE_TYPE,

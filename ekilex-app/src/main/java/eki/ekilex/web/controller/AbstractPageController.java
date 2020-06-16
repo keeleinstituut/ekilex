@@ -100,6 +100,11 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 		return permissionService.getUserDatasetPermissions(userId);
 	}
 
+	@ModelAttribute("tags")
+	public List<String> getTags() {
+		return commonDataService.getTags();
+	}
+
 	@ModelAttribute("allLanguages")
 	public List<Classifier> getAllLanguages() {
 		return commonDataService.getLanguages();
@@ -128,9 +133,9 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 	public List<ComplexitySelect> getComplexities() {
 
 		List<ComplexitySelect> complexities = new ArrayList<>();
+		complexities.add(new ComplexitySelect(Complexity.ANY, false));
 		complexities.add(new ComplexitySelect(Complexity.SIMPLE, false));
 		complexities.add(new ComplexitySelect(Complexity.DETAIL, false));
-		complexities.add(new ComplexitySelect(Complexity.ANY, false));
 		complexities.add(new ComplexitySelect(Complexity.SIMPLE1, true));
 		complexities.add(new ComplexitySelect(Complexity.DETAIL1, true));
 		complexities.add(new ComplexitySelect(Complexity.SIMPLE2, true));
@@ -140,7 +145,7 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 
 	@ModelAttribute("enabledComplexities")
 	public List<Complexity> getEnabledComplexities() {
-		return Arrays.asList(Complexity.SIMPLE, Complexity.DETAIL, Complexity.ANY);
+		return Arrays.asList(Complexity.ANY, Complexity.SIMPLE, Complexity.DETAIL);
 	}
 
 	@ModelAttribute("wordGenders")

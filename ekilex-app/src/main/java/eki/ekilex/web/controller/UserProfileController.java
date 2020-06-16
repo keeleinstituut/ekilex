@@ -40,8 +40,8 @@ public class UserProfileController extends AbstractPageController {
 
 	@PostMapping(REAPPLY_URI)
 	public String reapply(
-			@RequestParam(value = "selectedDatasets", required = false) List<String> selectedDatasets,
-			@RequestParam(value = "applicationComment", required = false) String applicationComment) {
+			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
+			@RequestParam(name = "applicationComment", required = false) String applicationComment) {
 
 		EkiUser user = userContext.getUser();
 		userService.submitAdditionalUserApplication(user, selectedDatasets, applicationComment);
@@ -51,10 +51,10 @@ public class UserProfileController extends AbstractPageController {
 	@PostMapping(UPDATE_MEANING_REL_PREFS_URI)
 	public String updateMeaningRelPrefs(
 			@RequestParam("meaningRelationWordLanguages") List<String> meaningRelationWordLanguages,
-			@RequestParam(value = "showLexMeaningRelationSourceLangWords", required = false) boolean showLexMeaningRelationSourceLangWords,
-			@RequestParam(value = "showMeaningRelationFirstWordOnly", required = false) boolean showMeaningRelationFirstWordOnly,
-			@RequestParam(value = "showMeaningRelationMeaningId", required = false) boolean showMeaningRelationMeaningId,
-			@RequestParam(value = "showMeaningRelationWordDatasets", required = false) boolean showMeaningRelationWordDatasets) {
+			@RequestParam(name = "showLexMeaningRelationSourceLangWords", required = false) boolean showLexMeaningRelationSourceLangWords,
+			@RequestParam(name = "showMeaningRelationFirstWordOnly", required = false) boolean showMeaningRelationFirstWordOnly,
+			@RequestParam(name = "showMeaningRelationMeaningId", required = false) boolean showMeaningRelationMeaningId,
+			@RequestParam(name = "showMeaningRelationWordDatasets", required = false) boolean showMeaningRelationWordDatasets) {
 
 		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
@@ -63,6 +63,19 @@ public class UserProfileController extends AbstractPageController {
 		userProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		userProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		userProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
+		userProfileService.updateUserProfile(userProfile);
+		return "redirect:" + USER_PROFILE_URI;
+	}
+
+	@PostMapping(UPDATE_TAG_PREFS_URI)
+	public String updateTagPrefs(
+			@RequestParam(name = "searchableTags", required = false) List<String> searchableTags,
+			@RequestParam(name = "activeTag", required = false) String activeTag) {
+
+		Long userId = userContext.getUserId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		userProfile.setSearchableTags(searchableTags);
+		userProfile.setActiveTag(activeTag);
 		userProfileService.updateUserProfile(userProfile);
 		return "redirect:" + USER_PROFILE_URI;
 	}
