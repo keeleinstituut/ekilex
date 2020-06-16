@@ -238,12 +238,17 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
 
-		Condition where = l.WORD_ID.eq(wordId);
+		Condition where = l.WORD_ID.eq(wordId).and(l.COMPLEXITY.in(getFilteringComplexityNames()));
 		if (datasetType != null) {
 			where = where.and(l.DATASET_TYPE.eq(datasetType.name()));
 		}
 		if (CollectionUtils.isNotEmpty(datasetCodes)) {
-			where = where.and(l.DATASET_CODE.in(datasetCodes));
+			if (datasetCodes.size() == 1) {
+				String datasetCode = datasetCodes.get(0);
+				where = where.and(l.DATASET_CODE.eq(datasetCode));
+			} else {
+				where = where.and(l.DATASET_CODE.in(datasetCodes));				
+			}
 		}
 		Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
 		Condition langCompWhere = lc.field("complexity", String.class).in(getFilteringComplexityNames());

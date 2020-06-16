@@ -201,32 +201,123 @@ from (
                     case
                       when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
                       else 'other'
-                    end,
-                    lc.complexity)::type_lang_complexity) lang_complexities,
-          ('{DETAIL, ANY}' && array_agg(lc.complexity)) detail_exists,
-          ('{SIMPLE, ANY}' && array_agg(lc.complexity)) simple_exists
-   from
-     (select
-        (select array_agg(distinct f.value)
-         from paradigm p,
-              form f
-         where p.word_id = l1.word_id
-           and f.paradigm_id = p.id
-           and f.mode = 'WORD')[1] as word,
-             w2.lang,
-             l2.complexity
-      from lexeme l1
-      inner join dataset l1ds on l1ds.code = l1.dataset_code
-      inner join lexeme l2 on l2.meaning_id = l1.meaning_id
-      and l2.dataset_code = l1.dataset_code
-      and l2.word_id != l1.word_id
-      inner join dataset l2ds on l2ds.code = l2.dataset_code
-      inner join word w2 on w2.id = l2.word_id
-      where l1.type = 'PRIMARY'
-        and l1.process_state_code = 'avalik'
-        and l1ds.is_public = true
-        and l2.process_state_code = 'avalik'
-        and l2ds.is_public = true) lc
+                    end, 
+                    trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities,
+          ('{DETAIL, ANY}' && array_agg(trim(trailing '12' from lc.complexity))) detail_exists,
+          ('{SIMPLE, ANY}' && array_agg(trim(trailing '12' from lc.complexity))) simple_exists
+   from (
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l1.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   w2.lang,
+                   l2.complexity
+            from lexeme l1
+            inner join dataset l1ds on l1ds.code = l1.dataset_code
+            inner join lexeme l2 on l2.meaning_id = l1.meaning_id
+            and l2.dataset_code = l1.dataset_code
+            and l2.word_id != l1.word_id
+            inner join dataset l2ds on l2ds.code = l2.dataset_code
+            inner join word w2 on w2.id = l2.word_id
+            where l1.type = 'PRIMARY'
+              and l1.process_state_code = 'avalik'
+              and l1ds.is_public = true
+              and l2.process_state_code = 'avalik'
+              and l2ds.is_public = true)
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   coalesce(ff.lang, w.lang) lang,
+                   ff.complexity
+            from word w,
+                 lexeme l,
+                 lexeme_freeform lff,
+                 freeform ff,
+                 dataset ds
+            where l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and l.word_id = w.id
+              and lff.lexeme_id = l.id
+              and lff.freeform_id = ff.id
+              and ff.is_public = true
+              and ff.type in ('USAGE',
+                              'GRAMMAR',
+                              'GOVERNMENT',
+                              'PUBLIC_NOTE'))
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   ut.lang,
+                   u.complexity
+            from lexeme l,
+                 lexeme_freeform lff,
+                 freeform u,
+                 freeform ut,
+                 dataset ds
+            where l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and lff.lexeme_id = l.id
+              and lff.freeform_id = u.id
+              and u.type = 'USAGE'
+              and u.is_public = true
+              and ut.parent_id = u.id
+              and ut.type = 'USAGE_TRANSLATION')
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = l.word_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   d.lang,
+                   d.complexity
+            from lexeme l,
+                 definition d,
+                 dataset ds
+            where l.type = 'PRIMARY'
+              and l.process_state_code = 'avalik'
+              and ds.code = l.dataset_code
+              and ds.is_public = true
+              and l.meaning_id = d.meaning_id
+              and d.is_public = true)
+         union all
+           (select
+              (select array_agg(distinct f.value)
+               from paradigm p,
+                    form f
+               where p.word_id = r.word1_id
+                 and f.paradigm_id = p.id
+                 and f.mode = 'WORD')[1] as word,
+                   w2.lang,
+                   l2.complexity
+            from word_relation r,
+                 lexeme l2,
+                 word w2,
+                 dataset ds
+            where w2.id = r.word2_id
+              and l2.word_id = w2.id
+              and l2.type = 'PRIMARY'
+              and l2.process_state_code = 'avalik'
+              and ds.code = l2.dataset_code
+              and ds.is_public = true)) lc
    group by lc.word) wlc
 where ws.word = wlc.word
 order by ws.sgroup,
@@ -383,27 +474,93 @@ from (select w.id as word_id,
                          and l2.process_state_code = 'avalik'
                          and l2ds.is_public = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
-  left outer join (select lc.word_id,
+  inner join (select lc.word_id,
                           array_agg(distinct row(
-                                    case 
+                                    case
                                       when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
-                                      else 'other' 
+                                      else 'other'
                                     end,
-                                    lc.complexity)::type_lang_complexity) lang_complexities
-                   from (select l1.word_id,
-                                w2.lang,
-                                l2.complexity
-                         from lexeme l1
-                           inner join dataset l1ds on l1ds.code = l1.dataset_code
-                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
-                           inner join dataset l2ds on l2ds.code = l2.dataset_code
-                           inner join word w2 on w2.id = l2.word_id
-                         where 
-                         l1.type = 'PRIMARY'
-                         and l1.process_state_code = 'avalik'
-                         and l1ds.is_public = true
-                         and l2.process_state_code = 'avalik'
-                         and l2ds.is_public = true) lc
+                                    trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities
+                   from ((select l1.word_id,
+                                 w2.lang,
+                                 l2.complexity
+                          from lexeme l1
+                            inner join dataset l1ds on l1ds.code = l1.dataset_code
+                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
+                            inner join dataset l2ds on l2ds.code = l2.dataset_code
+                            inner join word w2 on w2.id = l2.word_id
+                          where 
+                          l1.type = 'PRIMARY'
+                          and l1.process_state_code = 'avalik'
+                          and l1ds.is_public = true
+                          and l2.process_state_code = 'avalik'
+                          and l2ds.is_public = true)
+                          union all
+                          (select l.word_id,
+                                  coalesce(ff.lang, w.lang) lang,
+                                  ff.complexity
+                          from word w,
+                               lexeme l,
+                               lexeme_freeform lff,
+                               freeform ff,
+                               dataset ds
+                          where l.type = 'PRIMARY'
+                          and l.process_state_code = 'avalik'
+                          and ds.code = l.dataset_code
+                          and ds.is_public = true
+                          and l.word_id = w.id
+                          and lff.lexeme_id = l.id
+                          and lff.freeform_id = ff.id
+                          and ff.is_public = true
+                          and ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
+                          union all
+                          (select l.word_id,
+                                  ut.lang,
+                                  u.complexity
+                          from lexeme l,
+                               lexeme_freeform lff,
+                               freeform u,
+                               freeform ut,
+                               dataset ds
+                          where 
+                          l.type = 'PRIMARY'
+                          and l.process_state_code = 'avalik'
+                          and ds.code = l.dataset_code
+                          and ds.is_public = true
+                          and lff.lexeme_id = l.id
+                          and lff.freeform_id = u.id
+                          and u.type = 'USAGE'
+                          and u.is_public = true
+                          and ut.parent_id = u.id
+                          and ut.type = 'USAGE_TRANSLATION')
+                          union all
+                          (select l.word_id,
+                                  d.lang,
+                                  d.complexity
+                          from lexeme l,
+                               definition d,
+                               dataset ds
+                          where 
+                          l.type = 'PRIMARY'
+                          and l.process_state_code = 'avalik'
+                          and ds.code = l.dataset_code
+                          and ds.is_public = true
+                          and l.meaning_id = d.meaning_id
+                          and d.is_public = true)
+                          union all
+                          (select r.word1_id word_id,
+                                  w2.lang,
+                                  l2.complexity
+                          from word_relation r,
+                               lexeme l2,
+                               word w2,
+                               dataset ds
+                          where w2.id = r.word2_id
+                          and l2.word_id = w2.id
+                          and l2.type = 'PRIMARY'
+                          and l2.process_state_code = 'avalik'
+                          and ds.code = l2.dataset_code
+                          and ds.is_public = true)) lc
                    group by lc.word_id) lc on lc.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row (
@@ -731,8 +888,8 @@ from lexeme l
                    				 group by l_reg.lexeme_id) mw_lex_register_codes,
                    				l2.value_state_code mw_lex_value_state_code,
                                 w2.id mw_word_id,
-                                ' ' || f2.value mw_word,
-                                ' ' || f2.value_prese mw_word_prese,
+                                f2.value mw_word,
+                                f2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
@@ -813,21 +970,124 @@ from lexeme l
                                      when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
                                      else 'other'
                                    end,
-                                   lc.complexity)::type_lang_complexity) lang_complexities
-                  from (select l1.id,
-                               w2.lang,
-                               l2.complexity
-                        from lexeme l1
-                          inner join dataset l1ds on l1ds.code = l1.dataset_code
-                          inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
-                          inner join dataset l2ds on l2ds.code = l2.dataset_code
-                          inner join word w2 on w2.id = l2.word_id
-                        where l1.type = 'PRIMARY'
-                        and   l1.process_state_code = 'avalik'
-                        and   l1ds.is_public = true
-                        and   l2.type = 'PRIMARY'
-                        and   l2.process_state_code = 'avalik'
-                        and   l2ds.is_public = true) lc
+                                   trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities
+                  from ((select l1.id,
+                                w2.lang,
+                                l2.complexity
+                         from lexeme l1
+                           inner join dataset l1ds on l1ds.code = l1.dataset_code
+                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
+                           inner join dataset l2ds on l2ds.code = l2.dataset_code
+                           inner join word w2 on w2.id = l2.word_id
+                         where l1.type = 'PRIMARY'
+                         and   l1.process_state_code = 'avalik'
+                         and   l1ds.is_public = true
+                         and   l2.type = 'PRIMARY'
+                         and   l2.process_state_code = 'avalik'
+                         and   l2ds.is_public = true)
+                         union all
+                         (select l.id,
+                                 coalesce(ff.lang, w.lang) lang,
+                                 ff.complexity
+                         from word w,
+                              lexeme l,
+                              lexeme_freeform lff,
+                              freeform ff,
+                              dataset ds
+                         where l.type = 'PRIMARY'
+                         and   l.process_state_code = 'avalik'
+                         and   ds.code = l.dataset_code
+                         and   ds.is_public = true
+                         and   l.word_id = w.id
+                         and   lff.lexeme_id = l.id
+                         and   lff.freeform_id = ff.id
+                         and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
+                         union all
+                         (select l.id,
+                                 ut.lang,
+                                 u.complexity
+                         from lexeme l,
+                              lexeme_freeform lff,
+                              freeform u,
+                              freeform ut,
+                              dataset ds
+                         where l.type = 'PRIMARY'
+                         and   l.process_state_code = 'avalik'
+                         and   ds.code = l.dataset_code
+                         and   ds.is_public = true
+                         and   lff.lexeme_id = l.id
+                         and   lff.freeform_id = u.id
+                         and   u.type = 'USAGE'
+                         and   u.is_public = true
+                         and   ut.parent_id = u.id
+                         and   ut.type = 'USAGE_TRANSLATION')
+                         union all
+                         (select l.id,
+                                 d.lang,
+                                 d.complexity
+                         from lexeme l,
+                              definition d,
+                              dataset ds
+                         where l.type = 'PRIMARY'
+                         and   l.process_state_code = 'avalik'
+                         and   l.meaning_id = d.meaning_id
+                         and   d.is_public = true
+                         and   ds.code = l.dataset_code
+                         and   ds.is_public = true)
+                         union all
+                         (select l1.id,
+                                 w2.lang,
+                                 l2.complexity
+                         from lex_relation r,
+                              lexeme l1,
+                              lexeme l2,
+                              word w2,
+                              dataset l1ds,
+                              dataset l2ds
+                         where l1.type = 'PRIMARY'
+                         and   l1.process_state_code = 'avalik'
+                         and   l1ds.code = l1.dataset_code
+                         and   l1ds.is_public = true
+                         and   r.lexeme1_id = l1.id
+                         and   r.lexeme2_id = l2.id
+                         and   l2.dataset_code = l1.dataset_code
+                         and   l2.type = 'PRIMARY'
+                         and   l2.process_state_code = 'avalik'
+                         and   l2ds.code = l2.dataset_code
+                         and   l2ds.is_public = true
+                         and   w2.id = l2.word_id)
+                         union all
+                         (select l1.id,
+                                 w1.lang,
+                                 l1.complexity
+                         from lexeme l1,
+                              word w1,
+                              dataset l1ds
+                         where l1.type = 'PRIMARY'
+                         and   l1.process_state_code = 'avalik'
+                         and   l1ds.code = l1.dataset_code
+                         and   l1ds.is_public = true
+                         and   w1.id = l1.word_id
+                         and   not exists (select l2.id
+                                           from lexeme l2,
+                                                dataset l2ds
+                                           where l2.meaning_id = l1.meaning_id
+                                           and   l2.dataset_code = l1.dataset_code
+                                           and   l2.id != l1.id
+                                           and   l2.type = 'PRIMARY'
+                                           and   l2.process_state_code = 'avalik'
+                                           and   l2ds.code = l2.dataset_code
+                                           and   l2ds.is_public = true)
+                         and   not exists (select d.id
+                                           from definition d
+                                           where d.meaning_id = l1.meaning_id
+                                           and   d.is_public = true)
+                         and   not exists (select ff.id
+                                           from lexeme_freeform lff,
+                                                freeform ff
+                                           where lff.lexeme_id = l1.id
+                                           and   lff.freeform_id = ff.id
+                                           and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE')))) lc
             group by lc.id) l_lc on l_lc.id = l.id
 where l.type = 'PRIMARY'
 and   l.process_state_code = 'avalik'
