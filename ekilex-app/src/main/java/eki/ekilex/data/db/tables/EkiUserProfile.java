@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = 918854435;
+    private static final long serialVersionUID = 552943923;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -110,14 +110,14 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     public final TableField<EkiUserProfileRecord, String> PREFERRED_LAYER_NAME = createField(DSL.name("preferred_layer_name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.eki_user_profile.searchable_tag_names</code>.
+     * The column <code>public.eki_user_profile.preferred_tag_names</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> SEARCHABLE_TAG_NAMES = createField(DSL.name("searchable_tag_names"), org.jooq.impl.SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_TAG_NAMES = createField(DSL.name("preferred_tag_names"), org.jooq.impl.SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.eki_user_profile.preferred_tag_name</code>.
+     * The column <code>public.eki_user_profile.active_tag_name</code>.
      */
-    public final TableField<EkiUserProfileRecord, String> PREFERRED_TAG_NAME = createField(DSL.name("preferred_tag_name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<EkiUserProfileRecord, String> ACTIVE_TAG_NAME = createField(DSL.name("active_tag_name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.eki_user_profile</code> table reference
@@ -179,7 +179,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
     @Override
     public List<ForeignKey<EkiUserProfileRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_TAG_NAME_FKEY);
+        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY);
     }
 
     public EkiUser ekiUser() {
@@ -191,7 +191,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     }
 
     public Tag tag() {
-        return new Tag(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_TAG_NAME_FKEY);
+        return new Tag(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY);
     }
 
     @Override

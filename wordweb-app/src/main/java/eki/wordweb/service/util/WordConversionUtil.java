@@ -238,8 +238,8 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					|| CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())
 					|| CollectionUtils.isNotEmpty(lexeme.getAdviceNotes())
 					|| CollectionUtils.isNotEmpty(lexeme.getLearnerComments())
-					|| CollectionUtils.isNotEmpty(lexeme.getLexemePublicNotes())
-					|| CollectionUtils.isNotEmpty(lexeme.getMeaningPublicNotes())
+					|| CollectionUtils.isNotEmpty(lexeme.getLexemeNotes())
+					|| CollectionUtils.isNotEmpty(lexeme.getMeaningNotes())
 					|| CollectionUtils.isNotEmpty(lexeme.getLexemeSourceLinks());
 			boolean isShowSection3 = CollectionUtils.isNotEmpty(lexeme.getGovernments())
 					|| CollectionUtils.isNotEmpty(lexeme.getUsages())

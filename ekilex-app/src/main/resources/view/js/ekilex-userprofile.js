@@ -18,7 +18,7 @@ function initSelectMeaningRelationPrefsDlg(dlg) {
 }
 
 function initSelectTagPrefsDlg(dlg) {
-	dlg.find('select[name="searchableTagNames"]').selectpicker({
+	dlg.find('select[name="preferredTagNames"]').selectpicker({
 		width: '100%'
 	});
 }

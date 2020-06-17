@@ -86,8 +86,8 @@ public class UserProfileDbService {
 		boolean showMeaningRelationFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
 		boolean showMeaningRelationMeaningId = userProfile.isShowMeaningRelationMeaningId();
 		boolean showMeaningRelationWordDatasets = userProfile.isShowMeaningRelationWordDatasets();
-		List<String> searchableTagNames = userProfile.getSearchableTagNames();
-		String preferredTagName = userProfile.getPreferredTagName();
+		List<String> preferredTagNames = userProfile.getPreferredTagNames();
+		String activeTagName = userProfile.getActiveTagName();
 
 		EkiUserProfileRecord ekiUserProfile = create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOne();
 
@@ -109,10 +109,10 @@ public class UserProfileDbService {
 		ekiUserProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		ekiUserProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		ekiUserProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
-		if (CollectionUtils.isNotEmpty(searchableTagNames)) {
-			ekiUserProfile.setSearchableTagNames(searchableTagNames.toArray(new String[0]));
+		if (CollectionUtils.isNotEmpty(preferredTagNames)) {
+			ekiUserProfile.setPreferredTagNames(preferredTagNames.toArray(new String[0]));
 		}
-		ekiUserProfile.setPreferredTagName(preferredTagName);
+		ekiUserProfile.setActiveTagName(activeTagName);
 
 		ekiUserProfile.store();
 	}

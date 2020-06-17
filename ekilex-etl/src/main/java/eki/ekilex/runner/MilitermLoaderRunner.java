@@ -309,7 +309,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				if (CollectionUtils.isNotEmpty(noteValueNodes)) {
 					for (Node noteValueNode : noteValueNodes) {
 						List<Content> sources = extractContentAndRefs(noteValueNode, lang, term, false);
-						savePublicNotesAndSourceLinks(lexemeId, sources, term, fileName);
+						saveNotesAndSourceLinks(lexemeId, sources, term, fileName);
 					}
 				}
 
@@ -478,11 +478,11 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 
 		valueNodes = conceptGroupNode.selectNodes(noteExp);
-		for (Node publicNoteValueNode : valueNodes) {
-			valueStr = ((Element) publicNoteValueNode).getTextTrim();
-			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
-			if (((Element) publicNoteValueNode).hasMixedContent()) {
-				valueStr = handleFreeformTextSourceLinks(publicNoteValueNode, freeformId, fileName);
+		for (Node noteValueNode : valueNodes) {
+			valueStr = ((Element) noteValueNode).getTextTrim();
+			Long freeformId = createMeaningFreeform(meaningId, FreeformType.NOTE, valueStr);
+			if (((Element) noteValueNode).hasMixedContent()) {
+				valueStr = handleFreeformTextSourceLinks(noteValueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -797,29 +797,29 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		}
 	}
 
-	private void savePublicNotesAndSourceLinks(Long lexemeId, List<Content> publicNotes, String term, String fileName) throws Exception {
+	private void saveNotesAndSourceLinks(Long lexemeId, List<Content> notes, String term, String fileName) throws Exception {
 
-		for (Content publicNoteObj : publicNotes) {
-			String publicNote = publicNoteObj.getValue();
-			String lang = publicNoteObj.getLang();
-			List<Ref> refs = publicNoteObj.getRefs();
-			Long publicNoteId = null;
-			if (EMPTY_CONTENT.equals(publicNote)) {
-				boolean publicNoteHasAtLeastOneValidRef = containsValidRef(refs);
-				if (publicNoteHasAtLeastOneValidRef) {
-					publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
-					publicNoteObj.setId(publicNoteId);
+		for (Content noteObj : notes) {
+			String note = noteObj.getValue();
+			String lang = noteObj.getLang();
+			List<Ref> refs = noteObj.getRefs();
+			Long noteId = null;
+			if (EMPTY_CONTENT.equals(note)) {
+				boolean noteHasAtLeastOneValidRef = containsValidRef(refs);
+				if (noteHasAtLeastOneValidRef) {
+					noteId = createLexemeFreeform(lexemeId, FreeformType.NOTE, note, lang);
+					noteObj.setId(noteId);
 				}
 			}  else {
-				publicNoteId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, publicNote, lang);
-				publicNoteObj.setId(publicNoteId);
+				noteId = createLexemeFreeform(lexemeId, FreeformType.NOTE, note, lang);
+				noteObj.setId(noteId);
 			}
 			for (Ref ref : refs) {
 				String majorRef = ref.getMajorRef();
 				if (processLogSourceRefNames.contains(majorRef)) {
 					createLexemeProcessLog(lexemeId, majorRef);
 				} else {
-					createSourceLink(SourceOwner.PUBLIC_NOTE, publicNoteId, ref, term, fileName);
+					createSourceLink(SourceOwner.PUBLIC_NOTE, noteId, ref, term, fileName);
 				}
 			}
 		}

@@ -348,7 +348,7 @@ public class LookupService extends AbstractWordSearchService {
 
 	private void composeMeaningSelectData(Meaning meaning, List<ClassifierSelect> languagesOrder, Long userId) {
 
-		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.PUBLIC_NOTE.name()};
+		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name()};
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Long meaningId = meaning.getMeaningId();
 

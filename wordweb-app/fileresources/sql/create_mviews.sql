@@ -45,7 +45,7 @@ create type type_definition as (
 				value_prese text,
 				lang char(3),
 				complexity varchar(100),
-				public_notes text array);
+				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_image_file as (freeform_id bigint, image_file text, image_title text);
 create type type_source_link as (
@@ -220,7 +220,7 @@ dblink(
 	systematic_polysemy_patterns text array,
 	semantic_types text array,
 	learner_comments text array,
-	public_notes type_freeform array,
+	notes type_freeform array,
 	definitions type_definition array
 );
 
@@ -249,7 +249,7 @@ dblink(
 	deriv_codes varchar(100) array,
 	meaning_words type_meaning_word array,
 	advice_notes text array,
-	public_notes type_freeform array,
+	notes type_freeform array,
 	grammars type_freeform array,
 	governments type_freeform array,
 	usages type_usage array,

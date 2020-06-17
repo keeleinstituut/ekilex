@@ -24,7 +24,7 @@ public class Definition extends AbstractPublicEntity {
 
 	private List<String> datasetCodes;
 
-	private List<DefinitionNote> publicNotes;
+	private List<DefinitionNote> notes;
 
 	private List<SourceLink> sourceLinks;
 
@@ -92,12 +92,12 @@ public class Definition extends AbstractPublicEntity {
 		this.datasetCodes = datasetCodes;
 	}
 
-	public List<DefinitionNote> getPublicNotes() {
-		return publicNotes;
+	public List<DefinitionNote> getNotes() {
+		return notes;
 	}
 
-	public void setPublicNotes(List<DefinitionNote> publicNotes) {
-		this.publicNotes = publicNotes;
+	public void setNotes(List<DefinitionNote> notes) {
+		this.notes = notes;
 	}
 
 	public List<SourceLink> getSourceLinks() {

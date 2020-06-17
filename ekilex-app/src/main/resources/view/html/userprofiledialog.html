@@ -107,14 +107,15 @@
         <form th:action="@{/update_tag_prefs}" method="post">
           <div class="modal-body">
             <div class="form-group row">
-                <label class="col-md-auto col-form-label">Otsingutulemustes nähtavad sildid</label>
+                <label class="col-md-auto col-form-label">Otsingutulemustes nähtavad sildid (maksimum 3)</label>
               <div class="col-md-12">
-                <select name="searchableTagNames" multiple data-live-search="true" data-actions-box="true"
+                <select name="preferredTagNames" multiple data-live-search="true" data-actions-box="true"
+                        data-max-options="4" data-max-options-text="lubatud on kuni 3 valikut"
                         title="Vali otsingutulemustes nähtavad sildid"
                         th:data-select-all-text="#{button.select.all.text}"
                         th:data-deselect-all-text="#{button.unselect.all.text}">
                   <th:block th:each="tag : ${tags}">
-                    <option th:value="${tag}" th:text="${tag}" th:selected="${userProfile.searchableTagNames != null && #lists.contains(userProfile.searchableTagNames, tag)}"/>
+                    <option th:value="${tag}" th:text="${tag}" th:selected="${userProfile.preferredTagNames != null && #lists.contains(userProfile.preferredTagNames, tag)}"/>
                   </th:block>
                 </select>
               </div>
@@ -122,11 +123,11 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label">Aktiivne silt</label>
               <div class="col-md-12">
-                <select name="preferredTagName" class="form-control">
+                <select name="activeTagName" class="form-control">
                   <option value="" hidden disabled selected>vali aktiivne silt</option>
                   <option th:each="tag : ${tags}"
                           th:value="${tag}"
-                          th:selected="${tag == userProfile.preferredTagName}"
+                          th:selected="${tag == userProfile.activeTagName}"
                           th:text="${tag}">tags
                   </option>
                 </select>

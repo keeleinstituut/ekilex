@@ -22,7 +22,7 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private List<String> learnerComments;
 
-	private List<TypeFreeform> publicNotes;
+	private List<TypeFreeform> notes;
 
 	private List<TypeDefinition> definitions;
 
@@ -88,12 +88,12 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 		this.learnerComments = learnerComments;
 	}
 
-	public List<TypeFreeform> getPublicNotes() {
-		return publicNotes;
+	public List<TypeFreeform> getNotes() {
+		return notes;
 	}
 
-	public void setPublicNotes(List<TypeFreeform> publicNotes) {
-		this.publicNotes = publicNotes;
+	public void setNotes(List<TypeFreeform> notes) {
+		this.notes = notes;
 	}
 
 	public List<TypeDefinition> getDefinitions() {

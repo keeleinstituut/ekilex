@@ -20,7 +20,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
 
-    private static final long serialVersionUID = -940964941;
+    private static final long serialVersionUID = -175626149;
 
     /**
      * The reference instance of <code>public.type_definition</code>
@@ -71,9 +71,9 @@ public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
     public static final UDTField<TypeDefinitionRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_DEFINITION, "");
 
     /**
-     * The attribute <code>public.type_definition.public_notes</code>.
+     * The attribute <code>public.type_definition.notes</code>.
      */
-    public static final UDTField<TypeDefinitionRecord, String[]> PUBLIC_NOTES = createField(DSL.name("public_notes"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_DEFINITION, "");
+    public static final UDTField<TypeDefinitionRecord, String[]> NOTES = createField(DSL.name("notes"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_DEFINITION, "");
 
     /**
      * No further instances allowed

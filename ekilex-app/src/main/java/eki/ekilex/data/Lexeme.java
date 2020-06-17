@@ -54,7 +54,7 @@ public class Lexeme extends AbstractCrudEntity {
 
 	private List<FreeForm> freeforms;
 
-	private List<NoteLangGroup> publicNoteLangGroups;
+	private List<NoteLangGroup> noteLangGroups;
 
 	private List<FreeForm> grammars;
 
@@ -248,12 +248,12 @@ public class Lexeme extends AbstractCrudEntity {
 		this.freeforms = freeforms;
 	}
 
-	public List<NoteLangGroup> getPublicNoteLangGroups() {
-		return publicNoteLangGroups;
+	public List<NoteLangGroup> getNoteLangGroups() {
+		return noteLangGroups;
 	}
 
-	public void setPublicNoteLangGroups(List<NoteLangGroup> publicNoteLangGroups) {
-		this.publicNoteLangGroups = publicNoteLangGroups;
+	public void setNoteLangGroups(List<NoteLangGroup> noteLangGroups) {
+		this.noteLangGroups = noteLangGroups;
 	}
 
 	public List<FreeForm> getGrammars() {

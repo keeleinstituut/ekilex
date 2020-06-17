@@ -291,7 +291,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						l.DERIV_CODES,
 						l.MEANING_WORDS,
 						l.ADVICE_NOTES,
-						l.PUBLIC_NOTES.as("lexeme_public_notes"),
+						l.NOTES.as("lexeme_notes"),
 						l.GRAMMARS,
 						l.GOVERNMENTS,
 						l.USAGES,
@@ -307,7 +307,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.fetch(record -> {
 					Lexeme pojo = record.into(Lexeme.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
-					jooqBugCompensator.trimFreeforms(pojo.getLexemePublicNotes());
+					jooqBugCompensator.trimFreeforms(pojo.getLexemeNotes());
 					jooqBugCompensator.trimFreeforms(pojo.getGrammars());
 					jooqBugCompensator.trimFreeforms(pojo.getGovernments());
 					jooqBugCompensator.trimUsages(pojo.getUsages());
@@ -419,7 +419,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						m.SYSTEMATIC_POLYSEMY_PATTERNS,
 						m.SEMANTIC_TYPES,
 						m.LEARNER_COMMENTS,
-						m.PUBLIC_NOTES,
+						m.NOTES,
 						m.DEFINITIONS,
 						mr.RELATED_MEANINGS,
 						ffsl.SOURCE_LINKS.as("freeform_source_links"),
@@ -434,7 +434,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.fetch(record -> {
 					LexemeMeaningTuple pojo = record.into(LexemeMeaningTuple.class);
 					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
-					jooqBugCompensator.trimFreeforms(pojo.getPublicNotes());
+					jooqBugCompensator.trimFreeforms(pojo.getNotes());
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedMeanings());
 					return pojo;
 				});

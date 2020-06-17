@@ -66,7 +66,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
+import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
@@ -444,7 +444,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(FreeForm.class);
 	}
 
-	public List<NoteSourceTuple> getMeaningPublicNoteSourceTuples(Long meaningId) {
+	public List<NoteSourceTuple> getMeaningNoteSourceTuples(Long meaningId) {
 
 		return create
 				.select(
@@ -464,7 +464,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 								.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
+								.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(NoteSourceTuple.class);
 	}
@@ -557,7 +557,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Definition.class);
 	}
 
-	public List<DefSourceAndPublicNoteSourceTuple> getMeaningDefSourceAndPublicNoteSourceTuples(Long meaningId) {
+	public List<DefSourceAndNoteSourceTuple> getMeaningDefSourceAndNoteSourceTuples(Long meaningId) {
 
 		return create
 				.select(
@@ -566,28 +566,28 @@ public class CommonDataDbService extends AbstractDataDbService {
 						DEFINITION_SOURCE_LINK.TYPE.as("definition_source_link_type"),
 						DEFINITION_SOURCE_LINK.NAME.as("definition_source_link_name"),
 						DEFINITION_SOURCE_LINK.VALUE.as("definition_source_link_value"),
-						FREEFORM.ID.as("public_note_id"),
-						FREEFORM.VALUE_TEXT.as("public_note_value_text"),
-						FREEFORM.VALUE_PRESE.as("public_note_value_prese"),
-						FREEFORM.LANG.as("public_note_lang"),
-						FREEFORM.COMPLEXITY.as("public_note_complexity"),
-						FREEFORM.IS_PUBLIC.as("is_public_note_public"),
-						FREEFORM.ORDER_BY.as("public_note_order_by"),
-						FREEFORM_SOURCE_LINK.ID.as("public_note_source_link_id"),
-						FREEFORM_SOURCE_LINK.TYPE.as("public_note_source_link_type"),
-						FREEFORM_SOURCE_LINK.NAME.as("public_note_source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("public_note_source_link_value"))
+						FREEFORM.ID.as("note_id"),
+						FREEFORM.VALUE_TEXT.as("note_value_text"),
+						FREEFORM.VALUE_PRESE.as("note_value_prese"),
+						FREEFORM.LANG.as("note_lang"),
+						FREEFORM.COMPLEXITY.as("note_complexity"),
+						FREEFORM.IS_PUBLIC.as("is_note_public"),
+						FREEFORM.ORDER_BY.as("note_order_by"),
+						FREEFORM_SOURCE_LINK.ID.as("note_source_link_id"),
+						FREEFORM_SOURCE_LINK.TYPE.as("note_source_link_type"),
+						FREEFORM_SOURCE_LINK.NAME.as("note_source_link_name"),
+						FREEFORM_SOURCE_LINK.VALUE.as("note_source_link_value"))
 				.from(
 						DEFINITION
 								.leftOuterJoin(DEFINITION_SOURCE_LINK).on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
 								.leftOuterJoin(DEFINITION_FREEFORM).on(DEFINITION_FREEFORM.DEFINITION_ID.eq(DEFINITION.ID))
 								.leftOuterJoin(FREEFORM).on(
 										DEFINITION_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
-												.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
+												.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
 								.leftOuterJoin(FREEFORM_SOURCE_LINK).on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(DefSourceAndPublicNoteSourceTuple.class);
+				.fetchInto(DefSourceAndNoteSourceTuple.class);
 	}
 
 	public List<Relation> getMeaningRelations(
@@ -881,7 +881,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(UsageTranslationDefinitionTuple.class);
 	}
 
-	public List<NoteSourceTuple> getLexemePublicNoteSourceTuples(Long lexemeId) {
+	public List<NoteSourceTuple> getLexemeNoteSourceTuples(Long lexemeId) {
 
 		return create
 				.select(
@@ -901,7 +901,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
+								.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(NoteSourceTuple.class);
 	}

@@ -31,7 +31,7 @@ $(document).on("show.bs.modal", "[id^=addLexemeRelationDlg_]", function() {
 	initMultiselectRelationDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addLexemePublicNoteDlg_]", function(e) {
+$(document).on("show.bs.modal", "[id^=addLexemeNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
@@ -40,7 +40,7 @@ $(document).on("show.bs.modal", "[id^=addLexemeProcessStateDlg]", function() {
 	initGenericTextAddDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editLexemePublicNoteDlg_]", function(e) {
+$(document).on("show.bs.modal", "[id^=editLexemeNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
@@ -127,12 +127,12 @@ $(document).on("show.bs.modal", "[id^=addWordProcessLogDlg_]", function(e) {
 	alignAndFocus(e, $(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addMeaningPublicNoteDlg_]", function(e) {
+$(document).on("show.bs.modal", "[id^=addMeaningNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editMeaningPublicNoteDlg_]", function(e) {
+$(document).on("show.bs.modal", "[id^=editMeaningNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
@@ -142,17 +142,17 @@ $(document).on("show.bs.modal", "[id^=addDefinitionSourceLinkDlg_]", function() 
 	initSourceNameAutocomplete($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteDlg_]", function(e) {
+$(document).on("show.bs.modal", "[id^=addDefinitionNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editDefinitionPublicNoteDlg_]", function(e) {
+$(document).on("show.bs.modal", "[id^=editDefinitionNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addDefinitionPublicNoteSourceLinkDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=addDefinitionNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 	initSourceNameAutocomplete($(this));
 });

@@ -113,7 +113,7 @@ public class EstermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_YEAR, sourcePublicationYearExp);
 					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_PLACE, sourcePublicationPlaceExp);
 					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_NAME, sourcePublicationNameExp);
-					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.PUBLIC_NOTE, sourceNoteExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.NOTE, sourceNoteExp);
 
 					extractAndCreateSourceLifecycleLog(sourceId, termGroupNode);
 				}

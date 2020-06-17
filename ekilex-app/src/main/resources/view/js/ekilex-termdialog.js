@@ -46,12 +46,12 @@ $(document).on("show.bs.modal", "[id^=addMeaningDomainDlg_]", function() {
 	initAddMultiDataDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addLexemePublicNoteSourceLinkDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=addLexemeNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 	initSourceNameAutocomplete($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addMeaningPublicNoteSourceLinkDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=addMeaningNoteSourceLinkDlg_]", function() {
 	initAddSourceLinkDlg($(this));
 	initSourceNameAutocomplete($(this));
 });

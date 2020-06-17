@@ -31,9 +31,9 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private boolean showMeaningRelationWordDatasets;
 
-	private List<String> searchableTagNames;
+	private List<String> preferredTagNames;
 
-	private String preferredTagName;
+	private String activeTagName;
 
 	public Long getUserId() {
 		return userId;
@@ -123,19 +123,19 @@ public class EkiUserProfile extends AbstractDataObject {
 		this.showMeaningRelationWordDatasets = showMeaningRelationWordDatasets;
 	}
 
-	public List<String> getSearchableTagNames() {
-		return searchableTagNames;
+	public List<String> getPreferredTagNames() {
+		return preferredTagNames;
 	}
 
-	public void setSearchableTagNames(List<String> searchableTagNames) {
-		this.searchableTagNames = searchableTagNames;
+	public void setPreferredTagNames(List<String> preferredTagNames) {
+		this.preferredTagNames = preferredTagNames;
 	}
 
-	public String getPreferredTagName() {
-		return preferredTagName;
+	public String getActiveTagName() {
+		return activeTagName;
 	}
 
-	public void setPreferredTagName(String preferredTagName) {
-		this.preferredTagName = preferredTagName;
+	public void setActiveTagName(String activeTagName) {
+		this.activeTagName = activeTagName;
 	}
 }

@@ -171,8 +171,8 @@
                         <th:block th:if="${definition.subDataExists}">
                           <span class="definition-value mb-2 mr-1 text-weight-medium text-dark" th:utext="${definition.valuePrese}"></span>
                           <span th:if="${definition.oversizeValue}" th:text="#{label.definition.oversize.placeholder}" th:title="#{label.definition.oversize.title}"></span>
-                          <th:block th:if="${not #lists.isEmpty(definition.publicNotes)}">
-                            <span th:each="note : ${definition.publicNotes}">
+                          <th:block th:if="${not #lists.isEmpty(definition.notes)}">
+                            <span th:each="note : ${definition.notes}">
                               <span class="additional-meta mb-2" th:utext="${note}"></span>
                             </span>
                           </th:block>
@@ -383,25 +383,25 @@
                   <div th:each="note : ${lexeme.learnerComments}" th:utext="${note}"></div>
                 </div>
               </div>
-              <div class="row" th:if="${(not #maps.isEmpty(lexeme.lexemePublicNotesByLang)) or (not #maps.isEmpty(lexeme.meaningPublicNotesByLang))}">
+              <div class="row" th:if="${(not #maps.isEmpty(lexeme.lexemeNotesByLang)) or (not #maps.isEmpty(lexeme.meaningNotesByLang))}">
                 <div class="col-6">
                   <b th:text="#{label.public.note}">Hea teada</b>
                 </div>
                 <div class="col-12">
-                  <th:block th:if="${not #maps.isEmpty(lexeme.lexemePublicNotesByLang)}">
-                    <div th:each="publicNoteEntry : ${lexeme.lexemePublicNotesByLang}">
+                  <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
+                    <div th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
-                            th:with="langData=${viewUtil.getLangData(publicNoteEntry.key)}"
+                            th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                      <span th:each="note, noteIter : ${publicNoteEntry.value}" th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
+                      <span th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
                     </div>
                   </th:block>
-                  <th:block th:if="${not #maps.isEmpty(lexeme.meaningPublicNotesByLang)}">
-                    <div th:each="publicNoteEntry : ${lexeme.meaningPublicNotesByLang}">
+                  <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
+                    <div th:each="noteEntry : ${lexeme.meaningNotesByLang}">
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
-                            th:with="langData=${viewUtil.getLangData(publicNoteEntry.key)}"
+                            th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                      <span th:each="note, noteIter : ${publicNoteEntry.value}">
+                      <span th:each="note, noteIter : ${noteEntry.value}">
                         <span th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
                         <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                           <span th:each="sourceLink : ${note.sourceLinks}">

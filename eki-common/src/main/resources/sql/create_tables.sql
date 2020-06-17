@@ -493,15 +493,15 @@ create table eki_user_profile
   recent_dataset_permission_id bigint references dataset_permission(id),
   preferred_datasets varchar(10) array,
   preferred_layer_name varchar(100) null,
+  preferred_tag_names varchar(100) array,
+  active_tag_name varchar(100) references tag(name),
   preferred_syn_candidate_langs char(3) array,
   preferred_syn_lex_meaning_word_langs char(3) array,
   preferred_meaning_relation_word_langs char(3) array,
   show_lex_meaning_relation_source_lang_words boolean default true,
   show_meaning_relation_first_word_only boolean default true,
   show_meaning_relation_meaning_id boolean default true,
-  show_meaning_relation_word_datasets boolean default true,
-  searchable_tag_names varchar(100) array,
-  preferred_tag_name varchar(100) references tag(name)
+  show_meaning_relation_word_datasets boolean default true
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 

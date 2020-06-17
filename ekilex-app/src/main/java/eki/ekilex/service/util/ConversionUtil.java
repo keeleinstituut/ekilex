@@ -31,7 +31,7 @@ import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
-import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
+import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
@@ -459,17 +459,17 @@ public class ConversionUtil implements GlobalConstant {
 		return noteLangGroups;
 	}
 
-	public void composeMeaningDefinitions(List<Definition> definitions, List<DefSourceAndPublicNoteSourceTuple> definitionsDataTuples) {
+	public void composeMeaningDefinitions(List<Definition> definitions, List<DefSourceAndNoteSourceTuple> definitionsDataTuples) {
 
 		Map<Long, Definition> definitionMap = definitions.stream().collect(Collectors.toMap(Definition::getId, definition -> definition));
 		Set<Long> handledSourceLinkIds = new HashSet<>();
-		Map<Long, DefinitionNote> publicNoteMap = new HashMap<>();
+		Map<Long, DefinitionNote> noteMap = new HashMap<>();
 
-		for (DefSourceAndPublicNoteSourceTuple definitionData : definitionsDataTuples) {
+		for (DefSourceAndNoteSourceTuple definitionData : definitionsDataTuples) {
 			Long definitionId = definitionData.getDefinitionId();
 			Long definitionSourceLinkId = definitionData.getDefinitionSourceLinkId();
-			Long publicNoteId = definitionData.getPublicNoteId();
-			Long publicNoteSourceLinkId = definitionData.getPublicNoteSourceLinkId();
+			Long noteId = definitionData.getNoteId();
+			Long noteSourceLinkId = definitionData.getNoteSourceLinkId();
 
 			Definition definition = definitionMap.get(definitionId);
 			if (definition == null) {
@@ -478,8 +478,8 @@ public class ConversionUtil implements GlobalConstant {
 			if (definition.getSourceLinks() == null) {
 				definition.setSourceLinks(new ArrayList<>());
 			}
-			if (definition.getPublicNotes() == null) {
-				definition.setPublicNotes(new ArrayList<>());
+			if (definition.getNotes() == null) {
+				definition.setNotes(new ArrayList<>());
 			}
 
 			if (definitionSourceLinkId != null && !handledSourceLinkIds.contains(definitionSourceLinkId)) {
@@ -495,38 +495,38 @@ public class ConversionUtil implements GlobalConstant {
 				handledSourceLinkIds.add(definitionSourceLinkId);
 			}
 
-			if (publicNoteId != null) {
-				DefinitionNote publicNote = publicNoteMap.get(publicNoteId);
-				if (publicNote == null) {
-					String publicNoteValueText = definitionData.getPublicNoteValueText();
-					String publicNoteValuePrese = definitionData.getPublicNoteValuePrese();
-					String publicNoteLang = definitionData.getPublicNoteLang();
-					Complexity publicNoteComplexity = definitionData.getPublicNoteComplexity();
-					boolean isPublicNotePublic = definitionData.isPublicNotePublic();
-					Long publicNoteOrderBy = definitionData.getPublicNoteOrderBy();
-					publicNote = new DefinitionNote();
-					publicNote.setDefinitionId(definitionId);
-					publicNote.setId(publicNoteId);
-					publicNote.setValueText(publicNoteValueText);
-					publicNote.setValuePrese(publicNoteValuePrese);
-					publicNote.setLang(publicNoteLang);
-					publicNote.setComplexity(publicNoteComplexity);
-					publicNote.setPublic(isPublicNotePublic);
-					publicNote.setOrderBy(publicNoteOrderBy);
-					publicNote.setSourceLinks(new ArrayList<>());
-					definition.getPublicNotes().add(publicNote);
-					publicNoteMap.put(publicNoteId, publicNote);
+			if (noteId != null) {
+				DefinitionNote note = noteMap.get(noteId);
+				if (note == null) {
+					String noteValueText = definitionData.getNoteValueText();
+					String noteValuePrese = definitionData.getNoteValuePrese();
+					String noteLang = definitionData.getNoteLang();
+					Complexity noteComplexity = definitionData.getNoteComplexity();
+					boolean isNotePublic = definitionData.isNotePublic();
+					Long noteOrderBy = definitionData.getNoteOrderBy();
+					note = new DefinitionNote();
+					note.setDefinitionId(definitionId);
+					note.setId(noteId);
+					note.setValueText(noteValueText);
+					note.setValuePrese(noteValuePrese);
+					note.setLang(noteLang);
+					note.setComplexity(noteComplexity);
+					note.setPublic(isNotePublic);
+					note.setOrderBy(noteOrderBy);
+					note.setSourceLinks(new ArrayList<>());
+					definition.getNotes().add(note);
+					noteMap.put(noteId, note);
 				}
-				if (publicNoteSourceLinkId != null) {
-					ReferenceType publicNoteSourceLinkType = definitionData.getPublicNoteSourceLinkType();
-					String publicNoteSourceLinkName = definitionData.getPublicNoteSourceLinkName();
-					String publicNoteSourceLinkValue = definitionData.getPublicNoteSourceLinkValue();
-					SourceLink publicNoteSourceLink = new SourceLink();
-					publicNoteSourceLink.setId(publicNoteSourceLinkId);
-					publicNoteSourceLink.setType(publicNoteSourceLinkType);
-					publicNoteSourceLink.setName(publicNoteSourceLinkName);
-					publicNoteSourceLink.setValue(publicNoteSourceLinkValue);
-					publicNote.getSourceLinks().add(publicNoteSourceLink);
+				if (noteSourceLinkId != null) {
+					ReferenceType noteSourceLinkType = definitionData.getNoteSourceLinkType();
+					String noteSourceLinkName = definitionData.getNoteSourceLinkName();
+					String noteSourceLinkValue = definitionData.getNoteSourceLinkValue();
+					SourceLink noteSourceLink = new SourceLink();
+					noteSourceLink.setId(noteSourceLinkId);
+					noteSourceLink.setType(noteSourceLinkType);
+					noteSourceLink.setName(noteSourceLinkName);
+					noteSourceLink.setValue(noteSourceLinkValue);
+					note.getSourceLinks().add(noteSourceLink);
 				}
 			}
 		}

@@ -133,7 +133,7 @@ public class MilitermSourceLoaderRunner extends AbstractTermSourceLoaderRunner {
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_EXPLANATION, sourceExplanationExp);
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_ARTICLE_TITLE, sourceArticleTitleExp);
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_ARTICLE_AUTHOR, sourceArticleAuthorExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.PUBLIC_NOTE, sourceNoteExp);
+				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.NOTE, sourceNoteExp);
 
 				extractAndCreateSourceLifecycleLog(sourceId, termGroupNode);
 			}

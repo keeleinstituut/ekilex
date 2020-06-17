@@ -123,7 +123,7 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 	@ModelAttribute("sourcePropertyTypes")
 	public List<FreeformType> getSourcePropertyTypes() {
 
-		return Arrays.asList(FreeformType.SOURCE_AUTHOR, FreeformType.SOURCE_NAME, FreeformType.EXTERNAL_SOURCE_ID, FreeformType.PUBLIC_NOTE,
+		return Arrays.asList(FreeformType.SOURCE_AUTHOR, FreeformType.SOURCE_NAME, FreeformType.EXTERNAL_SOURCE_ID, FreeformType.NOTE,
 				FreeformType.SOURCE_ISBN, FreeformType.SOURCE_ISSN, FreeformType.SOURCE_WWW, FreeformType.SOURCE_FILE, FreeformType.SOURCE_PUBLISHER,
 				FreeformType.SOURCE_PUBLICATION_NAME, FreeformType.SOURCE_PUBLICATION_PLACE, FreeformType.SOURCE_PUBLICATION_YEAR, FreeformType.SOURCE_CELEX,
 				FreeformType.SOURCE_RT, FreeformType.SOURCE_EXPLANATION, FreeformType.SOURCE_ARTICLE_TITLE, FreeformType.SOURCE_ARTICLE_AUTHOR);

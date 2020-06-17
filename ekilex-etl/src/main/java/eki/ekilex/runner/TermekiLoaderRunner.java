@@ -465,9 +465,9 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				definitionValue = convertTermekiLinkMarkup(definitionValue, conceptMeaningIdMap);
 				Long definitionId = createOrSelectDefinition(meaningId, definitionValue, language);
 				definitionsCount++;
-				String publicNote = (String) definition.get("description");
-				if (isNotBlank(publicNote)) {
-					createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, publicNote);
+				String note = (String) definition.get("description");
+				if (isNotBlank(note)) {
+					createMeaningFreeform(meaningId, FreeformType.NOTE, note);
 				}
 				Integer sourceId = (Integer) definition.get("source_id");
 				createDefinitionSourceLink(context, definitionId, sourceId);
@@ -654,7 +654,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 		createMeaningFreeformOfType(FreeformType.FAMILY, context.families, conceptId, meaningId);
 		createMeaningFreeformOfType(FreeformType.DESCRIBER, context.describers, conceptId, meaningId);
 		createMeaningFreeformOfType(FreeformType.DESCRIBING_YEAR, context.describingYears, conceptId, meaningId);
-		createMeaningFreeformOfType(FreeformType.PUBLIC_NOTE, context.models, conceptId, meaningId);
+		createMeaningFreeformOfType(FreeformType.NOTE, context.models, conceptId, meaningId);
 	}
 
 	private void createMeaningFreeformOfType(FreeformType freeformType, List<Map<String, Object>> items, Integer conceptId, Long meaningId) throws Exception {

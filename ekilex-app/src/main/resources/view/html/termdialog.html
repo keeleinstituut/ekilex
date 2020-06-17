@@ -25,7 +25,7 @@
                   <option value="lexeme_region" sec:authorize="#vars.lexeme.crudGrant">Regioon</option>
                   <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.lexeme.crudGrant">Allikaviide</option>
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku seos</option>
-                  <option value="addLexemePublicNoteDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku märkus</option>
+                  <option value="addLexemeNoteDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku märkus</option>
                   <option value="word_gender" sec:authorize="#vars.lexeme.word.crudGrant">Sugu</option>
                   <option value="word_type" sec:authorize="#vars.lexeme.word.crudGrant">Sõna tüüp</option>
                 </select>
@@ -140,7 +140,7 @@
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
-                  <option value="addMeaningPublicNoteDlg" sec:authorize="#vars.meaning.crudGrant">Märkus</option>
+                  <option value="addMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant">Märkus</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse seos</option>
                   <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant">Semantiline tüüp</option>
                 </select>
@@ -566,13 +566,13 @@
         </form>
       </div>
     </div>
-  </div>  <div th:id="${'addLexemePublicNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_public_note_dlg">
+  </div>  <div th:id="${'addLexemeNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_public_note">
+            <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
@@ -602,22 +602,22 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="edit_lexeme_public_note_dlg">
+  <div th:id="${'editLexemeNoteDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_lexeme_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${publicNote.id}">
-            <input type="hidden" name="opCode" value="lexeme_public_note">
-            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${publicNote.complexity}">
+            <input type="hidden" name="id" th:value="${note.id}">
+            <input type="hidden" name="opCode" value="lexeme_note">
+            <input type="hidden" name="value" th:value="${note.valuePrese}">
+            <input type="hidden" name="complexity" th:value="${note.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == publicNote.lang}"
+                          th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -625,7 +625,7 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
               </label>
             </div>
           </div>
@@ -637,14 +637,14 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemePublicNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="add_lexeme_public_note_source_link_dlg">
+  <div th:id="${'addLexemeNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal" role="dialog" th:fragment="add_lexeme_note_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
-          <input type="hidden" name="id" th:value="${publicNote.id}">
+          <input type="hidden" name="id" th:value="${note.id}">
           <input type="hidden" name="opCode" value="lexeme_ff_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="id3">
@@ -657,13 +657,13 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningPublicNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_public_note_dlg">
+  <div th:id="${'addMeaningNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="opCode" value="meaning_public_note">
+            <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
@@ -693,22 +693,22 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningPublicNoteDlg_' + meaningId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="edit_meaning_public_note_dlg">
+  <div th:id="${'editMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_meaning_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${publicNote.id}">
-            <input type="hidden" name="opCode" value="meaning_public_note">
-            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
-            <input type="hidden" name="complexity" th:value="${publicNote.complexity}">
+            <input type="hidden" name="id" th:value="${note.id}">
+            <input type="hidden" name="opCode" value="meaning_note">
+            <input type="hidden" name="value" th:value="${note.valuePrese}">
+            <input type="hidden" name="complexity" th:value="${note.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == publicNote.lang}"
+                          th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -716,7 +716,7 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
               </label>
             </div>
           </div>
@@ -728,14 +728,14 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningPublicNoteSourceLinkDlg_' + meaningId + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="add_meaning_public_note_source_link_dlg">
+  <div th:id="${'addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}" class="modal" role="dialog" th:fragment="add_meaning_note_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
-          <input type="hidden" name="id" th:value="${publicNote.id}">
+          <input type="hidden" name="id" th:value="${note.id}">
           <input type="hidden" name="opCode" value="meaning_ff_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="id3">
@@ -882,13 +882,13 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionPublicNoteDlg_' + definition.id}" class="modal" role="dialog" th:fragment="add_definition_public_note_dlg">
+  <div th:id="${'addDefinitionNoteDlg_' + definition.id}" class="modal" role="dialog" th:fragment="add_definition_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${definition.id}">
-            <input type="hidden" name="opCode" value="definition_public_note">
+            <input type="hidden" name="opCode" value="definition_note">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
@@ -917,21 +917,21 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editDefinitionPublicNoteDlg_' + definition.id + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="edit_definition_public_note_dlg">
+  <div th:id="${'editDefinitionNoteDlg_' + definition.id + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_definition_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${publicNote.id}">
-            <input type="hidden" name="opCode" value="definition_public_note">
-            <input type="hidden" name="value" th:value="${publicNote.valuePrese}">
+            <input type="hidden" name="id" th:value="${note.id}">
+            <input type="hidden" name="opCode" value="definition_note">
+            <input type="hidden" name="value" th:value="${note.valuePrese}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == publicNote.lang}"
+                          th:selected="${language.code == note.lang}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -939,7 +939,7 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${publicNote.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
               </label>
             </div>
           </div>
@@ -951,14 +951,14 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionPublicNoteSourceLinkDlg_' + definition.id + '_' + publicNote.id}" class="modal" role="dialog" th:fragment="add_definition_public_note_source_link_dlg">
+  <div th:id="${'addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}" class="modal" role="dialog" th:fragment="add_definition_note_source_link_dlg">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
         <form th:action="@{/create_item}" method="post">
-          <input type="hidden" name="id" th:value="${publicNote.id}">
+          <input type="hidden" name="id" th:value="${note.id}">
           <input type="hidden" name="opCode" value="definition_ff_source_link">
           <input type="hidden" name="id2">
           <input type="hidden" name="id3">

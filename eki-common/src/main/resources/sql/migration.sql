@@ -70,7 +70,7 @@ set lang = d.lang
 from definition_freeform dff,
      definition d
 where ff.lang is null
-  and ff.type = 'PUBLIC_NOTE'
+  and ff.type = 'NOTE'
   and ff.id = dff.freeform_id
   and dff.definition_id = d.id;
 
@@ -80,7 +80,7 @@ from lexeme_freeform lff,
      lexeme l,
      word w
 where ff.lang is null
-  and ff.type = 'PUBLIC_NOTE'
+  and ff.type = 'NOTE'
   and ff.id = lff.freeform_id
   and lff.lexeme_id = l.id
   and l.word_id = w.id;
@@ -92,7 +92,7 @@ set lang = case
            end
 from meaning_freeform mff
 where ff.lang is null
-  and ff.type = 'PUBLIC_NOTE'
+  and ff.type = 'NOTE'
   and ff.id = mff.freeform_id;
 
 -- detailsuste muudatused
@@ -184,5 +184,8 @@ insert into tag select distinct process_state_code from lexeme where process_sta
 insert into lexeme_tag (lexeme_id, tag_name) select l.id, l.process_state_code from lexeme l where l.process_state_code != 'avalik';
 insert into process_state (code, datasets) values ('mitteavalik', '{}');
 update lexeme set process_state_code = 'mitteavalik' where process_state_code != 'avalik';
-alter table eki_user_profile add column searchable_tag_names varchar(100) array;
-alter table eki_user_profile add column preferred_tag_name varchar(100) references tag(name);
+alter table eki_user_profile add column preferred_tag_names varchar(100) array;
+alter table eki_user_profile add column active_tag_name varchar(100) references tag(name);
+
+update freeform set type = 'NOTE' where type = 'PUBLIC_NOTE';
+update lifecycle_log set entity_prop = 'NOTE' where entity_prop = 'PUBLIC_NOTE';

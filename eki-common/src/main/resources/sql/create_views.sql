@@ -12,7 +12,7 @@ create type type_definition as (
 				value_prese text,
 				lang char(3),
 				complexity varchar(100),
-				public_notes text array);
+				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_image_file as (freeform_id bigint, image_file text, image_title text);
 create type type_source_link as (
@@ -253,7 +253,7 @@ from (
               and ff.type in ('USAGE',
                               'GRAMMAR',
                               'GOVERNMENT',
-                              'PUBLIC_NOTE'))
+                              'NOTE'))
          union all
            (select
               (select array_agg(distinct f.value)
@@ -512,7 +512,7 @@ from (select w.id as word_id,
                           and lff.lexeme_id = l.id
                           and lff.freeform_id = ff.id
                           and ff.is_public = true
-                          and ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
+                          and ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
                           union all
                           (select l.word_id,
                                   ut.lang,
@@ -662,7 +662,7 @@ select m.id meaning_id,
        m_spp.systematic_polysemy_patterns,
        m_smt.semantic_types,
        m_lcm.learner_comments,
-       m_pnt.public_notes,
+       m_pnt.notes,
        d.definitions
 from (select m.id
       from meaning m
@@ -688,7 +688,7 @@ from (select m.id
                             ' ' || d.value_prese,
                             d.lang,
                             d.complexity,
-                            d.public_notes
+                            d.notes
                           )::type_definition
                           order by
                           d.order_by
@@ -705,9 +705,9 @@ from (select m.id
                                       freeform ff
                                  where dff.definition_id = d.id
                                  and   ff.id = dff.freeform_id
-                                 and   ff.type = 'PUBLIC_NOTE'
+                                 and   ff.type = 'NOTE'
                                  and   ff.is_public = true
-                                 group by dff.definition_id) public_notes
+                                 group by dff.definition_id) notes
                          from definition d
                          where d.is_public = true) d
                    group by d.meaning_id) d
@@ -752,11 +752,11 @@ from (select m.id
                    and   ff.type = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
   left outer join (select mf.meaning_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) public_notes
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) notes
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
-                   and   ff.type = 'PUBLIC_NOTE'
+                   and   ff.type = 'NOTE'
                    and   ff.is_public = true
                    group by mf.meaning_id) m_pnt on m_pnt.meaning_id = m.id
 order by m.id;
@@ -784,7 +784,7 @@ select l.id lexeme_id,
        l_der.deriv_codes,
        mw.meaning_words,
        anote.advice_notes,
-       pnote.public_notes,
+       pnote.notes,
        gramm.grammars,
        gov.governments,
        usg.usages,
@@ -812,11 +812,11 @@ from lexeme l
                    and   ff.type = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) public_notes
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
-                   and   ff.type = 'PUBLIC_NOTE'
+                   and   ff.type = 'NOTE'
                    and   ff.is_public = true
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
@@ -1001,7 +1001,7 @@ from lexeme l
                          and   l.word_id = w.id
                          and   lff.lexeme_id = l.id
                          and   lff.freeform_id = ff.id
-                         and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
+                         and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
                          union all
                          (select l.id,
                                  ut.lang,
@@ -1087,7 +1087,7 @@ from lexeme l
                                                 freeform ff
                                            where lff.lexeme_id = l1.id
                                            and   lff.freeform_id = ff.id
-                                           and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE')))) lc
+                                           and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
             group by lc.id) l_lc on l_lc.id = l.id
 where l.type = 'PRIMARY'
 and   l.process_state_code = 'avalik'

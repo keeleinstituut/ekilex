@@ -111,19 +111,19 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setCollocationPosGroups(new ArrayList<>());
 
-		List<TypeFreeform> publicNotes = lexeme.getLexemePublicNotes();
+		List<TypeFreeform> notes = lexeme.getLexemeNotes();
 		List<TypeFreeform> grammars = lexeme.getGrammars();
 		List<TypeFreeform> governments = lexeme.getGovernments();
 
-		List<TypeFreeform> filteredPublicNotes = filter(publicNotes, lexComplexity);
-		Map<String, List<TypeFreeform>> publicNotesByLangOrdered = null;
-		if (CollectionUtils.isNotEmpty(filteredPublicNotes)) {
-			Map<String, List<TypeFreeform>> publicNotesByLangUnordered = filteredPublicNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
-			publicNotesByLangOrdered = composeOrderedMap(publicNotesByLangUnordered, langOrderByMap);
+		List<TypeFreeform> filteredNotes = filter(notes, lexComplexity);
+		Map<String, List<TypeFreeform>> notesByLangOrdered = null;
+		if (CollectionUtils.isNotEmpty(filteredNotes)) {
+			Map<String, List<TypeFreeform>> notesByLangUnordered = filteredNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
 		}
 
-		lexeme.setLexemePublicNotes(filteredPublicNotes);
-		lexeme.setLexemePublicNotesByLang(publicNotesByLangOrdered);
+		lexeme.setLexemeNotes(filteredNotes);
+		lexeme.setLexemeNotesByLang(notesByLangOrdered);
 		lexeme.setGrammars(filter(grammars, lexComplexity));
 		lexeme.setGovernments(filter(governments, lexComplexity));
 
@@ -281,21 +281,21 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 					}
 					definition.setValuePrese(definitionValuePreseCut);
 				}
-				boolean subDataExists = CollectionUtils.isNotEmpty(definition.getPublicNotes()) || CollectionUtils.isNotEmpty(definition.getSourceLinks());
+				boolean subDataExists = CollectionUtils.isNotEmpty(definition.getNotes()) || CollectionUtils.isNotEmpty(definition.getSourceLinks());
 				definition.setSubDataExists(subDataExists);
 				definition.setOversizeValue(isOversizeValue);
 			});
 		}
 
-		List<TypeFreeform> publicNotes = tuple.getPublicNotes();
-		applySourceLinks(publicNotes, meaningFreeformSourceLinks);
-		Map<String, List<TypeFreeform>> publicNotesByLangOrdered = null;
-		if (CollectionUtils.isNotEmpty(publicNotes)) {
-			Map<String, List<TypeFreeform>> publicNotesByLangUnordered = publicNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
-			publicNotesByLangOrdered = composeOrderedMap(publicNotesByLangUnordered, langOrderByMap);
+		List<TypeFreeform> notes = tuple.getNotes();
+		applySourceLinks(notes, meaningFreeformSourceLinks);
+		Map<String, List<TypeFreeform>> notesByLangOrdered = null;
+		if (CollectionUtils.isNotEmpty(notes)) {
+			Map<String, List<TypeFreeform>> notesByLangUnordered = notes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
 		}
-		lexeme.setMeaningPublicNotes(publicNotes);
-		lexeme.setMeaningPublicNotesByLang(publicNotesByLangOrdered);
+		lexeme.setMeaningNotes(notes);
+		lexeme.setMeaningNotesByLang(notesByLangOrdered);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 

@@ -68,8 +68,8 @@
       <div th:replace="lexdialog :: add_meaning_semantic_type_dlg"></div>
       <div th:replace="lexdialog :: add_government_dlg"></div>
       <div th:replace="lexdialog :: add_usage_dlg"></div>
-      <div th:replace="lexdialog :: add_lexeme_public_note_dlg"></div>
-      <div th:replace="lexdialog :: add_meaning_public_note_dlg"></div>
+      <div th:replace="lexdialog :: add_lexeme_note_dlg"></div>
+      <div th:replace="lexdialog :: add_meaning_note_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_relation_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_process_state_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_value_state_dlg"></div>
@@ -254,7 +254,7 @@
                      th:data-orderby="${definition.orderBy}">
                   <div th:replace="lexdialog :: edit_definition_dlg"></div>
                   <div th:replace="lexdialog :: add_definition_source_link_dlg"></div>
-                  <div th:replace="lexdialog :: add_definition_public_note_dlg"></div>
+                  <div th:replace="lexdialog :: add_definition_note_dlg"></div>
                   <div style="display: list-item; position: absolute"></div>
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
@@ -286,7 +286,7 @@
                       <button type="button" class="btn badge badge-success"
                               title="Lisa märkus"
                               data-toggle="modal"
-                              th:data-target="${'#addDefinitionPublicNoteDlg_' + lexeme.lexemeId + '_' + definition.id}"
+                              th:data-target="${'#addDefinitionNoteDlg_' + lexeme.lexemeId + '_' + definition.id}"
                               sec:authorize="#vars.definition.crudGrant">
                         <i class="fa fa-sticky-note-o" aria-hidden="true"></i>
                       </button>
@@ -325,23 +325,23 @@
                       <i class="fa fa-external-link" aria-hidden="true"></i>
                     </button>
                   </div>
-                  <div th:if="${not #lists.isEmpty(definition.publicNotes)}" class="col pl-0">
+                  <div th:if="${not #lists.isEmpty(definition.notes)}" class="col pl-0">
                     <div>
                       <span class="lbl">Märkused</span>
                     </div>
-                    <th:block th:each="publicNote : ${definition.publicNotes}">
-                      <div th:replace="lexdialog :: edit_definition_public_note_dlg"></div>
-                      <div th:replace="lexdialog :: add_definition_public_note_source_link_dlg"></div>
+                    <th:block th:each="note : ${definition.notes}">
+                      <div th:replace="lexdialog :: edit_definition_note_dlg"></div>
+                      <div th:replace="lexdialog :: add_definition_note_source_link_dlg"></div>
                       <div class="small invisible-buttons action-buttons-anchor mw-90 ml-4">
                         <div style="display: list-item; position: absolute"></div>
-                        <span th:utext="${publicNote.valuePrese}"></span>
-                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${definition.crudGrant}"></span>
-                        <span class="show-on-mouseover" th:if="${#lists.isEmpty(publicNote.sourceLinks)}">
+                        <span th:utext="${note.valuePrese}"></span>
+                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}"></span>
+                        <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
                           [
                           <button type="button" class="btn badge badge-success"
                                   title="Lisa allikaviide"
                                   data-toggle="modal"
-                                  th:data-target="${'#addDefinitionPublicNoteSourceLinkDlg_' + definition.id + '_' + publicNote.id}"
+                                  th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
                                   sec:authorize="#vars.definition.crudGrant">
                             <i class="fa fa-external-link" aria-hidden="true"></i>
                           </button>
@@ -351,13 +351,13 @@
                           <button type="button" class="btn badge badge-primary"
                                   th:title="Muuda"
                                   data-toggle="modal"
-                                  th:data-target="${'#editDefinitionPublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                                  th:data-target="${'#editDefinitionNoteDlg_' + lexeme.lexemeId + '_' + note.id}"
                                   sec:authorize="#vars.definition.crudGrant">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
                           <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${publicNote.id}"
-                                  data-op-code="definition_public_note"
+                                  th:data-id="${note.id}"
+                                  data-op-code="definition_note"
                                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
@@ -367,7 +367,7 @@
                         </div>
                       </div>
                       <div class="small hidden-buttons ml-4">
-                        <span th:each="sourceLink : ${publicNote.sourceLinks}">
+                        <span th:each="sourceLink : ${note.sourceLinks}">
                           [
                           <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
                           <span th:if="${sourceLink.name != null}">
@@ -387,7 +387,7 @@
                         <button type="button" class="btn badge badge-success"
                                 title="Lisa allikaviide"
                                 data-toggle="modal"
-                                th:data-target="${'#addDefinitionPublicNoteSourceLinkDlg_' + definition.id + '_' + publicNote.id}"
+                                th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
                                 sec:authorize="#vars.definition.crudGrant">
                           <i class="fa fa-external-link" aria-hidden="true"></i>
                         </button>
@@ -1058,7 +1058,7 @@
             </th:block>
           </div>
         </div>
-        <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemePublicNoteLangGroups)}">
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeNoteLangGroups)}">
           <hr/>
           <div class="col pr-0 col-w13rem">
             <span class="lbl">
@@ -1066,47 +1066,47 @@
               <button type="button" class="btn badge badge-success float-right mr-4"
                       title="Lisa uus"
                       data-toggle="modal"
-                      th:data-target="${'#addLexemePublicNoteDlg_' + lexeme.lexemeId}"
+                      th:data-target="${'#addLexemeNoteDlg_' + lexeme.lexemeId}"
                       sec:authorize="#vars.lexeme.crudGrant">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </span>
           </div>
           <div class="col pl-0">
-            <th:block th:each="publicNoteLangGroup : ${lexeme.lexemePublicNoteLangGroups}">
+            <th:block th:each="noteLangGroup : ${lexeme.lexemeNoteLangGroups}">
               <div>
-                <span th:text="${viewUtil.getLangIso2(publicNoteLangGroup.lang)}" class="mr-2"></span>
+                <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
                 <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                         th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                        th:data-lang="${publicNoteLangGroup.lang}"
-                        th:title="${publicNoteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
-                  <i th:class="${publicNoteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
+                        th:data-lang="${noteLangGroup.lang}"
+                        th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  <i th:class="${noteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
                 </button>
               </div>
-              <div th:if="${publicNoteLangGroup.selected}" class="orderable" data-op-code="lexeme_public_note">
-                <div class="ml-4" style="position: relative" th:each="publicNote, itemIter: ${publicNoteLangGroup.notes}"
-                     th:data-id="${publicNote.id}"
-                     th:data-orderby="${publicNote.orderBy}">
-                  <div th:replace="lexdialog :: edit_lexeme_public_note_dlg"></div>
+              <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="lexeme_note">
+                <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
+                     th:data-id="${note.id}"
+                     th:data-orderby="${note.orderBy}">
+                  <div th:replace="lexdialog :: edit_lexeme_note_dlg"></div>
                   <div style="display: list-item; position: absolute"></div>
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
                   </div>
                   <div class="invisible-buttons action-buttons-anchor mw-90">
-                    <span th:utext="${publicNote.valuePrese}"></span>
-                    <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${publicNote.complexity}} + ')'"></span>
-                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
+                    <span th:utext="${note.valuePrese}"></span>
+                    <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'"></span>
+                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.crudGrant}"></span>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"
                               title="Muuda"
                               data-toggle="modal"
-                              th:data-target="${'#editLexemePublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                              th:data-target="${'#editLexemeNoteDlg_' + lexeme.lexemeId + '_' + note.id}"
                               sec:authorize="#vars.lexeme.crudGrant">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-warning"
-                              data-op-code="lexeme_public_note"
-                              th:data-id="${publicNote.id}"
+                              data-op-code="lexeme_note"
+                              th:data-id="${note.id}"
                               th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                               data-toggle="delete-confirm"
                               data-placement="right"
@@ -1120,7 +1120,7 @@
             </th:block>
           </div>
         </div>
-        <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.publicNoteLangGroups)}">
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.noteLangGroups)}">
           <hr/>
           <div class="col pr-0 col-w13rem">
             <span class="lbl">
@@ -1128,47 +1128,47 @@
               <button type="button" class="btn badge badge-success float-right mr-4"
                       title="Lisa uus"
                       data-toggle="modal"
-                      th:data-target="${'#addMeaningPublicNoteDlg_' + lexeme.lexemeId}"
+                      th:data-target="${'#addMeaningNoteDlg_' + lexeme.lexemeId}"
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </span>
           </div>
           <div class="col pl-0">
-            <th:block th:each="publicNoteLangGroup : ${lexeme.meaning.publicNoteLangGroups}">
+            <th:block th:each="noteLangGroup : ${lexeme.meaning.noteLangGroups}">
               <div>
-                <span th:text="${viewUtil.getLangIso2(publicNoteLangGroup.lang)}" class="mr-2"></span>
+                <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
                 <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                         th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                        th:data-lang="${publicNoteLangGroup.lang}"
-                        th:title="${publicNoteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
-                  <i th:class="${publicNoteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
+                        th:data-lang="${noteLangGroup.lang}"
+                        th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  <i th:class="${noteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
                 </button>
               </div>
-              <div th:if="${publicNoteLangGroup.selected}" class="orderable" data-op-code="meaning_public_note">
-                <div class="ml-4" style="position: relative" th:each="publicNote, itemIter: ${publicNoteLangGroup.notes}"
-                     th:data-id="${publicNote.id}"
-                     th:data-orderby="${publicNote.orderBy}">
-                  <div th:replace="lexdialog :: edit_meaning_public_note_dlg"></div>
+              <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="meaning_note">
+                <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
+                     th:data-id="${note.id}"
+                     th:data-orderby="${note.orderBy}">
+                  <div th:replace="lexdialog :: edit_meaning_note_dlg"></div>
                   <div style="display: list-item; position: absolute"></div>
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
                   </div>
                   <div class="invisible-buttons action-buttons-anchor mw-90">
-                    <span th:utext="${publicNote.valuePrese}"></span>
-                    <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${publicNote.complexity}} + ')'" th:if="${lexeme.meaning.crudGrant}"></span>
-                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${publicNote.public}} + ')'" th:if="${lexeme.meaning.crudGrant}"></span>
+                    <span th:utext="${note.valuePrese}"></span>
+                    <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${note.complexity}} + ')'" th:if="${lexeme.meaning.crudGrant}"></span>
+                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.meaning.crudGrant}"></span>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"
                               title="Muuda"
                               data-toggle="modal"
-                              th:data-target="${'#editMeaningPublicNoteDlg_' + lexeme.lexemeId + '_' + publicNote.id}"
+                              th:data-target="${'#editMeaningNoteDlg_' + lexeme.lexemeId + '_' + note.id}"
                               sec:authorize="#vars.lexeme.meaning.crudGrant">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-warning"
-                              data-op-code="meaning_public_note"
-                              th:data-id="${publicNote.id}"
+                              data-op-code="meaning_note"
+                              th:data-id="${note.id}"
                               th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                               data-toggle="delete-confirm"
                               data-placement="right"
