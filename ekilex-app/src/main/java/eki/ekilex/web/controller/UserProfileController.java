@@ -69,13 +69,13 @@ public class UserProfileController extends AbstractPageController {
 
 	@PostMapping(UPDATE_TAG_PREFS_URI)
 	public String updateTagPrefs(
-			@RequestParam(name = "searchableTags", required = false) List<String> searchableTags,
-			@RequestParam(name = "activeTag", required = false) String activeTag) {
+			@RequestParam(name = "searchableTagNames", required = false) List<String> searchableTagNames,
+			@RequestParam(name = "preferredTagName", required = false) String preferredTagName) {
 
 		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		userProfile.setSearchableTags(searchableTags);
-		userProfile.setActiveTag(activeTag);
+		userProfile.setSearchableTagNames(searchableTagNames);
+		userProfile.setPreferredTagName(preferredTagName);
 		userProfileService.updateUserProfile(userProfile);
 		return "redirect:" + USER_PROFILE_URI;
 	}

@@ -434,6 +434,13 @@ create table region
   order_by bigserial
 );
 
+create table tag
+(
+  name varchar(100) primary key,
+  set_automatically boolean default false,
+  order_by bigserial
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -493,8 +500,8 @@ create table eki_user_profile
   show_meaning_relation_first_word_only boolean default true,
   show_meaning_relation_meaning_id boolean default true,
   show_meaning_relation_word_datasets boolean default true,
-  searchable_tags varchar(100) array,
-  active_tag varchar(100)
+  searchable_tag_names varchar(100) array,
+  preferred_tag_name varchar(100) references tag(name)
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 
@@ -908,13 +915,6 @@ create table layer_state
   unique(lexeme_id, layer_name)
 );
 alter sequence layer_state_id_seq restart with 10000;
-
-create table tag
-(
-  name varchar(100) primary key,
-  set_automatically boolean default false,
-  order_by bigserial
-);
 
 create table lexeme_tag
 (

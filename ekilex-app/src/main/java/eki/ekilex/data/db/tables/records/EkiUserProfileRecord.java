@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileRecord> implements Record14<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String, String[], String> {
 
-    private static final long serialVersionUID = 538685901;
+    private static final long serialVersionUID = -942058031;
 
     /**
      * Setter for <code>public.eki_user_profile.id</code>.
@@ -190,30 +190,30 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
     }
 
     /**
-     * Setter for <code>public.eki_user_profile.searchable_tags</code>.
+     * Setter for <code>public.eki_user_profile.searchable_tag_names</code>.
      */
-    public void setSearchableTags(String[] value) {
+    public void setSearchableTagNames(String[] value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>public.eki_user_profile.searchable_tags</code>.
+     * Getter for <code>public.eki_user_profile.searchable_tag_names</code>.
      */
-    public String[] getSearchableTags() {
+    public String[] getSearchableTagNames() {
         return (String[]) get(12);
     }
 
     /**
-     * Setter for <code>public.eki_user_profile.active_tag</code>.
+     * Setter for <code>public.eki_user_profile.preferred_tag_name</code>.
      */
-    public void setActiveTag(String value) {
+    public void setPreferredTagName(String value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>public.eki_user_profile.active_tag</code>.
+     * Getter for <code>public.eki_user_profile.preferred_tag_name</code>.
      */
-    public String getActiveTag() {
+    public String getPreferredTagName() {
         return (String) get(13);
     }
 
@@ -302,12 +302,12 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
 
     @Override
     public Field<String[]> field13() {
-        return EkiUserProfile.EKI_USER_PROFILE.SEARCHABLE_TAGS;
+        return EkiUserProfile.EKI_USER_PROFILE.SEARCHABLE_TAG_NAMES;
     }
 
     @Override
     public Field<String> field14() {
-        return EkiUserProfile.EKI_USER_PROFILE.ACTIVE_TAG;
+        return EkiUserProfile.EKI_USER_PROFILE.PREFERRED_TAG_NAME;
     }
 
     @Override
@@ -372,12 +372,12 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
 
     @Override
     public String[] component13() {
-        return getSearchableTags();
+        return getSearchableTagNames();
     }
 
     @Override
     public String component14() {
-        return getActiveTag();
+        return getPreferredTagName();
     }
 
     @Override
@@ -442,12 +442,12 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
 
     @Override
     public String[] value13() {
-        return getSearchableTags();
+        return getSearchableTagNames();
     }
 
     @Override
     public String value14() {
-        return getActiveTag();
+        return getPreferredTagName();
     }
 
     @Override
@@ -524,13 +524,13 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
 
     @Override
     public EkiUserProfileRecord value13(String[] value) {
-        setSearchableTags(value);
+        setSearchableTagNames(value);
         return this;
     }
 
     @Override
     public EkiUserProfileRecord value14(String value) {
-        setActiveTag(value);
+        setPreferredTagName(value);
         return this;
     }
 
@@ -567,7 +567,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
     /**
      * Create a detached, initialised EkiUserProfileRecord
      */
-    public EkiUserProfileRecord(Long id, Long userId, Long recentDatasetPermissionId, String[] preferredDatasets, String[] preferredSynCandidateLangs, String[] preferredSynLexMeaningWordLangs, String[] preferredMeaningRelationWordLangs, Boolean showLexMeaningRelationSourceLangWords, Boolean showMeaningRelationFirstWordOnly, Boolean showMeaningRelationMeaningId, Boolean showMeaningRelationWordDatasets, String preferredLayerName, String[] searchableTags, String activeTag) {
+    public EkiUserProfileRecord(Long id, Long userId, Long recentDatasetPermissionId, String[] preferredDatasets, String[] preferredSynCandidateLangs, String[] preferredSynLexMeaningWordLangs, String[] preferredMeaningRelationWordLangs, Boolean showLexMeaningRelationSourceLangWords, Boolean showMeaningRelationFirstWordOnly, Boolean showMeaningRelationMeaningId, Boolean showMeaningRelationWordDatasets, String preferredLayerName, String[] searchableTagNames, String preferredTagName) {
         super(EkiUserProfile.EKI_USER_PROFILE);
 
         set(0, id);
@@ -582,7 +582,7 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
         set(9, showMeaningRelationMeaningId);
         set(10, showMeaningRelationWordDatasets);
         set(11, preferredLayerName);
-        set(12, searchableTags);
-        set(13, activeTag);
+        set(12, searchableTagNames);
+        set(13, preferredTagName);
     }
 }

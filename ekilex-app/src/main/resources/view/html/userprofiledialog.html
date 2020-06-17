@@ -109,12 +109,12 @@
             <div class="form-group row">
                 <label class="col-md-auto col-form-label">Otsingutulemustes nähtavad sildid</label>
               <div class="col-md-12">
-                <select name="searchableTags" multiple data-live-search="true" data-actions-box="true"
+                <select name="searchableTagNames" multiple data-live-search="true" data-actions-box="true"
                         title="Vali otsingutulemustes nähtavad sildid"
                         th:data-select-all-text="#{button.select.all.text}"
                         th:data-deselect-all-text="#{button.unselect.all.text}">
                   <th:block th:each="tag : ${tags}">
-                    <option th:value="${tag}" th:text="${tag}" th:selected="${userProfile.searchableTags != null && #lists.contains(userProfile.searchableTags, tag)}"/>
+                    <option th:value="${tag}" th:text="${tag}" th:selected="${userProfile.searchableTagNames != null && #lists.contains(userProfile.searchableTagNames, tag)}"/>
                   </th:block>
                 </select>
               </div>
@@ -122,11 +122,11 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label">Aktiivne silt</label>
               <div class="col-md-12">
-                <select name="activeTag" class="form-control">
+                <select name="preferredTagName" class="form-control">
                   <option value="" hidden disabled selected>vali aktiivne silt</option>
                   <option th:each="tag : ${tags}"
                           th:value="${tag}"
-                          th:selected="${tag == userProfile.activeTag}"
+                          th:selected="${tag == userProfile.preferredTagName}"
                           th:text="${tag}">tags
                   </option>
                 </select>

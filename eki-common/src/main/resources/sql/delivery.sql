@@ -184,5 +184,5 @@ insert into tag select distinct process_state_code from lexeme where process_sta
 insert into lexeme_tag (lexeme_id, tag_name) select l.id, l.process_state_code from lexeme l where l.process_state_code != 'avalik';
 insert into process_state (code, datasets) values ('mitteavalik', '{}');
 update lexeme set process_state_code = 'mitteavalik' where process_state_code != 'avalik';
-alter table eki_user_profile add column searchable_tags varchar(100) array;
-alter table eki_user_profile add column active_tag varchar(100);
+alter table eki_user_profile add column searchable_tag_names varchar(100) array;
+alter table eki_user_profile add column preferred_tag_name varchar(100) references tag(name);
