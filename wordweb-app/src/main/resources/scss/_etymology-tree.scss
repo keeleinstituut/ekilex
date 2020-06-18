@@ -1,3 +1,83 @@
 .etymology-tree{
-  /* add styles here */
+  .lang-code{
+    position: relative;
+    z-index: 1;
+  }
+
+  .etymology-tree{
+    position: relative;
+
+    &::before{
+      position: absolute;
+      display: block;
+      content: "";
+      top: -12px;
+      left: 12px;
+      height: 24px;
+      border-left: 1px solid $gray-200;
+    }
+  }
+
+  .etymology-tree li{
+    position: relative;
+    padding-left: 24px;
+
+    &::before,
+    &::after{
+      position: absolute;
+      display: block;
+      content: "";
+
+    }
+
+    &::before{
+      position: absolute;
+      display: block;
+      top: 12px;
+      left: 12px;
+      height: 100%;
+      border-left: 1px solid $gray-200;
+    }
+
+    &::after{
+      top: 12px;
+      left: 12px;
+      width: 24px;
+      border-top: 1px solid $gray-200;
+    }
+
+    &:last-child::before{
+      top: -11px;
+      height: 24px;
+    }
+
+  }
+  li div{
+    display: flex;
+    flex-flow: row nowrap;
+    position: relative;
+    &::before{
+      content: "";
+      display: block;
+      width: 1px;
+      border-left: 1px solid;
+      left: 12px;
+      top: 0;
+      height: 100%;
+      position: absolute;
+    }
+  }
+
+  li:last-child::before{
+
+  }
+
+  li:not(:only-of-type)::before{
+
+  }
 }
+/*
+div>.etymology-tree .etymology-tree:last-child div::before{
+  border-left-color: red;
+}
+*/

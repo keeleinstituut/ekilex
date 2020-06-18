@@ -16909,7 +16909,7 @@ body.hidden-scroll {
   display: inline-block;
   -webkit-box-flex: 0;
   flex: 0 0 auto;
-  width: 24px;
+  min-width: 24px;
   height: 20px;
   padding: 2px 5px 3px;
   overflow: visible;
@@ -18511,10 +18511,82 @@ eki-link {
   width: 30%;
 }
 
-.etymology-tree {
-  /* add styles here */
+.etymology-tree .lang-code {
+  position: relative;
+  z-index: 1;
 }
 
+.etymology-tree .etymology-tree {
+  position: relative;
+}
+
+.etymology-tree .etymology-tree::before {
+  position: absolute;
+  display: block;
+  content: "";
+  top: -12px;
+  left: 12px;
+  height: 24px;
+  border-left: 1px solid #ccd9e0;
+}
+
+.etymology-tree .etymology-tree li {
+  position: relative;
+  padding-left: 24px;
+}
+
+.etymology-tree .etymology-tree li::before, .etymology-tree .etymology-tree li::after {
+  position: absolute;
+  display: block;
+  content: "";
+}
+
+.etymology-tree .etymology-tree li::before {
+  position: absolute;
+  display: block;
+  top: 12px;
+  left: 12px;
+  height: 100%;
+  border-left: 1px solid #ccd9e0;
+}
+
+.etymology-tree .etymology-tree li::after {
+  top: 12px;
+  left: 12px;
+  width: 24px;
+  border-top: 1px solid #ccd9e0;
+}
+
+.etymology-tree .etymology-tree li:last-child::before {
+  top: -11px;
+  height: 24px;
+}
+
+.etymology-tree li div {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-flow: row nowrap;
+  position: relative;
+}
+
+.etymology-tree li div::before {
+  content: "";
+  display: block;
+  width: 1px;
+  border-left: 1px solid;
+  left: 12px;
+  top: 0;
+  height: 100%;
+  position: absolute;
+}
+
+/*
+div>.etymology-tree .etymology-tree:last-child div::before{
+  border-left-color: red;
+}
+*/
 @media (min-width: 768px) {
   .sticky-side-nav {
     position: -webkit-sticky;
