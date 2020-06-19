@@ -18575,18 +18575,17 @@ eki-link {
   content: "";
   display: block;
   width: 1px;
-  border-left: 1px solid;
+  border-left: 1px solid #ccd9e0;
   left: 12px;
   top: 0;
   height: 100%;
   position: absolute;
 }
 
-/*
-div>.etymology-tree .etymology-tree:last-child div::before{
-  border-left-color: red;
+.etymology-tree li div:last-child::before {
+  display: none;
 }
-*/
+
 @media (min-width: 768px) {
   .sticky-side-nav {
     position: -webkit-sticky;

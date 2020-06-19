@@ -56,28 +56,19 @@
     display: flex;
     flex-flow: row nowrap;
     position: relative;
+
     &::before{
       content: "";
       display: block;
       width: 1px;
-      border-left: 1px solid;
+      border-left: 1px solid $gray-200;
       left: 12px;
       top: 0;
       height: 100%;
       position: absolute;
     }
-  }
-
-  li:last-child::before{
-
-  }
-
-  li:not(:only-of-type)::before{
-
+    &:last-child::before{
+      display: none;
+    }
   }
 }
-/*
-div>.etymology-tree .etymology-tree:last-child div::before{
-  border-left-color: red;
-}
-*/
