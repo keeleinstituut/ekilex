@@ -39,6 +39,10 @@ public class UserService implements WebConstant {
 
 	private static final int MIN_NAME_LENGTH = 4;
 
+	private static final int ACCESS_TYPE_USER = 1;
+
+	private static final int ACCESS_TYPE_API = 2;
+
 	@Value("${ekilex.app.url:}")
 	private String ekilexAppUrl;
 
@@ -74,17 +78,6 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
-	public EkiUser getUserByApiKey(String apiKey) {
-
-		if (StringUtils.isEmpty(apiKey)) {
-			return null;
-		}
-		EkiUser user = userDbService.getUserByApiKey(apiKey);
-		applyPermissions(user);
-		return user;
-	}
-
-	@Transactional
 	public EkiUser getUserByEmail(String email) {
 
 		if (StringUtils.isEmpty(email)) {
@@ -92,14 +85,28 @@ public class UserService implements WebConstant {
 		}
 		email = email.toLowerCase();
 		EkiUser user = userDbService.getUserByEmail(email);
-		applyPermissions(user);
+		applyPermissions(user, ACCESS_TYPE_USER);
 		return user;
 	}
 
-	private void applyPermissions(EkiUser user) {
+	@Transactional
+	public EkiUser getUserByApiKey(String apiKey) {
+
+		if (StringUtils.isEmpty(apiKey)) {
+			return null;
+		}
+		EkiUser user = userDbService.getUserByApiKey(apiKey);
+		applyPermissions(user, ACCESS_TYPE_API);
+		return user;
+	}
+
+	private void applyPermissions(EkiUser user, int accessType) {
 
 		if (user == null) {
 			return;
+		}
+		if (accessType == ACCESS_TYPE_API) {
+			user.setName(user.getName() + " (API)");
 		}
 		Long userId = user.getId();
 		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);

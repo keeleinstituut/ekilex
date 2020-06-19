@@ -1,22 +1,34 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.condition.NameValueExpression;
+import org.springframework.web.servlet.mvc.condition.ParamsRequestCondition;
+import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import eki.common.constant.ClassifierName;
 import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.ApiEndpointDescription;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
@@ -53,10 +65,52 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 	@Autowired
 	private SourceService sourceService;
 
-	@GetMapping({
+	@Autowired
+	private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+	@GetMapping(API_SERVICES_URI + ENDPOINTS_URI)
+	@ResponseBody
+	public List<ApiEndpointDescription> listEndpoints() {
+		Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
+		List<ApiEndpointDescription> apiEndpointDescriptions = handlerMethods.entrySet().stream()
+				.map(entry -> {
+					RequestMappingInfo mappingInfo = entry.getKey();
+					PatternsRequestCondition patternsCondition = mappingInfo.getPatternsCondition();
+					HandlerMethod method = entry.getValue();
+					Set<String> allPatterns = patternsCondition.getPatterns();
+					List<String> apiPatterns = allPatterns.stream()
+							.filter(pattern -> StringUtils.startsWith(pattern, API_SERVICES_URI))
+							.collect(Collectors.toList());
+					MethodParameter[] methodParams = method.getMethodParameters();
+					ParamsRequestCondition paramsCondition = mappingInfo.getParamsCondition();
+					Set<NameValueExpression<String>> paramExpressions = paramsCondition.getExpressions();
+					List<String> declaredParamNames = paramExpressions.stream().map(NameValueExpression::getName).collect(Collectors.toList());
+					List<String> paramDescriptions = new ArrayList<>();
+					for (int methodParamIndex = 0; methodParamIndex < methodParams.length; methodParamIndex++) {
+						String declaredParamName = "?";
+						if (CollectionUtils.isNotEmpty(declaredParamNames)) {
+							declaredParamName = declaredParamNames.get(methodParamIndex);
+						}
+						MethodParameter methodParam = methodParams[methodParamIndex];
+						String paramType = methodParam.getGenericParameterType().getTypeName();
+						String paramDescription = declaredParamName + "::" + paramType;
+						paramDescriptions.add(paramDescription);
+					}
+					ApiEndpointDescription apiEndpointDescription = new ApiEndpointDescription();
+					apiEndpointDescription.setUriPatterns(apiPatterns);
+					apiEndpointDescription.setParameters(paramDescriptions);
+					return apiEndpointDescription;
+				})
+				.filter(apiEndpointDescription -> CollectionUtils.isNotEmpty(apiEndpointDescription.getUriPatterns()))
+				.sorted((desc1, desc2) -> StringUtils.compare(desc1.getUriPatterns().toString(), desc2.getUriPatterns().toString()))
+				.collect(Collectors.toList());
+		return apiEndpointDescriptions;
+	}
+
+	@GetMapping(value = {
 			API_SERVICES_URI + LEX_SEARCH_URI + "/{word}",
 			API_SERVICES_URI + LEX_SEARCH_URI + "/{word}/{datasets}"
-	})
+	}, params = {"word", "datasets"})
 	@ResponseBody
 	public WordsResult lexSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
 
@@ -66,21 +120,14 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return results;
 	}
 
-	@GetMapping(API_SERVICES_URI + SOURCE_SEARCH_URI + "/{searchFilter}")
-	@ResponseBody
-	public List<Source> sourceSearch(@PathVariable("searchFilter") String searchFilter) {
-
-		List<Source> sources = sourceService.getSources(searchFilter);
-		return sources;
-	}
-
-	@GetMapping({
+	@GetMapping(value = {
 			API_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}",
 			API_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}/{datasets}"
-	})
+	}, params = {"wordId", "datasets"})
 	@ResponseBody
-	public WordDetails getWordDetails(@PathVariable("wordId") String wordIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr)
-			throws Exception {
+	public WordDetails getWordDetails(
+			@PathVariable("wordId") String wordIdStr,
+			@PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
 		if (!StringUtils.isNumeric(wordIdStr)) {
 			return null;
@@ -92,20 +139,10 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return result;
 	}
 
-	@GetMapping(API_SERVICES_URI + PARADIGMS_URI + "/{wordId}")
-	public List<Paradigm> getParadigms(@PathVariable("wordId") String wordIdStr) {
-
-		if (!StringUtils.isNumeric(wordIdStr)) {
-			return null;
-		}
-		Long wordId = Long.valueOf(wordIdStr);
-		return morphologyService.getParadigms(wordId);
-	}
-
-	@GetMapping({
+	@GetMapping(value = {
 			API_SERVICES_URI + TERM_SEARCH_URI + "/{word}",
 			API_SERVICES_URI + TERM_SEARCH_URI + "/{word}/{datasets}"
-	})
+	}, params = {"word", "datasets"})
 	@ResponseBody
 	public TermSearchResult termSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
 
@@ -117,13 +154,14 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return results;
 	}
 
-	@GetMapping({
+	@GetMapping(value = {
 			API_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}",
 			API_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}/{datasets}"
-	})
+	}, params = {"meaningId", "datasets"})
 	@ResponseBody
-	public Meaning getMeaningDetails(@PathVariable("meaningId") String meaningIdStr, @PathVariable(value = "datasets", required = false) String datasetsStr)
-			throws Exception {
+	public Meaning getMeaningDetails(
+			@PathVariable("meaningId") String meaningIdStr,
+			@PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
 		if (!StringUtils.isNumeric(meaningIdStr)) {
 			return null;
@@ -136,7 +174,25 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return meaning;
 	}
 
-	@GetMapping(API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
+	@GetMapping(value = API_SERVICES_URI + PARADIGMS_URI + "/{wordId}", params = "wordId")
+	public List<Paradigm> getParadigms(@PathVariable("wordId") String wordIdStr) {
+
+		if (!StringUtils.isNumeric(wordIdStr)) {
+			return null;
+		}
+		Long wordId = Long.valueOf(wordIdStr);
+		return morphologyService.getParadigms(wordId);
+	}
+
+	@GetMapping(value = API_SERVICES_URI + SOURCE_SEARCH_URI + "/{searchFilter}", params = "searchFilter")
+	@ResponseBody
+	public List<Source> sourceSearch(@PathVariable("searchFilter") String searchFilter) {
+
+		List<Source> sources = sourceService.getSources(searchFilter);
+		return sources;
+	}
+
+	@GetMapping(value = API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}", params = "classifierName")
 	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
 
 		ClassifierName classifierName = null;
@@ -154,7 +210,7 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return commonDataService.getDomainOrigins();
 	}
 
-	@GetMapping(API_SERVICES_URI + DOMAINS_URI + "/{origin}")
+	@GetMapping(value = API_SERVICES_URI + DOMAINS_URI + "/{origin}", params = "origin")
 	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
 		return commonDataService.getDomains(origin);
 	}
