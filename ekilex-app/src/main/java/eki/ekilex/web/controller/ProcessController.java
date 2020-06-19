@@ -23,7 +23,6 @@ import eki.ekilex.data.ProcessLog;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.ProcessService;
-import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
 @Controller
@@ -35,79 +34,14 @@ public class ProcessController extends AbstractAuthActionController {
 	@Autowired
 	private ProcessService processService;
 
-	@Autowired
-	private ValueUtil valueUtil;
+	@GetMapping("/lexemeprocesslog:{lexemeId}")
+	public String lexemeProcessLogLink(@PathVariable("lexemeId") Long lexemeId, Model model) {
 
-	@GetMapping("/meaningprocesslog:{meaningId}")
-	public String meaningProcessLogLink(@PathVariable("meaningId") Long meaningId, Model model) {
-
-		logger.debug("Requested process log for meaning \"{}\"", meaningId);
-		List<ProcessLog> processLog = processService.getLogForMeaning(meaningId);
+		logger.debug("Requested process log for lexeme, lexeme id \"{}\"", lexemeId);
+		List<ProcessLog> processLog = processService.getLogForLexeme(lexemeId);
 		model.addAttribute("processLog", processLog);
 
 		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
-	}
-
-	@GetMapping("/wordprocesslog:{wordId}")
-	public String wordProcessLogLink(@PathVariable("wordId") Long wordId, Model model) {
-
-		logger.debug("Requested process log for word \"{}\"", wordId);
-		List<ProcessLog> processLog = processService.getLogForWord(wordId);
-		model.addAttribute("processLog", processLog);
-
-		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
-	}
-
-	@GetMapping("/lexemeandwordprocesslog:{lexemeId}")
-	public String lexemeAndWordProcessLogLink(@PathVariable("lexemeId") Long lexemeId, Model model) {
-
-		logger.debug("Requested process log for lexeme and word, lexeme id \"{}\"", lexemeId);
-		List<ProcessLog> processLog = processService.getLogForLexemeAndWord(lexemeId);
-		model.addAttribute("processLog", processLog);
-
-		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
-	}
-
-	@GetMapping("/lexemeandmeaningprocesslog:{lexemeId}")
-	public String lexemeAndMeaningProcessLogLink(@PathVariable("lexemeId") Long lexemeId, Model model) {
-
-		logger.debug("Requested process log for lexeme and meaning, lexeme id \"{}\"", lexemeId);
-		List<ProcessLog> processLog = processService.getLogForLexemeAndMeaning(lexemeId);
-		model.addAttribute("processLog", processLog);
-
-		return PROCESS_LOG_VIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
-	}
-
-	@PostMapping(CREATE_MEANING_PROCESS_LOG_URI)
-	@ResponseBody
-	public String createMeaningProcessLog(@RequestBody CreateItemRequest itemData) {
-
-		UserContextData userContextData = getUserContextData();
-		String userName = userContextData.getUserName();
-		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
-		Long meaningId = itemData.getId();
-		String commentPrese = itemData.getValue();
-		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
-		logger.debug("Creating process log for meaning \"{}\"", meaningId);
-		processService.createMeaningProcessLog(meaningId, userName, commentPrese, userRoleDatasetCode);
-
-		return RESPONSE_OK_VER2;
-	}
-
-	@PostMapping(CREATE_WORD_PROCESS_LOG_URI)
-	@ResponseBody
-	public String createWordProcessLog(@RequestBody CreateItemRequest itemData) {
-
-		UserContextData userContextData = getUserContextData();
-		String userName = userContextData.getUserName();
-		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
-		Long wordId = itemData.getId();
-		String commentPrese = itemData.getValue();
-		commentPrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(commentPrese);
-		logger.debug("Creating process log for word \"{}\"", wordId);
-		processService.createWordProcessLog(wordId, userName, commentPrese, userRoleDatasetCode);
-
-		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping(CREATE_LEXEME_PROCESS_STATE_URI)

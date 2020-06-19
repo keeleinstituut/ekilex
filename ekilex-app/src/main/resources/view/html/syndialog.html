@@ -57,28 +57,6 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addWordProcessLogDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_process_log_dlg">
-    <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected}">
-      <div class="modal-content">
-        <form th:action="@{/create_word_process_log}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${wordId}">
-            <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
-            <div class="form-group row">
-              <div class="col-md-8">
-                <span th:text="${sessionBean.userRole.datasetName}"></span>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'editSynLexemeWeightDlg_' + meaningWord.lexemeId}" class="modal" role="dialog" th:fragment="edit_meaning_word_lexeme_weight_dlg">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">

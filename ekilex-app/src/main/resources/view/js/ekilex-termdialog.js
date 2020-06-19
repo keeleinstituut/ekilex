@@ -37,11 +37,6 @@ $(document).on("show.bs.modal", "[id^=addUsageSourceLinkDlg_]", function() {
 	initSourceNameAutocomplete($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addMeaningProcessLogDlg_]", function(e) {
-	initEkiEditorDlg($(this));
-	alignAndFocus(e, $(this));
-});
-
 $(document).on("show.bs.modal", "[id^=addMeaningDomainDlg_]", function() {
 	initAddMultiDataDlg($(this));
 });

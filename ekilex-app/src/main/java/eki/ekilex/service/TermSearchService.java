@@ -18,10 +18,10 @@ import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
@@ -45,7 +45,6 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.db.LifecycleLogDbService;
-import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -54,9 +53,6 @@ public class TermSearchService extends AbstractSearchService {
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
-
-	@Autowired
-	private ProcessDbService processDbService;
 
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
@@ -168,7 +164,6 @@ public class TermSearchService extends AbstractSearchService {
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
-		Integer meaningProcessLogCount = processDbService.getLogCountForMeaning(meaningId);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForMeaning(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
@@ -235,7 +230,6 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setViewRelations(viewRelations);
-		meaning.setMeaningProcessLogCount(meaningProcessLogCount);
 		meaning.setLastChangedOn(latestLogEventTime);
 
 		return meaning;

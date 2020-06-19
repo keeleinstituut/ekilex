@@ -86,7 +86,6 @@ public class SynSearchService extends AbstractWordSearchService {
 		permCalculator.applyCrud(word, userRole);
 		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
 		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(GlobalConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
-		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
 		String headwordLang = word.getLang();
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName, classifierLabelLang, classifierLabelTypeDescrip);
@@ -103,7 +102,6 @@ public class SynSearchService extends AbstractWordSearchService {
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
 		wordDetails.setSynLayerComplete(isSynLayerComplete);
-		wordDetails.setWordProcessLogCount(wordProcessLogCount);
 
 		return wordDetails;
 	}

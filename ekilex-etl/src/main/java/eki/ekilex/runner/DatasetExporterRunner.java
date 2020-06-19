@@ -100,8 +100,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Tabl
 		tablesHierarchyPaths.add(composePath(WORD, WORD_GROUP_MEMBER, WORD_GROUP));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_LIFECYCLE_LOG));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_LIFECYCLE_LOG, LIFECYCLE_LOG));
-		tablesHierarchyPaths.add(composePath(WORD, WORD_PROCESS_LOG));
-		tablesHierarchyPaths.add(composePath(WORD, WORD_PROCESS_LOG, PROCESS_LOG));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_FREEFORM));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(WORD, WORD_ETYMOLOGY));
@@ -120,8 +118,6 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Tabl
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_RELATION));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_LIFECYCLE_LOG));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG));
-		tablesHierarchyPaths.add(composePath(MEANING, MEANING_PROCESS_LOG));
-		tablesHierarchyPaths.add(composePath(MEANING, MEANING_PROCESS_LOG, PROCESS_LOG));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(MEANING, MEANING_FREEFORM, FREEFORM, FREEFORM_SOURCE_LINK));

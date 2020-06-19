@@ -41,7 +41,6 @@
     <div th:data-id="${wordId}" id="syn-details-area" class="h-100"
          th:with="isWordLexemeCrudGranted=${#vars.details.word.crudGrant}">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
-      <div th:replace="syndialog :: add_word_process_log_dlg"></div>
       <div class="navigate-panel card shadow h-100">
 
         <div class="card-body p-0 d-flex flex-column h-100">

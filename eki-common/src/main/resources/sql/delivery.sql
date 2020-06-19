@@ -160,6 +160,7 @@ where d.complexity = 'ANY'
                and d2.complexity in ('DETAIL', 'DETAIL1')
                and d2.meaning_id = d.meaning_id);
 
+-- ilmikute sildid
 create table tag
 (
   name varchar(100) primary key,
@@ -192,3 +193,58 @@ create index eki_user_api_key_idx on eki_user(api_key);
 
 update freeform set type = 'NOTE' where type = 'PUBLIC_NOTE';
 update lifecycle_log set entity_prop = 'NOTE' where entity_prop = 'PUBLIC_NOTE';
+
+-- kolib teksti kujul olevad protsessi logid keelendi ja tähenduste vabavormidesse ning elutsükli logidesse
+do $$
+  declare
+    pl_row record;
+    ff_id freeform.id%type;
+    lcl_id lifecycle_log.id%type;
+    moved_word_logs_counter integer := 0;
+    moved_meaning_logs_counter integer := 0;
+  begin
+    for pl_row in
+      (select wpl.word_id, wpl.process_log_id, pl.event_by, pl.event_on, pl.comment, pl.comment_prese
+       from word_process_log wpl, process_log pl
+       where pl.id = wpl.process_log_id
+       order by pl.id desc)
+      loop
+        insert into freeform (type, value_text, value_prese, lang, complexity, is_public)
+        values ('NOTE', pl_row.comment, pl_row.comment_prese, 'est', 'DETAIL', false)
+        returning id into ff_id;
+
+        insert into lifecycle_log (entity_id, entity_name, entity_prop, event_type, event_by, event_on, entry)
+        values (pl_row.word_id, 'WORD', 'NOTE', 'CREATE', pl_row.event_by, pl_row.event_on, pl_row.comment_prese)
+        returning id into lcl_id;
+
+        insert into word_freeform (word_id, freeform_id) values (pl_row.word_id, ff_id);
+        insert into word_lifecycle_log (word_id, lifecycle_log_id) values (pl_row.word_id, lcl_id);
+        delete from process_log where id = pl_row.process_log_id;
+        moved_word_logs_counter := moved_word_logs_counter + 1;
+      end loop;
+    raise notice '% keelendi protsessi logi kolitud vabavormidesse ning elutsükli logidesse', moved_word_logs_counter;
+
+    for pl_row in
+      (select mpl.meaning_id, mpl.process_log_id, pl.event_by, pl.event_on, pl.comment, pl.comment_prese
+       from meaning_process_log mpl, process_log pl
+       where pl.id = mpl.process_log_id
+       order by pl.id desc)
+      loop
+        insert into freeform (type, value_text, value_prese, lang, complexity, is_public)
+        values ('NOTE', pl_row.comment, pl_row.comment_prese, 'est', 'DETAIL', false)
+        returning id into ff_id;
+
+        insert into lifecycle_log (entity_id, entity_name, entity_prop, event_type, event_by, event_on, entry)
+        values (pl_row.meaning_id, 'MEANING', 'NOTE', 'CREATE', pl_row.event_by, pl_row.event_on, pl_row.comment_prese)
+        returning id into lcl_id;
+
+        insert into meaning_freeform (meaning_id, freeform_id) values (pl_row.meaning_id, ff_id);
+        insert into meaning_lifecycle_log (meaning_id, lifecycle_log_id) values (pl_row.meaning_id, lcl_id);
+        delete from process_log where id = pl_row.process_log_id;
+        moved_meaning_logs_counter := moved_meaning_logs_counter + 1;
+      end loop;
+    raise notice '% tähenduse protsessi logi kolitud vabavormidesse ning elutsükli logidesse', moved_meaning_logs_counter;
+  end $$;
+
+drop table word_process_log;
+drop table meaning_process_log;

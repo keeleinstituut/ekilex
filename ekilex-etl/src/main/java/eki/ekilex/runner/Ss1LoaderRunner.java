@@ -724,7 +724,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
 			String semanticTypeGroup = ((Element)semanticTypeNode).attributeValue(semanticTypeGroupAttr);
 			if (isNotBlank(semanticTypeGroup)) {
-				createFreeformTextEkiMarkup(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null, null);
+				createFreeformTextEkiMarkup(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null, null, null);
 			}
 		}
 
@@ -752,7 +752,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Timestamp eventOnTs = new Timestamp(eventOnLong);
 
 			for (WordData newWord : newWords) {
-				createWordProcessLog(newWord.id, eventBy, eventOnTs, comment);
+				createWordFreeform(newWord.id, FreeformType.NOTE, false, comment);
 			}
 		}
 	}

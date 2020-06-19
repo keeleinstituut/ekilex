@@ -12,7 +12,6 @@ import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
@@ -20,7 +19,6 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
@@ -75,14 +73,6 @@ public class MaintenanceDbService implements GlobalConstant {
 		return create
 				.delete(PROCESS_LOG)
 				.whereNotExists(DSL
-						.select(WORD_PROCESS_LOG.ID)
-						.from(WORD_PROCESS_LOG)
-						.where(WORD_PROCESS_LOG.PROCESS_LOG_ID.eq(PROCESS_LOG.ID)))
-				.andNotExists(DSL.
-						select(MEANING_PROCESS_LOG.ID)
-						.from(MEANING_PROCESS_LOG)
-						.where(MEANING_PROCESS_LOG.PROCESS_LOG_ID.eq(PROCESS_LOG.ID)))
-				.andNotExists(DSL
 						.select(LEXEME_PROCESS_LOG.ID)
 						.from(LEXEME_PROCESS_LOG)
 						.where(LEXEME_PROCESS_LOG.PROCESS_LOG_ID.eq(PROCESS_LOG.ID)))

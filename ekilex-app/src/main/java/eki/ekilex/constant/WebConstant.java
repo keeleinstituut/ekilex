@@ -142,10 +142,6 @@ public interface WebConstant {
 
 	String PROCESS_LOG_VIEW_PAGE = "processlogview";
 
-	String CREATE_WORD_PROCESS_LOG_URI = "/create_word_process_log";
-
-	String CREATE_MEANING_PROCESS_LOG_URI = "/create_meaning_process_log";
-
 	String SOURCEVIEW_PAGE = "sourceview";
 
 	String ERROR_PAGE = "error";

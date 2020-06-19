@@ -25,7 +25,6 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -36,7 +35,6 @@ import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -252,7 +250,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinMeaningRelations(meaningId, sourceMeaningId);
 		joinMeaningSemanticTypes(meaningId, sourceMeaningId);
 		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
-		create.update(MEANING_PROCESS_LOG).set(MEANING_PROCESS_LOG.MEANING_ID, meaningId).where(MEANING_PROCESS_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
 	}
 
@@ -1145,11 +1142,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 
 		joinWordEtymologyRelations(targetWordId, sourceWordId);
-
-		create.update(WORD_PROCESS_LOG)
-				.set(WORD_PROCESS_LOG.WORD_ID, targetWordId)
-				.where(WORD_PROCESS_LOG.WORD_ID.eq(sourceWordId))
-				.execute();
 
 		create.update(WORD_LIFECYCLE_LOG)
 				.set(WORD_LIFECYCLE_LOG.WORD_ID, targetWordId)

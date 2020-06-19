@@ -490,10 +490,10 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(privateNoteExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			Long processLogId = createMeaningProcessLog(meaningId, valueStr);
+			Long freeformId = createMeaningFreeform(meaningId, FreeformType.NOTE, valueStr, false);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleProcessLogTextSourceLinks(valueNode, processLogId, fileName);
-				updateProcessLogText(processLogId, valueStr);
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
+				updateFreeformText(freeformId, valueStr);
 			}
 		}
 
@@ -507,7 +507,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		for (Node legacyIdNode : valueNodes) {
 			valueStr = ((Element)legacyIdNode).getTextTrim();
 			String legacyIdLogComment = LEGACY_ID_PROCESS_LOG_PREFIX + valueStr;
-			createMeaningProcessLog(meaningId, legacyIdLogComment);
+			createMeaningFreeform(meaningId, FreeformType.NOTE, legacyIdLogComment, false);
 		}
 
 		valueNodes = conceptGroupNode.selectNodes(ltbSourceExp);
@@ -518,7 +518,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Node ltbSourceNode = ltbSourceNodeIter.next();
 				ltbSourceLogComment.append(ltbSourceNode.getText());
 			}
-			createMeaningProcessLog(meaningId, ltbSourceLogComment.toString());
+			createMeaningFreeform(meaningId, FreeformType.NOTE, ltbSourceLogComment.toString(), false);
 		}
 
 		valueNodes = conceptGroupNode.selectNodes(meaningTypeExp);
@@ -775,7 +775,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			for (Ref ref : refs) {
 				String majorRef = ref.getMajorRef();
 				if (processLogSourceRefNames.contains(majorRef)) {
-					createMeaningProcessLog(meaningId, majorRef);
+					createMeaningFreeform(meaningId, FreeformType.NOTE, majorRef, false);
 				} else {
 					createSourceLink(SourceOwner.DEFINITION, definitionId, ref, term, fileName);
 				}

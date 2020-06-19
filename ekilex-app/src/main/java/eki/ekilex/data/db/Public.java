@@ -66,7 +66,6 @@ import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
-import eki.ekilex.data.db.tables.MeaningProcessLog;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
@@ -125,7 +124,6 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
-import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -167,7 +165,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -36038217;
+    private static final long serialVersionUID = -1373971986;
 
     /**
      * The reference instance of <code>public</code>
@@ -485,11 +483,6 @@ public class Public extends SchemaImpl {
     public final MeaningNr MEANING_NR = MeaningNr.MEANING_NR;
 
     /**
-     * The table <code>public.meaning_process_log</code>.
-     */
-    public final MeaningProcessLog MEANING_PROCESS_LOG = MeaningProcessLog.MEANING_PROCESS_LOG;
-
-    /**
      * The table <code>public.meaning_rel_mapping</code>.
      */
     public final MeaningRelMapping MEANING_REL_MAPPING = MeaningRelMapping.MEANING_REL_MAPPING;
@@ -780,11 +773,6 @@ public class Public extends SchemaImpl {
     public final WordLifecycleLog WORD_LIFECYCLE_LOG = WordLifecycleLog.WORD_LIFECYCLE_LOG;
 
     /**
-     * The table <code>public.word_process_log</code>.
-     */
-    public final WordProcessLog WORD_PROCESS_LOG = WordProcessLog.WORD_PROCESS_LOG;
-
-    /**
      * The table <code>public.word_rel_mapping</code>.
      */
     public final WordRelMapping WORD_REL_MAPPING = WordRelMapping.WORD_REL_MAPPING;
@@ -906,7 +894,6 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_ID_SEQ,
             Sequences.MEANING_LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_NR_ID_SEQ,
-            Sequences.MEANING_PROCESS_LOG_ID_SEQ,
             Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
@@ -945,7 +932,6 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
             Sequences.WORD_LIFECYCLE_LOG_ID_SEQ,
-            Sequences.WORD_PROCESS_LOG_ID_SEQ,
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
@@ -1020,7 +1006,6 @@ public class Public extends SchemaImpl {
             MeaningFreeform.MEANING_FREEFORM,
             MeaningLifecycleLog.MEANING_LIFECYCLE_LOG,
             MeaningNr.MEANING_NR,
-            MeaningProcessLog.MEANING_PROCESS_LOG,
             MeaningRelMapping.MEANING_REL_MAPPING,
             MeaningRelType.MEANING_REL_TYPE,
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
@@ -1079,7 +1064,6 @@ public class Public extends SchemaImpl {
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
             WordLifecycleLog.WORD_LIFECYCLE_LOG,
-            WordProcessLog.WORD_PROCESS_LOG,
             WordRelMapping.WORD_REL_MAPPING,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,

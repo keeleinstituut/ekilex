@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LayerName;
-import eki.common.service.TextDecorationService;
 import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.ProcessLog;
 import eki.ekilex.service.db.ProcessDbService;
@@ -23,41 +22,9 @@ public class ProcessService implements GlobalConstant {
 	@Autowired
 	private ProcessDbService processDbService;
 
-	@Autowired
-	private TextDecorationService textDecorationService;
-
 	@Transactional
-	public List<ProcessLog> getLogForMeaning(Long meaningId) {
-		return processDbService.getLogForMeaning(meaningId);
-	}
-
-	@Transactional
-	public List<ProcessLog> getLogForWord(Long wordId) {
-		return processDbService.getLogForWord(wordId);
-	}
-
-	@Transactional
-	public List<ProcessLog> getLogForLexemeAndMeaning(Long lexemeId) {
-		return processDbService.getLogForLexemeAndMeaning(lexemeId);
-	}
-
-	@Transactional
-	public List<ProcessLog> getLogForLexemeAndWord(Long lexemeId) {
-		return processDbService.getLogForLexemeAndWord(lexemeId);
-	}
-
-	@Transactional
-	public void createMeaningProcessLog(Long meaningId, String userName, String commentPrese, String datasetCode) {
-
-		String comment = textDecorationService.removeEkiElementMarkup(commentPrese);
-		processDbService.createMeaningProcessLog(meaningId, userName, comment, commentPrese, datasetCode);
-	}
-
-	@Transactional
-	public void createWordProcessLog(Long wordId, String userName, String commentPrese, String datasetCode) {
-
-		String comment = textDecorationService.removeEkiElementMarkup(commentPrese);
-		processDbService.createWordProcessLog(wordId, userName, comment, commentPrese, datasetCode);
+	public List<ProcessLog> getLogForLexeme(Long lexemeId) {
+		return processDbService.getLogForLexeme(lexemeId);
 	}
 
 	@Transactional
@@ -71,6 +38,7 @@ public class ProcessService implements GlobalConstant {
 		}
 
 		processDbService.updateLexemeProcessState(lexemeId, processStateCode);
+		// TODO change to lifecycle log?
 		processDbService.createLexemeProcessLog(lexemeId, userName, recentProcessStateCode, null, processStateCode, datasetCode);
 	}
 
