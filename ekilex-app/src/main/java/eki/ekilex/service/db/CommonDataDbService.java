@@ -43,6 +43,7 @@ import static eki.ekilex.data.db.Tables.TAG;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
@@ -959,6 +960,31 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_TAG.CREATED_ON)
 				.fetchInto(String.class);
+	}
+
+	public List<NoteSourceTuple> getWordNoteSourceTuples(Long wordId) {
+
+		return create
+				.select(
+						FREEFORM.ID.as("freeform_id"),
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.IS_PUBLIC,
+						FREEFORM.ORDER_BY,
+						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
+						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
+						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+				.from(WORD_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
+						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
+				.where(
+						WORD_FREEFORM.WORD_ID.eq(wordId)
+								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
+								.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(NoteSourceTuple.class);
 	}
 
 	private Field<String> getClassifierNameField(ClassifierName classifierName) {

@@ -194,7 +194,7 @@ create index eki_user_api_key_idx on eki_user(api_key);
 update freeform set type = 'NOTE' where type = 'PUBLIC_NOTE';
 update lifecycle_log set entity_prop = 'NOTE' where entity_prop = 'PUBLIC_NOTE';
 
--- kolib teksti kujul olevad protsessi logid keelendi ja tähenduste vabavormidesse ning elutsükli logidesse
+-- kolib teksti kujul olevad protsessi logid keelendi ja tähenduste märkuste vabavormidesse ning elutsükli logidesse
 do $$
   declare
     pl_row record;

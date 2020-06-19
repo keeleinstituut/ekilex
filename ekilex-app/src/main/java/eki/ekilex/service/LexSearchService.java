@@ -54,6 +54,7 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
@@ -96,6 +97,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
+		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
+		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
+		permCalculator.filterVisibility(wordNotes, userRole);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
@@ -105,6 +109,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
+		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setParadigms(paradigms);
@@ -240,7 +245,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
 			List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 			List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
-			permCalculator.filterVisibility(meaningNotes, userId);
+			permCalculator.filterVisibility(meaningNotes, userRole);
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);

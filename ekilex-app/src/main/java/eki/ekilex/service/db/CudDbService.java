@@ -638,6 +638,24 @@ public class CudDbService extends AbstractDataDbService {
 		return wordGroupMember.getId();
 	}
 
+	public Long createWordNote(Long wordId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.NOTE.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity.name());
+		freeform.setIsPublic(isPublic);
+		freeform.store();
+
+		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
+		wordFreeform.setWordId(wordId);
+		wordFreeform.setFreeformId(freeform.getId());
+		wordFreeform.store();
+
+		return freeform.getId();
+	}
+
 	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity, boolean isPublic) {
 		return create
 				.insertInto(

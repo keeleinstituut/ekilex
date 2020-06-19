@@ -21,6 +21,7 @@ import eki.ekilex.data.Source;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.service.db.PermissionDbService;
 
@@ -128,7 +129,23 @@ public class PermCalculator {
 		publicEntities.removeIf(entity -> !isEntityVisible(entity, userId));
 	}
 
+	public void filterVisibility(List<? extends AbstractPublicEntity> publicEntities, DatasetPermission userRole) {
+
+		if (userRole == null) {
+			publicEntities.removeIf(entity -> !entity.isPublic());
+			return;
+		}
+
+		Long userId = userRole.getUserId();
+		String datasetCode = userRole.getDatasetCode();
+		publicEntities.removeIf(entity -> !isEntityVisible(entity, userId, datasetCode));
+	}
+
 	private boolean isEntityVisible(AbstractPublicEntity entity, Long userId) {
+		return isEntityVisible(entity, userId, null);
+	}
+
+	private boolean isEntityVisible(AbstractPublicEntity entity, Long userId, String datasetCode) {
 
 		if (entity.isPublic()) {
 			return true;
@@ -156,11 +173,15 @@ public class PermCalculator {
 		} else if (entity instanceof MeaningNote) {
 			MeaningNote meaningNote = (MeaningNote) entity;
 			Long meaningId = meaningNote.getMeaningId();
-			isVisible = permissionDbService.isGrantedForMeaning(userId, meaningId, null, authItemDataset, readAuthOps);
+			isVisible = permissionDbService.isGrantedForMeaning(userId, meaningId, datasetCode, authItemDataset, readAuthOps);
 		} else if (entity instanceof DefinitionNote) {
 			DefinitionNote definitionNote = (DefinitionNote) entity;
 			Long definitionId = definitionNote.getDefinitionId();
 			isVisible = permissionDbService.isGrantedForDefinition(userId, definitionId, authItemDataset, readAuthOps);
+		} else if (entity instanceof WordNote) {
+			WordNote wordNote = (WordNote) entity;
+			Long wordId = wordNote.getWordId();
+			isVisible = permissionDbService.isGrantedForWord(userId, wordId, datasetCode, authItemDataset, readAuthOps);
 		}
 		return isVisible;
 	}

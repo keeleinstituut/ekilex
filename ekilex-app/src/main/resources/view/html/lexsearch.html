@@ -111,6 +111,7 @@
             <div class="col-4 border-left border-light h-100 overflow-auto">
               <div th:replace="lexdialog :: add_word_relation_dlg"></div>
               <div th:replace="lexdialog :: add_od_word_recommendation_dlg"></div>
+              <div th:replace="lexdialog :: add_word_note_dlg"></div>
               <div th:replace="lexdialog :: add_word_lang_dlg"></div>
               <div th:replace="lexdialog :: add_word_gender_dlg"></div>
               <div th:replace="lexdialog :: add_word_type_dlg"></div>
@@ -130,7 +131,7 @@
                           sec:authorize="#vars.details.word.crudGrant">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <div th:each="odWordRecommendation, itemIter : ${details.odWordRecommendations}">
+                  <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
                     <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
                     <div class="col hidden-buttons pr-5">
                       <div class="action-buttons-anchor">
@@ -147,6 +148,42 @@
                           <button type="button" class="btn badge badge-warning"
                                   th:data-id="${odWordRecommendation.id}"
                                   data-op-code="od_word_recommendation"
+                                  data-toggle="delete-confirm"
+                                  data-placement="right"
+                                  sec:authorize="#vars.details.word.crudGrant">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr/>
+                </div>
+                <div class="card-body pt-0 pb-0">
+                  <span class="lbl">Keelendi märkused</span>
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa uus" data-toggle="modal"
+                          th:data-target="${'#addWordNoteDlg_' + wordId}"
+                          sec:authorize="#vars.details.word.crudGrant">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                  <div th:each="note : ${details.word.notes}">
+                    <div th:replace="lexdialog :: edit_word_note_dlg"></div>
+                    <div class="col hidden-buttons pr-5">
+                      <div class="action-buttons-anchor">
+                        <span th:utext="${note.valuePrese}"></span>
+                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
+                        <div class="action-buttons-2">
+                          <button type="button" class="btn badge badge-primary"
+                                  title="Muuda"
+                                  data-toggle="modal"
+                                  th:data-target="${'#editWordNoteDlg_' + note.id}"
+                                  sec:authorize="#vars.details.word.crudGrant">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-id="${note.id}"
+                                  data-op-code="word_note"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
                                   sec:authorize="#vars.details.word.crudGrant">
