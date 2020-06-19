@@ -32,6 +32,7 @@ import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
+import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
@@ -39,6 +40,7 @@ import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.service.db.CudDbService;
@@ -78,12 +80,15 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordSynDetails getWordSynDetails(
 			Long wordId, String datasetCode, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes,
-			Long userId, DatasetPermission userRole, LayerName layerName) {
+			Long userId, DatasetPermission userRole, LayerName layerName) throws Exception {
 
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		Word word = synSearchDbService.getWordDetails(wordId);
 		permCalculator.applyCrud(word, userRole);
+		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
+		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
+		permCalculator.filterVisibility(wordNotes, userRole);
 		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
 		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(GlobalConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
 		String headwordLang = word.getLang();
@@ -98,6 +103,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		}
 
 		WordSynDetails wordDetails = new WordSynDetails();
+		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);

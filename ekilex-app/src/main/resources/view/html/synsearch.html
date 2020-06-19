@@ -44,7 +44,7 @@
       <div class="navigate-panel card shadow h-100">
 
         <div class="card-body p-0 d-flex flex-column h-100">
-          <div class="border-bottom px-2 d-flex flex-row align-items-center py-2">
+          <div class="px-2 d-flex flex-row align-items-center py-2">
             <h1 th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mr-3 mb-0">Aktiivne sõna</h1>
             <button type="button" class="btn btn-secondary btn-compact"
                     id="layerCompleteBtn"
@@ -62,6 +62,45 @@
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
             <div class="col-8 overflow-auto h-100 keyboard-nav-list lexeme-list" data-panel-index="2" th:attrappend="data-marked-word-id=${markedSynWordId != null}?${markedSynWordId}">
+              <div class="border-bottom pb-2">
+                <div class="col-12">
+                  <div>
+                    <span class="lbl">Keelendi märkused</span>
+                    <button type="button" class="btn btn-light badge"
+                            title="Lisa uus" data-toggle="modal"
+                            th:data-target="${'#addWordNoteDlg_' + wordId}"
+                            sec:authorize="#vars.details.word.crudGrant">
+                      <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div th:each="note : ${details.word.notes}">
+                    <div th:replace="syndialog :: edit_word_note_dlg"></div>
+                    <div class="col hidden-buttons pr-5">
+                      <div class="action-buttons-anchor">
+                        <span th:utext="${note.valuePrese}"></span>
+                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
+                        <div class="action-buttons-2">
+                          <button type="button" class="btn badge badge-primary"
+                                  title="Muuda"
+                                  data-toggle="modal"
+                                  th:data-target="${'#editWordNoteDlg_' + note.id}"
+                                  sec:authorize="#vars.details.word.crudGrant">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-id="${note.id}"
+                                  data-op-code="word_note"
+                                  data-toggle="delete-confirm"
+                                  data-placement="right"
+                                  sec:authorize="#vars.details.word.crudGrant">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="px-3 droppable-lexeme border-bottom border-light lexeme-list-item"
                    th:each="lexeme, lexemeIter : ${details.lexemes}"
                    th:classappend="${lexemeIter.first} ? 'pb-2' : 'py-2'"
@@ -127,6 +166,7 @@
     </div>
     <div th:replace="syndialog :: #selectSynCandidateLangDlg"></div>
     <div th:replace="syndialog :: #selectSynMeaningWordLangDlg"></div>
+    <div th:replace="syndialog :: add_word_note_dlg"></div>
     <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.relations}, ${details.word.lang}, ${details.word.morphCode})"></div>
     <div th:if="${!#lists.isEmpty(details.relations)}" th:each="synRelation : ${details.relations}">
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
@@ -138,6 +178,12 @@
     		title : 'Kinnita vaste ilmiku kustutamine',
     		onConfirm : deleteLexemeAndWordAndMeaning
     	});
+      $('[data-toggle=delete-confirm]').confirmation({
+        btnOkLabel : 'Jah',
+        btnCancelLabel : 'Ei',
+        title : 'Kinnita kustutamine',
+        onConfirm : executeDelete
+      });
     </script>
   </th:block>
   <div th:replace="common :: #waitDlg"></div>
