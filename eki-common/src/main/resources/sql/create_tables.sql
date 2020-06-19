@@ -23,8 +23,9 @@ create table eki_user
   email text not null,
   password text not null,
   terms_ver varchar(100) null,
-  activation_key varchar(60),
-  recovery_key varchar(60),
+  activation_key varchar(60) null,
+  recovery_key varchar(60) null,
+  api_key varchar(100) null,
   is_admin boolean default false,
   is_master boolean default false,
   is_enabled boolean,
@@ -1159,6 +1160,8 @@ create table temp_ds_import_queue
 alter sequence temp_ds_import_queue_id_seq restart with 10000;
 
 --- indexes
+create index eki_user_email_idx on eki_user(email);
+create index eki_user_api_key_idx on eki_user(api_key);
 create index eki_user_profile_user_id_idx on eki_user_profile(user_id);
 create index eki_user_profile_recent_dataset_permission_id_idx on eki_user_profile(recent_dataset_permission_id);
 create index dataset_code_idx on dataset(code);

@@ -30,8 +30,6 @@ public interface WebConstant {
 
 	String COMPONENT_URI = "/comp";
 
-	String REST_SERVICES_URI = "/data";
-
 	String VIEW_RESOURCES_URI = "/view";
 
 	String LEX_SEARCH_PAGE = "lexsearch";

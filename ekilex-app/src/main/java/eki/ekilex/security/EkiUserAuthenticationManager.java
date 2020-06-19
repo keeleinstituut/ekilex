@@ -5,28 +5,28 @@ import java.util.Collection;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.UserService;
 
-@Component
-public class EkilexAuthenticationManager implements AuthenticationManager {
+public class EkiUserAuthenticationManager implements AuthenticationManager {
 
-	private static Logger logger = LoggerFactory.getLogger(EkilexAuthenticationManager.class);
+	private static Logger logger = LoggerFactory.getLogger(EkiUserAuthenticationManager.class);
 
-	@Autowired
 	private UserService userService;
 
-	@Autowired
 	private EkilexPasswordEncoder passwordEncoder;
+
+	public EkiUserAuthenticationManager(UserService userService, EkilexPasswordEncoder passwordEncoder) {
+		this.userService = userService;
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -49,6 +49,7 @@ public class EkilexAuthenticationManager implements AuthenticationManager {
 			logger.info("Successful authentication for user: \"{}\"", providedEmail);
 			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, existingPassword, authorities);
+			authenticationToken.setAuthenticated(true);
 			return authenticationToken;
 		}
 		logger.info("Incorrect password for user: \"{}\"", providedEmail);

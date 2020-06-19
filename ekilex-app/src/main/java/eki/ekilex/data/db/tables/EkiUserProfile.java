@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = 552943923;
+    private static final long serialVersionUID = 1964762617;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -179,7 +179,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
     @Override
     public List<ForeignKey<EkiUserProfileRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY);
+        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_TAG_NAME_FKEY);
     }
 
     public EkiUser ekiUser() {
@@ -191,7 +191,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     }
 
     public Tag tag() {
-        return new Tag(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY);
+        return new Tag(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_TAG_NAME_FKEY);
     }
 
     @Override
