@@ -176,7 +176,7 @@ public class SynSearchController extends AbstractSearchController {
 	public String details(
 			@PathVariable("wordId") Long wordId,
 			@RequestParam(required = false) Long markedSynWordId,
-			Model model) {
+			Model model) throws Exception {
 
 		logger.debug("Requesting details by word {}", wordId);
 

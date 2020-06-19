@@ -16,8 +16,6 @@ public class WordSynDetails extends AbstractDataObject {
 
 	private boolean synLayerComplete;
 
-	private Integer wordProcessLogCount;
-
 	public Word getWord() {
 		return word;
 	}
@@ -48,14 +46,6 @@ public class WordSynDetails extends AbstractDataObject {
 
 	public void setSynLayerComplete(boolean synLayerComplete) {
 		this.synLayerComplete = synLayerComplete;
-	}
-
-	public Integer getWordProcessLogCount() {
-		return wordProcessLogCount;
-	}
-
-	public void setWordProcessLogCount(Integer wordProcessLogCount) {
-		this.wordProcessLogCount = wordProcessLogCount;
 	}
 
 }

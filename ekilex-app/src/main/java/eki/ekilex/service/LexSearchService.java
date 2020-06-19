@@ -23,10 +23,10 @@ import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
@@ -54,10 +54,10 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
-import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
@@ -65,9 +65,6 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
-	
-	@Autowired
-	private ProcessDbService processDbService;
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
@@ -100,7 +97,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
-		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
+		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
+		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
+		permCalculator.filterVisibility(wordNotes, userRole);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
@@ -110,6 +109,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
+		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setParadigms(paradigms);
@@ -118,7 +118,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setWordGroups(wordGroups);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
-		wordDetails.setWordProcessLogCount(wordProcessLogCount);
 		wordDetails.setLastChangedOn(latestLogEventTime);
 
 		return wordDetails;
@@ -246,7 +245,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
 			List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 			List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
-			permCalculator.filterVisibility(meaningNotes, userId);
+			permCalculator.filterVisibility(meaningNotes, userRole);
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);

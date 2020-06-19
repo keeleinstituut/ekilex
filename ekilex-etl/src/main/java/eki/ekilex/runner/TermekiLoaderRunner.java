@@ -494,7 +494,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				Long meaningId = conceptMeaningIdMap.get(conceptId);
 				String privateNote = (String) comment.get("content");
 				if (isNotBlank(privateNote)) {
-					createMeaningProcessLog(meaningId, privateNote);
+					createMeaningFreeform(meaningId, FreeformType.NOTE, privateNote, false);
 				}
 			}
 		}
@@ -566,7 +566,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 			String heading = (String) image.get("heading");
 			if (StringUtils.isNotBlank(heading)) {
-				createFreeformTextEkiMarkup(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null, null);
+				createFreeformTextEkiMarkup(imageFreeformId, FreeformType.IMAGE_TITLE, heading, null, null, null);
 			}
 
 			Integer extSourceId = (Integer) image.get("source_id");

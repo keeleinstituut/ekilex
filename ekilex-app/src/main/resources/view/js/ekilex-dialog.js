@@ -122,11 +122,6 @@ $(document).on("show.bs.modal", "[id^=editMeaningSemanticTypeDlg_]", function() 
 	initSelectDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=addWordProcessLogDlg_]", function(e) {
-	initEkiEditorDlg($(this));
-	alignAndFocus(e, $(this));
-});
-
 $(document).on("show.bs.modal", "[id^=addMeaningNoteDlg_]", function(e) {
 	initEkiEditorDlg($(this));
 	alignAndFocus(e, $(this));

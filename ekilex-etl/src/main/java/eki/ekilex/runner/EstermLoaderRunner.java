@@ -413,10 +413,10 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(privateNoteExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			Long processLogId = createMeaningProcessLog(meaningId, valueStr);
+			Long freeformId = createMeaningFreeform(meaningId, FreeformType.NOTE, valueStr, false);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleProcessLogTextSourceLinks(valueNode, processLogId, fileName);
-				updateProcessLogText(processLogId, valueStr);
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
+				updateFreeformText(freeformId, valueStr);
 			}
 		}
 
@@ -429,7 +429,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(worksheetExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			createMeaningProcessLog(meaningId, valueStr);
+			createMeaningFreeform(meaningId, FreeformType.NOTE, valueStr, false);
 		}
 	}
 

@@ -67,6 +67,7 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymRel;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
+import eki.ekilex.data.WordNote;
 
 @Component
 public class ConversionUtil implements GlobalConstant {
@@ -298,6 +299,8 @@ public class ConversionUtil implements GlobalConstant {
 					((LexemeNote) note).setLexemeId(parentId);
 				} else if (note instanceof MeaningNote) {
 					((MeaningNote) note).setMeaningId(parentId);
+				} else if (note instanceof WordNote) {
+					((WordNote) note).setWordId(parentId);
 				}
 				noteMap.put(noteId, note);
 				notes.add(note);

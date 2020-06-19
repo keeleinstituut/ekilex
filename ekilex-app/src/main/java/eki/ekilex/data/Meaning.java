@@ -33,8 +33,6 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<List<Relation>> viewRelations;
 
-	private Integer meaningProcessLogCount;
-
 	private Timestamp lastChangedOn;
 
 	public Long getMeaningId() {
@@ -139,14 +137,6 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setViewRelations(List<List<Relation>> viewRelations) {
 		this.viewRelations = viewRelations;
-	}
-
-	public Integer getMeaningProcessLogCount() {
-		return meaningProcessLogCount;
-	}
-
-	public void setMeaningProcessLogCount(Integer meaningProcessLogCount) {
-		this.meaningProcessLogCount = meaningProcessLogCount;
 	}
 
 	public Timestamp getLastChangedOn() {

@@ -699,14 +699,6 @@ create table word_lifecycle_log
 );
 alter sequence word_lifecycle_log_id_seq restart with 10000;
 
-create table word_process_log
-(
-  id bigserial primary key,
-  word_id bigint references word(id) on delete cascade not null,
-  process_log_id bigint references process_log(id) on delete cascade not null
-);
-alter sequence word_process_log_id_seq restart with 10000;
-
 -- paradigma
 create table paradigm
 (
@@ -812,14 +804,6 @@ create table meaning_lifecycle_log
   lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
 );
 alter sequence meaning_lifecycle_log_id_seq restart with 10000;
-
-create table meaning_process_log
-(
-  id bigserial primary key,
-  meaning_id bigint references meaning(id) on delete cascade not null,
-  process_log_id bigint references process_log(id) on delete cascade not null
-);
-alter sequence meaning_process_log_id_seq restart with 10000;
 
 -- tähenduse vabavorm
 create table meaning_freeform
@@ -1280,12 +1264,8 @@ create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
 create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
 create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
 create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);
-create index word_process_log_word_id_idx on word_process_log(word_id);
-create index word_process_log_log_id_idx on word_process_log(process_log_id);
 create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meaning_id);
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
-create index meaning_process_log_meaning_id_idx on meaning_process_log(meaning_id);
-create index meaning_process_log_log_id_idx on meaning_process_log(process_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
 create index lexeme_process_log_lexeme_id_idx on lexeme_process_log(lexeme_id);

@@ -116,6 +116,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateWordNote(Long noteFreeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, noteFreeformId, valuePrese);
+		createLifecycleLog(logData);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValue(noteFreeformId, value, valuePrese);
+	}
+
+	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_RELATION, LifecycleProperty.ID, item);
@@ -543,6 +551,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void createWordNote(Long wordId, String valuePrese) {
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long wordFreeformId = cudDbService.createWordNote(wordId, value, valuePrese, LANGUAGE_CODE_EST, Complexity.DETAIL, false);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, wordFreeformId, valuePrese);
+		createLifecycleLog(logData);
+	}
+
+	@Transactional
 	public void createLexeme(Long wordId, String datasetCode, Long meaningId) {
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
@@ -872,6 +888,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 				cudDbService.deleteWordRelationGroup(groupId);
 			}
 		}
+	}
+
+	@Transactional
+	public void deleteWordNote(Long id) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.NOTE, id);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeform(id);
 	}
 
 	@Transactional

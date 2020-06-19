@@ -80,7 +80,6 @@
       <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
       <div th:replace="termdialog :: add_definition_dlg"></div>
       <div th:replace="termdialog :: add_meaning_note_dlg"></div>
-      <div th:replace="termdialog :: add_meaning_process_log_dlg"></div>
       <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
       <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="meaning-details-btn" data-refresh></button>
@@ -123,18 +122,6 @@
                  data-target="#meaningLifecycleLogDlg"
                  class="btn btn-secondary btn-sm  ml-4"
                  sec:authorize="#vars.meaning.readGrant">Tegevuste logi</a>
-              <a th:href="@{'/meaningprocesslog:' + ${meaningId}}"
-                 data-toggle="modal"
-                 data-target="#processLogDlg"
-                 class="btn btn-secondary btn-sm"
-                 sec:authorize="#vars.meaning.readGrant">Menetluse logi</a>
-              <button type="button" class="btn badge badge-secondary"
-                      title="Lisa kirje menetluse logisse"
-                      data-toggle="modal"
-                      th:data-target="${'#addMeaningProcessLogDlg_' + meaningId}"
-                      sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-plus-circle" aria-hidden="true"></i>
-              </button>
             </div>
           </div>
           <div th:replace="termcomp :: meaning_domain"></div>
@@ -708,7 +695,7 @@
                   </button>
                 </div>
                 <div class="ml-2">
-                  <a th:href="@{'/lexemeandwordprocesslog:' + ${lexeme.lexemeId}}"
+                  <a th:href="@{'/lexemeprocesslog:' + ${lexeme.lexemeId}}"
                      data-toggle="modal"
                      data-target="#processLogDlg"
                      class="btn btn-secondary btn-sm ml-4"

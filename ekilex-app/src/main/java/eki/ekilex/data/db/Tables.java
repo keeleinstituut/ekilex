@@ -66,7 +66,6 @@ import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
-import eki.ekilex.data.db.tables.MeaningProcessLog;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
@@ -125,7 +124,6 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
-import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -453,11 +451,6 @@ public class Tables {
     public static final MeaningNr MEANING_NR = MeaningNr.MEANING_NR;
 
     /**
-     * The table <code>public.meaning_process_log</code>.
-     */
-    public static final MeaningProcessLog MEANING_PROCESS_LOG = MeaningProcessLog.MEANING_PROCESS_LOG;
-
-    /**
      * The table <code>public.meaning_rel_mapping</code>.
      */
     public static final MeaningRelMapping MEANING_REL_MAPPING = MeaningRelMapping.MEANING_REL_MAPPING;
@@ -746,11 +739,6 @@ public class Tables {
      * The table <code>public.word_lifecycle_log</code>.
      */
     public static final WordLifecycleLog WORD_LIFECYCLE_LOG = WordLifecycleLog.WORD_LIFECYCLE_LOG;
-
-    /**
-     * The table <code>public.word_process_log</code>.
-     */
-    public static final WordProcessLog WORD_PROCESS_LOG = WordProcessLog.WORD_PROCESS_LOG;
 
     /**
      * The table <code>public.word_rel_mapping</code>.

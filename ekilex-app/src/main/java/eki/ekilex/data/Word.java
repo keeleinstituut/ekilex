@@ -28,6 +28,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String displayMorphCode;
 
+	private List<WordNote> notes;
+
 	private String[] wordTypeCodes;
 
 	private boolean prefixoid;
@@ -134,6 +136,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setDisplayMorphCode(String displayMorphCode) {
 		this.displayMorphCode = displayMorphCode;
+	}
+
+	public List<WordNote> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<WordNote> notes) {
+		this.notes = notes;
 	}
 
 	@Override

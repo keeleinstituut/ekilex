@@ -170,6 +170,9 @@ public class EditController extends AbstractPageController {
 		case "meaning_note":
 			cudService.createMeaningNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
+		case "word_note":
+			cudService.createWordNote(itemData.getId(), itemValue);
+			break;
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
 			break;
@@ -292,6 +295,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "meaning_note":
 			cudService.updateMeaningNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			break;
+		case "word_note":
+			cudService.updateWordNote(itemData.getId(), itemValue);
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), itemValue);
@@ -520,6 +526,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null);
+			break;
+		case "word_note":
+			cudService.deleteWordNote(id);
 			break;
 		case "image_title":
 			cudService.deleteImageTitle(id);
