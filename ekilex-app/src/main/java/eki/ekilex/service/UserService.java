@@ -74,40 +74,61 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
+	public EkiUser getUserByApiKey(String apiKey) {
+
+		if (StringUtils.isEmpty(apiKey)) {
+			return null;
+		}
+		EkiUser user = userDbService.getUserByApiKey(apiKey);
+		applyPermissions(user);
+		return user;
+	}
+
+	@Transactional
 	public EkiUser getUserByEmail(String email) {
+
+		if (StringUtils.isEmpty(email)) {
+			return null;
+		}
 		email = email.toLowerCase();
 		EkiUser user = userDbService.getUserByEmail(email);
-		if (user != null) {
-			Long userId = user.getId();
-			List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
-			boolean datasetPermissionsExist;
-			boolean datasetCrudPermissionsExist;
-			boolean datasetOwnershipExist;
-			boolean hasSingleDatasetPermission;
-			if (CollectionUtils.isEmpty(datasetPermissions)) {
-				datasetPermissionsExist = false;
-				datasetCrudPermissionsExist = false;
-				datasetOwnershipExist = false;
-				hasSingleDatasetPermission = false;
-			} else {
-				datasetPermissionsExist = true;
-				datasetCrudPermissionsExist = datasetPermissions.stream()
-						.filter(perm -> AuthorityItem.DATASET.equals(perm.getAuthItem()))
-						.anyMatch(perm -> AuthorityOperation.CRUD.equals(perm.getAuthOperation()) || AuthorityOperation.OWN.equals(perm.getAuthOperation()));
-				datasetOwnershipExist = datasetPermissions.stream().anyMatch(
-						perm -> AuthorityItem.DATASET.equals(perm.getAuthItem()) && AuthorityOperation.OWN.equals(perm.getAuthOperation()));
-				hasSingleDatasetPermission = datasetPermissions.size() == 1;
-			}
-			DatasetPermission recentRole = resolveRecentRole(userId, datasetPermissions);
-
-			user.setDatasetPermissions(datasetPermissions);
-			user.setDatasetPermissionsExist(datasetPermissionsExist);
-			user.setDatasetCrudPermissionsExist(datasetCrudPermissionsExist);
-			user.setDatasetOwnershipExist(datasetOwnershipExist);
-			user.setHasSingleDatasetPermission(hasSingleDatasetPermission);
-			user.setRecentRole(recentRole);
-		}
+		applyPermissions(user);
 		return user;
+	}
+
+	private void applyPermissions(EkiUser user) {
+
+		if (user == null) {
+			return;
+		}
+		Long userId = user.getId();
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		boolean datasetPermissionsExist;
+		boolean datasetCrudPermissionsExist;
+		boolean datasetOwnershipExist;
+		boolean hasSingleDatasetPermission;
+		if (CollectionUtils.isEmpty(datasetPermissions)) {
+			datasetPermissionsExist = false;
+			datasetCrudPermissionsExist = false;
+			datasetOwnershipExist = false;
+			hasSingleDatasetPermission = false;
+		} else {
+			datasetPermissionsExist = true;
+			datasetCrudPermissionsExist = datasetPermissions.stream()
+					.filter(perm -> AuthorityItem.DATASET.equals(perm.getAuthItem()))
+					.anyMatch(perm -> AuthorityOperation.CRUD.equals(perm.getAuthOperation()) || AuthorityOperation.OWN.equals(perm.getAuthOperation()));
+			datasetOwnershipExist = datasetPermissions.stream().anyMatch(
+					perm -> AuthorityItem.DATASET.equals(perm.getAuthItem()) && AuthorityOperation.OWN.equals(perm.getAuthOperation()));
+			hasSingleDatasetPermission = datasetPermissions.size() == 1;
+		}
+		DatasetPermission recentRole = resolveRecentRole(userId, datasetPermissions);
+
+		user.setDatasetPermissions(datasetPermissions);
+		user.setDatasetPermissionsExist(datasetPermissionsExist);
+		user.setDatasetCrudPermissionsExist(datasetCrudPermissionsExist);
+		user.setDatasetOwnershipExist(datasetOwnershipExist);
+		user.setHasSingleDatasetPermission(hasSingleDatasetPermission);
+		user.setRecentRole(recentRole);
 	}
 
 	private DatasetPermission resolveRecentRole(Long userId, List<DatasetPermission> userPermissions) {

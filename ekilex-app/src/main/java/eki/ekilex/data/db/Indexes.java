@@ -13,6 +13,7 @@ import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
+import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EkiUserProfile;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
@@ -101,6 +102,8 @@ public class Indexes {
     public static final Index DOMAIN_CODE_ORIGIN_IDX = Indexes0.DOMAIN_CODE_ORIGIN_IDX;
     public static final Index DOMAIN_PARENT_CODE_ORIGIN_IDX = Indexes0.DOMAIN_PARENT_CODE_ORIGIN_IDX;
     public static final Index DOMAIN_LABEL_CODE_ORIGIN_IDX = Indexes0.DOMAIN_LABEL_CODE_ORIGIN_IDX;
+    public static final Index EKI_USER_API_KEY_IDX = Indexes0.EKI_USER_API_KEY_IDX;
+    public static final Index EKI_USER_EMAIL_IDX = Indexes0.EKI_USER_EMAIL_IDX;
     public static final Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Indexes0.EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX;
     public static final Index EKI_USER_PROFILE_USER_ID_IDX = Indexes0.EKI_USER_PROFILE_USER_ID_IDX;
     public static final Index FEEDBACK_LOG_COMMENT_LOG_ID_IDX = Indexes0.FEEDBACK_LOG_COMMENT_LOG_ID_IDX;
@@ -243,6 +246,8 @@ public class Indexes {
         public static Index DOMAIN_CODE_ORIGIN_IDX = Internal.createIndex("domain_code_origin_idx", Domain.DOMAIN, new OrderField[] { Domain.DOMAIN.CODE, Domain.DOMAIN.ORIGIN }, false);
         public static Index DOMAIN_PARENT_CODE_ORIGIN_IDX = Internal.createIndex("domain_parent_code_origin_idx", Domain.DOMAIN, new OrderField[] { Domain.DOMAIN.PARENT_CODE, Domain.DOMAIN.PARENT_ORIGIN }, false);
         public static Index DOMAIN_LABEL_CODE_ORIGIN_IDX = Internal.createIndex("domain_label_code_origin_idx", DomainLabel.DOMAIN_LABEL, new OrderField[] { DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN }, false);
+        public static Index EKI_USER_API_KEY_IDX = Internal.createIndex("eki_user_api_key_idx", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.API_KEY }, false);
+        public static Index EKI_USER_EMAIL_IDX = Internal.createIndex("eki_user_email_idx", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.EMAIL }, false);
         public static Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Internal.createIndex("eki_user_profile_recent_dataset_permission_id_idx", EkiUserProfile.EKI_USER_PROFILE, new OrderField[] { EkiUserProfile.EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID }, false);
         public static Index EKI_USER_PROFILE_USER_ID_IDX = Internal.createIndex("eki_user_profile_user_id_idx", EkiUserProfile.EKI_USER_PROFILE, new OrderField[] { EkiUserProfile.EKI_USER_PROFILE.USER_ID }, false);
         public static Index FEEDBACK_LOG_COMMENT_LOG_ID_IDX = Internal.createIndex("feedback_log_comment_log_id_idx", FeedbackLogComment.FEEDBACK_LOG_COMMENT, new OrderField[] { FeedbackLogComment.FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID }, false);

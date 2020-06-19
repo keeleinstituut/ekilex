@@ -186,6 +186,9 @@ insert into process_state (code, datasets) values ('mitteavalik', '{}');
 update lexeme set process_state_code = 'mitteavalik' where process_state_code != 'avalik';
 alter table eki_user_profile add column preferred_tag_names varchar(100) array;
 alter table eki_user_profile add column active_tag_name varchar(100) references tag(name);
+alter table eki_user add column api_key varchar(100) null;
+create index eki_user_email_idx on eki_user(email);
+create index eki_user_api_key_idx on eki_user(api_key);
 
 update freeform set type = 'NOTE' where type = 'PUBLIC_NOTE';
 update lifecycle_log set entity_prop = 'NOTE' where entity_prop = 'PUBLIC_NOTE';

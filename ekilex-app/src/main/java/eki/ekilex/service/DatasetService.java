@@ -52,13 +52,8 @@ public class DatasetService implements SystemConstant {
 		dataset.setProcessStates(processStates);
 
 		if (CollectionUtils.isNotEmpty(domains)) {
-			dataset.setOrigins(
-					domains
-							.stream()
-							.map(Classifier::getOrigin)
-							.distinct()
-							.sorted()
-							.collect(Collectors.toList()));
+			List<String> origins = domains.stream().map(Classifier::getOrigin).distinct().sorted().collect(Collectors.toList());
+			dataset.setOrigins(origins);
 		}
 		return dataset;
 
@@ -111,25 +106,21 @@ public class DatasetService implements SystemConstant {
 
 	private List<Classifier> getDatasetClassifiers(ClassifierName classifierName, String datasetCode) {
 		List<Classifier> classifiers = commonDataDbService.getDatasetClassifiers(classifierName, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		populateClassifierJson(classifiers);
+		classifierUtil.populateClassifierJson(classifiers);
 		return classifiers;
 	}
 
 	private List<Classifier> getDatasetDomains(String datasetCode) {
 		List<Classifier> domains = commonDataDbService.getDatasetDomains(datasetCode);
-		populateClassifierJson(domains);
+		classifierUtil.populateClassifierJson(domains);
 		return domains;
 	}
 
 	@Transactional
 	public List<Classifier> getDomains(String originCode) {
 		List<Classifier> domains = commonDataDbService.getDomains(originCode, CLASSIF_LABEL_TYPE_DESCRIP);
-		populateClassifierJson(domains);
+		classifierUtil.populateClassifierJson(domains);
 		return domains;
-	}
-
-	private void populateClassifierJson(List<Classifier> classifiers) {
-		classifiers.forEach(c -> c.setJsonStr(classifierUtil.toJson(c)));
 	}
 
 }
