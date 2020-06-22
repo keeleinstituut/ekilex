@@ -1,4 +1,4 @@
-package eki.ekilex.data;
+package eki.ekilex.data.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -10,26 +10,27 @@ public class ApiResponse extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String message;
-
 	private boolean success;
+
+	private String message;
 
 	private Long id;
 
 	public ApiResponse() {
 	}
 
+	public ApiResponse(boolean success, String message) {
+		this.success = success;
+		this.message = message;
+	}
+
+	public ApiResponse(boolean success) {
+		this.success = success;
+	}
+
 	public ApiResponse(boolean success, Long id) {
 		this.success = success;
 		this.id = id;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public boolean isSuccess() {
@@ -38,6 +39,14 @@ public class ApiResponse extends AbstractDataObject {
 
 	public void setSuccess(boolean success) {
 		this.success = success;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public Long getId() {
