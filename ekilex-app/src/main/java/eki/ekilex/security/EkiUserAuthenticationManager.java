@@ -49,7 +49,6 @@ public class EkiUserAuthenticationManager implements AuthenticationManager {
 			logger.info("Successful authentication for user: \"{}\"", providedEmail);
 			Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, existingPassword, authorities);
-			authenticationToken.setAuthenticated(true);
 			return authenticationToken;
 		}
 		logger.info("Incorrect password for user: \"{}\"", providedEmail);
