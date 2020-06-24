@@ -3,7 +3,7 @@
 <head></head>
 <body>
   <div class="card shadow mt-2"
-       th:id="${'sourceSearchResult_' + source.sourceId}"
+       th:id="${'sourceSearchResult_' + source.id}"
        th:fragment="source_search_result">
     <div class="card-body">
       <div class="col-auto form-inline">
@@ -11,7 +11,7 @@
           <button type="button" class="btn badge badge-success float-right"
                   title="Lisa allikale uus atribuut"
                   data-toggle="modal"
-                  th:data-target="${'#addSourcePropertyDlg_' + source.sourceId}"
+                  th:data-target="${'#addSourcePropertyDlg_' + source.id}"
                   sec:authorize="#vars.source.crudGrant">
             <i class="fa fa-plus" aria-hidden="true"></i>
           </button>
@@ -19,17 +19,17 @@
         <div class="ml-2">
           <form th:action="@{/source_join}" method="post">
             <input type="hidden" name="previousSearch" th:value="${searchFilter}">
-            <input type="hidden" name="sourceId" th:value="${source.sourceId}">
+            <input type="hidden" name="sourceId" th:value="${source.id}">
             <button type="submit" class="btn btn-primary btn-sm" sec:authorize="#vars.source.crudGrant">Ühenda</button>
           </form>
         </div>
         <div class="ml-2">
           <button type="button" class="btn btn-warning font-weight-bold btn-sm"
-                  th:data-source-id="${source.sourceId}"
+                  th:data-source-id="${source.id}"
                   data-toggle="delete-source-confirm"
                   sec:authorize="#vars.source.crudGrant">Eemalda allikas</button>
         </div>
-        <a th:href="@{'/sourcelifecyclelog:' + ${source.sourceId}}"
+        <a th:href="@{'/sourcelifecyclelog:' + ${source.id}}"
            data-toggle="modal"
            data-target="#sourceLifecycleLogDlg"
            class="btn btn-secondary btn-sm ml-4"
@@ -46,7 +46,7 @@
               <table style="background-color: #ececec; font-weight: bold">
                 <tr>
                   <td>source id</td>
-                  <td th:text="${source.sourceId}"></td>
+                  <td th:text="${source.id}"></td>
                 </tr>
                 <tr>
                   <td>type</td>
@@ -57,7 +57,7 @@
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
-                                th:data-target="${'#editSourceTypeDlg_' + source.sourceId}"
+                                th:data-target="${'#editSourceTypeDlg_' + source.id}"
                                 sec:authorize="#vars.source.crudGrant">
                           <i class="fa fa-caret-down" aria-hidden="true"></i>
                         </button>
@@ -88,7 +88,7 @@
                       <i class="fa fa-edit" aria-hidden="true"></i>
                     </button>
                     <button type="button" class="btn badge badge-warning" th:data-source-property-id="${sourceProperty.id}" th:data-source-property-type="${sourceProperty.type}"
-                      th:data-source-id="${source.sourceId}" th:data-count="${count}" data-toggle="delete-source-property-confirm" data-placement="right">
+                      th:data-source-id="${source.id}" th:data-count="${count}" data-toggle="delete-source-property-confirm" data-placement="right">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                   </div>
@@ -176,7 +176,7 @@
               <table style="background-color: #ececec; font-weight: bold;">
                 <tr>
                   <td>source id &nbsp;</td>
-                  <td th:text="${source.sourceId}"></td>
+                  <td th:text="${source.id}"></td>
                 </tr>
                 <tr>
                   <td>type</td>
@@ -185,12 +185,12 @@
               </table>
               <div class="ml-4">
                 <form th:action="@{/join_sources}" method="post">
-                  <input type="hidden" name="firstSourceId" th:value="${firstSource.sourceId}">
-                  <input type="hidden" name="secondSourceId" th:value="${source.sourceId}">
+                  <input type="hidden" name="firstSourceId" th:value="${firstSource.id}">
+                  <input type="hidden" name="secondSourceId" th:value="${source.id}">
                   <button type="button" class="btn btn-primary"
                           data-toggle="join-confirm"
                           data-placement="right"
-                          th:if="${source.sourceId != firstSourceId}"
+                          th:if="${source.id != firstSourceId}"
                           sec:authorize="#vars.source.crudGrant">Ühenda</button>
                 </form>
               </div>

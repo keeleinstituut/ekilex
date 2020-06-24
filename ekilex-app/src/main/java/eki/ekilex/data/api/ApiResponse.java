@@ -24,12 +24,9 @@ public class ApiResponse extends AbstractDataObject {
 		this.message = message;
 	}
 
-	public ApiResponse(boolean success) {
+	public ApiResponse(boolean success, String message, Long id) {
 		this.success = success;
-	}
-
-	public ApiResponse(boolean success, Long id) {
-		this.success = success;
+		this.message = message;
 		this.id = id;
 	}
 

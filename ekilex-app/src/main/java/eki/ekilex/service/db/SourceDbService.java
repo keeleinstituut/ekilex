@@ -50,33 +50,82 @@ public class SourceDbService implements SystemConstant {
 		Source s = SOURCE.as("s");
 		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
 		Freeform sp = FREEFORM.as("sp");
+		Condition where = s.ID.equal(sourceId);
+		Field<Boolean> spmf = DSL.field(DSL.val(Boolean.FALSE));
 
+		return getSources(s, sff, sp, spmf, where);
+	}
+
+	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType) {
+		return getSources(searchFilterWithMetaCharacters, sourceType, null);
+	}
+
+	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType, Long sourceIdToExclude) {
+	
+		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
+	
+		Source s = SOURCE.as("s");
+		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		Freeform sp = FREEFORM.as("sp");
+		SourceFreeform sffc = SOURCE_FREEFORM.as("sffc");
+		Freeform spc = FREEFORM.as("spc");
+	
+		SelectConditionStep<Record1<Long>> existCondition =
+				DSL
+				.select(sffc.ID)
+				.from(sffc, spc)
+				.where(
+						sffc.SOURCE_ID.eq(s.ID)
+						.and(sffc.FREEFORM_ID.eq(spc.ID))
+						.and(DSL.lower(spc.VALUE_TEXT).like(searchFilter)));
+	
+		if (sourceType != null) {
+			existCondition = existCondition.and(s.TYPE.eq(sourceType.name()));
+		}
+		if (sourceIdToExclude != null) {
+			existCondition = existCondition.and(sffc.SOURCE_ID.notEqual(sourceIdToExclude));
+		}
+		Condition sex = DSL.exists(existCondition);
+		Field<Boolean> spmf = DSL.field(DSL.lower(sp.VALUE_TEXT).like(searchFilter));
+	
+		return getSources(s, sff, sp, spmf, sex);
+	}
+
+	private List<SourcePropertyTuple> getSources(
+			Source s, SourceFreeform sff, Freeform sp, Field<Boolean> spmf, Condition where) {
+	
+		Field<Boolean> sptnf = DSL.field(sp.TYPE.eq(FreeformType.SOURCE_NAME.name()));
+	
 		return create
 				.select(
 						s.ID.as("source_id"),
-						s.TYPE,
+						s.TYPE.as("source_type"),
 						sp.ID.as("source_property_id"),
 						sp.TYPE.as("source_property_type"),
 						sp.VALUE_TEXT.as("source_property_value_text"),
-						sp.VALUE_DATE.as("source_property_value_date")
+						sp.VALUE_DATE.as("source_property_value_date"),
+						spmf.as("source_property_match")
 						)
 				.from(
 						s
 						.innerJoin(sff).on(s.ID.eq(sff.SOURCE_ID))
 						.innerJoin(sp).on(sff.FREEFORM_ID.eq(sp.ID)))
-				.where(s.ID.equal(sourceId))
-				.orderBy(sp.ORDER_BY)
+				.where(where)
+				.orderBy(
+						s.ID,
+						sptnf.desc(),
+						sp.ORDER_BY)
 				.fetch()
 				.into(SourcePropertyTuple.class);
 	}
 
-	public String getSourcePropertyValue(Long sourcePropertyId) {
+	public SourceProperty getSourceProperty(Long sourcePropertyId) {
 
 		return create
-				.select(FREEFORM.VALUE_TEXT)
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
 				.from(FREEFORM)
 				.where(FREEFORM.ID.eq(sourcePropertyId))
-				.fetchOneInto(String.class);
+				.fetchOneInto(SourceProperty.class);
 	}
 
 	public String getSourceNameValue(Long sourceId) {
@@ -89,60 +138,6 @@ public class SourceDbService implements SystemConstant {
 						.and(FREEFORM.TYPE.eq(FreeformType.SOURCE_NAME.name())))
 				.limit(1)
 				.fetchOneInto(String.class);
-	}
-
-	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType) {
-		return getSources(searchFilterWithMetaCharacters, sourceType, null);
-	}
-
-	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType, Long sourceIdToExclude) {
-
-		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
-
-		Source s = SOURCE.as("s");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
-		Freeform sp = FREEFORM.as("sp");
-		SourceFreeform sffc = SOURCE_FREEFORM.as("sffc");
-		Freeform spc = FREEFORM.as("spc");
-
-		SelectConditionStep<Record1<Long>> existCondition =
-				DSL
-				.select(sffc.ID)
-				.from(sffc, spc)
-				.where(
-						sffc.SOURCE_ID.eq(s.ID)
-						.and(sffc.FREEFORM_ID.eq(spc.ID))
-						.and(DSL.lower(spc.VALUE_TEXT).like(searchFilter)));
-
-		if (sourceType != null) {
-			existCondition = existCondition.and(s.TYPE.eq(sourceType.name()));
-		}
-		if (sourceIdToExclude != null) {
-			existCondition = existCondition.and(sffc.SOURCE_ID.notEqual(sourceIdToExclude));
-		}
-
-		Condition sex = DSL.exists(existCondition);
-
-		Field<Boolean> is_source_property_match = DSL.field(DSL.lower(sp.VALUE_TEXT).like(searchFilter));
-
-		return create
-				.select(
-						s.ID.as("source_id"),
-						s.TYPE,
-						sp.ID.as("source_property_id"),
-						sp.TYPE.as("source_property_type"),
-						sp.VALUE_TEXT.as("source_property_value_text"),
-						sp.VALUE_DATE.as("source_property_value_date"),
-						is_source_property_match.as("is_source_property_match")
-						)
-				.from(
-						s
-						.innerJoin(sff).on(s.ID.eq(sff.SOURCE_ID))
-						.innerJoin(sp).on(sff.FREEFORM_ID.eq(sp.ID)))
-				.where(sex)
-				.orderBy(s.ID, sp.ORDER_BY)
-				.fetch()
-				.into(SourcePropertyTuple.class);
 	}
 
 	public List<String> getSourceNames(String nameSearchFilter, int limit) {

@@ -1,10 +1,12 @@
-package eki.ekilex.web.controller;
+package eki.ekilex.api.controller;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +39,6 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Origin;
-import eki.ekilex.data.Source;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
@@ -45,7 +47,6 @@ import eki.ekilex.data.imp.Paradigm;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.MorphologyService;
-import eki.ekilex.service.SourceService;
 import eki.ekilex.service.TermSearchService;
 
 @ConditionalOnWebApplication
@@ -65,11 +66,9 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 	private MorphologyService morphologyService;
 
 	@Autowired
-	private SourceService sourceService;
-
-	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
 
+	@Order(101)
 	@GetMapping(API_SERVICES_URI + ENDPOINTS_URI)
 	@ResponseBody
 	public List<ApiEndpointDescription> listEndpoints() {
@@ -78,31 +77,43 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		List<ApiEndpointDescription> apiEndpointDescriptions = handlerMethods.entrySet().stream()
 				.map(entry -> {
 					RequestMappingInfo mappingInfo = entry.getKey();
+					HandlerMethod handlerMethod = entry.getValue();
+					Method serviceMethod = handlerMethod.getMethod();
 					PatternsRequestCondition patternsCondition = mappingInfo.getPatternsCondition();
-					HandlerMethod method = entry.getValue();
+					Set<String> allPatterns = patternsCondition.getPatterns();
+					List<String> apiPatterns = allPatterns.stream()
+							.filter(pattern -> StringUtils.startsWith(pattern, API_SERVICES_URI))
+							.collect(Collectors.toList());
+					if (CollectionUtils.isEmpty(apiPatterns)) {
+						return null;
+					}
+					Order orderAnnot = serviceMethod.getDeclaredAnnotation(Order.class);
+					if (orderAnnot == null) {
+						return null;
+					}
+					int serviceOrder = orderAnnot.value();
 					List<String> pathVariables = new ArrayList<>();
 					List<String> requestParameters = new ArrayList<>();
 					String requestBody = null;
-					Parameter[] methodParams = method.getMethod().getParameters();
+					Parameter[] methodParams = serviceMethod.getParameters();
 					for (int paramIndex = 0; paramIndex < methodParams.length; paramIndex++) {
 						Parameter methodParam = methodParams[paramIndex];
 						Annotation[] declaredAnnotations = methodParam.getDeclaredAnnotations();
 						Type[] genericParamTypes = methodParam.getDeclaringExecutable().getGenericParameterTypes();
-						List<PathVariable> pathVars = Arrays.stream(declaredAnnotations)
+						PathVariable pathVar = Arrays.stream(declaredAnnotations)
 								.filter(paramAnnot -> paramAnnot instanceof PathVariable)
 								.map(paramAnnot -> (PathVariable) paramAnnot)
-								.collect(Collectors.toList());
-						List<RequestParam> reqParams = Arrays.stream(declaredAnnotations)
+								.findFirst().orElse(null);
+						RequestParam reqParam = Arrays.stream(declaredAnnotations)
 								.filter(paramAnnot -> paramAnnot instanceof RequestParam)
 								.map(paramAnnot -> (RequestParam) paramAnnot)
-								.collect(Collectors.toList());
+								.findFirst().orElse(null);
 						RequestBody reqBody = Arrays.stream(declaredAnnotations)
 								.filter(paramAnnot -> paramAnnot instanceof RequestBody)
 								.map(paramAnnot -> (RequestBody) paramAnnot)
-								.findAny().orElse(null);
-						String paramName = null;
-						if (CollectionUtils.isNotEmpty(pathVars)) {
-							PathVariable pathVar = pathVars.get(0);
+								.findFirst().orElse(null);
+						if (pathVar != null) {
+							String paramName = "?";
 							if (StringUtils.isNotBlank(pathVar.name())) {
 								paramName = pathVar.name();
 							} else if (StringUtils.isNotBlank(pathVar.value())) {
@@ -111,8 +122,8 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 							String pathVariable = paramName + "::" + genericParamTypes[paramIndex].getTypeName();
 							pathVariables.add(pathVariable);
 						}
-						if (CollectionUtils.isNotEmpty(reqParams)) {
-							RequestParam reqParam = reqParams.get(0);
+						if (reqParam != null) {
+							String paramName = "?";
 							if (StringUtils.isNotBlank(reqParam.name())) {
 								paramName = reqParam.name();
 							} else if (StringUtils.isNotBlank(reqParam.value())) {
@@ -125,24 +136,21 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 							requestBody = genericParamTypes[paramIndex].getTypeName();
 						}
 					}
-
-					Set<String> allPatterns = patternsCondition.getPatterns();
-					List<String> apiPatterns = allPatterns.stream()
-							.filter(pattern -> StringUtils.startsWith(pattern, API_SERVICES_URI))
-							.collect(Collectors.toList());
 					ApiEndpointDescription apiEndpointDescription = new ApiEndpointDescription();
 					apiEndpointDescription.setUriPatterns(apiPatterns);
 					apiEndpointDescription.setPathVariables(pathVariables);
 					apiEndpointDescription.setRequestParameters(requestParameters);
 					apiEndpointDescription.setRequestBody(requestBody);
+					apiEndpointDescription.setOrder(serviceOrder);
 					return apiEndpointDescription;
 				})
-				.filter(apiEndpointDescription -> CollectionUtils.isNotEmpty(apiEndpointDescription.getUriPatterns()))
-				.sorted((desc1, desc2) -> StringUtils.compare(desc1.getUriPatterns().toString(), desc2.getUriPatterns().toString()))
+				.filter(apiEndpointDescription -> apiEndpointDescription != null)
+				.sorted(Comparator.comparing(ApiEndpointDescription::getOrder))
 				.collect(Collectors.toList());
 		return apiEndpointDescriptions;
 	}
 
+	@Order(102)
 	@GetMapping(value = {
 			API_SERVICES_URI + LEX_SEARCH_URI + "/{word}",
 			API_SERVICES_URI + LEX_SEARCH_URI + "/{word}/{datasets}"
@@ -156,6 +164,7 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return results;
 	}
 
+	@Order(103)
 	@GetMapping(value = {
 			API_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}",
 			API_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}/{datasets}"
@@ -175,6 +184,7 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return result;
 	}
 
+	@Order(104)
 	@GetMapping(value = {
 			API_SERVICES_URI + TERM_SEARCH_URI + "/{word}",
 			API_SERVICES_URI + TERM_SEARCH_URI + "/{word}/{datasets}"
@@ -190,6 +200,7 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return results;
 	}
 
+	@Order(105)
 	@GetMapping(value = {
 			API_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}",
 			API_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}/{datasets}"
@@ -210,6 +221,7 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return meaning;
 	}
 
+	@Order(106)
 	@GetMapping(value = API_SERVICES_URI + PARADIGMS_URI + "/{wordId}")
 	public List<Paradigm> getParadigms(@PathVariable("wordId") String wordIdStr) {
 
@@ -220,14 +232,7 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return morphologyService.getParadigms(wordId);
 	}
 
-	@GetMapping(value = API_SERVICES_URI + SOURCE_SEARCH_URI + "/{searchFilter}")
-	@ResponseBody
-	public List<Source> sourceSearch(@PathVariable("searchFilter") String searchFilter) {
-
-		List<Source> sources = sourceService.getSources(searchFilter);
-		return sources;
-	}
-
+	@Order(107)
 	@GetMapping(value = API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
 	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
 
@@ -241,16 +246,19 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return commonDataService.getClassifiers(classifierName);
 	}
 
+	@Order(108)
 	@GetMapping(API_SERVICES_URI + DOMAIN_ORIGINS_URI)
 	public List<Origin> getDomainOrigins() {
 		return commonDataService.getDomainOrigins();
 	}
 
+	@Order(109)
 	@GetMapping(value = API_SERVICES_URI + DOMAINS_URI + "/{origin}")
 	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
 		return commonDataService.getDomains(origin);
 	}
 
+	@Order(110)
 	@GetMapping(API_SERVICES_URI + DATASETS_URI)
 	public List<Dataset> getDatasets() {
 		return commonDataService.getDatasets();

@@ -2,6 +2,7 @@ package eki.ekilex.data.api;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -10,6 +11,9 @@ import eki.common.data.AbstractDataObject;
 public class ApiEndpointDescription extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	@JsonIgnore
+	private int order;
 
 	private List<String> uriPatterns;
 
@@ -21,6 +25,14 @@ public class ApiEndpointDescription extends AbstractDataObject {
 
 	@JsonInclude(Include.NON_NULL)
 	private String requestBody;
+
+	public int getOrder() {
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
+	}
 
 	public List<String> getUriPatterns() {
 		return uriPatterns;

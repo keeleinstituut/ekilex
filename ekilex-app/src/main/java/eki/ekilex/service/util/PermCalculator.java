@@ -61,7 +61,7 @@ public class PermCalculator {
 				isCrudGrant = permissionDbService.isGrantedForUsage(usageId, datasetCode, lang);
 			} else if (crudEntity instanceof Source) {
 				Source source = (Source) crudEntity;
-				Long sourceId = source.getSourceId();
+				Long sourceId = source.getId();
 				isCrudGrant = permissionDbService.isGrantedForSource(userId, sourceId, authItemDataset, crudAuthOps);
 			} else if (crudEntity instanceof Meaning) {
 				Meaning meaning = (Meaning) crudEntity;

@@ -46,6 +46,7 @@ public class SourceEditController extends AbstractAuthActionController {
 	@Autowired
 	private ValueUtil valueUtil;
 
+	//FIXME remove sourceId, type, searchResultCount
 	@PostMapping(UPDATE_SOURCE_PROPERTY_URI)
 	public String updateSourceProperty(
 			@RequestParam("sourceId") Long sourceId,
@@ -58,7 +59,7 @@ public class SourceEditController extends AbstractAuthActionController {
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-		sourceService.updateSourceProperty(sourcePropertyId, type, valueText);
+		sourceService.updateSourceProperty(sourcePropertyId, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -66,6 +67,7 @@ public class SourceEditController extends AbstractAuthActionController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
+	//FIXME rremove searchResultCount
 	@PostMapping(CREATE_SOURCE_PROPERTY_URI)
 	public String createSourceProperty(
 			@RequestParam("sourceId") Long sourceId,
@@ -85,6 +87,7 @@ public class SourceEditController extends AbstractAuthActionController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
+	//FIXME only sourcePropertyId should be provided
 	@GetMapping(DELETE_SOURCE_PROPERTY_URI + "/{sourceId}/{sourcePropertyId}/{sourcePropertyType}/{count}")
 	public String deleteSourceProperty(
 			@PathVariable("sourceId") Long sourceId,
@@ -95,7 +98,7 @@ public class SourceEditController extends AbstractAuthActionController {
 
 		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.deleteSourceProperty(sourcePropertyId, type);
+		sourceService.deleteSourceProperty(sourcePropertyId);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -103,8 +106,9 @@ public class SourceEditController extends AbstractAuthActionController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping(UPDATE_SOURCE_TYPE_URI)
-	public String updateSourceType(
+	//FIXME rremove searchResultCount
+	@PostMapping(UPDATE_SOURCE_URI)
+	public String updateSource(
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("sourceType") SourceType type,
 			@RequestParam("searchResultCount") String count,
@@ -112,7 +116,7 @@ public class SourceEditController extends AbstractAuthActionController {
 
 		logger.debug("Updating source type, source id: {}", sourceId);
 
-		sourceService.updateSourceType(sourceId, type);
+		sourceService.updateSource(sourceId, type);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -120,6 +124,7 @@ public class SourceEditController extends AbstractAuthActionController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
+	//FIXME provide single wrapper class with @RequestBody instead
 	@PostMapping(CREATE_SOURCE_URI)
 	@ResponseBody
 	public String createSource(
@@ -206,6 +211,7 @@ public class SourceEditController extends AbstractAuthActionController {
 		return "redirect:" + SOURCE_SEARCH_URI + "/" + firstSourceId;
 	}
 
+	//FIXME firstSourceId without second? use better naming
 	@PostMapping(SEARCH_SOURCES_URI)
 	public String searchSources(
 			@RequestParam("firstSourceId") Long firstSourceId,

@@ -120,7 +120,7 @@
           <table class="table table-striped mb-0">
             <tr th:each="source : ${sourcesFoundBySearch}">
               <td>
-                <button type="button" class="btn btn-primary float-right btn-sm mr-2" th:data-source-id="${source.sourceId}">Lisa</button>
+                <button type="button" class="btn btn-primary float-right btn-sm mr-2" th:data-source-id="${source.id}">Lisa</button>
                 <div th:text="${source.sourceNames.get(0)}" th:if="${not #lists.isEmpty(source.sourceNames)}"></div>
               </td>
             </tr>

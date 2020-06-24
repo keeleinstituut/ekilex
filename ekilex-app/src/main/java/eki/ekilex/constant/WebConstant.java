@@ -188,7 +188,7 @@ public interface WebConstant {
 
 	String DELETE_SOURCE_PROPERTY_URI = "/delete_source_property";
 
-	String UPDATE_SOURCE_TYPE_URI = "/update_source_type";
+	String UPDATE_SOURCE_URI = "/update_source";
 
 	String CREATE_SOURCE_URI = "/create_source";
 

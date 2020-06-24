@@ -25,6 +25,7 @@ import eki.ekilex.data.ConfirmationRequest;
 import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.service.ComplexOpService;
@@ -101,13 +102,13 @@ public class EditController extends AbstractPageController {
 			cudService.createLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK: {
-			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourcePropertyValue, itemValue);
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceValue, itemValue);
 			break;
 		}
 		case ContentKey.LEXEME_SOURCE_LINK: {
-			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), sourcePropertyValue, itemValue);
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceValue, itemValue);
 			break;
 		}
 		case "usage_author":
@@ -200,7 +201,8 @@ public class EditController extends AbstractPageController {
 	}
 
 	private String getSourcePropertyValue(Long sourcePropertyId) {
-		return sourceService.getSourcePropertyValue(sourcePropertyId);
+		SourceProperty sourceProperty = sourceService.getSourceProperty(sourcePropertyId);
+		return sourceProperty.getValueText();
 	}
 
 	private String getSourceNameValue(Long sourceId) {
