@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{user.profile.title}">Kasutaja profiil</title>
 <th:block th:fragment="links">
@@ -93,8 +93,10 @@
         Ekilex API kasutamiseks on vajalik administraatori õigus
       </div>
       <div class="card-body" th:if="${userRoleData.admin}">
-        <span>cd8c61505b17427282150624463fcace</span>
-        <button class="btn btn-primary pull-right" disabled="disabled">Genereeri võti</button>
+        <form th:action="@{/generate_api_key}" method="post">
+          <span sec:authentication="principal.apiKey">cd8c61505b17427282150624463fcace</span>
+          <button class="btn btn-primary pull-right" type="submit">Genereeri võti</button>
+        </form>
       </div>
     </div>
   </div>

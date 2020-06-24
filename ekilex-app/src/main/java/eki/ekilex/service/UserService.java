@@ -326,6 +326,14 @@ public class UserService implements WebConstant {
 		userDbService.setUserPassword(email, encodedPassword);
 	}
 
+	@Transactional
+	public String generateApiKey(Long userId) {
+		String apiKey = generateUniqueKey();
+		userDbService.updateApiKey(userId, apiKey);
+		updateUserSecurityContext();
+		return apiKey;
+	}
+
 	private String generateUniqueKey() {
 		return CodeGenerator.generateUniqueId();
 	}

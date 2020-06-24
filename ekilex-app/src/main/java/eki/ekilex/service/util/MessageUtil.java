@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ResourceUtils;
 
 import eki.common.constant.GlobalConstant;
 
@@ -21,8 +21,7 @@ public class MessageUtil implements InitializingBean, GlobalConstant {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		ClassPathResource fileResource = new ClassPathResource(MOTIVATIONAL_TXT_FILE_PATH);
-		File txtFile = fileResource.getFile();
+		File txtFile = ResourceUtils.getFile("classpath:" + MOTIVATIONAL_TXT_FILE_PATH);
 		FileInputStream txtFileStream = new FileInputStream(txtFile);
 		positiveQuotes = IOUtils.readLines(txtFileStream, UTF_8);
 		txtFileStream.close();

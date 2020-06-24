@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,6 +78,15 @@ public class UserProfileController extends AbstractPageController {
 		userProfile.setPreferredTagNames(preferredTagNames);
 		userProfile.setActiveTagName(activeTagName);
 		userProfileService.updateUserProfile(userProfile);
+		return "redirect:" + USER_PROFILE_URI;
+	}
+
+	@PreAuthorize("authentication.principal.admin")
+	@PostMapping(GENERATE_API_KEY)
+	public String generateApiKey() {
+
+		Long userId = userContext.getUserId();
+		userService.generateApiKey(userId);
 		return "redirect:" + USER_PROFILE_URI;
 	}
 }

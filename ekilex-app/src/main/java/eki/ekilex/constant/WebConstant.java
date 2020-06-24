@@ -74,6 +74,8 @@ public interface WebConstant {
 
 	String UPDATE_TAG_PREFS_URI = "/update_tag_prefs";
 
+	String GENERATE_API_KEY = "/generate_api_key";
+
 	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";
 
 	String VALIDATE_MEANING_DATA_IMPORT_URI = "/validatemeaningdataimport";
