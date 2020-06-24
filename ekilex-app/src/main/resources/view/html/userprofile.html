@@ -26,7 +26,10 @@
       <div class="card-header">
         <h5 class="card-title">Olemasolevad õigused</h5>
       </div>
-      <div class="card-body">
+      <div class="card-body" th:if="${#lists.isEmpty(userDatasetPermissions)}">
+        Õiguseid pole
+      </div>
+      <div class="card-body" th:unless="${#lists.isEmpty(userDatasetPermissions)}">
         <table class="table table-striped m-0 p-0 table-hover">
           <tr>
             <th class="m-1 p-1" style="width: 10%">Sõnakogu kood</th>
@@ -56,7 +59,10 @@
           <button class="btn btn-primary pull-right" title="Esita uus taotlus" data-toggle="modal" data-target="#addApplicationDlg">Esita uus taotlus</button>
         </h5>
       </div>
-      <div class="card-body">
+      <div class="card-body" th:if="${#lists.isEmpty(userApplications)}">
+        Taotluseid pole
+      </div>
+      <div class="card-body" th:unless="${#lists.isEmpty(userApplications)}">
         <table class="table table-striped m-0 p-0 table-hover">
           <tr>
             <th class="m-1 p-1" style="width: 10%">Esitamise aeg</th>
@@ -77,6 +83,18 @@
             </tr>
           </th:block>
         </table>
+      </div>
+    </div>
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Ekilex API võti</h5>
+      </div>
+      <div class="card-body" th:unless="${userRoleData.admin}">
+        Ekilex API kasutamiseks on vajalik administraatori õigus
+      </div>
+      <div class="card-body" th:if="${userRoleData.admin}">
+        <span>cd8c61505b17427282150624463fcace</span>
+        <button class="btn btn-primary pull-right" disabled="disabled">Genereeri võti</button>
       </div>
     </div>
   </div>
