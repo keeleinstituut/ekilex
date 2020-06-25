@@ -25,6 +25,7 @@ import eki.ekilex.data.ConfirmationRequest;
 import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.service.ComplexOpService;
@@ -72,8 +73,8 @@ public class EditController extends AbstractPageController {
 			datasetCode = getDatasetCodeFromRole();
 			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
 			break;
-		case "definition_public_note":
-			cudService.createDefinitionPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
+		case "definition_note":
+			cudService.createDefinitionNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
 			break;
 		case "usage":
 			cudService.createUsage(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
@@ -90,6 +91,9 @@ public class EditController extends AbstractPageController {
 		case "lexeme_pos":
 			cudService.createLexemePos(itemData.getId(), itemValue);
 			break;
+		case "lexeme_tag":
+			cudService.createLexemeTag(itemData.getId(), itemValue);
+			break;
 		case "meaning_domain":
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemValue);
 			cudService.createMeaningDomain(itemData.getId2(), meaningDomain);
@@ -98,13 +102,13 @@ public class EditController extends AbstractPageController {
 			cudService.createLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK: {
-			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourcePropertyValue, itemValue);
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceValue, itemValue);
 			break;
 		}
 		case ContentKey.LEXEME_SOURCE_LINK: {
-			String sourcePropertyValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), sourcePropertyValue, itemValue);
+			sourceValue = getSourcePropertyValue(itemData.getId3());
+			cudService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceValue, itemValue);
 			break;
 		}
 		case "usage_author":
@@ -161,18 +165,17 @@ public class EditController extends AbstractPageController {
 		case "learner_comment":
 			cudService.createMeaningLearnerComment(itemData.getId(), itemValue, itemData.getLanguage());
 			break;
-		case "lexeme_public_note":
-			cudService.createLexemePublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+		case "lexeme_note":
+			cudService.createLexemeNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
-		case "meaning_public_note":
-			cudService.createMeaningPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+		case "meaning_note":
+			cudService.createMeaningNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			break;
+		case "word_note":
+			cudService.createWordNote(itemData.getId(), itemValue);
 			break;
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
-			break;
-		case "create_raw_relation":
-			datasetCode = getDatasetCodeFromRole();
-			cudService.createSynRelation(itemData.getId(), itemData.getId2(), itemData.getValue2(), datasetCode);
 			break;
 		case "create_syn_word":
 			datasetCode = getDatasetCodeFromRole();
@@ -198,7 +201,8 @@ public class EditController extends AbstractPageController {
 	}
 
 	private String getSourcePropertyValue(Long sourcePropertyId) {
-		return sourceService.getSourcePropertyValue(sourcePropertyId);
+		SourceProperty sourceProperty = sourceService.getSourceProperty(sourcePropertyId);
+		return sourceProperty.getValueText();
 	}
 
 	private String getSourceNameValue(Long sourceId) {
@@ -232,8 +236,8 @@ public class EditController extends AbstractPageController {
 		case "definition":
 			cudService.updateDefinition(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.getCode(), itemData.isPublic());
 			break;
-		case "definition_public_note":
-			cudService.updateDefinitionPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
+		case "definition_note":
+			cudService.updateDefinitionNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
 			break;
 		case "lexeme_frequency_group":
 			cudService.updateLexemeFrequencyGroup(itemData.getId(), itemValue);
@@ -288,11 +292,14 @@ public class EditController extends AbstractPageController {
 		case "learner_comment":
 			cudService.updateMeaningLearnerComment(itemData.getId(), itemValue);
 			break;
-		case "lexeme_public_note":
-			cudService.updateLexemePublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+		case "lexeme_note":
+			cudService.updateLexemeNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
 			break;
-		case "meaning_public_note":
-			cudService.updateMeaningPublicNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+		case "meaning_note":
+			cudService.updateMeaningNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			break;
+		case "word_note":
+			cudService.updateWordNote(itemData.getId(), itemValue);
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), itemValue);
@@ -351,14 +358,14 @@ public class EditController extends AbstractPageController {
 		case "usage":
 			cudService.updateUsageOrdering(items);
 			break;
-		case "lexeme_public_note":
-			cudService.updateLexemePublicNoteOrdering(items);
+		case "lexeme_note":
+			cudService.updateLexemeNoteOrdering(items);
 			break;
-		case "meaning_public_note":
-			cudService.updateMeaningPublicNoteOrdering(items);
+		case "meaning_note":
+			cudService.updateMeaningNoteOrdering(items);
 			break;
-		case "definition_public_note":
-			cudService.updateDefinitionPublicNoteOrdering(items);
+		case "definition_note":
+			cudService.updateDefinitionNoteOrdering(items);
 			break;
 		case "lexeme_meaning_word":
 			Long lexemeId = listData.getAdditionalInfo();
@@ -424,8 +431,8 @@ public class EditController extends AbstractPageController {
 		case "definition":
 			cudService.deleteDefinition(id);
 			break;
-		case "definition_public_note":
-			cudService.deleteDefinitionPublicNote(id);
+		case "definition_note":
+			cudService.deleteDefinitionNote(id);
 			break;
 		case "usage":
 			cudService.deleteUsage(id);
@@ -452,14 +459,17 @@ public class EditController extends AbstractPageController {
 		case "government":
 			cudService.deleteLexemeGovernment(id);
 			break;
-		case "lexeme_public_note":
-			cudService.deleteLexemePublicNote(id);
+		case "lexeme_note":
+			cudService.deleteLexemeNote(id);
 			break;
 		case "lexeme_frequency_group":
 			cudService.updateLexemeFrequencyGroup(id, null);
 			break;
 		case "lexeme_pos":
 			cudService.deleteLexemePos(id, valueToDelete);
+			break;
+		case "lexeme_tag":
+			cudService.deleteLexemeTag(id, valueToDelete);
 			break;
 		case "lexeme_deriv":
 			cudService.deleteLexemeDeriv(id, valueToDelete);
@@ -495,8 +505,8 @@ public class EditController extends AbstractPageController {
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToDelete);
 			cudService.deleteMeaningDomain(id, meaningDomain);
 			break;
-		case "meaning_public_note":
-			cudService.deleteMeaningPublicNote(id);
+		case "meaning_note":
+			cudService.deleteMeaningNote(id);
 			break;
 		case "meaning_relation":
 			cudService.deleteMeaningRelation(id);
@@ -518,6 +528,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null);
+			break;
+		case "word_note":
+			cudService.deleteWordNote(id);
 			break;
 		case "image_title":
 			cudService.deleteImageTitle(id);
@@ -564,11 +577,13 @@ public class EditController extends AbstractPageController {
 	@ResponseBody
 	public String createRelations(
 			@RequestParam("opCode") String opCode,
-			@RequestParam("relationType") String relationType,
+			@RequestParam(name = "relationType", required = false) String relationType,
 			@RequestParam(name = "oppositeRelationType", required = false) String oppositeRelationType,
-			@RequestParam("id1") Long id1,
+			@RequestParam(name = "weight", required = false) String weightStr,
+			@RequestParam("id") Long id1,
 			@RequestParam("ids") List<Long> ids) {
 
+		String datasetCode = null;
 		for (Long id2 : ids) {
 			switch (opCode) {
 			case "meaning_relation":
@@ -579,6 +594,12 @@ public class EditController extends AbstractPageController {
 				break;
 			case "word_relation":
 				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType);
+				break;
+			case "raw_relation":
+				if (datasetCode == null) {
+					datasetCode = getDatasetCodeFromRole();
+				}
+				cudService.createSynRelation(id1, id2, weightStr, datasetCode);
 				break;
 			}
 		}

@@ -1,7 +1,6 @@
 -- wordweb associated views and types
 drop view if exists view_ww_word_search;
 drop view if exists view_ww_word;
-drop view if exists view_ww_as_word;--remove later
 drop view if exists view_ww_form;
 drop view if exists view_ww_meaning;
 drop view if exists view_ww_lexeme;
@@ -13,7 +12,6 @@ drop view if exists view_ww_word_relation;
 drop view if exists view_ww_lexeme_relation;
 drop view if exists view_ww_meaning_relation;
 drop view if exists view_ww_lexeme_source_link;
-drop view if exists view_ww_freeform_source_link;--remove later
 drop view if exists view_ww_lexeme_freeform_source_link;
 drop view if exists view_ww_meaning_freeform_source_link;
 drop view if exists view_ww_word_etym_source_link;
@@ -22,11 +20,7 @@ drop view if exists view_ww_lexical_decision_data;
 drop view if exists view_ww_similarity_judgement_data;
 drop type if exists type_meaning_word;
 drop type if exists type_freeform;
-drop type if exists type_public_note;--remove later
-drop type if exists type_grammar;--remove later
-drop type if exists type_government;--remove later
 drop type if exists type_lang_complexity;
-drop type if exists type_word;--remove later
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_image_file;
@@ -64,6 +58,7 @@ drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
 drop table if exists lexeme_region;
 drop table if exists layer_state;
+drop table if exists lexeme_tag;
 drop table if exists lexeme;
 drop table if exists collocation_freeform;
 drop table if exists collocation;
@@ -71,7 +66,6 @@ drop table if exists definition_freeform;
 drop table if exists definition_dataset;
 drop table if exists definition;
 drop table if exists meaning_lifecycle_log;
-drop table if exists meaning_process_log;
 drop table if exists meaning_relation;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
@@ -82,7 +76,6 @@ drop table if exists form_frequency;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;
-drop table if exists word_process_log;
 drop table if exists word_freeform;
 drop table if exists word_etymology_relation;
 drop table if exists word_etymology;
@@ -118,8 +111,6 @@ drop table if exists process_state;
 drop table if exists region;
 drop table if exists word_type_label;
 drop table if exists word_type;
-drop table if exists aspect_type_label;--remove later
-drop table if exists aspect_type;--remove later
 drop table if exists aspect_label;
 drop table if exists aspect;
 drop table if exists deriv_label;
@@ -153,3 +144,4 @@ drop table if exists label_type;
 drop table if exists lifecycle_log;
 drop table if exists eki_user_application;
 drop table if exists eki_user;
+drop table if exists tag;

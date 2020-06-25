@@ -16,13 +16,13 @@ import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.MEANING_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -33,7 +33,6 @@ import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.WORD_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
@@ -639,6 +638,24 @@ public class CudDbService extends AbstractDataDbService {
 		return wordGroupMember.getId();
 	}
 
+	public Long createWordNote(Long wordId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.NOTE.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity.name());
+		freeform.setIsPublic(isPublic);
+		freeform.store();
+
+		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
+		wordFreeform.setWordId(wordId);
+		wordFreeform.setFreeformId(freeform.getId());
+		wordFreeform.store();
+
+		return freeform.getId();
+	}
+
 	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity, boolean isPublic) {
 		return create
 				.insertInto(
@@ -676,9 +693,9 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createDefinitionPublicNote(Long definitionId, String value, String valuePrese, String lang, boolean isPublic) {
+	public Long createDefinitionNote(Long definitionId, String value, String valuePrese, String lang, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.PUBLIC_NOTE.name());
+		freeform.setType(FreeformType.NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
 		freeform.setLang(lang);
@@ -780,9 +797,9 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningDomainId;
 	}
 
-	public Long createMeaningPublicNote(Long meaningId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+	public Long createMeaningNote(Long meaningId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.PUBLIC_NOTE.name());
+		freeform.setType(FreeformType.NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
 		freeform.setLang(lang);
@@ -876,10 +893,10 @@ public class CudDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public Long createLexemePublicNote(Long lexemeId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+	public Long createLexemeNote(Long lexemeId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
 
 		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.PUBLIC_NOTE.name());
+		freeform.setType(FreeformType.NOTE.name());
 		freeform.setValueText(value);
 		freeform.setValuePrese(valuePrese);
 		freeform.setLang(lang);
@@ -945,6 +962,25 @@ public class CudDbService extends AbstractDataDbService {
 					.getId();
 		}
 		return lexemePosId;
+	}
+
+	public Long createLexemeTag(Long lexemeId, String tagName) {
+		Long lexemeTagId = create
+				.select(LEXEME_TAG.ID)
+				.from(LEXEME_TAG)
+				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_TAG.TAG_NAME.eq(tagName)))
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (lexemeTagId == null) {
+			lexemeTagId = create
+					.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
+					.values(lexemeId, tagName)
+					.returning(LEXEME_TAG.ID)
+					.fetchOne()
+					.getId();
+		}
+		return lexemeTagId;
 	}
 
 	public Long createLexemeDeriv(Long lexemeId, String derivCode) {
@@ -1089,12 +1125,6 @@ public class CudDbService extends AbstractDataDbService {
 						.from(WORD_LIFECYCLE_LOG)
 						.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(wordId))))
 				.execute();
-		create.delete(PROCESS_LOG)
-				.where(PROCESS_LOG.ID.in(DSL
-						.select(WORD_PROCESS_LOG.PROCESS_LOG_ID)
-						.from(WORD_PROCESS_LOG)
-						.where(WORD_PROCESS_LOG.WORD_ID.eq(wordId))))
-				.execute();
 		create.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL
 						.select(WORD_FREEFORM.FREEFORM_ID)
@@ -1158,6 +1188,12 @@ public class CudDbService extends AbstractDataDbService {
 	public void deleteLexemePos(Long lexemePosId) {
 		create.delete(LEXEME_POS)
 				.where(LEXEME_POS.ID.eq(lexemePosId))
+				.execute();
+	}
+
+	public void deleteLexemeTag(Long lexemeTagId) {
+		create.delete(LEXEME_TAG)
+				.where(LEXEME_TAG.ID.eq(lexemeTagId))
 				.execute();
 	}
 
@@ -1228,12 +1264,6 @@ public class CudDbService extends AbstractDataDbService {
 						.select(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
 						.from(MEANING_LIFECYCLE_LOG)
 						.where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId))))
-				.execute();
-		create.delete(PROCESS_LOG)
-				.where(PROCESS_LOG.ID.in(DSL
-						.select(MEANING_PROCESS_LOG.PROCESS_LOG_ID)
-						.from(MEANING_PROCESS_LOG)
-						.where(MEANING_PROCESS_LOG.MEANING_ID.eq(meaningId))))
 				.execute();
 		create.delete(MEANING)
 				.where(MEANING.ID.eq(meaningId))

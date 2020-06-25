@@ -27,6 +27,8 @@ public class EkiUser implements Principal, Serializable {
 
 	private String recoveryKey;
 
+	private String apiKey;
+
 	private boolean admin;
 
 	private boolean master;
@@ -91,6 +93,14 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setRecoveryKey(String recoveryKey) {
 		this.recoveryKey = recoveryKey;
+	}
+
+	public String getApiKey() {
+		return apiKey;
+	}
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
 	}
 
 	public boolean isAdmin() {

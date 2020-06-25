@@ -27,30 +27,39 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SourceEditController extends AbstractSearchController {
+public class SourceEditController extends AbstractAuthActionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
 
 	@Autowired
 	private SourceService sourceService;
 
+	@Autowired
+	private ValueUtil valueUtil;
+
+	//FIXME remove sourceId, type, searchResultCount
 	@PostMapping(UPDATE_SOURCE_PROPERTY_URI)
-	public String updateSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("sourcePropertyId") Long sourcePropertyId,
-			@RequestParam("type") FreeformType type, @RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count,
+	public String updateSourceProperty(
+			@RequestParam("sourceId") Long sourceId,
+			@RequestParam("sourcePropertyId") Long sourcePropertyId,
+			@RequestParam("type") FreeformType type,
+			@RequestParam("valueText") String valueText,
+			@RequestParam("searchResultCount") String count,
 			Model model) {
 
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-		sourceService.updateSourceProperty(sourcePropertyId, type, valueText);
+		sourceService.updateSourceProperty(sourcePropertyId, valueText);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -58,9 +67,14 @@ public class SourceEditController extends AbstractSearchController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
+	//FIXME rremove searchResultCount
 	@PostMapping(CREATE_SOURCE_PROPERTY_URI)
-	public String createSourceProperty(@RequestParam("sourceId") Long sourceId, @RequestParam("type") FreeformType type,
-			@RequestParam("valueText") String valueText, @RequestParam("searchResultCount") String count, Model model) {
+	public String createSourceProperty(
+			@RequestParam("sourceId") Long sourceId,
+			@RequestParam("type") FreeformType type,
+			@RequestParam("valueText") String valueText,
+			@RequestParam("searchResultCount") String count,
+			Model model) {
 
 		logger.debug("Creating property for source with id: {}", sourceId);
 
@@ -73,13 +87,18 @@ public class SourceEditController extends AbstractSearchController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
+	//FIXME only sourcePropertyId should be provided
 	@GetMapping(DELETE_SOURCE_PROPERTY_URI + "/{sourceId}/{sourcePropertyId}/{sourcePropertyType}/{count}")
-	public String deleteSourceProperty(@PathVariable("sourceId") Long sourceId, @PathVariable("sourcePropertyId") Long sourcePropertyId,
-			@PathVariable("sourcePropertyType") FreeformType type, @PathVariable("count") String count, Model model) {
+	public String deleteSourceProperty(
+			@PathVariable("sourceId") Long sourceId,
+			@PathVariable("sourcePropertyId") Long sourcePropertyId,
+			@PathVariable("sourcePropertyType") FreeformType type,
+			@PathVariable("count") String count,
+			Model model) {
 
 		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		sourceService.deleteSourceProperty(sourcePropertyId, type);
+		sourceService.deleteSourceProperty(sourcePropertyId);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -87,13 +106,17 @@ public class SourceEditController extends AbstractSearchController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	@PostMapping(UPDATE_SOURCE_TYPE_URI)
-	public String updateSourceType(@RequestParam("sourceId") Long sourceId, @RequestParam("sourceType") SourceType type,
-			@RequestParam("searchResultCount") String count, Model model) {
+	//FIXME rremove searchResultCount
+	@PostMapping(UPDATE_SOURCE_URI)
+	public String updateSource(
+			@RequestParam("sourceId") Long sourceId,
+			@RequestParam("sourceType") SourceType type,
+			@RequestParam("searchResultCount") String count,
+			Model model) {
 
 		logger.debug("Updating source type, source id: {}", sourceId);
 
-		sourceService.updateSourceType(sourceId, type);
+		sourceService.updateSource(sourceId, type);
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 		model.addAttribute("count", count);
@@ -101,10 +124,14 @@ public class SourceEditController extends AbstractSearchController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
+	//FIXME provide single wrapper class with @RequestBody instead
 	@PostMapping(CREATE_SOURCE_URI)
 	@ResponseBody
-	public String createSource(@RequestParam("sourceName") String sourceName, @RequestParam("sourceType") SourceType sourceType,
-			@RequestParam("type") List<FreeformType> sourcePropertyTypes, @RequestParam("valueText") List<String> valueTexts) {
+	public String createSource(
+			@RequestParam("sourceName") String sourceName,
+			@RequestParam("sourceType") SourceType sourceType,
+			@RequestParam("type") List<FreeformType> sourcePropertyTypes,
+			@RequestParam("valueText") List<String> valueTexts) {
 
 		logger.debug("Creating new source, source name: {}", sourceName);
 
@@ -168,9 +195,8 @@ public class SourceEditController extends AbstractSearchController {
 			@RequestParam("previousSearch") String previousSearch,
 			Model model) {
 
-		resetUserRole(model);
-		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
 		Source firstSource = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("firstSource", firstSource);
 		model.addAttribute("previousSearch", previousSearch);
@@ -185,6 +211,7 @@ public class SourceEditController extends AbstractSearchController {
 		return "redirect:" + SOURCE_SEARCH_URI + "/" + firstSourceId;
 	}
 
+	//FIXME firstSourceId without second? use better naming
 	@PostMapping(SEARCH_SOURCES_URI)
 	public String searchSources(
 			@RequestParam("firstSourceId") Long firstSourceId,
@@ -192,9 +219,8 @@ public class SourceEditController extends AbstractSearchController {
 			@RequestParam("previousSearch") String previousSearch,
 			Model model) {
 
-		resetUserRole(model);
-		EkiUser user = userContext.getUser();
-		DatasetPermission userRole = user.getRecentRole();
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
 		Source firstSource = sourceService.getSource(firstSourceId, userRole);
 		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, firstSource, userRole);
 		model.addAttribute("firstSource", firstSource);

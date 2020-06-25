@@ -59,13 +59,13 @@ import eki.ekilex.data.db.tables.LexemeProcessLog;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
-import eki.ekilex.data.db.tables.MeaningProcessLog;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
@@ -89,6 +89,7 @@ import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
+import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.UsageType;
@@ -123,7 +124,6 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
-import eki.ekilex.data.db.tables.WordProcessLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -416,6 +416,11 @@ public class Tables {
     public static final LexemeSourceLink LEXEME_SOURCE_LINK = LexemeSourceLink.LEXEME_SOURCE_LINK;
 
     /**
+     * The table <code>public.lexeme_tag</code>.
+     */
+    public static final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
+
+    /**
      * The table <code>public.lifecycle_log</code>.
      */
     public static final LifecycleLog LIFECYCLE_LOG = LifecycleLog.LIFECYCLE_LOG;
@@ -444,11 +449,6 @@ public class Tables {
      * The table <code>public.meaning_nr</code>.
      */
     public static final MeaningNr MEANING_NR = MeaningNr.MEANING_NR;
-
-    /**
-     * The table <code>public.meaning_process_log</code>.
-     */
-    public static final MeaningProcessLog MEANING_PROCESS_LOG = MeaningProcessLog.MEANING_PROCESS_LOG;
 
     /**
      * The table <code>public.meaning_rel_mapping</code>.
@@ -564,6 +564,11 @@ public class Tables {
      * The table <code>public.source_lifecycle_log</code>.
      */
     public static final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
+
+    /**
+     * The table <code>public.tag</code>.
+     */
+    public static final Tag TAG = Tag.TAG;
 
     /**
      * The table <code>public.temp_ds_import_pk_map</code>.
@@ -734,11 +739,6 @@ public class Tables {
      * The table <code>public.word_lifecycle_log</code>.
      */
     public static final WordLifecycleLog WORD_LIFECYCLE_LOG = WordLifecycleLog.WORD_LIFECYCLE_LOG;
-
-    /**
-     * The table <code>public.word_process_log</code>.
-     */
-    public static final WordProcessLog WORD_PROCESS_LOG = WordProcessLog.WORD_PROCESS_LOG;
 
     /**
      * The table <code>public.word_rel_mapping</code>.

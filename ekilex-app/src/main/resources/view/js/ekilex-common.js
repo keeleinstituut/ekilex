@@ -222,7 +222,7 @@ function initSelectDlg(selectDlg) {
 
 function configureSelectDlg(selectControl, selectDlg) {
 	let maxItemLength = 0;
-	selectControl.find('option').each(function (indx, item) {
+	selectControl.find('option').each(function(indx, item) {
 		let itemLenght = $(item).text().length;
 		if (itemLenght > maxItemLength) {
 			maxItemLength = itemLenght;
@@ -231,7 +231,7 @@ function configureSelectDlg(selectControl, selectDlg) {
 	let dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
 	let numberOfOptins = selectControl.find('option').length;
 	selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
-	selectDlg.off('shown.bs.modal').on('shown.bs.modal', function (e) {
+	selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		let dlgTop = $(e.relatedTarget).offset().top - $(window).scrollTop();
 		let dlgLeft = $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
 		let modalContent = selectDlg.find('.modal-content');
@@ -251,7 +251,7 @@ function initNewWordDlg() {
 	let newWordDlg = $('#newWordDlg');
 	newWordDlg.on('shown.bs.modal', function(e) {
 		newWordDlg.find('.form-control').first().focus();
-		newWordDlg.find('.form-control').each(function () {
+		newWordDlg.find('.form-control').each(function() {
 			$(this).removeClass('is-invalid');
 		});
 		let searchValue = $("input[name='simpleSearchFilter']").val() || '';
@@ -264,7 +264,7 @@ function initNewWordDlg() {
 		$('[name=meaningId]').val(meaningId);
 	});
 
-	newWordDlg.find('.form-control').on('change', function () {
+	newWordDlg.find('.form-control').on('change', function() {
 		if ($(this).val()) {
 			$(this).removeClass('is-invalid');
 		} else {
@@ -349,7 +349,7 @@ function initAddSourceLinkDlg(addDlg) {
 				let theForm = button.closest('form');
 
 				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function () {
+					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
 						addDlg.modal('hide');
 					});
 				}
@@ -498,7 +498,7 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 	});
 };
 
-function initAddSynRelationDlg(addDlg) {
+function initAddSynRelationDlgOld(addDlg) {
 	addDlg.find('.form-control').val(null);
 	addDlg.find('[data-name=dialogContent]').html(null);
 	let idElementName = 'word-id';
@@ -623,7 +623,7 @@ function closeWaitDlg() {
 	if (!isModalOpened) {
 		timeout = 500;
 	}
-	setTimeout(function () {
+	setTimeout(function() {
 		$("#waitDlg").modal("hide");
 		$("body").css("cursor", "default");
 	}, timeout);
@@ -664,12 +664,12 @@ function initWordValueEditorDlg(dlg) {
 				url: form.attr('action'),
 				data: form.serialize(),
 				method: 'POST',
-			}).done(function (data) {
+			}).done(function(data) {
 				dlg.modal('hide');
 				let wordId = dlg.find('[name=wordId]').val();
 				let wordValueSpan = $('#word-value-' + wordId);
 				wordValueSpan.html(data);
-			}).fail(function (data) {
+			}).fail(function(data) {
 				dlg.modal('hide');
 				console.log(data);
 				openAlertDlg('Salvestamine ebaõnnestus');
@@ -714,7 +714,7 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 		method: 'POST',
 		dataType: 'json',
 		contentType: 'application/json'
-	}).done(function (data) {
+	}).done(function(data) {
 		if (!data.valid) {
 			openAlertDlg(data.validationMessage);
 		} else if (data.unconfirmed) {
@@ -722,7 +722,7 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 		} else {
 			doPostDelete(deleteUrl, successCallbackFunc);
 		}
-	}).fail(function (data) {
+	}).fail(function(data) {
 		console.log(data);
 		openAlertDlg("Kustutamine ebaõnnestus");
 	});
@@ -730,7 +730,7 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 
 function initClassifierAutocomplete() {
 	$('.classifier-select').selectpicker({
-		width : '100%',
+		width: '100%',
 		container: 'body'
 	});
 };

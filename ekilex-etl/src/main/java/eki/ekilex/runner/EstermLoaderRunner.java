@@ -403,7 +403,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNodes = conceptGroupNode.selectNodes(noteExp);
 		for (Node noteValueNode : valueNodes) {
 			valueStr = ((Element)noteValueNode).getTextTrim();
-			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
+			Long freeformId = createMeaningFreeform(meaningId, FreeformType.NOTE, valueStr);
 			if (((Element)noteValueNode).hasMixedContent()) {
 				valueStr = handleFreeformTextSourceLinks(noteValueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);
@@ -413,10 +413,10 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(privateNoteExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			Long processLogId = createMeaningProcessLog(meaningId, valueStr);
+			Long freeformId = createMeaningFreeform(meaningId, FreeformType.NOTE, valueStr, false);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleProcessLogTextSourceLinks(valueNode, processLogId, fileName);
-				updateProcessLogText(processLogId, valueStr);
+				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
+				updateFreeformText(freeformId, valueStr);
 			}
 		}
 
@@ -429,7 +429,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(worksheetExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			createMeaningProcessLog(meaningId, valueStr);
+			createMeaningFreeform(meaningId, FreeformType.NOTE, valueStr, false);
 		}
 	}
 
@@ -641,7 +641,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 				Long definitionId = definitionObj.getId();
 				for (Node definitionNoteNode : definitionNoteNodes) {
 					String definitionNote = ((Element)definitionNoteNode).getTextTrim();
-					Long freeformId = createDefinitionFreeform(definitionId, FreeformType.PUBLIC_NOTE, definitionNote);
+					Long freeformId = createDefinitionFreeform(definitionId, FreeformType.NOTE, definitionNote);
 					if (((Element)definitionNoteNode).hasMixedContent()) {
 						definitionNote = handleFreeformTextSourceLinks(definitionNoteNode, freeformId, fileName);
 						updateFreeformText(freeformId, definitionNote);
@@ -690,7 +690,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		valueNodes = termGroupNode.selectNodes(noteExp);
 		for (Node valueNode : valueNodes) {
 			valueStr = ((Element)valueNode).getTextTrim();
-			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
+			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.NOTE, valueStr, null);
 			if (((Element)valueNode).hasMixedContent()) {
 				valueStr = handleFreeformTextSourceLinks(valueNode, freeformId, fileName);
 				updateFreeformText(freeformId, valueStr);

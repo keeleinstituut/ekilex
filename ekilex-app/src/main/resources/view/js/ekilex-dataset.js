@@ -111,7 +111,7 @@ function emptyClassifSelect(modal, classifSelectName) {
 };
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {
-	let getOriginDomainsUrl = applicationUrl + 'data/origin_domains/' + originCode;
+	let getOriginDomainsUrl = applicationUrl + 'origin_domains/' + originCode;
 	$.get(getOriginDomainsUrl).done(function(response) {
 		var domainOrigins = JSON.parse(response);
 
@@ -204,7 +204,7 @@ function deleteDataset(datasetCode) {
 
 function checkAndAddDataset(addDatasetForm) {
 	let newCodeField = addDatasetForm.find('input[name="code"]');
-	let validateUrl = applicationUrl + 'data/validate_create_dataset/' + newCodeField.val();
+	let validateUrl = applicationUrl + 'validate_create_dataset/' + newCodeField.val();
 
 	if (!isValidDatasetCodeFormat(newCodeField.val())) {
 		showFieldError(newCodeField, "Kood tohib sisaldada ainult tähti ja numbreid.");

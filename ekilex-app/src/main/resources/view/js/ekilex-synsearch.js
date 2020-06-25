@@ -18,10 +18,6 @@ function initializeSynSearch() {
 
 	});
 
-	$(document).on("click", ".popover-close-btn", function() {
-		$(this).parents(".popover").popover('hide');
-	});
-
 	$(document).on("click", "#layerCompleteBtn", function() {
 		let wordId = $(this).data('word-id');
 		setLayerComplete(wordId);
@@ -46,22 +42,22 @@ function initializeSynSearch() {
 		$("#syn_select_wait_" + id).show();
 		openWaitDlg();
 
-		let detailsUrl =  applicationUrl + "syn_worddetails/" + id;
+		let detailsUrl = applicationUrl + "syn_worddetails/" + id;
 		if (markedSynWordId != undefined) {
 			detailsUrl += '?markedSynWordId=' + markedSynWordId;
 		}
 
 		$.get(detailsUrl).done(function(data) {
-			let detailsDiv = $('#syn_details_div');
+			let detailsDiv = $('#syn-details-area');
 			detailsDiv.replaceWith(data);
 			$('.tooltip').remove();
 			closeWaitDlg();
 			$("#syn_select_wait_" + id).hide();
-			$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
+			$('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
 
 			$('.syn-stats-popover').popover({
-				template:'<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header" ></h3><button type="button" class="bnt btn-sm btn-outline-light border-0  popover-close-btn"><i class="fa fa-close" aria-hidden="true"></i></button></div><div class="popover-body"></div></div>',
-				placement:'top',
+				template: '<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header"></h3></div><div class="popover-body"></div></div>',
+				placement: 'top',
 				content: function() {
 					// Get the content from the hidden sibling.
 					return $(this).siblings('.syn-stats-content').html();
@@ -87,10 +83,10 @@ function initializeSynSearch() {
 			$(document).find('.droppable-meaning').droppable({
 				accept: function(draggableDiv) {
 					let draggableLexemeId = draggableDiv.closest('.droppable-lexeme').attr('data-lexeme-id');
-					let droppableLexemeId =  $(this).closest('.droppable-lexeme').attr('data-lexeme-id');
+					let droppableLexemeId = $(this).closest('.droppable-lexeme').attr('data-lexeme-id');
 
 					return draggableLexemeId === droppableLexemeId;
-					}
+				}
 				,
 				greedy: true,
 				classes: {
@@ -111,7 +107,7 @@ function initializeSynSearch() {
 					openWaitDlg();
 					postJson(applicationUrl + 'update_ordering', orderingData);
 					if (orderingBtn.hasClass('do-refresh')) {
-						refreshDetailsSynSearch();
+						refreshDetails();
 					}
 				}
 			});
@@ -142,7 +138,7 @@ function initializeSynSearch() {
 					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
 
 					openWaitDlg();
-					let callbackFunc = () => refreshDetailsSynSearch();
+					let callbackFunc = () => refreshDetails();
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
 			});
@@ -171,7 +167,7 @@ function initializeSynSearch() {
 		let id = $(this).data('id');
 		let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
 
-		let callbackFunc = () => refreshDetailsSynSearch();
+		let callbackFunc = () => refreshDetails();
 
 		doPostRelationChange(actionUrl, callbackFunc);
 
@@ -182,7 +178,7 @@ function initializeSynSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, -1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsSynSearch();
+			refreshDetails();
 		}
 	});
 
@@ -191,7 +187,7 @@ function initializeSynSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsSynSearch();
+			refreshDetails();
 		}
 	});
 
@@ -242,7 +238,101 @@ function initializeSynSearch() {
 		let dlg = $("#selectSynMeaningWordLangDlg");
 		validateAndSubmitLangSelectForm(dlg);
 	});
-};
+
+	$(document).on('click', '[name="pagingBtn"]', function() {
+		openWaitDlg();
+		let url = applicationUrl + "syn_paging";
+		let button = $(this);
+		let direction = button.data("direction");
+		let form = button.closest('form');
+		form.find('input[name="direction"]').val(direction);
+
+		$.ajax({
+			url: url,
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function (data) {
+			closeWaitDlg();
+			$('#synSearchResultsDiv').html(data);
+			$('#synSearchResultsDiv').parent().scrollTop(0);
+			$('#syn-details-area').empty();
+		}).fail(function (data) {
+			console.log(data);
+			closeWaitDlg();
+			openAlertDlg('Lehekülje muutmine ebaõnnestus');
+		});
+
+	});
+}
+
+function initAddSynRelationDlg(addDlg) {
+	addDlg.find('.form-control').val(null);
+	addDlg.find('[data-name=dialogContent]').html(null);
+
+	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		e.preventDefault();
+		let button = $(this);
+		let content = button.html();
+		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+		let theForm = $(this).closest('form');
+		let url = theForm.attr('action') + '?' + theForm.serialize();
+
+		$.get(url).done(function(data) {
+			addDlg.find('[data-name=dialogContent]').replaceWith(data);
+			let addRelationsBtn = addDlg.find('button[name="addRelationsBtn"]');
+
+			let idsChk = addDlg.find('input[name="ids"]');
+			idsChk.on('change', function() {
+				addRelationsBtn.prop('disabled', !idsChk.filter(":checked").length);
+			});
+
+			addRelationsBtn.off('click').on('click', function(e) {
+				e.preventDefault();
+				let selectRelationsForm = addRelationsBtn.closest('form');
+				if (checkRequiredFields(selectRelationsForm)) {
+					let url = applicationUrl + "create_relations/"
+					$.ajax({
+						url: url,
+						data: selectRelationsForm.serialize(),
+						method: 'POST',
+					}).done(function() {
+						addDlg.modal('hide');
+						refreshDetails();
+					}).fail(function(data) {
+						addDlg.modal('hide');
+						console.log(data);
+						openAlertDlg('Kandidaatide lisamine ebaõnnestus');
+					});
+				}
+			});
+
+			addDlg.find('#addSynRelationWord').on('click', function(e) {
+				e.preventDefault();
+				let button = $(e.target);
+				addDlg.find('[name=opCode]').val('create_syn_word');
+				let weightValue = $("#weightInput").val();
+				addDlg.find('[name=value2]').val(weightValue);
+
+				let theForm = button.closest('form');
+				if (checkRequiredFields(theForm)) {
+					submitForm(theForm, 'Keelendi lisamine ebaõnnestus.').always(function() {
+						addDlg.modal('hide');
+					});
+				}
+			});
+
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg('Viga!');
+		}).always(function() {
+			button.html(content);
+		});
+	});
+
+	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+		addDlg.find('.form-control').first().focus();
+	});
+}
 
 function validateAndSubmitLangSelectForm(dlg) {
 	let form = dlg.find('form');
@@ -253,14 +343,14 @@ function validateAndSubmitLangSelectForm(dlg) {
 			method: 'POST',
 		}).done(function() {
 			dlg.modal('hide');
-			refreshDetailsSynSearch();
+			refreshDetails();
 		}).fail(function(data) {
 			dlg.modal('hide');
 			console.log(data);
 			openAlertDlg('Viga! Keele valik ebaõnnestus');
 		});
 	}
-};
+}
 
 function activateSynCandidatesList() {
 	let activatedList = $('#synCandidatesListDiv');
@@ -269,7 +359,7 @@ function activateSynCandidatesList() {
 	itemToSelect.addClass('keyboard-nav-list-item-active');
 	itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 	changeSynonymDefinitionDisplay('show');
-};
+}
 
 function changeLexemeMeaningOrdering(target, delta) {
 	let orderBlock = target.closest('.orderable');
@@ -285,8 +375,8 @@ function changeLexemeMeaningOrdering(target, delta) {
 
 		let increment = delta > 0 ? -1 : 1;
 
-		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos) ; position += increment) {
-			let nextPos = delta > 0 ? position -1 : position + 1;
+		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos); position += increment) {
+			let nextPos = delta > 0 ? position - 1 : position + 1;
 			let nextOrderPos = $(items.get(nextPos)).attr('data-orderpos');
 			//TODO - remove debug if dragging works as expected
 			console.log($(items.get(position)).attr('data-orderpos') + ' -> ' + $(items.get(nextPos)).attr('data-orderpos'));
@@ -320,7 +410,7 @@ function changeLexemeMeaningOrdering(target, delta) {
 		items: orderedItems,
 		additionalInfo: additionalInfo
 	};
-};
+}
 
 function doPostRelationChange(actionUrl, callbackFunc) {
 
@@ -334,13 +424,13 @@ function doPostRelationChange(actionUrl, callbackFunc) {
 		openAlertDlg("Andmete muutmine ebaõnnestus.");
 		console.log(data);
 	});
-};
+}
 
 function setLayerComplete(wordId) {
 	let actionUrl = applicationUrl + "update_layer_complete/" + wordId;
-	let callbackFunc = () => refreshDetailsSynSearch();
+	let callbackFunc = () => refreshDetails();
 	doPostRelationChange(actionUrl, callbackFunc);
-};
+}
 
 function isDisabledItem(activeDiv, navigateItem) {
 	let panelIndex = activeDiv.attr('data-panel-index');
@@ -351,7 +441,7 @@ function isDisabledItem(activeDiv, navigateItem) {
 		return navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
 	}
 	return false;
-};
+}
 
 function unActivateItem(selectedItem, unSelect) {
 
@@ -363,7 +453,7 @@ function unActivateItem(selectedItem, unSelect) {
 			selectedItem.removeAttr(NAVIGATE_SELECTED_ATTR);
 		}
 	}
-};
+}
 
 function findSelectedNavigateItem(activeDiv) {
 	let selectedItem = activeDiv.find('[' + NAVIGATE_SELECTED_ATTR + ']');
@@ -373,10 +463,10 @@ function findSelectedNavigateItem(activeDiv) {
 	}
 
 	return selectedItem;
-};
+}
 
 function isValidPanelChangeKeyPress(keyCode) {
-	let synDetailsVisible = $("#syn_details_div").html() != '';
+	let synDetailsVisible = $("#syn-details-area").html() != '';
 
 	if (!synDetailsVisible) {
 		return false;
@@ -394,7 +484,7 @@ function isValidPanelChangeKeyPress(keyCode) {
 	}
 
 	return true;
-};
+}
 
 function isValidKeyboardModeKeypress(e) {
 	if (IS_KEYBOARD_MODE == false) {
@@ -412,7 +502,7 @@ function isValidKeyboardModeKeypress(e) {
 	}
 
 	return true;
-};
+}
 
 function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex) {
 	if (currentSelectedItem.length != 0) {
@@ -434,7 +524,7 @@ function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, curr
 			}
 		}
 	}
-};
+}
 
 function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
 	if (isValidPanelChangeKeyPress(e.keyCode)) {
@@ -478,7 +568,7 @@ function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
 			changeSynonymDefinitionDisplay('show');
 		}
 	}
-};
+}
 
 function handleEscapeKeyPress(currentActivePanelIndex) {
 	if (currentActivePanelIndex == "3") {
@@ -501,7 +591,7 @@ function handleEscapeKeyPress(currentActivePanelIndex) {
 	});
 	$('body').removeClass('keyboard-edit-mode-active');
 	IS_KEYBOARD_MODE = false;
-};
+}
 
 function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList) {
 	e.preventDefault();
@@ -537,7 +627,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 				let meaningId = currentSelectedItem.data('meaning-id');
 
 				let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-				let callbackFunc = () => refreshDetailsSynSearch();
+				let callbackFunc = () => refreshDetails();
 				doPostRelationChange(actionUrl, callbackFunc);
 
 			} else {
@@ -555,7 +645,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 		activateSynCandidatesList();
 
 	}
-};
+}
 
 function handleKeyPress(e) {
 	if (!isValidKeyboardModeKeypress(e)) {
@@ -585,7 +675,7 @@ function handleKeyPress(e) {
 	if (e.keyCode == 13) {
 		handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList);
 	}
-};
+}
 
 function getScrollPositions() {
 	let scrollPositions = [];
@@ -596,23 +686,23 @@ function getScrollPositions() {
 
 	})
 	return scrollPositions;
-};
+}
 
 function setScrollPositions(positions) {
 	$('.keyboard-nav-list').each(function(i) {
 		$(this).scrollTop(positions[i]);
 	})
-};
+}
 
 function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 	$('.tooltip').remove();
 	$('.keyboard-nav-list-item-active .list-item-value').tooltip(displayOption);
-};
+}
 
-function refreshDetailsSynSearch() {
-	let selectedWordId = $('#syn_details_div').data('id');
+function refreshDetails() {
+	let selectedWordId = $('#syn-details-area').data('id');
 	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
 
 	refreshButton.trigger('click');
 	refreshButton.parent().addClass('active');
-};
+}

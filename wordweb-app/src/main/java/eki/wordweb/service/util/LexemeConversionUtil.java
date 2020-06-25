@@ -16,7 +16,6 @@ import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
-import eki.common.data.OrderedMap;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
@@ -31,10 +30,6 @@ import eki.wordweb.data.TypeUsage;
 
 @Component
 public class LexemeConversionUtil extends AbstractConversionUtil {
-
-	public List<Lexeme> filterLexemes(List<Lexeme> lexemes, Complexity lexComplexity) {
-		return filterSimpleOnly(lexemes, lexComplexity);
-	}
 
 	public void sortLexemes(List<Lexeme> lexemes, DatasetType datasetType) {
 		if (CollectionUtils.isEmpty(lexemes)) {
@@ -80,7 +75,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	}
 
 	public void compose(
-			DatasetType datasetType,
 			String wordLang,
 			List<Lexeme> lexemes,
 			Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap,
@@ -89,11 +83,12 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			DataFilter dataFilter,
 			String displayLang) {
 
-		List<String> destinLangs = dataFilter.getDestinLangs();
-		Complexity lexComplexity = null;
-		if (DatasetType.LEX.equals(datasetType)) {
-			lexComplexity = dataFilter.getLexComplexity();
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
 		}
+
+		List<String> destinLangs = dataFilter.getDestinLangs();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
 
 		for (Lexeme lexeme : lexemes) {
 
@@ -106,33 +101,31 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
 			populateMeaning(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
 			populateRelatedMeanings(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, lexComplexity, displayLang);
+			setValueStateFlags(lexeme, wordLang);
 		}
 	}
 
 	private void populateLexeme(Lexeme lexeme, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
 
-		if (DatasetType.LEX.equals(lexeme.getDatasetType())) {
-			lexeme.setDatasetName(null);
-		}
 		lexeme.setSourceLangMeaningWords(new ArrayList<>());
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setCollocationPosGroups(new ArrayList<>());
 
-		List<TypeFreeform> publicNotes = lexeme.getLexemePublicNotes();
+		List<TypeFreeform> notes = lexeme.getLexemeNotes();
 		List<TypeFreeform> grammars = lexeme.getGrammars();
 		List<TypeFreeform> governments = lexeme.getGovernments();
 
-		List<TypeFreeform> filteredPublicNotes = filter(publicNotes, lexComplexity);
-		Map<String, List<TypeFreeform>> publicNotesByLangOrdered = null;
-		if (CollectionUtils.isNotEmpty(filteredPublicNotes)) {
-			Map<String, List<TypeFreeform>> publicNotesByLangUnordered = filteredPublicNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
-			publicNotesByLangOrdered = composeOrderedMap(publicNotesByLangUnordered, langOrderByMap);
+		List<TypeFreeform> filteredNotes = filter(notes, lexComplexity);
+		Map<String, List<TypeFreeform>> notesByLangOrdered = null;
+		if (CollectionUtils.isNotEmpty(filteredNotes)) {
+			Map<String, List<TypeFreeform>> notesByLangUnordered = filteredNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
 		}
 
-		lexeme.setLexemePublicNotes(filteredPublicNotes);
-		lexeme.setLexemePublicNotesByLang(publicNotesByLangOrdered);
+		lexeme.setLexemeNotes(filteredNotes);
+		lexeme.setLexemeNotesByLang(notesByLangOrdered);
 		lexeme.setGrammars(filter(grammars, lexComplexity));
-		lexeme.setGovernments(filterSimpleOnly(governments, lexComplexity));
+		lexeme.setGovernments(filter(governments, lexComplexity));
 
 		convertUrlsToHrefs(lexeme.getLexemeSourceLinks());
 
@@ -159,7 +152,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 
 		usages = filter(usages, wordLang, destinLangs);
-		usages = filterPreferred(usages, lexComplexity);
+		usages = filter(usages, lexComplexity);
 		lexeme.setUsages(usages);
 
 		for (TypeUsage usage : usages) {
@@ -219,7 +212,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningWords = meaningWords.stream().filter(meaningWord -> !meaningWord.getWordId().equals(lexeme.getWordId())).collect(Collectors.toList());
 		}
 		meaningWords = filter(meaningWords, wordLang, destinLangs);
-		meaningWords = filterSimpleOnly(meaningWords, lexComplexity);
+		meaningWords = filter(meaningWords, lexComplexity);
 
 		for (TypeMeaningWord meaningWord : meaningWords) {
 			String meaningWordLang = meaningWord.getLang();
@@ -268,7 +261,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
 			definitions = filter(definitions, wordLang, destinLangs);
-			definitions = filterPreferred(definitions, lexComplexity);
+			definitions = filter(definitions, lexComplexity);
 			applySourceLinks(definitions, allDefinitionSourceLinks);
 			lexeme.setDefinitions(definitions);
 			Map<String, List<TypeDefinition>> definitionsByLangUnordered = definitions.stream().collect(Collectors.groupingBy(TypeDefinition::getLang));
@@ -288,25 +281,25 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 					}
 					definition.setValuePrese(definitionValuePreseCut);
 				}
-				boolean subDataExists = CollectionUtils.isNotEmpty(definition.getPublicNotes()) || CollectionUtils.isNotEmpty(definition.getSourceLinks());
+				boolean subDataExists = CollectionUtils.isNotEmpty(definition.getNotes()) || CollectionUtils.isNotEmpty(definition.getSourceLinks());
 				definition.setSubDataExists(subDataExists);
 				definition.setOversizeValue(isOversizeValue);
 			});
 		}
 
-		List<TypeFreeform> publicNotes = tuple.getPublicNotes();
-		applySourceLinks(publicNotes, meaningFreeformSourceLinks);
-		Map<String, List<TypeFreeform>> publicNotesByLangOrdered = null;
-		if (CollectionUtils.isNotEmpty(publicNotes)) {
-			Map<String, List<TypeFreeform>> publicNotesByLangUnordered = publicNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
-			publicNotesByLangOrdered = composeOrderedMap(publicNotesByLangUnordered, langOrderByMap);
+		List<TypeFreeform> notes = tuple.getNotes();
+		applySourceLinks(notes, meaningFreeformSourceLinks);
+		Map<String, List<TypeFreeform>> notesByLangOrdered = null;
+		if (CollectionUtils.isNotEmpty(notes)) {
+			Map<String, List<TypeFreeform>> notesByLangUnordered = notes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
 		}
-		lexeme.setMeaningPublicNotes(publicNotes);
-		lexeme.setMeaningPublicNotesByLang(publicNotesByLangOrdered);
+		lexeme.setMeaningNotes(notes);
+		lexeme.setMeaningNotesByLang(notesByLangOrdered);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 
-		if (!Complexity.DETAIL.equals(lexComplexity)) {
+		if (Complexity.SIMPLE.equals(lexComplexity)) {
 			List<TypeImageFile> imageFiles = tuple.getImageFiles();
 			applySourceLinks(imageFiles, meaningFreeformSourceLinks);
 			lexeme.setImageFiles(imageFiles);
@@ -322,7 +315,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 		List<TypeMeaningRelation> relatedMeanings = tuple.getRelatedMeanings();
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
-			relatedMeanings = filterSimpleOnly(relatedMeanings, lexComplexity);
+			relatedMeanings = filter(relatedMeanings, lexComplexity);
 		}
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			for (TypeMeaningRelation meaningRelation : relatedMeanings) {
@@ -382,19 +375,19 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setMeaningWords(meaningWords);
 	}
 
-	private <T> OrderedMap<String, List<T>> composeOrderedMap(Map<String, List<T>> langKeyUnorderedMap, Map<String, Long> langOrderByMap) {
-		return langKeyUnorderedMap.entrySet().stream()
-				.sorted((entry1, entry2) -> {
-					Long orderBy1 = langOrderByMap.get(entry1.getKey());
-					Long orderBy2 = langOrderByMap.get(entry2.getKey());
-					if (orderBy1 == null) {
-						return 0;
-					}
-					if (orderBy2 == null) {
-						return 0;
-					}
-					return orderBy1.compareTo(orderBy2);
-				})
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue, OrderedMap::new));
+	private void setValueStateFlags(Lexeme lexeme, String wordLang) {
+
+		DatasetType datasetType = lexeme.getDatasetType();
+		if (DatasetType.TERM.equals(datasetType)) {
+			List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
+			String valueStateCode = lexeme.getValueStateCode();
+			if (StringUtils.equals(valueStateCode, VALUE_STATE_LEAST_PREFERRED)) {
+				TypeMeaningWord preferredTermMeaningWord = meaningWords.stream()
+						.filter(meaningWord -> StringUtils.equals(VALUE_STATE_MOST_PREFERRED, meaningWord.getMwLexValueStateCode()) && StringUtils.equals(wordLang, meaningWord.getLang()))
+						.findFirst().orElse(null);
+				lexeme.setPreferredTermMeaningWord(preferredTermMeaningWord);
+			}
+		}
 	}
+
 }

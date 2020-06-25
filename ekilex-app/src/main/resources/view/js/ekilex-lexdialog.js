@@ -85,6 +85,16 @@ $(function(){
 		alignAndFocus(e, $(this));
 	});
 	
+	$(document).on("show.bs.modal", "[id^=addWordNoteDlg_]", function(e) {
+		initEkiEditorDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+	
+	$(document).on("show.bs.modal", "[id^=editWordNoteDlg_]", function(e) {
+		initEkiEditorDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+	
 	$(document).on("show.bs.modal", "[id^=addWordVocalFormDlg_]", function() {
 		initGenericTextEditDlg($(this));
 	});

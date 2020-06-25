@@ -103,14 +103,12 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		updateCountMap.put(WORD_ETYMOLOGY_RELATION, new Count());
 		updateCountMap.put(WORD_GROUP_MEMBER, new Count());
 		updateCountMap.put(WORD_LIFECYCLE_LOG, new Count());
-		updateCountMap.put(WORD_PROCESS_LOG, new Count());
 		updateCountMap.put(WORD_RELATION, new Count());
 		updateCountMap.put(MEANING_FREEFORM, new Count());
 		updateCountMap.put(MEANING_NR, new Count());
 		updateCountMap.put(MEANING_DOMAIN, new Count());
 		updateCountMap.put(MEANING_SEMANTIC_TYPE, new Count());
 		updateCountMap.put(MEANING_LIFECYCLE_LOG, new Count());
-		updateCountMap.put(MEANING_PROCESS_LOG, new Count());
 		updateCountMap.put(MEANING_RELATION, new Count());
 		updateCountMap.put(DEFINITION, new Count());
 		updateCountMap.put(LEXEME, new Count());
@@ -234,7 +232,6 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		moveData("related_word_id", targetWordId, sourceMergingWordIds, WORD_ETYMOLOGY_RELATION, new String[] {"word_etym_id"}, updateCountMap);
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_GROUP_MEMBER, new String[] {"word_group_id"}, updateCountMap);
 		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_LIFECYCLE_LOG, null, updateCountMap);
-		moveData("word_id", targetWordId, sourceMergingWordIds, WORD_PROCESS_LOG, null, updateCountMap);
 		moveWordRelations(targetWordId, sourceMergingWordIds, updateCountMap);
 	}
 
@@ -467,7 +464,6 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		moveData("meaning_id", targetMeaningId, sourceMeaningIds, MEANING_DOMAIN, new String[] {"domain_origin", "domain_code"}, updateCountMap);
 		moveData("meaning_id", targetMeaningId, sourceMeaningIds, MEANING_SEMANTIC_TYPE, new String[] {"semantic_type_code"}, updateCountMap);
 		moveData("meaning_id", targetMeaningId, sourceMeaningIds, MEANING_LIFECYCLE_LOG, null, updateCountMap);
-		moveData("meaning_id", targetMeaningId, sourceMeaningIds, MEANING_PROCESS_LOG, null, updateCountMap);
 		moveData("meaning_id", targetMeaningId, sourceMeaningIds, DEFINITION, new String[] {"value", "complexity"}, updateCountMap);
 		moveMeaningRelations(targetMeaningId, sourceMeaningIds, updateCountMap);
 	}

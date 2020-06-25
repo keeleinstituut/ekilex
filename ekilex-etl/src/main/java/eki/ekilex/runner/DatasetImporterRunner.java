@@ -55,10 +55,6 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 	private static final String DATASET_TYPE_COMPENSATION = DatasetType.TERM.name();
 
-	private static final String LEXEME_COMPLEXITY_COMPENSATION = Complexity.DEFAULT.name();
-
-	private static final String LEXEME_TYPE_COMPENSATION = LexemeType.PRIMARY.name();
-
 	private static final String IMPORT_PK_MAP = "temp_ds_import_pk_map";
 
 	private static final String IMPORT_QUEUE = "temp_ds_import_queue";
@@ -560,13 +556,6 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		if (StringUtils.equalsIgnoreCase(DATASET, tableName)) {
 			if (!dataMapCopy.containsKey("type") && tableColumnsMap.containsKey("type")) {
 				dataMapCopy.put("type", DATASET_TYPE_COMPENSATION);
-			}
-		} else if (StringUtils.equalsIgnoreCase(LEXEME, tableName)) {
-			if (!dataMapCopy.containsKey("complexity") && tableColumnsMap.containsKey("complexity")) {
-				dataMapCopy.put("complexity", LEXEME_COMPLEXITY_COMPENSATION);
-			}
-			if (!dataMapCopy.containsKey("type") && tableColumnsMap.containsKey("type")) {
-				dataMapCopy.put("type", LEXEME_TYPE_COMPENSATION);
 			}
 		} else if (StringUtils.equalsIgnoreCase(DEFINITION, tableName)) {
 			String definitionValuePrese = (String) dataMap.get("value_prese");

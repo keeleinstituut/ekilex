@@ -63,37 +63,9 @@
                 </form>
               </div>
               <div sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
-                <span class="text-secondary mr-1"> Logid </span>
-                <div class="btn-group ">
-                  <a th:href="@{'/wordprocesslog:' + ${wordId}}" data-toggle="modal"
-                     data-target="#processLogDlg"
-                     class="btn btn-secondary btn-compact position-relative pr-1">
-                    <span class="d-block" data-toggle="tooltip" title="Vaata kommentaare">
-                      Kommentaarid
-                      <span class="badge badge-counter" th:text="${details.wordProcessLogCount}"
-                            th:classappend="${details.wordProcessLogCount > 0} ? 'badge-danger' : 'badge-secondary'">0</span>
-                    </span>
-                  </a>
-                  <button type="button" class="btn btn-secondary btn-compact px-0"
-                          data-toggle="modal"
-                          th:data-target="${'#addWordProcessLogDlg_' + wordId}"
-                          sec:authorize="#vars.details.word.crudGrant">
-                    <i class="action-icon fa fa-plus px-2 d-block" aria-hidden="true" title="Lisa kommentaar" data-toggle="tooltip"></i>
-                  </button>
-                </div>
-                <div id="processLogDlg" class="modal" role="dialog">
-                  <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                      </div>
-                      <div class="modal-body" style="max-height: 90vh; overflow-y: auto;"></div>
-                    </div>
-                  </div>
-                </div>
                 <a th:href="@{'/wordlifecyclelog:' + ${wordId}}" data-toggle="modal"
                    data-target="#wordLifecycleLogDlg"
-                   class="btn btn-secondary btn-compact ml-2">Tegevused</a>
+                   class="btn btn-secondary btn-compact ml-2">Tegevuste logi</a>
                 <div id="wordLifecycleLogDlg" class="modal" role="dialog">
                   <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
@@ -130,12 +102,12 @@
             <div class="col-4 border-left border-light h-100 overflow-auto">
               <div th:replace="lexdialog :: add_word_relation_dlg"></div>
               <div th:replace="lexdialog :: add_od_word_recommendation_dlg"></div>
+              <div th:replace="lexdialog :: add_word_note_dlg"></div>
               <div th:replace="lexdialog :: add_word_lang_dlg"></div>
               <div th:replace="lexdialog :: add_word_gender_dlg"></div>
               <div th:replace="lexdialog :: add_word_type_dlg"></div>
               <div th:replace="lexdialog :: add_word_aspect_dlg"></div>
               <div th:replace="lexdialog :: add_word_vocal_form_dlg"></div>
-              <div th:replace="lexdialog :: add_word_process_log_dlg"></div>
               <div th:replace="lexdialog :: edit_word_value_dlg"></div>
               <div th:replace="lexdialog :: edit_word_lang_dlg"></div>
               <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
@@ -150,7 +122,7 @@
                           sec:authorize="#vars.details.word.crudGrant">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <div th:each="odWordRecommendation, itemIter : ${details.odWordRecommendations}">
+                  <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
                     <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
                     <div class="col hidden-buttons pr-5">
                       <div class="action-buttons-anchor">
@@ -167,6 +139,42 @@
                           <button type="button" class="btn badge badge-warning"
                                   th:data-id="${odWordRecommendation.id}"
                                   data-op-code="od_word_recommendation"
+                                  data-toggle="delete-confirm"
+                                  data-placement="right"
+                                  sec:authorize="#vars.details.word.crudGrant">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <hr/>
+                </div>
+                <div class="card-body pt-0 pb-0">
+                  <span class="lbl">Keelendi märkused</span>
+                  <button type="button" class="btn badge badge-success"
+                          title="Lisa uus" data-toggle="modal"
+                          th:data-target="${'#addWordNoteDlg_' + wordId}"
+                          sec:authorize="#vars.details.word.crudGrant">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                  <div th:each="note : ${details.word.notes}">
+                    <div th:replace="lexdialog :: edit_word_note_dlg"></div>
+                    <div class="col hidden-buttons pr-5">
+                      <div class="action-buttons-anchor">
+                        <span th:utext="${note.valuePrese}"></span>
+                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
+                        <div class="action-buttons-2">
+                          <button type="button" class="btn badge badge-primary"
+                                  title="Muuda"
+                                  data-toggle="modal"
+                                  th:data-target="${'#editWordNoteDlg_' + note.id}"
+                                  sec:authorize="#vars.details.word.crudGrant">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-id="${note.id}"
+                                  data-op-code="word_note"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
                                   sec:authorize="#vars.details.word.crudGrant">

@@ -16704,9 +16704,9 @@ body.hidden-scroll {
 @media (max-width: 767.98px) {
   .homonym-list {
     display: none;
+    margin-top: -24px;
     border: 3px solid #8a98a5;
     border-radius: 10px;
-    margin-top: -24px;
   }
   .homonym-list.expand {
     display: block;
@@ -16909,7 +16909,7 @@ body.hidden-scroll {
   display: inline-block;
   -webkit-box-flex: 0;
   flex: 0 0 auto;
-  width: 24px;
+  min-width: 24px;
   height: 20px;
   padding: 2px 5px 3px;
   overflow: visible;
@@ -17017,6 +17017,10 @@ body.hidden-scroll {
   font-style: italic;
 }
 
+.example-text .example-text-value {
+  white-space: normal;
+}
+
 .example-sentence-wrap .example-text {
   padding-left: .5rem;
   margin-left: .5rem;
@@ -17087,7 +17091,7 @@ body.hidden-scroll {
   display: inline-block;
 }
 
-.colloc-row .colloc-member:last-child::after {
+.colloc-row .colloc-member:last-of-type::after {
   display: none;
 }
 
@@ -17571,13 +17575,21 @@ body {
 }
 
 .menu-btn {
-  padding-right: 50px;
   font-size: 1.25rem;
 }
 
-.menu-btn > .icon {
-  position: absolute;
-  right: 10px;
+@media (min-width: 768px) {
+  .menu-btn {
+    padding-right: 50px;
+  }
+}
+
+@media (min-width: 768px) {
+  .menu-btn > .icon {
+    position: absolute;
+    top: 2px;
+    right: 10px;
+  }
 }
 
 .menu-btn:hover > .icon {
@@ -17781,13 +17793,6 @@ body {
 
 .label-md {
   color: #7f8891;
-}
-
-.homonym-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  margin: 0 auto;
 }
 
 /* Custome Response */
@@ -18350,6 +18355,18 @@ body {
   transition: transform ease-in-out .32s, -webkit-transform ease-in-out .32s;
 }
 
+.btn-ellipsis .collapse-icon {
+  margin-bottom: 2px;
+}
+
+.btn-ellipsis.collapsing {
+  text-decoration: none;
+}
+
+.btn-ellipsis.show {
+  display: none !important;
+}
+
 .tag {
   padding: 0 8px;
   margin-right: .25rem;
@@ -18494,8 +18511,79 @@ eki-link {
   width: 30%;
 }
 
-.etymology-tree {
-  /* add styles here */
+.etymology-tree .lang-code {
+  position: relative;
+  z-index: 1;
+}
+
+.etymology-tree .etymology-tree {
+  position: relative;
+}
+
+.etymology-tree .etymology-tree::before {
+  position: absolute;
+  display: block;
+  content: "";
+  top: -12px;
+  left: 12px;
+  height: 24px;
+  border-left: 1px solid #ccd9e0;
+}
+
+.etymology-tree .etymology-tree li {
+  position: relative;
+  padding-left: 24px;
+}
+
+.etymology-tree .etymology-tree li::before, .etymology-tree .etymology-tree li::after {
+  position: absolute;
+  display: block;
+  content: "";
+}
+
+.etymology-tree .etymology-tree li::before {
+  position: absolute;
+  display: block;
+  top: 12px;
+  left: 12px;
+  height: 100%;
+  border-left: 1px solid #ccd9e0;
+}
+
+.etymology-tree .etymology-tree li::after {
+  top: 12px;
+  left: 12px;
+  width: 24px;
+  border-top: 1px solid #ccd9e0;
+}
+
+.etymology-tree .etymology-tree li:last-child::before {
+  top: -11px;
+  height: 24px;
+}
+
+.etymology-tree li div {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-flow: row nowrap;
+  position: relative;
+}
+
+.etymology-tree li div::before {
+  content: "";
+  display: block;
+  width: 1px;
+  border-left: 1px solid #ccd9e0;
+  left: 12px;
+  top: 0;
+  height: 100%;
+  position: absolute;
+}
+
+.etymology-tree li div:last-child::before {
+  display: none;
 }
 
 @media (min-width: 768px) {
@@ -18512,5 +18600,14 @@ eki-link {
 .morphology-section.collapse {
   max-height: 155px;
   overflow: hidden;
+}
+
+.homonym-image {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  margin: 0 auto;
+  -o-object-fit: contain;
+  object-fit: contain;
 }
 /*# sourceMappingURL=styles.css.map */

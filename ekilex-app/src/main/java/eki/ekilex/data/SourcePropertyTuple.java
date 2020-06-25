@@ -2,8 +2,6 @@ package eki.ekilex.data;
 
 import java.sql.Timestamp;
 
-import javax.persistence.Column;
-
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
@@ -12,25 +10,18 @@ public class SourcePropertyTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "source_id")
 	private Long sourceId;
 
-	@Column(name = "type")
-	private SourceType type;
+	private SourceType sourceType;
 
-	@Column(name = "source_property_id")
 	private Long sourcePropertyId;
 
-	@Column(name = "source_property_type")
 	private FreeformType sourcePropertyType;
 
-	@Column(name = "source_property_value_text")
 	private String sourcePropertyValueText;
 
-	@Column(name = "source_property_value_date")
 	private Timestamp sourcePropertyValueDate;
 
-	@Column(name = "is_source_property_match")
 	private boolean sourcePropertyMatch;
 
 	public Long getSourceId() {
@@ -41,12 +32,12 @@ public class SourcePropertyTuple extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
-	public SourceType getType() {
-		return type;
+	public SourceType getSourceType() {
+		return sourceType;
 	}
 
-	public void setType(SourceType type) {
-		this.type = type;
+	public void setSourceType(SourceType type) {
+		this.sourceType = type;
 	}
 
 	public Long getSourcePropertyId() {

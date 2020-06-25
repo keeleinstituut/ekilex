@@ -120,7 +120,7 @@
           <table class="table table-striped mb-0">
             <tr th:each="source : ${sourcesFoundBySearch}">
               <td>
-                <button type="button" class="btn btn-primary float-right btn-sm mr-2" th:data-source-id="${source.sourceId}">Lisa</button>
+                <button type="button" class="btn btn-primary float-right btn-sm mr-2" th:data-source-id="${source.id}">Lisa</button>
                 <div th:text="${source.sourceNames.get(0)}" th:if="${not #lists.isEmpty(source.sourceNames)}"></div>
               </td>
             </tr>
@@ -130,79 +130,6 @@
     </div>
     <div class="card" th:if="${#lists.isEmpty(sourcesFoundBySearch)}">
       <div th:text="#{person.search.not.found}" class="card-body">Not found.</div>
-    </div>
-  </div>
-  <div data-name="dialogContent" th:fragment="syn_word_search_result">
-    <div class="card">
-      <div class="card-body p-2">
-        <div class="form-group row">
-          <div class="col-md-4 ml-2">
-            <label>Kandidaadi kaal</label>
-            <input id="weightInput" type="number" min="0" max="0.9" step=".1" class="form-control required-field required-range" value="0.7">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
-      <div class="card-body p-2">
-        <span th:text="${'Kokku leiti : ' + totalCount}"></span>
-        <div style="max-height: 70vh; overflow: auto;">
-          <table class="table table-striped mb-0">
-            <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${existingIds != null && #lists.contains(existingIds, word.wordId)}">
-              <td class="p-0" style="line-height: 0.6rem;">
-                <div class="btn btn-custom pt-0">
-                  <span th:utext="${viewUtil.getWordValueMarkup(word)}" class="ttl">vorm 1</span>
-                  <span th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
-                  <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
-                </div>
-                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2" th:data-word-id="${word.wordId}"
-                        th:disabled="${wordExists}" th:title="${wordExists ? 'Keelend on juba sünonüümide hulgas' : ''}">Lisa</button>
-                <div class="ml-3 mb-2" style="margin-top: -6px;">
-                  <small>
-                    <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
-                  </small>
-                </div>
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
-      <div th:text="#{common.not.found}" class="card-body">Not found.</div>
-    </div>
-    <div class="card">
-      <div class="card-body p-2">
-        <div class="form-group row">
-          <div class="col-md-9 ml-2">
-            <div th:text="${sessionBean.userRole.datasetName}"></div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-9 ml-2">
-            <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
-              <option value="" selected disabled>vali keel...</option>
-              <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-9 ml-2">
-            <select required class="form-control required-field" name="itemType">
-              <option value="" selected disabled>vali kood...</option>
-              <option th:each="morphCode : ${wordMorphCodes}" th:value="${morphCode.code}" th:text="${morphCode.value}" th:selected="${morphCode.code == selectedWordMorphCode}">morphCode</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-6 ml-2">
-            <input class="form-control required-field" readonly name="value" th:value="${searchedWord}"/>
-          </div>
-          <div class="col-md-3">
-            <button type="button" id="addSynRelationWord" class="btn btn-sm btn-success" data-btn-menu>Lisa uus keelend</button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
   <div class="form-group row eki-editor" th:fragment="eki_editor_elem(showButtons)">

@@ -1,6 +1,5 @@
 drop materialized view if exists mview_ww_word_search;
 drop materialized view if exists mview_ww_word;
-drop materialized view if exists mview_ww_as_word;--remove later
 drop materialized view if exists mview_ww_form;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
@@ -13,18 +12,13 @@ drop materialized view if exists mview_ww_lexeme_relation;
 drop materialized view if exists mview_ww_meaning_relation;
 drop materialized view if exists mview_ww_word_etym_source_link;
 drop materialized view if exists mview_ww_lexeme_source_link;
-drop materialized view if exists mview_ww_freeform_source_link;--remove later
 drop materialized view if exists mview_ww_lexeme_freeform_source_link;
 drop materialized view if exists mview_ww_meaning_freeform_source_link;
 drop materialized view if exists mview_ww_definition_source_link;
 
 drop type if exists type_meaning_word;
 drop type if exists type_freeform;
-drop type if exists type_public_note;--remove later
-drop type if exists type_grammar;--remove later
-drop type if exists type_government;--remove later
 drop type if exists type_lang_complexity;
-drop type if exists type_word;--remove later
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_image_file;
@@ -51,7 +45,7 @@ create type type_definition as (
 				value_prese text,
 				lang char(3),
 				complexity varchar(100),
-				public_notes text array);
+				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_image_file as (freeform_id bigint, image_file text, image_title text);
 create type type_source_link as (
@@ -75,8 +69,21 @@ create type type_usage as (
 				usage_definitions text array,
 				od_usage_definitions text array,
 				od_usage_alternatives text array);
-create type type_freeform as (freeform_id bigint, type varchar(100), value text, lang char(3), complexity varchar(100));
-create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
+create type type_freeform as (
+				freeform_id bigint,
+				type varchar(100),
+				value text,
+				lang char(3),
+				complexity varchar(100));
+create type type_colloc_member as (
+				lexeme_id bigint,
+				word_id bigint,
+				word text,
+				form text,
+				homonym_nr integer,
+				word_exists boolean,
+				conjunct varchar(100),
+				weight numeric(14,4));
 create type type_meaning_word as (
 				lexeme_id bigint,
 				meaning_id bigint,
@@ -93,7 +100,12 @@ create type type_meaning_word as (
 				lang char(3),
 				word_type_codes varchar(100) array,
 				aspect_code varchar(100));
-create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
+create type type_word_etym_relation as (
+				word_etym_rel_id bigint,
+				comment text,
+				is_questionable boolean,
+				is_compound boolean,
+				related_word_id bigint);
 create type type_word_relation as (
 				word_group_id bigint,
 				word_rel_type_code varchar(100),
@@ -105,15 +117,15 @@ create type type_word_relation as (
 				word_type_codes varchar(100) array,
 				lex_complexities varchar(100) array);
 create type type_lexeme_relation as (
-                lexeme_id bigint,
-                word_id bigint,
-                word text,
-                word_prese text,
-                homonym_nr integer,
-                lang char(3),
-                word_type_codes varchar(100) array,
-                complexity varchar(100),
-                lex_rel_type_code varchar(100));
+				lexeme_id bigint,
+				word_id bigint,
+				word text,
+				word_prese text,
+				homonym_nr integer,
+				lang char(3),
+				word_type_codes varchar(100) array,
+				complexity varchar(100),
+				lex_rel_type_code varchar(100));
 create type type_meaning_relation as (
 				meaning_id bigint,
 				word_id bigint,
@@ -140,6 +152,7 @@ dblink(
 	unacrit text,
 	lang_order_by bigint,
 	lang_complexities type_lang_complexity array,
+	detail_exists boolean,
 	simple_exists boolean
 );
 
@@ -207,7 +220,7 @@ dblink(
 	systematic_polysemy_patterns text array,
 	semantic_types text array,
 	learner_comments text array,
-	public_notes type_freeform array,
+	notes type_freeform array,
 	definitions type_definition array
 );
 
@@ -236,7 +249,7 @@ dblink(
 	deriv_codes varchar(100) array,
 	meaning_words type_meaning_word array,
 	advice_notes text array,
-	public_notes type_freeform array,
+	notes type_freeform array,
 	grammars type_freeform array,
 	governments type_freeform array,
 	usages type_usage array,
@@ -389,6 +402,7 @@ create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
 create index mview_ww_word_search_crit_lower_prefix_idx on mview_ww_word_search (lower(crit) text_pattern_ops);
 create index mview_ww_word_search_unacrit_tri_idx on mview_ww_word_search using gin(unacrit gin_trgm_ops);
+create index mview_ww_word_search_detail_exists_idx on mview_ww_word_search (detail_exists);
 create index mview_ww_word_search_simple_exists_idx on mview_ww_word_search (simple_exists);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_value_idx on mview_ww_word (word);

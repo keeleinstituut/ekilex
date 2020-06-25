@@ -30,8 +30,6 @@ public interface WebConstant {
 
 	String COMPONENT_URI = "/comp";
 
-	String REST_SERVICES_URI = "/data";
-
 	String VIEW_RESOURCES_URI = "/view";
 
 	String LEX_SEARCH_PAGE = "lexsearch";
@@ -73,6 +71,10 @@ public interface WebConstant {
 	String MEANING_REL_SELECT_PAGE = "meaningrelselect";
 
 	String UPDATE_MEANING_REL_PREFS_URI = "/update_meaning_rel_prefs";
+
+	String UPDATE_TAG_PREFS_URI = "/update_tag_prefs";
+
+	String GENERATE_API_KEY = "/generate_api_key";
 
 	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";
 
@@ -142,10 +144,6 @@ public interface WebConstant {
 
 	String PROCESS_LOG_VIEW_PAGE = "processlogview";
 
-	String CREATE_WORD_PROCESS_LOG_URI = "/create_word_process_log";
-
-	String CREATE_MEANING_PROCESS_LOG_URI = "/create_meaning_process_log";
-
 	String SOURCEVIEW_PAGE = "sourceview";
 
 	String ERROR_PAGE = "error";
@@ -192,7 +190,7 @@ public interface WebConstant {
 
 	String DELETE_SOURCE_PROPERTY_URI = "/delete_source_property";
 
-	String UPDATE_SOURCE_TYPE_URI = "/update_source_type";
+	String UPDATE_SOURCE_URI = "/update_source";
 
 	String CREATE_SOURCE_URI = "/create_source";
 
@@ -231,6 +229,10 @@ public interface WebConstant {
 	String SYN_SEARCH_PAGE = "synsearch";
 
 	String SYN_SEARCH_URI = "/synsearch";
+
+	String SYN_PAGING_URI = "/syn_paging";
+
+	String SYN_COMPONENTS_PAGE = "syncomp";
 
 	String SYN_WORD_DETAILS_URI = "/syn_worddetails";
 

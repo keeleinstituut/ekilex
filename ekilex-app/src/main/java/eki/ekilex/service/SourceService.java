@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -64,8 +65,8 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public String getSourcePropertyValue(Long sourcePropertyId) {
-		return sourceDbService.getSourcePropertyValue(sourcePropertyId);
+	public SourceProperty getSourceProperty(Long sourcePropertyId) {
+		return sourceDbService.getSourceProperty(sourcePropertyId);
 	}
 
 	@Transactional
@@ -108,7 +109,7 @@ public class SourceService extends AbstractService {
 			return new ArrayList<>();
 		}
 		SourceType sourceType = excludedSource.getType();
-		Long excludedSourceId = excludedSource.getSourceId();
+		Long excludedSourceId = excludedSource.getId();
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
 		List<Source> sources = convert(sourcePropertyTuples);
 		permCalculator.applyCrud(sources, userRole);
@@ -151,8 +152,10 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateSourceProperty(Long sourcePropertyId, FreeformType type, String valueText) {
+	public void updateSourceProperty(Long sourcePropertyId, String valueText) {
 
+		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+		FreeformType type = sourceProperty.getType();
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId, valueText);
 		createLifecycleLog(logData);
@@ -160,8 +163,10 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteSourceProperty(Long sourcePropertyId, FreeformType type) {
+	public void deleteSourceProperty(Long sourcePropertyId) {
 
+		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+		FreeformType type = sourceProperty.getType();
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId);
 		createLifecycleLog(logData);
@@ -169,7 +174,7 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateSourceType(Long sourceId, SourceType type) {
+	public void updateSource(Long sourceId, SourceType type) {
 
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, type.name());
 		createLifecycleLog(logData);
@@ -212,7 +217,6 @@ public class SourceService extends AbstractService {
 
 		List<Source> sources = new ArrayList<>();
 		Map<Long, Source> sourceMap = new HashMap<>();
-		Map<Long, SourceProperty> sourcePropertyMap = new HashMap<>();
 
 		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
 
@@ -225,36 +229,31 @@ public class SourceService extends AbstractService {
 
 			Source source = sourceMap.get(sourceId);
 			if (source == null) {
-				SourceType type = tuple.getType();
 				source = new Source();
-				source.setSourceId(sourceId);
-				source.setType(type);
-				source.setSourceNames(new ArrayList<>());
+				source.setId(sourceId);
+				source.setType(tuple.getSourceType());
 				source.setSourceProperties(new ArrayList<>());
-				sourceMap.put(sourceId, source);
 				sources.add(source);
+				sourceMap.put(sourceId, source);
 			}
 
-			SourceProperty sourceProperty = sourcePropertyMap.get(sourcePropertyId);
-
-			if (sourceProperty == null) {
-				sourceProperty = new SourceProperty();
-				sourceProperty.setId(sourcePropertyId);
-				sourceProperty.setType(sourcePropertyType);
-				sourceProperty.setValueText(sourcePropertyValueText);
-				sourceProperty.setValueDate(sourcePropertyValueDate);
-				sourceProperty.setValueMatch(sourcePropertyMatch);
-				sourcePropertyMap.put(sourcePropertyId, sourceProperty);
-			}
-
-			if (FreeformType.SOURCE_NAME.equals(sourcePropertyType)) {
-				source.getSourceNames().add(sourcePropertyValueText);
-				source.getSourceProperties().add(0, sourceProperty);
-			} else {
-				source.getSourceProperties().add(sourceProperty);
-			}
-
+			SourceProperty sourceProperty = new SourceProperty();
+			sourceProperty.setId(sourcePropertyId);
+			sourceProperty.setType(sourcePropertyType);
+			sourceProperty.setValueText(sourcePropertyValueText);
+			sourceProperty.setValueDate(sourcePropertyValueDate);
+			sourceProperty.setValueMatch(sourcePropertyMatch);
+			source.getSourceProperties().add(sourceProperty);
 		}
+
+		sources.forEach(source -> {
+			List<SourceProperty> sourceProperties = source.getSourceProperties();
+			List<String> sourceNames = sourceProperties.stream()
+					.filter(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()))
+					.map(SourceProperty::getValueText)
+					.collect(Collectors.toList());
+			source.setSourceNames(sourceNames);
+		});
 		return sources;
 	}
 

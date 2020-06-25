@@ -23,10 +23,10 @@ import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
-import eki.ekilex.data.DefSourceAndPublicNoteSourceTuple;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
@@ -54,10 +54,10 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LifecycleLogDbService;
-import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
@@ -65,9 +65,6 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
-	
-	@Autowired
-	private ProcessDbService processDbService;
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
@@ -100,7 +97,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
-		Integer wordProcessLogCount = processDbService.getLogCountForWord(wordId);
+		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
+		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
+		permCalculator.filterVisibility(wordNotes, userRole);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
@@ -110,6 +109,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 
 		WordDetails wordDetails = new WordDetails();
+		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setParadigms(paradigms);
@@ -118,7 +118,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setWordGroups(wordGroups);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
-		wordDetails.setWordProcessLogCount(wordProcessLogCount);
 		wordDetails.setLastChangedOn(latestLogEventTime);
 
 		return wordDetails;
@@ -150,7 +149,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchFilter)) {
-			WordsResult words = getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET);
+			WordsResult words = getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				for (Word word : words.getWords()) {
 					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -184,10 +183,10 @@ public class LexSearchService extends AbstractWordSearchService {
 			WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUser user, EkiUserProfile userProfile, boolean isFullData) throws Exception {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {
-				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.PUBLIC_NOTE.name()};
+				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
-				FreeformType.PUBLIC_NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
+				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
@@ -213,11 +212,11 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		if (isFullData) {
 
-			List<DefSourceAndPublicNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndPublicNoteSourceTuples(meaningId);
+			List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
 			conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 			for (Definition definition : definitions) {
-				List<DefinitionNote> definitionPublicNotes = definition.getPublicNotes();
-				permCalculator.filterVisibility(definitionPublicNotes, userId);
+				List<DefinitionNote> definitionNotes = definition.getNotes();
+				permCalculator.filterVisibility(definitionNotes, userId);
 			}
 			List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 			List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
@@ -227,10 +226,10 @@ public class LexSearchService extends AbstractWordSearchService {
 			permCalculator.applyCrud(usages, userRole);
 			permCalculator.filterVisibility(usages, userId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
-			List<NoteSourceTuple> lexemePublicNoteSourceTuples = commonDataDbService.getLexemePublicNoteSourceTuples(lexemeId);
-			List<LexemeNote> lexemePublicNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemePublicNoteSourceTuples);
-			permCalculator.filterVisibility(lexemePublicNotes, userId);
-			List<NoteLangGroup> lexemePublicNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemePublicNotes, languagesOrder);
+			List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
+			List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
+			permCalculator.filterVisibility(lexemeNotes, userId);
+			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
 			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
 			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
@@ -238,15 +237,16 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
 			List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
 			List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
+			List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 
 			List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 			List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 			List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 			List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
-			List<NoteSourceTuple> meaningPublicNoteSourceTuples = commonDataDbService.getMeaningPublicNoteSourceTuples(meaningId);
-			List<MeaningNote> meaningPublicNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningPublicNoteSourceTuples);
-			permCalculator.filterVisibility(meaningPublicNotes, userId);
-			List<NoteLangGroup> meaningPublicNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningPublicNotes, languagesOrder);
+			List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
+			List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
+			permCalculator.filterVisibility(meaningNotes, userRole);
+			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
 			List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, classifierLabelLang, classifierLabelTypeDescrip);
@@ -257,18 +257,19 @@ public class LexSearchService extends AbstractWordSearchService {
 			lexeme.setGrammars(grammars);
 			lexeme.setUsages(usages);
 			lexeme.setLexemeFreeforms(lexemeFreeforms);
-			lexeme.setLexemePublicNoteLangGroups(lexemePublicNoteLangGroups);
+			lexeme.setLexemeNoteLangGroups(lexemeNoteLangGroups);
 			lexeme.setOdLexemeRecommendations(odLexemeRecommendations);
 			lexeme.setLexemeRelations(lexemeRelations);
 			lexeme.setSourceLinks(lexemeSourceLinks);
 			lexeme.setCollocationPosGroups(collocationPosGroups);
 			lexeme.setSecondaryCollocations(secondaryCollocations);
+			lexeme.setTags(tags);
 
 			permCalculator.applyCrud(meaning, userRole);
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLearnerComments(meaningLearnerComments);
 			meaning.setImages(meaningImages);
-			meaning.setPublicNoteLangGroups(meaningPublicNoteLangGroups);
+			meaning.setNoteLangGroups(meaningNoteLangGroups);
 			meaning.setSemanticTypes(meaningSemanticTypes);
 			meaning.setRelations(meaningRelations);
 			meaning.setViewRelations(viewMeaningRelations);

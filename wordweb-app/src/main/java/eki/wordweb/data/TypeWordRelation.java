@@ -1,5 +1,7 @@
 package eki.wordweb.data;
 
+import java.util.List;
+
 import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
 
@@ -13,7 +15,7 @@ public class TypeWordRelation extends WordTypeData {
 
 	private Classifier wordRelType;
 
-	private Complexity[] lexComplexities;
+	private List<Complexity> lexComplexities;
 
 	public Long getWordGroupId() {
 		return wordGroupId;
@@ -39,11 +41,11 @@ public class TypeWordRelation extends WordTypeData {
 		this.wordRelType = wordRelType;
 	}
 
-	public Complexity[] getLexComplexities() {
+	public List<Complexity> getLexComplexities() {
 		return lexComplexities;
 	}
 
-	public void setLexComplexities(Complexity[] lexComplexities) {
+	public void setLexComplexities(List<Complexity> lexComplexities) {
 		this.lexComplexities = lexComplexities;
 	}
 

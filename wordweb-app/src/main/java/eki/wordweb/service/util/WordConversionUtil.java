@@ -1,13 +1,14 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -109,7 +110,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	public void composeWordRelations(Word word, WordRelationsTuple wordRelationsTuple, Complexity lexComplexity, String displayLang) {
+	public void composeWordRelations(Word word, WordRelationsTuple wordRelationsTuple, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
 
 		if (wordRelationsTuple == null) {
 			return;
@@ -120,14 +121,13 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
 		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
+		List<Complexity> combinedLexComplexity = Arrays.asList(lexComplexity, Complexity.ANY);
 
 		List<TypeWordRelation> relatedWords = wordRelationsTuple.getRelatedWords();
 		if (CollectionUtils.isNotEmpty(relatedWords)) {
-			if (CollectionUtils.isNotEmpty(relatedWords) && Complexity.SIMPLE.equals(lexComplexity)) {
-				relatedWords = relatedWords.stream()
-						.filter(relation -> ArrayUtils.contains(relation.getLexComplexities(), lexComplexity))
-						.collect(Collectors.toList());
-			}
+			relatedWords = relatedWords.stream()
+					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
+					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				word.getRelatedWords().addAll(relatedWords);
 				for (TypeWordRelation wordRelation : relatedWords) {
@@ -144,12 +144,12 @@ public class WordConversionUtil extends AbstractConversionUtil {
 									.collect(Collectors.groupingBy(wordRelation -> StringUtils.equals(word.getLang(), wordRelation.getLang())));
 							List<TypeWordRelation> relatedWordsAsSyn = wordRelationSynOrMatchMap.get(Boolean.TRUE);
 							Classifier wordRelTypeSyn = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.syn");
-							appendRelatedWordTypeGroup(word, wordRelTypeSyn, relatedWordsAsSyn);
+							appendRelatedWordTypeGroup(word, wordRelTypeSyn, relatedWordsAsSyn, null);
 							List<TypeWordRelation> relatedWordsAsMatch = wordRelationSynOrMatchMap.get(Boolean.FALSE);
 							Classifier wordRelTypeMatch = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.match");
-							appendRelatedWordTypeGroup(word, wordRelTypeMatch, relatedWordsAsMatch);
+							appendRelatedWordTypeGroup(word, wordRelTypeMatch, relatedWordsAsMatch, langOrderByMap);
 						} else {
-							appendRelatedWordTypeGroup(word, wordRelType, relatedWordsOfType);
+							appendRelatedWordTypeGroup(word, wordRelType, relatedWordsOfType, null);
 						}
 					}
 				}
@@ -162,11 +162,9 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			Collections.sort(wordGroupIds);
 			for (Long wordGroupId : wordGroupIds) {
 				List<TypeWordRelation> wordGroupMembers = wordGroupMap.get(wordGroupId);
-				if (CollectionUtils.isNotEmpty(wordGroupMembers) && Complexity.SIMPLE.equals(lexComplexity)) {
-					wordGroupMembers = wordGroupMembers.stream()
-							.filter(member -> ArrayUtils.contains(member.getLexComplexities(), lexComplexity))
-							.collect(Collectors.toList());
-				}
+				wordGroupMembers = wordGroupMembers.stream()
+						.filter(member -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(member.getLexComplexities(), combinedLexComplexity)))
+						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
 					for (TypeWordRelation wordGroupMember : wordGroupMembers) {
 						classifierUtil.applyClassifiers(wordGroupMember, displayLang);
@@ -187,15 +185,22 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		word.setWordRelationsExist(wordRelationsExist);
 	}
 
-	private void appendRelatedWordTypeGroup(Word word, Classifier wordRelType, List<TypeWordRelation> relatedWordsOfType) {
+	private void appendRelatedWordTypeGroup(Word word, Classifier wordRelType, List<TypeWordRelation> relatedWordsOfType, Map<String, Long> langOrderByMap) {
 		if (CollectionUtils.isEmpty(relatedWordsOfType)) {
 			return;
 		}
-		boolean isSeeMore = relatedWordsOfType.size() > WORD_RELATIONS_DISPLAY_LIMIT;
 		WordRelationGroup wordRelationGroup = new WordRelationGroup();
 		wordRelationGroup.setWordRelType(wordRelType);
-		wordRelationGroup.setRelatedWords(relatedWordsOfType);
-		wordRelationGroup.setSeeMore(isSeeMore);
+
+		if (MapUtils.isNotEmpty(langOrderByMap)) {
+			Map<String, List<TypeWordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(TypeWordRelation::getLang));
+			Map<String, List<TypeWordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
+			wordRelationGroup.setRelatedWordsByLang(relatedWordsByLangOrdered);
+			wordRelationGroup.setAsMap(true);
+		} else {
+			wordRelationGroup.setRelatedWords(relatedWordsOfType);	
+			wordRelationGroup.setAsList(true);
+		}
 		word.getRelatedWordTypeGroups().add(wordRelationGroup);
 	}
 
@@ -233,8 +238,8 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					|| CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())
 					|| CollectionUtils.isNotEmpty(lexeme.getAdviceNotes())
 					|| CollectionUtils.isNotEmpty(lexeme.getLearnerComments())
-					|| CollectionUtils.isNotEmpty(lexeme.getLexemePublicNotes())
-					|| CollectionUtils.isNotEmpty(lexeme.getMeaningPublicNotes())
+					|| CollectionUtils.isNotEmpty(lexeme.getLexemeNotes())
+					|| CollectionUtils.isNotEmpty(lexeme.getMeaningNotes())
 					|| CollectionUtils.isNotEmpty(lexeme.getLexemeSourceLinks());
 			boolean isShowSection3 = CollectionUtils.isNotEmpty(lexeme.getGovernments())
 					|| CollectionUtils.isNotEmpty(lexeme.getUsages())

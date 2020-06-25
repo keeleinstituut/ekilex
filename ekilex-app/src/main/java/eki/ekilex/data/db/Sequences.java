@@ -305,6 +305,11 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("lexeme_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.lexeme_tag_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_TAG_ID_SEQ = Internal.createSequence("lexeme_tag_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.lifecycle_log_id_seq</code>
      */
     public static final Sequence<Long> LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -338,11 +343,6 @@ public class Sequences {
      * The sequence <code>public.meaning_nr_id_seq</code>
      */
     public static final Sequence<Long> MEANING_NR_ID_SEQ = Internal.createSequence("meaning_nr_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.meaning_process_log_id_seq</code>
-     */
-    public static final Sequence<Long> MEANING_PROCESS_LOG_ID_SEQ = Internal.createSequence("meaning_process_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.meaning_rel_type_order_by_seq</code>
@@ -440,6 +440,11 @@ public class Sequences {
     public static final Sequence<Long> SOURCE_LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("source_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.tag_order_by_seq</code>
+     */
+    public static final Sequence<Long> TAG_ORDER_BY_SEQ = Internal.createSequence("tag_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.temp_ds_import_pk_map_id_seq</code>
      */
     public static final Sequence<Long> TEMP_DS_IMPORT_PK_MAP_ID_SEQ = Internal.createSequence("temp_ds_import_pk_map_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -528,11 +533,6 @@ public class Sequences {
      * The sequence <code>public.word_lifecycle_log_id_seq</code>
      */
     public static final Sequence<Long> WORD_LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("word_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.word_process_log_id_seq</code>
-     */
-    public static final Sequence<Long> WORD_PROCESS_LOG_ID_SEQ = Internal.createSequence("word_process_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_rel_type_order_by_seq</code>

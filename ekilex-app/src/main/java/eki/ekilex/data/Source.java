@@ -8,7 +8,7 @@ public class Source extends AbstractCrudEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long sourceId;
+	private Long id;
 
 	private SourceType type;
 
@@ -16,12 +16,12 @@ public class Source extends AbstractCrudEntity {
 
 	private List<SourceProperty> sourceProperties;
 
-	public Long getSourceId() {
-		return sourceId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setSourceId(Long sourceId) {
-		this.sourceId = sourceId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public SourceType getType() {

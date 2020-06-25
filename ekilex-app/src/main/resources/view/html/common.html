@@ -227,7 +227,7 @@
               <table style="background-color: #ececec; font-weight: bold">
                 <tr>
                   <td>source id &nbsp;</td>
-                  <td th:text="${source.sourceId}"></td>
+                  <td th:text="${source.id}"></td>
                 </tr>
                 <tr>
                   <td>type</td>
@@ -243,7 +243,7 @@
             <th:block th:each="sourceProperty,sourcePropertyIter : ${source.sourceProperties}">
               <div class="row">
                 <div class="mb-1">
-                  <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" th:name="${'source_' + source.sourceId}"
+                  <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" th:name="${'source_' + source.id}"
                     th:checked="${sourcePropertyIter.count == 1}">
                   <span th:text="${sourceProperty.type}"></span>
                   -
@@ -265,7 +265,7 @@
                     <input type="text" class="form-control">
                   </div>
                   <div class="col-2">
-                    <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
+                    <button type="button" class="btn btn-primary" th:data-source-id="${source.id}">Vali</button>
                   </div>
                 </div>
               </div>

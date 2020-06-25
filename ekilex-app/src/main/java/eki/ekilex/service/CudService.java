@@ -116,6 +116,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateWordNote(Long noteFreeformId, String valuePrese) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, noteFreeformId, valuePrese);
+		createLifecycleLog(logData);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		cudDbService.updateFreeformTextValue(noteFreeformId, value, valuePrese);
+	}
+
+	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) {
 		for (ListData item : items) {
 			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_RELATION, LifecycleProperty.ID, item);
@@ -161,27 +169,27 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateLexemePublicNoteOrdering(List<ListData> items) {
+	public void updateLexemeNoteOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.PUBLIC_NOTE, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateFreeformOrderby(item);
 		}
 	}
 
 	@Transactional
-	public void updateMeaningPublicNoteOrdering(List<ListData> items) {
+	public void updateMeaningNoteOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING, LifecycleProperty.PUBLIC_NOTE, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING, LifecycleProperty.NOTE, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateFreeformOrderby(item);
 		}
 	}
 
 	@Transactional
-	public void updateDefinitionPublicNoteOrdering(List<ListData> items) {
+	public void updateDefinitionNoteOrdering(List<ListData> items) {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.DEFINITION, LifecycleProperty.PUBLIC_NOTE, item);
+			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, item);
 			createListOrderingLifecycleLog(logData);
 			cudDbService.updateFreeformOrderby(item);
 		}
@@ -306,8 +314,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateLexemePublicNote(Long id, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PUBLIC_NOTE, id, valuePrese);
+	public void updateLexemeNote(Long id, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, id, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeform(id, value, valuePrese, lang, complexity, isPublic);
@@ -347,8 +355,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateDefinitionPublicNote(Long id, String valuePrese, String lang, boolean isPublic) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.PUBLIC_NOTE, id, valuePrese);
+	public void updateDefinitionNote(Long id, String valuePrese, String lang, boolean isPublic) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, id, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeform(id, value, valuePrese, lang, isPublic);
@@ -380,8 +388,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateMeaningPublicNote(Long id, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.PUBLIC_NOTE, id, valuePrese);
+	public void updateMeaningNote(Long id, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, id, valuePrese);
 		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeform(id, value, valuePrese, lang, complexity, isPublic);
@@ -543,6 +551,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void createWordNote(Long wordId, String valuePrese) {
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long wordFreeformId = cudDbService.createWordNote(wordId, value, valuePrese, LANGUAGE_CODE_EST, Complexity.DETAIL, false);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, wordFreeformId, valuePrese);
+		createLifecycleLog(logData);
+	}
+
+	@Transactional
 	public void createLexeme(Long wordId, String datasetCode, Long meaningId) {
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
@@ -587,6 +603,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void createLexemeTag(Long lexemeId, String tagName) {
+		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
+		// TODO (lifecycle, process?) log
+	}
+
+	@Transactional
 	public void createLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
@@ -623,10 +645,10 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createLexemePublicNote(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+	public void createLexemeNote(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeFreeformId = cudDbService.createLexemePublicNote(lexemeId, value, valuePrese, lang, complexity, isPublic);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.PUBLIC_NOTE, lexemeFreeformId, valuePrese);
+		Long lexemeFreeformId = cudDbService.createLexemeNote(lexemeId, value, valuePrese, lang, complexity, isPublic);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, lexemeFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
@@ -688,10 +710,10 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createMeaningPublicNote(Long meaningId, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
+	public void createMeaningNote(Long meaningId, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningFreeformId = cudDbService.createMeaningPublicNote(meaningId, value, valuePrese, lang, complexity, isPublic);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.PUBLIC_NOTE, meaningFreeformId, valuePrese);
+		Long meaningFreeformId = cudDbService.createMeaningNote(meaningId, value, valuePrese, lang, complexity, isPublic);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, meaningFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
@@ -713,11 +735,11 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createDefinitionPublicNote(Long definitionId, String valuePrese, String lang, boolean isPublic) {
+	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic) {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long definitionFreeformId = cudDbService.createDefinitionPublicNote(definitionId, value, valuePrese, lang, isPublic);
+		Long definitionFreeformId = cudDbService.createDefinitionNote(definitionId, value, valuePrese, lang, isPublic);
 		LogData logData = new LogData(
-				LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.PUBLIC_NOTE, definitionFreeformId, valuePrese);
+				LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
@@ -869,6 +891,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void deleteWordNote(Long id) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.NOTE, id);
+		createLifecycleLog(logData);
+		cudDbService.deleteFreeform(id);
+	}
+
+	@Transactional
 	public void deleteDefinition(Long id) {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, null);
 		createLifecycleLog(logData);
@@ -883,8 +912,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void deleteDefinitionPublicNote(Long id) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.PUBLIC_NOTE, id);
+	public void deleteDefinitionNote(Long id) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, id);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
@@ -894,7 +923,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
 		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.geWordLexemeMeaningId(lexemeId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 
@@ -960,8 +989,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void deleteLexemePublicNote(Long id) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.PUBLIC_NOTE, id);
+	public void deleteLexemeNote(Long id) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, id);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}
@@ -980,6 +1009,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteLexemePos(lexemePosId);
+		}
+	}
+
+	@Transactional
+	public void deleteLexemeTag(Long lexemeId, String tagName) {
+		if (StringUtils.isNotBlank(tagName)) {
+			Long lexemeTagId = lookupDbService.getLexemeTagId(lexemeId, tagName);
+			// TODO (lifecycle, process?) log
+			cudDbService.deleteLexemeTag(lexemeTagId);
 		}
 	}
 
@@ -1073,8 +1111,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void deleteMeaningPublicNote(Long id) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.PUBLIC_NOTE, id);
+	public void deleteMeaningNote(Long id) {
+		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, id);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
 	}

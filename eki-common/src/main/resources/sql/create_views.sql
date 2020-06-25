@@ -12,7 +12,7 @@ create type type_definition as (
 				value_prese text,
 				lang char(3),
 				complexity varchar(100),
-				public_notes text array);
+				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_image_file as (freeform_id bigint, image_file text, image_title text);
 create type type_source_link as (
@@ -36,8 +36,21 @@ create type type_usage as (
 				usage_definitions text array,
 				od_usage_definitions text array,
 				od_usage_alternatives text array);
-create type type_freeform as (freeform_id bigint, type varchar(100), value text, lang char(3), complexity varchar(100));
-create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
+create type type_freeform as (
+				freeform_id bigint,
+				type varchar(100),
+				value text,
+				lang char(3),
+				complexity varchar(100));
+create type type_colloc_member as (
+				lexeme_id bigint,
+				word_id bigint,
+				word text,
+				form text,
+				homonym_nr integer,
+				word_exists boolean,
+				conjunct varchar(100),
+				weight numeric(14,4));
 create type type_meaning_word as (
 				lexeme_id bigint,
 				meaning_id bigint,
@@ -54,7 +67,12 @@ create type type_meaning_word as (
 				lang char(3),
 				word_type_codes varchar(100) array,
 				aspect_code varchar(100));
-create type type_word_etym_relation as (word_etym_rel_id bigint, comment text, is_questionable boolean, is_compound boolean, related_word_id bigint);
+create type type_word_etym_relation as (
+				word_etym_rel_id bigint,
+				comment text,
+				is_questionable boolean,
+				is_compound boolean,
+				related_word_id bigint);
 create type type_word_relation as (
 				word_group_id bigint,
 				word_rel_type_code varchar(100),
@@ -98,6 +116,7 @@ select ws.sgroup,
        unaccent(ws.crit) unacrit,
        ws.lang_order_by,
        wlc.lang_complexities,
+       wlc.detail_exists,
        wlc.simple_exists
 from (
         (select 'word' as sgroup,
@@ -178,12 +197,14 @@ from (
          group by fw.value,
                   f.value)) ws,
   (select lc.word,
-          array_agg(distinct row (case
-                                      when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
-                                      else 'other'
-                                  end, 
-                                  trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities,
-          ('SIMPLE' = any(array_agg(lc.complexity))) simple_exists
+          array_agg(distinct row (
+                    case
+                      when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                      else 'other'
+                    end, 
+                    trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities,
+          ('{DETAIL, ANY}' && array_agg(trim(trailing '12' from lc.complexity))) detail_exists,
+          ('{SIMPLE, ANY}' && array_agg(trim(trailing '12' from lc.complexity))) simple_exists
    from (
            (select
               (select array_agg(distinct f.value)
@@ -228,10 +249,11 @@ from (
               and l.word_id = w.id
               and lff.lexeme_id = l.id
               and lff.freeform_id = ff.id
+              and ff.is_public = true
               and ff.type in ('USAGE',
                               'GRAMMAR',
                               'GOVERNMENT',
-                              'PUBLIC_NOTE'))
+                              'NOTE'))
          union all
            (select
               (select array_agg(distinct f.value)
@@ -295,8 +317,7 @@ from (
               and l2.type = 'PRIMARY'
               and l2.process_state_code = 'avalik'
               and ds.code = l2.dataset_code
-              and ds.is_public = true
-              and r.word_rel_type_code != 'raw')) lc
+              and ds.is_public = true)) lc
    group by lc.word) wlc
 where ws.word = wlc.word
 order by ws.sgroup,
@@ -453,10 +474,13 @@ from (select w.id as word_id,
                          and l2.process_state_code = 'avalik'
                          and l2ds.is_public = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
-  left outer join (select lc.word_id,
+  inner join (select lc.word_id,
                           array_agg(distinct row(
-                                        case when (lc.lang in ('est', 'rus', 'eng')) then lc.lang else 'other' end,
-                                        trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities
+                                    case
+                                      when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                                      else 'other'
+                                    end,
+                                    trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities
                    from ((select l1.word_id,
                                  w2.lang,
                                  l2.complexity
@@ -487,7 +511,8 @@ from (select w.id as word_id,
                           and l.word_id = w.id
                           and lff.lexeme_id = l.id
                           and lff.freeform_id = ff.id
-                          and ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
+                          and ff.is_public = true
+                          and ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
                           union all
                           (select l.word_id,
                                   ut.lang,
@@ -535,8 +560,7 @@ from (select w.id as word_id,
                           and l2.type = 'PRIMARY'
                           and l2.process_state_code = 'avalik'
                           and ds.code = l2.dataset_code
-                          and ds.is_public = true
-                          and r.word_rel_type_code != 'raw')) lc
+                          and ds.is_public = true)) lc
                    group by lc.word_id) lc on lc.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row (
@@ -550,6 +574,7 @@ from (select w.id as word_id,
                             null
                           )::type_definition 
                           order by
+                          wd.ds_order_by,
                           wd.level1,
                           wd.level2,
                           wd.lex_order_by,
@@ -566,7 +591,8 @@ from (select w.id as word_id,
                                 substring(d.value_prese, 1, 200) value_prese,
                                 d.lang,
                                 d.complexity,
-                                d.order_by def_order_by
+                                d.order_by def_order_by,
+                                ds.order_by ds_order_by
                          from lexeme l
                            inner join dataset ds on ds.code = l.dataset_code
                            inner join definition d on d.meaning_id = l.meaning_id and d.is_public = true
@@ -636,7 +662,7 @@ select m.id meaning_id,
        m_spp.systematic_polysemy_patterns,
        m_smt.semantic_types,
        m_lcm.learner_comments,
-       m_pnt.public_notes,
+       m_pnt.notes,
        d.definitions
 from (select m.id
       from meaning m
@@ -662,7 +688,7 @@ from (select m.id
                             ' ' || d.value_prese,
                             d.lang,
                             d.complexity,
-                            d.public_notes
+                            d.notes
                           )::type_definition
                           order by
                           d.order_by
@@ -679,9 +705,9 @@ from (select m.id
                                       freeform ff
                                  where dff.definition_id = d.id
                                  and   ff.id = dff.freeform_id
-                                 and   ff.type = 'PUBLIC_NOTE'
+                                 and   ff.type = 'NOTE'
                                  and   ff.is_public = true
-                                 group by dff.definition_id) public_notes
+                                 group by dff.definition_id) notes
                          from definition d
                          where d.is_public = true) d
                    group by d.meaning_id) d
@@ -726,11 +752,11 @@ from (select m.id
                    and   ff.type = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
   left outer join (select mf.meaning_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) public_notes
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) notes
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
-                   and   ff.type = 'PUBLIC_NOTE'
+                   and   ff.type = 'NOTE'
                    and   ff.is_public = true
                    group by mf.meaning_id) m_pnt on m_pnt.meaning_id = m.id
 order by m.id;
@@ -758,7 +784,7 @@ select l.id lexeme_id,
        l_der.deriv_codes,
        mw.meaning_words,
        anote.advice_notes,
-       pnote.public_notes,
+       pnote.notes,
        gramm.grammars,
        gov.governments,
        usg.usages,
@@ -786,11 +812,11 @@ from lexeme l
                    and   ff.type = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) public_notes
+                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
-                   and   ff.type = 'PUBLIC_NOTE'
+                   and   ff.type = 'NOTE'
                    and   ff.is_public = true
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
@@ -862,8 +888,8 @@ from lexeme l
                    				 group by l_reg.lexeme_id) mw_lex_register_codes,
                    				l2.value_state_code mw_lex_value_state_code,
                                 w2.id mw_word_id,
-                                ' ' || f2.value mw_word,
-                                ' ' || f2.value_prese mw_word_prese,
+                                f2.value mw_word,
+                                f2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
@@ -940,8 +966,11 @@ from lexeme l
                    group by u.lexeme_id) usg on usg.lexeme_id = l.id
   left outer join (select lc.id,
                          array_agg(distinct row(
-                                        case when (lc.lang in ('est', 'rus', 'eng')) then lc.lang else 'other' end,
-                                        trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities
+                                   case
+                                     when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                                     else 'other'
+                                   end,
+                                   trim(trailing '12' from lc.complexity))::type_lang_complexity) lang_complexities
                   from ((select l1.id,
                                 w2.lang,
                                 l2.complexity
@@ -972,7 +1001,7 @@ from lexeme l
                          and   l.word_id = w.id
                          and   lff.lexeme_id = l.id
                          and   lff.freeform_id = ff.id
-                         and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE'))
+                         and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
                          union all
                          (select l.id,
                                  ut.lang,
@@ -1058,7 +1087,7 @@ from lexeme l
                                                 freeform ff
                                            where lff.lexeme_id = l1.id
                                            and   lff.freeform_id = ff.id
-                                           and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'PUBLIC_NOTE')))) lc
+                                           and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
             group by lc.id) l_lc on l_lc.id = l.id
 where l.type = 'PRIMARY'
 and   l.process_state_code = 'avalik'
@@ -1081,7 +1110,19 @@ select l1.id as lexeme_id,
        c.value as colloc_value,
        c.definition as colloc_definition,
        c.usages as colloc_usages,
-       array_agg(row (lw2.lexeme_id,lw2.word_id,' ' || lw2.word,' ' || lc2.member_form,lw2.homonym_nr,lw2.word_exists,lc2.conjunct,lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members,
+       array_agg(row (
+                 lw2.lexeme_id,
+                 lw2.word_id,
+                 ' ' || lw2.word,
+                 ' ' || lc2.member_form,
+                 lw2.homonym_nr,
+                 lw2.word_exists,
+                 lc2.conjunct,
+                 lc2.weight)
+                 ::type_colloc_member
+                 order by
+                 lc2.member_order
+                 ) as colloc_members,
        c.complexity
 from collocation as c
   inner join lex_colloc as lc1 on lc1.collocation_id = c.id
@@ -1127,14 +1168,13 @@ order by l1.level1,
 -- etymology - OK
 create view view_ww_word_etymology
 as
-with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, word_etym_rel_id, related_word_id, related_word_ids) as
+with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, related_word_id, related_word_ids) as
 (
   (
     select
       we.word_id,
       we.word_id word_etym_word_id,
       we.id word_etym_id,
-      wer.id word_etym_rel_id,
       wer.related_word_id,
       array[we.word_id] as related_word_ids
     from
@@ -1150,7 +1190,6 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, wo
         rec.word_id,
         we.word_id word_etym_word_id,
         we.id word_etym_id,
-        wer.id word_etym_rel_id,
         wer.related_word_id,
         (
           rec.related_word_ids || we.word_id
@@ -1178,16 +1217,7 @@ select
   we.comment_prese word_etym_comment,
   we.is_questionable word_etym_is_questionable,
   we.order_by word_etym_order_by,
-  array_agg(
-    row(
-      wer.id,
-      wer.comment_prese,
-      wer.is_questionable,
-      wer.is_compound,
-      wer.related_word_id
-    ):: type_word_etym_relation
-    order by wer.order_by
-  ) word_etym_relations
+  wer.word_etym_relations
 from
   word_etym_recursion rec
   inner join word_etymology we on we.id = rec.word_etym_id
@@ -1219,7 +1249,23 @@ from
     group by
       w.id
   ) w on w.id = rec.word_etym_word_id
-  left outer join word_etymology_relation wer on wer.id = rec.word_etym_rel_id
+  left outer join (
+    select
+      wer.word_etym_id,
+      array_agg(
+        row(
+            wer.id,
+            wer.comment_prese,
+            wer.is_questionable,
+            wer.is_compound,
+            wer.related_word_id
+        ):: type_word_etym_relation
+        order by wer.order_by
+      ) word_etym_relations
+    from
+      word_etymology_relation wer
+    group by wer.word_etym_id
+  ) wer on wer.word_etym_id = rec.word_etym_id
   left outer join (
     select
       l1.word_id,
@@ -1256,7 +1302,8 @@ group by
   we.id,
   w.id,
   w.word,
-  w.lang
+  w.lang,
+  wer.word_etym_relations
 order by
   rec.word_id,
   we.order_by;

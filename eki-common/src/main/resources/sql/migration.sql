@@ -70,7 +70,7 @@ set lang = d.lang
 from definition_freeform dff,
      definition d
 where ff.lang is null
-  and ff.type = 'PUBLIC_NOTE'
+  and ff.type = 'NOTE'
   and ff.id = dff.freeform_id
   and dff.definition_id = d.id;
 
@@ -80,7 +80,7 @@ from lexeme_freeform lff,
      lexeme l,
      word w
 where ff.lang is null
-  and ff.type = 'PUBLIC_NOTE'
+  and ff.type = 'NOTE'
   and ff.id = lff.freeform_id
   and lff.lexeme_id = l.id
   and l.word_id = w.id;
@@ -92,7 +92,7 @@ set lang = case
            end
 from meaning_freeform mff
 where ff.lang is null
-  and ff.type = 'PUBLIC_NOTE'
+  and ff.type = 'NOTE'
   and ff.id = mff.freeform_id;
 
 -- detailsuste muudatused
@@ -140,3 +140,111 @@ update collocation set complexity = 'ANY' where complexity = 'SIMPLE';
 update freeform
 set value_prese = replace(value_prese, '<eki-stress>ё</eki-stress>', 'ё')
 where value_prese like '%<eki-stress>ё</eki-stress>%';
+
+update lexeme set complexity = 'DETAIL' where complexity = 'DEFAULT';
+update lexeme set complexity = 'DETAIL' where complexity = 'SIMPLE' and dataset_code = 'rmtk';
+update lexeme set complexity = 'ANY' where complexity = 'SIMPLE';
+
+--kokkulangevate definitsioonide kustutamine
+delete
+from definition d
+where d.complexity = 'ANY'
+  and d.definition_type_code = 'lühivihje'
+  and d.is_public = false
+  and exists(select d2.id
+             from definition d2
+             where d2.value_prese = d.value_prese
+               and d2.complexity in ('DETAIL', 'DETAIL1')
+               and d2.meaning_id = d.meaning_id);
+
+update freeform ff set complexity = 'DETAIL' from meaning_freeform mff where ff.complexity is null and ff.type = 'PUBLIC_NOTE' and ff.id = mff.freeform_id;
+update freeform ff set complexity = 'DETAIL' from lexeme_freeform lff where ff.complexity is null and ff.type = 'PUBLIC_NOTE' and ff.id = lff.freeform_id;
+
+-- ilmikute sildid
+create table tag
+(
+  name varchar(100) primary key,
+  set_automatically boolean default false,
+  order_by bigserial
+);
+
+create table lexeme_tag
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  tag_name varchar(100) references tag(name) on delete cascade not null,
+  created_on timestamp not null default statement_timestamp(),
+  unique(lexeme_id, tag_name)
+);
+alter sequence lexeme_tag_id_seq restart with 10000;
+
+create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
+create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
+
+insert into tag select distinct process_state_code from lexeme where process_state_code != 'avalik';
+insert into lexeme_tag (lexeme_id, tag_name) select l.id, l.process_state_code from lexeme l where l.process_state_code != 'avalik';
+insert into process_state (code, datasets) values ('mitteavalik', '{}');
+update lexeme set process_state_code = 'mitteavalik' where process_state_code != 'avalik';
+alter table eki_user_profile add column preferred_tag_names varchar(100) array;
+alter table eki_user_profile add column active_tag_name varchar(100) references tag(name);
+alter table eki_user add column api_key varchar(100) null;
+create index eki_user_email_idx on eki_user(email);
+create index eki_user_api_key_idx on eki_user(api_key);
+
+update freeform set type = 'NOTE' where type = 'PUBLIC_NOTE';
+update lifecycle_log set entity_prop = 'NOTE' where entity_prop = 'PUBLIC_NOTE';
+
+-- kolib teksti kujul olevad protsessi logid keelendi ja tähenduste märkuste vabavormidesse ning elutsükli logidesse
+do $$
+declare
+  pl_row record;
+  ff_id freeform.id%type;
+  lcl_id lifecycle_log.id%type;
+  moved_word_logs_counter integer := 0;
+  moved_meaning_logs_counter integer := 0;
+begin
+  for pl_row in
+    (select wpl.word_id, wpl.process_log_id, pl.event_by, pl.event_on, pl.comment, pl.comment_prese
+    from word_process_log wpl, process_log pl
+    where pl.id = wpl.process_log_id
+    order by pl.id desc)
+  loop
+    insert into freeform (type, value_text, value_prese, lang, complexity, is_public)
+    values ('NOTE', pl_row.comment, pl_row.comment_prese, 'est', 'DETAIL', false)
+    returning id into ff_id;
+
+    insert into lifecycle_log (entity_id, entity_name, entity_prop, event_type, event_by, event_on, entry)
+    values (pl_row.word_id, 'WORD', 'NOTE', 'CREATE', pl_row.event_by, pl_row.event_on, pl_row.comment_prese)
+    returning id into lcl_id;
+
+    insert into word_freeform (word_id, freeform_id) values (pl_row.word_id, ff_id);
+    insert into word_lifecycle_log (word_id, lifecycle_log_id) values (pl_row.word_id, lcl_id);
+    delete from process_log where id = pl_row.process_log_id;
+    moved_word_logs_counter := moved_word_logs_counter + 1;
+  end loop;
+  raise notice '% keelendi protsessi logi kolitud vabavormidesse ning elutsükli logidesse', moved_word_logs_counter;
+
+  for pl_row in
+    (select mpl.meaning_id, mpl.process_log_id, pl.event_by, pl.event_on, pl.comment, pl.comment_prese
+     from meaning_process_log mpl, process_log pl
+     where pl.id = mpl.process_log_id
+     order by pl.id desc)
+    loop
+      insert into freeform (type, value_text, value_prese, lang, complexity, is_public)
+      values ('NOTE', pl_row.comment, pl_row.comment_prese, 'est', 'DETAIL', false)
+      returning id into ff_id;
+
+      insert into lifecycle_log (entity_id, entity_name, entity_prop, event_type, event_by, event_on, entry)
+      values (pl_row.meaning_id, 'MEANING', 'NOTE', 'CREATE', pl_row.event_by, pl_row.event_on, pl_row.comment_prese)
+      returning id into lcl_id;
+
+      insert into meaning_freeform (meaning_id, freeform_id) values (pl_row.meaning_id, ff_id);
+      insert into meaning_lifecycle_log (meaning_id, lifecycle_log_id) values (pl_row.meaning_id, lcl_id);
+      delete from process_log where id = pl_row.process_log_id;
+      moved_meaning_logs_counter := moved_meaning_logs_counter + 1;
+    end loop;
+  raise notice '% tähenduse protsessi logi kolitud vabavormidesse ning elutsükli logidesse', moved_meaning_logs_counter;
+end $$;
+
+drop table word_process_log;
+drop table meaning_process_log;

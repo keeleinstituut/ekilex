@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
 import java.util.List;
 import java.util.Optional;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
@@ -38,6 +39,18 @@ public class UserDbService extends AbstractDbService {
 
 	public EkiUser getUserByEmail(String email) {
 
+		Condition where = EKI_USER.EMAIL.eq(email);
+		return getUser(where);
+	}
+
+	public EkiUser getUserByApiKey(String apiKey) {
+
+		Condition where = EKI_USER.API_KEY.eq(apiKey);
+		return getUser(where);
+	}
+
+	private EkiUser getUser(Condition where) {
+
 		return create
 				.select(
 						EKI_USER.ID,
@@ -46,11 +59,12 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.PASSWORD,
 						EKI_USER.ACTIVATION_KEY,
 						EKI_USER.RECOVERY_KEY,
+						EKI_USER.API_KEY,
 						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_MASTER.as("master"),
 						EKI_USER.IS_ENABLED.as("enabled"))
 				.from(EKI_USER)
-				.where(EKI_USER.EMAIL.eq(email))
+				.where(where)
 				.fetchOptionalInto(EkiUser.class)
 				.orElse(null);
 	}
@@ -156,4 +170,8 @@ public class UserDbService extends AbstractDbService {
 				.fetchInto(EkiUserApplication.class);
 	}
 
+	public void updateApiKey(Long userId, String apiKey) {
+
+		create.update(EKI_USER).set(EKI_USER.API_KEY, apiKey).where(EKI_USER.ID.eq(userId)).execute();
+	}
 }

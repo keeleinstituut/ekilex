@@ -9,5 +9,6 @@ public enum Complexity {
 	DETAIL1,//ss
 	SIMPLE2,//qq
 	DETAIL2,//ev
+	@Deprecated
 	DEFAULT,//term
 }

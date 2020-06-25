@@ -23,8 +23,9 @@ create table eki_user
   email text not null,
   password text not null,
   terms_ver varchar(100) null,
-  activation_key varchar(60),
-  recovery_key varchar(60),
+  activation_key varchar(60) null,
+  recovery_key varchar(60) null,
+  api_key varchar(100) null,
   is_admin boolean default false,
   is_master boolean default false,
   is_enabled boolean,
@@ -434,6 +435,13 @@ create table region
   order_by bigserial
 );
 
+create table tag
+(
+  name varchar(100) primary key,
+  set_automatically boolean default false,
+  order_by bigserial
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -486,6 +494,8 @@ create table eki_user_profile
   recent_dataset_permission_id bigint references dataset_permission(id),
   preferred_datasets varchar(10) array,
   preferred_layer_name varchar(100) null,
+  preferred_tag_names varchar(100) array,
+  active_tag_name varchar(100) references tag(name),
   preferred_syn_candidate_langs char(3) array,
   preferred_syn_lex_meaning_word_langs char(3) array,
   preferred_meaning_relation_word_langs char(3) array,
@@ -689,14 +699,6 @@ create table word_lifecycle_log
 );
 alter sequence word_lifecycle_log_id_seq restart with 10000;
 
-create table word_process_log
-(
-  id bigserial primary key,
-  word_id bigint references word(id) on delete cascade not null,
-  process_log_id bigint references process_log(id) on delete cascade not null
-);
-alter sequence word_process_log_id_seq restart with 10000;
-
 -- paradigma
 create table paradigm
 (
@@ -803,14 +805,6 @@ create table meaning_lifecycle_log
 );
 alter sequence meaning_lifecycle_log_id_seq restart with 10000;
 
-create table meaning_process_log
-(
-  id bigserial primary key,
-  meaning_id bigint references meaning(id) on delete cascade not null,
-  process_log_id bigint references process_log(id) on delete cascade not null
-);
-alter sequence meaning_process_log_id_seq restart with 10000;
-
 -- tähenduse vabavorm
 create table meaning_freeform
 (
@@ -906,6 +900,16 @@ create table layer_state
   unique(lexeme_id, layer_name)
 );
 alter sequence layer_state_id_seq restart with 10000;
+
+create table lexeme_tag
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  tag_name varchar(100) references tag(name) on delete cascade not null,
+  created_on timestamp not null default statement_timestamp(),
+  unique(lexeme_id, tag_name)
+);
+alter sequence lexeme_tag_id_seq restart with 10000;
 
 create table lexeme_frequency
 (
@@ -1140,6 +1144,8 @@ create table temp_ds_import_queue
 alter sequence temp_ds_import_queue_id_seq restart with 10000;
 
 --- indexes
+create index eki_user_email_idx on eki_user(email);
+create index eki_user_api_key_idx on eki_user(api_key);
 create index eki_user_profile_user_id_idx on eki_user_profile(user_id);
 create index eki_user_profile_recent_dataset_permission_id_idx on eki_user_profile(recent_dataset_permission_id);
 create index dataset_code_idx on dataset(code);
@@ -1183,6 +1189,8 @@ create index lexeme_process_state_code_idx on lexeme(process_state_code);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index layer_state_lexeme_id_idx on layer_state(lexeme_id);
 create index layer_state_layer_name_idx on layer_state(layer_name);
+create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
+create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
 create index definition_meaning_id_idx on definition(meaning_id);
 create index definition_lang_idx on definition(lang);
 create index definition_complexity_idx on definition(complexity);
@@ -1256,12 +1264,8 @@ create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
 create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
 create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
 create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);
-create index word_process_log_word_id_idx on word_process_log(word_id);
-create index word_process_log_log_id_idx on word_process_log(process_log_id);
 create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meaning_id);
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
-create index meaning_process_log_meaning_id_idx on meaning_process_log(meaning_id);
-create index meaning_process_log_log_id_idx on meaning_process_log(process_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
 create index lexeme_process_log_lexeme_id_idx on lexeme_process_log(lexeme_id);

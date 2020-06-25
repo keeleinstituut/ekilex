@@ -5,6 +5,8 @@ import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
+import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
@@ -16,7 +18,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record15;
+import org.jooq.Record17;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -25,11 +27,8 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordSynLexeme;
@@ -38,6 +37,8 @@ import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -47,27 +48,6 @@ import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 
 @Component
 public class SynSearchDbService extends AbstractSearchDbService {
-
-	public List<eki.ekilex.data.Word> getWords(
-			String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) {
-
-		Word word = WORD.as("w");
-		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
-
-		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
-	}
-
-	public List<eki.ekilex.data.Word> getWords(
-			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset) throws Exception {
-
-		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
-		Word w1 = WORD.as("w1");
-		Paradigm p = PARADIGM.as("p");
-		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
-
-		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, layerName, fetchAll, offset);
-	}
 
 	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
 
@@ -82,6 +62,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Form fh = FORM.as("fh");
 		Lexeme l2 = LEXEME.as("l");
 		Lexeme lh = LEXEME.as("lh");
+		LexemePos lp = LEXEME_POS.as("lp");
+		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 		Definition d = DEFINITION.as("d");
 
 		Field<TypeWordRelParamRecord[]> relp = DSL
@@ -103,12 +85,35 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.groupBy(l2.WORD_ID)
 				.asField();
 
+		Field<String[]> rwlp = DSL
+				.select(DSL.arrayAggDistinct(lp.POS_CODE))
+				.from(lp, l2)
+				.where(
+						l2.WORD_ID.eq(r.WORD2_ID)
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(l2.DATASET_CODE.eq(datasetCode))
+								.and(lp.LEXEME_ID.eq(l2.ID)))
+				.asField();
+
+		Field<Float> rwlf = DSL
+				.select(DSL.max(DSL.field("value")))
+				.from(DSL
+						.select(DSL.field("distinct on (lf.lexeme_id) lf.value", Float.class))
+						.from(lf, l2)
+						.where(
+								l2.WORD_ID.eq(r.WORD2_ID)
+										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(l2.DATASET_CODE.eq(datasetCode))
+										.and(lf.LEXEME_ID.eq(l2.ID)))
+						.orderBy(lf.LEXEME_ID, lf.CREATED_ON.desc()))
+				.asField();
+
 		Field<String[]> wtf = getWordTypesField(w2.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record15<Long, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[]>> rr = DSL.select(
+		Table<Record17<Long, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
 				r.ID,
 				r.RELATION_STATUS,
 				oppr.RELATION_STATUS.as("opposite_relation_status"),
@@ -123,7 +128,9 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				wtpf.as("prefixoid"),
 				wtsf.as("suffixoid"),
 				wtz.as("foreign"),
-				rwd.as("word_definitions"))
+				rwd.as("word_definitions"),
+				rwlp.as("word_lexemes_poses"),
+				rwlf.as("word_lexemes_max_frequency"))
 				.from(r
 						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
 						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
@@ -170,7 +177,9 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				rr.field("prefixoid"),
 				rr.field("suffixoid"),
 				rr.field("foreign"),
-				rr.field("word_definitions"))
+				rr.field("word_definitions"),
+				rr.field("word_lexemes_poses"),
+				rr.field("word_lexemes_max_frequency"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
 				.fetchInto(SynRelation.class);
@@ -268,7 +277,6 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.select(l.ID)
 								.from(l)
 								.where(l.WORD_ID.eq(w.ID)
-										//TODO what lexeme type?
 				)))
 				.groupBy(w.ID)
 				.fetchOneInto(eki.ekilex.data.Word.class);

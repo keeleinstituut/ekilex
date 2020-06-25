@@ -126,15 +126,15 @@
         </th:block>
       </div>
     </div>
-    <div class="row" th:if="${not #lists.isEmpty(meaning.publicNoteLangGroups)}">
+    <div class="row" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}">
       <div class="col-1 pr-0">
         <span class="lbl">Märkused</span>
       </div>
       <div class="col pl-0">
-        <th:block th:each="publicNoteLangGroup : ${lexeme.meaning.publicNoteLangGroups}">
-          <th:block th:each="publicNote : ${publicNoteLangGroup}">
+        <th:block th:each="noteLangGroup : ${lexeme.meaning.noteLangGroups}">
+          <th:block th:each="note : ${noteLangGroup}">
             <div style="display: list-item; position: absolute"></div>
-            <div th:utext="${publicNote.valuePrese}"></div>
+            <div th:utext="${note.valuePrese}"></div>
           </th:block>
         </th:block>
       </div>

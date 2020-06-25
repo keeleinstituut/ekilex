@@ -23,7 +23,7 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	private Complexity complexity;
 
-	private List<String> publicNotes;
+	private List<String> notes;
 
 	private List<TypeSourceLink> sourceLinks;
 
@@ -94,12 +94,12 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 		this.complexity = complexity;
 	}
 
-	public List<String> getPublicNotes() {
-		return publicNotes;
+	public List<String> getNotes() {
+		return notes;
 	}
 
-	public void setPublicNotes(List<String> publicNotes) {
-		this.publicNotes = publicNotes;
+	public void setNotes(List<String> notes) {
+		this.notes = notes;
 	}
 
 	@Override

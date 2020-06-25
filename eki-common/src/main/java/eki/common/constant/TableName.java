@@ -33,7 +33,6 @@ public interface TableName {
 	String WORD_RELATION_PARAM = "word_relation_param";
 	String WORD_GROUP = "word_group";
 	String WORD_LIFECYCLE_LOG = "word_lifecycle_log";
-	String WORD_PROCESS_LOG = "word_process_log";
 	String WORD_FREEFORM = "word_freeform";
 	String LEXEME = "lexeme";
 	String LEXEME_POS = "lexeme_pos";
@@ -56,7 +55,6 @@ public interface TableName {
 	String MEANING_FREEFORM = "meaning_freeform";
 	String MEANING_RELATION = "meaning_relation";
 	String MEANING_LIFECYCLE_LOG = "meaning_lifecycle_log";
-	String MEANING_PROCESS_LOG = "meaning_process_log";
 	String DEFINITION = "definition";
 	String DEFINITION_FREEFORM = "definition_freeform";
 	String DEFINITION_SOURCE_LINK = "definition_source_link";

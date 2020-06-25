@@ -30,6 +30,8 @@ public class Lexeme extends AbstractCrudEntity {
 
 	private String lexemeProcessStateCode;
 
+	private List<String> tags;
+
 	private Complexity complexity;
 
 	private Long orderBy;
@@ -52,7 +54,7 @@ public class Lexeme extends AbstractCrudEntity {
 
 	private List<FreeForm> freeforms;
 
-	private List<NoteLangGroup> publicNoteLangGroups;
+	private List<NoteLangGroup> noteLangGroups;
 
 	private List<FreeForm> grammars;
 
@@ -150,6 +152,14 @@ public class Lexeme extends AbstractCrudEntity {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
 	}
 
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+
 	public Complexity getComplexity() {
 		return complexity;
 	}
@@ -238,12 +248,12 @@ public class Lexeme extends AbstractCrudEntity {
 		this.freeforms = freeforms;
 	}
 
-	public List<NoteLangGroup> getPublicNoteLangGroups() {
-		return publicNoteLangGroups;
+	public List<NoteLangGroup> getNoteLangGroups() {
+		return noteLangGroups;
 	}
 
-	public void setPublicNoteLangGroups(List<NoteLangGroup> publicNoteLangGroups) {
-		this.publicNoteLangGroups = publicNoteLangGroups;
+	public void setNoteLangGroups(List<NoteLangGroup> noteLangGroups) {
+		this.noteLangGroups = noteLangGroups;
 	}
 
 	public List<FreeForm> getGrammars() {

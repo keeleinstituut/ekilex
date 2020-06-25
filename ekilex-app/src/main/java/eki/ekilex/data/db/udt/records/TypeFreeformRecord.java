@@ -4,12 +4,12 @@
 package eki.ekilex.data.db.udt.records;
 
 
+import eki.ekilex.data.db.udt.TypeFreeform;
+
 import org.jooq.Field;
 import org.jooq.Record5;
 import org.jooq.Row5;
 import org.jooq.impl.UDTRecordImpl;
-
-import eki.ekilex.data.db.udt.TypeFreeform;
 
 
 /**

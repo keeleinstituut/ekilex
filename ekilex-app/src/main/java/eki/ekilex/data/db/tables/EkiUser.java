@@ -4,6 +4,7 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
@@ -15,9 +16,10 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row13;
+import org.jooq.Row14;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = 736845639;
+    private static final long serialVersionUID = 2031244183;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -114,6 +116,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     public final TableField<EkiUserRecord, String> TERMS_VER = createField(DSL.name("terms_ver"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
+     * The column <code>public.eki_user.api_key</code>.
+     */
+    public final TableField<EkiUserRecord, String> API_KEY = createField(DSL.name("api_key"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * Create a <code>public.eki_user</code> table reference
      */
     public EkiUser() {
@@ -149,6 +156,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.EKI_USER_API_KEY_IDX, Indexes.EKI_USER_EMAIL_IDX);
     }
 
     @Override
@@ -193,11 +205,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row13 type methods
+    // Row14 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row13<Long, String, String, String, String, String, Boolean, Boolean, Boolean, String, Timestamp, Boolean, String> fieldsRow() {
-        return (Row13) super.fieldsRow();
+    public Row14<Long, String, String, String, String, String, Boolean, Boolean, Boolean, String, Timestamp, Boolean, String, String> fieldsRow() {
+        return (Row14) super.fieldsRow();
     }
 }

@@ -22,7 +22,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> implements Record8<Long, TypeDomainRecord[], TypeImageFileRecord[], String[], String[], String[], TypeFreeformRecord[], TypeDefinitionRecord[]> {
 
-    private static final long serialVersionUID = -1542844092;
+    private static final long serialVersionUID = 1903725181;
 
     /**
      * Setter for <code>public.mview_ww_meaning.meaning_id</code>.
@@ -109,16 +109,16 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
     }
 
     /**
-     * Setter for <code>public.mview_ww_meaning.public_notes</code>.
+     * Setter for <code>public.mview_ww_meaning.notes</code>.
      */
-    public void setPublicNotes(TypeFreeformRecord[] value) {
+    public void setNotes(TypeFreeformRecord[] value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_meaning.public_notes</code>.
+     * Getter for <code>public.mview_ww_meaning.notes</code>.
      */
-    public TypeFreeformRecord[] getPublicNotes() {
+    public TypeFreeformRecord[] getNotes() {
         return (TypeFreeformRecord[]) get(6);
     }
 
@@ -182,7 +182,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public Field<TypeFreeformRecord[]> field7() {
-        return MviewWwMeaning.MVIEW_WW_MEANING.PUBLIC_NOTES;
+        return MviewWwMeaning.MVIEW_WW_MEANING.NOTES;
     }
 
     @Override
@@ -222,7 +222,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public TypeFreeformRecord[] component7() {
-        return getPublicNotes();
+        return getNotes();
     }
 
     @Override
@@ -262,7 +262,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public TypeFreeformRecord[] value7() {
-        return getPublicNotes();
+        return getNotes();
     }
 
     @Override
@@ -308,7 +308,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
 
     @Override
     public MviewWwMeaningRecord value7(TypeFreeformRecord[] value) {
-        setPublicNotes(value);
+        setNotes(value);
         return this;
     }
 
@@ -345,7 +345,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
     /**
      * Create a detached, initialised MviewWwMeaningRecord
      */
-    public MviewWwMeaningRecord(Long meaningId, TypeDomainRecord[] domainCodes, TypeImageFileRecord[] imageFiles, String[] systematicPolysemyPatterns, String[] semanticTypes, String[] learnerComments, TypeFreeformRecord[] publicNotes, TypeDefinitionRecord[] definitions) {
+    public MviewWwMeaningRecord(Long meaningId, TypeDomainRecord[] domainCodes, TypeImageFileRecord[] imageFiles, String[] systematicPolysemyPatterns, String[] semanticTypes, String[] learnerComments, TypeFreeformRecord[] notes, TypeDefinitionRecord[] definitions) {
         super(MviewWwMeaning.MVIEW_WW_MEANING);
 
         set(0, meaningId);
@@ -354,7 +354,7 @@ public class MviewWwMeaningRecord extends TableRecordImpl<MviewWwMeaningRecord> 
         set(3, systematicPolysemyPatterns);
         set(4, semanticTypes);
         set(5, learnerComments);
-        set(6, publicNotes);
+        set(6, notes);
         set(7, definitions);
     }
 }

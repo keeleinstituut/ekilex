@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = -92047345;
+    private static final long serialVersionUID = 1132581903;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -81,9 +81,9 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField(DSL.name("learner_comments"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.public_notes</code>.
+     * The column <code>public.mview_ww_meaning.notes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, TypeFreeformRecord[]> PUBLIC_NOTES = createField(DSL.name("public_notes"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, TypeFreeformRecord[]> NOTES = createField(DSL.name("notes"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.definitions</code>.

@@ -130,7 +130,7 @@ public class DatasetController extends AbstractAuthActionController {
 		return RESPONSE_OK_VER1;
 	}
 
-	@GetMapping(REST_SERVICES_URI + VALIDATE_CREATE_DATASET_URI + "/{datasetCode}")
+	@GetMapping(VALIDATE_CREATE_DATASET_URI + "/{datasetCode}")
 	@ResponseBody
 	public String validateCreateDataset(@PathVariable("datasetCode") String datasetCode) {
 
@@ -141,7 +141,7 @@ public class DatasetController extends AbstractAuthActionController {
 		return RESPONSE_OK_VER1;
 	}
 
-	@GetMapping(REST_SERVICES_URI + ORIGIN_DOMAINS_URI + "/{originCode}")
+	@GetMapping(ORIGIN_DOMAINS_URI + "/{originCode}")
 	@ResponseBody
 	public String getOriginDomains(@PathVariable String originCode) throws Exception {
 

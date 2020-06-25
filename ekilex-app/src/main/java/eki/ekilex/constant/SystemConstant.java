@@ -2,7 +2,7 @@ package eki.ekilex.constant;
 
 public interface SystemConstant {
 
-	int MAX_RESULTS_LIMIT = 50;
+	int DEFAULT_MAX_RESULTS_LIMIT = 50;
 
 	int DEFAULT_OFFSET = 0;
 
@@ -27,6 +27,8 @@ public interface SystemConstant {
 	String CACHE_KEY_DATASET = "dataset";
 
 	String CACHE_KEY_USER = "user";
+
+	String CACHE_KEY_TAG = "tag";
 
 	int MAX_TEXT_LENGTH_LIMIT = 2000;
 }

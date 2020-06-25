@@ -47,13 +47,13 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<String> adviceNotes;
 
-	private List<TypeFreeform> lexemePublicNotes;
+	private List<TypeFreeform> lexemeNotes;
 
-	private Map<String, List<TypeFreeform>> lexemePublicNotesByLang;
+	private Map<String, List<TypeFreeform>> lexemeNotesByLang;
 
-	private List<TypeFreeform> meaningPublicNotes;
+	private List<TypeFreeform> meaningNotes;
 
-	private Map<String, List<TypeFreeform>> meaningPublicNotesByLang;
+	private Map<String, List<TypeFreeform>> meaningNotesByLang;
 
 	private List<TypeFreeform> grammars;
 
@@ -90,6 +90,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	private List<TypeDefinition> definitions;
 
 	private Map<String, List<TypeDefinition>> definitionsByLang;
+
+	private TypeMeaningWord preferredTermMeaningWord;
 
 	private List<TypeMeaningWord> meaningWords;
 
@@ -269,36 +271,36 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.adviceNotes = adviceNotes;
 	}
 
-	public List<TypeFreeform> getLexemePublicNotes() {
-		return lexemePublicNotes;
+	public List<TypeFreeform> getLexemeNotes() {
+		return lexemeNotes;
 	}
 
-	public void setLexemePublicNotes(List<TypeFreeform> lexemePublicNotes) {
-		this.lexemePublicNotes = lexemePublicNotes;
+	public void setLexemeNotes(List<TypeFreeform> lexemeNotes) {
+		this.lexemeNotes = lexemeNotes;
 	}
 
-	public Map<String, List<TypeFreeform>> getLexemePublicNotesByLang() {
-		return lexemePublicNotesByLang;
+	public Map<String, List<TypeFreeform>> getLexemeNotesByLang() {
+		return lexemeNotesByLang;
 	}
 
-	public void setLexemePublicNotesByLang(Map<String, List<TypeFreeform>> lexemePublicNotesByLang) {
-		this.lexemePublicNotesByLang = lexemePublicNotesByLang;
+	public void setLexemeNotesByLang(Map<String, List<TypeFreeform>> lexemeNotesByLang) {
+		this.lexemeNotesByLang = lexemeNotesByLang;
 	}
 
-	public List<TypeFreeform> getMeaningPublicNotes() {
-		return meaningPublicNotes;
+	public List<TypeFreeform> getMeaningNotes() {
+		return meaningNotes;
 	}
 
-	public void setMeaningPublicNotes(List<TypeFreeform> meaningPublicNotes) {
-		this.meaningPublicNotes = meaningPublicNotes;
+	public void setMeaningNotes(List<TypeFreeform> meaningNotes) {
+		this.meaningNotes = meaningNotes;
 	}
 
-	public Map<String, List<TypeFreeform>> getMeaningPublicNotesByLang() {
-		return meaningPublicNotesByLang;
+	public Map<String, List<TypeFreeform>> getMeaningNotesByLang() {
+		return meaningNotesByLang;
 	}
 
-	public void setMeaningPublicNotesByLang(Map<String, List<TypeFreeform>> meaningPublicNotesByLang) {
-		this.meaningPublicNotesByLang = meaningPublicNotesByLang;
+	public void setMeaningNotesByLang(Map<String, List<TypeFreeform>> meaningNotesByLang) {
+		this.meaningNotesByLang = meaningNotesByLang;
 	}
 
 	public List<TypeFreeform> getGrammars() {
@@ -443,6 +445,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	public void setDefinitionsByLang(Map<String, List<TypeDefinition>> definitionsByLang) {
 		this.definitionsByLang = definitionsByLang;
+	}
+
+	public TypeMeaningWord getPreferredTermMeaningWord() {
+		return preferredTermMeaningWord;
+	}
+
+	public void setPreferredTermMeaningWord(TypeMeaningWord preferredTermMeaningWord) {
+		this.preferredTermMeaningWord = preferredTermMeaningWord;
 	}
 
 	public List<TypeMeaningWord> getMeaningWords() {

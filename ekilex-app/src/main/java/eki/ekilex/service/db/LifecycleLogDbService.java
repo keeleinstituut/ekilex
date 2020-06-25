@@ -456,6 +456,17 @@ public class LifecycleLogDbService implements GlobalConstant {
 			logData.setEntityId(wordId);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createWordLifecycleLog(wordId, lifecycleLogId);
+		} else if (LifecycleProperty.NOTE.equals(property)) {
+			Map<String, Object> entityData = helper.getWordFreeformData(create, entityId, FreeformType.NOTE);
+			String recent = (String) entityData.get("value_prese");
+			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
+			if (!isRecentValueValid) {
+				return;
+			}
+			Long wordId = (Long) entityData.get("word_id");
+			logData.setEntityId(wordId);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(wordId, lifecycleLogId);
 		}
 	}
 
@@ -578,8 +589,8 @@ public class LifecycleLogDbService implements GlobalConstant {
 			logData.setEntityId(lexemeId);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-		} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-			Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+		} else if (LifecycleProperty.NOTE.equals(property)) {
+			Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.NOTE);
 			String recent = (String) entityData.get("value_prese");
 			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
 			if (!isRecentValueValid) {
@@ -673,8 +684,8 @@ public class LifecycleLogDbService implements GlobalConstant {
 			logData.setEntityId(meaningId);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
-		} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-			Map<String, Object> entityData = helper.getMeaningFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+		} else if (LifecycleProperty.NOTE.equals(property)) {
+			Map<String, Object> entityData = helper.getMeaningFreeformData(create, entityId, FreeformType.NOTE);
 			String recent = (String) entityData.get("value_prese");
 			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
 			if (!isRecentValueValid) {
@@ -726,8 +737,8 @@ public class LifecycleLogDbService implements GlobalConstant {
 			logData.setEntityId(definitionId);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createMeaningLifecycleLog(meaningId, lifecycleLogId);
-		} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-			Map<String, Object> entityData = helper.getDefinitionFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+		} else if (LifecycleProperty.NOTE.equals(property)) {
+			Map<String, Object> entityData = helper.getDefinitionFreeformData(create, entityId, FreeformType.NOTE);
 			String recent = (String) entityData.get("value_prese");
 			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
 			if (!isRecentValueValid) {
@@ -869,8 +880,8 @@ public class LifecycleLogDbService implements GlobalConstant {
 				logData.setEntry(entry);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-				Map<String, Object> entityData = helper.getDefinitionFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+			} else if (LifecycleProperty.NOTE.equals(property)) {
+				Map<String, Object> entityData = helper.getDefinitionFreeformData(create, entityId, FreeformType.NOTE);
 				Long prevOrderBy = (Long) entityData.get("order_by");
 				if (newOrderby.equals(prevOrderBy)) {
 					return;
@@ -945,7 +956,7 @@ public class LifecycleLogDbService implements GlobalConstant {
 				logData.setEntry(entry);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
+			} else if (LifecycleProperty.NOTE.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeFreeformData(create, entityId);
 				Long prevOrderBy = (Long) entityData.get("order_by");
 				if (newOrderby.equals(prevOrderBy)) {
@@ -976,8 +987,8 @@ public class LifecycleLogDbService implements GlobalConstant {
 				logData.setEntityId(meaningId);
 				Long lifecycleLogId = createLifecycleLog(logData);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.PUBLIC_NOTE.equals(property)) {
-				Map<String, Object> entityData = helper.getMeaningFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+			} else if (LifecycleProperty.NOTE.equals(property)) {
+				Map<String, Object> entityData = helper.getMeaningFreeformData(create, entityId, FreeformType.NOTE);
 				Long prevOrderBy = (Long) entityData.get("order_by");
 				if (newOrderby.equals(prevOrderBy)) {
 					return;

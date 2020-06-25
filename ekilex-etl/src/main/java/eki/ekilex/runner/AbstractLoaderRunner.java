@@ -961,7 +961,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
-					Long usageDefinitionId = createFreeformTextEkiMarkup(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang, null);
+					Long usageDefinitionId = createFreeformTextEkiMarkup(usageId, FreeformType.USAGE_DEFINITION, usageDefinition, dataLang, null, null);
 					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, usageDefinitionId, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageDefinition);
 				}
 			}
@@ -969,7 +969,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 				for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
 					String usageTranslationValue = usageTranslation.getValue();
 					String usageTranslationLang = usageTranslation.getLang();
-					Long usageTranslationId = createFreeformTextEkiMarkup(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang, null);
+					Long usageTranslationId = createFreeformTextEkiMarkup(usageId, FreeformType.USAGE_TRANSLATION, usageTranslationValue, usageTranslationLang, null, null);
 					createLifecycleLog(
 							LifecycleLogOwner.LEXEME, lexemeId, usageTranslationId, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, LifecycleEventType.CREATE, usageTranslationValue);
 				}
@@ -1027,20 +1027,6 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		createLexemeProcessStateProcessLog(lexemeId, processStateCode);
 	}
 
-	protected Long createWordProcessLog(Long wordId, String eventBy, Timestamp eventOn, String comment) throws Exception {
-
-		String datasetCode = getDataset();
-
-		Long processLogId = createProcessLog(eventBy, eventOn, comment, null, datasetCode);
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("process_log_id", processLogId);
-		basicDbService.create(WORD_PROCESS_LOG, tableRowParamMap);
-
-		return processLogId;
-	}
-
 	protected Long createLexemeProcessStateProcessLog(Long lexemeId, String processStateCode) throws Exception {
 		String datasetCode = getDataset();
 		return createLexemeProcessLog(lexemeId, null, null, null, processStateCode, datasetCode);
@@ -1063,25 +1049,11 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		return processLogId;
 	}
 
-	protected Long createMeaningProcessLog(Long meaningId, String comment) throws Exception {
-
-		String datasetCode = getDataset();
-
-		Long processLogId = createProcessLog(null, null, comment, null, datasetCode);
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("process_log_id", processLogId);
-		basicDbService.create(MEANING_PROCESS_LOG, tableRowParamMap);
-
-		return processLogId;
-	}
-
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
 
 		Complexity complexity = getFreeformComplexity();
 
-		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, lang, complexity);
+		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, lang, complexity, null);
 		if (freeformId == null) {
 			return null;
 		}
@@ -1129,8 +1101,12 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 	}
 
 	protected Long createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
+		return createMeaningFreeform(meaningId, freeformType, value, null);
+	}
 
-		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null);
+	protected Long createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value, Boolean isPublic) throws Exception {
+
+		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null, isPublic);
 		if (freeformId == null) {
 			return null;
 		}
@@ -1146,9 +1122,27 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		return freeformId;
 	}
 
+	protected Long createWordFreeform(Long wordId, FreeformType freeformType, boolean isPublic, Object value) throws Exception {
+
+		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null, isPublic);
+		if (freeformId == null) {
+			return null;
+		}
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_id", wordId);
+		tableRowParamMap.put("freeform_id", freeformId);
+		basicDbService.create(WORD_FREEFORM, tableRowParamMap);
+
+		LifecycleEntity lifecycleEntity = translate(freeformType);
+		createLifecycleLog(LifecycleLogOwner.WORD, wordId, freeformId, lifecycleEntity, LifecycleProperty.VALUE, LifecycleEventType.CREATE, value.toString());
+
+		return freeformId;
+	}
+
 	protected Long createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null);
+		Long freeformId = createFreeformTextOrTimestamp(freeformType, value, null, null, null);
 		if (freeformId == null) {
 			return null;
 		}
@@ -1161,7 +1155,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		return freeformId;
 	}
 
-	protected Long createFreeformTextEkiMarkup(Long parentId, FreeformType freeformType, String value, String lang, Complexity complexity) throws Exception {
+	protected Long createFreeformTextEkiMarkup(Long parentId, FreeformType freeformType, String value, String lang, Complexity complexity, Boolean isPublic) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -1181,18 +1175,21 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		if (complexity != null) {
 			tableRowParamMap.put("complexity", complexity.name());
 		}
+		if (isPublic != null) {
+			tableRowParamMap.put("is_public", isPublic);
+		}
 		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
 		return freeformId;
 	}
 
-	private Long createFreeformTextOrTimestamp(FreeformType freeformType, Object value, String lang, Complexity complexity) throws Exception {
+	private Long createFreeformTextOrTimestamp(FreeformType freeformType, Object value, String lang, Complexity complexity, Boolean isPublic) throws Exception {
 		if (value == null) {
 			return null;
 		}
 		Long freeformId = null;
 		if (value instanceof String) {
 			String valueStr = (String) value;
-			freeformId = createFreeformTextEkiMarkup(null, freeformType, valueStr, lang, complexity);
+			freeformId = createFreeformTextEkiMarkup(null, freeformType, valueStr, lang, complexity, isPublic);
 		} else if (value instanceof Timestamp) {
 			Timestamp valueTs = (Timestamp) value;
 			freeformId = createFreeformDate(null, freeformType, valueTs, null);
@@ -1490,7 +1487,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Long freeformId = null;
 		if (value instanceof String) {
 			String valueStr = (String) value;
-			freeformId = createFreeformTextEkiMarkup(null, freeformType, valueStr, null, null);
+			freeformId = createFreeformTextEkiMarkup(null, freeformType, valueStr, null, null, null);
 		} else if (value instanceof Timestamp) {
 			Timestamp valueTs = (Timestamp) value;
 			freeformId = createFreeformDate(null, freeformType, valueTs, null);

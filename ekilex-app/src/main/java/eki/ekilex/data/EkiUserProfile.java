@@ -31,6 +31,10 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private boolean showMeaningRelationWordDatasets;
 
+	private List<String> preferredTagNames;
+
+	private String activeTagName;
+
 	public Long getUserId() {
 		return userId;
 	}
@@ -117,5 +121,21 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	public void setShowMeaningRelationWordDatasets(boolean showMeaningRelationWordDatasets) {
 		this.showMeaningRelationWordDatasets = showMeaningRelationWordDatasets;
+	}
+
+	public List<String> getPreferredTagNames() {
+		return preferredTagNames;
+	}
+
+	public void setPreferredTagNames(List<String> preferredTagNames) {
+		this.preferredTagNames = preferredTagNames;
+	}
+
+	public String getActiveTagName() {
+		return activeTagName;
+	}
+
+	public void setActiveTagName(String activeTagName) {
+		this.activeTagName = activeTagName;
 	}
 }

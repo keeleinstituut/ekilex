@@ -572,7 +572,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<String> definitions = extractDefinitions(meaningGroupNode);
 		List<String> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 		List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
-		List<String> publicNotes = extractPublicNotes(meaningGroupNode);
+		List<String> notes = extractNotes(meaningGroupNode);
 		String meaningNr = ((Element)meaningGroupNode).attributeValue(meaningNrAttr);
 
 		Long meaningId;
@@ -648,7 +648,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				saveGrammars(meaningGroupNode, lexemeId, newWordData);
 				saveRegisters(lexemeId, registers, headword);
 				saveAdviceNotes(lexemeId, adviceNotes);
-				savePublicNotes(lexemeId, publicNotes);
+				saveNotes(lexemeId, notes);
 				for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
 					LexemeToWordData abbreviationData = meaningAbbreviation.copy();
 					abbreviationData.lexemeId = lexemeId;
@@ -662,9 +662,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return createdLexemeIds;
 	}
 
-	private void savePublicNotes(Long lexemeId, List<String> notes) throws Exception {
+	private void saveNotes(Long lexemeId, List<String> notes) throws Exception {
 		for (String note : notes) {
-			createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, note, dataLang);
+			createLexemeFreeform(lexemeId, FreeformType.NOTE, note, dataLang);
 		}
 	}
 
@@ -724,7 +724,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
 			String semanticTypeGroup = ((Element)semanticTypeNode).attributeValue(semanticTypeGroupAttr);
 			if (isNotBlank(semanticTypeGroup)) {
-				createFreeformTextEkiMarkup(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null, null);
+				createFreeformTextEkiMarkup(meaningFreeformId, FreeformType.SEMANTIC_TYPE_GROUP, semanticTypeGroup, null, null, null);
 			}
 		}
 
@@ -752,7 +752,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Timestamp eventOnTs = new Timestamp(eventOnLong);
 
 			for (WordData newWord : newWords) {
-				createWordProcessLog(newWord.id, eventBy, eventOnTs, comment);
+				createWordFreeform(newWord.id, FreeformType.NOTE, false, comment);
 			}
 		}
 	}
@@ -948,7 +948,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return extractCleanValues(node, registerValueExp);
 	}
 
-	private List<String> extractPublicNotes(Node node) {
+	private List<String> extractNotes(Node node) {
 
 		final String registerValueExp = "s:lig/s:tx";
 		return extractOriginalValues(node, registerValueExp);

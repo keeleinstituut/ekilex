@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> implements Record8<Long, Long, Long, String, String, String, String, String[]> {
 
-    private static final long serialVersionUID = -217889055;
+    private static final long serialVersionUID = 1645369292;
 
     /**
      * Setter for <code>public.type_definition.lexeme_id</code>.
@@ -119,16 +119,16 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
     }
 
     /**
-     * Setter for <code>public.type_definition.public_notes</code>.
+     * Setter for <code>public.type_definition.notes</code>.
      */
-    public void setPublicNotes(String[] value) {
+    public void setNotes(String[] value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>public.type_definition.public_notes</code>.
+     * Getter for <code>public.type_definition.notes</code>.
      */
-    public String[] getPublicNotes() {
+    public String[] getNotes() {
         return (String[]) get(7);
     }
 
@@ -183,7 +183,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
 
     @Override
     public Field<String[]> field8() {
-        return TypeDefinition.PUBLIC_NOTES;
+        return TypeDefinition.NOTES;
     }
 
     @Override
@@ -223,7 +223,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
 
     @Override
     public String[] component8() {
-        return getPublicNotes();
+        return getNotes();
     }
 
     @Override
@@ -263,7 +263,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
 
     @Override
     public String[] value8() {
-        return getPublicNotes();
+        return getNotes();
     }
 
     @Override
@@ -310,7 +310,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
 
     @Override
     public TypeDefinitionRecord value8(String[] value) {
-        setPublicNotes(value);
+        setNotes(value);
         return this;
     }
 
@@ -341,7 +341,7 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
     /**
      * Create a detached, initialised TypeDefinitionRecord
      */
-    public TypeDefinitionRecord(Long lexemeId, Long meaningId, Long definitionId, String value, String valuePrese, String lang, String complexity, String[] publicNotes) {
+    public TypeDefinitionRecord(Long lexemeId, Long meaningId, Long definitionId, String value, String valuePrese, String lang, String complexity, String[] notes) {
         super(TypeDefinition.TYPE_DEFINITION);
 
         set(0, lexemeId);
@@ -351,6 +351,6 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
         set(4, valuePrese);
         set(5, lang);
         set(6, complexity);
-        set(7, publicNotes);
+        set(7, notes);
     }
 }
