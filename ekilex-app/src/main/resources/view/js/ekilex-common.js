@@ -9,7 +9,7 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
 		console.log(data);
 		openAlertDlg(failMessage);
 	});
-}
+};
 
 function doPostDelete(deleteUrl, callback) {
 	$.post(deleteUrl).done(function(data) {
@@ -23,7 +23,7 @@ function doPostDelete(deleteUrl, callback) {
 		openAlertDlg("Andmete eemaldamine ebaõnnestus.");
 		console.log(data);
 	});
-}
+};
 
 function submitDialog(e, dlg, failMessage) {
 	e.preventDefault();
@@ -41,7 +41,7 @@ function submitDialog(e, dlg, failMessage) {
 	submitForm(theForm, failMessage, successCallbackFunc).always(function() {
 		dlg.modal('hide');
 	});
-}
+};
 
 function submitForm(theForm, failMessage, callback) {
 	var data = JSON.stringify(theForm.serializeJSON());
@@ -61,7 +61,7 @@ function submitForm(theForm, failMessage, callback) {
 		console.log(data);
 		alert(failMessage);
 	});
-}
+};
 
 function alignAndFocus(e, dlg) {
 	dlg.find('.form-control').first().focus();
@@ -72,7 +72,7 @@ function alignAndFocus(e, dlg) {
 		}
 		dlg.find('.modal-content').css('top', dlgTop);
 	}
-}
+};
 
 // Do not change the selector to '.required-field' as it causes selectpicker to fire change event twice
 $(document).on("change", "input.required-field, select.required-field", function() {
@@ -105,7 +105,7 @@ function showFieldError(field, errorText) {
 		errorSmallElem.show();
 		field.addClass('is-invalid');
 	}
-}
+};
 
 function changeItemOrdering(target, delta) {
 	let orderBlock = target.closest('.orderable');
@@ -140,7 +140,7 @@ function changeItemOrdering(target, delta) {
 		items: orderedItems,
 		additionalInfo: additionalInfo
 	};
-}
+};
 
 function executeDelete(deleteUrl) {
 	if (deleteUrl === undefined) {
@@ -160,7 +160,7 @@ function executeDelete(deleteUrl) {
 		successCallbackFunc = () => $('#refresh-details').trigger('click');
 	}
 	doPostDelete(deleteUrl, successCallbackFunc);
-}
+};
 
 function initAddMultiDataDlg(theDlg) {
 
@@ -183,7 +183,7 @@ function initAddMultiDataDlg(theDlg) {
 		});
 		alignAndFocus(e, theDlg);
 	});
-}
+};
 
 function initGenericTextAddDlg(addDlg) {
 	addDlg.find('[name=value]').val(null);
@@ -196,13 +196,13 @@ function initGenericTextAddDlg(addDlg) {
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		alignAndFocus(e, addDlg)
 	});
-}
+};
 
 function initGenericTextEditDlg(editDlg) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
-}
+};
 
 function initSelectDlg(selectDlg) {
 	let selectControl = selectDlg.find('select');
@@ -218,7 +218,7 @@ function initSelectDlg(selectDlg) {
 			submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
 		}
 	});
-}
+};
 
 function configureSelectDlg(selectControl, selectDlg) {
 	let maxItemLength = 0;
@@ -245,7 +245,7 @@ function configureSelectDlg(selectControl, selectDlg) {
 		selectDlg.find('.form-control').first().focus();
 		$('.modal-backdrop').css('opacity', 0);
 	});
-}
+};
 
 function initNewWordDlg() {
 	let newWordDlg = $('#newWordDlg');
@@ -279,7 +279,7 @@ function initNewWordDlg() {
 		}
 		addWordForm.submit();
 	});
-}
+};
 
 function checkRequiredFields(thisForm) {
 
@@ -318,7 +318,7 @@ function checkRequiredFields(thisForm) {
 		}
 	});
 	return isValid;
-}
+};
 
 function initAddSourceLinkDlg(addDlg) {
 	addDlg.find('.form-control').val(null);
@@ -365,7 +365,7 @@ function initAddSourceLinkDlg(addDlg) {
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		addDlg.find('.form-control').first().focus();
 	});
-}
+};
 
 function initRelationDialogLogic(addDlg, idElementName) {
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
@@ -399,7 +399,7 @@ function initRelationDialogLogic(addDlg, idElementName) {
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		addDlg.find('.form-control').first().focus();
 	});
-}
+};
 
 function initMultiselectRelationDlg(dlg) {
 
@@ -461,7 +461,7 @@ function initMultiselectRelationDlg(dlg) {
 		let relationTypeSelect = $(this);
 		changeOppositeRelationSelectData(relationTypeSelect);
 	});
-}
+};
 
 function changeOppositeRelationSelectData(relationTypeSelect) {
 	let relationTypeValue = relationTypeSelect.find('option:selected').val();
@@ -496,7 +496,7 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 		console.log(data);
 		openAlertDlg("Viga vastassuuna andmete päringuga!");
 	});
-}
+};
 
 function initAddSynRelationDlg(addDlg) {
 	addDlg.find('.form-control').val(null);
@@ -553,7 +553,7 @@ function initAddSynRelationDlg(addDlg) {
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		addDlg.find('.form-control').first().focus();
 	});
-}
+};
 
 function decorateSourceLinks(detailsDiv) {
 	detailsDiv.find('a[href]').each(function(indx, item) {
@@ -567,7 +567,7 @@ function decorateSourceLinks(detailsDiv) {
 			});
 		}
 	});
-}
+};
 
 function openSourceDetails(elem) {
 	let dlg = $($(elem).data('target'));
@@ -579,11 +579,11 @@ function openSourceDetails(elem) {
 			dlg.find('.modal-body').html(data);
 		});
 	});
-}
+};
 
 function openMessageDlg(message) {
 	openAlertDlg(message, false);
-}
+};
 
 function openAlertDlg(alertMessage, showAsAlert = true) {
 	let alertDlg = $('#alertDlg');
@@ -592,7 +592,7 @@ function openAlertDlg(alertMessage, showAsAlert = true) {
 	alertDlg.find('.alert-success').prop('hidden', showAsAlert);
 	alertDlg.modal('show');
 	alertDlg.find('.modal-footer button').focus();
-}
+};
 
 function openConfirmDlg(confirmQuestion, callback) {
 	let alertDlg = $('#confirmDlg');
@@ -604,7 +604,7 @@ function openConfirmDlg(confirmQuestion, callback) {
 		alertDlg.modal('hide');
 		callback();
 	});
-}
+};
 
 function openWaitDlg(message) {
 	if (message) {
@@ -627,7 +627,7 @@ function closeWaitDlg() {
 		$("#waitDlg").modal("hide");
 		$("body").css("cursor", "default");
 	}, timeout);
-}
+};
 
 function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
 	var ul = $("<ul/>");
@@ -646,7 +646,7 @@ function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
 		alertDlg.modal('hide');
 		callback(...callbackArgs);
 	});
-}
+};
 
 function initWordValueEditorDlg(dlg) {
 	let editFld = dlg.find('[data-name=editFld]');
@@ -678,7 +678,7 @@ function initWordValueEditorDlg(dlg) {
 			editFld.addClass('is-invalid');
 		}
 	});
-}
+};
 
 function deleteLexemeAndWordAndMeaning() {
 	var opName = "delete";
@@ -688,7 +688,7 @@ function deleteLexemeAndWordAndMeaning() {
 	let successCallbackFunc = () => eval(successCallbackName)($(this));
 
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
-}
+};
 
 function deleteLexemeAndRusMeaningLexemes() {
 	var opName = "delete";
@@ -698,7 +698,7 @@ function deleteLexemeAndRusMeaningLexemes() {
 	let successCallbackFunc = () => eval(successCallbackName)($(this));
 
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
-}
+};
 
 function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) {
 	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
@@ -726,14 +726,14 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 		console.log(data);
 		openAlertDlg("Kustutamine ebaõnnestus");
 	});
-}
+};
 
 function initClassifierAutocomplete() {
 	$('.classifier-select').selectpicker({
 		width : '100%',
 		container: 'body'
 	});
-}
+};
 
 function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 	$.ajax({
@@ -753,5 +753,5 @@ function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 		console.log(data);
 		openAlertDlg(failMessage);
 	});
-}
+};
 

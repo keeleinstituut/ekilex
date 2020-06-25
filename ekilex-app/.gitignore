@@ -3,6 +3,9 @@
 /.classpath
 /.project
 
+src/main/resources/view/css/styles.css
+src/main/resources/view/js/main.js
+
 .cache
 # Dependency directories
 node_modules/

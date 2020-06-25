@@ -1,4 +1,4 @@
-function initialise() {
+function initializeLexSearch() {
 
 	$(document).on("click", ":button[name='word-details-btn']", function() {
 		let wordId = $(this).data('id');
@@ -17,7 +17,7 @@ function initialise() {
 		let orderingData = changeItemOrdering(orderingBtn, -1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetails();
+			refreshDetailsLexSearch();
 		}
 	});
 
@@ -26,7 +26,7 @@ function initialise() {
 		let orderingData = changeItemOrdering(orderingBtn, 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetails();
+			refreshDetailsLexSearch();
 		}
 	});
 
@@ -72,7 +72,7 @@ function initialise() {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
 				openMessageDlg(response.message);
-				refreshDetails();
+				refreshDetailsLexSearch();
 			} else {
 				openAlertDlg(response.message);
 			}
@@ -88,7 +88,7 @@ function initialise() {
 		$.post(url).done(function(data) {
 			var response = JSON.parse(data);
 			openMessageDlg(response.message);
-			refreshDetails();
+			refreshDetailsLexSearch();
 		}).fail(function(data) {
 			openAlertDlg("Tähenduse lisamine ebaõnnestus");
 			console.log(data);
@@ -140,7 +140,7 @@ function initialise() {
 
 	initNewWordDlg();
 	initClassifierAutocomplete();
-}
+};
 
 function loadWordDetails(wordId) {
 	$("[id^='word_select_wait_']").hide();
@@ -167,11 +167,11 @@ function loadWordDetails(wordId) {
 		closeWaitDlg();
 		alert('Keelendi detailide päring ebaõnnestus');
 	});
-}
+};
 
 function loadFullLexemeDetails(lexemeId, lexemeLevels) {
 	loadLexemeDetails(lexemeId, lexemeLevels, "full");
-}
+};
 
 function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 	openWaitDlg();
@@ -190,7 +190,7 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 		closeWaitDlg();
 		alert('Lekseemi detailide päring ebaõnnestus');
 	});
-}
+};
 
 function initLexemeLevelsDlg(editDlg) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
@@ -208,7 +208,7 @@ function initLexemeLevelsDlg(editDlg) {
 			console.log(data);
 		});
 	});
-}
+};
 
 function initUsageAuthorDlg(addDlg) {
 	addDlg.find('.form-control').val(null);
@@ -216,7 +216,7 @@ function initUsageAuthorDlg(addDlg) {
 	let selectElem = addDlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 	initRelationDialogLogic(addDlg, 'source-id');
-}
+};
 
 function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 	let wordValueEditFld = dlg.find('[data-name=wordValueEditFld]');
@@ -236,13 +236,13 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 			wordValueEditFld.addClass('is-invalid');
 		}
 	});
-}
+};
 
-function refreshDetails() {
+function refreshDetailsLexSearch() {
 	var refreshButton = $('#refresh-details');
 	refreshButton.trigger('click');
-}
+};
 
-function doNewSearch() {
+function doNewSearchLexDetail() {
 	$('#simple_search_filter').find('button[type=submit]').trigger('click');
-}
+};

@@ -3,7 +3,6 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{meaning.join.title}">EKILEX tähenduste ühendamine</title>
 <th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/ekilex-meaningjoin.js}"></script>
 </th:block>
 </head>
 <body class="body-with-navbar">
@@ -253,7 +252,7 @@
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <script th:inline="javascript">
-  	initialise();
+  	initializeMeaningJoin();
   	$('[data-toggle=join-confirm]').confirmation({
   		btnOkLabel : 'Jah',
   		btnCancelLabel : 'Ei',

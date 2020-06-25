@@ -46,4 +46,4 @@ function initSourceNameAutocomplete(dlg) {
 	};
 
 	dlg.find("input[name='searchFilter']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
-}
+};

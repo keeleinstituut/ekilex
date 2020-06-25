@@ -1,10 +1,10 @@
 function initEditSourcePropertyDlg(editDlg) {
 	validateAndSubmitAndUpdateSourcePropertyForm(editDlg);
-}
+};
 
 function initAddSourcePropertyDlg(addDlg) {
 	validateAndSubmitAndUpdateSourcePropertyForm(addDlg);
-}
+};
 
 function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 	dlg.find('button[type="submit"]').off('click').on('click', function (e) {
@@ -27,12 +27,12 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 			openAlertDlg('Salvestamine ebaõnnestus');
 		});
 	});
-}
+};
 
 function isSourcePropertyFormValid(form) {
 	validateRequiredSourceFormField(form, 'textarea', 'valueText');
 	return form.find(".error-show").length == 0;
-}
+};
 
 function validateRequiredSourceFormField(form, type, fieldName) {
 	var fieldElement = form.find(type + "[name=" + fieldName + "]");
@@ -41,7 +41,7 @@ function validateRequiredSourceFormField(form, type, fieldName) {
 	} else {
 		fieldElement.siblings(".errors").find(".alert-danger").removeClass("error-show");
 	}
-}
+};
 
 function deleteSourceProperty(sourceId, sourcePropertyId, sourcePropertyType, count) {
 	let deleteSourcePropertyUrl = applicationUrl + 'delete_source_property/' + sourceId + '/' + sourcePropertyId + '/' + sourcePropertyType + '/' + count;
@@ -51,7 +51,7 @@ function deleteSourceProperty(sourceId, sourcePropertyId, sourcePropertyType, co
 		console.log(data);
 		openAlertDlg('Kustutamine ebaõnnestus');
 	});
-}
+};
 
 function initEditSourceTypeSelectDlg(selectDlg) {
 	let selectControl = selectDlg.find('select');
@@ -65,7 +65,7 @@ function initEditSourceTypeSelectDlg(selectDlg) {
 			submitAndUpdateSourceType(selectDlg)
 		}
 	});
-}
+};
 
 function submitAndUpdateSourceType(selectDlg) {
 	let form = selectDlg.find('form');
@@ -81,7 +81,7 @@ function submitAndUpdateSourceType(selectDlg) {
 		console.log(data);
 		openAlertDlg('Muutmine ebaõnnestus');
 	});
-}
+};
 
 function initialiseAddNewProperty() {
 	displayButtons();
@@ -97,7 +97,7 @@ function initialiseAddNewProperty() {
 		displayButtons();
 	});
 
-}
+};
 
 function displayButtons() {
 	$('[name="removePropertyGroupBtn"]').each(function (i, v) {
@@ -107,45 +107,19 @@ function displayButtons() {
 			$(this).show();
 		}
 	});
-}
+};
 
 function createAndAttachCopyFromLastSourceItem(parentElement) {
 	let copyOfLastElement = parentElement.clone();
 	copyOfLastElement.find('textArea').val(null);
 	parentElement.after(copyOfLastElement);
-}
-
-$(document).on("click", "#addSourceSubmitBtn", function () {
-	let location = $(this).attr("data-location");
-	let form = $("#addSourceForm");
-	let dlg = $("#addSourceDlg");
-	if (!isNewSourceFormValid(form)) {
-		return;
-	}
-
-	$.ajax({
-		url: form.attr('action'),
-		data: form.serialize(),
-		method: 'POST',
-	}).done(function (sourceId) {
-		if (location === "source_search") {
-			window.location = applicationUrl + 'sourcesearch/' + sourceId;
-		}
-		if (location === "term_search" || location === "lex_search") {
-			dlg.modal('hide');
-			openMessageDlg("Allikas lisatud");
-		}
-	}).fail(function (data) {
-		console.log(data);
-		openAlertDlg('Allika lisamine ebaõnnestus');
-	});
-});
+};
 
 function isNewSourceFormValid(form) {
 	validateRequiredSourceFormField(form, 'input', 'sourceName');
 	validateRequiredSourceFormField(form, 'select', 'sourceType');
 	return form.find(".error-show").length == 0;
-}
+};
 
 function executeValidateSourceDelete(sourceId) {
 	let validateUrl = applicationUrl + 'validate_delete_source/' + sourceId;
@@ -163,7 +137,7 @@ function executeValidateSourceDelete(sourceId) {
 		openAlertDlg("Allika eemaldamine ebaõnnestus.");
 		console.log(data);
 	});
-}
+};
 
 function deleteSourceAndUpdateSearch(deleteUrl) {
 	$.get(deleteUrl).done(function (data) {
@@ -172,15 +146,43 @@ function deleteSourceAndUpdateSearch(deleteUrl) {
 		openAlertDlg("Allika eemaldamine ebaõnnestus.");
 		console.log(data);
 	});
-}
+};
 
-$(document).on('show.bs.modal', '#sourceLifecycleLogDlg', function(e) {
-	var dlg = $(this);
-	var link = $(e.relatedTarget);
-	var url = link.attr('href');
-	dlg.find('.close').focus();
-	dlg.find('.modal-body').html(null);
-	$.get(url).done(function(data) {
-		dlg.find('.modal-body').html(data);
+$(function(){
+	
+	$(document).on('show.bs.modal', '#sourceLifecycleLogDlg', function(e) {
+		var dlg = $(this);
+		var link = $(e.relatedTarget);
+		var url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
+	$(document).on("click", "#addSourceSubmitBtn", function () {
+		let location = $(this).attr("data-location");
+		let form = $("#addSourceForm");
+		let dlg = $("#addSourceDlg");
+		if (!isNewSourceFormValid(form)) {
+			return;
+		}
+
+		$.ajax({
+			url: form.attr('action'),
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function (sourceId) {
+			if (location === "source_search") {
+				window.location = applicationUrl + 'sourcesearch/' + sourceId;
+			}
+			if (location === "term_search" || location === "lex_search") {
+				dlg.modal('hide');
+				openMessageDlg("Allikas lisatud");
+			}
+		}).fail(function (data) {
+			console.log(data);
+			openAlertDlg('Allika lisamine ebaõnnestus');
+		});
 	});
 });

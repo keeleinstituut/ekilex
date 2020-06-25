@@ -1,6 +1,6 @@
 function selectDatasets(selection) {
 	$('#datasetSelectDlg').find(':checkbox').prop('checked', selection)
-}
+};
 
 function displayDetailConditionButtons() {
 	$('[name="removeDetailConditionBtn"]').each(function(i, v) {
@@ -11,7 +11,7 @@ function displayDetailConditionButtons() {
 			$(this).show();
 		}
 	});
-}
+};
 
 function displayDetailGroupButtons() {
 	if ($('[name="detailGroup"]').length === 1) {
@@ -19,15 +19,15 @@ function displayDetailGroupButtons() {
 	} else {
 		$('[name="removeDetailGroupBtn"]').show();
 	}
-}
+};
 
 function displaySimpleSearch() {
 	$('#searchMode').val('SIMPLE');
-}
+};
 
 function displayDetailSearch() {
 	$('#searchMode').val('DETAIL');
-}
+};
 
 function initialiseSearchForm() {
 	$('#simpleSearchModeBtn').on('click',displaySimpleSearch);
@@ -46,7 +46,7 @@ function initialiseSearchForm() {
 			validateAndSubmitSimpleSearch();
 		}
 	});
-}
+};
 
 function validateAndSubmitSimpleSearch() {
 	let searchForm = $('#searchForm');
@@ -56,7 +56,7 @@ function validateAndSubmitSimpleSearch() {
 		$('#isSearchFilterValid').val('true');
 		searchForm.submit();
 	}
-}
+};
 
 function initialiseDetailSearch() {
 	displayDetailConditionButtons();
@@ -165,7 +165,7 @@ function initialiseDetailSearch() {
 			copyOfValueTemplate.selectpicker({width: '100%'})
 		}
 
-	}
+	};
 
 	$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
 
@@ -184,7 +184,7 @@ function initialiseDetailSearch() {
 	$('[data-live-search="true"]:not(:hidden)').each(function () {
 		$(this).selectpicker({width: '100%'});
 	})
-}
+};
 
 function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 
@@ -201,21 +201,21 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 	copyOfLastElement.find('input').val(null);
 	lastElement.after(copyOfLastElement);
 	return parentElement.find('[name="' + itemName + '"]').last();
-}
+};
 
 function initConditionGroup(groupElement) {
 	let entitySelect = groupElement.find('select[name$="entity"]');
 	entitySelect.val(entitySelect.find('option').first().val());
 	entitySelect.trigger('change');
 	displayDetailGroupButtons();
-}
+};
 
 function initCondition(conditionElement) {
 	let searchKeySelect = conditionElement.find('select[name$="searchKey"]');
 	searchKeySelect.val(searchKeySelect.find('option').first().val());
 	searchKeySelect.trigger('change');
 	displayDetailConditionButtons();
-}
+};
 
 function validateSearchFilter(searchFilter) {
 	if (searchFilter === '*') {
@@ -224,4 +224,4 @@ function validateSearchFilter(searchFilter) {
 		return false;
 	}
 	return true;
-}
+};

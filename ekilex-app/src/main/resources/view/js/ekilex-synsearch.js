@@ -3,7 +3,7 @@ var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
 var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
-function initialise() {
+function initializeSynSearch() {
 	let activeSearchResultID;
 
 	//Enter keyboard edit mode
@@ -111,7 +111,7 @@ function initialise() {
 					openWaitDlg();
 					postJson(applicationUrl + 'update_ordering', orderingData);
 					if (orderingBtn.hasClass('do-refresh')) {
-						refreshDetails();
+						refreshDetailsSynSearch();
 					}
 				}
 			});
@@ -142,7 +142,7 @@ function initialise() {
 					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
 
 					openWaitDlg();
-					let callbackFunc = () => refreshDetails();
+					let callbackFunc = () => refreshDetailsSynSearch();
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
 			});
@@ -171,7 +171,7 @@ function initialise() {
 		let id = $(this).data('id');
 		let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
 
-		let callbackFunc = () => refreshDetails();
+		let callbackFunc = () => refreshDetailsSynSearch();
 
 		doPostRelationChange(actionUrl, callbackFunc);
 
@@ -182,7 +182,7 @@ function initialise() {
 		let orderingData = changeItemOrdering(orderingBtn, -1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetails();
+			refreshDetailsSynSearch();
 		}
 	});
 
@@ -191,7 +191,7 @@ function initialise() {
 		let orderingData = changeItemOrdering(orderingBtn, 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetails();
+			refreshDetailsSynSearch();
 		}
 	});
 
@@ -242,7 +242,7 @@ function initialise() {
 		let dlg = $("#selectSynMeaningWordLangDlg");
 		validateAndSubmitLangSelectForm(dlg);
 	});
-}
+};
 
 function validateAndSubmitLangSelectForm(dlg) {
 	let form = dlg.find('form');
@@ -253,14 +253,14 @@ function validateAndSubmitLangSelectForm(dlg) {
 			method: 'POST',
 		}).done(function() {
 			dlg.modal('hide');
-			refreshDetails();
+			refreshDetailsSynSearch();
 		}).fail(function(data) {
 			dlg.modal('hide');
 			console.log(data);
 			openAlertDlg('Viga! Keele valik ebaõnnestus');
 		});
 	}
-}
+};
 
 function activateSynCandidatesList() {
 	let activatedList = $('#synCandidatesListDiv');
@@ -269,7 +269,7 @@ function activateSynCandidatesList() {
 	itemToSelect.addClass('keyboard-nav-list-item-active');
 	itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 	changeSynonymDefinitionDisplay('show');
-}
+};
 
 function changeLexemeMeaningOrdering(target, delta) {
 	let orderBlock = target.closest('.orderable');
@@ -320,7 +320,7 @@ function changeLexemeMeaningOrdering(target, delta) {
 		items: orderedItems,
 		additionalInfo: additionalInfo
 	};
-}
+};
 
 function doPostRelationChange(actionUrl, callbackFunc) {
 
@@ -334,13 +334,13 @@ function doPostRelationChange(actionUrl, callbackFunc) {
 		openAlertDlg("Andmete muutmine ebaõnnestus.");
 		console.log(data);
 	});
-}
+};
 
 function setLayerComplete(wordId) {
 	let actionUrl = applicationUrl + "update_layer_complete/" + wordId;
-	let callbackFunc = () => refreshDetails();
+	let callbackFunc = () => refreshDetailsSynSearch();
 	doPostRelationChange(actionUrl, callbackFunc);
-}
+};
 
 function isDisabledItem(activeDiv, navigateItem) {
 	let panelIndex = activeDiv.attr('data-panel-index');
@@ -351,7 +351,7 @@ function isDisabledItem(activeDiv, navigateItem) {
 		return navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
 	}
 	return false;
-}
+};
 
 function unActivateItem(selectedItem, unSelect) {
 
@@ -363,7 +363,7 @@ function unActivateItem(selectedItem, unSelect) {
 			selectedItem.removeAttr(NAVIGATE_SELECTED_ATTR);
 		}
 	}
-}
+};
 
 function findSelectedNavigateItem(activeDiv) {
 	let selectedItem = activeDiv.find('[' + NAVIGATE_SELECTED_ATTR + ']');
@@ -373,7 +373,7 @@ function findSelectedNavigateItem(activeDiv) {
 	}
 
 	return selectedItem;
-}
+};
 
 function isValidPanelChangeKeyPress(keyCode) {
 	let synDetailsVisible = $("#syn_details_div").html() != '';
@@ -394,7 +394,7 @@ function isValidPanelChangeKeyPress(keyCode) {
 	}
 
 	return true;
-}
+};
 
 function isValidKeyboardModeKeypress(e) {
 	if (IS_KEYBOARD_MODE == false) {
@@ -412,7 +412,7 @@ function isValidKeyboardModeKeypress(e) {
 	}
 
 	return true;
-}
+};
 
 function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex) {
 	if (currentSelectedItem.length != 0) {
@@ -434,7 +434,7 @@ function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, curr
 			}
 		}
 	}
-}
+};
 
 function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
 	if (isValidPanelChangeKeyPress(e.keyCode)) {
@@ -478,7 +478,7 @@ function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
 			changeSynonymDefinitionDisplay('show');
 		}
 	}
-}
+};
 
 function handleEscapeKeyPress(currentActivePanelIndex) {
 	if (currentActivePanelIndex == "3") {
@@ -501,7 +501,7 @@ function handleEscapeKeyPress(currentActivePanelIndex) {
 	});
 	$('body').removeClass('keyboard-edit-mode-active');
 	IS_KEYBOARD_MODE = false;
-}
+};
 
 function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList) {
 	e.preventDefault();
@@ -537,7 +537,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 				let meaningId = currentSelectedItem.data('meaning-id');
 
 				let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-				let callbackFunc = () => refreshDetails();
+				let callbackFunc = () => refreshDetailsSynSearch();
 				doPostRelationChange(actionUrl, callbackFunc);
 
 			} else {
@@ -555,7 +555,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 		activateSynCandidatesList();
 
 	}
-}
+};
 
 function handleKeyPress(e) {
 	if (!isValidKeyboardModeKeypress(e)) {
@@ -585,7 +585,7 @@ function handleKeyPress(e) {
 	if (e.keyCode == 13) {
 		handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, currentActiveList);
 	}
-}
+};
 
 function getScrollPositions() {
 	let scrollPositions = [];
@@ -596,23 +596,23 @@ function getScrollPositions() {
 
 	})
 	return scrollPositions;
-}
+};
 
 function setScrollPositions(positions) {
 	$('.keyboard-nav-list').each(function(i) {
 		$(this).scrollTop(positions[i]);
 	})
-}
+};
 
 function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 	$('.tooltip').remove();
 	$('.keyboard-nav-list-item-active .list-item-value').tooltip(displayOption);
-}
+};
 
-function refreshDetails() {
+function refreshDetailsSynSearch() {
 	let selectedWordId = $('#syn_details_div').data('id');
 	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
 
 	refreshButton.trigger('click');
 	refreshButton.parent().addClass('active');
-}
+};

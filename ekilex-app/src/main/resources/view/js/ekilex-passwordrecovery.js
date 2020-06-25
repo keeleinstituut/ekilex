@@ -1,4 +1,4 @@
-function initialise() {
+function initializePasswordRecovery() {
 	$(document).on("click", "#passRecoveryBtn", function () {
 		let passRecoveryForm = $("#passRecoveryForm");
 		let code = $(this).data('code');
@@ -6,4 +6,4 @@ function initialise() {
 		passRecoveryForm.attr("action", action);
 		passRecoveryForm.submit();
 	});
-}
+};

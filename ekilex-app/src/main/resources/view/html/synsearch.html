@@ -3,14 +3,6 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{syn.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/jquery.scrollTo.min.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-dialog.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-synsearch.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-syndialog.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.et.min.js}"></script>
 </th:block>
 </head>
 <body class="d-flex flex-column">
@@ -132,7 +124,7 @@
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="syndialog :: #synTutorialDlg"></div>
   <script th:inline="javascript">
-	  initialise();
+	  initializeSynSearch();
   </script>
 </body>
 </html>

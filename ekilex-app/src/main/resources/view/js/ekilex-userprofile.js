@@ -1,6 +1,9 @@
-$(document).on("show.bs.modal", "#selectMeaningRelationPrefsDlg", function() {
-	initSelectMeaningRelationPrefsDlg($(this));
+$(function(){
+	$(document).on("show.bs.modal", "#selectMeaningRelationPrefsDlg", function() {
+		initSelectMeaningRelationPrefsDlg($(this));
+	});
 });
+
 
 function initSelectMeaningRelationPrefsDlg(dlg) {
 	dlg.find(".classifier-select").selectpicker({
@@ -11,11 +14,11 @@ function initSelectMeaningRelationPrefsDlg(dlg) {
 		e.preventDefault();
 		validateAndSubmitMeaningRelationPrefsForm(dlg);
 	});
-}
+};
 
 function validateAndSubmitMeaningRelationPrefsForm(dlg) {
 	let form = dlg.find('form');
 	if (checkRequiredFields(form)) {
 		form.submit();
 	}
-}
+};

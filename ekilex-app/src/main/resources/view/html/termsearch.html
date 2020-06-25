@@ -3,15 +3,6 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{term.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-searchfilter.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-termsearch.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-termdialog.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-dialog.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-sourcesearch.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ekilex-autocomplete.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap-datepicker.et.min.js}"></script>
 </th:block>
 </head>
 <body class="body-with-navbar compacted">
@@ -115,7 +106,7 @@
                       sec:authorize="#vars.isMeaningAnyLexemeCrudGranted">Uus termin</button>
               <button class="btn btn-warning font-weight-bold btn-sm" type="button"
                       th:data-id="${meaningId}"
-                      data-callback="doNewSearch"
+                      data-callback="doNewSearchTermSearch"
                       data-toggle="deleteMeaningAndLexemesAndWords"
                       sec:authorize="#vars.isMeaningLexemeCrudGranted">Kustuta</button>
               <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
@@ -1040,7 +1031,9 @@
   <div th:replace="termdialog :: new_word_dlg"></div>
   <div th:replace="sourcedialog :: add_source_dlg('term_search')"></div>
   <script th:inline="javascript">
-	  initialise();
+    $(function(){
+      initializeTermSearch();
+    });
   </script>
 </body>
 </html>

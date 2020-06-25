@@ -179,13 +179,13 @@
                 <a class="btn btn-secondary font-weight-bold btn-sm"
                    href="#"
                    th:data-id="${lexeme.lexemeId}"
-                   data-callback="doNewSearch"
+                   data-callback="doNewSearchLexDetail"
                    data-toggle="deleteLexemeAndWordAndMeaning"
                    sec:authorize="#vars.lexeme.crudGrant">Kustuta koos tähendusega</a>
                 <a class="btn btn-secondary font-weight-bold btn-sm"
                    href="#"
                    th:data-id="${lexeme.lexemeId}"
-                   data-callback="doNewSearch"
+                   data-callback="doNewSearchLexDetail"
                    data-toggle="deleteLexemeAndRusMeaningLexemes"
                    sec:authorize="#vars.lexeme.crudGrant">Kustuta koos tähenduse ja venekeelsete vastetega</a>
               </span>
