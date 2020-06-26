@@ -154,8 +154,8 @@ insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_c
 insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4016, 1002, 2016, 'evs', 'PRIMARY', 'avalik', 'DEFAULT');
 insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4017, 1003, 2017, 'qq2', 'PRIMARY', 'avalik', 'DEFAULT');
 insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4018, 1004, 2018, 'qq2', 'PRIMARY', 'avalik', 'DEFAULT');
-insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4019, 1005, 2019, 'qq2', 'PRIMARY', 'määramata', 'DEFAULT');
-insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4020, 1006, 2020, 'qq2', 'PRIMARY', 'määramata', 'DEFAULT');
+insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4019, 1005, 2019, 'qq2', 'PRIMARY', 'mitteavalik', 'DEFAULT');
+insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4020, 1006, 2020, 'qq2', 'PRIMARY', 'mitteavalik', 'DEFAULT');
 insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4021, 1007, 2021, 'qq2', 'PRIMARY', 'avalik', 'DEFAULT');
 insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4022, 1008, 2022, 'qq2', 'PRIMARY', 'avalik', 'DEFAULT');
 insert into lexeme (id, word_id, meaning_id, dataset_code, type, process_state_code, complexity) values (4023, 1009, 2023, 'qq2', 'PRIMARY', 'avalik', 'DEFAULT');
