@@ -110,8 +110,8 @@
               <small>
                 <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
               </small>
-              <span class="badge badge-pill badge-light ml-auto" th:if="${userRoleData.processStateChangeEnabled}">
-                <span th:text="${#strings.listJoin(word.layerProcessStateCodes, ', ')}"></span>
+              <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.lexemesTagNames)}">
+                <span th:text="${#strings.listJoin(word.lexemesTagNames, ', ')}"></span>
               </span>
             </span>
             <span class="position-absolute search-result-status">

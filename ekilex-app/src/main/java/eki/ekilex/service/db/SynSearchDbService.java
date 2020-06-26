@@ -3,7 +3,6 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
-import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -35,7 +33,6 @@ import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
@@ -186,11 +183,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 	}
 
 	public List<WordSynLexeme> getWordPrimarySynonymLexemes(
-			Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, LayerName layerName, String classifierLabelLang, String classifierLabelTypeCode) {
+			Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
-		LayerState lst = LAYER_STATE.as("lst");
 
 		Condition dsWhere = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
@@ -205,11 +201,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				l.LEVEL1,
 				l.LEVEL2,
 				l.WEIGHT,
-				lposf.as("pos"),
-				lst.PROCESS_STATE_CODE.as("layer_process_state_code"))
-				.from(l
-						.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE))
-						.leftOuterJoin(lst).on(lst.LEXEME_ID.eq(l.ID).and(lst.LAYER_NAME.eq(layerName.name()))))
+				lposf.as("pos"))
+				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
 				.where(
 						l.WORD_ID.eq(wordId)
 								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))

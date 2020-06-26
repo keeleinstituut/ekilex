@@ -262,10 +262,6 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteMeaningLifecycleLogsForDataset(), paramMap);
 		logger.debug("Deleted {} meaning lifecycle logs in \"{}\"", deletedRecordCount, dataset);
 
-		// delete process logs
-		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteProcessLogsForDataset(), paramMap);
-		logger.debug("Deleted {} process logs in \"{}\"", deletedRecordCount, dataset);
-
 		// delete definitions
 		deletedRecordCount = basicDbService.executeScript(sqls.getSqlDeleteDefinitionsForDataset(), paramMap);
 		logger.debug("Deleted {} definitions in \"{}\"", deletedRecordCount, dataset);
@@ -859,7 +855,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		populateLexemeValueParamMap(lexeme, valueParamMap);
 		Long lexemeId = basicDbService.create(LEXEME, valueParamMap);
 		String processStateCode = (String) valueParamMap.get("process_state_code");
-		createLexemeProcessStateProcessLog(lexemeId, processStateCode);
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, LifecycleEventType.UPDATE, processStateCode);
 		return lexemeId;
 	}
 
@@ -889,7 +885,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
 				String processStateCode = (String) valueParamMap.get("process_state_code");
-				createLexemeProcessStateProcessLog(lexemeId, processStateCode);
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, LifecycleEventType.UPDATE, processStateCode);
 			}
 		}
 		return lexemeId;
@@ -977,45 +973,6 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		}
 	}
 
-	protected Long createProcessLog(String eventBy, Timestamp eventOn, String comment, String processStateCode, String datasetCode) throws Exception {
-
-		if (StringUtils.isBlank(eventBy)) {
-			eventBy = "Ekilex " + datasetCode + "-laadur";
-		}
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("event_by", eventBy);
-		if (eventOn != null) {
-			tableRowParamMap.put("event_on", eventOn);
-		}
-		if (StringUtils.isNotBlank(comment)) {
-			String commentClean = removeEkiEntityMarkup(comment);
-			String commentPrese = convertEkiEntityMarkup(comment);
-			tableRowParamMap.put("comment", commentClean);
-			tableRowParamMap.put("comment_prese", commentPrese);
-		}
-		if (StringUtils.isNotBlank(processStateCode)) {
-			tableRowParamMap.put("process_state_code", processStateCode);
-		}
-		tableRowParamMap.put("dataset_code", datasetCode);
-		Long processLogId = basicDbService.create(PROCESS_LOG, tableRowParamMap);
-		return processLogId;
-	}
-
-	protected void updateProcessLogText(Long processLogId, String comment) throws Exception {
-
-		String commentClean = removeEkiEntityMarkup(comment);
-		commentClean = removeEkiElementMarkup(commentClean);
-		String commentPrese = convertEkiEntityMarkup(comment);
-
-		Map<String, Object> criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("id", processLogId);
-		Map<String, Object> valueParamMap = new HashMap<>();
-		valueParamMap.put("comment", commentClean);
-		valueParamMap.put("comment_prese", commentPrese);
-		basicDbService.update(PROCESS_LOG, criteriaParamMap, valueParamMap);
-	}
-
 	protected void updateLexemeProcessState(Long lexemeId, String processStateCode) throws Exception {
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
@@ -1024,29 +981,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		valueParamMap.put("process_state_code", processStateCode);
 		basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
 
-		createLexemeProcessStateProcessLog(lexemeId, processStateCode);
-	}
-
-	protected Long createLexemeProcessStateProcessLog(Long lexemeId, String processStateCode) throws Exception {
-		String datasetCode = getDataset();
-		return createLexemeProcessLog(lexemeId, null, null, null, processStateCode, datasetCode);
-	}
-
-	protected Long createLexemeProcessLog(Long lexemeId, String comment) throws Exception {
-		String datasetCode = getDataset();
-		return createLexemeProcessLog(lexemeId, null, null, comment, null, datasetCode);
-	}
-
-	protected Long createLexemeProcessLog(Long lexemeId, String eventBy, Timestamp eventOn, String comment, String processStateCode, String datasetCode) throws Exception {
-		
-		Long processLogId = createProcessLog(eventBy, eventOn, comment, processStateCode, datasetCode);
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("process_log_id", processLogId);
-		basicDbService.create(LEXEME_PROCESS_LOG, tableRowParamMap);
-
-		return processLogId;
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, LifecycleEventType.UPDATE, processStateCode);
 	}
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
@@ -1070,8 +1005,12 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 	}
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity) throws Exception {
+		return createLexemeFreeform(lexemeId, freeformType, valueText, valuePrese, lang, complexity, null);
+	}
 
-		Long freeformId = createFreeformText(null, freeformType, valueText, valuePrese, lang, complexity);
+	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity, Boolean isPublic) throws Exception {
+
+		Long freeformId = createFreeformText(null, freeformType, valueText, valuePrese, lang, complexity, isPublic);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -1199,7 +1138,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		return freeformId;
 	}
 
-	protected Long createFreeformText(Long parentId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity) throws Exception {
+	protected Long createFreeformText(Long parentId, FreeformType freeformType, String valueText, String valuePrese, String lang, Complexity complexity, Boolean isPublic) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -1213,6 +1152,9 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		}
 		if (complexity != null) {
 			tableRowParamMap.put("complexity", complexity.name());
+		}
+		if (isPublic != null) {
+			tableRowParamMap.put("is_public", isPublic);
 		}
 		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
 		return freeformId;
@@ -1271,19 +1213,6 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 			tableRowParamMap.put("value", value);
 		}
 		Long sourceLinkId = basicDbService.create(FREEFORM_SOURCE_LINK, tableRowParamMap);
-		return sourceLinkId;
-	}
-
-	protected Long createProcessLogSourceLink(Long processLogId, ReferenceType refType, Long sourceId, String value) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("process_log_id", processLogId);
-		tableRowParamMap.put("type", refType.name());
-		tableRowParamMap.put("source_id", sourceId);
-		if (StringUtils.isNotBlank(value)) {
-			tableRowParamMap.put("value", value);
-		}
-		Long sourceLinkId = basicDbService.create(PROCESS_LOG_SOURCE_LINK, tableRowParamMap);
 		return sourceLinkId;
 	}
 

@@ -13,10 +13,10 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
@@ -68,6 +68,7 @@ import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
@@ -263,10 +264,26 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinLexemeDerivs(lexemeId, sourceLexemeId);
 		joinLexemeRegions(lexemeId, sourceLexemeId);
 		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, lexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
-		create.update(LEXEME_PROCESS_LOG).set(LEXEME_PROCESS_LOG.LEXEME_ID, lexemeId).where(LEXEME_PROCESS_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
 		joinLexemeRelations(lexemeId, sourceLexemeId);
 		joinLexemeProcessStateCodes(lexemeId, sourceLexemeId);
+		joinLexemeTags(lexemeId, sourceLexemeId);
 		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
+	}
+
+	private void joinLexemeTags(Long lexemeId, Long sourceLexemeId) {
+
+		LexemeTag lt1 = LEXEME_TAG.as("lt1");
+		LexemeTag lt2 = LEXEME_TAG.as("lt2");
+		create
+				.update(lt1)
+				.set(lt1.LEXEME_ID, lexemeId)
+				.where(lt1.LEXEME_ID.eq(sourceLexemeId))
+				.andNotExists(DSL
+						.select(lt2.ID)
+						.from(lt2)
+						.where(lt2.LEXEME_ID.eq(lexemeId)
+								.and(lt2.TAG_NAME.eq(lt1.TAG_NAME))))
+				.execute();
 	}
 
 	private void joinLexemeProcessStateCodes(Long targetLexemeId, Long sourceLexemeId) {

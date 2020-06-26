@@ -65,7 +65,6 @@ function initializeDatasets() {
 
 	$(document).on('hide.bs.modal ', ".edit-dataset-dialog", function(e) {
 		emptyClassifSelect($(this), "languages");
-		emptyClassifSelect($(this), "processStates");
 		emptyClassifSelect($(this), "origins");
 
 		let domains = $(this).find('select[name="domains"]');
@@ -87,7 +86,6 @@ function initializeDatasets() {
 			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);
 
 			markSelectedClassifiers(thisForm, "languages", dataset.languages);
-			markSelectedClassifiers(thisForm, "processStates", dataset.processStates);
 			markClassifierDomains(thisForm, dataset);
 
 		}).fail(function(data) {

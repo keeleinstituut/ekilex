@@ -493,7 +493,6 @@ create table eki_user_profile
   user_id bigint references eki_user(id) on delete cascade not null,
   recent_dataset_permission_id bigint references dataset_permission(id),
   preferred_datasets varchar(10) array,
-  preferred_layer_name varchar(100) null,
   preferred_tag_names varchar(100) array,
   active_tag_name varchar(100) references tag(name),
   preferred_syn_candidate_langs char(3) array,
@@ -551,32 +550,6 @@ create table source_lifecycle_log
   lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
 );
 alter sequence source_lifecycle_log_id_seq restart with 10000;
-
--- protsessi logi
-create table process_log
-(
-  id bigserial primary key,
-  event_by text not null,
-  event_on timestamp not null default statement_timestamp(),
-  layer_name varchar(100) null,
-  comment text null,
-  comment_prese text null,
-  process_state_code varchar(100) references process_state(code) null,
-  dataset_code varchar(10) references dataset(code) not null
-);
-alter sequence process_log_id_seq restart with 10000;
-
-create table process_log_source_link
-(
-  id bigserial primary key,
-  process_log_id bigint references process_log(id) on delete cascade not null,
-  source_id bigint references source(id) on delete cascade not null,
-  type varchar(100) not null,
-  name text null,
-  value text null,
-  order_by bigserial
-);
-alter sequence process_log_source_link_id_seq restart with 10000;
 
 -- keelend (morfoloogiline homonüüm)
 create table word
@@ -891,16 +864,6 @@ create table lexeme
 );
 alter sequence lexeme_id_seq restart with 10000;
 
-create table layer_state
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  layer_name varchar(100) not null,
-  process_state_code varchar(100) references process_state(code) not null,
-  unique(lexeme_id, layer_name)
-);
-alter sequence layer_state_id_seq restart with 10000;
-
 create table lexeme_tag
 (
   id bigserial primary key,
@@ -981,14 +944,6 @@ create table lexeme_lifecycle_log
   lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
 );
 alter sequence lexeme_lifecycle_log_id_seq restart with 10000;
-
-create table lexeme_process_log
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  process_log_id bigint references process_log(id) on delete cascade not null
-);
-alter sequence lexeme_process_log_id_seq restart with 10000;
 
 -- ilmiku seos
 create table lex_relation
@@ -1187,8 +1142,6 @@ create index lexeme_dataset_code_idx on lexeme(dataset_code);
 create index lexeme_type_idx on lexeme(type);
 create index lexeme_process_state_code_idx on lexeme(process_state_code);
 create index lexeme_complexity_idx on lexeme(complexity);
-create index layer_state_lexeme_id_idx on layer_state(lexeme_id);
-create index layer_state_layer_name_idx on layer_state(layer_name);
 create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
 create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
 create index definition_meaning_id_idx on definition(meaning_id);
@@ -1268,8 +1221,6 @@ create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meani
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
-create index lexeme_process_log_lexeme_id_idx on lexeme_process_log(lexeme_id);
-create index lexeme_process_log_log_id_idx on lexeme_process_log(process_log_id);
 create index source_lifecycle_log_source_id_idx on source_lifecycle_log(source_id);
 create index source_lifecycle_log_log_id_idx on source_lifecycle_log(lifecycle_log_id);
 create index lifecycle_log_event_on_idx on lifecycle_log(event_on);
@@ -1277,8 +1228,6 @@ create index lifecycle_log_event_on_ms_idx on lifecycle_log((date_part('epoch', 
 create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
 create index lifecycle_log_event_by_lower_idx on lifecycle_log(lower(event_by));
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
-create index process_log_source_link_process_log_id_idx on process_log_source_link(process_log_id);
-create index process_log_source_link_source_id_idx on process_log_source_link(source_id);
 create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
 create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);
 create index temp_ds_import_pk_map_source_pk_idx on temp_ds_import_pk_map(source_pk);

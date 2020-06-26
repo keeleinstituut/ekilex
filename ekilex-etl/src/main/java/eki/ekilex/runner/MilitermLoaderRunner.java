@@ -273,7 +273,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Element overlapValueNode = (Element) termGroupNode.selectSingleNode(overlapExp);
 				if (overlapValueNode != null) {
 					String overlapLogComment = OVERLAP_PROCESS_LOG_PREFIX + overlapValueNode.getTextTrim();
-					createLexemeProcessLog(lexemeId, overlapLogComment);
+					createLexemeFreeform(lexemeId, FreeformType.NOTE, overlapLogComment, overlapLogComment, lang, Complexity.DETAIL, false);
 				}
 
 				List<Node> regionValueNodes = termGroupNode.selectNodes(regionExp);
@@ -817,7 +817,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 			for (Ref ref : refs) {
 				String majorRef = ref.getMajorRef();
 				if (processLogSourceRefNames.contains(majorRef)) {
-					createLexemeProcessLog(lexemeId, majorRef);
+					createLexemeFreeform(lexemeId, FreeformType.NOTE, majorRef, majorRef, lang, Complexity.DETAIL, false);
 				} else {
 					createSourceLink(SourceOwner.PUBLIC_NOTE, noteId, ref, term, fileName);
 				}

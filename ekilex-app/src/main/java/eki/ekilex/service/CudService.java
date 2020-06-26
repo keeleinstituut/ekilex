@@ -604,8 +604,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createLexemeTag(Long lexemeId, String tagName) {
-		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
-		// TODO (lifecycle, process?) log
+		cudDbService.createLexemeTag(lexemeId, tagName);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
+		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -1016,7 +1017,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteLexemeTag(Long lexemeId, String tagName) {
 		if (StringUtils.isNotBlank(tagName)) {
 			Long lexemeTagId = lookupDbService.getLexemeTagId(lexemeId, tagName);
-			// TODO (lifecycle, process?) log
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName, null);
+			createLifecycleLog(logData);
 			cudDbService.deleteLexemeTag(lexemeTagId);
 		}
 	}

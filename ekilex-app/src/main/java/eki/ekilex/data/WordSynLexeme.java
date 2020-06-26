@@ -25,9 +25,9 @@ public class WordSynLexeme extends AbstractCrudEntity implements LexemeLevel {
 
 	private String levels;
 
-	private String layerProcessStateCode;
-
 	private Float weight;
+
+	private List<String> tags;
 
 	private List<MeaningWordLangGroup> meaningWordLangGroups;
 
@@ -101,20 +101,20 @@ public class WordSynLexeme extends AbstractCrudEntity implements LexemeLevel {
 		this.levels = levels;
 	}
 
-	public String getLayerProcessStateCode() {
-		return layerProcessStateCode;
-	}
-
-	public void setLayerProcessStateCode(String layerProcessStateCode) {
-		this.layerProcessStateCode = layerProcessStateCode;
-	}
-
 	public Float getWeight() {
 		return weight;
 	}
 
 	public void setWeight(Float weight) {
 		this.weight = weight;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public List<MeaningWordLangGroup> getMeaningWordLangGroups() {

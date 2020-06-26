@@ -18,12 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
-import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
 import eki.ekilex.service.StatDataService;
@@ -60,10 +58,6 @@ public class HomeController extends AbstractPageController {
 	public String home(Model model) {
 		EkiUser user = userContext.getUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
-			Long userId = user.getId();
-			EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-			LayerName layerName = userProfile.getPreferredLayerName();
-			model.addAttribute("layerName", layerName);
 			populateStatData(model);
 			populateRecentRole(user, model);
 			return HOME_PAGE;
@@ -165,13 +159,4 @@ public class HomeController extends AbstractPageController {
 		return REDIRECT_PREF + HOME_URI;
 	}
 
-	@PostMapping(CHANGE_LAYER_URI)
-	public String changeLayer(@RequestParam LayerName layerName, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
-
-		logger.debug("User initiated layer change, layer name: {}", layerName);
-
-		Long userId = userContext.getUserId();
-		userProfileService.updateUserPreferredLayerName(layerName, userId);
-		return REDIRECT_PREF + HOME_URI;
-	}
 }

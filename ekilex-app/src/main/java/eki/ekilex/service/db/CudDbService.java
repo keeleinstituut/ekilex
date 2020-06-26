@@ -12,7 +12,6 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
@@ -26,7 +25,6 @@ import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -1167,12 +1165,6 @@ public class CudDbService extends AbstractDataDbService {
 						.select(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID)
 						.from(LEXEME_LIFECYCLE_LOG)
 						.where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(lexemeId))))
-				.execute();
-		create.delete(PROCESS_LOG)
-				.where(PROCESS_LOG.ID.in(DSL
-						.select(LEXEME_PROCESS_LOG.PROCESS_LOG_ID)
-						.from(LEXEME_PROCESS_LOG)
-						.where(LEXEME_PROCESS_LOG.LEXEME_ID.eq(lexemeId))))
 				.execute();
 		create.delete(FREEFORM)
 				.where(FREEFORM.ID.in(DSL

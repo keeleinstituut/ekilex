@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.common.constant.LayerName;
 import eki.common.constant.LifecycleEntity;
 import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
@@ -139,11 +138,12 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public MeaningWordCandidates getMeaningWordCandidates(Long sourceMeaningId, String wordValue, String language, Long userId, DatasetPermission userRole, LayerName layerName) {
+	public MeaningWordCandidates getMeaningWordCandidates(
+			Long sourceMeaningId, String wordValue, String language, Long userId, DatasetPermission userRole, List<String> tagNames) {
 
 		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
-		WordsResult words = getWords(wordValue, Collections.emptyList(), userRole, layerName, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		WordsResult words = getWords(wordValue, Collections.emptyList(), userRole, tagNames, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		for (Word word : words.getWords()) {
 			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -235,13 +235,13 @@ public class LookupService extends AbstractWordSearchService {
 	@Transactional
 	public List<WordLexeme> getWordLexemesOfJoinCandidates(
 			String searchWord, List<String> userPrefDatasetCodes, Integer wordHomonymNumber,
-			Long excludedMeaningId, Long userId, DatasetPermission userRole, LayerName layerName) {
+			Long excludedMeaningId, Long userId, DatasetPermission userRole, List<String> tagNames) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
 			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
-			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, layerName, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, tagNames, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {

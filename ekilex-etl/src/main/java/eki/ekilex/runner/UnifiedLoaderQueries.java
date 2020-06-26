@@ -34,7 +34,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_DELETE_WORD_LC_LOGS_FOR_DATASET = "sql/delete_word_lifecycle_logs_for_dataset.sql";
 	private static final String SQL_DELETE_LEXEME_LC_LOGS_FOR_DATASET = "sql/delete_lexeme_lifecycle_logs_for_dataset.sql";
 	private static final String SQL_DELETE_MEANING_LC_LOGS_FOR_DATASET = "sql/delete_meaning_lifecycle_logs_for_dataset.sql";
-	private static final String SQL_DELETE_PROCESS_LOGS_FOR_DATASET = "sql/delete_process_logs_for_dataset.sql";
 
 	private String sqlSelectWordIdsForDatasetByLexeme;
 	private String sqlSelectWordIdsForDatasetByGuid;
@@ -62,7 +61,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlDeleteWordLifecycleLogsForDataset;
 	private String sqlDeleteLexemeLifecycleLogsForDataset;
 	private String sqlDeleteMeaningLifecycleLogsForDataset;
-	private String sqlDeleteProcessLogsForDataset;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -148,8 +146,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_MEANING_LC_LOGS_FOR_DATASET);
 		sqlDeleteMeaningLifecycleLogsForDataset = getContent(resourceFileInputStream);
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_PROCESS_LOGS_FOR_DATASET);
-		sqlDeleteProcessLogsForDataset = getContent(resourceFileInputStream);
 	}
 
 	public String getSqlSelectWordIdsForDatasetByLexeme() {
@@ -256,7 +252,4 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 		return sqlDeleteMeaningLifecycleLogsForDataset;
 	}
 
-	public String getSqlDeleteProcessLogsForDataset() {
-		return sqlDeleteProcessLogsForDataset;
-	}
 }

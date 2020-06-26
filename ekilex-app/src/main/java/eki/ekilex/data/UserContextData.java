@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.LayerName;
 import eki.common.data.AbstractDataObject;
 
 public class UserContextData extends AbstractDataObject {
@@ -17,7 +16,7 @@ public class UserContextData extends AbstractDataObject {
 
 	private String userRoleDatasetCode;
 
-	private LayerName layerName;
+	private List<String> tagNames;
 
 	private List<String> preferredDatasetCodes;
 
@@ -26,13 +25,13 @@ public class UserContextData extends AbstractDataObject {
 	private List<String> synMeaningWordLangCodes;
 
 	public UserContextData(
-			Long userId, String userName, DatasetPermission userRole, String userRoleDatasetCode, LayerName layerName,
+			Long userId, String userName, DatasetPermission userRole, String userRoleDatasetCode, List<String> tagNames,
 			List<String> preferredDatasetCodes, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes) {
 		this.userId = userId;
 		this.userName = userName;
 		this.userRole = userRole;
 		this.userRoleDatasetCode = userRoleDatasetCode;
-		this.layerName = layerName;
+		this.tagNames = tagNames;
 		this.preferredDatasetCodes = preferredDatasetCodes;
 		this.synCandidateLangCodes = synCandidateLangCodes;
 		this.synMeaningWordLangCodes = synMeaningWordLangCodes;
@@ -54,8 +53,8 @@ public class UserContextData extends AbstractDataObject {
 		return userRoleDatasetCode;
 	}
 
-	public LayerName getLayerName() {
-		return layerName;
+	public List<String> getTagNames() {
+		return tagNames;
 	}
 
 	public List<String> getPreferredDatasetCodes() {

@@ -29,8 +29,6 @@ public class Dataset extends AbstractDataObject {
 
 	private List<Classifier> languages;
 
-	private List<Classifier> processStates;
-
 	public String getCode() {
 		return code;
 	}
@@ -110,14 +108,5 @@ public class Dataset extends AbstractDataObject {
 	public void setLanguages(List<Classifier> languages) {
 		this.languages = languages;
 	}
-
-	public List<Classifier> getProcessStates() {
-		return processStates;
-	}
-
-	public void setProcessStates(List<Classifier> processStates) {
-		this.processStates = processStates;
-	}
-
 
 }

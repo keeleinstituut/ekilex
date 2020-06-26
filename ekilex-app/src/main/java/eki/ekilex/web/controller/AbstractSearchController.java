@@ -41,7 +41,7 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	}
 
 	@ModelAttribute("datasetDomains")
-	public Map<String, List<Classifier>> getDatasetDomains(Model model) {
+	public Map<String, List<Classifier>> getDatasetDomains() {
 
 		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
@@ -51,13 +51,9 @@ public abstract class AbstractSearchController extends AbstractPageController {
 	}
 
 	@ModelAttribute("processStates")
-	public List<Classifier> getProcessStates(Model model) {
+	public List<Classifier> getProcessStates() {
 
-		DatasetPermission userRole = userContext.getUserRole();
-		if (userRole == null) {
-			return Collections.emptyList();
-		}
-		return commonDataService.getProcessStatesByDataset(userRole.getDatasetCode());
+		return commonDataService.getProcessStates();
 	}
 
 	@ModelAttribute("lexemeFrequencyGroups")

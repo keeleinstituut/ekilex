@@ -7,12 +7,10 @@ import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -64,18 +62,6 @@ public class MaintenanceDbService implements GlobalConstant {
 						.select(WORD_FREEFORM.ID)
 						.from(WORD_FREEFORM)
 						.where(WORD_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
-				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
-				.execute();
-	}
-
-	public int deleteFloatingProcessLogs() {
-
-		return create
-				.delete(PROCESS_LOG)
-				.whereNotExists(DSL
-						.select(LEXEME_PROCESS_LOG.ID)
-						.from(LEXEME_PROCESS_LOG)
-						.where(LEXEME_PROCESS_LOG.PROCESS_LOG_ID.eq(PROCESS_LOG.ID)))
 				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}

@@ -165,18 +165,6 @@
       </div>
     </form>
   </th:block>
-  <th:block th:fragment="change_layer">
-    <form method="post" th:action="@{/change_layer}">
-      <div class="row mt-3">
-        <label class="col-form-label col-auto">Vali kiht:</label>
-        <select th:with="selectedLayer = ${userProfile.preferredLayerName}" class="form-control col-2" id="changeLayerSelect" name="layerName">
-          <th:block th:each="layer : ${layerNames}">
-            <option th:value="${layer}" th:text="#{|layername.${layer.name()}|}" th:selected="${selectedLayer == layer}"/>
-          </th:block>
-        </select>
-      </div>
-    </form>
-  </th:block>
   <th:block th:fragment="paging(pagingResult)">
     <hr/>
     <form th:action="@{/update_paging}" method="post">

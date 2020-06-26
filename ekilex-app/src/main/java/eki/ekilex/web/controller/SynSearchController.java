@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
-import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
@@ -106,7 +105,7 @@ public class SynSearchController extends AbstractSearchController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		if (StringUtils.isEmpty(userRoleDatasetCode)) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
@@ -115,9 +114,9 @@ public class SynSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -146,7 +145,7 @@ public class SynSearchController extends AbstractSearchController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		if (StringUtils.isEmpty(userRoleDatasetCode)) {
 			throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Role has to be selected");
@@ -161,9 +160,9 @@ public class SynSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 
 		wordsResult.setOffset(offset);
@@ -186,10 +185,10 @@ public class SynSearchController extends AbstractSearchController {
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		List<String> synCandidateLangCodes = userContextData.getSynCandidateLangCodes();
 		List<String> synMeaningWordLangCodes = userContextData.getSynMeaningWordLangCodes();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 
 		WordSynDetails details = synSearchService.getWordSynDetails(
-				wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, userId, userRole, layerName);
+				wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, userId, userRole, tagNames);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
@@ -234,10 +233,10 @@ public class SynSearchController extends AbstractSearchController {
 		final int maxResultsLimit = 250;
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+		List<String> tagNames = userContextData.getTagNames();
 
-		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET, maxResultsLimit);
+		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, false, DEFAULT_OFFSET, maxResultsLimit);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());

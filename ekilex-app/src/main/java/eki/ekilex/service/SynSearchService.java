@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.GlobalConstant;
-import eki.common.constant.LayerName;
 import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -28,7 +25,6 @@ import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
-import eki.ekilex.data.LexemeData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
@@ -80,7 +76,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordSynDetails getWordSynDetails(
 			Long wordId, String datasetCode, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes,
-			Long userId, DatasetPermission userRole, LayerName layerName) throws Exception {
+			Long userId, DatasetPermission userRole, List<String> tagNames) throws Exception {
 
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
@@ -89,11 +85,9 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 		permCalculator.filterVisibility(wordNotes, userRole);
-		List<LexemeData> lexemeDatas = processDbService.getLexemeDatas(wordId, datasetCode, layerName);
-		boolean isSynLayerComplete = lexemeDatas.stream().allMatch(lexemeData -> StringUtils.equals(GlobalConstant.PROCESS_STATE_COMPLETE, lexemeData.getLayerProcessStateCode()));
 		String headwordLang = word.getLang();
 
-		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, layerName, classifierLabelLang, classifierLabelTypeDescrip);
+		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, synMeaningWordLangCodes, userId, userRole));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 
@@ -107,7 +101,6 @@ public class SynSearchService extends AbstractWordSearchService {
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
-		wordDetails.setSynLayerComplete(isSynLayerComplete);
 
 		return wordDetails;
 	}
@@ -134,9 +127,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 		permCalculator.filterVisibility(usages, userId);
 
+		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
+
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		lexeme.setDefinitions(definitions);
 		lexeme.setUsages(usages);
+		lexeme.setTags(tags);
 	}
 
 	@Transactional

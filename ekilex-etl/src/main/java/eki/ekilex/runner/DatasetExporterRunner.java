@@ -143,10 +143,9 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Tabl
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREQUENCY));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_SOURCE_LINK));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_RELATION));
+		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_TAG));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_LIFECYCLE_LOG));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_LIFECYCLE_LOG, LIFECYCLE_LOG));
-		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_PROCESS_LOG));
-		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_PROCESS_LOG, PROCESS_LOG));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM));
 		tablesHierarchyPaths.add(composePath(LEXEME, LEXEME_FREEFORM, FREEFORM, FREEFORM));
