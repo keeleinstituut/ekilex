@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.AuthorityOperation;
 import eki.common.constant.PermConstant;
 import eki.ekilex.data.AbstractCrudEntity;
 import eki.ekilex.data.AbstractPublicEntity;
@@ -37,7 +38,13 @@ public class PermCalculator implements PermConstant {
 
 		Long userId = userRole.getUserId();
 		String datasetCode = userRole.getDatasetCode();
+		AuthorityOperation authOperation = userRole.getAuthOperation();
+		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
 		String lang = userRole.getAuthLang();
+
+		if (!isCrudRole) {
+			return;
+		}
 
 		for (AbstractCrudEntity crudEntity : crudEntities) {
 			boolean isCrudGrant = false;
@@ -74,8 +81,27 @@ public class PermCalculator implements PermConstant {
 
 		Long userId = userRole.getUserId();
 		String datasetCode = userRole.getDatasetCode();
-		boolean isCrudGrant = false;
+		AuthorityOperation authOperation = userRole.getAuthOperation();
+		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
+
 		boolean isReadGrant = false;
+
+		if (crudEntity instanceof Word) {
+			Word word = (Word) crudEntity;
+			Long wordId = word.getWordId();
+			isReadGrant = permissionDbService.isGrantedForWord(userId, wordId, datasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+		} else if (crudEntity instanceof Meaning) {
+			Meaning meaning = (Meaning) crudEntity;
+			Long meaningId = meaning.getMeaningId();
+			isReadGrant = permissionDbService.isGrantedForMeaning(userId, meaningId, datasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+		}
+
+		crudEntity.setReadGrant(isReadGrant);
+		if (!isCrudRole) {
+			return;
+		}
+
+		boolean isCrudGrant = false;
 		boolean isSubGrant = false;
 		boolean isAnyGrant = false;
 
@@ -83,7 +109,6 @@ public class PermCalculator implements PermConstant {
 			Word word = (Word) crudEntity;
 			Long wordId = word.getWordId();
 			isCrudGrant = permissionDbService.isGrantedForWord(userId, wordId, datasetCode, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			isReadGrant = permissionDbService.isGrantedForWord(userId, wordId, datasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 			isSubGrant = permissionDbService.wordDatasetExists(wordId, datasetCode);
 		} else if (crudEntity instanceof Lexeme) {
 			Lexeme lexeme = (Lexeme) crudEntity;
@@ -101,13 +126,11 @@ public class PermCalculator implements PermConstant {
 			Meaning meaning = (Meaning) crudEntity;
 			Long meaningId = meaning.getMeaningId();
 			isCrudGrant = permissionDbService.isGrantedForMeaning(userId, meaningId, datasetCode, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			isReadGrant = permissionDbService.isGrantedForMeaning(userId, meaningId, datasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 			isSubGrant = permissionDbService.meaningDatasetExists(meaningId, datasetCode);
 			isAnyGrant = permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
 		}
 
 		crudEntity.setCrudGrant(isCrudGrant);
-		crudEntity.setReadGrant(isReadGrant);
 		crudEntity.setSubGrant(isSubGrant);
 		crudEntity.setAnyGrant(isAnyGrant);
 	}
