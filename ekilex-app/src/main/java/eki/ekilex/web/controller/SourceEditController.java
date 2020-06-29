@@ -67,7 +67,7 @@ public class SourceEditController extends AbstractAuthActionController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	//FIXME rremove searchResultCount
+	//FIXME remove searchResultCount
 	@PostMapping(CREATE_SOURCE_PROPERTY_URI)
 	public String createSourceProperty(
 			@RequestParam("sourceId") Long sourceId,
@@ -106,7 +106,7 @@ public class SourceEditController extends AbstractAuthActionController {
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	//FIXME rremove searchResultCount
+	//FIXME remove searchResultCount
 	@PostMapping(UPDATE_SOURCE_URI)
 	public String updateSource(
 			@RequestParam("sourceId") Long sourceId,

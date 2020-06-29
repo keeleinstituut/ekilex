@@ -18,7 +18,6 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
-import eki.common.constant.ReferenceType;
 import eki.common.constant.RelationStatus;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
@@ -669,15 +668,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createLexemeSourceLink(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
-		//TODO ref type should also be set user
-		ReferenceType refType = ReferenceType.ANY;
-		Long sourceLinkId = cudDbService.createLexemeSourceLink(lexemeId, sourceId, refType, sourceValue, sourceName);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
-		createLifecycleLog(logData);
-	}
-
-	@Transactional
 	public void createMeaningDomain(Long meaningId, Classifier domain) {
 		Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, domain);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
@@ -743,28 +733,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		createLifecycleLog(logData);
 	}
 
-	@Transactional
-	public void createDefinitionSourceLink(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
-		//TODO ref type should also be set user
-		ReferenceType refType = ReferenceType.ANY;
-		Long sourceLinkId = cudDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceValue, sourceName);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
-		createLifecycleLog(logData);
-	}
-
-	@Transactional
-	public void createUsageSourceLink(Long usageId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
-		Long sourceLinkId = cudDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceValue, sourceName);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
-		createLifecycleLog(logData);
-	}
-
-	@Transactional
-	public void createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName, LifecycleEntity lifecycleEntity) {
-		Long sourceLinkId = cudDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
-		LogData logData = new LogData(LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.FREEFORM_SOURCE_LINK, sourceLinkId, sourceValue);
-		createLifecycleLog(logData);
-	}
+	
 
 	@Transactional
 	public void createImageTitle(Long imageId, String valuePrese) {
@@ -905,13 +874,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void deleteDefinitionSourceLink(Long sourceLinkId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
-		createLifecycleLog(logData);
-		cudDbService.deleteDefinitionRefLink(sourceLinkId);
-	}
-
-	@Transactional
 	public void deleteDefinitionNote(Long id) {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, id);
 		createLifecycleLog(logData);
@@ -993,13 +955,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, id);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
-	}
-
-	@Transactional
-	public void deleteLexemeSourceLink(Long sourceLinkId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
-		createLifecycleLog(logData);
-		cudDbService.deleteLexemeRefLink(sourceLinkId);
 	}
 
 	@Transactional
@@ -1115,20 +1070,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, id);
 		createLifecycleLog(logData);
 		cudDbService.deleteFreeform(id);
-	}
-
-	@Transactional
-	public void deleteUsageSourceLink(Long sourceLinkId) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
-		createLifecycleLog(logData);
-		cudDbService.deleteFreeformRefLink(sourceLinkId);
-	}
-
-	@Transactional
-	public void deleteFreeformSourceLink(Long sourceLinkId, LifecycleEntity lifecycleEntity) {
-		LogData logData = new LogData(LifecycleEventType.DELETE, lifecycleEntity, LifecycleProperty.FREEFORM_SOURCE_LINK, sourceLinkId, null);
-		createLifecycleLog(logData);
-		cudDbService.deleteFreeformRefLink(sourceLinkId);
 	}
 
 	@Transactional

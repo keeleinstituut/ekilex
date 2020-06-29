@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.LookupService;
+import eki.ekilex.service.PermissionGrantService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserContext;
 import eki.ekilex.web.bean.SessionBean;
@@ -20,6 +21,9 @@ public class PermDataUtil {
 
 	@Autowired
 	private PermissionService permissionService;
+
+	@Autowired
+	private PermissionGrantService permissionGrantService;
 
 	@Autowired
 	private LookupService lookupService;
@@ -49,7 +53,7 @@ public class PermDataUtil {
 			return false;
 		}
 
-		boolean isSourceMeaningAnyLexemeCrudGranted = permissionService.isMeaningAnyLexemeCrudGranted(sourceMeaningId, userId);
+		boolean isSourceMeaningAnyLexemeCrudGranted = permissionGrantService.isMeaningAnyLexemeCrudGranted(userId, sourceMeaningId);
 		if (isSourceMeaningAnyLexemeCrudGranted) {
 			return true;
 		}
@@ -84,7 +88,7 @@ public class PermDataUtil {
 		String roleDatasetCode = userRole.getDatasetCode();
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 
-		boolean isSourceWordCrudGranted = permissionService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes);
+		boolean isSourceWordCrudGranted = permissionGrantService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes);
 		if (isSourceWordCrudGranted) {
 			return true;
 		}

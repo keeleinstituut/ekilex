@@ -64,6 +64,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceOwner;
 import eki.common.constant.SourceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -744,10 +745,13 @@ public class CommonDataDbService extends AbstractDataDbService {
 	public List<SourceLink> getLexemeSourceLinks(Long lexemeId) {
 		return create
 				.select(
+						DSL.field(DSL.val(ReferenceOwner.LEXEME.name())).as("owner"),
+						LEXEME_SOURCE_LINK.LEXEME_ID.as("owner_id"),
 						LEXEME_SOURCE_LINK.ID,
 						LEXEME_SOURCE_LINK.TYPE,
 						LEXEME_SOURCE_LINK.NAME,
-						LEXEME_SOURCE_LINK.VALUE)
+						LEXEME_SOURCE_LINK.VALUE,
+						LEXEME_SOURCE_LINK.SOURCE_ID)
 				.from(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)

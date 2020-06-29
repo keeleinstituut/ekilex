@@ -3,10 +3,8 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -15,7 +13,6 @@ import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_PROCESS_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
@@ -53,7 +50,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
-import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SimpleWord;
@@ -461,15 +457,15 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public void adjustWordHomonymNrs(SimpleWord word) {
-	
+
 		String wordValue = word.getWordValue();
 		String lang = word.getLang();
-	
+
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
 		Paradigm p = PARADIGM.as("p");
 		Form f = FORM.as("f");
-	
+
 		Field<Integer> dsobf = DSL
 				.select(DSL.when(DSL.count(l.ID).gt(0), 1).otherwise(2))
 				.from(l)
@@ -478,7 +474,7 @@ public class CudDbService extends AbstractDataDbService {
 								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(l.DATASET_CODE.eq(DATASET_SSS)))
 				.asField();
-	
+
 		Table<Record3<Long, Integer, Integer>> ww = DSL
 				.select(
 						w.ID,
@@ -502,7 +498,7 @@ public class CudDbService extends AbstractDataDbService {
 														.and(f.MODE.eq(FormMode.WORD.name()))
 														.and(f.VALUE.eq(wordValue)))))
 				.asTable("w");
-	
+
 		Result<Record2<Long, Integer>> homonyms = create
 				.select(
 						ww.field("id", Long.class),
@@ -513,7 +509,7 @@ public class CudDbService extends AbstractDataDbService {
 						ww.field("homonym_nr"),
 						ww.field("id"))
 				.fetch();
-	
+
 		if (CollectionUtils.isNotEmpty(homonyms)) {
 			int homonymNrIter = 1;
 			for (Record2<Long, Integer> homonym : homonyms) {
@@ -602,7 +598,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createWordRelation(Long wordId, Long targetWordId, String wordRelationCode) {
-	
+
 		Long wordRelationId = create
 				.select(WORD_RELATION.ID)
 				.from(WORD_RELATION)
@@ -679,20 +675,6 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public Long createDefinitionSourceLink(Long definitionId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
-		return create
-				.insertInto(
-						DEFINITION_SOURCE_LINK,
-						DEFINITION_SOURCE_LINK.DEFINITION_ID,
-						DEFINITION_SOURCE_LINK.SOURCE_ID,
-						DEFINITION_SOURCE_LINK.TYPE,
-						DEFINITION_SOURCE_LINK.VALUE,
-						DEFINITION_SOURCE_LINK.NAME)
-				.values(definitionId, sourceId, refType.name(), sourceValue, sourceName).returning(DEFINITION_SOURCE_LINK.ID)
-				.fetchOne()
-				.getId();
-	}
-
 	public Long createDefinitionNote(Long definitionId, String value, String valuePrese, String lang, boolean isPublic) {
 		FreeformRecord freeform = create.newRecord(FREEFORM);
 		freeform.setType(FreeformType.NOTE.name());
@@ -708,34 +690,6 @@ public class CudDbService extends AbstractDataDbService {
 		definitionFreeform.store();
 
 		return freeform.getId();
-	}
-
-	public Long createFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
-		return create
-				.insertInto(
-						FREEFORM_SOURCE_LINK,
-						FREEFORM_SOURCE_LINK.FREEFORM_ID,
-						FREEFORM_SOURCE_LINK.SOURCE_ID,
-						FREEFORM_SOURCE_LINK.TYPE,
-						FREEFORM_SOURCE_LINK.VALUE,
-						FREEFORM_SOURCE_LINK.NAME)
-				.values(freeformId, sourceId, refType.name(), sourceValue, sourceName).returning(FREEFORM_SOURCE_LINK.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
-		return create
-				.insertInto(
-						LEXEME_SOURCE_LINK,
-						LEXEME_SOURCE_LINK.LEXEME_ID,
-						LEXEME_SOURCE_LINK.SOURCE_ID,
-						LEXEME_SOURCE_LINK.TYPE,
-						LEXEME_SOURCE_LINK.VALUE,
-						LEXEME_SOURCE_LINK.NAME)
-				.values(lexemeId, sourceId, refType.name(), sourceValue, sourceName).returning(LEXEME_SOURCE_LINK.ID)
-				.fetchOne()
-				.getId();
 	}
 
 	public Long createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
@@ -769,12 +723,12 @@ public class CudDbService extends AbstractDataDbService {
 		freeform.setLang(lang);
 		freeform.setComplexity(complexity.name());
 		freeform.store();
-	
+
 		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
 		meaningFreeform.setMeaningId(meaningId);
 		meaningFreeform.setFreeformId(freeform.getId());
 		meaningFreeform.store();
-	
+
 		return freeform.getId();
 	}
 
@@ -806,12 +760,12 @@ public class CudDbService extends AbstractDataDbService {
 		freeform.setComplexity(complexity.name());
 		freeform.setIsPublic(isPublic);
 		freeform.store();
-	
+
 		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
 		meaningFreeform.setMeaningId(meaningId);
 		meaningFreeform.setFreeformId(freeform.getId());
 		meaningFreeform.store();
-	
+
 		return freeform.getId();
 	}
 
@@ -843,9 +797,9 @@ public class CudDbService extends AbstractDataDbService {
 					.from(LEXEME)
 					.where(
 							LEXEME.WORD_ID.eq(wordId)
-							.and(LEXEME.DATASET_CODE.eq(datasetCode))
-							.and(LEXEME.MEANING_ID.eq(meaningId))
-							.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+									.and(LEXEME.DATASET_CODE.eq(datasetCode))
+									.and(LEXEME.MEANING_ID.eq(meaningId))
+									.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 					.fetchOptionalInto(Long.class)
 					.orElse(null);
 			if (existingLexemeId != null) {
@@ -853,14 +807,14 @@ public class CudDbService extends AbstractDataDbService {
 			}
 		}
 		Long lexemeId = create
-					.insertInto(
-							LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
-							LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
-					.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-							lexemeLevel1, 1, PROCESS_STATE_PUBLIC, COMPLEXITY_DETAIL)
-					.returning(LEXEME.ID)
-					.fetchOne()
-					.getId();
+				.insertInto(
+						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
+						lexemeLevel1, 1, PROCESS_STATE_PUBLIC, COMPLEXITY_DETAIL)
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
 		return lexemeId;
 	}
 
@@ -903,12 +857,12 @@ public class CudDbService extends AbstractDataDbService {
 		freeform.setComplexity(complexity.name());
 		freeform.setIsPublic(isPublic);
 		freeform.store();
-	
+
 		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
 		lexemeFreeform.setLexemeId(lexemeId);
 		lexemeFreeform.setFreeformId(freeform.getId());
 		lexemeFreeform.store();
-	
+
 		return freeform.getId();
 	}
 
@@ -920,12 +874,12 @@ public class CudDbService extends AbstractDataDbService {
 		freeform.setValuePrese(value);
 		freeform.setComplexity(complexity.name());
 		freeform.store();
-	
+
 		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
 		lexemeFreeform.setLexemeId(lexemeId);
 		lexemeFreeform.setFreeformId(freeform.getId());
 		lexemeFreeform.store();
-	
+
 		return freeform.getId();
 	}
 
@@ -937,12 +891,12 @@ public class CudDbService extends AbstractDataDbService {
 		freeform.setValuePrese(valuePrese);
 		freeform.setComplexity(complexity.name());
 		freeform.store();
-	
+
 		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
 		lexemeFreeform.setLexemeId(lexemeId);
 		lexemeFreeform.setFreeformId(freeform.getId());
 		lexemeFreeform.store();
-	
+
 		return freeform.getId();
 	}
 
@@ -1100,9 +1054,9 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void createWordRelationParam(Long wordRelationId, String paramName, BigDecimal paramValue) {
 
-		 create.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
-				 .values(wordRelationId, paramName, paramValue)
-				 .execute();
+		create.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
+				.values(wordRelationId, paramName, paramValue)
+				.execute();
 	}
 
 	public SynRelation createSynRelation(Long word1Id, Long word2Id, String relationType, String relationStatus) {
@@ -1215,12 +1169,6 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteLexemeRefLink(Long refLinkId) {
-		create.delete(LEXEME_SOURCE_LINK)
-				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId))
-				.execute();
-	}
-
 	public void deleteLexemeRelation(Long relationId) {
 		create.delete(LEX_RELATION)
 				.where(LEX_RELATION.ID.eq(relationId))
@@ -1233,21 +1181,9 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteDefinitionRefLink(Long refLinkId) {
-		create.delete(DEFINITION_SOURCE_LINK)
-				.where(DEFINITION_SOURCE_LINK.ID.eq(refLinkId))
-				.execute();
-	}
-
 	public void deleteFreeform(Long id) {
 		create.delete(FREEFORM)
 				.where(FREEFORM.ID.eq(id))
-				.execute();
-	}
-
-	public void deleteFreeformRefLink(Long refLinkId) {
-		create.delete(FREEFORM_SOURCE_LINK)
-				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 

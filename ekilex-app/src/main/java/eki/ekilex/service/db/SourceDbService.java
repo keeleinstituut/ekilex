@@ -122,9 +122,15 @@ public class SourceDbService implements SystemConstant {
 	public SourceProperty getSourceProperty(Long sourcePropertyId) {
 
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
-				.from(FREEFORM)
-				.where(FREEFORM.ID.eq(sourcePropertyId))
+				.select(
+						SOURCE_FREEFORM.SOURCE_ID,
+						FREEFORM.ID,
+						FREEFORM.TYPE,
+						FREEFORM.VALUE_TEXT)
+				.from(SOURCE_FREEFORM, FREEFORM)
+				.where(
+						SOURCE_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
+						.and(FREEFORM.ID.eq(sourcePropertyId)))
 				.fetchOneInto(SourceProperty.class);
 	}
 

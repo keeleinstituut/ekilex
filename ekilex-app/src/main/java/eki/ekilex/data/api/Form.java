@@ -1,61 +1,46 @@
-package eki.ekilex.data.imp;
+package eki.ekilex.data.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
-@JsonIgnoreProperties({"id", "paradigm_id"})
 public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@JsonIgnore
 	private Long id;
 
-	@JsonProperty("paradigm_id")
+	@JsonIgnore
 	private Long paradigmId;
 
-	@JsonProperty("mode")
 	private FormMode mode;
 
-	@JsonProperty("morph_group1")
 	private String morphGroup1;
 
-	@JsonProperty("morph_group2")
 	private String morphGroup2;
 
-	@JsonProperty("morph_group3")
 	private String morphGroup3;
 
-	@JsonProperty("display_level")
 	private Integer displayLevel;
 
-	@JsonProperty("morph_code")
 	private String morphCode;
 
-	@JsonProperty("morph_exists")
 	private Boolean morphExists;
 
-	@JsonProperty("value")
 	private String value;
 
-	@JsonProperty("value_prese")
 	private String valuePrese;
 
-	@JsonProperty("components")
 	private String[] components;
 
-	@JsonProperty("display_form")
 	private String displayForm;
 
-	@JsonProperty("vocal_form")
 	private String vocalForm;
 
-	@JsonProperty("audio_file")
 	private String audioFile;
 
-	@JsonProperty("order_by")
 	private Long orderBy;
 
 	public Long getId() {

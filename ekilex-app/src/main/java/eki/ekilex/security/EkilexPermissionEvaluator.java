@@ -1,7 +1,7 @@
 package eki.ekilex.security;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -17,15 +17,15 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.LifecycleEntity;
+import eki.common.constant.PermConstant;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.PermissionDbService;
 
+//This class is currently not used, but is available for possible future use (for example @PreAuthorize)
 @Component
-public class EkilexPermissionEvaluator implements PermissionEvaluator {
-
-	// This class is currently not used, but is available for possible future use (for example @PreAuthorize)
+public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(EkilexPermissionEvaluator.class);
 
@@ -110,19 +110,16 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator {
 		String[] perms = StringUtils.split(permSentence, PERM_KEY_VALUE_SEPARATOR);
 		AuthorityItem authItem = AuthorityItem.valueOf(perms[0]);
 		AuthorityOperation authOp = AuthorityOperation.valueOf(perms[1]);
-		List<String> authOps = new ArrayList<>();
-		authOps.add(authOp.name());
 		if (AuthorityItem.DATASET.equals(authItem)) {
 			if (AuthorityOperation.CRUD.equals(authOp)) {
 				// if crud is required, owner is also pass
-				authOps.add(AuthorityOperation.OWN.name());
+				return new Authority(authItem, AUTH_OPS_CRUD);
 			} else if (AuthorityOperation.READ.equals(authOp)) {
 				// if read is required, crud and owner is also pass
-				authOps.add(AuthorityOperation.CRUD.name());
-				authOps.add(AuthorityOperation.OWN.name());
+				return new Authority(authItem, AUTH_OPS_READ);
 			}
 		}
-		return new Authority(authItem, authOps);
+		return new Authority(authItem, Collections.emptyList());
 	}
 
 	public class Authority extends AbstractDataObject {

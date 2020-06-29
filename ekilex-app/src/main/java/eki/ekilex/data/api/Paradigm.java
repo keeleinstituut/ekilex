@@ -1,35 +1,28 @@
-package eki.ekilex.data.imp;
+package eki.ekilex.data.api;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import eki.common.data.AbstractDataObject;
 
-@JsonIgnoreProperties({"id"})
 public class Paradigm extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@JsonIgnore
 	private Long id;
 
-	@JsonProperty("word_id")
 	private Long wordId;
 
-	@JsonProperty("example")
 	private String example;
 
-	@JsonProperty("inflection_type_nr")
 	private String inflectionTypeNr;
 
-	@JsonProperty("inflection_type")
 	private String inflectionType;
 
-	@JsonProperty("is_secondary")
 	private boolean secondary;
 
-	@JsonProperty("form")
 	private List<Form> forms;
 
 	public Long getId() {

@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
@@ -7,17 +8,35 @@ public class SourceLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private ReferenceOwner owner;
+
+	private Long ownerId;
+
 	private Long id;
+
+	private ReferenceType type;
 
 	private String name;
 
 	private String value;
 
-	private Long ownerId;
-
-	private ReferenceType type;
-
 	private Long sourceId;
+
+	public ReferenceOwner getOwner() {
+		return owner;
+	}
+
+	public void setOwner(ReferenceOwner owner) {
+		this.owner = owner;
+	}
+
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Long ownerId) {
+		this.ownerId = ownerId;
+	}
 
 	public Long getId() {
 		return id;
@@ -25,6 +44,14 @@ public class SourceLink extends AbstractDataObject {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public ReferenceType getType() {
+		return type;
+	}
+
+	public void setType(ReferenceType type) {
+		this.type = type;
 	}
 
 	public String getName() {
@@ -41,22 +68,6 @@ public class SourceLink extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public Long getOwnerId() {
-		return ownerId;
-	}
-
-	public void setOwnerId(Long ownerId) {
-		this.ownerId = ownerId;
-	}
-
-	public ReferenceType getType() {
-		return type;
-	}
-
-	public void setType(ReferenceType type) {
-		this.type = type;
 	}
 
 	public Long getSourceId() {

@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.imp.Form;
-import eki.ekilex.data.imp.Paradigm;
-import eki.ekilex.data.imp.ParadigmWrapper;
+import eki.ekilex.data.api.Form;
+import eki.ekilex.data.api.Paradigm;
+import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.service.db.MorphologyDbService;
 
 @Component
