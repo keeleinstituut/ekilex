@@ -142,8 +142,6 @@ public interface WebConstant {
 
 	String LIFECYCLELOGVIEW_PAGE = "lifecyclelogview";
 
-	String PROCESS_LOG_VIEW_PAGE = "processlogview";
-
 	String SOURCEVIEW_PAGE = "sourceview";
 
 	String ERROR_PAGE = "error";
@@ -224,8 +222,6 @@ public interface WebConstant {
 
 	String CHANGE_ROLE_URI = "/change_role";
 
-	String CHANGE_LAYER_URI = "/change_layer";
-
 	String SYN_SEARCH_PAGE = "synsearch";
 
 	String SYN_SEARCH_URI = "/synsearch";
@@ -245,10 +241,6 @@ public interface WebConstant {
 	String UPDATE_SYN_CANDIDATE_LANGS_URI = "/update_syn_candidate_langs";
 
 	String UPDATE_SYN_MEANING_WORD_LANGS_URI = "/update_syn_meaning_word_langs";
-
-	String UPDATE_LAYER_COMPLETE_URI = "/update_layer_complete";
-
-	String UPDATE_LAYER_PROCESS_STATE_URI = "/update_layer_process_state";
 
 	String UPDATE_LEXEME_PROCESS_STATE_URI = "/update_lexeme_process_state";
 

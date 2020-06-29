@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row14;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = 552943923;
+    private static final long serialVersionUID = -1760576487;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -103,11 +103,6 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
      * The column <code>public.eki_user_profile.show_meaning_relation_word_datasets</code>.
      */
     public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_WORD_DATASETS = createField(DSL.name("show_meaning_relation_word_datasets"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
-
-    /**
-     * The column <code>public.eki_user_profile.preferred_layer_name</code>.
-     */
-    public final TableField<EkiUserProfileRecord, String> PREFERRED_LAYER_NAME = createField(DSL.name("preferred_layer_name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_tag_names</code>.
@@ -221,11 +216,11 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String, String[], String> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public Row13<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String[], String> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

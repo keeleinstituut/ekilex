@@ -3,13 +3,11 @@ package eki.ekilex.web.util;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LayerName;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
@@ -44,7 +42,6 @@ public class UserProfileUtil implements GlobalConstant {
 
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
-		Long userId = user.getId();
 
 		boolean isAdmin = user.isAdmin();
 		boolean isRoleSelected = userRole != null;
@@ -52,8 +49,6 @@ public class UserProfileUtil implements GlobalConstant {
 		boolean isDatasetOwnerOrAdmin = isDatasetOwnerOrAdmin(user);
 		boolean isDatasetCrudOwnerOrAdmin = isDatasetCrudOwnerOrAdmin(user);
 		boolean isRoleChangeEnabled = isRoleChangeEnabled(user);
-		boolean isLayerChangeEnabled = isLayerChangeEnabled(userRole);
-		boolean isProcessStateChangeEnabled = isProcessStateChangeEnabled(isLayerChangeEnabled, userId);
 
 		ekiUserRoleData.setAdmin(isAdmin);
 		ekiUserRoleData.setRoleSelected(isRoleSelected);
@@ -61,8 +56,6 @@ public class UserProfileUtil implements GlobalConstant {
 		ekiUserRoleData.setDatasetOwnerOrAdmin(isDatasetOwnerOrAdmin);
 		ekiUserRoleData.setDatasetCrudOwnerOrAdmin(isDatasetCrudOwnerOrAdmin);
 		ekiUserRoleData.setRoleChangeEnabled(isRoleChangeEnabled);
-		ekiUserRoleData.setLayerChangeEnabled(isLayerChangeEnabled);
-		ekiUserRoleData.setProcessStateChangeEnabled(isProcessStateChangeEnabled);
 		return ekiUserRoleData;
 	}
 
@@ -95,24 +88,6 @@ public class UserProfileUtil implements GlobalConstant {
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
 		boolean hasMoreThanOnePermission = !user.isHasSingleDatasetPermission();
 		return datasetPermissionsExist && hasMoreThanOnePermission;
-	}
-
-	private boolean isLayerChangeEnabled(DatasetPermission userRole) {
-
-		if (userRole == null) {
-			return false;
-		}
-		return StringUtils.equals(userRole.getDatasetCode(), DATASET_SSS);
-	}
-
-	private boolean isProcessStateChangeEnabled(boolean isLayerChangeEnabled, Long userId) {
-
-		if (!isLayerChangeEnabled) {
-			return false;
-		}
-		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		LayerName layerName = userProfile.getPreferredLayerName();
-		return !LayerName.NONE.equals(layerName);
 	}
 
 }

@@ -3,7 +3,6 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{word.join.title}"></title>
 <th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/ekilex-wordjoin.js}"></script>
 </th:block>
 </head>
 <body class="body-with-navbar">
@@ -187,7 +186,7 @@
     </div>
   </th:block>
   <script th:inline="javascript">
-	  initialise();
+	  initializeWordJoin();
 	  $('[data-toggle=join-confirm]').confirmation({
 		  btnOkLabel: 'Jah',
 		  btnCancelLabel: 'Ei',

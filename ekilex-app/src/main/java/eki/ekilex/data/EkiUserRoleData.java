@@ -18,10 +18,6 @@ public class EkiUserRoleData extends AbstractDataObject {
 
 	private boolean roleChangeEnabled;
 
-	private boolean layerChangeEnabled;
-
-	private boolean processStateChangeEnabled;
-
 	public boolean isAdmin() {
 		return admin;
 	}
@@ -70,19 +66,4 @@ public class EkiUserRoleData extends AbstractDataObject {
 		this.roleChangeEnabled = roleChangeEnabled;
 	}
 
-	public boolean isLayerChangeEnabled() {
-		return layerChangeEnabled;
-	}
-
-	public void setLayerChangeEnabled(boolean layerChangeEnabled) {
-		this.layerChangeEnabled = layerChangeEnabled;
-	}
-
-	public boolean isProcessStateChangeEnabled() {
-		return processStateChangeEnabled;
-	}
-
-	public void setProcessStateChangeEnabled(boolean processStateChangeEnabled) {
-		this.processStateChangeEnabled = processStateChangeEnabled;
-	}
 }

@@ -2,7 +2,6 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(_,~{::links})">
   <th:block th:fragment="links">
-    <script type="text/javascript" th:src="@{/view/js/ekilex-home.js}"></script>
   </th:block>
 </head>
 <body class="body-with-navbar">
@@ -42,7 +41,6 @@
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
-        <th:block th:replace="components :: change_layer" sec:authorize="#vars.userRoleData.layerChangeEnabled"></th:block>
         <hr/>
         <p>
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>
@@ -157,7 +155,7 @@
   </div>
 
   <script th:inline="javascript">
-	  initialise();
+	  initializeHome();
   </script>
 </body>
 </html>

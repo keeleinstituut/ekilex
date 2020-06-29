@@ -9,7 +9,6 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.LayerName;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.db.tables.records.EkiUserProfileRecord;
 
@@ -65,20 +64,11 @@ public class UserProfileDbService {
 				.execute();
 	}
 
-	public void updateUserPreferredLayerName(LayerName layerName, Long userId) {
-
-		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_LAYER_NAME, layerName.name())
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
-	}
-
 	public void updateUserProfile(EkiUserProfile userProfile) {
 
 		Long userId = userProfile.getUserId();
 		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
 		List<String> preferredDatasets = userProfile.getPreferredDatasets();
-		LayerName preferredLayerName = userProfile.getPreferredLayerName();
 		List<String> preferredSynCandidateLangs = userProfile.getPreferredSynCandidateLangs();
 		List<String> preferredSynLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 		List<String> preferredMeaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
@@ -86,8 +76,8 @@ public class UserProfileDbService {
 		boolean showMeaningRelationFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
 		boolean showMeaningRelationMeaningId = userProfile.isShowMeaningRelationMeaningId();
 		boolean showMeaningRelationWordDatasets = userProfile.isShowMeaningRelationWordDatasets();
-		List<String> preferredTagNames = userProfile.getPreferredTagNames();
 		String activeTagName = userProfile.getActiveTagName();
+		List<String> preferredTagNames = userProfile.getPreferredTagNames();
 
 		EkiUserProfileRecord ekiUserProfile = create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOne();
 
@@ -95,7 +85,6 @@ public class UserProfileDbService {
 		if (CollectionUtils.isNotEmpty(preferredDatasets)) {
 			ekiUserProfile.setPreferredDatasets(preferredDatasets.toArray(new String[0]));
 		}
-		ekiUserProfile.setPreferredLayerName(preferredLayerName.name());
 		if (CollectionUtils.isNotEmpty(preferredSynCandidateLangs)) {
 			ekiUserProfile.setPreferredSynCandidateLangs(preferredSynCandidateLangs.toArray(new String[0]));
 		}
@@ -109,10 +98,12 @@ public class UserProfileDbService {
 		ekiUserProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		ekiUserProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		ekiUserProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
+		ekiUserProfile.setActiveTagName(activeTagName);
 		if (CollectionUtils.isNotEmpty(preferredTagNames)) {
 			ekiUserProfile.setPreferredTagNames(preferredTagNames.toArray(new String[0]));
+		} else {
+			ekiUserProfile.setPreferredTagNames(null);
 		}
-		ekiUserProfile.setActiveTagName(activeTagName);
 
 		ekiUserProfile.store();
 	}

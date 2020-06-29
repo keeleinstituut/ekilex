@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import eki.common.constant.LayerName;
 import eki.common.data.AbstractDataObject;
 
 public class EkiUserProfile extends AbstractDataObject {
@@ -14,8 +13,6 @@ public class EkiUserProfile extends AbstractDataObject {
 	private Long recentDatasetPermissionId;
 
 	private List<String> preferredDatasets;
-
-	private LayerName preferredLayerName;
 
 	private List<String> preferredSynCandidateLangs;
 
@@ -57,14 +54,6 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	public void setPreferredDatasets(List<String> preferredDatasets) {
 		this.preferredDatasets = preferredDatasets;
-	}
-
-	public LayerName getPreferredLayerName() {
-		return preferredLayerName;
-	}
-
-	public void setPreferredLayerName(LayerName preferredLayerName) {
-		this.preferredLayerName = preferredLayerName;
 	}
 
 	public List<String> getPreferredSynCandidateLangs() {

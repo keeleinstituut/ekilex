@@ -27,14 +27,7 @@
 <body>
   <!-- Bootstrap core JS -->
   <th:block th:fragment="js">
-    <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/jquery-ui.min.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/bootstrap-select.min.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/ekilex-home.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/main.js}"></script>
   </th:block>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
@@ -129,12 +122,8 @@
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
                 <th:block th:if="${userRoleData.roleSelected}">
                   <th:block th:with="selectedRole = ${sessionBean.userRole}">
-                    <small class="w-100 text-truncate user-menu-active-role"
-                           th:with="
-                             permissionName=#{|authorityoperation.${selectedRole.authOperation}|},
-                             selectedLayer = ${userProfile.preferredLayerName}">
+                    <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}">
                       <span th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></span>
-                      <span th:if="${userRoleData.layerChangeEnabled}" th:text="' (' + #{|layername.${selectedLayer.name()}|} + ')'"></span>
                     </small>
                   </th:block>
                 </th:block>
@@ -156,20 +145,6 @@
                 </th:block>
               </th:block>
               <div class="dropdown-divider"></div>
-              <th:block th:if="${userRoleData.layerChangeEnabled}">
-                <th:block th:with="selectedLayer = ${userProfile.preferredLayerName}">
-                  <div>
-                    <div class="dropdown-header pb-0">Aktiivne kiht</div>
-                    <div class="px-3 d-flex flex-row">
-                      <span class="pr-3" th:text="#{|layername.${selectedLayer.name()}|}"></span>
-                      <a th:href="@{/home}" class="text-nowrap">
-                        <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
-                      </a>
-                    </div>
-                  </div>
-                </th:block>
-                <div class="dropdown-divider"></div>
-              </th:block>
               <a class="dropdown-item" th:href="@{/userprofile}">
                 Kasutaja profiili haldus <i class="fa fa-user" aria-hidden="true"></i>
               </a>

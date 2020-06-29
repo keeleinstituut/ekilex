@@ -41,10 +41,8 @@ import eki.ekilex.data.transform.LexemeCollocationGroupTuple;
 import eki.ekilex.data.transform.LexemeCollocationTuple;
 import eki.ekilex.data.transform.LexemeFrequency;
 import eki.ekilex.data.transform.LexemeLifecycleLog;
-import eki.ekilex.data.transform.LexemeProcessLog;
 import eki.ekilex.data.transform.LexemeRelation;
 import eki.ekilex.data.transform.LexemeSourceLink;
-import eki.ekilex.data.transform.ProcessLogSourceLink;
 import eki.ekilex.data.transform.WordMeaningPair;
 import eki.ekilex.data.util.AbstractRowMapper;
 import eki.ekilex.data.util.CollocationRowMapper;
@@ -55,10 +53,8 @@ import eki.ekilex.data.util.LexemeCollocationGroupTupleRowMapper;
 import eki.ekilex.data.util.LexemeCollocationTupleRowMapper;
 import eki.ekilex.data.util.LexemeFrequencyRowMapper;
 import eki.ekilex.data.util.LexemeLifecycleLogRowMapper;
-import eki.ekilex.data.util.LexemeProcessLogRowMapper;
 import eki.ekilex.data.util.LexemeRelationRowMapper;
 import eki.ekilex.data.util.LexemeSourceLinkRowMapper;
-import eki.ekilex.data.util.ProcessLogSourceLinkRowMapper;
 import eki.ekilex.data.util.WordMeaningPairRowMapper;
 import eki.ekilex.service.ReportComposer;
 
@@ -83,8 +79,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 
 	private static final String SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_lifecycle_logs_for_datasets.sql";
 
-	private static final String SQL_SELECT_LEXEME_PROCESS_LOGS_FOR_DATASETS_PATH = "sql/select_lexeme_process_logs_for_datasets.sql";
-
 	private static final String SQL_INSERT_DEFINITION_DATASET_WHERE_NOT_EXISTS_PATH = "sql/insert_definition_dataset_where_not_exists.sql";
 
 	private String sqlSelectWordLexemeMeaningIds;
@@ -98,8 +92,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 	private String sqlSelectLexemeCollocGroupTuplesForDatasets;
 
 	private String sqlSelectLexemeLifecycleLogsForDatasets;
-
-	private String sqlSelectLexemeProcessLogsForDatasets;
 
 	private String sqlInsertDefinitionDatasetWhereNotExists;
 
@@ -120,8 +112,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 	private String sqlSelectLexemeSourceLinks = "select lsl.* from " + LEXEME_SOURCE_LINK + " lsl where lsl.lexeme_id = :lexemeId order by lsl.order_by";
 
 	private String sqlSelectFreeformSourceLinks = "select ffsl.* from " + FREEFORM_SOURCE_LINK + " ffsl where ffsl.freeform_id = :freeformId order by ffsl.order_by";
-
-	private String sqlSelectProcessLogSourceLinks = "select plsl.* from " + PROCESS_LOG_SOURCE_LINK + " plsl where plsl.process_log_id = :processLogId order by plsl.order_by";
 
 	private String sqlSelectLexemeRelations =
 			"select r.lexeme1_id, r.lexeme2_id, r.lex_rel_type_code, r.order_by from " + LEXEME_RELATION + " r where r.lexeme1_id in (:lexemeIds) order by r.order_by";
@@ -183,9 +173,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_LIFECYCLE_LOGS_FOR_DATASETS_PATH);
 		sqlSelectLexemeLifecycleLogsForDatasets = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_PROCESS_LOGS_FOR_DATASETS_PATH);
-		sqlSelectLexemeProcessLogsForDatasets = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_INSERT_DEFINITION_DATASET_WHERE_NOT_EXISTS_PATH);
 		sqlInsertDefinitionDatasetWhereNotExists = getContent(resourceFileInputStream);
@@ -274,9 +261,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		List<LexemeLifecycleLog> lexemeLifecycleLogs = getLexemeLifecycleLogs(lexemeMergeDatasets);
 		createLexemeLifecycleLogs(sumLexemeIdMap, lexemeLifecycleLogs, countsMap);
 
-		// post handling lexeme process logs
-		List<LexemeProcessLog> lexemeProcessLogs = getLexemeProcessLogs(lexemeMergeDatasets);
-		createLexemeProcessLogs(sumLexemeIdMap, lexemeProcessLogs, countsMap);
+		// TODO lexeme tags? - yogesh
 
 		// post handling definition datasets
 		appendMergeDatasetToDefinitions(lexemeMergeName, countsMap);
@@ -310,7 +295,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		Count sumLexemeCollocPosGroupCount = new Count();
 		Count sumLexemeCollocRelGroupCount = new Count();
 		Count sumLexemeLifecycleLogCount = new Count();
-		Count sumLexemeProcessLogCount = new Count();
 		Count sumDefinitionCount = new Count();
 
 		Map<String, Count> countsMap = new HashMap<>();
@@ -332,7 +316,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		countsMap.put("sumLexemeCollocPosGroupCount", sumLexemeCollocPosGroupCount);
 		countsMap.put("sumLexemeCollocRelGroupCount", sumLexemeCollocRelGroupCount);
 		countsMap.put("sumLexemeLifecycleLogCount", sumLexemeLifecycleLogCount);
-		countsMap.put("sumLexemeProcessLogCount", sumLexemeProcessLogCount);
 		countsMap.put("sumDefinitionCount", sumDefinitionCount);
 
 		return countsMap;
@@ -358,7 +341,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		Count sumLexemeCollocPosGroupCount = countsMap.get("sumLexemeCollocPosGroupCount");
 		Count sumLexemeCollocRelGroupCount = countsMap.get("sumLexemeCollocRelGroupCount");
 		Count sumLexemeLifecycleLogCount = countsMap.get("sumLexemeLifecycleLogCount");
-		Count sumLexemeProcessLogCount = countsMap.get("sumLexemeProcessLogCount");
 		Count sumDefinitionCount = countsMap.get("sumDefinitionCount");
 
 		logger.info("Collected {} word meaning pairs", wordMeaningPairCount.getValue());
@@ -379,7 +361,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		logger.info("Created {} lexeme colloc pos groups", sumLexemeCollocPosGroupCount.getValue());
 		logger.info("Created {} lexeme colloc rel groups", sumLexemeCollocRelGroupCount.getValue());
 		logger.info("Created {} lexeme lifecycle logs", sumLexemeLifecycleLogCount.getValue());
-		logger.info("Created {} lexeme process logs", sumLexemeProcessLogCount.getValue());
 		logger.info("Associated {} definitions", sumDefinitionCount.getValue());
 	}
 
@@ -655,20 +636,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		return lexemeLifecycleLogs;
 	}
 
-	private List<LexemeProcessLog> getLexemeProcessLogs(List<String> lexemeMergeDatasets) throws Exception {
-
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("datasetCodes", lexemeMergeDatasets);
-		List<LexemeProcessLog> lexemeProcessLogs = basicDbService.getResults(sqlSelectLexemeProcessLogsForDatasets, paramMap, new LexemeProcessLogRowMapper());
-		for (LexemeProcessLog lexemeProcessLog : lexemeProcessLogs) {
-			if (lexemeProcessLog.isSourceLinksExist()) {
-				List<ProcessLogSourceLink> sourceLinks = basicDbService.getResults(sqlSelectProcessLogSourceLinks, paramMap, new ProcessLogSourceLinkRowMapper());
-				lexemeProcessLog.setSourceLinks(sourceLinks);
-			}
-		}
-		return lexemeProcessLogs;
-	}
-
 	private void createLexemeFreeformsAndSourceLinks(Long sumLexemeId, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
 
 		Count sumLexemeFreeformCount = countsMap.get("sumLexemeFreeformCount");
@@ -738,7 +705,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 
 		for (Freeform freeform : freeforms) {
 			if (freeform.getValueText() != null) {
-				createFreeformText(parentId, freeform.getType(), freeform.getValueText(), freeform.getValuePrese(), freeform.getLangCode(), freeform.getComplexity());
+				createFreeformText(parentId, freeform.getType(), freeform.getValueText(), freeform.getValuePrese(), freeform.getLangCode(), freeform.getComplexity(), null);
 			} else if (freeform.getValueDate() != null) {
 				createFreeformDate(parentId, freeform.getType(), freeform.getValueDate(), freeform.getComplexity());
 			}
@@ -1095,37 +1062,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		}
 
 		logger.debug("Done with lexeme lifecycle logs");
-	}
-
-	private void createLexemeProcessLogs(Map<Long, Long> sumLexemeIdMap, List<LexemeProcessLog> lexemeProcessLogs, Map<String, Count> countsMap) throws Exception {
-
-		logger.debug("Creating lexeme process logs");
-
-		Count sumLexemeProcessLogCount = countsMap.get("sumLexemeProcessLogCount");
-
-		for (LexemeProcessLog lexemeProcessLog : lexemeProcessLogs) {
-			Long sourceLexemeId = lexemeProcessLog.getLexemeId();
-			Long targetLexemeId = sumLexemeIdMap.get(sourceLexemeId);
-			String eventBy = lexemeProcessLog.getEventBy();
-			Timestamp eventOn = lexemeProcessLog.getEventOn();
-			String comment = lexemeProcessLog.getComment();
-			String processStateCode = lexemeProcessLog.getProcessStateCode();
-			String datasetCode = lexemeProcessLog.getDatasetCode();
-			boolean sourceLinksExist = lexemeProcessLog.isSourceLinksExist();
-			Long targetProcessLogId = createLexemeProcessLog(targetLexemeId, eventBy, eventOn, comment, processStateCode, datasetCode);
-			sumLexemeProcessLogCount.increment();
-			if (sourceLinksExist) {
-				List<ProcessLogSourceLink> sourceLinks = lexemeProcessLog.getSourceLinks();
-				for (ProcessLogSourceLink sourceLink : sourceLinks) {
-					ReferenceType refType = sourceLink.getType();
-					Long sourceId = sourceLink.getSourceId();
-					String value = sourceLink.getValue();
-					createProcessLogSourceLink(targetProcessLogId, refType, sourceId, value);
-				}
-			}
-		}
-
-		logger.debug("Done with lexeme process logs");
 	}
 
 	private void appendMergeDatasetToDefinitions(String lexemeMergeName, Map<String, Count> countsMap) {

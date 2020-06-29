@@ -3,7 +3,7 @@ var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
 var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
-function initialise() {
+function initializeSynSearch() {
 	let activeSearchResultID;
 
 	//Enter keyboard edit mode
@@ -204,17 +204,6 @@ function initialise() {
 	if (detailButtons.length === 1) {
 		detailButtons.trigger('click');
 	}
-
-	$(document).on('show.bs.modal', '#processLogDlg', function(e) {
-		var dlg = $(this);
-		var link = $(e.relatedTarget);
-		var url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
-		});
-	});
 
 	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
 		let dlg = $(this);

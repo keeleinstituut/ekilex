@@ -49,7 +49,6 @@ public class DatasetService implements SystemConstant {
 		List<Classifier> processStates = getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
 		dataset.setDomains(domains);
 		dataset.setLanguages(languages);
-		dataset.setProcessStates(processStates);
 
 		if (CollectionUtils.isNotEmpty(domains)) {
 			List<String> origins = domains.stream().map(Classifier::getOrigin).distinct().sorted().collect(Collectors.toList());
@@ -94,13 +93,11 @@ public class DatasetService implements SystemConstant {
 
 	private void addDatasetToSelectedClassifiers(Dataset dataset) {
 		datasetDbService.addDatasetToClassifier(ClassifierName.LANGUAGE, dataset.getCode(), dataset.getLanguages());
-		datasetDbService.addDatasetToClassifier(ClassifierName.PROCESS_STATE, dataset.getCode(), dataset.getProcessStates());
 		datasetDbService.addDatasetToClassifier(ClassifierName.DOMAIN, dataset.getCode(), dataset.getDomains());
 	}
 
 	private void removeDatasetFromAllClassifiers(String datasetCode) {
 		datasetDbService.removeDatasetFromAllClassifiers(ClassifierName.LANGUAGE, datasetCode);
-		datasetDbService.removeDatasetFromAllClassifiers(ClassifierName.PROCESS_STATE, datasetCode);
 		datasetDbService.removeDatasetFromAllClassifiers(ClassifierName.DOMAIN, datasetCode);
 	}
 

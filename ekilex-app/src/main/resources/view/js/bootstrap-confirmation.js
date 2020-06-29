@@ -5,6 +5,7 @@
  * @licence Apache License, Version 2.0
  */
 (function (global, factory) {
+  global = window;
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('jquery'), require('bootstrap')) :
   typeof define === 'function' && define.amd ? define(['jquery', 'bootstrap'], factory) :
   (factory(global.jQuery));

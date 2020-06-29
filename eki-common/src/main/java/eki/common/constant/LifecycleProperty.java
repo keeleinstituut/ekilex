@@ -26,6 +26,7 @@ public enum LifecycleProperty {
 	SOURCE_TYPE,
 	SEMANTIC_TYPE,
 	PROCESS_STATE,
+	TAG,
 	SOURCE_NAME,
 	SOURCE_RT,
 	SOURCE_CELEX,

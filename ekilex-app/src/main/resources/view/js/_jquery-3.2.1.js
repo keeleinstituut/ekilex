@@ -15,6 +15,7 @@
 
 	"use strict";
 
+	global = window;
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
 
 		// For CommonJS and CommonJS-like environments where a proper `window`
@@ -10250,4 +10251,4 @@ if ( !noGlobal ) {
 
 
 return jQuery;
-} );
+});

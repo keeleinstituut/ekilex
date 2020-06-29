@@ -2,7 +2,7 @@
 function toggleGroup(dlg, groupName) {
 	dlg.find('.value-group').hide();
 	dlg.find('[data-id=' + groupName + ']').show();
-}
+};
 
 function initUsageMemberDlg(theDlg) {
 	theDlg.find('[name=opCode]').off('change').on('change', function(e) {
@@ -31,7 +31,7 @@ function initUsageMemberDlg(theDlg) {
 	theDlg.find('.eki-editor').each(function(indx, item) {
 		initEkiEditor($(item));
 	});
-}
+};
 
 function initEkiEditorDlg(editDlg) {
 	let modifyFld = editDlg.find('[data-name=editFld]');
@@ -51,7 +51,7 @@ function initEkiEditorDlg(editDlg) {
 	});
 	let ekiEditorElem = editDlg.find('.eki-editor');
 	initEkiEditor(ekiEditorElem);
-}
+};
 
 function initEkiEditor(ekiEditorElem) {
 	let editorElem = ekiEditorElem.find('[data-name=editFld]');
@@ -105,20 +105,20 @@ function initEkiEditor(ekiEditorElem) {
 			$(this).removeClass('is-invalid');
 		}
 	})
-}
+};
 
 function removeTags(editorElem) {
 	let cleanedHtml = editorElem.html().replace(/<\/?eki-(.*?)>/g, '');
 	editorElem.html(cleanedHtml);
 	editorElem.focus();
-}
+};
 
 function openEditorMenu(menuElement) {
 	menuElement.addClass('show');
 	let selectElem = menuElement.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 	selectElem.focus();
-}
+};
 
 function addNode(ekiTag) {
 	let sel = window.getSelection();
@@ -133,7 +133,7 @@ function addNode(ekiTag) {
 			}
 		}
 	}
-}
+};
 
 function removeEkiTag(editorElem) {
 	let sel = window.getSelection();
@@ -149,10 +149,12 @@ function removeEkiTag(editorElem) {
 		}
 	}
 	editorElem.focus();
-}
+};
 
-$(document).on("paste", "[data-name=editFld]", function(e) {
-	e.preventDefault();
-	let text = e.originalEvent.clipboardData.getData('text/plain');
-	document.execCommand("insertHTML", false, text);
+$(function(){
+	$(document).on("paste", "[data-name=editFld]", function(e) {
+		e.preventDefault();
+		let text = e.originalEvent.clipboardData.getData('text/plain');
+		document.execCommand("insertHTML", false, text);
+	});
 });

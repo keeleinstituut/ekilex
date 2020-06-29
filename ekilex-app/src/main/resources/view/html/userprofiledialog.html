@@ -109,11 +109,9 @@
             <div class="form-group row">
                 <label class="col-md-auto col-form-label">Otsingutulemustes nähtavad sildid (maksimum 3)</label>
               <div class="col-md-12">
-                <select name="preferredTagNames" multiple data-live-search="true" data-actions-box="true"
-                        data-max-options="4" data-max-options-text="lubatud on kuni 3 valikut"
-                        title="Vali otsingutulemustes nähtavad sildid"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                <select name="preferredTagNames" multiple data-live-search="true"
+                        data-max-options="3" data-max-options-text="lubatud on kuni 3 valikut"
+                        title="Vali otsingutulemustes nähtavad sildid">
                   <th:block th:each="tag : ${tags}">
                     <option th:value="${tag}" th:text="${tag}" th:selected="${userProfile.preferredTagNames != null && #lists.contains(userProfile.preferredTagNames, tag)}"/>
                   </th:block>

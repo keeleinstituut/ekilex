@@ -6,7 +6,8 @@ String.prototype.trunc = function(n, useWordBoundary) {
 	return (useWordBoundary ? subString.substr(0, subString.lastIndexOf(' ')) : subString) + "&hellip;";
 };
 
-function initialise() {
+
+function initializeDatasets() {
 	$(document).on("click", "#addDatasetSubmitBtn", function(e) {
 		e.preventDefault();
 
@@ -64,7 +65,6 @@ function initialise() {
 
 	$(document).on('hide.bs.modal ', ".edit-dataset-dialog", function(e) {
 		emptyClassifSelect($(this), "languages");
-		emptyClassifSelect($(this), "processStates");
 		emptyClassifSelect($(this), "origins");
 
 		let domains = $(this).find('select[name="domains"]');
@@ -86,7 +86,6 @@ function initialise() {
 			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);
 
 			markSelectedClassifiers(thisForm, "languages", dataset.languages);
-			markSelectedClassifiers(thisForm, "processStates", dataset.processStates);
 			markClassifierDomains(thisForm, dataset);
 
 		}).fail(function(data) {
@@ -107,7 +106,7 @@ function emptyClassifSelect(modal, classifSelectName) {
 		$(this).removeAttr("selected");
 	});
 	classifSelect.selectpicker('refresh');
-}
+};
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {
 	let getOriginDomainsUrl = applicationUrl + 'origin_domains/' + originCode;
@@ -137,7 +136,7 @@ function populateDomains(domainsSelect, originCode, previousDomainsValue) {
 		console.log(response);
 		openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
 	});
-}
+};
 
 function markClassifierDomains(thisForm, dataset) {
 
@@ -158,7 +157,7 @@ function markClassifierDomains(thisForm, dataset) {
 			populateDomains(domainsSelect, originCode, previousDomainsIds);
 		});
 	}
-}
+};
 
 function markSelectedClassifiers(form, classifSelectName, classifArray) {
 	let classifSelect = form.find('select[name="' + classifSelectName + '"]');
@@ -169,19 +168,19 @@ function markSelectedClassifiers(form, classifSelectName, classifArray) {
 	});
 
 	classifSelect.selectpicker('refresh');
-}
+};
 
 function emptyAndDisableSelect(selectCtl) {
 	selectCtl.find("option").remove();
 	selectCtl.attr('disabled', true);
 	selectCtl.selectpicker('refresh');
-}
+};
 
 function isValidDatasetCodeFormat(code) {
 	//don't allow spaces, tabls ? and %
 	let pattern = /^((?!\?|\%)\S)*$/;
 	return pattern.test(code);
-}
+};
 
 function deleteDataset(datasetCode) {
 	openWaitDlg("Palun oodake, sõnakogu kustutamine on pooleli");
@@ -199,7 +198,7 @@ function deleteDataset(datasetCode) {
 		openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
 		console.log(data);
 	});
-}
+};
 
 function checkAndAddDataset(addDatasetForm) {
 	let newCodeField = addDatasetForm.find('input[name="code"]');
@@ -226,4 +225,4 @@ function checkAndAddDataset(addDatasetForm) {
 		openAlertDlg("Sõnakogu lisamine ebaõnnestus.");
 		console.log(data);
 	});
-}
+};

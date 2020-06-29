@@ -35,7 +35,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LayerName;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.FreeForm;
@@ -72,14 +71,14 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 	public List<eki.ekilex.data.Word> getWords(
 			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
-			LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) throws Exception {
+			List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
+		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -93,13 +92,13 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 	public List<eki.ekilex.data.Word> getWords(
 			String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
-			LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) {
+			List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Condition where = createSearchCondition(word, paradigm, searchWordCrit, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
+		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {

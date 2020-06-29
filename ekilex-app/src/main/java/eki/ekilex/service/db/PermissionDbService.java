@@ -18,8 +18,6 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
@@ -43,8 +41,8 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.OrderingField;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
@@ -615,13 +613,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 						.and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
 				.asTable("lds");
 
-		Table<Record1<String>> plds = DSL
-				.select(PROCESS_LOG.DATASET_CODE)
-				.from(PROCESS_LOG, PROCESS_LOG_SOURCE_LINK)
-				.where(PROCESS_LOG.ID.eq(PROCESS_LOG_SOURCE_LINK.PROCESS_LOG_ID)
-						.and(PROCESS_LOG_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
-				.asTable("plds");
-
 		Table<Record1<String>> weds = DSL
 				.select(LEXEME.DATASET_CODE)
 				.from(LEXEME, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK)
@@ -636,7 +627,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.unionAll(DSL.selectFrom(lffds))
 				.unionAll(DSL.selectFrom(dds))
 				.unionAll(DSL.selectFrom(lds))
-				.unionAll(DSL.selectFrom(plds))
 				.unionAll(DSL.selectFrom(weds))
 				.asTable("sds");
 

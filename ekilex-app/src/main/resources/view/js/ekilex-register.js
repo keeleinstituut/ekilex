@@ -1,4 +1,4 @@
-function initialise() {
+function initializeRegister() {
 	$(document).on("click", "#registerBtn", function() {
 		let registerForm = $("#registerForm");
 		let code = $(this).data('code');
@@ -17,4 +17,4 @@ function initialise() {
 			$('#registerBtn').prop("disabled", true);
 		}
 	});
-}
+};

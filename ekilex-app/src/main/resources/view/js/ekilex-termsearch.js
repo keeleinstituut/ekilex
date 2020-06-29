@@ -1,5 +1,5 @@
 // add on click handlers to details buttons in search result table
-function initialise() {
+function initializeTermSearch() {
 
 	$(document).on("click", ":button[name='meaning-details-btn']", function() {
 		var meaningId = $(this).data('id');
@@ -23,7 +23,7 @@ function initialise() {
 			code: lang
 		};
 		postJson(applicationUrl + 'update_item', itemData).done(function(data) {
-			refreshDetails();
+			refreshDetailsTermsSearch();
 		});
 	});
 
@@ -90,17 +90,6 @@ function initialise() {
 		});
 	});
 
-	$(document).on('show.bs.modal', '#processLogDlg', function(e) {
-		var dlg = $(this);
-		var link = $(e.relatedTarget);
-		var url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
-		});
-	});
-
 	var detailsButtons = $('#results').find('[name="meaning-details-btn"]');
 	if (detailsButtons.length === 1) {
 		detailsButtons.trigger('click');
@@ -108,7 +97,7 @@ function initialise() {
 
 	initNewWordDlg();
 	initClassifierAutocomplete();
-}
+};
 
 function loadMeaningDetails(meaningId) {
 	$("[id^='meaning_select_point_']").hide();
@@ -133,16 +122,16 @@ function loadMeaningDetails(meaningId) {
 		closeWaitDlg();
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	});
-}
+};
 
-function refreshDetails() {
+function refreshDetailsTermsSearch() {
 	var refreshButton = $('#refresh-details');
 	refreshButton.trigger('click');
-}
+};
 
-function doNewSearch() {
+function doNewSearchTermSearch() {
 	$('#simple_search_filter').find('button[type=submit]').trigger('click');
-}
+};
 
 function deleteMeaningAndLexemesAndWords() {
 	var opName = "delete";
@@ -152,4 +141,4 @@ function deleteMeaningAndLexemesAndWords() {
 	let successCallbackFunc = () => eval(successCallbackName)($(this));
 
 	executeMultiConfirmPostDelete(opName, opCode, meaningId, successCallbackFunc);
-}
+};

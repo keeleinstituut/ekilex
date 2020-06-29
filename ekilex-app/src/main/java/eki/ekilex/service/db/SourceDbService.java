@@ -4,7 +4,6 @@ import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
@@ -288,11 +287,7 @@ public class SourceDbService implements SystemConstant {
 						.andNotExists(DSL
 								.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
 								.from(WORD_ETYMOLOGY_SOURCE_LINK)
-								.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
-						.andNotExists(DSL
-								.select(PROCESS_LOG_SOURCE_LINK.ID)
-								.from(PROCESS_LOG_SOURCE_LINK)
-								.where(PROCESS_LOG_SOURCE_LINK.SOURCE_ID.eq(sourceId))))
+								.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId))))
 				.fetchSingleInto(Boolean.class);
 	}
 

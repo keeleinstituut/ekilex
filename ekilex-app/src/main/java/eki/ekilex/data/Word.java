@@ -42,7 +42,7 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private List<String> lexemesProcessStateCodes;
 
-	private List<String> layerProcessStateCodes;
+	private List<String> lexemesTagNames;
 
 	private List<String> datasetCodes;
 
@@ -202,12 +202,12 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.lexemesProcessStateCodes = lexemesProcessStateCodes;
 	}
 
-	public List<String> getLayerProcessStateCodes() {
-		return layerProcessStateCodes;
+	public List<String> getLexemesTagNames() {
+		return lexemesTagNames;
 	}
 
-	public void setLayerProcessStateCodes(List<String> layerProcessStateCodes) {
-		this.layerProcessStateCodes = layerProcessStateCodes;
+	public void setLexemesTagNames(List<String> lexemesTagNames) {
+		this.lexemesTagNames = lexemesTagNames;
 	}
 
 	public List<String> getDatasetCodes() {

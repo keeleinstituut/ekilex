@@ -74,11 +74,6 @@ public class MaintenanceService implements SystemConstant {
 			logger.debug("Maintenance service deleted {} floating freeforms", deletedFreeformCount);
 		}
 
-		int deletedProcessLogCount = maintenanceDbService.deleteFloatingProcessLogs();
-		if (deletedProcessLogCount > 0) {
-			logger.debug("Maintenance service deleted {} floating process logs", deletedProcessLogCount);
-		}
-
 		int deletedLifecycleLogCount = maintenanceDbService.deleteFloatingLifecycleLogs();
 		if (deletedLifecycleLogCount > 0) {
 			logger.debug("Maintenance service deleted {} floating lifecycle logs", deletedLifecycleLogCount);

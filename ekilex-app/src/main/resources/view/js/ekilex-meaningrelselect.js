@@ -1,4 +1,4 @@
-function initialise() {
+function initializeMeaningRelSelect() {
 	let relationTypeSelect = $("select[name='relationType']");
 	changeOppositeRelationSelectData(relationTypeSelect);
 	checkEnableSubmitButtons();
@@ -21,7 +21,7 @@ function initialise() {
 	});
 
 	$("#submitDiv").find("button").click(function() {
-		submitForm();
+		submitFormMeaning();
 	});
 
 	$("#submitWithRelationDiv").find("button").click(function() {
@@ -32,11 +32,11 @@ function initialise() {
 				createWordForm.find('input[name="importMeaningData"]').val("true");
 				validateMeaningDataImportAndSubmitForm();
 			} else {
-				submitForm();
+				submitFormMeaning();
 			}
 		}
 	});
-}
+};
 
 function validateMeaningDataImportAndSubmitForm() {
 	let failMessage = "Termini loomine ja mõiste andmete kopeerimine ebaõnnestus. Kontrolli, et mõistel ei oleks samakujulisi erineva sõnakogu termineid";
@@ -46,7 +46,7 @@ function validateMeaningDataImportAndSubmitForm() {
 
 	$.get(validateMeaningDataImportUrl).done(function(response) {
 		if (response === "OK") {
-			submitForm();
+			submitFormMeaning();
 		} else {
 			console.log(response);
 			openAlertDlg(failMessage);
@@ -57,9 +57,9 @@ function validateMeaningDataImportAndSubmitForm() {
 		openAlertDlg(failMessage);
 		importMeaningDataInput.val("false");
 	});
-}
+};
 
-function submitForm() {
+function submitFormMeaning() {
 	let createWordForm = $("#createWordForm");
 	let createRelation = !$("#chkNoRelation").is(":checked");
 	createWordForm.find('input[name="createRelation"]').val(createRelation);
@@ -84,7 +84,7 @@ function submitForm() {
 		console.log(data);
 		openAlertDlg(failMessage);
 	});
-}
+};
 
 function hideRelationSelect() {
 	$('#submitDiv').show();
@@ -92,7 +92,7 @@ function hideRelationSelect() {
 	$('#meanings').hide();
 	$('#relationTypes').hide();
 	$('#oppositeRelationTypes').hide();
-}
+};
 
 function showRelationSelect() {
 	$('#submitDiv').hide();
@@ -101,10 +101,10 @@ function showRelationSelect() {
 	$('#relationTypes').show();
 	let relationTypeSelect = $("select[name='relationType']");
 	changeOppositeRelationSelectData(relationTypeSelect);
-}
+};
 
 function checkEnableSubmitButtons() {
 	if ($('input[name="relatedMeaningId"]:checked').length === 1) {
 		$("#submitWithRelationDiv").find("button").removeAttr("disabled");
 	}
-}
+};
