@@ -114,7 +114,10 @@
                      th:data-orderby="${meaningWord.orderBy}">
                   <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                   <div class="hidden-buttons">
-                    <button type="button" th:hidden="${meaningWordIter.first}" class="btn badge badge-secondary do-refresh order-up" title="Muuda järjestust">
+                    <button type="button" class="btn badge badge-secondary do-refresh order-up"
+                            title="Muuda järjestust"
+                            th:hidden="${meaningWordIter.first}"
+                            sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-arrow-left" aria-hidden="true"></i>
                     </button>
                     <button type="button" class="btn btn-link p-0" th:data-id="${meaningWord.wordId}" name="word-details-btn">
@@ -144,7 +147,10 @@
                             sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
-                    <button type="button" th:hidden="${meaningWordIter.last}" class="btn  badge badge-secondary do-refresh order-down" title="Muuda järjestust">
+                    <button type="button" class="btn badge badge-secondary do-refresh order-down"
+                            title="Muuda järjestust"
+                            th:hidden="${meaningWordIter.last}"
+                            sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-arrow-right" aria-hidden="true"></i>
                     </button>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
