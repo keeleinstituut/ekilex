@@ -54,7 +54,7 @@ public class SourceEditController extends AbstractAuthActionController {
 			@RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText,
 			@RequestParam("searchResultCount") String count,
-			Model model) {
+			Model model) throws Exception {
 
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
@@ -94,7 +94,7 @@ public class SourceEditController extends AbstractAuthActionController {
 			@PathVariable("sourcePropertyId") Long sourcePropertyId,
 			@PathVariable("sourcePropertyType") FreeformType type,
 			@PathVariable("count") String count,
-			Model model) {
+			Model model) throws Exception {
 
 		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 

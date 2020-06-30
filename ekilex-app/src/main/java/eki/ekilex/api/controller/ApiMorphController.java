@@ -39,7 +39,7 @@ public class ApiMorphController extends AbstractApiController {
 
 		try {
 			morphologyService.replace(paradigmWrapper);
-			return getOpPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}

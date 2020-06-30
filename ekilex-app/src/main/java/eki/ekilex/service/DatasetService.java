@@ -46,7 +46,6 @@ public class DatasetService implements SystemConstant {
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
 		List<Classifier> domains = getDatasetDomains(dataset.getCode());
 		List<Classifier> languages = getDatasetClassifiers(ClassifierName.LANGUAGE, dataset.getCode());
-		List<Classifier> processStates = getDatasetClassifiers(ClassifierName.PROCESS_STATE, dataset.getCode());
 		dataset.setDomains(domains);
 		dataset.setLanguages(languages);
 

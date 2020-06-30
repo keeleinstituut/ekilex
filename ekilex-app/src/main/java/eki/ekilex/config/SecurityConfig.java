@@ -23,7 +23,7 @@ import eki.ekilex.service.UserService;
 @ConditionalOnWebApplication
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class SecurityConfig {
 
 	@Configuration
 	@Order(1)

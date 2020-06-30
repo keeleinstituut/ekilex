@@ -25,9 +25,4 @@ public class PermissionGrantService implements PermConstant {
 	public boolean isGrantedForWord(Long wordId, String roleDatasetCode, List<String> userPermDatasetCodes) {
 		return permissionDbService.isGrantedForWord(wordId, roleDatasetCode, userPermDatasetCodes);
 	}
-
-	@Transactional
-	public boolean isGrantedForSource(Long userId, Long sourceId) {
-		return permissionDbService.isGrantedForSource(userId, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-	}
 }

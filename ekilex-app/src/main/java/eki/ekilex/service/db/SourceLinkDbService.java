@@ -33,7 +33,7 @@ import eki.ekilex.data.db.tables.WordFreeform;
 public class SourceLinkDbService {
 
 	@Autowired
-	protected DSLContext create;
+	private DSLContext create;
 
 	public FreeformOwner getFreeformOwner(Long freeformId) {
 

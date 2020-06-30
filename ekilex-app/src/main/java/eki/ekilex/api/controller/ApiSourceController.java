@@ -78,14 +78,14 @@ public class ApiSourceController extends AbstractApiController {
 
 		try {
 			Long sourceId = sourceService.createSource(sourceType, completeSourceProperties);
-			return getOpPositiveResponse(sourceId);
+			return getOpSuccessResponse(sourceId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(203)
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSource(
@@ -93,43 +93,33 @@ public class ApiSourceController extends AbstractApiController {
 			@RequestParam("sourceType") SourceType sourceType) {
 
 		try {
-			Long userId = userContext.getUserId();
-			boolean isGranted = permissionGrantService.isGrantedForSource(userId, sourceId);
-			if (!isGranted) {
-				return getPermFailResponse();
-			}
 			sourceService.updateSource(sourceId, sourceType);
-			return getOpPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(204)
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSource(@RequestParam("sourceId") Long sourceId) {
 
 		try {
-			Long userId = userContext.getUserId();
-			boolean isGranted = permissionGrantService.isGrantedForSource(userId, sourceId);
-			if (!isGranted) {
-				return getPermFailResponse();
-			}
 			boolean isValidForDeletion = sourceService.validateSourceDelete(sourceId);
 			if (!isValidForDeletion) {
 				return getOpFailResponse("Cannot delete, source in use");
 			}
 			sourceService.deleteSource(sourceId);
-			return getOpPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(205)
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId1)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + JOIN_URI)
 	@ResponseBody
 	public ApiResponse joinSources(
@@ -137,20 +127,15 @@ public class ApiSourceController extends AbstractApiController {
 			@RequestParam("sourceId2") Long sourceId2) {
 
 		try {
-			Long userId = userContext.getUserId();
-			boolean isGranted = permissionGrantService.isGrantedForSource(userId, sourceId1);
-			if (!isGranted) {
-				return getPermFailResponse();
-			}
 			sourceService.joinSources(sourceId1, sourceId2);
-			return getOpPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(206)
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceProperty(
@@ -160,20 +145,15 @@ public class ApiSourceController extends AbstractApiController {
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
-			Long userId = userContext.getUserId();
-			boolean isGranted = permissionGrantService.isGrantedForSource(userId, sourceId);
-			if (!isGranted) {
-				return getPermFailResponse();
-			}
 			sourceService.createSourceProperty(sourceId, type, valueText);
-			return getOpPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(207)
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("@permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSourceProperty(
@@ -182,36 +162,22 @@ public class ApiSourceController extends AbstractApiController {
 
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
-			Long userId = userContext.getUserId();
-			SourceProperty sourceProperty = sourceService.getSourceProperty(sourcePropertyId);
-			Long sourceId = sourceProperty.getSourceId();
-			boolean isGranted = permissionGrantService.isGrantedForSource(userId, sourceId);
-			if (!isGranted) {
-				return getPermFailResponse();
-			}
 			sourceService.updateSourceProperty(sourcePropertyId, valueText);
-			return getOpPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(208)
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("@permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSourceProperty(@RequestParam("sourcePropertyId") Long sourcePropertyId) {
 
 		try {
-			Long userId = userContext.getUserId();
-			SourceProperty sourceProperty = sourceService.getSourceProperty(sourcePropertyId);
-			Long sourceId = sourceProperty.getSourceId();
-			boolean isGranted = permissionGrantService.isGrantedForSource(userId, sourceId);
-			if (!isGranted) {
-				return getPermFailResponse();
-			}
 			sourceService.deleteSourceProperty(sourcePropertyId);
-			return getOpPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}

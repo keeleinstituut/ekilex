@@ -1,6 +1,7 @@
 package eki.ekilex.security;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,13 +19,18 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.PermConstant;
+import eki.common.constant.ReferenceOwner;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.api.FreeformOwner;
 import eki.ekilex.service.db.PermissionDbService;
+import eki.ekilex.service.db.SourceDbService;
+import eki.ekilex.service.db.SourceLinkDbService;
 
-//This class is currently not used, but is available for possible future use (for example @PreAuthorize)
-@Component
+@Component("permEval")
 public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(EkilexPermissionEvaluator.class);
@@ -34,6 +40,77 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	@Autowired
 	private PermissionDbService permissionDbService;
 
+	@Autowired
+	private SourceDbService sourceDbService;
+
+	@Autowired
+	private SourceLinkDbService sourceLinkDbService;
+
+	@Transactional
+	public boolean isSourceCrudGranted(Authentication authentication, Long sourceId) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		boolean isGranted = permissionDbService.isGrantedForSource(userId, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		return isGranted;
+	}
+
+	@Transactional
+	public boolean isSourcePropertyCrudGranted(Authentication authentication, Long sourcePropertyId) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+		if (sourceProperty == null) {
+			return true;
+		}
+		Long sourceId = sourceProperty.getSourceId();
+		boolean isGranted = permissionDbService.isGrantedForSource(userId, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		return isGranted;
+	}
+
+	@Transactional
+	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, SourceLink sourceLink) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		boolean isValidCrudRole = isValidCrudRole(userId, crudRoleDataset);
+		if (!isValidCrudRole) {
+			return false;
+		}
+		ReferenceOwner referenceOwner = sourceLink.getOwner();
+		Long ownerId = sourceLink.getOwnerId();
+		if (ReferenceOwner.FREEFORM.equals(referenceOwner)) {
+			FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
+			LifecycleEntity entity = freeformOwner.getEntity();
+			Long entityId = freeformOwner.getEntityId();
+			if (LifecycleEntity.LEXEME.equals(entity)) {
+				return permissionDbService.isGrantedForLexeme(entityId, crudRoleDataset);
+			} else if (LifecycleEntity.MEANING.equals(entity)) {
+				return permissionDbService.isGrantedForMeaning(userId, entityId, crudRoleDataset, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			} else if (LifecycleEntity.DEFINITION.equals(entity)) {
+				return permissionDbService.isGrantedForDefinition(entityId, crudRoleDataset, null);
+			}
+		} else if (ReferenceOwner.DEFINITION.equals(referenceOwner)) {
+			return permissionDbService.isGrantedForDefinition(ownerId, crudRoleDataset, null);
+		} else if (ReferenceOwner.LEXEME.equals(referenceOwner)) {
+			return permissionDbService.isGrantedForLexeme(ownerId, crudRoleDataset);
+		}
+		return false;
+	}
+
+	private boolean isValidCrudRole(Long userId, String crudRoleDataset) {
+
+		final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.OWN, AuthorityOperation.CRUD);
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		boolean isValidCrudRole = datasetPermissions.stream()
+				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
+						&& crudAuthOps.contains(datasetPermission.getAuthOperation())
+						&& StringUtils.equals(datasetPermission.getDatasetCode(), crudRoleDataset));
+		return isValidCrudRole;
+	}
+
+	//not in use currently
 	//hasPermission(#foo, 'write')
 	@Override
 	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
@@ -41,15 +118,12 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		EkiUser user = (EkiUser) authentication.getPrincipal();
 		Long userId = user.getId();
 
-		if (user.isAdmin()) {
-			return true;
-		}
-
 		logger.debug("userId: \"{}\" targetObj: \"{}\" permission: \"{}\"", userId, targetDomainObject, permission);
 
 		return false;
 	}
 
+	//not in use currently
 	//hasPermission(#id, 'USAGE', 'DATASET:CRUD')
 	@Transactional
 	@Override
@@ -63,11 +137,8 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		AuthorityItem requiredAuthItem = requiredAuthority.getAuthItem();
 		List<String> requiredAuthOps = requiredAuthority.getAuthOps();
 
-		if (requiredAuthOps.contains(AuthorityOperation.READ.name())) {
-			boolean isMaster = user.isMaster();
-			if (isMaster) {
-				return true;
-			}
+		if (requiredAuthOps.contains(AuthorityOperation.READ.name()) && user.isMaster()) {
+			return true;
 		}
 
 		DatasetPermission userRole = user.getRecentRole();

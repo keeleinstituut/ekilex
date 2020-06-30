@@ -130,7 +130,8 @@ public class SourceDbService implements SystemConstant {
 				.where(
 						SOURCE_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
 						.and(FREEFORM.ID.eq(sourcePropertyId)))
-				.fetchOneInto(SourceProperty.class);
+				.fetchOptionalInto(SourceProperty.class)
+				.orElse(null);
 	}
 
 	public String getSourceNameValue(Long sourceId) {

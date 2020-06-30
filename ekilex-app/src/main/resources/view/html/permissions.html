@@ -19,7 +19,7 @@
               <table class="table table-striped m-0 p-0 table-hover">
                 <tr>
                   <th class="m-1 p-1"></th>
-                  <th class="m-1 p-1">
+                  <th class="m-1 p-1 text-nowrap">
                     <form th:action="@{/permissions}" method="post">
                       <input type="hidden" name="orderBy" value="DATE">
                       <button type="submit" class="btn badge badge-light">
@@ -28,7 +28,7 @@
                       Kuupäev
                     </form>
                   </th>
-                  <th class="m-1 p-1">
+                  <th class="m-1 p-1 text-nowrap">
                     <form th:action="@{/permissions}" method="post">
                       <input type="hidden" name="orderBy" value="NAME">
                       <button type="submit" class="btn badge badge-light">
@@ -58,7 +58,7 @@
                     <td class="m-1 p-1">
                       <span th:text="${#dates.format(userPerm.createdOn, 'dd.MM.yyyy')}"></span>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="m-1 p-1 text-nowrap">
                       <span th:text="${userPerm.name}"></span>
                     </td>
                     <td class="m-1 p-1">
@@ -145,12 +145,11 @@
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </td>
-                    <td class="m-1 p-1" style="width: 160px">
+                    <td class="m-1 p-1">
                       <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
-                        <div class="invisible-buttons">
+                        <div class="invisible-buttons text-nowrap">
                           <span th:text="${datasetPerm.datasetCode}"></span>
                           <span th:text="${datasetPerm.authOperation}"></span>
-                          <span th:text="${datasetPerm.authItem}"></span>
                           <span th:if="${datasetPerm.authLang != null}">
                             <span th:text="${datasetPerm.authLang}"></span>
                           </span>

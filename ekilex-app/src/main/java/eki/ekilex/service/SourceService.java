@@ -22,6 +22,7 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.SourceType;
+import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.Source;
@@ -152,9 +153,12 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateSourceProperty(Long sourcePropertyId, String valueText) {
+	public void updateSourceProperty(Long sourcePropertyId, String valueText) throws Exception {
 
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+		if (sourceProperty == null) {
+			throw new OperationDeniedException();
+		}
 		FreeformType type = sourceProperty.getType();
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId, valueText);
@@ -163,9 +167,12 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteSourceProperty(Long sourcePropertyId) {
+	public void deleteSourceProperty(Long sourcePropertyId) throws Exception {
 
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+		if (sourceProperty == null) {
+			throw new OperationDeniedException();
+		}
 		FreeformType type = sourceProperty.getType();
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId);
