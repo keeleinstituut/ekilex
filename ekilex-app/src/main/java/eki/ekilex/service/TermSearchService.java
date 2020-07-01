@@ -140,15 +140,15 @@ public class TermSearchService extends AbstractSearchService {
 			return null;
 		}
 
-		permCalculator.applyCrud(meaning, userRole);
+		permCalculator.applyCrud(userRole, meaning);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		permCalculator.applyCrud(definitions, userRole);
-		permCalculator.filterVisibility(definitions, userId);
+		permCalculator.applyCrud(userRole, definitions);
+		permCalculator.filterVisibility(userId, definitions);
 		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
 		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 		for (Definition definition : definitions) {
 			List<DefinitionNote> definitionNotes = definition.getNotes();
-			permCalculator.filterVisibility(definitionNotes, userId);
+			permCalculator.filterVisibility(userId, definitionNotes);
 		}
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
@@ -159,7 +159,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<Image> images = conversionUtil.composeMeaningImages(imageSourceTuples);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
-		permCalculator.filterVisibility(meaningNotes, userRole);
+		permCalculator.filterVisibility(userRole, meaningNotes);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -173,18 +173,18 @@ public class TermSearchService extends AbstractSearchService {
 
 			LexemeWordTuple lexemeWordTuple = termSearchDbService.getLexemeWordTuple(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			Lexeme lexeme = conversionUtil.composeLexeme(lexemeWordTuple);
-			permCalculator.applyCrud(lexeme, userRole);
+			permCalculator.applyCrud(userRole, lexeme);
 			Long wordId = lexeme.getWordId();
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-			permCalculator.applyCrud(usages, userRole);
-			permCalculator.filterVisibility(usages, userId);
+			permCalculator.applyCrud(userRole, usages);
+			permCalculator.filterVisibility(userId, usages);
 			List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
 			List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
-			permCalculator.filterVisibility(lexemeNotes, userId);
+			permCalculator.filterVisibility(userId, lexemeNotes);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
@@ -192,7 +192,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 
 			Word word = lexeme.getWord();
-			permCalculator.applyCrud(word, userRole);
+			permCalculator.applyCrud(userRole, word);
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())

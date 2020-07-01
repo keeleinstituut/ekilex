@@ -56,7 +56,7 @@ public class SourceService extends AbstractService {
 			return null;
 		}
 		List<Source> sources = convert(sourcePropertyTuples);
-		permCalculator.applyCrud(sources, userRole);
+		permCalculator.applyCrud(userRole, sources);
 		if (sources.size() > 1) {
 			logger.error("Single source query for id {} returned several. Fix this!", sourceId);
 		}
@@ -98,7 +98,7 @@ public class SourceService extends AbstractService {
 		}
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType);
 		List<Source> sources = convert(sourcePropertyTuples);
-		permCalculator.applyCrud(sources, userRole);
+		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
 	}
@@ -113,7 +113,7 @@ public class SourceService extends AbstractService {
 		Long excludedSourceId = excludedSource.getId();
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
 		List<Source> sources = convert(sourcePropertyTuples);
-		permCalculator.applyCrud(sources, userRole);
+		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
 	}

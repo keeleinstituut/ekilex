@@ -1,7 +1,5 @@
 package eki.ekilex.service;
 
-import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ public class PermissionGrantService implements PermConstant {
 	}
 
 	@Transactional
-	public boolean isGrantedForWord(Long wordId, String roleDatasetCode, List<String> userPermDatasetCodes) {
-		return permissionDbService.isGrantedForWord(wordId, roleDatasetCode, userPermDatasetCodes);
+	public boolean isWordCrudGranted(Long userId, Long wordId, String roleDatasetCode) {
+		return permissionDbService.isGrantedForWord(userId, wordId, roleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 	}
 }

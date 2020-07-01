@@ -94,7 +94,7 @@ public class LexEditController extends AbstractPageController {
 		}
 
 		List<WordLexeme> sourceLexemes = lookupService
-				.getWordLexemesOfJoinCandidates(searchFilter, datasetCodes, wordHomonymNumber, sourceLexemeMeaningId, userId, userRole, tagNames);
+				.getWordLexemesOfJoinCandidates(userId, userRole, datasetCodes, searchFilter, wordHomonymNumber, sourceLexemeMeaningId, tagNames);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
@@ -232,11 +232,11 @@ public class LexEditController extends AbstractPageController {
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 
 		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId, userId);
+		WordDetails targetWordDetails = lookupService.getWordJoinDetails(userId, wordId);
 		Word targetWord = targetWordDetails.getWord();
 
 		List<WordDetails> sourceWordDetailsList = lookupService
-				.getWordDetailsOfJoinCandidates(targetWord, userRoleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes, userId);
+				.getWordDetailsOfJoinCandidates(userId, userRoleDatasetCode, targetWord, userPreferredDatasetCodes, userPermDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
@@ -338,7 +338,7 @@ public class LexEditController extends AbstractPageController {
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
 
-		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, userId, userRole, tagNames);
+		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(userId, userRole, wordValue, language, meaningId, tagNames);
 		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
 		return WORD_SELECT_PAGE;

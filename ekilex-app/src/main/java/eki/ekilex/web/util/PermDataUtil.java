@@ -1,7 +1,5 @@
 package eki.ekilex.web.util;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -86,9 +84,7 @@ public class PermDataUtil {
 			return false;
 		}
 		String roleDatasetCode = userRole.getDatasetCode();
-		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-
-		boolean isSourceWordCrudGranted = permissionGrantService.isGrantedForWord(sourceWordId, roleDatasetCode, userPermDatasetCodes);
+		boolean isSourceWordCrudGranted = permissionGrantService.isWordCrudGranted(userId, sourceWordId, roleDatasetCode);
 		if (isSourceWordCrudGranted) {
 			return true;
 		}

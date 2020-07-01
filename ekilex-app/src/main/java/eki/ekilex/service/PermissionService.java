@@ -67,6 +67,7 @@ public class PermissionService implements SystemConstant {
 		return userVisibleDatasetCodes;
 	}
 
+	//FIXME ambiguous - read or crud?
 	@Transactional
 	public List<String> getUserPermDatasetCodes(Long userId) {
 		if (userId == null) {

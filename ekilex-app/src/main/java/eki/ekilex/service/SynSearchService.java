@@ -81,10 +81,10 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		Word word = synSearchDbService.getWordDetails(wordId);
-		permCalculator.applyCrud(word, userRole);
+		permCalculator.applyCrud(userRole, word);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
-		permCalculator.filterVisibility(wordNotes, userRole);
+		permCalculator.filterVisibility(userRole, wordNotes);
 		String headwordLang = word.getLang();
 
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -111,7 +111,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
 
-		permCalculator.applyCrud(lexeme, userRole);
+		permCalculator.applyCrud(userRole, lexeme);
 		List<MeaningWordLangGroup> meaningWordLangGroups = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
 			List<LexemeType> lexemeTypes = Arrays.asList(LexemeType.PRIMARY, LexemeType.SECONDARY);
@@ -120,12 +120,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		}
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-		permCalculator.filterVisibility(definitions, userId);
+		permCalculator.filterVisibility(userId, definitions);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-		permCalculator.filterVisibility(usages, userId);
+		permCalculator.filterVisibility(userId, usages);
 
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 
