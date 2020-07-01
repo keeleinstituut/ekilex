@@ -367,8 +367,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 														DATASET_PERMISSION.USER_ID.eq(userId)
 																.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 																.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-																.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG))))))
+																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE)))))
 						.leftOuterJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE)))
 				.where(
 						MEANING.ID.eq(meaningId)
@@ -389,8 +388,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 												DATASET_PERMISSION.USER_ID.eq(userId)
 														.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 														.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-														.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG)))))))
+														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))))))
 				.where(MEANING.ID.eq(meaningId))
 				.groupBy(MEANING.ID)
 				.asTable("lpc");
