@@ -66,6 +66,11 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
+	public Long getSourceId(Long sourcePropertyId) {
+		return sourceDbService.getSourceId(sourcePropertyId);
+	}
+
+	@Transactional
 	public SourceProperty getSourceProperty(Long sourcePropertyId) {
 		return sourceDbService.getSourceProperty(sourcePropertyId);
 	}
@@ -202,15 +207,15 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void joinSources(Long firstSourceId, Long secondSourceId) {
+	public void joinSources(Long targetSourceId, Long originSourceId) {
 
-		String firstSourceNames = joinSourceNames(firstSourceId);
-		String secondSourceNames = joinSourceNames(secondSourceId);
+		String targetSourceNames = joinSourceNames(targetSourceId);
+		String originSourceNames = joinSourceNames(originSourceId);
 		LogData logData = new LogData(
-				LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, firstSourceId, secondSourceNames, firstSourceNames);
+				LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, targetSourceId, originSourceNames, targetSourceNames);
 		createLifecycleLog(logData);
 
-		sourceDbService.joinSources(firstSourceId, secondSourceId);
+		sourceDbService.joinSources(targetSourceId, originSourceId);
 	}
 
 	private String joinSourceNames(Long sourceId) {

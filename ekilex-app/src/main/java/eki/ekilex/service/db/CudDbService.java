@@ -225,6 +225,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
+		create.update(LEXEME)
+				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
 		create.update(LEXEME)
 				.set(LEXEME.VALUE_STATE_CODE, valueStateCode)
