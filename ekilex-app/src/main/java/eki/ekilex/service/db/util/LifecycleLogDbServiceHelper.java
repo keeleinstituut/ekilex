@@ -329,33 +329,6 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 		return result;
 	}
 
-	public Map<String, Object> getFreeformSourceLinkData(DSLContext create, Long entityId) {
-
-		Freeform ff = FREEFORM.as("ff");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
-		Table<Record2<Long, Long>> dff = DSL
-				.select(DEFINITION.MEANING_ID, DEFINITION_FREEFORM.FREEFORM_ID)
-				.from(DEFINITION, DEFINITION_FREEFORM)
-				.where(DEFINITION_FREEFORM.DEFINITION_ID.eq(DEFINITION.ID))
-				.asTable("dff");
-		Map<String, Object> result = create
-				.select(
-						ffsl.VALUE,
-						lff.LEXEME_ID,
-						dff.field("meaning_id", Long.class).as("definition_meaning_id"),
-						mff.MEANING_ID)
-				.from(ffsl
-						.innerJoin(ff).on(ff.ID.eq(ffsl.FREEFORM_ID))
-						.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ffsl.FREEFORM_ID))
-						.leftOuterJoin(dff).on(dff.field("freeform_id", Long.class).eq(ff.ID))
-						.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.ID)))
-				.where(ffsl.ID.eq(entityId))
-				.fetchSingleMap();
-		return result;
-	}
-
 	public Map<String, Object> getLexemeRelationData(DSLContext create, Long entityId) {
 
 		Map<String, Object> result = create

@@ -231,12 +231,12 @@ public class LexEditController extends AbstractPageController {
 		List<String> userPreferredDatasetCodes = userContextData.getPreferredDatasetCodes();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 
-		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
+		List<String> userVisibleDatasetCodes = permissionService.getUserVisibleDatasetCodes(userId);
 		WordDetails targetWordDetails = lookupService.getWordJoinDetails(userId, wordId);
 		Word targetWord = targetWordDetails.getWord();
 
 		List<WordDetails> sourceWordDetailsList = lookupService
-				.getWordDetailsOfJoinCandidates(userId, userRoleDatasetCode, targetWord, userPreferredDatasetCodes, userPermDatasetCodes);
+				.getWordDetailsOfJoinCandidates(userId, userRoleDatasetCode, targetWord, userPreferredDatasetCodes, userVisibleDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
