@@ -1,10 +1,11 @@
 $(function(){
+
 	$(document).on("click", ":input[name='userEnableCheck']", function() {
 		var userId = $(this).data('id');
-		var enable = $(this).is(':checked');
+		var checked = $(this).is(':checked');
 		var orderBy = $(this).data('order-by');
 		var userEnableUrl;
-		if (enable == true) {
+		if (checked == true) {
 			userEnableUrl = applicationUrl + 'permissions/enable/' + userId + '/' + orderBy;
 		} else {
 			userEnableUrl = applicationUrl + 'permissions/disable/' + userId + '/' + orderBy;
@@ -17,13 +18,32 @@ $(function(){
 			openAlertDlg('Viga!');
 		});
 	});
+
+	$(document).on("click", ":input[name='userApiCrudCheck']", function() {
+		var userId = $(this).data('id');
+		var checked = $(this).is(':checked');
+		var orderBy = $(this).data('order-by');
+		var userEnableUrl;
+		if (checked == true) {
+			userEnableUrl = applicationUrl + 'permissions/setapicrud/' + userId + '/' + orderBy;
+		} else {
+			userEnableUrl = applicationUrl + 'permissions/remapicrud/' + userId + '/' + orderBy;
+		}
+		$.get(userEnableUrl).done(function(data) {
+			var permissionsArea = $('#permissionsArea');
+			permissionsArea.replaceWith(data);
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg('Viga!');
+		});
+	});
 	
 	$(document).on("click", ":input[name='userAdminCheck']", function() {
 		var userId = $(this).data('id');
-		var enable = $(this).is(':checked');
+		var checked = $(this).is(':checked');
 		var orderBy = $(this).data('order-by');
 		var setAdminUrl;
-		if (enable == true) {
+		if (checked == true) {
 			setAdminUrl = applicationUrl + 'permissions/setadmin/' + userId + '/' + orderBy;
 		} else {
 			setAdminUrl = applicationUrl + 'permissions/remadmin/' + userId + '/' + orderBy;
@@ -39,10 +59,10 @@ $(function(){
 	
 	$(document).on("click", ":input[name='userMasterCheck']", function() {
 		var userId = $(this).data('id');
-		var enable = $(this).is(':checked');
+		var checked = $(this).is(':checked');
 		var orderBy = $(this).data('order-by');
 		var setMasterUrl;
-		if (enable == true) {
+		if (checked == true) {
 			setMasterUrl = applicationUrl + 'permissions/setmaster/' + userId + '/' + orderBy;
 		} else {
 			setMasterUrl = applicationUrl + 'permissions/remmaster/' + userId + '/' + orderBy;
@@ -58,10 +78,10 @@ $(function(){
 	
 	$(document).on("click", ":input[name='userReviewedCheck']", function() {
 		var userId = $(this).data('id');
-		var reviewed = $(this).is(':checked');
+		var checked = $(this).is(':checked');
 		var orderBy = $(this).data('order-by');
 		var setReviewedUrl;
-		if (reviewed == true) {
+		if (checked == true) {
 			setReviewedUrl = applicationUrl + 'permissions/setreviewed/' + userId + '/' + orderBy;
 		} else {
 			setReviewedUrl = applicationUrl + 'permissions/remreviewed/' + userId + '/' + orderBy;

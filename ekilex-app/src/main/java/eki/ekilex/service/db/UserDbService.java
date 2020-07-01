@@ -120,6 +120,10 @@ public class UserDbService extends AbstractDbService {
 		create.update(EKI_USER).set(EKI_USER.IS_ENABLED, enable).where(EKI_USER.ID.eq(userId)).execute();
 	}
 
+	public void setApiCrud(Long userId, boolean isApiCrud) {
+		create.update(EKI_USER).set(EKI_USER.IS_API_CRUD, isApiCrud).where(EKI_USER.ID.eq(userId)).execute();
+	}
+
 	public void setAdmin(Long userId, boolean isAdmin) {
 		create.update(EKI_USER).set(EKI_USER.IS_ADMIN, isAdmin).where(EKI_USER.ID.eq(userId)).execute();
 	}

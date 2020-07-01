@@ -232,6 +232,12 @@ public class UserService implements WebConstant {
 
 	@PreAuthorize("principal.admin")
 	@Transactional
+	public void setApiCrud(Long userId, boolean isApiCrud) {
+		userDbService.setApiCrud(userId, isApiCrud);
+	}
+
+	@PreAuthorize("principal.admin")
+	@Transactional
 	public void setAdmin(Long userId, boolean isAdmin) {
 		userDbService.setAdmin(userId, isAdmin);
 	}

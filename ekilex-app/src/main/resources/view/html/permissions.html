@@ -75,7 +75,7 @@
                              th:data-order-by="${orderBy}"
                              name="userApiCrudCheck"
                              th:checked="${userPerm.apiCrud}"
-                             th:disabled="${!userPerm.apiKeyExists && (!#vars.isAdmin)}"/>
+                             th:disabled="${!(userPerm.apiKeyExists && #vars.isAdmin)}"/>
                     </td>
                     <td class="p-1 text-center">
                       <input type="checkbox"

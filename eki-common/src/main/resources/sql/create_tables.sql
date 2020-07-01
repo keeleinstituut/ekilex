@@ -26,6 +26,7 @@ create table eki_user
   activation_key varchar(60) null,
   recovery_key varchar(60) null,
   api_key varchar(100) null,
+  is_api_crud boolean default false,
   is_admin boolean default false,
   is_master boolean default false,
   is_enabled boolean,

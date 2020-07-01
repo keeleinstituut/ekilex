@@ -96,6 +96,22 @@ public class PermissionsController extends AbstractPageController {
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
+	@GetMapping(PERMISSIONS_URI + "/setapicrud/{userId}/{orderBy}")
+	public String setApiCrud(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+
+		userService.setApiCrud(userId, true);
+		populateUserPermDataModel(model, orderBy);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/remapicrud/{userId}/{orderBy}")
+	public String remApiCrud(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+
+		userService.setApiCrud(userId, false);
+		populateUserPermDataModel(model, orderBy);
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
+	}
+
 	@GetMapping(PERMISSIONS_URI + "/setadmin/{userId}/{orderBy}")
 	public String setAdmin(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
 
