@@ -242,10 +242,6 @@ public interface WebConstant {
 
 	String UPDATE_SYN_MEANING_WORD_LANGS_URI = "/update_syn_meaning_word_langs";
 
-	String UPDATE_LEXEME_PROCESS_STATE_URI = "/update_lexeme_process_state";
-
-	String CREATE_LEXEME_PROCESS_STATE_URI = "/create_lexeme_process_state";
-
 	String USER_PROFILE_PAGE = "userprofile";
 
 	String USER_PROFILE_URI = "/userprofile";

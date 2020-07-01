@@ -107,9 +107,10 @@
   <div th:id="${'addLexemeProcessStateDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_process_state_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/create_lexeme_process_state}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_process_state">
             <div class="col-md-6">
               <select required class="form-control value-select required-field" name="value">
                 <option value="" hidden disabled selected>vali väärtus...</option>
@@ -179,9 +180,10 @@
   <div th:id="${'editLexemeProcessStateDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_process_state_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_lexeme_process_state}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_process_state">
             <select class="form-control" name="value">
               <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeProcessStateCode}">value</option>
             </select>

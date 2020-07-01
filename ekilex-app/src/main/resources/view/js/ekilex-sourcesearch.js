@@ -6,6 +6,21 @@ function initAddSourcePropertyDlg(addDlg) {
 	validateAndSubmitAndUpdateSourcePropertyForm(addDlg);
 };
 
+function initDeleteConfirmations() {
+	$('[data-toggle=delete-source-property-confirm]').confirmation({
+		btnOkLabel: 'Jah',
+		btnCancelLabel: 'Ei',
+		title: 'Palun kinnita allika atribuudi kustutamine',
+		onConfirm: deleteSourceProperty
+	});
+	$('[data-toggle=delete-source-confirm]').confirmation({
+		btnOkLabel: 'Jah',
+		btnCancelLabel: 'Ei',
+		title: 'Palun kinnita allika kustutamine',
+		onConfirm: executeValidateSourceDelete
+	});
+}
+
 function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 	dlg.find('button[type="submit"]').off('click').on('click', function (e) {
 		e.preventDefault();
@@ -14,7 +29,7 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 			return;
 		}
 
-		let sourceId = form.find('[name=sourceId]').val();
+		let sourceId = $(this).attr("data-source-id");
 		$.ajax({
 			url: form.attr('action'),
 			data: form.serialize(),
@@ -22,6 +37,7 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 		}).done(function (data) {
 			dlg.modal('hide');
 			$('#sourceSearchResult_' + sourceId).replaceWith(data);
+			initDeleteConfirmations();
 		}).fail(function (data) {
 			console.log(data);
 			openAlertDlg('Salvestamine ebaõnnestus');
@@ -43,10 +59,13 @@ function validateRequiredSourceFormField(form, type, fieldName) {
 	}
 };
 
-function deleteSourceProperty(sourceId, sourcePropertyId, sourcePropertyType, count) {
-	let deleteSourcePropertyUrl = applicationUrl + 'delete_source_property/' + sourceId + '/' + sourcePropertyId + '/' + sourcePropertyType + '/' + count;
+function deleteSourceProperty() {
+	let sourcePropertyId = $(this).data('sourcePropertyId');
+	let sourceId = $(this).data('sourceId');
+	let deleteSourcePropertyUrl = applicationUrl + 'delete_source_property/' + sourcePropertyId;
 	$.get(deleteSourcePropertyUrl).done(function (data) {
 		$('#sourceSearchResult_' + sourceId).replaceWith(data);
+		initDeleteConfirmations();
 	}).fail(function (data) {
 		console.log(data);
 		openAlertDlg('Kustutamine ebaõnnestus');
@@ -77,6 +96,7 @@ function submitAndUpdateSourceType(selectDlg) {
 	}).done(function (data) {
 		selectDlg.modal('hide');
 		$('#sourceSearchResult_' + sourceId).replaceWith(data);
+		initDeleteConfirmations();
 	}).fail(function (data) {
 		console.log(data);
 		openAlertDlg('Muutmine ebaõnnestus');
@@ -121,7 +141,8 @@ function isNewSourceFormValid(form) {
 	return form.find(".error-show").length == 0;
 };
 
-function executeValidateSourceDelete(sourceId) {
+function executeValidateSourceDelete() {
+	let sourceId = $(this).data('sourceId');
 	let validateUrl = applicationUrl + 'validate_delete_source/' + sourceId;
 	let deleteUrl = applicationUrl + 'delete_source/' + sourceId;
 	$.get(validateUrl).done(function (data) {
@@ -149,7 +170,7 @@ function deleteSourceAndUpdateSearch(deleteUrl) {
 };
 
 $(function(){
-	
+
 	$(document).on('show.bs.modal', '#sourceLifecycleLogDlg', function(e) {
 		var dlg = $(this);
 		var link = $(e.relatedTarget);
@@ -170,8 +191,10 @@ $(function(){
 
 		$.ajax({
 			url: form.attr('action'),
-			data: form.serialize(),
+			data: JSON.stringify(form.serializeJSON()),
 			method: 'POST',
+			dataType: 'json',
+			contentType: 'application/json'
 		}).done(function (sourceId) {
 			if (location === "source_search") {
 				window.location = applicationUrl + 'sourcesearch/' + sourceId;

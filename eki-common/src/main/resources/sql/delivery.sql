@@ -270,15 +270,9 @@ begin
   raise notice '% militermi ilmiku protsessi logi kolitud vabavormidesse ning elutsükli logidesse', moved_mil_lexeme_logs_counter;
 end $$;
 
-drop table word_process_log;
-drop table meaning_process_log;
-
-alter table eki_user_profile drop column preferred_layer_name;
-
 -- kolib süno kihis märgitud 'valmis' olekud ilmiku siltidesse
 insert into tag (name) values ('süno valmis');
 insert into lexeme_tag (lexeme_id, tag_name) select ls.lexeme_id, 'süno valmis' from layer_state ls where ls.layer_name = 'SYN' and ls.process_state_code = 'valmis';
-drop table layer_state;
 
 -- kolib ilmiku haldusoleku muutuse logid ilmiku elutsükli logidesse
 do $$
@@ -313,9 +307,13 @@ begin
   raise notice '% ilmiku haldusoleku logi kolitud elutsükli logidesse', moved_logs_counter;
 end $$;
 
+delete from process_state where code not in ('avalik', 'mitteavalik');
+update process_state set datasets = '{}';
+
+alter table eki_user_profile drop column preferred_layer_name;
+drop table word_process_log;
+drop table meaning_process_log;
 drop table lexeme_process_log;
 drop table process_log_source_link;
 drop table process_log;
-
-delete from process_state where code not in ('avalik', 'mitteavalik');
-update process_state set datasets = '{}';
+drop table layer_state;

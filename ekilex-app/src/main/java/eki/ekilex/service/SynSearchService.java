@@ -41,7 +41,6 @@ import eki.ekilex.data.WordSynDetails;
 import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
-import eki.ekilex.service.db.ProcessDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -59,9 +58,6 @@ public class SynSearchService extends AbstractWordSearchService {
 	private SynSearchDbService synSearchDbService;
 
 	@Autowired
-	private ProcessDbService processDbService;
-
-	@Autowired
 	private CudDbService cudDbService;
 
 	@Autowired
@@ -76,7 +72,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordSynDetails getWordSynDetails(
 			Long wordId, String datasetCode, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes,
-			Long userId, DatasetPermission userRole, List<String> tagNames) throws Exception {
+			Long userId, DatasetPermission userRole) throws Exception {
 
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);

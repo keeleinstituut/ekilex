@@ -18,12 +18,12 @@
       </div>
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
-          <th:block th:replace="sourcecomp :: source_join_details(${firstSource.id},${firstSource})"></th:block>
+          <th:block th:replace="sourcecomp :: source_join_details(${targetSource.id},${targetSource})"></th:block>
         </div>
       </div>
       <div class="card-body">
         <form th:action="@{/search_sources}" method="post">
-          <input type="hidden" name="firstSourceId" th:value="${firstSource.id}">
+          <input type="hidden" name="targetSourceId" th:value="${targetSource.id}">
           <input type="hidden" name="previousSearch" th:value="${previousSearch}">
           <div class="form-row">
             <div class="col-12">
@@ -45,7 +45,7 @@
       </div>
       <div class="card-body" th:if="${not #lists.isEmpty(sources)}">
         <div style="width: 95%" class="border rounded mb-2 p-2" name="source" th:each="source : ${sources}">
-          <th:block th:replace="sourcecomp :: source_join_details(${firstSource.id}, ${source})"></th:block>
+          <th:block th:replace="sourcecomp :: source_join_details(${targetSource.id}, ${source})"></th:block>
         </div>
       </div>
     </div>

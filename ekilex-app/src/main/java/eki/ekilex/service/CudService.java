@@ -321,6 +321,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, lexemeId, processStateCode);
+		createLifecycleLog(logData);
+		cudDbService.updateLexemeProcessState(lexemeId, processStateCode);
+	}
+
+	@Transactional
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
 		createLifecycleLog(logData);

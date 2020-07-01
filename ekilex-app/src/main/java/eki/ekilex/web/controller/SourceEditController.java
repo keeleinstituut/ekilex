@@ -1,12 +1,9 @@
 package eki.ekilex.web.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -29,6 +27,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.SourceRequest;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.web.util.ValueUtil;
@@ -36,7 +35,7 @@ import eki.ekilex.web.util.ValueUtil;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SourceEditController extends AbstractAuthActionController {
+public class SourceEditController extends AbstractPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
 
@@ -46,117 +45,101 @@ public class SourceEditController extends AbstractAuthActionController {
 	@Autowired
 	private ValueUtil valueUtil;
 
-	//FIXME remove sourceId, type, searchResultCount
 	@PostMapping(UPDATE_SOURCE_PROPERTY_URI)
 	public String updateSourceProperty(
-			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("sourcePropertyId") Long sourcePropertyId,
-			@RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText,
-			@RequestParam("searchResultCount") String count,
 			Model model) throws Exception {
 
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
+
+		Long sourceId = sourceService.getSourceId(sourcePropertyId);
 		logger.debug("Updating source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
-		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		sourceService.updateSourceProperty(sourcePropertyId, valueText);
-		Source source = sourceService.getSource(sourceId);
+		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
-		model.addAttribute("count", count);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	//FIXME remove searchResultCount
 	@PostMapping(CREATE_SOURCE_PROPERTY_URI)
 	public String createSourceProperty(
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText,
-			@RequestParam("searchResultCount") String count,
 			Model model) {
 
 		logger.debug("Creating property for source with id: {}", sourceId);
 
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		sourceService.createSourceProperty(sourceId, type, valueText);
-		Source source = sourceService.getSource(sourceId);
+		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
-		model.addAttribute("count", count);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	//FIXME only sourcePropertyId should be provided
-	@GetMapping(DELETE_SOURCE_PROPERTY_URI + "/{sourceId}/{sourcePropertyId}/{sourcePropertyType}/{count}")
-	public String deleteSourceProperty(
-			@PathVariable("sourceId") Long sourceId,
-			@PathVariable("sourcePropertyId") Long sourcePropertyId,
-			@PathVariable("sourcePropertyType") FreeformType type,
-			@PathVariable("count") String count,
-			Model model) throws Exception {
+	@GetMapping(DELETE_SOURCE_PROPERTY_URI + "/{sourcePropertyId}")
+	public String deleteSourceProperty(@PathVariable("sourcePropertyId") Long sourcePropertyId, Model model) throws Exception {
 
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		Long sourceId = sourceService.getSourceId(sourcePropertyId);
 		logger.debug("Deleting source property with id: {}, source id: {}", sourcePropertyId, sourceId);
 
 		sourceService.deleteSourceProperty(sourcePropertyId);
-		Source source = sourceService.getSource(sourceId);
+		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
-		model.addAttribute("count", count);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	//FIXME remove searchResultCount
 	@PostMapping(UPDATE_SOURCE_URI)
 	public String updateSource(
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("sourceType") SourceType type,
-			@RequestParam("searchResultCount") String count,
 			Model model) {
 
 		logger.debug("Updating source type, source id: {}", sourceId);
 
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+
 		sourceService.updateSource(sourceId, type);
-		Source source = sourceService.getSource(sourceId);
+		Source source = sourceService.getSource(sourceId, userRole);
 		model.addAttribute("source", source);
-		model.addAttribute("count", count);
 
 		return SOURCE_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + SOURCE_SEARCH_RESULT;
 	}
 
-	//FIXME provide single wrapper class with @RequestBody instead
 	@PostMapping(CREATE_SOURCE_URI)
 	@ResponseBody
-	public String createSource(
-			@RequestParam("sourceName") String sourceName,
-			@RequestParam("sourceType") SourceType sourceType,
-			@RequestParam("type") List<FreeformType> sourcePropertyTypes,
-			@RequestParam("valueText") List<String> valueTexts) {
+	public String createSource(@RequestBody SourceRequest source) {
+
+		String sourceName = source.getName();
+		SourceType sourceType = source.getType();
+		List<SourceProperty> properties = source.getProperties();
 
 		logger.debug("Creating new source, source name: {}", sourceName);
-
-		List<SourceProperty> sourceProperties = new ArrayList<>();
 
 		SourceProperty name = new SourceProperty();
 		name.setType(FreeformType.SOURCE_NAME);
 		name.setValueText(sourceName);
-		sourceProperties.add(name);
+		properties.add(0, name);
 
-		if (CollectionUtils.isNotEmpty(valueTexts)) {
-			for (int sourcePropertyIndex = 0; sourcePropertyIndex < sourcePropertyTypes.size(); sourcePropertyIndex++) {
-				FreeformType type = sourcePropertyTypes.get(sourcePropertyIndex);
-				String valueText = valueTexts.get(sourcePropertyIndex);
-				valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-				if (StringUtils.isNotBlank(valueText)) {
-					SourceProperty sourceProperty = new SourceProperty();
-					sourceProperty.setType(type);
-					sourceProperty.setValueText(valueText);
-					sourceProperties.add(sourceProperty);
-				}
-			}
-		}
+		properties.forEach(property -> {
+			String valueText = property.getValueText();
+			valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
+			property.setValueText(valueText);
+		});
 
-		Long sourceId = sourceService.createSource(sourceType, sourceProperties);
+		Long sourceId = sourceService.createSource(sourceType, properties);
 
 		return String.valueOf(sourceId);
 	}
@@ -185,7 +168,6 @@ public class SourceEditController extends AbstractAuthActionController {
 		logger.debug("Deleting source with id: {}", sourceId);
 
 		sourceService.deleteSource(sourceId);
-
 		return RESPONSE_OK_VER1;
 	}
 
@@ -197,33 +179,32 @@ public class SourceEditController extends AbstractAuthActionController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		Source firstSource = sourceService.getSource(sourceId, userRole);
-		model.addAttribute("firstSource", firstSource);
+		Source targetSource = sourceService.getSource(sourceId, userRole);
+		model.addAttribute("targetSource", targetSource);
 		model.addAttribute("previousSearch", previousSearch);
 
 		return SOURCE_JOIN_PAGE;
 	}
 
 	@PostMapping(JOIN_SOURCES_URI)
-	public String joinSources(@RequestParam("firstSourceId") Long firstSourceId, @RequestParam("secondSourceId") Long secondSourceId) {
+	public String joinSources(@RequestParam("targetSourceId") Long targetSourceId, @RequestParam("originSourceId") Long originSourceId) {
 
-		sourceService.joinSources(firstSourceId, secondSourceId);
-		return "redirect:" + SOURCE_SEARCH_URI + "/" + firstSourceId;
+		sourceService.joinSources(targetSourceId, originSourceId);
+		return "redirect:" + SOURCE_SEARCH_URI + "/" + targetSourceId;
 	}
 
-	//FIXME firstSourceId without second? use better naming
 	@PostMapping(SEARCH_SOURCES_URI)
 	public String searchSources(
-			@RequestParam("firstSourceId") Long firstSourceId,
+			@RequestParam("targetSourceId") Long targetSourceId,
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,
 			@RequestParam("previousSearch") String previousSearch,
 			Model model) {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		Source firstSource = sourceService.getSource(firstSourceId, userRole);
-		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, firstSource, userRole);
-		model.addAttribute("firstSource", firstSource);
+		Source targetSource = sourceService.getSource(targetSourceId, userRole);
+		List<Source> sources = sourceService.getSourcesExcludingOne(searchFilter, targetSource, userRole);
+		model.addAttribute("targetSource", targetSource);
 		model.addAttribute("sources", sources);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("previousSearch", previousSearch);
