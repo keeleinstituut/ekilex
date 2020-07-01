@@ -28,9 +28,6 @@ begin
   raise notice '% words deleted', deleted_words_counter;
 end $$;
 
-alter table definition add column is_public boolean default true;
-alter table freeform add column is_public boolean default true;
-
 -- kõrvaldab erinevad reavahetused, tabulaatori, topelttühikud definitsioonidest ja kõigist vabavormidest
 update definition
    set value_prese = trim(regexp_replace(regexp_replace(value_prese, '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g')),
@@ -43,12 +40,10 @@ update freeform
    where value_prese != trim(regexp_replace(regexp_replace(value_prese, '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'));
 
 -- väärtusolekute jrk
-   
 update value_state set order_by = 5 where code = 'väldi';
 update value_state set order_by = 4 where code = 'endine';
 
 -- uus termini db tüübi struktuur
-
 drop type type_term_meaning_word;
 create type type_term_meaning_word as (
 				word_id bigint,
@@ -96,6 +91,35 @@ from meaning_freeform mff
 where ff.lang is null
   and ff.type = 'PUBLIC_NOTE'
   and ff.id = mff.freeform_id;
+
+-- tabelite struktuuri muudatused
+create table tag
+(
+  name varchar(100) primary key,
+  set_automatically boolean default false,
+  order_by bigserial
+);
+
+create table lexeme_tag
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  tag_name varchar(100) references tag(name) on delete cascade not null,
+  created_on timestamp not null default statement_timestamp(),
+  unique(lexeme_id, tag_name)
+);
+alter sequence lexeme_tag_id_seq restart with 10000;
+
+alter table definition add column is_public boolean default true;
+alter table freeform add column is_public boolean default true;
+alter table eki_user_profile add column preferred_tag_names varchar(100) array;
+alter table eki_user_profile add column active_tag_name varchar(100) references tag(name);
+alter table eki_user_profile drop column preferred_layer_name;
+alter table eki_user add column api_key varchar(100) null;
+create index eki_user_email_idx on eki_user(email);
+create index eki_user_api_key_idx on eki_user(api_key);
+create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
+create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
 
 -- detailsuste muudatused
 insert into definition_type (code, datasets) values ('lühivihje', '{}');
@@ -160,36 +184,11 @@ where d.complexity = 'ANY'
                and d2.complexity in ('DETAIL', 'DETAIL1')
                and d2.meaning_id = d.meaning_id);
 
--- ilmikute sildid
-create table tag
-(
-  name varchar(100) primary key,
-  set_automatically boolean default false,
-  order_by bigserial
-);
-
-create table lexeme_tag
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  tag_name varchar(100) references tag(name) on delete cascade not null,
-  created_on timestamp not null default statement_timestamp(),
-  unique(lexeme_id, tag_name)
-);
-alter sequence lexeme_tag_id_seq restart with 10000;
-
-create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
-create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
-
+-- kolib ilmiku mitteavalikud protsessiolekud ilmiku siltidesse
 insert into tag select distinct process_state_code from lexeme where process_state_code != 'avalik';
 insert into lexeme_tag (lexeme_id, tag_name) select l.id, l.process_state_code from lexeme l where l.process_state_code != 'avalik';
 insert into process_state (code, datasets) values ('mitteavalik', '{}');
 update lexeme set process_state_code = 'mitteavalik' where process_state_code != 'avalik';
-alter table eki_user_profile add column preferred_tag_names varchar(100) array;
-alter table eki_user_profile add column active_tag_name varchar(100) references tag(name);
-alter table eki_user add column api_key varchar(100) null;
-create index eki_user_email_idx on eki_user(email);
-create index eki_user_api_key_idx on eki_user(api_key);
 
 update freeform set type = 'NOTE' where type = 'PUBLIC_NOTE';
 update lifecycle_log set entity_prop = 'NOTE' where entity_prop = 'PUBLIC_NOTE';
@@ -307,13 +306,12 @@ begin
   raise notice '% ilmiku haldusoleku logi kolitud elutsükli logidesse', moved_logs_counter;
 end $$;
 
-delete from process_state where code not in ('avalik', 'mitteavalik');
-update process_state set datasets = '{}';
-
-alter table eki_user_profile drop column preferred_layer_name;
 drop table word_process_log;
 drop table meaning_process_log;
 drop table lexeme_process_log;
 drop table process_log_source_link;
 drop table process_log;
 drop table layer_state;
+
+delete from process_state where code not in ('avalik', 'mitteavalik');
+update process_state set datasets = '{}';
