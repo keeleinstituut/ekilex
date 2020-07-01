@@ -18,8 +18,6 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
@@ -43,8 +41,8 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
 import eki.common.constant.ClassifierName;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.OrderingField;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
@@ -295,20 +293,32 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 
 	public boolean isGrantedForWord(Long userId, Long wordId, String datasetCode, String authItem, List<String> authOps) {
 
-		Table<Record1<Integer>> sup = DSL.
-				select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
-				.from(LEXEME, DATASET)
+		Table<Record1<Integer>> lsc = DSL
+				.select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
+				.from(WORD
+						.leftOuterJoin(LEXEME).on(
+								LEXEME.WORD_ID.eq(WORD.ID)
+										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.andExists(DSL
+												.select(DATASET_PERMISSION.ID)
+												.from(DATASET_PERMISSION)
+												.where(
+														DATASET_PERMISSION.USER_ID.eq(userId)
+																.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
+																.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
+																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
+																.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG))))))
+						.leftOuterJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE)))
 				.where(
-						DATASET.CODE.eq(datasetCode)
-								.and(DATASET.IS_SUPERIOR.eq(true))
-								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-								.and(LEXEME.WORD_ID.eq(wordId))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.asTable("sup");
+						WORD.ID.eq(wordId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(DATASET.IS_SUPERIOR.eq(true)))
+				.asTable("lsc");
 
-		Table<Record1<Integer>> lp = DSL
+		Table<Record1<Integer>> lpc = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
-				.from(WORD.leftOuterJoin(LEXEME).on(
+				.from(WORD
+						.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.andExists(DSL
@@ -319,84 +329,57 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 														.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 														.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
 														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-														.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG)))))))
+														.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG))))))
+						)
 				.where(WORD.ID.eq(wordId))
 				.groupBy(WORD.ID)
-				.asTable("lp");
+				.asTable("lpc");
 
-		Table<Record1<Integer>> la = DSL
+		Table<Record1<Integer>> lac = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("all_lex_count"))
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(LEXEME.WORD_ID)
-				.asTable("la");
+				.asTable("lac");
 
 		return create
 				.select(field(DSL.or(
-						sup.field("sup_lex_count", Integer.class).gt(0),
-						lp.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
-				.from(sup, lp, la)
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean isGrantedForWord(Long wordId, String roleDatasetCode, List<String> userPermDatasetCodes) {
-
-		Table<Record1<Integer>> sup = DSL.
-				select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
-				.from(LEXEME, DATASET)
-				.where(
-						DATASET.CODE.eq(roleDatasetCode)
-								.and(DATASET.IS_SUPERIOR.eq(true))
-								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-								.and(LEXEME.WORD_ID.eq(wordId))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.asTable("sup");
-
-		Table<Record1<Integer>> lp = DSL
-				.select(DSL.field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
-				.from(WORD.leftOuterJoin(LEXEME).on(
-						LEXEME.WORD_ID.eq(WORD.ID)
-								.and(LEXEME.DATASET_CODE.in(userPermDatasetCodes))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))))
-				.where(WORD.ID.eq(wordId))
-				.groupBy(WORD.ID)
-				.asTable("lp");
-
-		Table<Record1<Integer>> la = DSL
-				.select(DSL.field(DSL.count(LEXEME.ID)).as("all_lex_count"))
-				.from(LEXEME)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(LEXEME.WORD_ID)
-				.asTable("la");
-
-		return create
-				.select(field(DSL.or(
-						sup.field("sup_lex_count", Integer.class).gt(0),
-						lp.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
-				.from(sup, lp, la)
+						lsc.field("sup_lex_count", Integer.class).gt(0),
+						lpc.field("perm_lex_count", Integer.class).eq(lac.field("all_lex_count", Integer.class)))).as("is_granted"))
+				.from(lsc, lpc, lac)
 				.fetchSingleInto(Boolean.class);
 	}
 
 	public boolean isGrantedForMeaning(Long userId, Long meaningId, String datasetCode, String authItem, List<String> authOps) {
 
-		Table<Record1<Integer>> sup = DSL.
-				select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
-				.from(LEXEME, DATASET)
+		Table<Record1<Integer>> lsc = DSL
+				.select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
+				.from(MEANING
+						.leftOuterJoin(LEXEME).on(
+								LEXEME.MEANING_ID.eq(MEANING.ID)
+										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.andExists(DSL
+												.select(DATASET_PERMISSION.ID)
+												.from(DATASET_PERMISSION)
+												.where(
+														DATASET_PERMISSION.USER_ID.eq(userId)
+																.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
+																.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
+																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
+																.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG))))))
+						.leftOuterJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE)))
 				.where(
-						DATASET.CODE.eq(datasetCode)
-								.and(DATASET.IS_SUPERIOR.eq(true))
-								.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.asTable("sup");
+						MEANING.ID.eq(meaningId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(DATASET.IS_SUPERIOR.eq(true)))
+				.asTable("lsc");
 
-		Table<Record1<Integer>> lp = DSL
+		Table<Record1<Integer>> lpc = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
-				.from(MEANING.leftOuterJoin(LEXEME).on(
+				.from(MEANING
+						.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.andExists(DSL
@@ -406,10 +389,11 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 												DATASET_PERMISSION.USER_ID.eq(userId)
 														.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 														.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))))))
+														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
+														.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG)))))))
 				.where(MEANING.ID.eq(meaningId))
 				.groupBy(MEANING.ID)
-				.asTable("lp");
+				.asTable("lpc");
 
 		Table<Record1<Integer>> la = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("all_lex_count"))
@@ -422,9 +406,9 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 
 		return create
 				.select(field(DSL.or(
-						sup.field("sup_lex_count", Integer.class).gt(0),
-						lp.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
-				.from(sup, lp, la)
+						lsc.field("sup_lex_count", Integer.class).gt(0),
+						lpc.field("perm_lex_count", Integer.class).eq(la.field("all_lex_count", Integer.class)))).as("is_granted"))
+				.from(lsc, lpc, la)
 				.fetchSingleInto(Boolean.class);
 	}
 
@@ -447,10 +431,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	/*
-	 * currently not used. remove?
-	 * isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
-	 */
 	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String authItem, List<String> authOps) {
 
 		return create
@@ -615,13 +595,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 						.and(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
 				.asTable("lds");
 
-		Table<Record1<String>> plds = DSL
-				.select(PROCESS_LOG.DATASET_CODE)
-				.from(PROCESS_LOG, PROCESS_LOG_SOURCE_LINK)
-				.where(PROCESS_LOG.ID.eq(PROCESS_LOG_SOURCE_LINK.PROCESS_LOG_ID)
-						.and(PROCESS_LOG_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
-				.asTable("plds");
-
 		Table<Record1<String>> weds = DSL
 				.select(LEXEME.DATASET_CODE)
 				.from(LEXEME, WORD_ETYMOLOGY, WORD_ETYMOLOGY_SOURCE_LINK)
@@ -636,7 +609,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.unionAll(DSL.selectFrom(lffds))
 				.unionAll(DSL.selectFrom(dds))
 				.unionAll(DSL.selectFrom(lds))
-				.unionAll(DSL.selectFrom(plds))
 				.unionAll(DSL.selectFrom(weds))
 				.asTable("sds");
 

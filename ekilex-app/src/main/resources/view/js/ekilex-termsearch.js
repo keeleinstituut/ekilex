@@ -90,17 +90,6 @@ function initializeTermSearch() {
 		});
 	});
 
-	$(document).on('show.bs.modal', '#processLogDlg', function(e) {
-		var dlg = $(this);
-		var link = $(e.relatedTarget);
-		var url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
-		});
-	});
-
 	var detailsButtons = $('#results').find('[name="meaning-details-btn"]');
 	if (detailsButtons.length === 1) {
 		detailsButtons.trigger('click');

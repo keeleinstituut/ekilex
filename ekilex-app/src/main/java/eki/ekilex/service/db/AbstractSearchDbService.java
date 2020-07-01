@@ -6,11 +6,11 @@ import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LAYER_STATE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -43,7 +43,6 @@ import org.jooq.impl.DSL;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LayerName;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -57,11 +56,11 @@ import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
-import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
@@ -448,7 +447,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return filteredCriteria;
 	}
 
-	protected Condition applyLanguageNotExistFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Lexeme l2, Word w2, Condition w2Where) {
+	protected Condition applyLanguageNotExistFilters(List<SearchCriterion> searchCriteria, Word w2, Condition w2Where) {
 
 		List<SearchCriterion> languageNotExistCriteria = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.LANGUAGE)
@@ -626,7 +625,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
-					where1 = applyLanguageNotExistFilters(negativeExistSearchCriteria, l1, l2, w2, where1);
+					where1 = applyLanguageNotExistFilters(negativeExistSearchCriteria, w2, where1);
 
 					where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, w2).where(where1));
 				}
@@ -793,12 +792,12 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 	protected List<eki.ekilex.data.Word> execute(
 			Word w1, Paradigm p1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction,
-			DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) {
+			DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
 		Lexeme l = LEXEME.as("l");
-		LayerState lls = LAYER_STATE.as("lls");
+		LexemeTag lt = LEXEME_TAG.as("lt");
 		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
 		Field<String> wv = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
@@ -826,11 +825,11 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 		Field<String[]> lxvsf;
 		Field<String[]> lxpsf;
-		Field<String[]> lypsf;
+		Field<String[]> lxtnf;
 		if (userRole == null) {
 			lxvsf = DSL.field(DSL.val(new String[0]));
 			lxpsf = DSL.field(DSL.val(new String[0]));
-			lypsf = DSL.field(DSL.val(new String[0]));
+			lxtnf = DSL.field(DSL.val(new String[0]));
 		} else {
 			String userRoleDatasetCode = userRole.getDatasetCode();
 			lxvsf = DSL.field(DSL
@@ -848,15 +847,13 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 							.and(l.PROCESS_STATE_CODE.isNotNull()))
 					.groupBy(w.field("word_id")));
 
-			if (layerName == null) {
-				lypsf = DSL.field(DSL.val(new String[0]));
-			} else if (LayerName.NONE.equals(layerName)) {
-				lypsf = DSL.field(DSL.val(new String[0]));
+			if (CollectionUtils.isEmpty(tagNames)) {
+				lxtnf = DSL.field(DSL.val(new String[0]));
 			} else {
-				lypsf = DSL.field(DSL
-						.select(DSL.arrayAggDistinct(DSL.coalesce(lls.PROCESS_STATE_CODE, "!")))
+				lxtnf = DSL.field(DSL
+						.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
 						.from(l
-								.leftOuterJoin(lls).on(lls.LEXEME_ID.eq(l.ID).and(lls.LAYER_NAME.eq(layerName.name()))))
+								.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID).and(lt.TAG_NAME.in(tagNames))))
 						.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
 								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(l.DATASET_CODE.eq(userRoleDatasetCode)))
@@ -888,7 +885,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 						wtz.as("foreign"),
 						lxvsf.as("lexemes_value_state_codes"),
 						lxpsf.as("lexemes_process_state_codes"),
-						lypsf.as("layer_process_state_codes"),
+						lxtnf.as("lexemes_tag_names"),
 						dscf.as("dataset_codes")
 						)
 				.from(w)

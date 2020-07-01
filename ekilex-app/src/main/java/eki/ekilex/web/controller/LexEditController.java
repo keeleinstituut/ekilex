@@ -29,7 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import eki.common.constant.LayerName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
@@ -86,7 +85,7 @@ public class LexEditController extends AbstractPageController {
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
 		Integer wordHomonymNumber = null;
@@ -94,7 +93,8 @@ public class LexEditController extends AbstractPageController {
 			wordHomonymNumber = targetLexeme.getWordHomonymNr();
 		}
 
-		List<WordLexeme> sourceLexemes = lookupService.getWordLexemesOfJoinCandidates(searchFilter, datasetCodes, wordHomonymNumber, sourceLexemeMeaningId, userId, userRole, layerName);
+		List<WordLexeme> sourceLexemes = lookupService
+				.getWordLexemesOfJoinCandidates(userId, userRole, datasetCodes, searchFilter, wordHomonymNumber, sourceLexemeMeaningId, tagNames);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
@@ -231,12 +231,12 @@ public class LexEditController extends AbstractPageController {
 		List<String> userPreferredDatasetCodes = userContextData.getPreferredDatasetCodes();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 
-		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-		WordDetails targetWordDetails = lookupService.getWordJoinDetails(wordId, userId);
+		List<String> userVisibleDatasetCodes = permissionService.getUserVisibleDatasetCodes(userId);
+		WordDetails targetWordDetails = lookupService.getWordJoinDetails(userId, wordId);
 		Word targetWord = targetWordDetails.getWord();
 
 		List<WordDetails> sourceWordDetailsList = lookupService
-				.getWordDetailsOfJoinCandidates(targetWord, userRoleDatasetCode, userPreferredDatasetCodes, userPermDatasetCodes, userId);
+				.getWordDetailsOfJoinCandidates(userId, userRoleDatasetCode, targetWord, userPreferredDatasetCodes, userVisibleDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
@@ -336,9 +336,9 @@ public class LexEditController extends AbstractPageController {
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 
-		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(meaningId, wordValue, language, userId, userRole, layerName);
+		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(userId, userRole, wordValue, language, meaningId, tagNames);
 		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
 		return WORD_SELECT_PAGE;

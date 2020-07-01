@@ -29,10 +29,7 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import eki.common.constant.ClassifierName;
-import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.constant.SearchResultMode;
-import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
@@ -43,15 +40,13 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.data.api.ApiEndpointDescription;
-import eki.ekilex.data.imp.Paradigm;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
-import eki.ekilex.service.MorphologyService;
 import eki.ekilex.service.TermSearchService;
 
 @ConditionalOnWebApplication
 @RestController
-public class ApiSearchController implements SystemConstant, WebConstant, ApiConstant {
+public class ApiSearchController extends AbstractApiController {
 
 	@Autowired
 	private CommonDataService commonDataService;
@@ -61,9 +56,6 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 
 	@Autowired
 	private TermSearchService termSearchService;
-
-	@Autowired
-	private MorphologyService morphologyService;
 
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -152,8 +144,8 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 
 	@Order(102)
 	@GetMapping(value = {
-			API_SERVICES_URI + LEX_SEARCH_URI + "/{word}",
-			API_SERVICES_URI + LEX_SEARCH_URI + "/{word}/{datasets}"
+			API_SERVICES_URI + WORD_URI + SEARCH_URI + "/{word}",
+			API_SERVICES_URI + WORD_URI + SEARCH_URI + "/{word}/{datasets}"
 	})
 	@ResponseBody
 	public WordsResult lexSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
@@ -166,28 +158,25 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 
 	@Order(103)
 	@GetMapping(value = {
-			API_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}",
-			API_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}/{datasets}"
+			API_SERVICES_URI + WORD_URI + DETAILS_URI + "/{wordId}",
+			API_SERVICES_URI + WORD_URI + DETAILS_URI + "/{wordId}/{datasets}"
 	})
 	@ResponseBody
 	public WordDetails getWordDetails(
-			@PathVariable("wordId") String wordIdStr,
+			@PathVariable("wordId") Long wordId,
 			@PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
-		if (!StringUtils.isNumeric(wordIdStr)) {
-			return null;
-		}
-		Long wordId = Long.valueOf(wordIdStr);
 		List<String> datasets = parseDatasets(datasetsStr);
 		boolean isFullData = true;
-		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, new EkiUser(), null, isFullData);
+		EkiUser user = userContext.getUser();
+		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, user, null, isFullData);
 		return result;
 	}
 
 	@Order(104)
 	@GetMapping(value = {
-			API_SERVICES_URI + TERM_SEARCH_URI + "/{word}",
-			API_SERVICES_URI + TERM_SEARCH_URI + "/{word}/{datasets}"
+			API_SERVICES_URI + MEANING_URI + SEARCH_URI + "/{word}",
+			API_SERVICES_URI + MEANING_URI + SEARCH_URI + "/{word}/{datasets}"
 	})
 	@ResponseBody
 	public TermSearchResult termSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
@@ -202,37 +191,23 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 
 	@Order(105)
 	@GetMapping(value = {
-			API_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}",
-			API_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}/{datasets}"
+			API_SERVICES_URI + MEANING_URI + DETAILS_URI + "/{meaningId}",
+			API_SERVICES_URI + MEANING_URI + DETAILS_URI + "/{meaningId}/{datasets}"
 	})
 	@ResponseBody
 	public Meaning getMeaningDetails(
-			@PathVariable("meaningId") String meaningIdStr,
+			@PathVariable("meaningId") Long meaningId,
 			@PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
-		if (!StringUtils.isNumeric(meaningIdStr)) {
-			return null;
-		}
-		Long meaningId = Long.valueOf(meaningIdStr);
 		List<String> datasets = parseDatasets(datasetsStr);
 		List<Classifier> allLanguages = commonDataService.getLanguages();
 		List<ClassifierSelect> languagesOrder = convert(allLanguages);
-		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null, new EkiUser());
+		EkiUser user = userContext.getUser();
+		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null, user);
 		return meaning;
 	}
 
 	@Order(106)
-	@GetMapping(value = API_SERVICES_URI + PARADIGMS_URI + "/{wordId}")
-	public List<Paradigm> getParadigms(@PathVariable("wordId") String wordIdStr) {
-
-		if (!StringUtils.isNumeric(wordIdStr)) {
-			return null;
-		}
-		Long wordId = Long.valueOf(wordIdStr);
-		return morphologyService.getParadigms(wordId);
-	}
-
-	@Order(107)
 	@GetMapping(value = API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
 	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
 
@@ -246,19 +221,19 @@ public class ApiSearchController implements SystemConstant, WebConstant, ApiCons
 		return commonDataService.getClassifiers(classifierName);
 	}
 
-	@Order(108)
+	@Order(107)
 	@GetMapping(API_SERVICES_URI + DOMAIN_ORIGINS_URI)
 	public List<Origin> getDomainOrigins() {
 		return commonDataService.getDomainOrigins();
 	}
 
-	@Order(109)
+	@Order(108)
 	@GetMapping(value = API_SERVICES_URI + DOMAINS_URI + "/{origin}")
 	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
 		return commonDataService.getDomains(origin);
 	}
 
-	@Order(110)
+	@Order(109)
 	@GetMapping(API_SERVICES_URI + DATASETS_URI)
 	public List<Dataset> getDatasets() {
 		return commonDataService.getDatasets();

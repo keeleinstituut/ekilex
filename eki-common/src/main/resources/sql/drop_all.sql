@@ -57,7 +57,7 @@ drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
 drop table if exists lexeme_region;
-drop table if exists layer_state;
+drop table if exists layer_state; -- remove later
 drop table if exists lexeme_tag;
 drop table if exists lexeme;
 drop table if exists collocation_freeform;
@@ -66,6 +66,7 @@ drop table if exists definition_freeform;
 drop table if exists definition_dataset;
 drop table if exists definition;
 drop table if exists meaning_lifecycle_log;
+drop table if exists meaning_process_log; -- remove later
 drop table if exists meaning_relation;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
@@ -76,6 +77,7 @@ drop table if exists form_frequency;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;
+drop table if exists word_process_log; -- remove later
 drop table if exists word_freeform;
 drop table if exists word_etymology_relation;
 drop table if exists word_etymology;
@@ -86,8 +88,8 @@ drop table if exists word_relation_param;
 drop table if exists word_relation;
 drop table if exists word_word_type;
 drop table if exists word;
-drop table if exists process_log_source_link;
-drop table if exists process_log;
+drop table if exists process_log_source_link; -- remove later
+drop table if exists process_log; -- remove later
 drop table if exists source_lifecycle_log;
 drop table if exists source_freeform;
 drop table if exists source;

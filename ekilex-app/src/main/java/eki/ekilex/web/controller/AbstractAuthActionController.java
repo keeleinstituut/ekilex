@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LayerName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
@@ -44,10 +43,10 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 			userRoleDatasetCode = userRole.getDatasetCode();
 		}
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		LayerName layerName = userProfile.getPreferredLayerName();
+		List<String> preferredTagNames = userProfile.getPreferredTagNames();
 		List<String> preferredDatasetCodes = userProfile.getPreferredDatasets();
 		List<String> synCandidateLangCodes = userProfile.getPreferredSynCandidateLangs();
 		List<String> synMeaningWordLangCodes = userProfile.getPreferredSynLexMeaningWordLangs();
-		return new UserContextData(userId, userName, userRole, userRoleDatasetCode, layerName, preferredDatasetCodes, synCandidateLangCodes, synMeaningWordLangCodes);
+		return new UserContextData(userId, userName, userRole, userRoleDatasetCode, preferredTagNames, preferredDatasetCodes, synCandidateLangCodes, synMeaningWordLangCodes);
 	}
 }

@@ -7,10 +7,7 @@
       <div class="modal-content">
         <form th:action="@{/update_source_property}">
           <div class="modal-body">
-            <input type="hidden" name="sourceId" th:value="${source.id}">
             <input type="hidden" name="sourcePropertyId" th:value="${sourceProperty.id}">
-            <input type="hidden" name="type" th:value="${sourceProperty.type}">
-            <input type="hidden" name="searchResultCount" th:value="${count}">
             <div class="form-group row">
               <div class="col-auto">
                 <span th:text="${sourceProperty.type}"></span>
@@ -26,7 +23,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Muuda</button>
+            <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}">Muuda</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -39,7 +36,6 @@
         <form th:action="@{/create_source_property}">
           <div class="modal-body">
             <input type="hidden" name="sourceId" th:value="${source.id}">
-            <input type="hidden" name="searchResultCount" th:value="${count}">
             <div class="form-group row">
               <div class="col-auto">
                 <select required class="form-control" name="type">
@@ -57,7 +53,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -70,7 +66,6 @@
         <form th:action="@{/update_source}">
           <div class="modal-body">
             <input type="hidden" name="sourceId" th:value="${source.id}">
-            <input type="hidden" name="searchResultCount" th:value="${count}">
             <select class="form-control" name="sourceType">
               <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}" th:selected="${type == source.type}">value</option>
             </select>
@@ -89,7 +84,7 @@
                 <div class="border rounded">
                   <div class="form-group row p-2 m-2">
                     <div class="col-md-12">
-                      <input class="form-control" name="sourceName" placeholder="allika nimetus">
+                      <input class="form-control" name="name" placeholder="allika nimetus">
                       <div class="errors">
                         <div role="error" aria-live="alert" aria-hidden="false" class="alert alert-danger hide">Väli on kohustuslik</div>
                       </div>
@@ -100,7 +95,7 @@
                       <div class="form-group row">
                         <div class="col-auto">
                           <label title="Tüüp">
-                            <select required class="form-control" name="sourceType">
+                            <select required class="form-control" name="type">
                               <option value="" hidden disabled selected>vali allika tüüp</option>
                               <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}">value</option>
                             </select>

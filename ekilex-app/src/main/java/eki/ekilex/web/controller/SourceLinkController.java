@@ -15,7 +15,7 @@ import eki.common.constant.ReferenceOwner;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.service.RefLinkService;
+import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
 
 @ConditionalOnWebApplication
@@ -26,7 +26,7 @@ public class SourceLinkController implements WebConstant {
 	private static final Logger logger = LoggerFactory.getLogger(SourceLinkController.class);
 
 	@Autowired
-	private RefLinkService refLinkService;
+	private SourceLinkService sourceLinkService;
 
 	@Autowired
 	private SourceService sourceService;
@@ -63,7 +63,7 @@ public class SourceLinkController implements WebConstant {
 
 	private String handleSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner, Model model) {
 
-		SourceLink sourceLink = refLinkService.getSourceLink(sourceLinkId, referenceOwner);
+		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkId, referenceOwner);
 		Long sourceId = sourceLink.getSourceId();
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);

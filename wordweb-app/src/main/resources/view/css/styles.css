@@ -17129,6 +17129,7 @@ body.hidden-scroll {
   display: inline-block;
   padding: 10px 0 7px;
   font-size: 1.25rem;
+  font-style: normal;
   color: #0073e6;
   text-transform: uppercase;
 }
@@ -18522,11 +18523,11 @@ eki-link {
 
 .etymology-tree .etymology-tree::before {
   position: absolute;
-  display: block;
-  content: "";
   top: -12px;
   left: 12px;
+  display: block;
   height: 24px;
+  content: "";
   border-left: 1px solid #ccd9e0;
 }
 
@@ -18543,9 +18544,9 @@ eki-link {
 
 .etymology-tree .etymology-tree li::before {
   position: absolute;
-  display: block;
   top: 12px;
   left: 12px;
+  display: block;
   height: 100%;
   border-left: 1px solid #ccd9e0;
 }
@@ -18563,23 +18564,23 @@ eki-link {
 }
 
 .etymology-tree li div {
+  position: relative;
   display: -webkit-box;
   display: flex;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
   flex-flow: row nowrap;
-  position: relative;
 }
 
 .etymology-tree li div::before {
-  content: "";
+  position: absolute;
+  top: 0;
+  left: 12px;
   display: block;
   width: 1px;
-  border-left: 1px solid #ccd9e0;
-  left: 12px;
-  top: 0;
   height: 100%;
-  position: absolute;
+  content: "";
+  border-left: 1px solid #ccd9e0;
 }
 
 .etymology-tree li div:last-child::before {

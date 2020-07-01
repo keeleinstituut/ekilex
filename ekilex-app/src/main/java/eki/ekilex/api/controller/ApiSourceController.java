@@ -7,6 +7,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,27 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
-import eki.ekilex.constant.ApiConstant;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.SourceService;
-import eki.ekilex.service.util.MessageUtil;
-import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
 @RestController
-public class ApiSourceController implements SystemConstant, ApiConstant {
+public class ApiSourceController extends AbstractApiController {
 
 	@Autowired
 	private SourceService sourceService;
-
-	@Autowired
-	private MessageUtil messageUtil;
-
-	@Autowired
-	private ValueUtil valueUtil;
 
 	@Order(201)
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + SEARCH_URI + "/{searchFilter}")
@@ -48,6 +39,7 @@ public class ApiSourceController implements SystemConstant, ApiConstant {
 	}
 
 	@Order(202)
+	@PreAuthorize("principal.datasetCrudPermissionsExist")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSource(@RequestBody Source source) {
@@ -59,11 +51,11 @@ public class ApiSourceController implements SystemConstant, ApiConstant {
 		List<SourceProperty> completeSourceProperties = new ArrayList<>();
 
 		if (CollectionUtils.isEmpty(sourceNames) && CollectionUtils.isEmpty(sourceProperties)) {
-			return new ApiResponse(false, "Source has no name nor any properties");
+			return getOpFailResponse("Source has no name nor any properties");
 		} else if (CollectionUtils.isEmpty(sourceNames)) {
 			boolean sourceHasNoName = sourceProperties.stream().noneMatch(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()));
 			if (sourceHasNoName) {
-				return new ApiResponse(false, "Source has no name");
+				return getOpFailResponse("Source has no name");
 			}
 		} else {
 			for (String sourceName : sourceNames) {
@@ -86,15 +78,14 @@ public class ApiSourceController implements SystemConstant, ApiConstant {
 
 		try {
 			Long sourceId = sourceService.createSource(sourceType, completeSourceProperties);
-			String positiveQuote = messageUtil.getPositiveQuote();
-			return new ApiResponse(true, positiveQuote, sourceId);
+			return getOpSuccessResponse(sourceId);
 		} catch (Exception e) {
-			String message = e.toString();
-			return new ApiResponse(false, message);
+			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(203)
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSource(
@@ -103,28 +94,32 @@ public class ApiSourceController implements SystemConstant, ApiConstant {
 
 		try {
 			sourceService.updateSource(sourceId, sourceType);
-			return getPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
-			String message = e.toString();
-			return new ApiResponse(false, message);
+			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(204)
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSource(@RequestParam("sourceId") Long sourceId) {
 
 		try {
+			boolean isValidForDeletion = sourceService.validateSourceDelete(sourceId);
+			if (!isValidForDeletion) {
+				return getOpFailResponse("Cannot delete, source in use");
+			}
 			sourceService.deleteSource(sourceId);
-			return getPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
-			String message = e.toString();
-			return new ApiResponse(false, message);
+			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(205)
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId1)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + JOIN_URI)
 	@ResponseBody
 	public ApiResponse joinSources(
@@ -133,14 +128,14 @@ public class ApiSourceController implements SystemConstant, ApiConstant {
 
 		try {
 			sourceService.joinSources(sourceId1, sourceId2);
-			return getPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
-			String message = e.toString();
-			return new ApiResponse(false, message);
+			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(206)
+	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceProperty(
@@ -151,14 +146,14 @@ public class ApiSourceController implements SystemConstant, ApiConstant {
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
 			sourceService.createSourceProperty(sourceId, type, valueText);
-			return getPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
-			String message = e.toString();
-			return new ApiResponse(false, message);
+			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(207)
+	@PreAuthorize("@permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSourceProperty(
@@ -168,29 +163,23 @@ public class ApiSourceController implements SystemConstant, ApiConstant {
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
 			sourceService.updateSourceProperty(sourcePropertyId, valueText);
-			return getPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
-			String message = e.toString();
-			return new ApiResponse(false, message);
+			return getOpFailResponse(e);
 		}
 	}
 
 	@Order(208)
+	@PreAuthorize("@permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSourceProperty(@RequestParam("sourcePropertyId") Long sourcePropertyId) {
 
 		try {
 			sourceService.deleteSourceProperty(sourcePropertyId);
-			return getPositiveResponse();
+			return getOpSucessResponse();
 		} catch (Exception e) {
-			String message = e.toString();
-			return new ApiResponse(false, message);
+			return getOpFailResponse(e);
 		}
-	}
-
-	private ApiResponse getPositiveResponse() {
-		String positiveQuote = messageUtil.getPositiveQuote();
-		return new ApiResponse(true, positiveQuote);
 	}
 }

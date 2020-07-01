@@ -8,8 +8,8 @@ import java.util.List;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.imp.Form;
-import eki.ekilex.data.imp.Paradigm;
+import eki.ekilex.data.api.Form;
+import eki.ekilex.data.api.Paradigm;
 
 @Component
 public class MorphologyDbService {

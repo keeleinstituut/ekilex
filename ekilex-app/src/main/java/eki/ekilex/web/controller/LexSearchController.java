@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.common.constant.LayerName;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
@@ -124,15 +123,15 @@ public class LexSearchController extends AbstractSearchController {
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -162,7 +161,7 @@ public class LexSearchController extends AbstractSearchController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 
 		if (StringUtils.equals("next", direction)) {
 			offset += DEFAULT_MAX_RESULTS_LIMIT;
@@ -172,9 +171,9 @@ public class LexSearchController extends AbstractSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, layerName, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
 		}
 
 		wordsResult.setOffset(offset);
@@ -192,10 +191,10 @@ public class LexSearchController extends AbstractSearchController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
@@ -219,10 +218,10 @@ public class LexSearchController extends AbstractSearchController {
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = Arrays.asList(lexeme.getDatasetCode());
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, layerName);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, tagNames);
 
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
@@ -239,10 +238,10 @@ public class LexSearchController extends AbstractSearchController {
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
-		LayerName layerName = userContextData.getLayerName();
+		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, layerName);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, tagNames);
 
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();

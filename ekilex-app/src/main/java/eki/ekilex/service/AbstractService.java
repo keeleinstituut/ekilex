@@ -14,13 +14,13 @@ public abstract class AbstractService {
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	protected void createLifecycleLog(LogData logData) {
-		String userName = userContext.getUser().getName();
+		String userName = userContext.getUserName();
 		logData.setUserName(userName);
 		lifecycleLogDbService.createLog(logData);
 	}
 
 	protected void createListOrderingLifecycleLog(LogData logData) {
-		String userName = userContext.getUser().getName();
+		String userName = userContext.getUserName();
 		logData.setUserName(userName);
 		lifecycleLogDbService.createListOrderingLog(logData);
 	}

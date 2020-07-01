@@ -9,11 +9,11 @@
 
     &::before{
       position: absolute;
-      display: block;
-      content: "";
       top: -12px;
       left: 12px;
+      display: block;
       height: 24px;
+      content: "";
       border-left: 1px solid $gray-200;
     }
   }
@@ -32,9 +32,9 @@
 
     &::before{
       position: absolute;
-      display: block;
       top: 12px;
       left: 12px;
+      display: block;
       height: 100%;
       border-left: 1px solid $gray-200;
     }
@@ -53,19 +53,19 @@
 
   }
   li div{
+    position: relative;
     display: flex;
     flex-flow: row nowrap;
-    position: relative;
 
     &::before{
-      content: "";
+      position: absolute;
+      top: 0;
+      left: 12px;
       display: block;
       width: 1px;
-      border-left: 1px solid $gray-200;
-      left: 12px;
-      top: 0;
       height: 100%;
-      position: absolute;
+      content: "";
+      border-left: 1px solid $gray-200;
     }
     &:last-child::before{
       display: none;

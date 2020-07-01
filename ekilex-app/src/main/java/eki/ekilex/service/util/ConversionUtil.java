@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -207,6 +208,8 @@ public class ConversionUtil implements GlobalConstant {
 				SourceLink usageSource = usageSourceMap.get(usageSourceLinkId);
 				if (usageSource == null) {
 					usageSource = new SourceLink();
+					usageSource.setOwner(ReferenceOwner.FREEFORM);
+					usageSource.setOwnerId(usageId);
 					usageSource.setId(tuple.getUsageSourceLinkId());
 					usageSource.setType(tuple.getUsageSourceLinkType());
 					usageSource.setName(tuple.getUsageSourceLinkName());
@@ -309,6 +312,8 @@ public class ConversionUtil implements GlobalConstant {
 			}
 			if (sourceLinkId != null) {
 				SourceLink sourceLink = new SourceLink();
+				sourceLink.setOwner(ReferenceOwner.FREEFORM);
+				sourceLink.setOwnerId(noteId);
 				sourceLink.setId(sourceLinkId);
 				sourceLink.setType(tuple.getSourceLinkType());
 				sourceLink.setName(tuple.getSourceLinkName());
@@ -346,6 +351,8 @@ public class ConversionUtil implements GlobalConstant {
 			}
 			if (sourceLinkId != null) {
 				SourceLink sourceLink = new SourceLink();
+				sourceLink.setOwner(ReferenceOwner.FREEFORM);
+				sourceLink.setOwnerId(imageId);
 				sourceLink.setId(sourceLinkId);
 				sourceLink.setType(tuple.getSourceLinkType());
 				sourceLink.setName(tuple.getSourceLinkName());
@@ -490,6 +497,8 @@ public class ConversionUtil implements GlobalConstant {
 				String definitionSourceLinkName = definitionData.getDefinitionSourceLinkName();
 				String definitionSourceLinkValue = definitionData.getDefinitionSourceLinkValue();
 				SourceLink definitionSourceLink = new SourceLink();
+				definitionSourceLink.setOwner(ReferenceOwner.DEFINITION);
+				definitionSourceLink.setOwnerId(definitionId);
 				definitionSourceLink.setId(definitionSourceLinkId);
 				definitionSourceLink.setType(definitionSourceLinkType);
 				definitionSourceLink.setName(definitionSourceLinkName);
@@ -525,6 +534,8 @@ public class ConversionUtil implements GlobalConstant {
 					String noteSourceLinkName = definitionData.getNoteSourceLinkName();
 					String noteSourceLinkValue = definitionData.getNoteSourceLinkValue();
 					SourceLink noteSourceLink = new SourceLink();
+					noteSourceLink.setOwner(ReferenceOwner.FREEFORM);
+					noteSourceLink.setOwnerId(noteId);
 					noteSourceLink.setId(noteSourceLinkId);
 					noteSourceLink.setType(noteSourceLinkType);
 					noteSourceLink.setName(noteSourceLinkName);
@@ -614,6 +625,8 @@ public class ConversionUtil implements GlobalConstant {
 			if (wordEtymSourceLinkId != null) {
 				if (!wordEtymSourceLinkIds.contains(wordEtymSourceLinkId)) {
 					SourceLink sourceLink = new SourceLink();
+					sourceLink.setOwner(ReferenceOwner.WORD_ETYM);
+					sourceLink.setOwnerId(wordEtymId);
 					sourceLink.setId(wordEtymSourceLinkId);
 					sourceLink.setType(tuple.getWordEtymSourceLinkType());
 					sourceLink.setValue(tuple.getWordEtymSourceLinkValue());

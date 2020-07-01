@@ -32,6 +32,13 @@ public class ExceptionHandlerController implements WebConstant {
 		return new ApiResponse(false, exception.toString());
 	}
 
+	@ResponseBody
+	@ExceptionHandler(AccessDeniedException.class)
+	public ApiResponse accessDeniedException(AccessDeniedException exception) {
+
+		return new ApiResponse(false, exception.toString());
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ModelAndView exception(HttpServletRequest request, Exception exception) throws Exception {
 

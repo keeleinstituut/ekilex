@@ -27,8 +27,8 @@
                   <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateCodes)}">|</span>
                   <span th:text="${#strings.listJoin(word.lexemesProcessStateCodes, ', ')}"></span>
                 </small>
-                <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.layerProcessStateCodes)}">
-                  <span th:text="${#strings.listJoin(word.layerProcessStateCodes, ', ')}"></span>
+                <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.lexemesTagNames)}">
+                  <span th:text="${#strings.listJoin(word.lexemesTagNames, ', ')}"></span>
                 </span>
               </span>
               <span class="position-absolute search-result-status">

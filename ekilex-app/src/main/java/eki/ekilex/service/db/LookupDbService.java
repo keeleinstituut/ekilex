@@ -249,7 +249,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.fetchMap(wordValue, homonymNumbers);
 	}
 
-	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userPermDatasetCodes) {
+	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
 
 		String wordValue = targetWord.getWordValue();
 		String wordLang = targetWord.getLang();
@@ -306,7 +306,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.selectDistinct(wl.field("word_id"))
 				.from(wl)
 				.where(wl.field("process_state_code", String.class).eq(PROCESS_STATE_PUBLIC)
-						.or(wl.field("dataset_code", String.class).in(userPermDatasetCodes)))
+						.or(wl.field("dataset_code", String.class).in(userVisibleDatasetCodes)))
 				.fetchInto(Long.class);
 	}
 

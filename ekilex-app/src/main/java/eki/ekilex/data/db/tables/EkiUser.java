@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row14;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = 2031244183;
+    private static final long serialVersionUID = -41923200;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -119,6 +119,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
      * The column <code>public.eki_user.api_key</code>.
      */
     public final TableField<EkiUserRecord, String> API_KEY = createField(DSL.name("api_key"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.eki_user.is_api_crud</code>.
+     */
+    public final TableField<EkiUserRecord, Boolean> IS_API_CRUD = createField(DSL.name("is_api_crud"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.eki_user</code> table reference
@@ -205,11 +210,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Long, String, String, String, String, String, Boolean, Boolean, Boolean, String, Timestamp, Boolean, String, String> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public Row15<Long, String, String, String, String, String, Boolean, Boolean, Boolean, String, Timestamp, Boolean, String, String, Boolean> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

@@ -17,6 +17,7 @@ public interface TableName {
 	String LABEL_TYPE = "label_type";
 	String GENDER = "gender";
 	String DATASET = "dataset";
+	String TAG = "tag";
 
 	// dynamic
 	String SOURCE = "source";
@@ -44,7 +45,7 @@ public interface TableName {
 	String LEXEME_RELATION = "lex_relation";
 	String LEXEME_SOURCE_LINK = "lexeme_source_link";
 	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";
-	String LEXEME_PROCESS_LOG = "lexeme_process_log";
+	String LEXEME_TAG = "lexeme_tag";
 	String LEX_COLLOC = "lex_colloc";
 	String LEX_COLLOC_POS_GROUP = "lex_colloc_pos_group";
 	String LEX_COLLOC_REL_GROUP = "lex_colloc_rel_group";
@@ -67,7 +68,5 @@ public interface TableName {
 	String COLLOCATION = "collocation";
 	String COLLOCATION_FREEFORM = "collocation_freeform";
 	String LIFECYCLE_LOG = "lifecycle_log";
-	String PROCESS_LOG = "process_log";
-	String PROCESS_LOG_SOURCE_LINK = "process_log_source_link";
 	String GAME_NONWORD = "game_nonword";
 }

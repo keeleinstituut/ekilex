@@ -11,6 +11,8 @@ public class SourceProperty extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long sourceId;
+
 	private Long id;
 
 	private FreeformType type;
@@ -20,6 +22,14 @@ public class SourceProperty extends AbstractDataObject {
 	private Timestamp valueDate;
 
 	private boolean valueMatch;
+
+	public Long getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(Long sourceId) {
+		this.sourceId = sourceId;
+	}
 
 	public Long getId() {
 		return id;

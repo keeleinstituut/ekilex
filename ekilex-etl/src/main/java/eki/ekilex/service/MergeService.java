@@ -122,7 +122,6 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		updateCountMap.put(LEX_COLLOC, new Count());
 		updateCountMap.put(LEX_COLLOC_POS_GROUP, new Count());
 		updateCountMap.put(LEXEME_LIFECYCLE_LOG, new Count());
-		updateCountMap.put(LEXEME_PROCESS_LOG, new Count());
 		updateCountMap.put(LEXEME_RELATION, new Count());
 		updateCountMap.put(PARADIGM, new Count());
 		return updateCountMap;
@@ -376,10 +375,10 @@ public class MergeService implements TableName, SystemConstant, GlobalConstant, 
 		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEXEME_DERIV, new String[] {"deriv_code"}, updateCountMap);
 		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEXEME_REGION, new String[] {"region_code"}, updateCountMap);
 		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEXEME_SOURCE_LINK, new String[] {"source_id"}, updateCountMap);
+		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEXEME_TAG, new String[] {"tag_name"}, updateCountMap);
 		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEX_COLLOC, null, updateCountMap);
 		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEX_COLLOC_POS_GROUP, null, updateCountMap);
 		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEXEME_LIFECYCLE_LOG, null, updateCountMap);
-		moveData("lexeme_id", targetLexemeId, sourceMergingLexemeIds, LEXEME_PROCESS_LOG, null, updateCountMap);
 		moveLexemeRelations(targetLexemeId, sourceMergingLexemeIds, updateCountMap);
 	}
 

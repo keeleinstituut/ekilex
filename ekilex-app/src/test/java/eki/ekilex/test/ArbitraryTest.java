@@ -27,9 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.constant.GlobalConstant;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
-import eki.ekilex.data.imp.Form;
-import eki.ekilex.data.imp.Paradigm;
-import eki.ekilex.data.imp.ParadigmWrapper;
+import eki.ekilex.data.api.Form;
+import eki.ekilex.data.api.Paradigm;
+import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.web.util.ValueUtil;
 
 @RunWith(SpringRunner.class)

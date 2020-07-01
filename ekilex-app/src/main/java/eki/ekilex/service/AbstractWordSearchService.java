@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.LayerName;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
@@ -30,7 +29,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			SearchFilter searchFilter, List<String> datasetCodes, DatasetPermission userRole, LayerName layerName, boolean fetchAll,
+			SearchFilter searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, boolean fetchAll,
 			int offset, int maxResultsLimit) throws Exception {
 
 		List<Word> words;
@@ -40,7 +39,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 			wordCount = words.size();
 			if (!fetchAll && wordCount == maxResultsLimit) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
@@ -60,7 +59,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, LayerName layerName, boolean fetchAll, int offset, int maxResultsLimit) {
+			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		List<Word> words;
 		int wordCount;
@@ -69,7 +68,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, layerName, fetchAll, offset, maxResultsLimit);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 			wordCount = words.size();
 			if ((!fetchAll && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);

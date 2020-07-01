@@ -42,16 +42,26 @@
       </div>
     </div>
   </th:block>
-  <div th:id="${'editLexemeSynProcessStateDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_syn_process_state_dlg">
+  <div th:id="${'addLexemeTagDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_tag_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_layer_process_state}" method="post">
+        <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="opCode" value="syn">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <select class="form-control" name="value">
-              <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.layerProcessStateCode}">value</option>
-            </select>
+            <input type="hidden" name="opCode" value="lexeme_tag">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="tag : ${tags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(lexeme.tags, tag)}">tag</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
       </div>

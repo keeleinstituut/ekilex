@@ -22,6 +22,7 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.SourceType;
+import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.Source;
@@ -55,13 +56,18 @@ public class SourceService extends AbstractService {
 			return null;
 		}
 		List<Source> sources = convert(sourcePropertyTuples);
-		permCalculator.applyCrud(sources, userRole);
+		permCalculator.applyCrud(userRole, sources);
 		if (sources.size() > 1) {
 			logger.error("Single source query for id {} returned several. Fix this!", sourceId);
 		}
 		Source source = sources.get(0);
 
 		return source;
+	}
+
+	@Transactional
+	public Long getSourceId(Long sourcePropertyId) {
+		return sourceDbService.getSourceId(sourcePropertyId);
 	}
 
 	@Transactional
@@ -97,7 +103,7 @@ public class SourceService extends AbstractService {
 		}
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType);
 		List<Source> sources = convert(sourcePropertyTuples);
-		permCalculator.applyCrud(sources, userRole);
+		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
 	}
@@ -112,7 +118,7 @@ public class SourceService extends AbstractService {
 		Long excludedSourceId = excludedSource.getId();
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
 		List<Source> sources = convert(sourcePropertyTuples);
-		permCalculator.applyCrud(sources, userRole);
+		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
 	}
@@ -152,9 +158,12 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void updateSourceProperty(Long sourcePropertyId, String valueText) {
+	public void updateSourceProperty(Long sourcePropertyId, String valueText) throws Exception {
 
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+		if (sourceProperty == null) {
+			throw new OperationDeniedException();
+		}
 		FreeformType type = sourceProperty.getType();
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId, valueText);
@@ -163,9 +172,12 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void deleteSourceProperty(Long sourcePropertyId) {
+	public void deleteSourceProperty(Long sourcePropertyId) throws Exception {
 
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
+		if (sourceProperty == null) {
+			throw new OperationDeniedException();
+		}
 		FreeformType type = sourceProperty.getType();
 		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId);
@@ -195,15 +207,15 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public void joinSources(Long firstSourceId, Long secondSourceId) {
+	public void joinSources(Long targetSourceId, Long originSourceId) {
 
-		String firstSourceNames = joinSourceNames(firstSourceId);
-		String secondSourceNames = joinSourceNames(secondSourceId);
+		String targetSourceNames = joinSourceNames(targetSourceId);
+		String originSourceNames = joinSourceNames(originSourceId);
 		LogData logData = new LogData(
-				LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, firstSourceId, secondSourceNames, firstSourceNames);
+				LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, targetSourceId, originSourceNames, targetSourceNames);
 		createLifecycleLog(logData);
 
-		sourceDbService.joinSources(firstSourceId, secondSourceId);
+		sourceDbService.joinSources(targetSourceId, originSourceId);
 	}
 
 	private String joinSourceNames(Long sourceId) {

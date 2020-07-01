@@ -41,7 +41,6 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LanguageLabel;
-import eki.ekilex.data.db.tables.LayerState;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -55,7 +54,6 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
-import eki.ekilex.data.db.tables.LexemeProcessLog;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -78,8 +76,6 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.ProcessLog;
-import eki.ekilex.data.db.tables.ProcessLogSourceLink;
 import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
@@ -326,11 +322,6 @@ public class Tables {
     public static final LanguageLabel LANGUAGE_LABEL = LanguageLabel.LANGUAGE_LABEL;
 
     /**
-     * The table <code>public.layer_state</code>.
-     */
-    public static final LayerState LAYER_STATE = LayerState.LAYER_STATE;
-
-    /**
      * The table <code>public.lex_colloc</code>.
      */
     public static final LexColloc LEX_COLLOC = LexColloc.LEX_COLLOC;
@@ -394,11 +385,6 @@ public class Tables {
      * The table <code>public.lexeme_pos</code>.
      */
     public static final LexemePos LEXEME_POS = LexemePos.LEXEME_POS;
-
-    /**
-     * The table <code>public.lexeme_process_log</code>.
-     */
-    public static final LexemeProcessLog LEXEME_PROCESS_LOG = LexemeProcessLog.LEXEME_PROCESS_LOG;
 
     /**
      * The table <code>public.lexeme_region</code>.
@@ -509,16 +495,6 @@ public class Tables {
      * The table <code>public.pos_label</code>.
      */
     public static final PosLabel POS_LABEL = PosLabel.POS_LABEL;
-
-    /**
-     * The table <code>public.process_log</code>.
-     */
-    public static final ProcessLog PROCESS_LOG = ProcessLog.PROCESS_LOG;
-
-    /**
-     * The table <code>public.process_log_source_link</code>.
-     */
-    public static final ProcessLogSourceLink PROCESS_LOG_SOURCE_LINK = ProcessLogSourceLink.PROCESS_LOG_SOURCE_LINK;
 
     /**
      * The table <code>public.process_state</code>.

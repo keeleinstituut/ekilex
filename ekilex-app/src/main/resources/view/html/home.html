@@ -41,7 +41,6 @@
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
-        <th:block th:replace="components :: change_layer" sec:authorize="#vars.userRoleData.layerChangeEnabled"></th:block>
         <hr/>
         <p>
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>

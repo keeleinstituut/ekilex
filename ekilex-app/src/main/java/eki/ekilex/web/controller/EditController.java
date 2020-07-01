@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
@@ -31,6 +32,7 @@ import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LookupService;
+import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
@@ -52,6 +54,9 @@ public class EditController extends AbstractPageController {
 	private SourceService sourceService;
 
 	@Autowired
+	private SourceLinkService sourceLinkService;
+
+	@Autowired
 	private LookupService lookupService;
 
 	@Autowired
@@ -65,7 +70,7 @@ public class EditController extends AbstractPageController {
 
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
-		String sourceValue;
+		String sourceLinkValue;
 		String datasetCode;
 
 		switch (itemData.getOpCode()) {
@@ -102,35 +107,37 @@ public class EditController extends AbstractPageController {
 			cudService.createLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK: {
-			sourceValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceValue, itemValue);
+			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
+			sourceLinkService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
 		}
 		case ContentKey.LEXEME_SOURCE_LINK: {
-			sourceValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceValue, itemValue);
+			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
+			sourceLinkService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
 		}
 		case "usage_author":
-			sourceValue = getSourceNameValue(itemData.getId2());
+			sourceLinkValue = getSourceNameValue(itemData.getId2());
 			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
-			cudService.createUsageSourceLink(itemData.getId(), itemData.getId2(), refType, sourceValue, null);
+			sourceLinkService.createFreeformSourceLink(
+					itemData.getId(), itemData.getId2(), refType, sourceLinkValue, null, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK);
 			break;
 		case "usage_source_link":
-			sourceValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createUsageSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, itemValue);
+			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
+			sourceLinkService.createFreeformSourceLink(
+					itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK);
 			break;
 		case "lexeme_ff_source_link":
-			sourceValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, itemValue, LifecycleEntity.LEXEME);
+			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.LEXEME);
 			break;
 		case "meaning_ff_source_link":
-			sourceValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, itemValue, LifecycleEntity.MEANING);
+			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.MEANING);
 			break;
 		case "definition_ff_source_link":
-			sourceValue = getSourcePropertyValue(itemData.getId3());
-			cudService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceValue, itemValue, LifecycleEntity.DEFINITION);
+			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.DEFINITION);
 			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(itemData.getId(), itemValue);
@@ -158,6 +165,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "lexeme_grammar":
 			cudService.createLexemeGrammar(itemData.getId(), itemValue, itemData.getComplexity());
+			break;
+		case "lexeme_process_state":
+			cudService.updateLexemeProcessState(itemData.getId(), itemValue);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), itemValue);
@@ -285,6 +295,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "word_lang":
 			cudService.updateWordLang(itemData.getId(), itemValue);
+			break;
+		case "lexeme_process_state":
+			cudService.updateLexemeProcessState(itemData.getId(), itemValue);
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), itemValue);
@@ -445,16 +458,22 @@ public class EditController extends AbstractPageController {
 			break;
 		case "usage_author":
 		case "usage_source_link":
-			cudService.deleteUsageSourceLink(id);
+			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.USAGE);
 			break;
 		case "lexeme_ff_source_link":
-			cudService.deleteFreeformSourceLink(id, LifecycleEntity.LEXEME);
+			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.LEXEME);
 			break;
 		case "meaning_ff_source_link":
-			cudService.deleteFreeformSourceLink(id, LifecycleEntity.MEANING);
+			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.MEANING);
 			break;
 		case "definition_ff_source_link":
-			cudService.deleteFreeformSourceLink(id, LifecycleEntity.DEFINITION);
+			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.DEFINITION);
+			break;
+		case ContentKey.DEFINITION_SOURCE_LINK:
+			sourceLinkService.deleteDefinitionSourceLink(id);
+			break;
+		case ContentKey.LEXEME_SOURCE_LINK:
+			sourceLinkService.deleteLexemeSourceLink(id);
 			break;
 		case "government":
 			cudService.deleteLexemeGovernment(id);
@@ -537,12 +556,6 @@ public class EditController extends AbstractPageController {
 			break;
 		case "meaning_semantic_type":
 			cudService.deleteMeaningSemanticType(id, valueToDelete);
-			break;
-		case ContentKey.DEFINITION_SOURCE_LINK:
-			cudService.deleteDefinitionSourceLink(id);
-			break;
-		case ContentKey.LEXEME_SOURCE_LINK:
-			cudService.deleteLexemeSourceLink(id);
 			break;
 		case "od_word_recommendation":
 			cudService.deleteOdWordRecommendation(id);

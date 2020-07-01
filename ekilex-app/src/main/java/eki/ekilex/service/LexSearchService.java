@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.common.constant.LayerName;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -86,7 +85,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			return null;
 		}
 		DatasetPermission userRole = user.getRecentRole();
-		permCalculator.applyCrud(word, userRole);
+		permCalculator.applyCrud(userRole, word);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.getParadigmFormTuples(wordId, word.getWordValue(), classifierLabelLang, classifierLabelTypeDescrip);
@@ -99,7 +98,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
-		permCalculator.filterVisibility(wordNotes, userRole);
+		permCalculator.filterVisibility(userRole, wordNotes);
 		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
@@ -144,12 +143,13 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordLexeme> getWordLexemesWithDefinitionsData(String searchFilter, List<String> datasetCodes, Long userId, DatasetPermission userRole, LayerName layerName) {
+	public List<WordLexeme> getWordLexemesWithDefinitionsData(
+			String searchFilter, List<String> datasetCodes, Long userId, DatasetPermission userRole, List<String> tagNames) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchFilter)) {
-			WordsResult words = getWords(searchFilter, datasetCodes, userRole, layerName, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			WordsResult words = getWords(searchFilter, datasetCodes, userRole, tagNames, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				for (Word word : words.getWords()) {
 					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -160,7 +160,7 @@ public class LexSearchService extends AbstractWordSearchService {
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-						permCalculator.filterVisibility(definitions, userId);
+						permCalculator.filterVisibility(userId, definitions);
 						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 						Meaning meaning = new Meaning();
 						meaning.setDefinitions(definitions);
@@ -196,7 +196,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		String wordLang = lexeme.getWordLang();
 		Meaning meaning = new Meaning();
 
-		permCalculator.applyCrud(lexeme, userRole);
+		permCalculator.applyCrud(userRole, lexeme);
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, wordLang);
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
@@ -207,8 +207,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		meaning.setDomains(meaningDomains);
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-		permCalculator.applyCrud(definitions, userRole);
-		permCalculator.filterVisibility(definitions, userId);
+		permCalculator.applyCrud(userRole, definitions);
+		permCalculator.filterVisibility(userId, definitions);
 
 		if (isFullData) {
 
@@ -216,19 +216,19 @@ public class LexSearchService extends AbstractWordSearchService {
 			conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 			for (Definition definition : definitions) {
 				List<DefinitionNote> definitionNotes = definition.getNotes();
-				permCalculator.filterVisibility(definitionNotes, userId);
+				permCalculator.filterVisibility(userId, definitionNotes);
 			}
 			List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 			List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-			permCalculator.applyCrud(usages, userRole);
-			permCalculator.filterVisibility(usages, userId);
+			permCalculator.applyCrud(userRole, usages);
+			permCalculator.filterVisibility(userId, usages);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
 			List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
-			permCalculator.filterVisibility(lexemeNotes, userId);
+			permCalculator.filterVisibility(userId, lexemeNotes);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
 			List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull);
@@ -245,7 +245,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
 			List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 			List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
-			permCalculator.filterVisibility(meaningNotes, userRole);
+			permCalculator.filterVisibility(userRole, meaningNotes);
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, classifierLabelLang, classifierLabelTypeDescrip);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
@@ -265,7 +265,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			lexeme.setSecondaryCollocations(secondaryCollocations);
 			lexeme.setTags(tags);
 
-			permCalculator.applyCrud(meaning, userRole);
+			permCalculator.applyCrud(userRole, meaning);
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLearnerComments(meaningLearnerComments);
 			meaning.setImages(meaningImages);

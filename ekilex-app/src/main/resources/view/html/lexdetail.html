@@ -114,7 +114,10 @@
                      th:data-orderby="${meaningWord.orderBy}">
                   <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                   <div class="hidden-buttons">
-                    <button type="button" th:hidden="${meaningWordIter.first}" class="btn badge badge-secondary do-refresh order-up" title="Muuda järjestust">
+                    <button type="button" class="btn badge badge-secondary do-refresh order-up"
+                            title="Muuda järjestust"
+                            th:hidden="${meaningWordIter.first}"
+                            sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-arrow-left" aria-hidden="true"></i>
                     </button>
                     <button type="button" class="btn btn-link p-0" th:data-id="${meaningWord.wordId}" name="word-details-btn">
@@ -144,7 +147,10 @@
                             sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
-                    <button type="button" th:hidden="${meaningWordIter.last}" class="btn  badge badge-secondary do-refresh order-down" title="Muuda järjestust">
+                    <button type="button" class="btn badge badge-secondary do-refresh order-down"
+                            title="Muuda järjestust"
+                            th:hidden="${meaningWordIter.last}"
+                            sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-arrow-right" aria-hidden="true"></i>
                     </button>
                     <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
@@ -191,21 +197,6 @@
                    sec:authorize="#vars.lexeme.crudGrant">Kustuta koos tähenduse ja venekeelsete vastetega</a>
               </span>
             </span>
-            <a th:href="@{'/lexemeprocesslog:' + ${lexeme.lexemeId}}"
-               data-toggle="modal"
-               data-target="#processLogDlg"
-               class="btn btn-secondary btn-sm ml-3"
-               sec:authorize="#vars.lexeme.crudGrant">Menetluse logi</a>
-            <div id="processLogDlg" class="modal" role="dialog">
-              <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                  </div>
-                  <div class="modal-body" style="max-height: 90vh; overflow-y: auto;"></div>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="ml-auto">
             <b th:text="${lexeme.datasetName}"></b>

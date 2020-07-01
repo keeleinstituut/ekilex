@@ -4,7 +4,6 @@ import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.PROCESS_LOG_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
@@ -119,13 +118,31 @@ public class SourceDbService implements SystemConstant {
 				.into(SourcePropertyTuple.class);
 	}
 
+	public Long getSourceId(Long sourcePropertyId) {
+
+		return create
+				.select(SOURCE_FREEFORM.SOURCE_ID)
+				.from(SOURCE_FREEFORM, FREEFORM)
+				.where(
+						SOURCE_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
+								.and(FREEFORM.ID.eq(sourcePropertyId)))
+				.fetchSingleInto(Long.class);
+	}
+
 	public SourceProperty getSourceProperty(Long sourcePropertyId) {
 
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
-				.from(FREEFORM)
-				.where(FREEFORM.ID.eq(sourcePropertyId))
-				.fetchOneInto(SourceProperty.class);
+				.select(
+						SOURCE_FREEFORM.SOURCE_ID,
+						FREEFORM.ID,
+						FREEFORM.TYPE,
+						FREEFORM.VALUE_TEXT)
+				.from(SOURCE_FREEFORM, FREEFORM)
+				.where(
+						SOURCE_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
+						.and(FREEFORM.ID.eq(sourcePropertyId)))
+				.fetchOptionalInto(SourceProperty.class)
+				.orElse(null);
 	}
 
 	public String getSourceNameValue(Long sourceId) {
@@ -225,40 +242,40 @@ public class SourceDbService implements SystemConstant {
 				.execute();
 	}
 
-	public void joinSources(Long firstSourceId, Long secondSourceId) {
+	public void joinSources(Long targetSourceId, Long originSourceId) {
 
-		Result<FreeformRecord> firstSourceFreeforms = getSourceFreeformRecords(firstSourceId);
-		Result<FreeformRecord> secondSourceFreeforms = getSourceFreeformRecords(secondSourceId);
+		Result<FreeformRecord> targetSourceFreeforms = getSourceFreeformRecords(targetSourceId);
+		Result<FreeformRecord> originSourceFreeforms = getSourceFreeformRecords(originSourceId);
 
-		List<Long> uniqueFreeformsIds = secondSourceFreeforms.stream()
-				.filter(second -> firstSourceFreeforms.stream()
-						.noneMatch(first ->
-								first.getType().equals(second.getType())
-								&& Objects.nonNull(first.getValueText())
-								&& first.getValueText().equals(second.getValueText())))
+		List<Long> uniqueFreeformsIds = originSourceFreeforms.stream()
+				.filter(origin -> targetSourceFreeforms.stream()
+						.noneMatch(target ->
+								target.getType().equals(origin.getType())
+								&& Objects.nonNull(target.getValueText())
+								&& target.getValueText().equals(origin.getValueText())))
 				.map(FreeformRecord::getId)
 				.collect(Collectors.toList());
 
 		for (Long freeformId : uniqueFreeformsIds) {
 			create.update(SOURCE_FREEFORM)
-					.set(SOURCE_FREEFORM.SOURCE_ID, firstSourceId)
+					.set(SOURCE_FREEFORM.SOURCE_ID, targetSourceId)
 					.where(
-							SOURCE_FREEFORM.SOURCE_ID.eq(secondSourceId)
+							SOURCE_FREEFORM.SOURCE_ID.eq(originSourceId)
 							.and(SOURCE_FREEFORM.FREEFORM_ID.eq(freeformId)))
 					.execute();
 		}
 
 		create.update(FREEFORM_SOURCE_LINK)
-				.set(FREEFORM_SOURCE_LINK.SOURCE_ID, firstSourceId)
-				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(secondSourceId))
+				.set(FREEFORM_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
 		create.update(SOURCE_LIFECYCLE_LOG)
-				.set(SOURCE_LIFECYCLE_LOG.SOURCE_ID, firstSourceId)
-				.where(SOURCE_LIFECYCLE_LOG.SOURCE_ID.eq(secondSourceId))
+				.set(SOURCE_LIFECYCLE_LOG.SOURCE_ID, targetSourceId)
+				.where(SOURCE_LIFECYCLE_LOG.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		deleteSource(secondSourceId);
+		deleteSource(originSourceId);
 	}
 
 	public boolean validateSourceDelete(Long sourceId) {
@@ -282,11 +299,7 @@ public class SourceDbService implements SystemConstant {
 						.andNotExists(DSL
 								.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
 								.from(WORD_ETYMOLOGY_SOURCE_LINK)
-								.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
-						.andNotExists(DSL
-								.select(PROCESS_LOG_SOURCE_LINK.ID)
-								.from(PROCESS_LOG_SOURCE_LINK)
-								.where(PROCESS_LOG_SOURCE_LINK.SOURCE_ID.eq(sourceId))))
+								.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId))))
 				.fetchSingleInto(Boolean.class);
 	}
 
