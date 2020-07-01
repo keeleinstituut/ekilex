@@ -93,9 +93,11 @@
       </div>
       <div class="card-body">
         <form th:action="@{/generate_api_key}" method="post">
-          <span th:text="${#authentication.principal.apiKey}">cd8c61505b17427282150624463fcace</span>
-          <strong th:if="${#authentication.principal.apiCrud}">CRUD</strong>
-          <strong th:if="${!#authentication.principal.apiCrud}">READ</strong>
+          <th:block th:if="${#authentication.principal.apiKey != null}">
+            <span th:text="${#authentication.principal.apiKey}">cd8c61505b17427282150624463fcace</span>
+            <strong th:if="${#authentication.principal.apiCrud}">CRUD</strong>
+            <strong th:if="${!#authentication.principal.apiCrud}">READ</strong>
+          </th:block>
           <button class="btn btn-primary pull-right" type="submit">Genereeri võti</button>
         </form>
       </div>
