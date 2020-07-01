@@ -48,7 +48,6 @@ public class SynSearchController extends AbstractSearchController {
 	public String initPage(Model model) {
 
 		initSearchForms(SYN_SEARCH_PAGE, model);
-		resetUserRole(model);
 
 		WordsResult wordsResult = new WordsResult();
 		model.addAttribute("wordsResult", wordsResult);
@@ -87,7 +86,6 @@ public class SynSearchController extends AbstractSearchController {
 		logger.debug(searchUri);
 
 		initSearchForms(SYN_SEARCH_PAGE, model);
-		resetUserRole(model);
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(SYN_SEARCH_PAGE, searchUri);
 

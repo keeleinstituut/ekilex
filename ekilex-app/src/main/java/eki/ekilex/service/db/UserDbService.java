@@ -60,6 +60,7 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.ACTIVATION_KEY,
 						EKI_USER.RECOVERY_KEY,
 						EKI_USER.API_KEY,
+						EKI_USER.IS_API_CRUD.as("api_crud"),
 						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_MASTER.as("master"),
 						EKI_USER.IS_ENABLED.as("enabled"))
@@ -170,8 +171,8 @@ public class UserDbService extends AbstractDbService {
 				.fetchInto(EkiUserApplication.class);
 	}
 
-	public void updateApiKey(Long userId, String apiKey) {
+	public void updateApiKey(Long userId, String apiKey, boolean isApiCrud) {
 
-		create.update(EKI_USER).set(EKI_USER.API_KEY, apiKey).where(EKI_USER.ID.eq(userId)).execute();
+		create.update(EKI_USER).set(EKI_USER.API_KEY, apiKey).set(EKI_USER.IS_API_CRUD, isApiCrud).where(EKI_USER.ID.eq(userId)).execute();
 	}
 }

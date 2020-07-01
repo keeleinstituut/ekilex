@@ -91,9 +91,11 @@
       <div class="card-body" th:unless="${userRoleData.admin}">
         Ekilex API kasutamiseks on vajalik administraatori õigus
       </div>
-      <div class="card-body" th:if="${userRoleData.admin}">
+      <div class="card-body">
         <form th:action="@{/generate_api_key}" method="post">
           <span th:text="${#authentication.principal.apiKey}">cd8c61505b17427282150624463fcace</span>
+          <strong th:if="${#authentication.principal.apiCrud}">CRUD</strong>
+          <strong th:if="${!#authentication.principal.apiCrud}">READ</strong>
           <button class="btn btn-primary pull-right" type="submit">Genereeri võti</button>
         </form>
       </div>

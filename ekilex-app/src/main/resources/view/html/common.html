@@ -121,7 +121,7 @@
               <span class="d-flex flex-wrap">
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
                 <th:block th:if="${userRoleData.roleSelected}">
-                  <th:block th:with="selectedRole = ${sessionBean.userRole}">
+                  <th:block th:with="selectedRole = ${userRoleData.userRole}">
                     <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}">
                       <span th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></span>
                     </small>
@@ -131,7 +131,7 @@
             </button>
             <div class="dropdown-menu dropdown-menu-right user-menu-content">
               <th:block th:if="${userRoleData.roleSelected}">
-                <th:block th:with="selectedRole = ${sessionBean.userRole}">
+                <th:block th:with="selectedRole = ${userRoleData.userRole}">
                   <div>
                     <div class="dropdown-header pb-0">Aktiivne roll</div>
                     <div class="px-3 d-flex flex-row">

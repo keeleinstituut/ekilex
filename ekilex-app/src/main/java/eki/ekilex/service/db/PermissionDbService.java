@@ -84,6 +84,8 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 						EKI_USER.ID,
 						EKI_USER.NAME,
 						EKI_USER.EMAIL,
+						DSL.field(EKI_USER.API_KEY.isNotNull()).as("api_key_exists"),
+						EKI_USER.IS_API_CRUD.as("api_crud"),
 						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_MASTER.as("master"),
 						EKI_USER.IS_ENABLED.as("enabled"),
@@ -367,8 +369,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 														DATASET_PERMISSION.USER_ID.eq(userId)
 																.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 																.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-																.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG))))))
+																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE)))))
 						.leftOuterJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE)))
 				.where(
 						MEANING.ID.eq(meaningId)
@@ -389,8 +390,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 												DATASET_PERMISSION.USER_ID.eq(userId)
 														.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 														.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-														.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG)))))))
+														.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))))))
 				.where(MEANING.ID.eq(meaningId))
 				.groupBy(MEANING.ID)
 				.asTable("lpc");

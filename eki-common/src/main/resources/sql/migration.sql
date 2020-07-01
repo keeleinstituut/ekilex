@@ -188,6 +188,7 @@ update lexeme set process_state_code = 'mitteavalik' where process_state_code !=
 alter table eki_user_profile add column preferred_tag_names varchar(100) array;
 alter table eki_user_profile add column active_tag_name varchar(100) references tag(name);
 alter table eki_user add column api_key varchar(100) null;
+alter table eki_user add column is_api_crud boolean default false;
 create index eki_user_email_idx on eki_user(email);
 create index eki_user_api_key_idx on eki_user(api_key);
 

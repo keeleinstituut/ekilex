@@ -5,7 +5,6 @@ import java.util.List;
 import eki.common.data.AbstractDataObject;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.DatasetPermission;
 
 public class SessionBean extends AbstractDataObject {
 
@@ -20,8 +19,6 @@ public class SessionBean extends AbstractDataObject {
 	private String recentLanguage;
 
 	private String recentMorphCode;
-
-	private DatasetPermission userRole;
 
 	public SearchResultMode getTermSearchResultMode() {
 		return termSearchResultMode;
@@ -62,13 +59,4 @@ public class SessionBean extends AbstractDataObject {
 	public void setRecentMorphCode(String recentMorphCode) {
 		this.recentMorphCode = recentMorphCode;
 	}
-
-	public DatasetPermission getUserRole() {
-		return userRole;
-	}
-
-	public void setUserRole(DatasetPermission userRole) {
-		this.userRole = userRole;
-	}
-
 }

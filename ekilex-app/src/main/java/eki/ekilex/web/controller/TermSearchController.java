@@ -47,7 +47,6 @@ public class TermSearchController extends AbstractSearchController {
 	public String initSearch(Model model) {
 
 		initSearchForms(TERM_SEARCH_PAGE, model);
-		resetUserRole(model);
 
 		TermSearchResult termSearchResult = new TermSearchResult();
 		model.addAttribute("termSearchResult", termSearchResult);
@@ -90,7 +89,6 @@ public class TermSearchController extends AbstractSearchController {
 
 		// if redirect from login arrives
 		initSearchForms(searchPage, model);
-		resetUserRole(model);
 
 		String searchUri = StringUtils.removeStart(request.getRequestURI(), TERM_SEARCH_URI);
 		logger.debug(searchUri);

@@ -15,6 +15,10 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	private String email;
 
+	private boolean apiKeyExists;
+
+	private boolean apiCrud;
+
 	private boolean admin;
 
 	private boolean master;
@@ -55,6 +59,22 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public boolean isApiKeyExists() {
+		return apiKeyExists;
+	}
+
+	public void setApiKeyExists(boolean apiKeyExists) {
+		this.apiKeyExists = apiKeyExists;
+	}
+
+	public boolean isApiCrud() {
+		return apiCrud;
+	}
+
+	public void setApiCrud(boolean apiCrud) {
+		this.apiCrud = apiCrud;
 	}
 
 	public boolean isAdmin() {

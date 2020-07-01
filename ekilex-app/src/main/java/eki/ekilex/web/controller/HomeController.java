@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.StatData;
@@ -59,7 +58,6 @@ public class HomeController extends AbstractPageController {
 		EkiUser user = userContext.getUser();
 		if (Boolean.TRUE.equals(user.getEnabled())) {
 			populateStatData(model);
-			populateRecentRole(user, model);
 			return HOME_PAGE;
 		}
 		populateUserApplicationData(user, model);
@@ -130,11 +128,6 @@ public class HomeController extends AbstractPageController {
 		model.addAttribute("statExists", statExists);
 	}
 
-	private void populateRecentRole(EkiUser user, Model model) {
-		SessionBean sessionBean = getSessionBean(model);
-		sessionBean.setUserRole(user.getRecentRole());
-	}
-
 	@GetMapping("/loginerror")
 	public String loginError(RedirectAttributes attributes) {
 		attributes.addFlashAttribute("loginerror", "Autentimine ebaõnnestus");
@@ -147,14 +140,9 @@ public class HomeController extends AbstractPageController {
 
 		logger.debug("User initiated role change, dataSetPermissionId: {}", permissionId);
 
-		if (permissionId == null) {
-			sessionBean.setUserRole(null);
-		} else {
-			Long userId = userContext.getUserId();
-			DatasetPermission datasetPermission = userProfileService.getAndSetRecentDatasetPermission(permissionId, userId);
-			userService.updateUserSecurityContext();
-			sessionBean.setUserRole(datasetPermission);
-		}
+		Long userId = userContext.getUserId();
+		userProfileService.setRecentDatasetPermission(permissionId, userId);
+		userService.updateUserSecurityContext();
 
 		return REDIRECT_PREF + HOME_URI;
 	}

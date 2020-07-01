@@ -81,15 +81,18 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public DatasetPermission getAndSetRecentDatasetPermission(Long permissionId, Long userId) {
+	public void setRecentDatasetPermission(Long permissionId, Long userId) {
 
-		DatasetPermission datasetPermission = permissionDbService.getDatasetPermission(permissionId);
-		if (datasetPermission == null) {
+		if (permissionId == null) {
 			userProfileDbService.setRecentDatasetPermission(userId, null);
 		} else {
-			userProfileDbService.setRecentDatasetPermission(userId, permissionId);
+			DatasetPermission datasetPermission = permissionDbService.getDatasetPermission(permissionId);
+			if (datasetPermission == null) {
+				userProfileDbService.setRecentDatasetPermission(userId, null);
+			} else {
+				userProfileDbService.setRecentDatasetPermission(userId, permissionId);
+			}			
 		}
-		return datasetPermission;
 	}
 
 }

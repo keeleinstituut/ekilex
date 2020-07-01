@@ -34,7 +34,6 @@ public class SourceSearchController extends AbstractSearchController {
 	@GetMapping(SOURCE_SEARCH_URI)
 	public String initSearch(Model model) {
 
-		resetUserRole(model);
 		return SOURCE_SEARCH_PAGE;
 	}
 
@@ -43,7 +42,6 @@ public class SourceSearchController extends AbstractSearchController {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
-		resetUserRole(model);
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
 		List<Source> sources = sourceService.getSources(searchFilter, userRole);
@@ -72,7 +70,6 @@ public class SourceSearchController extends AbstractSearchController {
 
 		logger.debug("Searching by id: \"{}\"", sourceId);
 
-		resetUserRole(model);
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
 		List<Source> sources = new ArrayList<>();

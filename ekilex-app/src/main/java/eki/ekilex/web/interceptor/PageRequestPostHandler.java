@@ -21,7 +21,6 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.EkiUserRoleData;
-import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ClassifierUtil;
 import eki.ekilex.web.util.PermDataUtil;
 import eki.ekilex.web.util.UserProfileUtil;
@@ -92,8 +91,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 			modelMap.addAttribute(USER_PROFILE_KEY, userProfile);
 		}
 		if (!modelMap.containsKey(USER_ROLE_DATA_KEY)) {
-			SessionBean sessionBean = (SessionBean) modelMap.get(SESSION_BEAN);
-			EkiUserRoleData roleData = userProfileUtil.getUserRoleData(sessionBean);
+			EkiUserRoleData roleData = userProfileUtil.getUserRoleData();
 			modelMap.addAttribute(USER_ROLE_DATA_KEY, roleData);
 		}
 

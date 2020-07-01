@@ -14,7 +14,6 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.EkiUserRoleData;
 import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.web.bean.SessionBean;
 
 @Component
 public class UserProfileUtil implements GlobalConstant {
@@ -33,12 +32,9 @@ public class UserProfileUtil implements GlobalConstant {
 		return userProfile;
 	}
 
-	public EkiUserRoleData getUserRoleData(SessionBean sessionBean) {
+	public EkiUserRoleData getUserRoleData() {
 
 		EkiUserRoleData ekiUserRoleData = new EkiUserRoleData();
-		if (sessionBean == null) {
-			 return ekiUserRoleData;
-		}
 
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
@@ -50,6 +46,7 @@ public class UserProfileUtil implements GlobalConstant {
 		boolean isDatasetCrudOwnerOrAdmin = isDatasetCrudOwnerOrAdmin(user);
 		boolean isRoleChangeEnabled = isRoleChangeEnabled(user);
 
+		ekiUserRoleData.setUserRole(userRole);
 		ekiUserRoleData.setAdmin(isAdmin);
 		ekiUserRoleData.setRoleSelected(isRoleSelected);
 		ekiUserRoleData.setCrudRoleSelected(isCrudRoleSelected);

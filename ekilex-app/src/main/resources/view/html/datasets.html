@@ -42,11 +42,13 @@
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span class="text-secondary fa" th:classappend="${dataset.visible ? 'fa-check-square-o' : 'fa-square-o'}"
-                          th:title="|#{datasets.dataset.is.visible} : ${dataset.visible ? 'Jah' : 'Ei'}|"></span>
+                          th:title="|#{datasets.dataset.is.visible} : ${dataset.visible ? 'Jah' : 'Ei'}|">
+                    </span>
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span class="text-secondary fa" th:classappend="${dataset.public ? 'fa-check-square-o' : 'fa-square-o'}"
-                          th:title="|#{datasets.dataset.is.public} : ${dataset.public ? 'Jah' : 'Ei'}|"></span>
+                          th:title="|#{datasets.dataset.is.public} : ${dataset.public ? 'Jah' : 'Ei'}|">
+                    </span>
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span class="text-secondary fa" th:classappend="${dataset.superior ? 'fa-check-square-o' : 'fa-square-o'}"

@@ -13,7 +13,7 @@ public class EkiUser implements Principal, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String[] HIDDEN_FIELD_NAMES = new String[] {"password", "activationKey", "recoveryKey"};
+	private static final String[] HIDDEN_FIELD_NAMES = new String[] {"password", "activationKey", "recoveryKey", "apiKey"};
 
 	private Long id;
 
@@ -28,6 +28,8 @@ public class EkiUser implements Principal, Serializable {
 	private String recoveryKey;
 
 	private String apiKey;
+
+	private boolean apiCrud;
 
 	private boolean admin;
 
@@ -101,6 +103,14 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
+	}
+
+	public boolean isApiCrud() {
+		return apiCrud;
+	}
+
+	public void setApiCrud(boolean apiCrud) {
+		this.apiCrud = apiCrud;
 	}
 
 	public boolean isAdmin() {

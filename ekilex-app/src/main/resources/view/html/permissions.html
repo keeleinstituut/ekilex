@@ -18,8 +18,8 @@
             <div id="permissionsArea">
               <table class="table table-striped m-0 p-0 table-hover">
                 <tr>
-                  <th class="m-1 p-1"></th>
-                  <th class="m-1 p-1 text-nowrap">
+                  <th class="p-1"></th>
+                  <th class="p-1 text-nowrap">
                     <form th:action="@{/permissions}" method="post">
                       <input type="hidden" name="orderBy" value="DATE">
                       <button type="submit" class="btn badge badge-light">
@@ -28,7 +28,7 @@
                       Kuupäev
                     </form>
                   </th>
-                  <th class="m-1 p-1 text-nowrap">
+                  <th class="p-1 text-nowrap">
                     <form th:action="@{/permissions}" method="post">
                       <input type="hidden" name="orderBy" value="NAME">
                       <button type="submit" class="btn badge badge-light">
@@ -37,14 +37,16 @@
                       Nimi
                     </form>
                   </th>
-                  <th class="m-1 p-1">E-post</th>
-                  <th class="m-1 p-1 text-center">Admin</th>
-                  <th class="m-1 p-1 text-center">Ülevaataja</th>
-                  <th class="m-1 p-1 text-center">Lubatud</th>
-                  <th class="m-1 p-1 text-center">Tegeletud</th>
-                  <th class="m-1 p-1">Kommentaar</th>
-                  <th class="m-1 p-1">Avaldused</th>
-                  <th class="m-1 p-1" colspan="3">Load</th>
+                  <th class="p-1">E-post</th>
+                  <th class="p-1 text-center">api</th>
+                  <th class="p-1 text-center">crud</th>
+                  <th class="p-1 text-center">Admin</th>
+                  <th class="p-1 text-center">Ülevaataja</th>
+                  <th class="p-1 text-center">Lubatud</th>
+                  <th class="p-1 text-center">Tegeletud</th>
+                  <th class="p-1">Kommentaar</th>
+                  <th class="p-1">Avaldused</th>
+                  <th class="p-1" colspan="3">Load</th>
                 </tr>
                 <th:block th:each="userPerm : ${ekiUserPermissions}"
                           th:with="
@@ -52,55 +54,62 @@
                             isAdmin=${#vars.userRoleData.admin},
                             isDatasetOwnerOrAdmin=${#vars.userRoleData.datasetOwnerOrAdmin}">
                   <tr>
-                    <td class="m-1 p-1 text-center">
+                    <td class="p-1 text-center">
                       <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="p-1">
                       <span th:text="${#dates.format(userPerm.createdOn, 'dd.MM.yyyy')}"></span>
                     </td>
-                    <td class="m-1 p-1 text-nowrap">
+                    <td class="p-1 text-nowrap">
                       <span th:text="${userPerm.name}"></span>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="p-1">
                       <span th:text="${userPerm.email}"></span>
                     </td>
-                    <td class="m-1 p-1 text-center">
+                    <td class="p-1 text-center">
+                      <span class="text-success fa" th:classappend="${userPerm.apiKeyExists ? 'fa-check' : ''}"></span>
+                    </td>
+                    <td class="p-1 text-center">
                       <input type="checkbox"
-                             class="form-check-input"
+                             th:data-id="${userPerm.id}"
+                             th:data-order-by="${orderBy}"
+                             name="userApiCrudCheck"
+                             th:checked="${userPerm.apiCrud}"
+                             th:disabled="${!userPerm.apiKeyExists && (!#vars.isAdmin)}"/>
+                    </td>
+                    <td class="p-1 text-center">
+                      <input type="checkbox"
                              th:data-id="${userPerm.id}"
                              th:data-order-by="${orderBy}"
                              name="userAdminCheck"
                              th:checked="${userPerm.admin}"
                              th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
                     </td>
-                    <td class="m-1 p-1 text-center">
+                    <td class="p-1 text-center">
                       <input type="checkbox"
-                             class="form-check-input"
                              th:data-id="${userPerm.id}"
                              th:data-order-by="${orderBy}"
                              name="userMasterCheck"
                              th:checked="${userPerm.master}"
                              th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
                     </td>
-                    <td class="m-1 p-1 text-center">
+                    <td class="p-1 text-center">
                       <input type="checkbox"
-                             class="form-check-input"
                              th:data-id="${userPerm.id}"
                              th:data-order-by="${orderBy}"
                              name="userEnableCheck"
                              th:checked="${userPerm.enabled}"
                              th:disabled="${#vars.isOwnPermission}"/>
                     </td>
-                    <td class="m-1 p-1 text-center">
+                    <td class="p-1 text-center">
                       <input type="checkbox"
-                             class="form-check-input"
                              th:data-id="${userPerm.id}"
                              th:data-order-by="${orderBy}"
                              name="userReviewedCheck"
                              th:checked="${userPerm.reviewed}"
                              th:disabled="${#vars.isOwnPermission}"/>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="p-1">
                       <div th:replace="permdialog :: edit_review_comment_dlg"></div>
                       <button type="button" class="btn badge badge-success" title="Lisa kommentaar"
                               data-toggle="modal"
@@ -125,7 +134,7 @@
                         </a>
                       </div>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="p-1">
                       <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
                       <th:block th:each="userApplication,userApplicationIter : ${userPerm.applications}">
                         <div>
@@ -135,7 +144,7 @@
                         </div>
                       </th:block>
                     </td>
-                    <td class="m-1 p-1 text-center">
+                    <td class="p-1 text-center">
                       <div th:replace="permdialog :: add_dataset_perm_dlg"></div>
                       <button type="button" class="btn badge badge-success" title="Lisa luba"
                               data-toggle="modal"
@@ -145,7 +154,7 @@
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="p-1">
                       <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
                         <div class="invisible-buttons text-nowrap">
                           <span th:text="${datasetPerm.datasetCode}"></span>
@@ -165,7 +174,7 @@
                         </div>
                       </th:block>
                     </td>
-                    <td class="m-1 p-1">
+                    <td class="p-1">
                       <button type="button" class="btn badge"
                               data-toggle="send-mail-confirm"
                               data-placement="top"

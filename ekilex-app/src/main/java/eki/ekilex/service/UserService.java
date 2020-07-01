@@ -327,9 +327,11 @@ public class UserService implements WebConstant {
 	}
 
 	@Transactional
-	public String generateApiKey(Long userId) {
+	public String generateApiKey(EkiUser user) {
+		Long userId = user.getId();
+		boolean isApiCrud = user.isAdmin();
 		String apiKey = generateUniqueKey();
-		userDbService.updateApiKey(userId, apiKey);
+		userDbService.updateApiKey(userId, apiKey, isApiCrud);
 		updateUserSecurityContext();
 		return apiKey;
 	}
