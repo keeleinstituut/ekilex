@@ -708,7 +708,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	private List<TermMeaning> executeFetchWordMode(
 			Table<Record3<Long, Long, Long[]>> wmid,
-			SearchDatasetsRestriction searchDatasetsRestriction,
 			String resultLang, boolean fetchAll, int offset) {
 
 		Lexeme lm = LEXEME.as("lm");
@@ -814,7 +813,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		return create.fetchCount(DSL.selectDistinct(wm.field("meaning_id")).from(wm));
 	}
 
-	private int executeCountWordsWordMode(Table<Record3<Long, Long, Long[]>> wmid, SearchDatasetsRestriction searchDatasetsRestriction, String resultLang) {
+	private int executeCountWordsWordMode(Table<Record3<Long, Long, Long[]>> wmid, String resultLang) {
 
 		Word wm = WORD.as("wm");
 
@@ -839,9 +838,9 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			meaningCount = resultCount = executeCountMeaningsMeaningMode(wm);
 			wordCount = executeCountWordsMeaningMode(wm, searchDatasetsRestriction, resultLang);
 		} else if (SearchResultMode.WORD.equals(resultMode)) {
-			results = executeFetchWordMode(wm, searchDatasetsRestriction, resultLang, fetchAll, offset);
+			results = executeFetchWordMode(wm, resultLang, fetchAll, offset);
 			meaningCount = executeCountMeaningsWordMode(wm);
-			wordCount = resultCount = executeCountWordsWordMode(wm, searchDatasetsRestriction, resultLang);
+			wordCount = resultCount = executeCountWordsWordMode(wm, resultLang);
 		}
 
 		TermSearchResult termSearchResult = new TermSearchResult();

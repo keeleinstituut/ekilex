@@ -447,7 +447,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return filteredCriteria;
 	}
 
-	protected Condition applyLanguageNotExistFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Lexeme l2, Word w2, Condition w2Where) {
+	protected Condition applyLanguageNotExistFilters(List<SearchCriterion> searchCriteria, Word w2, Condition w2Where) {
 
 		List<SearchCriterion> languageNotExistCriteria = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.LANGUAGE)
@@ -625,7 +625,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
-					where1 = applyLanguageNotExistFilters(negativeExistSearchCriteria, l1, l2, w2, where1);
+					where1 = applyLanguageNotExistFilters(negativeExistSearchCriteria, w2, where1);
 
 					where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, w2).where(where1));
 				}

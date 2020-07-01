@@ -213,19 +213,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
-	public List<Classifier> getDomains() {
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.DOMAIN),
-						DOMAIN_LABEL.ORIGIN,
-						DOMAIN_LABEL.CODE,
-						DOMAIN_LABEL.VALUE)
-				.from(DOMAIN_LABEL)
-				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE)
-				.fetchInto(Classifier.class);
-	}
-
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Classifier> getDomainsInUse() {
 		return create
 				.select(
