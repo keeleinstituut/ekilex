@@ -22,7 +22,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 	private SourceLinkService sourceLinkService;
 
 	@Order(301)
-	@PreAuthorize("@permEval.isSourceLinkCrudGranted(authentication, #crudRoleDataset, #sourceLink)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(authentication, #crudRoleDataset, #sourceLink)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_LINK_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceLink(

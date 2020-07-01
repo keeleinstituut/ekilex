@@ -39,7 +39,7 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(202)
-	@PreAuthorize("principal.datasetCrudPermissionsExist")
+	@PreAuthorize("principal.apiCrud && principal.datasetCrudPermissionsExist")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSource(@RequestBody Source source) {
@@ -85,7 +85,7 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(203)
-	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSource(
@@ -101,7 +101,7 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(204)
-	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSource(@RequestParam("sourceId") Long sourceId) {
@@ -119,7 +119,7 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(205)
-	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId1)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId1)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + JOIN_URI)
 	@ResponseBody
 	public ApiResponse joinSources(
@@ -135,7 +135,7 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(206)
-	@PreAuthorize("@permEval.isSourceCrudGranted(authentication, #sourceId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceProperty(
@@ -153,7 +153,7 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(207)
-	@PreAuthorize("@permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSourceProperty(
@@ -170,7 +170,7 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(208)
-	@PreAuthorize("@permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSourceProperty(@RequestParam("sourcePropertyId") Long sourcePropertyId) {
