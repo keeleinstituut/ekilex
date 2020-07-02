@@ -1,6 +1,7 @@
 package eki.ekilex.security;
 
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +47,8 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	@Autowired
 	private SourceLinkDbService sourceLinkDbService;
 
+	// source
+
 	@Transactional
 	public boolean isSourceCrudGranted(Authentication authentication, Long sourceId) {
 
@@ -69,32 +72,65 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		return isGranted;
 	}
 
-	@Transactional
-	public boolean isSourceLinkCrudGranted(Authentication authentication, String crudRoleDataset, SourceLink sourceLink) {
+	// source link
 
-		EkiUser user = (EkiUser) authentication.getPrincipal();
+	@Transactional
+	public boolean isSourceLinkCrudGranted(Principal principal, String crudRoleDataset, SourceLink sourceLink) {
+
+		EkiUser user = (EkiUser) principal;
 		Long userId = user.getId();
 		boolean isValidCrudRole = isValidCrudRole(userId, crudRoleDataset);
 		if (!isValidCrudRole) {
 			return false;
 		}
-		ReferenceOwner referenceOwner = sourceLink.getOwner();
+		ReferenceOwner sourceLinkOwner = sourceLink.getOwner();
 		Long ownerId = sourceLink.getOwnerId();
-		if (ReferenceOwner.FREEFORM.equals(referenceOwner)) {
-			FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
-			LifecycleEntity entity = freeformOwner.getEntity();
-			Long entityId = freeformOwner.getEntityId();
-			if (LifecycleEntity.LEXEME.equals(entity)) {
-				return permissionDbService.isGrantedForLexeme(entityId, crudRoleDataset);
-			} else if (LifecycleEntity.MEANING.equals(entity)) {
-				return permissionDbService.isGrantedForMeaning(userId, entityId, crudRoleDataset, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			} else if (LifecycleEntity.DEFINITION.equals(entity)) {
-				return permissionDbService.isGrantedForDefinition(entityId, crudRoleDataset, null);
-			}
-		} else if (ReferenceOwner.DEFINITION.equals(referenceOwner)) {
+		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
+			return isFreeformSourceLinkCrudGranted(userId, crudRoleDataset, ownerId);
+		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
 			return permissionDbService.isGrantedForDefinition(ownerId, crudRoleDataset, null);
-		} else if (ReferenceOwner.LEXEME.equals(referenceOwner)) {
+		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
 			return permissionDbService.isGrantedForLexeme(ownerId, crudRoleDataset);
+		}
+		return false;
+	}
+
+	@Transactional
+	public boolean isSourceLinkCrudGranted(
+			Principal principal, String crudRoleDataset, ReferenceOwner sourceLinkOwner, Long sourceLinkId) {
+
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		boolean isValidCrudRole = isValidCrudRole(userId, crudRoleDataset);
+		if (!isValidCrudRole) {
+			return false;
+		}
+		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
+			SourceLink sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
+			Long ownerId = sourceLink.getOwnerId();
+			return isFreeformSourceLinkCrudGranted(userId, crudRoleDataset, ownerId);
+		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
+			SourceLink sourceLink = sourceLinkDbService.getDefinitionSourceLink(sourceLinkId);
+			Long ownerId = sourceLink.getOwnerId();
+			return permissionDbService.isGrantedForDefinition(ownerId, crudRoleDataset, null);
+		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
+			SourceLink sourceLink = sourceLinkDbService.getLexemeSourceLink(sourceLinkId);
+			Long ownerId = sourceLink.getOwnerId();
+			return permissionDbService.isGrantedForLexeme(ownerId, crudRoleDataset);
+		}
+		return false;
+	}
+
+	private boolean isFreeformSourceLinkCrudGranted(Long userId, String crudRoleDataset, Long ownerId) {
+		FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
+		LifecycleEntity entity = freeformOwner.getEntity();
+		Long entityId = freeformOwner.getEntityId();
+		if (LifecycleEntity.LEXEME.equals(entity)) {
+			return permissionDbService.isGrantedForLexeme(entityId, crudRoleDataset);
+		} else if (LifecycleEntity.MEANING.equals(entity)) {
+			return permissionDbService.isGrantedForMeaning(userId, entityId, crudRoleDataset, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		} else if (LifecycleEntity.DEFINITION.equals(entity)) {
+			return permissionDbService.isGrantedForDefinition(entityId, crudRoleDataset, null);
 		}
 		return false;
 	}

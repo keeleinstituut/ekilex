@@ -94,7 +94,7 @@ public class ApiSourceController extends AbstractApiController {
 
 		try {
 			sourceService.updateSource(sourceId, sourceType);
-			return getOpSucessResponse();
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
@@ -112,7 +112,7 @@ public class ApiSourceController extends AbstractApiController {
 				return getOpFailResponse("Cannot delete, source in use");
 			}
 			sourceService.deleteSource(sourceId);
-			return getOpSucessResponse();
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
@@ -128,7 +128,7 @@ public class ApiSourceController extends AbstractApiController {
 
 		try {
 			sourceService.joinSources(sourceId1, sourceId2);
-			return getOpSucessResponse();
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
@@ -146,7 +146,7 @@ public class ApiSourceController extends AbstractApiController {
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
 			sourceService.createSourceProperty(sourceId, type, valueText);
-			return getOpSucessResponse();
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
@@ -163,7 +163,7 @@ public class ApiSourceController extends AbstractApiController {
 		valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
 		try {
 			sourceService.updateSourceProperty(sourcePropertyId, valueText);
-			return getOpSucessResponse();
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}
@@ -177,7 +177,7 @@ public class ApiSourceController extends AbstractApiController {
 
 		try {
 			sourceService.deleteSourceProperty(sourcePropertyId);
-			return getOpSucessResponse();
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}

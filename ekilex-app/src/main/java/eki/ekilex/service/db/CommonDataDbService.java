@@ -447,7 +447,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
+						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
 				.from(MEANING_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
 						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
 				.where(
@@ -471,7 +472,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
+						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
 				.from(
 						MEANING_FREEFORM,
 						iff
@@ -555,6 +557,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						DEFINITION_SOURCE_LINK.TYPE.as("definition_source_link_type"),
 						DEFINITION_SOURCE_LINK.NAME.as("definition_source_link_name"),
 						DEFINITION_SOURCE_LINK.VALUE.as("definition_source_link_value"),
+						DEFINITION_SOURCE_LINK.SOURCE_ID.as("definition_source_id"),
 						FREEFORM.ID.as("note_id"),
 						FREEFORM.VALUE_TEXT.as("note_value_text"),
 						FREEFORM.VALUE_PRESE.as("note_value_prese"),
@@ -565,7 +568,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM_SOURCE_LINK.ID.as("note_source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("note_source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("note_source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("note_source_link_value"))
+						FREEFORM_SOURCE_LINK.VALUE.as("note_source_link_value"),
+						FREEFORM_SOURCE_LINK.SOURCE_ID.as("note_source_id")
+						)
 				.from(
 						DEFINITION
 								.leftOuterJoin(DEFINITION_SOURCE_LINK).on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
@@ -887,7 +892,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
+						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
 				.from(LEXEME_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
 						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
 				.where(
@@ -967,7 +973,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"))
+						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
+						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
 				.from(WORD_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
 						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
 				.where(

@@ -30,6 +30,8 @@ public class NoteSourceTuple extends AbstractDataObject {
 
 	private String sourceLinkValue;
 
+	private Long sourceId;
+
 	public Long getFreeformId() {
 		return freeformId;
 	}
@@ -117,4 +119,13 @@ public class NoteSourceTuple extends AbstractDataObject {
 	public void setSourceLinkValue(String sourceLinkValue) {
 		this.sourceLinkValue = sourceLinkValue;
 	}
+
+	public Long getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(Long sourceId) {
+		this.sourceId = sourceId;
+	}
+
 }

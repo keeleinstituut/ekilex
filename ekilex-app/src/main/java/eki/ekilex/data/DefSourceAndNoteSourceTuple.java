@@ -18,6 +18,8 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 
 	private String definitionSourceLinkValue;
 
+	private Long definitionSourceId;
+
 	private Long noteId;
 
 	private String noteValueText;
@@ -39,6 +41,8 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 	private String noteSourceLinkName;
 
 	private String noteSourceLinkValue;
+
+	private Long noteSourceId;
 
 	public Long getDefinitionId() {
 		return definitionId;
@@ -78,6 +82,14 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 
 	public void setDefinitionSourceLinkValue(String definitionSourceLinkValue) {
 		this.definitionSourceLinkValue = definitionSourceLinkValue;
+	}
+
+	public Long getDefinitionSourceId() {
+		return definitionSourceId;
+	}
+
+	public void setDefinitionSourceId(Long definitionSourceId) {
+		this.definitionSourceId = definitionSourceId;
 	}
 
 	public Long getNoteId() {
@@ -167,4 +179,13 @@ public class DefSourceAndNoteSourceTuple extends AbstractDataObject {
 	public void setNoteSourceLinkValue(String noteSourceLinkValue) {
 		this.noteSourceLinkValue = noteSourceLinkValue;
 	}
+
+	public Long getNoteSourceId() {
+		return noteSourceId;
+	}
+
+	public void setNoteSourceId(Long noteSourceId) {
+		this.noteSourceId = noteSourceId;
+	}
+
 }

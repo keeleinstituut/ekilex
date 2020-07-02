@@ -40,22 +40,22 @@ public class SourceLinkService extends AbstractService {
 	@Transactional
 	public Long createSourceLink(SourceLink sourceLink) {
 
-		ReferenceOwner referenceOwner = sourceLink.getOwner();
+		ReferenceOwner sourceLinkOwner = sourceLink.getOwner();
 		Long ownerId = sourceLink.getOwnerId();
 		Long sourceId = sourceLink.getSourceId();
 		ReferenceType refType = sourceLink.getType();
 		String value = sourceLink.getValue();
 		String name = sourceLink.getName();
-		if (ReferenceOwner.FREEFORM.equals(referenceOwner)) {
+		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
 			FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
 			boolean isSupportedOwner = isSupportedSourceLink(freeformOwner);
 			if (isSupportedOwner) {
 				LifecycleEntity lifecycleEntity = freeformOwner.getEntity();
 				return createFreeformSourceLink(ownerId, sourceId, refType, value, name, lifecycleEntity);
 			}
-		} else if (ReferenceOwner.DEFINITION.equals(referenceOwner)) {
+		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
 			return createDefinitionSourceLink(ownerId, sourceId, refType, value, name);
-		} else if (ReferenceOwner.LEXEME.equals(referenceOwner)) {
+		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
 			return createLexemeSourceLink(ownerId, sourceId, refType, value, name);
 		}
 		return null;
@@ -79,6 +79,21 @@ public class SourceLinkService extends AbstractService {
 			return true;
 		}
 		return false;
+	}
+
+	public void deleteSourceLink(ReferenceOwner sourceLinkOwner, Long sourceLinkId) {
+
+		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
+			SourceLink sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
+			Long ownerId = sourceLink.getOwnerId();
+			FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
+			LifecycleEntity lifecycleEntity = freeformOwner.getEntity();
+			deleteFreeformSourceLink(sourceLinkId, lifecycleEntity);
+		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
+			deleteDefinitionSourceLink(sourceLinkId);
+		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
+			deleteLexemeSourceLink(sourceLinkId);
+		}
 	}
 
 	@Transactional

@@ -21,6 +21,8 @@ public class ImageSourceTuple extends AbstractDataObject {
 
 	private String sourceLinkValue;
 
+	private Long sourceId;
+
 	public Long getImageFreeformId() {
 		return imageFreeformId;
 	}
@@ -76,4 +78,13 @@ public class ImageSourceTuple extends AbstractDataObject {
 	public void setSourceLinkValue(String sourceLinkValue) {
 		this.sourceLinkValue = sourceLinkValue;
 	}
+
+	public Long getSourceId() {
+		return sourceId;
+	}
+
+	public void setSourceId(Long sourceId) {
+		this.sourceId = sourceId;
+	}
+
 }

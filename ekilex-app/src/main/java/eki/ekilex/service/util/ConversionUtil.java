@@ -318,6 +318,7 @@ public class ConversionUtil implements GlobalConstant {
 				sourceLink.setType(tuple.getSourceLinkType());
 				sourceLink.setName(tuple.getSourceLinkName());
 				sourceLink.setValue(tuple.getSourceLinkValue());
+				sourceLink.setSourceId(tuple.getSourceId());
 				sourceLinks.add(sourceLink);
 			}
 		}
@@ -357,6 +358,7 @@ public class ConversionUtil implements GlobalConstant {
 				sourceLink.setType(tuple.getSourceLinkType());
 				sourceLink.setName(tuple.getSourceLinkName());
 				sourceLink.setValue(tuple.getSourceLinkValue());
+				sourceLink.setSourceId(tuple.getSourceId());
 				sourceLinks.add(sourceLink);
 			}
 		}
@@ -496,6 +498,7 @@ public class ConversionUtil implements GlobalConstant {
 				ReferenceType definitionSourceLinkType = definitionData.getDefinitionSourceLinkType();
 				String definitionSourceLinkName = definitionData.getDefinitionSourceLinkName();
 				String definitionSourceLinkValue = definitionData.getDefinitionSourceLinkValue();
+				Long definitionSourceId = definitionData.getDefinitionSourceId();
 				SourceLink definitionSourceLink = new SourceLink();
 				definitionSourceLink.setOwner(ReferenceOwner.DEFINITION);
 				definitionSourceLink.setOwnerId(definitionId);
@@ -503,6 +506,7 @@ public class ConversionUtil implements GlobalConstant {
 				definitionSourceLink.setType(definitionSourceLinkType);
 				definitionSourceLink.setName(definitionSourceLinkName);
 				definitionSourceLink.setValue(definitionSourceLinkValue);
+				definitionSourceLink.setSourceId(definitionSourceId);
 				definition.getSourceLinks().add(definitionSourceLink);
 				handledSourceLinkIds.add(definitionSourceLinkId);
 			}
@@ -533,6 +537,7 @@ public class ConversionUtil implements GlobalConstant {
 					ReferenceType noteSourceLinkType = definitionData.getNoteSourceLinkType();
 					String noteSourceLinkName = definitionData.getNoteSourceLinkName();
 					String noteSourceLinkValue = definitionData.getNoteSourceLinkValue();
+					Long noteSourceId = definitionData.getNoteSourceId();
 					SourceLink noteSourceLink = new SourceLink();
 					noteSourceLink.setOwner(ReferenceOwner.FREEFORM);
 					noteSourceLink.setOwnerId(noteId);
@@ -540,6 +545,7 @@ public class ConversionUtil implements GlobalConstant {
 					noteSourceLink.setType(noteSourceLinkType);
 					noteSourceLink.setName(noteSourceLinkName);
 					noteSourceLink.setValue(noteSourceLinkValue);
+					noteSourceLink.setSourceId(noteSourceId);
 					note.getSourceLinks().add(noteSourceLink);
 				}
 			}

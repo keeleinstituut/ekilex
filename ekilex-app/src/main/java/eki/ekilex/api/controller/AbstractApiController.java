@@ -20,7 +20,7 @@ public abstract class AbstractApiController implements SystemConstant, ApiConsta
 	@Autowired
 	private MessageUtil messageUtil;
 
-	protected ApiResponse getOpSucessResponse() {
+	protected ApiResponse getOpSuccessResponse() {
 		String positiveQuote = messageUtil.getPositiveQuote();
 		return new ApiResponse(true, positiveQuote);
 	}

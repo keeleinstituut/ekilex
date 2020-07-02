@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eki.common.constant.ReferenceOwner;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.service.SourceLinkService;
@@ -22,7 +23,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 	private SourceLinkService sourceLinkService;
 
 	@Order(301)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(authentication, #crudRoleDataset, #sourceLink)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(principal, #crudRoleDataset, #sourceLink)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_LINK_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceLink(
@@ -41,6 +42,23 @@ public class ApiSourceLinkController extends AbstractApiController {
 				return getOpFailResponse("Invalid or unsupported source link composition");
 			}
 			return getOpSuccessResponse(sourceLinkId);
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(302)
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(principal, #crudRoleDataset, #sourceLinkOwner, #sourceLinkId)")
+	@GetMapping(value = API_SERVICES_URI + SOURCE_LINK_URI + DELETE_URI)
+	@ResponseBody
+	public ApiResponse deleteFreeformSourceLink(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("sourceLinkOwner") ReferenceOwner sourceLinkOwner,
+			@RequestParam("sourceLinkId") Long sourceLinkId) {
+
+		try {
+			sourceLinkService.deleteSourceLink(sourceLinkOwner, sourceLinkId);
+			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
 		}

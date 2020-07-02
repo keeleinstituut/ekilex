@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import eki.common.data.AbstractDataObject;
@@ -9,12 +10,16 @@ public abstract class AbstractCrudEntity extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@JsonIgnore
 	private boolean crudGrant;
 
+	@JsonIgnore
 	private boolean readGrant;
 
+	@JsonIgnore
 	private boolean subGrant;
 
+	@JsonIgnore
 	private boolean anyGrant;
 
 	public boolean isCrudGrant() {
