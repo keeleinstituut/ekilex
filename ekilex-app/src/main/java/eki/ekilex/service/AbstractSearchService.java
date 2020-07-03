@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.LexemeTag;
 import eki.ekilex.data.PagingResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.Tag;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.util.ConversionUtil;
@@ -77,5 +79,20 @@ public abstract class AbstractSearchService extends AbstractService implements S
 		result.setTotalPages(totalPages);
 		result.setPreviousPageExists(previousPageExists);
 		result.setNextPageExists(nextPageExists);
+	}
+
+	protected boolean isActiveTagComplete(List<? extends LexemeTag> lexemes, Tag activeTag) {
+
+		if (activeTag == null) {
+			return false;
+		}
+		String activeTagName = activeTag.getName();
+		boolean removeToComplete = activeTag.isRemoveToComplete();
+
+		if (removeToComplete) {
+			return lexemes.stream().noneMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> lexemeTagName.equals(activeTagName)));
+		} else {
+			return lexemes.stream().allMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> lexemeTagName.equals(activeTagName)));
+		}
 	}
 }

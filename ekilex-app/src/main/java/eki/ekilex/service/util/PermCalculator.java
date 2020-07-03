@@ -121,15 +121,6 @@ public class PermCalculator implements PermConstant {
 		crudEntity.setAnyGrant(isAnyGrant);
 	}
 
-	public void filterVisibility(Long userId, List<? extends AbstractPublicEntity> publicEntities) {
-
-		if (userId == null) {
-			publicEntities.removeIf(entity -> !entity.isPublic());
-			return;
-		}
-		publicEntities.removeIf(entity -> !isEntityVisible(userId, entity));
-	}
-
 	public void filterVisibility(DatasetPermission userRole, List<? extends AbstractPublicEntity> publicEntities) {
 
 		if (userRole == null) {
@@ -140,10 +131,6 @@ public class PermCalculator implements PermConstant {
 		Long userId = userRole.getUserId();
 		String userRoleDatasetCode = userRole.getDatasetCode();
 		publicEntities.removeIf(entity -> !isEntityVisible(userId, userRoleDatasetCode, entity));
-	}
-
-	private boolean isEntityVisible(Long userId, AbstractPublicEntity entity) {
-		return isEntityVisible(userId, null, entity);
 	}
 
 	private boolean isEntityVisible(Long userId, String userRoleDatasetCode, AbstractPublicEntity entity) {

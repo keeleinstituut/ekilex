@@ -4,7 +4,7 @@ import java.util.List;
 
 import eki.common.constant.Complexity;
 
-public class Lexeme extends AbstractCrudEntity {
+public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,6 +15,8 @@ public class Lexeme extends AbstractCrudEntity {
 	private Long meaningId;
 
 	private String datasetCode;
+
+	private String datasetName;
 
 	private Integer level1;
 
@@ -94,6 +96,14 @@ public class Lexeme extends AbstractCrudEntity {
 
 	public void setDatasetCode(String datasetCode) {
 		this.datasetCode = datasetCode;
+	}
+
+	public String getDatasetName() {
+		return datasetName;
+	}
+
+	public void setDatasetName(String datasetName) {
+		this.datasetName = datasetName;
 	}
 
 	public Integer getLevel1() {

@@ -33,6 +33,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.MeaningWordCandidates;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
@@ -227,16 +228,17 @@ public class LexEditController extends AbstractPageController {
 	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model) {
 
 		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
 		Long userId = userContextData.getUserId();
 		List<String> userPreferredDatasetCodes = userContextData.getPreferredDatasetCodes();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 
 		List<String> userVisibleDatasetCodes = permissionService.getUserVisibleDatasetCodes(userId);
-		WordDetails targetWordDetails = lookupService.getWordJoinDetails(userId, wordId);
+		WordDetails targetWordDetails = lookupService.getWordJoinDetails(userRole, wordId);
 		Word targetWord = targetWordDetails.getWord();
 
 		List<WordDetails> sourceWordDetailsList = lookupService
-				.getWordDetailsOfJoinCandidates(userId, userRoleDatasetCode, targetWord, userPreferredDatasetCodes, userVisibleDatasetCodes);
+				.getWordDetailsOfJoinCandidates(userRole, userRoleDatasetCode, targetWord, userPreferredDatasetCodes, userVisibleDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);
@@ -363,6 +365,21 @@ public class LexEditController extends AbstractPageController {
 		}
 		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
+	}
+
+	@PostMapping(UPDATE_WORD_ACTIVE_TAG_COMPLETE_URI + "/{wordId}")
+	@ResponseBody
+	public String updateWordLexemesActiveTagComplete(@PathVariable Long wordId) {
+
+		UserContextData userContextData = getUserContextData();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		Tag activeTag = userContextData.getActiveTag();
+		String activeTagName = activeTag.getName();
+
+		logger.debug("Updating word (id: {}} lexemes active tag \"{}\" complete", wordId, activeTagName);
+		cudService.updateWordLexemesTagComplete(wordId, userRoleDatasetCode, activeTag);
+
+		return RESPONSE_OK_VER2;
 	}
 
 }

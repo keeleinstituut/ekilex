@@ -32,6 +32,7 @@ import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -72,7 +73,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public WordSynDetails getWordSynDetails(
 			Long wordId, String datasetCode, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes,
-			Long userId, DatasetPermission userRole) throws Exception {
+			Tag activeTag, Long userId, DatasetPermission userRole) throws Exception {
 
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
@@ -86,6 +87,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, synMeaningWordLangCodes, userId, userRole));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
+		boolean isActiveTagComplete = isActiveTagComplete(synLexemes, activeTag);
 
 		List<SynRelation> relations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {
@@ -97,6 +99,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setRelations(relations);
+		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;
 	}
@@ -116,12 +119,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		}
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
-		permCalculator.filterVisibility(userId, definitions);
+		permCalculator.filterVisibility(userRole, definitions);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-		permCalculator.filterVisibility(userId, usages);
+		permCalculator.filterVisibility(userRole, usages);
 
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 

@@ -40,6 +40,7 @@ import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
@@ -164,7 +165,7 @@ public class LookupService extends AbstractWordSearchService {
 				List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 				lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-				permCalculator.filterVisibility(userId, definitions);
+				permCalculator.filterVisibility(userRole, definitions);
 				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
 				allDefinitionValues.addAll(lexemeDefinitionValues);
 			});
@@ -186,15 +187,16 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<WordDetails> getWordDetailsOfJoinCandidates(
-			Long userId, String roleDatasetCode, Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
+			DatasetPermission userRole, String roleDatasetCode, Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
+		Long userId = userRole.getUserId();
 		Long targetWordId = targetWord.getWordId();
 		List<Long> sourceWordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userVisibleDatasetCodes);
 		sourceWordIds.sort(Comparator.comparing(sourceWordId -> !isWordJoinGranted(userId, sourceWordId, targetWordId, roleDatasetCode)));
 
 		for (Long sourceWordId : sourceWordIds) {
-			WordDetails wordDetails = getWordJoinDetails(userId, sourceWordId);
+			WordDetails wordDetails = getWordJoinDetails(userRole, sourceWordId);
 			wordDetailsList.add(wordDetails);
 		}
 		return wordDetailsList;
@@ -209,7 +211,7 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordDetails getWordJoinDetails(Long userId, Long wordId) {
+	public WordDetails getWordJoinDetails(DatasetPermission userRole, Long wordId) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		Word word = lexSearchDbService.getWord(wordId);
@@ -218,7 +220,7 @@ public class LookupService extends AbstractWordSearchService {
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 
-		lexemes.forEach(lexeme -> populateLexemeWithMinimalData(userId, lexeme));
+		lexemes.forEach(lexeme -> populateLexemeWithMinimalData(userRole, lexeme));
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 		String firstDefinitionValue = getFirstDefinitionValue(lexemes);
 
@@ -258,12 +260,12 @@ public class LookupService extends AbstractWordSearchService {
 						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-						permCalculator.filterVisibility(userId, definitions);
+						permCalculator.filterVisibility(userRole, definitions);
 						List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 						List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 								commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 						List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-						permCalculator.filterVisibility(userId, usages);
+						permCalculator.filterVisibility(userRole, usages);
 
 						lexeme.setDatasetName(datasetName);
 						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
@@ -285,18 +287,17 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public Meaning getMeaningOfJoinTarget(Long userId, Long meaningId, List<ClassifierSelect> languagesOrder) {
+	public Meaning getMeaningOfJoinTarget(DatasetPermission userRole, Long meaningId, List<ClassifierSelect> languagesOrder) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
-		composeMeaningSelectData(userId, meaning, languagesOrder);
+		composeMeaningSelectData(userRole, meaning, languagesOrder);
 		return meaning;
 	}
 
 	@Transactional
 	public List<Meaning> getMeaningsOfJoinCandidates(
-			Long userId, DatasetPermission userRole, List<String> userPrefDatasetCodes,
-			String searchFilter, List<ClassifierSelect> languagesOrder, Long excludedMeaningId) {
+			DatasetPermission userRole, List<String> userPrefDatasetCodes, String searchFilter, List<ClassifierSelect> languagesOrder, Long excludedMeaningId) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return Collections.emptyList();
@@ -305,20 +306,20 @@ public class LookupService extends AbstractWordSearchService {
 			List<Meaning> meanings = lookupDbService.getMeanings(searchFilter, searchDatasetsRestriction, excludedMeaningId);
 			permCalculator.applyCrud(userRole, meanings);
 			meanings.sort(Comparator.comparing(meaning -> !meaning.isAnyGrant()));
-			meanings.forEach(meaning -> composeMeaningSelectData(userId, meaning, languagesOrder));
+			meanings.forEach(meaning -> composeMeaningSelectData(userRole, meaning, languagesOrder));
 			return meanings;
 		}
 	}
 
 	@Transactional
-	public List<Meaning> getMeaningsOfRelationCandidates(Long userId, String wordValue, Long excludedMeaningId, List<ClassifierSelect> languagesOrder) {
+	public List<Meaning> getMeaningsOfRelationCandidates(DatasetPermission userRole, String wordValue, Long excludedMeaningId, List<ClassifierSelect> languagesOrder) {
 
 		if (StringUtils.isBlank(wordValue)) {
 			return Collections.emptyList();
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 			List<Meaning> meanings = lookupDbService.getMeanings(wordValue, searchDatasetsRestriction, excludedMeaningId);
-			meanings.forEach(meaning -> composeMeaningSelectData(userId, meaning, languagesOrder));
+			meanings.forEach(meaning -> composeMeaningSelectData(userRole, meaning, languagesOrder));
 			return meanings;
 		}
 	}
@@ -347,14 +348,19 @@ public class LookupService extends AbstractWordSearchService {
 		return oppositeRelations;
 	}
 
-	private void composeMeaningSelectData(Long userId, Meaning meaning, List<ClassifierSelect> languagesOrder) {
+	@Transactional
+	public Tag getTag(String tagName) {
+		return lookupDbService.getTag(tagName);
+	}
+
+	private void composeMeaningSelectData(DatasetPermission userRole, Meaning meaning, List<ClassifierSelect> languagesOrder) {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name()};
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Long meaningId = meaning.getMeaningId();
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		permCalculator.filterVisibility(userId, definitions);
+		permCalculator.filterVisibility(userRole, definitions);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
 		domains = conversionUtil.removeOrderedClassifierDuplicates(domains);
@@ -369,7 +375,7 @@ public class LookupService extends AbstractWordSearchService {
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-			permCalculator.filterVisibility(userId, usages);
+			permCalculator.filterVisibility(userRole, usages);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 			String dataset = lexeme.getDatasetCode();
 			dataset = datasetNameMap.get(dataset);
@@ -388,7 +394,7 @@ public class LookupService extends AbstractWordSearchService {
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 	}
 
-	private void populateLexemeWithMinimalData(Long userId, WordLexeme lexeme) {
+	private void populateLexemeWithMinimalData(DatasetPermission userRole, WordLexeme lexeme) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
@@ -396,7 +402,7 @@ public class LookupService extends AbstractWordSearchService {
 		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		permCalculator.filterVisibility(userId, definitions);
+		permCalculator.filterVisibility(userRole, definitions);
 
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
 		Meaning meaning = new Meaning();

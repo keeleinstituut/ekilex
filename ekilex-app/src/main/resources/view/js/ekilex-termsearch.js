@@ -71,6 +71,21 @@ function initializeTermSearch() {
 
 	});
 
+	$(document).on("click", "#activeTagCompleteBtn", function() {
+		let meaningId = $(this).data('meaning-id');
+		let actionUrl = applicationUrl + "update_meaning_active_tag_complete/" + meaningId;
+		$.post(actionUrl).done(function(data) {
+			if (data !== "{}") {
+				openAlertDlg("Andmete muutmine ebaõnnestus.");
+				console.log(data);
+			}
+			refreshDetailsTermsSearch();
+		}).fail(function(data) {
+			openAlertDlg("Andmete muutmine ebaõnnestus.");
+			console.log(data);
+		});
+	});
+
 	$(document).on('change', '[name="resultLang"]', function() {
 		$(this).closest('form').submit();
 	});

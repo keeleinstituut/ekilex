@@ -55,12 +55,14 @@ import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
+import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
@@ -657,6 +659,56 @@ public class CudDbService extends AbstractDataDbService {
 		return freeform.getId();
 	}
 
+	public List<Long> createWordLexemesTag(Long wordId, String datasetCode, String tagName) {
+
+		Lexeme l = LEXEME.as("l");
+		LexemeTag lt = LEXEME_TAG.as("lt");
+
+		List<Long> lexemeIds = create
+				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID)
+				.select(DSL
+						.select(DSL.val(tagName), l.ID)
+						.from(l)
+						.where(
+								l.WORD_ID.eq(wordId)
+										.and(l.DATASET_CODE.eq(datasetCode)
+												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+												.andNotExists(DSL
+														.select(lt.ID)
+														.from(lt)
+														.where(lt.LEXEME_ID.eq(l.ID).and(lt.TAG_NAME.eq(tagName)))))))
+				.returning(LEXEME_TAG.LEXEME_ID)
+				.fetch()
+				.map(LexemeTagRecord::getLexemeId);
+
+		return lexemeIds;
+	}
+
+	public List<Long> createMeaningLexemesTag(Long meaningId, String datasetCode, String tagName) {
+
+		Lexeme l = LEXEME.as("l");
+		LexemeTag lt = LEXEME_TAG.as("lt");
+
+		List<Long> lexemeIds = create
+				.insertInto(LEXEME_TAG, LEXEME_TAG.TAG_NAME, LEXEME_TAG.LEXEME_ID)
+				.select(DSL
+						.select(DSL.val(tagName), l.ID)
+						.from(l)
+						.where(
+								l.MEANING_ID.eq(meaningId)
+										.and(l.DATASET_CODE.eq(datasetCode)
+												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+												.andNotExists(DSL
+														.select(lt.ID)
+														.from(lt)
+														.where(lt.LEXEME_ID.eq(l.ID).and(lt.TAG_NAME.eq(tagName)))))))
+				.returning(LEXEME_TAG.LEXEME_ID)
+				.fetch()
+				.map(LexemeTagRecord::getLexemeId);
+
+		return lexemeIds;
+	}
+
 	public Long createDefinition(Long meaningId, String value, String valuePrese, String languageCode, String definitionTypeCode, Complexity complexity, boolean isPublic) {
 		return create
 				.insertInto(
@@ -1118,6 +1170,42 @@ public class CudDbService extends AbstractDataDbService {
 		create.delete(WORD_GROUP)
 				.where(WORD_GROUP.ID.eq(groupId))
 				.execute();
+	}
+
+	public List<Long> deleteWordLexemesTag(Long wordId, String datasetCode, String tagName) {
+
+		List<Long> lexemeIds = create
+				.delete(LEXEME_TAG)
+				.using(LEXEME)
+				.where(
+						LEXEME_TAG.TAG_NAME.eq(tagName)
+								.and(LEXEME_TAG.LEXEME_ID.eq(LEXEME.ID))
+								.and(LEXEME.WORD_ID.eq(wordId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.returning(LEXEME_TAG.LEXEME_ID)
+				.fetch()
+				.map(LexemeTagRecord::getLexemeId);
+
+		return lexemeIds;
+	}
+
+	public List<Long> deleteMeaningLexemesTag(Long meaningId, String datasetCode, String tagName) {
+
+		List<Long> lexemeIds = create
+				.delete(LEXEME_TAG)
+				.using(LEXEME)
+				.where(
+						LEXEME_TAG.TAG_NAME.eq(tagName)
+								.and(LEXEME_TAG.LEXEME_ID.eq(LEXEME.ID))
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.returning(LEXEME_TAG.LEXEME_ID)
+				.fetch()
+				.map(LexemeTagRecord::getLexemeId);
+
+		return lexemeIds;
 	}
 
 	public void deleteLexeme(Long lexemeId) {

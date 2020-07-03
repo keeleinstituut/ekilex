@@ -14,6 +14,8 @@ public class WordSynDetails extends AbstractDataObject {
 
 	private List<SynRelation> relations;
 
+	private boolean activeTagComplete;
+
 	public Word getWord() {
 		return word;
 	}
@@ -38,4 +40,11 @@ public class WordSynDetails extends AbstractDataObject {
 		this.relations = relations;
 	}
 
+	public boolean isActiveTagComplete() {
+		return activeTagComplete;
+	}
+
+	public void setActiveTagComplete(boolean activeTagComplete) {
+		this.activeTagComplete = activeTagComplete;
+	}
 }

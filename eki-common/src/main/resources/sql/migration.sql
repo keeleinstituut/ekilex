@@ -320,3 +320,5 @@ drop table process_log;
 
 delete from process_state where code not in ('avalik', 'mitteavalik');
 update process_state set datasets = '{}';
+
+alter table tag add column remove_to_complete boolean default true not null;

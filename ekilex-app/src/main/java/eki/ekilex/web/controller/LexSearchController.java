@@ -31,6 +31,7 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Source;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
@@ -214,12 +215,11 @@ public class LexSearchController extends AbstractSearchController {
 		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId, languagesOrder);
 
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = Arrays.asList(lexeme.getDatasetCode());
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, tagNames);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
 
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
@@ -234,12 +234,11 @@ public class LexSearchController extends AbstractSearchController {
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userId, userRole, tagNames);
+		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
 
 		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
@@ -275,8 +274,10 @@ public class LexSearchController extends AbstractSearchController {
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		List<String> datasetCodes = getUserPreferredDatasetCodes();
-		WordDetails details = lexSearchService.getWordDetails(wordId, datasetCodes, languagesOrder, user, userProfile, false);
+		List<String> datasetCodes = userProfile.getPreferredDatasets();
+		UserContextData userContextData = getUserContextData();
+		Tag activeTag = userContextData.getActiveTag();
+		WordDetails details = lexSearchService.getWordDetails(wordId, datasetCodes, languagesOrder, user, userProfile, activeTag, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
@@ -296,9 +297,10 @@ public class LexSearchController extends AbstractSearchController {
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
+		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		boolean isFullData = StringUtils.equals(composition, "full");
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, user, isFullData);
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, userRole, isFullData);
 		lexeme.setLevels(levels);
 		model.addAttribute("lexeme", lexeme);
 

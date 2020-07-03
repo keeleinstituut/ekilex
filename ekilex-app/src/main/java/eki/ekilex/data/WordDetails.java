@@ -29,6 +29,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private String firstDefinitionValue;
 
+	private boolean activeTagComplete;
+
 	private Timestamp lastChangedOn;
 
 	public WordDetails() {
@@ -112,6 +114,14 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setFirstDefinitionValue(String firstDefinitionValue) {
 		this.firstDefinitionValue = firstDefinitionValue;
+	}
+
+	public boolean isActiveTagComplete() {
+		return activeTagComplete;
+	}
+
+	public void setActiveTagComplete(boolean activeTagComplete) {
+		this.activeTagComplete = activeTagComplete;
 	}
 
 	public Timestamp getLastChangedOn() {
