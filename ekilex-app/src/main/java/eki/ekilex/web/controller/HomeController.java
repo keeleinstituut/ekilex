@@ -136,7 +136,7 @@ public class HomeController extends AbstractPageController {
 
 	@PreAuthorize("authentication.principal.datasetPermissionsExist")
 	@PostMapping(CHANGE_ROLE_URI)
-	public String changeRole(@RequestParam Long permissionId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String changeRole(@RequestParam Long permissionId) {
 
 		logger.debug("User initiated role change, dataSetPermissionId: {}", permissionId);
 

@@ -159,7 +159,7 @@
             <option th:with="permissionName=#{|authorityoperation.${datasetPermission.authOperation}|}"
                     th:value="${datasetPermission.id}" th:text="${datasetPermission.datasetName + ' (' + permissionName + ')'
                       + (datasetPermission.authLang != null ? ' - ' + datasetPermission.authLangValue : '')}"
-                    th:selected="${permDataUtil.isRoleSelected(sessionBean, datasetPermission)}"/>
+                    th:selected="${permDataUtil.isRoleSelected(datasetPermission)}"/>
           </th:block>
         </select>
       </div>
