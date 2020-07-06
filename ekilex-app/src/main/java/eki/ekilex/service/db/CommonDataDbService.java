@@ -1026,11 +1026,13 @@ public class CommonDataDbService extends AbstractDataDbService {
 
 	public List<Classifier> getDatasetDomains(String datasetCode) {
 		String[] datasetCodes = {datasetCode};
-		return create.select(getClassifierNameField(ClassifierName.DOMAIN),
-				DOMAIN.CODE,
-				DOMAIN.ORIGIN,
-				DOMAIN.ORIGIN, DOMAIN.ORDER_BY,
-				DOMAIN_LABEL.VALUE)
+		return create
+				.select(getClassifierNameField(ClassifierName.DOMAIN),
+						DOMAIN.PARENT_ORIGIN,
+						DOMAIN.PARENT_CODE,
+						DOMAIN.ORIGIN,
+						DOMAIN.CODE,
+						DOMAIN_LABEL.VALUE)
 				.distinctOn(DOMAIN.CODE)
 				.from(DOMAIN)
 				.leftJoin(DOMAIN_LABEL)

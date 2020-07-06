@@ -29,7 +29,9 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermSearchResult;
+import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -146,7 +148,9 @@ public class TermSearchController extends AbstractSearchController {
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> selectedDatasets = userProfile.getPreferredDatasets();
-		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, user);
+		UserContextData userContextData = getUserContextData();
+		Tag activeTag = userContextData.getActiveTag();
+		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, user, activeTag);
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 

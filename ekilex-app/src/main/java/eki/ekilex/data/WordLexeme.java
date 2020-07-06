@@ -5,7 +5,7 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.LexemeLevel;
 
-public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, DecoratedWordType {
+public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, DecoratedWordType, LexemeTag {
 
 	private static final long serialVersionUID = 1L;
 

@@ -16,6 +16,8 @@ public class UserContextData extends AbstractDataObject {
 
 	private String userRoleDatasetCode;
 
+	private Tag activeTag;
+
 	private List<String> tagNames;
 
 	private List<String> preferredDatasetCodes;
@@ -24,13 +26,13 @@ public class UserContextData extends AbstractDataObject {
 
 	private List<String> synMeaningWordLangCodes;
 
-	public UserContextData(
-			Long userId, String userName, DatasetPermission userRole, String userRoleDatasetCode, List<String> tagNames,
+	public UserContextData(Long userId, String userName, DatasetPermission userRole, String userRoleDatasetCode, Tag activeTag, List<String> tagNames,
 			List<String> preferredDatasetCodes, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes) {
 		this.userId = userId;
 		this.userName = userName;
 		this.userRole = userRole;
 		this.userRoleDatasetCode = userRoleDatasetCode;
+		this.activeTag = activeTag;
 		this.tagNames = tagNames;
 		this.preferredDatasetCodes = preferredDatasetCodes;
 		this.synCandidateLangCodes = synCandidateLangCodes;
@@ -51,6 +53,10 @@ public class UserContextData extends AbstractDataObject {
 
 	public String getUserRoleDatasetCode() {
 		return userRoleDatasetCode;
+	}
+
+	public Tag getActiveTag() {
+		return activeTag;
 	}
 
 	public List<String> getTagNames() {

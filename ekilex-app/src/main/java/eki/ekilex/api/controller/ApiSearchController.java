@@ -169,7 +169,7 @@ public class ApiSearchController extends AbstractApiController {
 		List<String> datasets = parseDatasets(datasetsStr);
 		boolean isFullData = true;
 		EkiUser user = userContext.getUser();
-		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, user, null, isFullData);
+		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, user, null, null, isFullData);
 		return result;
 	}
 
@@ -203,7 +203,7 @@ public class ApiSearchController extends AbstractApiController {
 		List<Classifier> allLanguages = commonDataService.getLanguages();
 		List<ClassifierSelect> languagesOrder = convert(allLanguages);
 		EkiUser user = userContext.getUser();
-		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null, user);
+		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder, null, user, null);
 		return meaning;
 	}
 

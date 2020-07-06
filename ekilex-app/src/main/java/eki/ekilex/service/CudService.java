@@ -26,6 +26,7 @@ import eki.ekilex.data.ListData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -120,6 +121,50 @@ public class CudService extends AbstractService implements GlobalConstant {
 		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		cudDbService.updateFreeformTextValue(noteFreeformId, value, valuePrese);
+	}
+
+	@Transactional
+	public void updateWordLexemesTagComplete(Long wordId, String userRoleDatasetCode, Tag tag) {
+
+		String tagName = tag.getName();
+		boolean removeToComplete = tag.isRemoveToComplete();
+		List<Long> updatedLexemeIds;
+		LifecycleEventType eventType;
+
+		if (removeToComplete) {
+			updatedLexemeIds = cudDbService.deleteWordLexemesTag(wordId, userRoleDatasetCode, tagName);
+			eventType = LifecycleEventType.DELETE;
+		} else {
+			updatedLexemeIds = cudDbService.createWordLexemesTag(wordId, userRoleDatasetCode, tagName);
+			eventType = LifecycleEventType.CREATE;
+		}
+
+		updatedLexemeIds.forEach(lexemeId -> {
+			LogData logData = new LogData(eventType, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
+			createLifecycleLog(logData);
+		});
+	}
+
+	@Transactional
+	public void updateMeaningLexemesTagComplete(Long meaningId, String userRoleDatasetCode, Tag tag) {
+
+		String tagName = tag.getName();
+		boolean removeToComplete = tag.isRemoveToComplete();
+		List<Long> updatedLexemeIds;
+		LifecycleEventType eventType;
+
+		if (removeToComplete) {
+			updatedLexemeIds = cudDbService.deleteMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
+			eventType = LifecycleEventType.DELETE;
+		} else {
+			updatedLexemeIds = cudDbService.createMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
+			eventType = LifecycleEventType.CREATE;
+		}
+
+		updatedLexemeIds.forEach(lexemeId -> {
+			LogData logData = new LogData(eventType, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
+			createLifecycleLog(logData);
+		});
 	}
 
 	@Transactional

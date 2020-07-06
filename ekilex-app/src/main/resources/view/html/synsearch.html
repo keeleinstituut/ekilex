@@ -30,21 +30,19 @@
     </div>
   </div>
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="syn-details-area" class="h-100"
-         th:with="isWordLexemeCrudGranted=${#vars.details.word.crudGrant}">
+    <div th:data-id="${wordId}" id="syn-details-area" class="h-100">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="navigate-panel card shadow h-100">
 
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="px-2 d-flex flex-row align-items-center py-2">
             <h1 th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mr-3 mb-0">Aktiivne sõna</h1>
-<!--            TODO mark all button for tags? - yogesh-->
-<!--            <button type="button" class="btn btn-secondary btn-compact"-->
-<!--                    id="layerCompleteBtn"-->
-<!--                    th:data-word-id="${wordId}"-->
-<!--                    th:disabled="${details.synLayerComplete}"-->
-<!--                    th:if="${userRoleData.processStateChangeEnabled}"-->
-<!--                    sec:authorize="${#vars.isWordLexemeCrudGranted}">Märgi tehtuks-->
+            <button type="button" class="btn btn-secondary btn-compact"
+                    id="activeTagCompleteBtn"
+                    th:data-word-id="${wordId}"
+                    th:disabled="${details.activeTagComplete}"
+                    th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
+                    sec:authorize="#vars.details.word.subGrant">Märgi tehtuks
             </button>
             <button type="button" class="btn px-2 rounded-0" data-toggle="modal" data-target="#selectSynMeaningWordLangDlg">
               <span th:title="#{syn.choose.meaning.word.languages}" data-toggle="tooltip">

@@ -18,9 +18,11 @@ function initializeSynSearch() {
 
 	});
 
-	$(document).on("click", "#layerCompleteBtn", function() {
+	$(document).on("click", "#activeTagCompleteBtn", function() {
 		let wordId = $(this).data('word-id');
-		setLayerComplete(wordId);
+		let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+		let callbackFunc = () => refreshDetails();
+		doPostRelationChange(actionUrl, callbackFunc);
 	});
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
@@ -413,12 +415,6 @@ function doPostRelationChange(actionUrl, callbackFunc) {
 		openAlertDlg("Andmete muutmine ebaõnnestus.");
 		console.log(data);
 	});
-}
-
-function setLayerComplete(wordId) {
-	let actionUrl = applicationUrl + "update_layer_complete/" + wordId;
-	let callbackFunc = () => refreshDetails();
-	doPostRelationChange(actionUrl, callbackFunc);
 }
 
 function isDisabledItem(activeDiv, navigateItem) {

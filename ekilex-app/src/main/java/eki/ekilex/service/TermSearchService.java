@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -40,6 +41,7 @@ import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -124,14 +126,14 @@ public class TermSearchService extends AbstractSearchService {
 
 	@Transactional
 	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile,
-			EkiUser user) throws Exception {
+			EkiUser user, Tag activeTag) throws Exception {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		DatasetPermission userRole = user.getRecentRole();
-		Long userId = user.getId();
+		String roleDatasetCode = userRole.getDatasetCode();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
@@ -143,12 +145,12 @@ public class TermSearchService extends AbstractSearchService {
 		permCalculator.applyCrud(userRole, meaning);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.applyCrud(userRole, definitions);
-		permCalculator.filterVisibility(userId, definitions);
+		permCalculator.filterVisibility(userRole, definitions);
 		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
 		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 		for (Definition definition : definitions) {
 			List<DefinitionNote> definitionNotes = definition.getNotes();
-			permCalculator.filterVisibility(userId, definitionNotes);
+			permCalculator.filterVisibility(userRole, definitionNotes);
 		}
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<OrderedClassifier> domains = commonDataDbService.getMeaningDomains(meaningId);
@@ -181,10 +183,10 @@ public class TermSearchService extends AbstractSearchService {
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			permCalculator.applyCrud(userRole, usages);
-			permCalculator.filterVisibility(userId, usages);
+			permCalculator.filterVisibility(userRole, usages);
 			List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
 			List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
-			permCalculator.filterVisibility(userId, lexemeNotes);
+			permCalculator.filterVisibility(userRole, lexemeNotes);
 			List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, languagesOrder);
 			List<FreeForm> lexemeGrammars = commonDataDbService.getLexemeGrammars(lexemeId);
 			List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
@@ -203,10 +205,10 @@ public class TermSearchService extends AbstractSearchService {
 					|| CollectionUtils.isNotEmpty(lexeme.getRegisters())
 					|| CollectionUtils.isNotEmpty(lexemeGrammars);
 
-			String dataset = lexeme.getDatasetCode();
-			dataset = datasetNameMap.get(dataset);
+			String datasetCode = lexeme.getDatasetCode();
+			String datasetName = datasetNameMap.get(datasetCode);
 
-			lexeme.setDatasetCode(dataset);
+			lexeme.setDatasetName(datasetName);
 			lexeme.setWordTypes(wordTypes);
 			lexeme.setFreeforms(lexemeFreeforms);
 			lexeme.setNoteLangGroups(lexemeNoteLangGroups);
@@ -219,6 +221,8 @@ public class TermSearchService extends AbstractSearchService {
 			lexemes.add(lexeme);
 		}
 
+		List<Lexeme> roleDatasetLexemes = lexemes.stream().filter(lexeme -> lexeme.getDatasetCode().equals(roleDatasetCode)).collect(Collectors.toList());
+		boolean isActiveTagComplete = isActiveTagComplete(roleDatasetLexemes, activeTag);
 		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
 
 		meaning.setDefinitionLangGroups(definitionLangGroups);
@@ -230,6 +234,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setViewRelations(viewRelations);
+		meaning.setActiveTagComplete(isActiveTagComplete);
 		meaning.setLastChangedOn(latestLogEventTime);
 
 		return meaning;

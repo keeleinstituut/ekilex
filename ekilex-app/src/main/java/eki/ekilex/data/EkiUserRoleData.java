@@ -20,6 +20,8 @@ public class EkiUserRoleData extends AbstractDataObject {
 
 	private boolean roleChangeEnabled;
 
+	private boolean lexemeActiveTagChangeEnabled;
+
 	public DatasetPermission getUserRole() {
 		return userRole;
 	}
@@ -76,4 +78,11 @@ public class EkiUserRoleData extends AbstractDataObject {
 		this.roleChangeEnabled = roleChangeEnabled;
 	}
 
+	public boolean isLexemeActiveTagChangeEnabled() {
+		return lexemeActiveTagChangeEnabled;
+	}
+
+	public void setLexemeActiveTagChangeEnabled(boolean lexemeActiveTagChangeEnabled) {
+		this.lexemeActiveTagChangeEnabled = lexemeActiveTagChangeEnabled;
+	}
 }

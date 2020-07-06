@@ -440,6 +440,7 @@ create table tag
 (
   name varchar(100) primary key,
   set_automatically boolean default false,
+  remove_to_complete boolean default true not null,
   order_by bigserial
 );
 

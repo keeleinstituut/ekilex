@@ -18,6 +18,7 @@ import static eki.ekilex.data.db.Tables.MEANING_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.TAG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
@@ -49,6 +50,7 @@ import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordStress;
@@ -448,6 +450,15 @@ public class LookupDbService extends AbstractSearchDbService {
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(LexemeType.class);
+	}
+
+	public Tag getTag(String tagName) {
+
+		return create
+				.select(TAG.NAME, TAG.SET_AUTOMATICALLY, TAG.REMOVE_TO_COMPLETE)
+				.from(TAG)
+				.where(TAG.NAME.eq(tagName))
+				.fetchOneInto(Tag.class);
 	}
 
 	public boolean meaningPublicLexemeExists(Long meaningId) {

@@ -1,13 +1,10 @@
 package eki.ekilex.web.util;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityOperation;
-import eki.common.constant.GlobalConstant;
+import eki.common.constant.PermConstant;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
@@ -16,9 +13,7 @@ import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
 
 @Component
-public class UserProfileUtil implements GlobalConstant {
-
-	private final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.CRUD, AuthorityOperation.OWN);
+public class UserProfileUtil implements PermConstant {
 
 	@Autowired
 	private UserContext userContext;
@@ -45,6 +40,7 @@ public class UserProfileUtil implements GlobalConstant {
 		boolean isDatasetOwnerOrAdmin = isDatasetOwnerOrAdmin(user);
 		boolean isDatasetCrudOwnerOrAdmin = isDatasetCrudOwnerOrAdmin(user);
 		boolean isRoleChangeEnabled = isRoleChangeEnabled(user);
+		boolean isLexemeActiveTagChangeEnabled = isLexemeActiveTagChangeEnabled(userRole);
 
 		ekiUserRoleData.setUserRole(userRole);
 		ekiUserRoleData.setAdmin(isAdmin);
@@ -53,6 +49,7 @@ public class UserProfileUtil implements GlobalConstant {
 		ekiUserRoleData.setDatasetOwnerOrAdmin(isDatasetOwnerOrAdmin);
 		ekiUserRoleData.setDatasetCrudOwnerOrAdmin(isDatasetCrudOwnerOrAdmin);
 		ekiUserRoleData.setRoleChangeEnabled(isRoleChangeEnabled);
+		ekiUserRoleData.setLexemeActiveTagChangeEnabled(isLexemeActiveTagChangeEnabled);
 		return ekiUserRoleData;
 	}
 
@@ -62,7 +59,7 @@ public class UserProfileUtil implements GlobalConstant {
 			return false;
 		}
 		AuthorityOperation authOperation = userRole.getAuthOperation();
-		boolean isCrudRoleSelected = crudAuthOps.contains(authOperation);
+		boolean isCrudRoleSelected = AUTH_OPS_CRUD.contains(authOperation.name());
 		return isCrudRoleSelected;
 	}
 
@@ -85,6 +82,17 @@ public class UserProfileUtil implements GlobalConstant {
 		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
 		boolean hasMoreThanOnePermission = !user.isHasSingleDatasetPermission();
 		return datasetPermissionsExist && hasMoreThanOnePermission;
+	}
+
+	private boolean isLexemeActiveTagChangeEnabled(DatasetPermission userRole) {
+
+		if (userRole == null) {
+			return false;
+		}
+		Long userId = userRole.getUserId();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		String activeTagName = userProfile.getActiveTagName();
+		return activeTagName != null;
 	}
 
 }

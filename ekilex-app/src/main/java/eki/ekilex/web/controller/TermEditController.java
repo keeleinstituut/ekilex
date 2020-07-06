@@ -35,6 +35,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordMeaningRelationsDetails;
@@ -74,7 +75,6 @@ public class TermEditController extends AbstractPageController {
 			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
@@ -84,8 +84,8 @@ public class TermEditController extends AbstractPageController {
 			searchFilter = targetMeaningFirstWord;
 		}
 
-		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(userId, targetMeaningId, languagesOrder);
-		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(userId, userRole, userPrefDatasetCodes, searchFilter, languagesOrder, targetMeaningId);
+		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(userRole, targetMeaningId, languagesOrder);
+		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(userRole, userPrefDatasetCodes, searchFilter, languagesOrder, targetMeaningId);
 
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);
@@ -185,6 +185,7 @@ public class TermEditController extends AbstractPageController {
 			String morphCode = wordDetails.getMorphCode();
 			Long meaningId = wordDetails.getMeaningId();
 			String dataset = wordDetails.getDataset();
+			DatasetPermission userRole = userContext.getUserRole();
 			Long userId = userContext.getUserId();
 			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
@@ -194,7 +195,7 @@ public class TermEditController extends AbstractPageController {
 
 			boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 			if (!meaningHasWord) {
-				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(userId, wordValue, meaningId, languagesOrder);
+				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(userRole, wordValue, meaningId, languagesOrder);
 				if (CollectionUtils.isNotEmpty(relationCandidates)) {
 					attributes.addFlashAttribute("dataset", dataset);
 					attributes.addFlashAttribute("wordValue", wordValue);
@@ -293,6 +294,21 @@ public class TermEditController extends AbstractPageController {
 		} else {
 			return "invalid";
 		}
+	}
+
+	@PostMapping(UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI + "/{meaningId}")
+	@ResponseBody
+	public String updateMeaningLexemesActiveTagComplete(@PathVariable Long meaningId) {
+
+		UserContextData userContextData = getUserContextData();
+		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
+		Tag activeTag = userContextData.getActiveTag();
+		String activeTagName = activeTag.getName();
+
+		logger.debug("Updating meaning (id: {}} lexemes active tag \"{}\" complete", meaningId, activeTagName);
+		cudService.updateMeaningLexemesTagComplete(meaningId, userRoleDatasetCode, activeTag);
+
+		return RESPONSE_OK_VER2;
 	}
 
 }

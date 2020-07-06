@@ -33,6 +33,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<List<Relation>> viewRelations;
 
+	private boolean activeTagComplete;
+
 	private Timestamp lastChangedOn;
 
 	public Long getMeaningId() {
@@ -137,6 +139,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setViewRelations(List<List<Relation>> viewRelations) {
 		this.viewRelations = viewRelations;
+	}
+
+	public boolean isActiveTagComplete() {
+		return activeTagComplete;
+	}
+
+	public void setActiveTagComplete(boolean activeTagComplete) {
+		this.activeTagComplete = activeTagComplete;
 	}
 
 	public Timestamp getLastChangedOn() {

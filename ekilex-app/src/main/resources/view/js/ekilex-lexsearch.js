@@ -122,6 +122,21 @@ function initializeLexSearch() {
 
 	});
 
+	$(document).on("click", "#activeTagCompleteBtn", function() {
+		let wordId = $(this).data('word-id');
+		let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+		$.post(actionUrl).done(function(data) {
+			if (data !== "{}") {
+				openAlertDlg("Andmete muutmine ebaõnnestus.");
+				console.log(data);
+			}
+			refreshDetailsLexSearch();
+		}).fail(function(data) {
+			openAlertDlg("Andmete muutmine ebaõnnestus.");
+			console.log(data);
+		});
+	});
+
 	let detailButtons = $('#results').find('[name="word-details-btn"]');
 	if (detailButtons.length === 1) {
 		detailButtons.trigger('click');

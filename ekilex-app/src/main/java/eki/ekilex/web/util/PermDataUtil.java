@@ -26,10 +26,8 @@ public class PermDataUtil {
 	@Autowired
 	private LookupService lookupService;
 
-	public boolean isRoleSelected(SessionBean sessionBean, DatasetPermission datasetPermission) {
-		if (sessionBean == null) {
-			return false;
-		}
+	public boolean isRoleSelected(DatasetPermission datasetPermission) {
+
 		EkiUser user = userContext.getUser();
 		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
