@@ -43,6 +43,7 @@ import eki.ekilex.data.transform.LexemeFrequency;
 import eki.ekilex.data.transform.LexemeLifecycleLog;
 import eki.ekilex.data.transform.LexemeRelation;
 import eki.ekilex.data.transform.LexemeSourceLink;
+import eki.ekilex.data.transform.LexemeTag;
 import eki.ekilex.data.transform.WordMeaningPair;
 import eki.ekilex.data.util.AbstractRowMapper;
 import eki.ekilex.data.util.CollocationRowMapper;
@@ -55,6 +56,7 @@ import eki.ekilex.data.util.LexemeFrequencyRowMapper;
 import eki.ekilex.data.util.LexemeLifecycleLogRowMapper;
 import eki.ekilex.data.util.LexemeRelationRowMapper;
 import eki.ekilex.data.util.LexemeSourceLinkRowMapper;
+import eki.ekilex.data.util.LexemeTagRowMapper;
 import eki.ekilex.data.util.WordMeaningPairRowMapper;
 import eki.ekilex.service.ReportComposer;
 
@@ -100,6 +102,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 	private String sqlSelectFreeformChildren = "select ff.*, false as children_exist, false as source_links_exist from " + FREEFORM + " ff where ff.parent_id = :freeformId order by ff.order_by";
 
 	private String sqlSelectLexemeFrequencies = "select lf.* from " + LEXEME_FREQUENCY + " lf where lf.lexeme_id = :lexemeId";
+
+	private String sqlSelectLexemeTags = "select lt.lexeme_id, lt.tag_name from " + LEXEME_TAG + " lt where lt.lexeme_id = :lexemeId";
 
 	private String sqlSelectLexemeRegisters = "select c.lexeme_id, c.register_code as code from " + LEXEME_REGISTER + " c where c.lexeme_id = :lexemeId order by c.order_by";
 
@@ -237,6 +241,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 			createLexemeDerivs(word, sumLexemeId, allLexemes);
 			createLexemeRegions(word, sumLexemeId, allLexemes);
 			createLexemeSourceLinks(sumLexemeId, allLexemes, countsMap);
+			createLexemeTags(sumLexemeId, allLexemes, countsMap);
 
 			// progress
 			wordMeaningPairCounter++;
@@ -260,8 +265,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		// post handling lexeme lifecycle logs
 		List<LexemeLifecycleLog> lexemeLifecycleLogs = getLexemeLifecycleLogs(lexemeMergeDatasets);
 		createLexemeLifecycleLogs(sumLexemeIdMap, lexemeLifecycleLogs, countsMap);
-
-		// TODO lexeme tags? - yogesh
 
 		// post handling definition datasets
 		appendMergeDatasetToDefinitions(lexemeMergeName, countsMap);
@@ -294,6 +297,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		Count sumLexemeCollocCount = new Count();
 		Count sumLexemeCollocPosGroupCount = new Count();
 		Count sumLexemeCollocRelGroupCount = new Count();
+		Count sumLexemeTagCount = new Count();
 		Count sumLexemeLifecycleLogCount = new Count();
 		Count sumDefinitionCount = new Count();
 
@@ -315,6 +319,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		countsMap.put("sumLexemeCollocCount", sumLexemeCollocCount);
 		countsMap.put("sumLexemeCollocPosGroupCount", sumLexemeCollocPosGroupCount);
 		countsMap.put("sumLexemeCollocRelGroupCount", sumLexemeCollocRelGroupCount);
+		countsMap.put("sumLexemeTagCount", sumLexemeTagCount);
 		countsMap.put("sumLexemeLifecycleLogCount", sumLexemeLifecycleLogCount);
 		countsMap.put("sumDefinitionCount", sumDefinitionCount);
 
@@ -340,6 +345,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		Count sumLexemeCollocCount = countsMap.get("sumLexemeCollocCount");
 		Count sumLexemeCollocPosGroupCount = countsMap.get("sumLexemeCollocPosGroupCount");
 		Count sumLexemeCollocRelGroupCount = countsMap.get("sumLexemeCollocRelGroupCount");
+		Count sumLexemeTagCount = countsMap.get("sumLexemeTagCount");
 		Count sumLexemeLifecycleLogCount = countsMap.get("sumLexemeLifecycleLogCount");
 		Count sumDefinitionCount = countsMap.get("sumDefinitionCount");
 
@@ -360,6 +366,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		logger.info("Created {} lexeme colloc bindings", sumLexemeCollocCount.getValue());
 		logger.info("Created {} lexeme colloc pos groups", sumLexemeCollocPosGroupCount.getValue());
 		logger.info("Created {} lexeme colloc rel groups", sumLexemeCollocRelGroupCount.getValue());
+		logger.info("Created {} lexeme tags", sumLexemeTagCount.getValue());
 		logger.info("Created {} lexeme lifecycle logs", sumLexemeLifecycleLogCount.getValue());
 		logger.info("Associated {} definitions", sumDefinitionCount.getValue());
 	}
@@ -550,6 +557,11 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		paramMap.put("lexemeId", lexemeId);
 		List<LexemeFrequency> lexemeFrequencies = basicDbService.getResults(sqlSelectLexemeFrequencies, paramMap, new LexemeFrequencyRowMapper());
 		lexeme.setLexemeFrequencies(lexemeFrequencies);
+
+		paramMap = new HashMap<>();
+		paramMap.put("lexemeId", lexemeId);
+		List<LexemeTag> lexemeTags = basicDbService.getResults(sqlSelectLexemeTags, paramMap, new LexemeTagRowMapper());
+		lexeme.setLexemeTags(lexemeTags);
 
 		paramMap = new HashMap<>();
 		paramMap.put("lexemeId", lexemeId);
@@ -802,6 +814,27 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		}
 
 		detectAndLogConflictingData(word, allLexemeClassifierCodes, "region");
+	}
+
+	private void createLexemeTags(Long sumLexemeId, List<LexemeExt> allLexemes, Map<String, Count> countsMap) throws Exception {
+
+		Count sumLexemeTagCount = countsMap.get("sumLexemeTagCount");
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("lexeme_id", sumLexemeId);
+
+		for (LexemeExt lexeme : allLexemes) {
+			List<LexemeTag> lexemeTags = lexeme.getLexemeTags();
+			if (CollectionUtils.isNotEmpty(lexemeTags)) {
+				for (LexemeTag lexemeTag : lexemeTags) {
+					paramMap.put("tag_name", lexemeTag.getTagName());
+					Long lexemeTagId = basicDbService.createIfNotExists(LEXEME_TAG, paramMap);
+					if (lexemeTagId != null) {
+						createLifecycleLog(LifecycleLogOwner.LEXEME, sumLexemeId, sumLexemeId, LifecycleEntity.LEXEME, LifecycleProperty.TAG, LifecycleEventType.CREATE, lexemeTag.getTagName());
+						sumLexemeTagCount.increment();
+					}
+				}
+			}
+		}
 	}
 
 	private void detectAndLogConflictingData(String word, List<List<String>> allLexemeClassifierCodes, String dataName) throws Exception {
@@ -1091,6 +1124,8 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 
 		private List<LexemeFrequency> lexemeFrequencies;
 
+		private List<LexemeTag> lexemeTags;
+
 		private List<LexemeClassifier> lexemeRegisters;
 
 		private List<LexemeClassifier> lexemePoses;
@@ -1115,6 +1150,14 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 
 		public void setLexemeFrequencies(List<LexemeFrequency> lexemeFrequencies) {
 			this.lexemeFrequencies = lexemeFrequencies;
+		}
+
+		public List<LexemeTag> getLexemeTags() {
+			return lexemeTags;
+		}
+
+		public void setLexemeTags(List<LexemeTag> lexemeTags) {
+			this.lexemeTags = lexemeTags;
 		}
 
 		public List<LexemeClassifier> getLexemeRegisters() {

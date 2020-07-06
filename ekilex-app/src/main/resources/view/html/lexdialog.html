@@ -282,10 +282,9 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:selected="${language.code == definition.lang}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -759,10 +758,9 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:selected="${language.code == lexeme.wordLang}"
                           th:text="${language.value}">language
                   </option>
                 </select>
@@ -853,10 +851,10 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentLanguage}"
+                          th:selected="${language.code == sessionBean.recentNoteLanguage}"
                           th:text="${language.value}">language
                   </option>
                 </select>

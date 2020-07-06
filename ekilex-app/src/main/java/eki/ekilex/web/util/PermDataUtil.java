@@ -9,7 +9,6 @@ import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionGrantService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserContext;
-import eki.ekilex.web.bean.SessionBean;
 
 @Component
 public class PermDataUtil {
@@ -37,11 +36,8 @@ public class PermDataUtil {
 		return isRoleSelected;
 	}
 
-	public boolean isSourceMeaningCrudGranted(Long sourceMeaningId, Long targetMeaningId, SessionBean sessionBean) {
+	public boolean isSourceMeaningCrudGranted(Long sourceMeaningId, Long targetMeaningId) {
 
-		if (sessionBean == null) {
-			return false;
-		}
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();
@@ -70,11 +66,8 @@ public class PermDataUtil {
 		return lookupService.isValidWordStressAndMarkup(sourceWordId, targetWordId);
 	}
 
-	public boolean isSourceWordCrudGranted(Long sourceWordId, Long targetWordId, SessionBean sessionBean) {
+	public boolean isSourceWordCrudGranted(Long sourceWordId, Long targetWordId) {
 
-		if (sessionBean == null) {
-			return false;
-		}
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		DatasetPermission userRole = user.getRecentRole();

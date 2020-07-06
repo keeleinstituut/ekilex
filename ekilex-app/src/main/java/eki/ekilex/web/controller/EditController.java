@@ -64,7 +64,7 @@ public class EditController extends AbstractPageController {
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
-	public String createItem(@RequestBody CreateItemRequest itemData) {
+	public String createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		logger.debug("Add new item : {}", itemData);
 
@@ -180,6 +180,7 @@ public class EditController extends AbstractPageController {
 			break;
 		case "meaning_note":
 			cudService.createMeaningNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			sessionBean.setRecentNoteLanguage(itemData.getLanguage());
 			break;
 		case "word_note":
 			cudService.createWordNote(itemData.getId(), itemValue);
