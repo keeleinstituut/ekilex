@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tag extends TableImpl<TagRecord> {
 
-    private static final long serialVersionUID = 827928964;
+    private static final long serialVersionUID = -923386589;
 
     /**
      * The reference instance of <code>public.tag</code>
@@ -55,7 +55,7 @@ public class Tag extends TableImpl<TagRecord> {
     /**
      * The column <code>public.tag.set_automatically</code>.
      */
-    public final TableField<TagRecord, Boolean> SET_AUTOMATICALLY = createField(DSL.name("set_automatically"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<TagRecord, Boolean> SET_AUTOMATICALLY = createField(DSL.name("set_automatically"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.tag.order_by</code>.

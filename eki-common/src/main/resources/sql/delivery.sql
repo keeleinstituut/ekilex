@@ -96,7 +96,7 @@ where ff.lang is null
 create table tag
 (
   name varchar(100) primary key,
-  set_automatically boolean default false,
+  set_automatically boolean default false not null,
   remove_to_complete boolean default true not null,
   order_by bigserial
 );
