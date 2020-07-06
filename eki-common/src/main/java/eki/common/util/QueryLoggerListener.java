@@ -14,9 +14,9 @@ public class QueryLoggerListener extends DefaultExecuteListener implements Globa
 
 	private static final Logger logger = LoggerFactory.getLogger(QueryLoggerListener.class);
 
-	private static final long PROLONGED_QUERY_TRESHOLD_MS = 1000;
+	private static final long PROLONGED_QUERY_TRESHOLD_MS = 2000;
 
-	private static final long XTRA_PROLONGED_QUERY_TRESHOLD_MS = 6000;
+	private static final long XTRA_PROLONGED_QUERY_TRESHOLD_MS = 8000;
 
 	private static final long serialVersionUID = 1L;
 

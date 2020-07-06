@@ -301,6 +301,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 						.leftOuterJoin(LEXEME).on(
 								LEXEME.WORD_ID.eq(WORD.ID)
 										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(LEXEME.DATASET_CODE.eq(datasetCode))
 										.andExists(DSL
 												.select(DATASET_PERMISSION.ID)
 												.from(DATASET_PERMISSION)
@@ -309,12 +310,13 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 																.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 																.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
 																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-																.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG))))))
-						.leftOuterJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE)))
-				.where(
-						WORD.ID.eq(wordId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(DATASET.IS_SUPERIOR.eq(true)))
+																.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(WORD.LANG)))))
+										.andExists(DSL
+												.select(DATASET.CODE)
+												.from(DATASET)
+												.where(DATASET.CODE.eq(LEXEME.DATASET_CODE)
+														.and(DATASET.IS_SUPERIOR.eq(true))))))
+				.where(WORD.ID.eq(wordId))
 				.asTable("lsc");
 
 		Table<Record1<Integer>> lpc = DSL
@@ -362,6 +364,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 						.leftOuterJoin(LEXEME).on(
 								LEXEME.MEANING_ID.eq(MEANING.ID)
 										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(LEXEME.DATASET_CODE.eq(datasetCode))
 										.andExists(DSL
 												.select(DATASET_PERMISSION.ID)
 												.from(DATASET_PERMISSION)
@@ -369,12 +372,13 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 														DATASET_PERMISSION.USER_ID.eq(userId)
 																.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 																.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE)))))
-						.leftOuterJoin(DATASET).on(DATASET.CODE.eq(LEXEME.DATASET_CODE)))
-				.where(
-						MEANING.ID.eq(meaningId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(DATASET.IS_SUPERIOR.eq(true)))
+																.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))))
+										.andExists(DSL
+												.select(DATASET.CODE)
+												.from(DATASET)
+												.where(DATASET.CODE.eq(LEXEME.DATASET_CODE)
+														.and(DATASET.IS_SUPERIOR.eq(true))))))
+				.where(MEANING.ID.eq(meaningId))
 				.asTable("lsc");
 
 		Table<Record1<Integer>> lpc = DSL
@@ -431,7 +435,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String authItem, List<String> authOps) {
+	public boolean isGrantedForLexeme(Long userId, Long lexemeId, String datasetCode, String authItem, List<String> authOps) {
 
 		return create
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
@@ -439,6 +443,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.where(
 						LEXEME.ID.eq(lexemeId)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
 								.andExists(DSL
 										.select(DATASET_PERMISSION.ID)
 										.from(DATASET_PERMISSION)
@@ -450,43 +455,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForLexeme(Long lexemeId, String datasetCode) {
-
-		return create
-				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
-				.from(LEXEME)
-				.where(
-						LEXEME.ID.eq(lexemeId)
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean isGrantedForDefinition(Long userId, Long definitionId, String authItem, List<String> authOps) {
-
-		return create
-				.select(field(DSL.count(DEFINITION.ID).gt(0)).as("is_granted"))
-				.from(DEFINITION)
-				.where(
-						DEFINITION.ID.eq(definitionId)
-								.andExists(DSL
-										.select(DEFINITION_DATASET.DEFINITION_ID)
-										.from(DEFINITION_DATASET)
-										.where(
-												DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)
-														.andExists(DSL
-																.select(DATASET_PERMISSION.ID)
-																.from(DATASET_PERMISSION)
-																.where(
-																		DATASET_PERMISSION.USER_ID.eq(userId)
-																				.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
-																				.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-																				.and(DATASET_PERMISSION.DATASET_CODE.eq(DEFINITION_DATASET.DATASET_CODE))
-																				.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(DEFINITION.LANG))))))))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean isGrantedForDefinition(Long definitionId, String datasetCode, String lang) {
+	public boolean isGrantedForDefinition(Long userId, Long definitionId, String datasetCode, String lang, String authItem, List<String> authOps) {
 
 		Condition langCond;
 		if (StringUtils.isBlank(lang)) {
@@ -503,25 +472,9 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 								.andExists(DSL
 										.select(DEFINITION_DATASET.DEFINITION_ID)
 										.from(DEFINITION_DATASET)
-										.where(DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)
-														.and(DEFINITION_DATASET.DATASET_CODE.eq(datasetCode)))))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean isGrantedForUsage(Long userId, Long usageId, String authItem, List<String> authOps) {
-
-		return create
-				.select(field(DSL.count(FREEFORM.ID).gt(0)).as("is_granted"))
-				.from(FREEFORM)
-				.where(
-						FREEFORM.ID.eq(usageId)
-								.and(FREEFORM.TYPE.eq(FreeformType.USAGE.name()))
-								.andExists(DSL
-										.select(LEXEME.ID)
-										.from(LEXEME, LEXEME_FREEFORM)
 										.where(
-												LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
-														.and(LEXEME_FREEFORM.LEXEME_ID.eq(LEXEME.ID))
+												DEFINITION_DATASET.DEFINITION_ID.eq(DEFINITION.ID)
+														.and(DEFINITION_DATASET.DATASET_CODE.eq(datasetCode))
 														.andExists(DSL
 																.select(DATASET_PERMISSION.ID)
 																.from(DATASET_PERMISSION)
@@ -529,12 +482,12 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 																		DATASET_PERMISSION.USER_ID.eq(userId)
 																				.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
 																				.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
-																				.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
-																				.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(FREEFORM.LANG))))))))
+																				.and(DATASET_PERMISSION.DATASET_CODE.eq(DEFINITION_DATASET.DATASET_CODE))
+																				.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(DEFINITION.LANG))))))))
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForUsage(Long usageId, String datasetCode, String lang) {
+	public boolean isGrantedForUsage(Long userId, Long usageId, String datasetCode, String lang, String authItem, List<String> authOps) {
 
 		Condition langCond;
 		if (StringUtils.isBlank(lang)) {
@@ -544,15 +497,28 @@ public class PermissionDbService implements SystemConstant, GlobalConstant {
 		}
 		return create
 				.select(field(DSL.count(FREEFORM.ID).gt(0)).as("is_granted"))
-				.from(FREEFORM, LEXEME, LEXEME_FREEFORM)
+				.from(FREEFORM)
 				.where(
 						FREEFORM.ID.eq(usageId)
-						.and(FREEFORM.TYPE.eq(FreeformType.USAGE.name()))
-						.and(langCond)
-						.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID))
-						.and(LEXEME_FREEFORM.LEXEME_ID.eq(LEXEME.ID))
-						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						)
+								.and(FREEFORM.TYPE.eq(FreeformType.USAGE.name()))
+								.and(langCond)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME, LEXEME_FREEFORM)
+										.where(
+												LEXEME.DATASET_CODE.eq(datasetCode)
+														.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+														.and(LEXEME_FREEFORM.LEXEME_ID.eq(LEXEME.ID))
+														.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID))
+														.andExists(DSL
+																.select(DATASET_PERMISSION.ID)
+																.from(DATASET_PERMISSION)
+																.where(
+																		DATASET_PERMISSION.USER_ID.eq(userId)
+																				.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
+																				.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem))
+																				.and(DATASET_PERMISSION.DATASET_CODE.eq(LEXEME.DATASET_CODE))
+																				.and(DSL.or(DATASET_PERMISSION.AUTH_LANG.isNull(), DATASET_PERMISSION.AUTH_LANG.eq(FREEFORM.LANG))))))))
 				.fetchSingleInto(Boolean.class);
 	}
 
