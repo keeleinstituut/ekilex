@@ -2,7 +2,6 @@ package eki.ekilex.security;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,18 +78,18 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 		EkiUser user = (EkiUser) principal;
 		Long userId = user.getId();
-		boolean isValidCrudRole = isValidCrudRole(userId, crudRoleDataset);
-		if (!isValidCrudRole) {
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
 			return false;
 		}
 		ReferenceOwner sourceLinkOwner = sourceLink.getOwner();
 		Long ownerId = sourceLink.getOwnerId();
 		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
-			return isFreeformSourceLinkCrudGranted(userId, crudRoleDataset, ownerId);
+			return isFreeformSourceLinkCrudGranted(userId, crudRole, ownerId);
 		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
-			return permissionDbService.isGrantedForDefinition(userId, ownerId, crudRoleDataset, null, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			return permissionDbService.isGrantedForDefinition(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
-			return permissionDbService.isGrantedForLexeme(userId, ownerId, crudRoleDataset, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			return permissionDbService.isGrantedForLexeme(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 		return false;
 	}
@@ -101,49 +100,50 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 		EkiUser user = (EkiUser) principal;
 		Long userId = user.getId();
-		boolean isValidCrudRole = isValidCrudRole(userId, crudRoleDataset);
-		if (!isValidCrudRole) {
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
 			return false;
 		}
 		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
 			SourceLink sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
 			Long ownerId = sourceLink.getOwnerId();
-			return isFreeformSourceLinkCrudGranted(userId, crudRoleDataset, ownerId);
+			return isFreeformSourceLinkCrudGranted(userId, crudRole, ownerId);
 		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
 			SourceLink sourceLink = sourceLinkDbService.getDefinitionSourceLink(sourceLinkId);
 			Long ownerId = sourceLink.getOwnerId();
-			return permissionDbService.isGrantedForDefinition(userId, ownerId, crudRoleDataset, null, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			return permissionDbService.isGrantedForDefinition(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
 			SourceLink sourceLink = sourceLinkDbService.getLexemeSourceLink(sourceLinkId);
 			Long ownerId = sourceLink.getOwnerId();
-			return permissionDbService.isGrantedForLexeme(userId, ownerId, crudRoleDataset, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			return permissionDbService.isGrantedForLexeme(userId, crudRole, ownerId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 		return false;
 	}
 
-	private boolean isFreeformSourceLinkCrudGranted(Long userId, String crudRoleDataset, Long ownerId) {
+	private boolean isFreeformSourceLinkCrudGranted(Long userId, DatasetPermission crudRole, Long ownerId) {
 		FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
 		LifecycleEntity entity = freeformOwner.getEntity();
 		Long entityId = freeformOwner.getEntityId();
 		if (LifecycleEntity.LEXEME.equals(entity)) {
-			return permissionDbService.isGrantedForLexeme(userId, entityId, crudRoleDataset, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			return permissionDbService.isGrantedForLexeme(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (LifecycleEntity.MEANING.equals(entity)) {
-			return permissionDbService.isGrantedForMeaning(userId, entityId, crudRoleDataset, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			return permissionDbService.isGrantedForMeaning(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (LifecycleEntity.DEFINITION.equals(entity)) {
-			return permissionDbService.isGrantedForDefinition(userId, entityId, crudRoleDataset, null, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			return permissionDbService.isGrantedForDefinition(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 		return false;
 	}
 
-	private boolean isValidCrudRole(Long userId, String crudRoleDataset) {
+	private DatasetPermission getCrudRole(Long userId, String crudRoleDataset) {
 
-		final List<AuthorityOperation> crudAuthOps = Arrays.asList(AuthorityOperation.OWN, AuthorityOperation.CRUD);
 		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
-		boolean isValidCrudRole = datasetPermissions.stream()
-				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
-						&& crudAuthOps.contains(datasetPermission.getAuthOperation())
-						&& StringUtils.equals(datasetPermission.getDatasetCode(), crudRoleDataset));
-		return isValidCrudRole;
+		DatasetPermission crudRole = datasetPermissions.stream()
+				.filter(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
+						&& AUTH_OPS_CRUD.contains(datasetPermission.getAuthOperation().name())
+						&& StringUtils.equals(datasetPermission.getDatasetCode(), crudRoleDataset))
+				.findAny()
+				.orElse(null);
+		return crudRole;
 	}
 
 	//not in use currently
@@ -183,25 +183,23 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		}
 
 		// provided user role
-		String providedDatasetCode = userRole.getDatasetCode();
 		AuthorityOperation providedAuthOperation = userRole.getAuthOperation();
 		AuthorityItem providedAuthItem = userRole.getAuthItem();
-		String providedAuthLang = userRole.getAuthLang();
 
 		Long entityId = Long.valueOf(targetId.toString());
 		boolean isPermGranted = false;
 
 		if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
 			if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForWord(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
+				isPermGranted = permissionDbService.isGrantedForWord(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
 			} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForMeaning(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
+				isPermGranted = permissionDbService.isGrantedForMeaning(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
 			} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForLexeme(userId, entityId, providedDatasetCode, requiredAuthItem.name(), requiredAuthOps);
+				isPermGranted = permissionDbService.isGrantedForLexeme(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
 			} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForDefinition(userId, entityId, providedDatasetCode, providedAuthLang, requiredAuthItem.name(), requiredAuthOps);
+				isPermGranted = permissionDbService.isGrantedForDefinition(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
 			} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForUsage(userId, entityId, providedDatasetCode, providedAuthLang, requiredAuthItem.name(), requiredAuthOps);
+				isPermGranted = permissionDbService.isGrantedForUsage(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
 			} else if (StringUtils.equals(LifecycleEntity.SOURCE.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForSource(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
 			}
@@ -219,10 +217,8 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		AuthorityOperation authOp = AuthorityOperation.valueOf(perms[1]);
 		if (AuthorityItem.DATASET.equals(authItem)) {
 			if (AuthorityOperation.CRUD.equals(authOp)) {
-				// if crud is required, owner is also pass
 				return new Authority(authItem, AUTH_OPS_CRUD);
 			} else if (AuthorityOperation.READ.equals(authOp)) {
-				// if read is required, crud and owner is also pass
 				return new Authority(authItem, AUTH_OPS_READ);
 			}
 		}

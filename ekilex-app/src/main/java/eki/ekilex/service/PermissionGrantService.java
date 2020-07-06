@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.PermConstant;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.service.db.PermissionDbService;
 
 @Component
@@ -15,12 +16,12 @@ public class PermissionGrantService implements PermConstant {
 	private PermissionDbService permissionDbService;
 
 	@Transactional
-	public boolean isMeaningAnyLexemeCrudGranted(Long userId, Long meaningId) {
-		return permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
+	public boolean isMeaningCrudGrantedByAnyLexeme(Long userId, Long meaningId) {
+		return permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 	}
 
 	@Transactional
-	public boolean isWordCrudGranted(Long userId, Long wordId, String roleDatasetCode) {
-		return permissionDbService.isGrantedForWord(userId, wordId, roleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+	public boolean isWordCrudGranted(Long userId, DatasetPermission userRole, Long wordId) {
+		return permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 	}
 }

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
-import eki.common.constant.PermConstant;
 import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
@@ -186,14 +185,13 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(
-			DatasetPermission userRole, String roleDatasetCode, Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
+	public List<WordDetails> getWordDetailsOfJoinCandidates(DatasetPermission userRole, Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
 
 		List<WordDetails> wordDetailsList = new ArrayList<>();
 		Long userId = userRole.getUserId();
 		Long targetWordId = targetWord.getWordId();
 		List<Long> sourceWordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userVisibleDatasetCodes);
-		sourceWordIds.sort(Comparator.comparing(sourceWordId -> !isWordJoinGranted(userId, sourceWordId, targetWordId, roleDatasetCode)));
+		sourceWordIds.sort(Comparator.comparing(sourceWordId -> !isWordJoinGranted(userId, userRole, sourceWordId, targetWordId)));
 
 		for (Long sourceWordId : sourceWordIds) {
 			WordDetails wordDetails = getWordJoinDetails(userRole, sourceWordId);
@@ -202,9 +200,9 @@ public class LookupService extends AbstractWordSearchService {
 		return wordDetailsList;
 	}
 
-	private boolean isWordJoinGranted(Long userId, Long sourceWordId, Long targetWordId, String roleDatasetCode) {
+	private boolean isWordJoinGranted(Long userId, DatasetPermission userRole, Long sourceWordId, Long targetWordId) {
 
-		if (!permissionDbService.isGrantedForWord(userId, sourceWordId, roleDatasetCode, PermConstant.AUTH_ITEM_DATASET, PermConstant.AUTH_OPS_CRUD)) {
+		if (!permissionDbService.isGrantedForWord(userId, userRole, sourceWordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD)) {
 			return false;
 		}
 		return isValidWordStressAndMarkup(sourceWordId, targetWordId);

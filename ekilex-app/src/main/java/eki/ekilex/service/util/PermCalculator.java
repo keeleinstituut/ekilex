@@ -37,10 +37,8 @@ public class PermCalculator implements PermConstant {
 		}
 
 		Long userId = userRole.getUserId();
-		String userRoleDatasetCode = userRole.getDatasetCode();
 		AuthorityOperation authOperation = userRole.getAuthOperation();
 		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
-		String userRoleLang = userRole.getAuthLang();
 
 		if (!isCrudRole) {
 			return;
@@ -54,11 +52,11 @@ public class PermCalculator implements PermConstant {
 			if (crudEntity instanceof Definition) {
 				Definition definition = (Definition) crudEntity;
 				Long definitionId = definition.getId();
-				isCrudGrant = permissionDbService.isGrantedForDefinition(userId, definitionId, userRoleDatasetCode, userRoleLang, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				isCrudGrant = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			} else if (crudEntity instanceof Usage) {
 				Usage usage = (Usage) crudEntity;
 				Long usageId = usage.getId();
-				isCrudGrant = permissionDbService.isGrantedForUsage(userId, usageId, userRoleDatasetCode, userRoleLang, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				isCrudGrant = permissionDbService.isGrantedForUsage(userId, userRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			} else if (crudEntity instanceof Source) {
 				Source source = (Source) crudEntity;
 				Long sourceId = source.getId();
@@ -66,7 +64,7 @@ public class PermCalculator implements PermConstant {
 			} else if (crudEntity instanceof Meaning) {
 				Meaning meaning = (Meaning) crudEntity;
 				Long meaningId = meaning.getMeaningId();
-				isAnyGrant = permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
+				isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			}
 
 			crudEntity.setCrudGrant(isCrudGrant);
@@ -91,28 +89,28 @@ public class PermCalculator implements PermConstant {
 		if (crudEntity instanceof Word) {
 			Word word = (Word) crudEntity;
 			Long wordId = word.getWordId();
-			isReadGrant = permissionDbService.isGrantedForWord(userId, wordId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
-			isCrudGrant = permissionDbService.isGrantedForWord(userId, wordId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			isReadGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			isSubGrant = permissionDbService.wordDatasetExists(wordId, userRoleDatasetCode);
 		} else if (crudEntity instanceof Lexeme) {
 			Lexeme lexeme = (Lexeme) crudEntity;
 			Long lexemeId = lexeme.getLexemeId();
-			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, lexemeId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof WordLexeme) {
 			WordLexeme lexeme = (WordLexeme) crudEntity;
 			Long lexemeId = lexeme.getLexemeId();
-			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, lexemeId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof WordSynLexeme) {
 			WordSynLexeme lexeme = (WordSynLexeme) crudEntity;
 			Long lexemeId = lexeme.getLexemeId();
-			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, lexemeId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof Meaning) {
 			Meaning meaning = (Meaning) crudEntity;
 			Long meaningId = meaning.getMeaningId();
-			isReadGrant = permissionDbService.isGrantedForMeaning(userId, meaningId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
-			isCrudGrant = permissionDbService.isGrantedForMeaning(userId, meaningId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			isSubGrant = permissionDbService.meaningDatasetExists(meaningId, userRoleDatasetCode);
-			isAnyGrant = permissionDbService.isMeaningAnyLexemeCrudGranted(userId, meaningId);
+			isReadGrant = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isCrudGrant = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			isSubGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 
 		crudEntity.setReadGrant(isReadGrant);
@@ -144,34 +142,31 @@ public class PermCalculator implements PermConstant {
 			return true;
 		}
 
-		String userRoleDatasetCode = userRole.getDatasetCode();
-		String userRoleLang = userRole.getAuthLang();
-
 		boolean isVisible = false;
 		if (entity instanceof Definition) {
 			Definition definition = (Definition) entity;
 			Long definitionId = definition.getId();
-			isVisible = permissionDbService.isGrantedForDefinition(userId, definitionId, userRoleDatasetCode, userRoleLang, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isVisible = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 		} else if (entity instanceof Usage) {
 			Usage usage = (Usage) entity;
 			Long usageId = usage.getId();
-			isVisible = permissionDbService.isGrantedForUsage(userId, usageId, userRoleDatasetCode, userRoleLang, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isVisible = permissionDbService.isGrantedForUsage(userId, userRole, usageId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 		} else if (entity instanceof LexemeNote) {
 			LexemeNote lexemeNote = (LexemeNote) entity;
 			Long lexemeId = lexemeNote.getLexemeId();
-			isVisible = permissionDbService.isGrantedForLexeme(userId, lexemeId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isVisible = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 		} else if (entity instanceof MeaningNote) {
 			MeaningNote meaningNote = (MeaningNote) entity;
 			Long meaningId = meaningNote.getMeaningId();
-			isVisible = permissionDbService.isGrantedForMeaning(userId, meaningId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isVisible = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 		} else if (entity instanceof DefinitionNote) {
 			DefinitionNote definitionNote = (DefinitionNote) entity;
 			Long definitionId = definitionNote.getDefinitionId();
-			isVisible = permissionDbService.isGrantedForDefinition(userId, definitionId, userRoleDatasetCode, userRoleLang, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isVisible = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 		} else if (entity instanceof WordNote) {
 			WordNote wordNote = (WordNote) entity;
 			Long wordId = wordNote.getWordId();
-			isVisible = permissionDbService.isGrantedForWord(userId, wordId, userRoleDatasetCode, AUTH_ITEM_DATASET, AUTH_OPS_READ);
+			isVisible = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 		}
 		return isVisible;
 	}

@@ -49,7 +49,7 @@ public class PermDataUtil {
 			return false;
 		}
 
-		boolean isSourceMeaningAnyLexemeCrudGranted = permissionGrantService.isMeaningAnyLexemeCrudGranted(userId, sourceMeaningId);
+		boolean isSourceMeaningAnyLexemeCrudGranted = permissionGrantService.isMeaningCrudGrantedByAnyLexeme(userId, sourceMeaningId);
 		if (isSourceMeaningAnyLexemeCrudGranted) {
 			return true;
 		}
@@ -82,7 +82,7 @@ public class PermDataUtil {
 			return false;
 		}
 		String roleDatasetCode = userRole.getDatasetCode();
-		boolean isSourceWordCrudGranted = permissionGrantService.isWordCrudGranted(userId, sourceWordId, roleDatasetCode);
+		boolean isSourceWordCrudGranted = permissionGrantService.isWordCrudGranted(userId, userRole, sourceWordId);
 		if (isSourceWordCrudGranted) {
 			return true;
 		}
