@@ -139,8 +139,7 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public MeaningWordCandidates getMeaningWordCandidates(
-			Long userId, DatasetPermission userRole, String wordValue, String language, Long sourceMeaningId, List<String> tagNames) {
+	public MeaningWordCandidates getMeaningWordCandidates(DatasetPermission userRole, String wordValue, String language, Long sourceMeaningId, List<String> tagNames) {
 
 		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
@@ -234,7 +233,7 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<WordLexeme> getWordLexemesOfJoinCandidates(
-			Long userId, DatasetPermission userRole, List<String> userPrefDatasetCodes,
+			DatasetPermission userRole, List<String> userPrefDatasetCodes,
 			String searchWord, Integer wordHomonymNumber, Long excludedMeaningId, List<String> tagNames) {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);

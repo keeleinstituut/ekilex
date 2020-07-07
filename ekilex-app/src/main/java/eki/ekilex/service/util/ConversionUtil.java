@@ -847,7 +847,7 @@ public class ConversionUtil implements GlobalConstant {
 		return meaningWordLangGroups;
 	}
 
-	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<?> lexemes, Tag activeTag) {
+	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<? extends LexemeTag> lexemes, Tag activeTag) {
 
 		if (userRole == null) {
 			return false;
@@ -859,7 +859,6 @@ public class ConversionUtil implements GlobalConstant {
 				.map(lexeme -> (WordLexeme) lexeme)
 				.filter(lexeme -> lexeme.getDatasetCode().equals(roleDatasetCode))
 				.collect(Collectors.toList());
-
 		if (CollectionUtils.isNotEmpty(roleDatasetWordLexemes)) {
 			return isLexemesActiveTagComplete(roleDatasetWordLexemes, activeTag);
 		}
@@ -885,9 +884,9 @@ public class ConversionUtil implements GlobalConstant {
 		boolean removeToComplete = activeTag.isRemoveToComplete();
 
 		if (removeToComplete) {
-			return lexemes.stream().noneMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> lexemeTagName.equals(activeTagName)));
+			return lexemes.stream().noneMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> StringUtils.equals(lexemeTagName, activeTagName)));
 		} else {
-			return lexemes.stream().allMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> lexemeTagName.equals(activeTagName)));
+			return lexemes.stream().allMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> StringUtils.equals(lexemeTagName, activeTagName)));
 		}
 	}
 }

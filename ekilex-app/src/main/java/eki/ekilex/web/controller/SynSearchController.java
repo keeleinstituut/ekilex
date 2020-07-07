@@ -179,15 +179,13 @@ public class SynSearchController extends AbstractSearchController {
 		logger.debug("Requesting details by word {}", wordId);
 
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		List<String> synCandidateLangCodes = userContextData.getSynCandidateLangCodes();
 		List<String> synMeaningWordLangCodes = userContextData.getSynMeaningWordLangCodes();
 		Tag activeTag = userContextData.getActiveTag();
 
-		WordSynDetails details = synSearchService.getWordSynDetails(
-				wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userId, userRole);
+		WordSynDetails details = synSearchService.getWordSynDetails(wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userRole);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
