@@ -130,14 +130,4 @@ public class PermissionService implements SystemConstant {
 	public List<DatasetPermission> getUserDatasetPermissions(Long userId) {
 		return permissionDbService.getDatasetPermissions(userId);
 	}
-
-	@Transactional
-	public boolean meaningDatasetExists(Long meaningId, String datasetCode) {
-		return permissionDbService.meaningDatasetExists(meaningId, datasetCode);
-	}
-
-	@Transactional
-	public boolean wordDatasetExists(Long wordId, String datasetCode) {
-		return permissionDbService.wordDatasetExists(wordId, datasetCode);
-	}
 }

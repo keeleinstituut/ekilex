@@ -79,7 +79,6 @@ public class PermCalculator implements PermConstant {
 		}
 
 		Long userId = userRole.getUserId();
-		String userRoleDatasetCode = userRole.getDatasetCode();
 
 		boolean isReadGrant = false;
 		boolean isCrudGrant = false;
@@ -91,7 +90,7 @@ public class PermCalculator implements PermConstant {
 			Long wordId = word.getWordId();
 			isReadGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 			isCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			isSubGrant = permissionDbService.wordDatasetExists(wordId, userRoleDatasetCode);
+			isSubGrant = permissionDbService.isGrantedForWordByLexeme(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof Lexeme) {
 			Lexeme lexeme = (Lexeme) crudEntity;
 			Long lexemeId = lexeme.getLexemeId();
@@ -109,7 +108,7 @@ public class PermCalculator implements PermConstant {
 			Long meaningId = meaning.getMeaningId();
 			isReadGrant = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 			isCrudGrant = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-			isSubGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+			isSubGrant = permissionDbService.isGrantedForMeaningByLexeme(userId, userRole, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			isAnyGrant = permissionDbService.isGrantedForMeaningByAnyLexeme(userId, meaningId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 
