@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -133,7 +132,6 @@ public class TermSearchService extends AbstractSearchService {
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		DatasetPermission userRole = user.getRecentRole();
-		String roleDatasetCode = userRole.getDatasetCode();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
@@ -221,8 +219,7 @@ public class TermSearchService extends AbstractSearchService {
 			lexemes.add(lexeme);
 		}
 
-		List<Lexeme> roleDatasetLexemes = lexemes.stream().filter(lexeme -> lexeme.getDatasetCode().equals(roleDatasetCode)).collect(Collectors.toList());
-		boolean isActiveTagComplete = isActiveTagComplete(roleDatasetLexemes, activeTag);
+		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(userRole, lexemes, activeTag);
 		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
 
 		meaning.setDefinitionLangGroups(definitionLangGroups);

@@ -32,6 +32,7 @@ import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.DefSourceAndNoteSourceTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
@@ -43,6 +44,7 @@ import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeNote;
+import eki.ekilex.data.LexemeTag;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
@@ -57,6 +59,7 @@ import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TypeTermMeaningWord;
 import eki.ekilex.data.Usage;
@@ -68,6 +71,7 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymRel;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
 
 @Component
@@ -841,5 +845,49 @@ public class ConversionUtil implements GlobalConstant {
 
 		meaningWordLangGroups.sort(Comparator.comparing(meaningWordLangGroup -> !StringUtils.equals(meaningWordLangGroup.getLang(), headwordLang)));
 		return meaningWordLangGroups;
+	}
+
+	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<?> lexemes, Tag activeTag) {
+
+		if (userRole == null) {
+			return false;
+		}
+		String roleDatasetCode = userRole.getDatasetCode();
+
+		List<WordLexeme> roleDatasetWordLexemes = lexemes.stream()
+				.filter(lexeme -> lexeme instanceof WordLexeme)
+				.map(lexeme -> (WordLexeme) lexeme)
+				.filter(lexeme -> lexeme.getDatasetCode().equals(roleDatasetCode))
+				.collect(Collectors.toList());
+
+		if (CollectionUtils.isNotEmpty(roleDatasetWordLexemes)) {
+			return isLexemesActiveTagComplete(roleDatasetWordLexemes, activeTag);
+		}
+
+		List<Lexeme> roleDatasetLexemes = lexemes.stream()
+				.filter(lexeme -> lexeme instanceof Lexeme)
+				.map(lexeme -> (Lexeme) lexeme)
+				.filter(lexeme -> lexeme.getDatasetCode().equals(roleDatasetCode))
+				.collect(Collectors.toList());
+		if (CollectionUtils.isNotEmpty(roleDatasetLexemes)) {
+			return isLexemesActiveTagComplete(roleDatasetLexemes, activeTag);
+		}
+
+		return false;
+	}
+
+	public boolean isLexemesActiveTagComplete(List<? extends LexemeTag> lexemes, Tag activeTag) {
+
+		if (activeTag == null) {
+			return false;
+		}
+		String activeTagName = activeTag.getName();
+		boolean removeToComplete = activeTag.isRemoveToComplete();
+
+		if (removeToComplete) {
+			return lexemes.stream().noneMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> lexemeTagName.equals(activeTagName)));
+		} else {
+			return lexemes.stream().allMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> lexemeTagName.equals(activeTagName)));
+		}
 	}
 }

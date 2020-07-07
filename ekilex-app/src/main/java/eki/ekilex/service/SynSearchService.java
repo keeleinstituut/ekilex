@@ -87,7 +87,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, synMeaningWordLangCodes, userId, userRole));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
-		boolean isActiveTagComplete = isActiveTagComplete(synLexemes, activeTag);
+		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
 
 		List<SynRelation> relations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {

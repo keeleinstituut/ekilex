@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -87,7 +86,6 @@ public class LexSearchService extends AbstractWordSearchService {
 			return null;
 		}
 		DatasetPermission userRole = user.getRecentRole();
-		String roleDatasetCode = userRole.getDatasetCode();
 		permCalculator.applyCrud(userRole, word);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip);
 		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
@@ -109,8 +107,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			populateLexeme(lexeme, languagesOrder, userRole, userProfile, isFullDataCorrection);
 		}
 		lexemeLevelPreseUtil.combineLevels(lexemes);
-		List<WordLexeme> roleDatasetLexemes = lexemes.stream().filter(lexeme -> lexeme.getDatasetCode().equals(roleDatasetCode)).collect(Collectors.toList());
-		boolean isActiveTagComplete = isActiveTagComplete(roleDatasetLexemes, activeTag);
+		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(userRole, lexemes, activeTag);
 
 		WordDetails wordDetails = new WordDetails();
 		word.setNotes(wordNotes);
