@@ -2,9 +2,10 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class TypeImageFile extends AbstractDataObject implements SourceLinkType {
+public class TypeImageFile extends AbstractDataObject implements ComplexityType, SourceLinkType {
 
 	private static final long serialVersionUID = 1L;
 
@@ -13,6 +14,8 @@ public class TypeImageFile extends AbstractDataObject implements SourceLinkType 
 	private String imageFile;
 
 	private String imageTitle;
+
+	private Complexity complexity;
 
 	private List<TypeSourceLink> sourceLinks;
 
@@ -43,6 +46,15 @@ public class TypeImageFile extends AbstractDataObject implements SourceLinkType 
 
 	public void setImageTitle(String imageTitle) {
 		this.imageTitle = imageTitle;
+	}
+
+	@Override
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	@Override
