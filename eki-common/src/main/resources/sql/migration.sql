@@ -323,3 +323,19 @@ update process_state set datasets = '{}';
 
 alter table tag add column remove_to_complete boolean default true not null;
 alter table tag alter column set_automatically set not null;
+
+update freeform img_ff
+set complexity = ff_c.complexity
+from (select mff.freeform_id,
+             (case
+                when 'sss' = any (array_agg(l.dataset_code)) then 'SIMPLE'
+                else 'DETAIL'
+              end) complexity
+      from lexeme l,
+           meaning_freeform mff,
+           freeform ff
+      where mff.freeform_id = ff.id
+        and mff.meaning_id = l.meaning_id
+        and ff.type = 'IMAGE_FILE'
+      group by mff.freeform_id) ff_c
+where img_ff.id = ff_c.freeform_id;

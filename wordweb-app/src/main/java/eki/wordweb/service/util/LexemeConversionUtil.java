@@ -294,15 +294,16 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Map<String, List<TypeFreeform>> notesByLangUnordered = notes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
 			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
 		}
+		List<TypeImageFile> imageFiles = tuple.getImageFiles();
+		List<TypeImageFile> filteredImageFiles = filter(imageFiles, lexComplexity);
+		applySourceLinks(filteredImageFiles, meaningFreeformSourceLinks);
 		lexeme.setMeaningNotes(notes);
 		lexeme.setMeaningNotesByLang(notesByLangOrdered);
+		lexeme.setImageFiles(imageFiles);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 
 		if (Complexity.SIMPLE.equals(lexComplexity)) {
-			List<TypeImageFile> imageFiles = tuple.getImageFiles();
-			applySourceLinks(imageFiles, meaningFreeformSourceLinks);
-			lexeme.setImageFiles(imageFiles);
 			lexeme.setLearnerComments(tuple.getLearnerComments());
 		}
 		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);

@@ -20,7 +20,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeImageFile extends UDTImpl<TypeImageFileRecord> {
 
-    private static final long serialVersionUID = -1670773209;
+    private static final long serialVersionUID = -1614812847;
 
     /**
      * The reference instance of <code>public.type_image_file</code>
@@ -49,6 +49,11 @@ public class TypeImageFile extends UDTImpl<TypeImageFileRecord> {
      * The attribute <code>public.type_image_file.image_title</code>.
      */
     public static final UDTField<TypeImageFileRecord, String> IMAGE_TITLE = createField(DSL.name("image_title"), org.jooq.impl.SQLDataType.CLOB, TYPE_IMAGE_FILE, "");
+
+    /**
+     * The attribute <code>public.type_image_file.complexity</code>.
+     */
+    public static final UDTField<TypeImageFileRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_IMAGE_FILE, "");
 
     /**
      * No further instances allowed

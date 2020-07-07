@@ -14,7 +14,7 @@ create type type_definition as (
 				complexity varchar(100),
 				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_image_file as (freeform_id bigint, image_file text, image_title text);
+create type type_image_file as (freeform_id bigint, image_file text, image_title text, complexity varchar(100));
 create type type_source_link as (
 				ref_owner varchar(100),
 				owner_id bigint,
@@ -716,7 +716,8 @@ from (select m.id
                           array_agg(row (
                             ff_if.id,
                             ff_if.value_text,
-                            ff_it.value_text
+                            ff_it.value_text,
+                            ff_if.complexity
                           )::type_image_file
                           order by
                           ff_if.order_by,

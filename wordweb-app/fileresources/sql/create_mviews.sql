@@ -47,7 +47,7 @@ create type type_definition as (
 				complexity varchar(100),
 				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_image_file as (freeform_id bigint, image_file text, image_title text);
+create type type_image_file as (freeform_id bigint, image_file text, image_title text, complexity varchar(100));
 create type type_source_link as (
 				ref_owner varchar(100),
 				owner_id bigint,
