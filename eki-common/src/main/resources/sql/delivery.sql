@@ -140,15 +140,21 @@ set complexity = 'ANY',
     is_public = false
 where complexity in ('SIMPLE2', 'DETAIL2');
 
-update freeform ff
-set complexity = 'SIMPLE'
-where ff.type = 'IMAGE_FILE'
-  and exists(select l.id
-             from lexeme l,
-                  meaning_freeform mff
-             where mff.freeform_id = ff.id
-               and l.meaning_id = mff.meaning_id
-               and l.dataset_code = 'sss');
+update freeform img_ff
+set complexity = ff_c.complexity
+from (select mff.freeform_id,
+             (case
+                when 'sss' = any (array_agg(l.dataset_code)) then 'SIMPLE'
+                else 'DETAIL'
+              end) complexity
+      from lexeme l,
+           meaning_freeform mff,
+           freeform ff
+      where mff.freeform_id = ff.id
+        and mff.meaning_id = l.meaning_id
+        and ff.type = 'IMAGE_FILE'
+      group by mff.freeform_id) ff_c
+where img_ff.id = ff_c.freeform_id;
 
 update definition set complexity = 'DETAIL' where complexity = 'DEFAULT';
 update freeform set complexity = 'DETAIL' where type = 'USAGE' and complexity = 'DEFAULT';
