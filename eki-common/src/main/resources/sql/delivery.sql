@@ -319,6 +319,28 @@ begin
   raise notice '% ilmiku haldusoleku logi kolitud elutsükli logidesse', moved_logs_counter;
 end $$;
 
+-- vene vastete avalikustamine
+update lexeme l
+set process_state_code = 'avalik'
+from word w
+where l.process_state_code != 'avalik'
+  and l.dataset_code = 'sss'
+  and l.type = 'PRIMARY'
+  and l.word_id = w.id
+  and w.lang = 'rus'
+  and exists(select l2.id
+             from lexeme l2, word w2
+             where l2.meaning_id = l.meaning_id
+               and l2.process_state_code = 'avalik'
+               and l2.dataset_code = 'sss'
+               and l2.type = 'PRIMARY'
+               and l2.word_id = w2.id
+               and w2.lang = 'est')
+  and exists(select d.id
+             from definition d
+             where d.meaning_id = l.meaning_id
+               and d.complexity in ('DETAIL', 'DETAIL1'));
+
 drop table word_process_log;
 drop table meaning_process_log;
 drop table lexeme_process_log;
