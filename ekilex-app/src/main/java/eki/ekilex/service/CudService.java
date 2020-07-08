@@ -24,8 +24,8 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.SimpleWord;
-import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
@@ -586,7 +586,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 				}
 			}
 		} else {
-			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode);
+			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode, null);
 			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 			createLifecycleLog(relationLogData);
 			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
@@ -594,7 +594,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 				if (oppositeRelationExists) {
 					return;
 				}
-				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode);
+				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode, null);
 				LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, oppositeRelationId);
 				createLifecycleLog(oppositeRelationLogData);
 			}
@@ -835,14 +835,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, PROCESS_STATE_NOT_REVIEWED, null);
+				.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, PROCESS_STATE_NOT_PUBLIC, null);
+		// TODO set automatically tags - yogesh
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
 		createLifecycleLog(logData);
 
-		SynRelation createdRelation = cudDbService.createSynRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		Long createdRelationId = createdRelation.getId();
+		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		moveCreatedRelationToFirst(existingWordId, createdRelationId);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
@@ -855,8 +855,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		if (!word2DatasetLexemeExists) {
 			createLexeme(word2Id, datasetCode, null);
 		}
-		SynRelation createdRelation = cudDbService.createSynRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		Long createdRelationId = createdRelation.getId();
+		Long createdRelationId = cudDbService.createWordRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		moveCreatedRelationToFirst(word1Id, createdRelationId);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
@@ -1170,18 +1169,18 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	private void moveCreatedRelationToFirst(Long wordId, Long relationId) {
-		List<SynRelation> existingRelations = lookupDbService.getWordRelations(wordId, RAW_RELATION_TYPE);
+		List<Relation> existingRelations = lookupDbService.getWordRelations(wordId, RAW_RELATION_TYPE);
 		if (existingRelations.size() > 1) {
 
-			SynRelation firstRelation = existingRelations.get(0);
-			List<Long> existingOrderByValues = existingRelations.stream().map(SynRelation::getOrderBy).collect(Collectors.toList());
+			Relation firstRelation = existingRelations.get(0);
+			List<Long> existingOrderByValues = existingRelations.stream().map(Relation::getOrderBy).collect(Collectors.toList());
 
 			cudDbService.updateWordRelationOrderBy(relationId, firstRelation.getOrderBy());
 			existingRelations.remove(existingRelations.size() - 1);
 			existingOrderByValues.remove(0);
 
 			int relIdx = 0;
-			for (SynRelation relation : existingRelations) {
+			for (Relation relation : existingRelations) {
 				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
 				relIdx++;
 			}

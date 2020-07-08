@@ -8,9 +8,7 @@ public interface GlobalConstant {
 
 	String PROCESS_STATE_PUBLIC = "avalik";
 
-	String PROCESS_STATE_COMPLETE = "valmis";
-
-	String PROCESS_STATE_NOT_REVIEWED = "läbi vaatamata";
+	String PROCESS_STATE_NOT_PUBLIC = "mitteavalik";
 
 	String VALUE_STATE_MOST_PREFERRED = "eelistermin";
 

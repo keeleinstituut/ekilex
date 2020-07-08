@@ -21,7 +21,6 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
-import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.service.db.PermissionDbService;
 
 @Component
@@ -97,10 +96,6 @@ public class PermCalculator implements PermConstant {
 			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof WordLexeme) {
 			WordLexeme lexeme = (WordLexeme) crudEntity;
-			Long lexemeId = lexeme.getLexemeId();
-			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (crudEntity instanceof WordSynLexeme) {
-			WordSynLexeme lexeme = (WordSynLexeme) crudEntity;
 			Long lexemeId = lexeme.getLexemeId();
 			isCrudGrant = permissionDbService.isGrantedForLexeme(userId, userRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		} else if (crudEntity instanceof Meaning) {

@@ -51,7 +51,6 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SimpleWord;
-import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -604,7 +603,7 @@ public class CudDbService extends AbstractDataDbService {
 		return wordWordTypeId;
 	}
 
-	public Long createWordRelation(Long wordId, Long targetWordId, String wordRelationCode) {
+	public Long createWordRelation(Long wordId, Long targetWordId, String wordRelationCode, String relationStatus) {
 
 		Long wordRelationId = create
 				.select(WORD_RELATION.ID)
@@ -620,6 +619,7 @@ public class CudDbService extends AbstractDataDbService {
 			newRelation.setWord1Id(wordId);
 			newRelation.setWord2Id(targetWordId);
 			newRelation.setWordRelTypeCode(wordRelationCode);
+			newRelation.setRelationStatus(relationStatus);
 			newRelation.store();
 			wordRelationId = newRelation.getId();
 		}
@@ -1114,18 +1114,6 @@ public class CudDbService extends AbstractDataDbService {
 		create.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
 				.values(wordRelationId, paramName, paramValue)
 				.execute();
-	}
-
-	public SynRelation createSynRelation(Long word1Id, Long word2Id, String relationType, String relationStatus) {
-		return create.insertInto(WORD_RELATION,
-				WORD_RELATION.WORD1_ID,
-				WORD_RELATION.WORD2_ID,
-				WORD_RELATION.WORD_REL_TYPE_CODE,
-				WORD_RELATION.RELATION_STATUS)
-				.values(word1Id, word2Id, relationType, relationStatus)
-				.returning()
-				.fetchOne()
-				.into(SynRelation.class);
 	}
 
 	public void deleteWord(SimpleWord word) {

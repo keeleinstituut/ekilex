@@ -26,20 +26,21 @@ import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
-import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
-import eki.ekilex.data.WordSynDetails;
-import eki.ekilex.data.WordSynLexeme;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SynSearchDbService;
@@ -71,7 +72,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	private PermCalculator permCalculator;
 
 	@Transactional
-	public WordSynDetails getWordSynDetails(
+	public WordDetails getWordSynDetails(
 			Long wordId, String datasetCode, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes,
 			Tag activeTag, DatasetPermission userRole) throws Exception {
 
@@ -84,17 +85,17 @@ public class SynSearchService extends AbstractWordSearchService {
 		permCalculator.filterVisibility(userRole, wordNotes);
 		String headwordLang = word.getLang();
 
-		List<WordSynLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
+		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
 		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, synMeaningWordLangCodes, userRole));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
 
-		List<SynRelation> relations = Collections.emptyList();
+		List<Relation> relations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {
 			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes);
 		}
 
-		WordSynDetails wordDetails = new WordSynDetails();
+		WordDetails wordDetails = new WordDetails();
 		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
@@ -104,7 +105,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		return wordDetails;
 	}
 
-	private void populateLexeme(WordSynLexeme lexeme, String headwordLanguage, List<String> meaningWordLangs, DatasetPermission userRole) {
+	private void populateLexeme(WordLexeme lexeme, String headwordLanguage, List<String> meaningWordLangs, DatasetPermission userRole) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
@@ -129,9 +130,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 
 		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
-		lexeme.setDefinitions(definitions);
 		lexeme.setUsages(usages);
 		lexeme.setTags(tags);
+		Meaning meaning = new Meaning();
+		meaning.setMeaningId(meaningId);
+		meaning.setDefinitions(definitions);
+		lexeme.setMeaning(meaning);
 	}
 
 	@Transactional
@@ -183,11 +187,11 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {
-		List<SynRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, RAW_RELATION_CODE);
+		List<Relation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, RAW_RELATION_CODE);
 
 		if (existingRelations.size() > 1) {
-			SynRelation lastRelation = existingRelations.get(existingRelations.size() - 1);
-			List<Long> existingOrderByValues = existingRelations.stream().map(SynRelation::getOrderBy).collect(Collectors.toList());
+			Relation lastRelation = existingRelations.get(existingRelations.size() - 1);
+			List<Long> existingOrderByValues = existingRelations.stream().map(Relation::getOrderBy).collect(Collectors.toList());
 
 			cudDbService.updateWordRelationOrderBy(relationId, lastRelation.getOrderBy());
 			existingRelations.remove(0);
@@ -195,7 +199,7 @@ public class SynSearchService extends AbstractWordSearchService {
 			existingOrderByValues.remove(existingOrderByValues.size() - 1);
 
 			int relIdx = 0;
-			for (SynRelation relation : existingRelations) {
+			for (Relation relation : existingRelations) {
 				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
 				relIdx++;
 			}

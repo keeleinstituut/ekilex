@@ -26,10 +26,10 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
-import eki.ekilex.data.WordSynLexeme;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
@@ -46,7 +46,7 @@ import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 @Component
 public class SynSearchDbService extends AbstractSearchDbService {
 
-	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
+	public List<Relation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		WordRelation oppr = WORD_RELATION.as("oppr");
@@ -179,10 +179,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				rr.field("word_lexemes_max_frequency"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
-				.fetchInto(SynRelation.class);
+				.fetchInto(Relation.class);
 	}
 
-	public List<WordSynLexeme> getWordPrimarySynonymLexemes(
+	public List<WordLexeme> getWordPrimarySynonymLexemes(
 			Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Lexeme l = LEXEME.as("l");
@@ -196,7 +196,6 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				l.MEANING_ID,
 				l.WORD_ID,
 				l.ID.as("lexeme_id"),
-				l.TYPE,
 				l.DATASET_CODE,
 				l.LEVEL1,
 				l.LEVEL2,
@@ -208,7 +207,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(dsWhere))
 				.orderBy(ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
-				.fetchInto(WordSynLexeme.class);
+				.fetchInto(WordLexeme.class);
 	}
 
 	public void changeRelationStatus(Long id, String status) {
@@ -343,7 +342,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 				.fetchInto(MeaningWord.class);
 	}
 
-	public List<SynRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
+	public List<Relation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
@@ -354,7 +353,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 								.and(WORD_RELATION.ORDER_BY.ge(wr2.ORDER_BY))
 								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode)))
 				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetchInto(SynRelation.class);
+				.fetchInto(Relation.class);
 	}
 
 	public List<TypeWordRelParam> getWordRelationParams(Long wordRelationId) {
