@@ -128,7 +128,7 @@ update freeform set complexity = 'DETAIL' where type = 'USAGE' and complexity = 
 update freeform set complexity = 'ANY', is_public = false where type = 'USAGE' and complexity = 'DETAIL2';
 update freeform set complexity = 'ANY', is_public = false where type = 'USAGE' and complexity = 'SIMPLE2';
 update freeform set complexity = 'ANY' where type = 'GOVERNMENT';
-update freeform set complexity = 'DETAIL' where type = 'GRAMMAR';
+update freeform set complexity = 'DETAIL' where type = 'GRAMMAR' and complexity = 'DEFAULT';
 update freeform set complexity = 'SIMPLE' where type = 'LEARNER_COMMENT';
 update freeform set complexity = 'DETAIL' where type = 'OD_LEXEME_RECOMMENDATION';
 update freeform set complexity = 'DETAIL' where type = 'OD_WORD_RECOMMENDATION';
