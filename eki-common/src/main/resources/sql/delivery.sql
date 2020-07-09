@@ -156,6 +156,21 @@ from (select mff.freeform_id,
       group by mff.freeform_id) ff_c
 where img_ff.id = ff_c.freeform_id;
 
+update lexeme l
+set complexity = l_c.complexity
+from (select ls.id lexeme_id,
+             (case
+                when 'DETAIL' = all (array_agg(lp.complexity)) then 'DETAIL'
+                else 'ANY'
+               end) complexity
+      from lexeme ls,
+           lexeme lp
+      where ls.type = 'SECONDARY'
+        and lp.type = 'PRIMARY'
+        and lp.word_id = ls.word_id
+      group by ls.id) l_c
+where l.id = l_c.lexeme_id;
+
 update definition set complexity = 'DETAIL' where complexity = 'DEFAULT';
 update freeform set complexity = 'DETAIL' where type = 'USAGE' and complexity = 'DEFAULT';
 update freeform set complexity = 'ANY', is_public = false where type = 'USAGE' and complexity = 'DETAIL2';

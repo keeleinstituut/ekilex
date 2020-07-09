@@ -361,3 +361,18 @@ where l.process_state_code != 'avalik'
              from definition d
              where d.meaning_id = l.meaning_id
                and d.complexity in ('DETAIL', 'DETAIL1'));
+
+update lexeme l
+set complexity = l_c.complexity
+from (select ls.id lexeme_id,
+             (case
+                when 'DETAIL' = all (array_agg(lp.complexity)) then 'DETAIL'
+                else 'ANY'
+              end) complexity
+      from lexeme ls,
+           lexeme lp
+      where ls.type = 'SECONDARY'
+        and lp.type = 'PRIMARY'
+        and lp.word_id = ls.word_id
+      group by ls.id) l_c
+where l.id = l_c.lexeme_id;
