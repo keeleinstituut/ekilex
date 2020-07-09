@@ -83,6 +83,24 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Dataset> getDatasets() {
+		List<Dataset> datasets = commonDataDbService.getDatasets();
+		return datasets;
+	}
+
+	@Transactional
+	public List<Dataset> getTermDatasets() {
+		List<Dataset> datasets = commonDataDbService.getDatasets();
+		List<Dataset> termDatasets = new ArrayList<>();
+		datasets.forEach(dataset -> {
+			if (! dataset.getCode().equals("sss")) {
+			    termDatasets.add(dataset);
+			}
+		});
+		return termDatasets;
+	}
+
+	@Transactional
 	public List<String> getSupportedDatasetCodes() {
 		List<String> supportedDatasetCodes = new ArrayList<>();
 		List<String> datasetCodes = commonDataDbService.getDatasetCodes();

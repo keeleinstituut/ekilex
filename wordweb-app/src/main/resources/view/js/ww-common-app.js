@@ -69,10 +69,13 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 			errorMessageElement.attr('hidden', false);
 		}
 	}).fail(function(data) {
-		dataDiv.attr('hidden', true);
+		//dataDiv.attr('hidden', true);
 		responseDiv.attr('hidden', false);
 		responseDiv.find('.has-error').show();
-		acceptPrivacyStatement.trigger('click');
+		//acceptPrivacyStatement.trigger('click');
+                                    errorMessageElement.attr('hidden', false);
+                                    errorMessageElement.text('Vabandust, saatmine ebaõnnestus. Proovige hiljem uuesti.');
+                                    errorMessageElement.css('color', 'red');
 	});
 });
 
