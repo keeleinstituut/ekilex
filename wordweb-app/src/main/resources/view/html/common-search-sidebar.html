@@ -275,7 +275,7 @@
           </span>
         </th:block>
       </div>
-      <div th:id="${'collapse-panel-word-rel-group-' + wordRelType.code + '-' + relGroupIter.index}" class="collapse">
+      <div th:id="${'word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}" class="collapse">
         <th:block th:each="relation, relationIter : ${relationTypeGroup.relatedWords}"
                   th:with="
                   isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
@@ -292,8 +292,9 @@
               aria-expanded="false"
               data-toggle="collapse"
               data-dynamic-text="true"
-              th:data-target="${'#collapse-panel-word-rel-group-' + wordRelType.code + '-' + relGroupIter.index}"
-              type="button">
+              th:data-target="${'#word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}"
+              type="button"
+              th:if="${#lists.size(relationTypeGroup.relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
         <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
         </span>
@@ -321,7 +322,7 @@
               <span th:unless="${relationIter.last}" class="ml-n1 mr-1">,</span>
             </span>
           </th:block>
-          <div th:id="${'related-words-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="collapse">
+          <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="collapse">
             <th:block th:each="relation, relationIter : ${relationEntry.value}"
                       th:with="
                       isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
@@ -339,7 +340,7 @@
                 aria-expanded="false"
                 data-toggle="collapse"
                 data-dynamic-text="true"
-                th:data-target="${'#related-words-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}"
+                th:data-target="${'#word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}"
                 type="button"
                 th:if="${#lists.size(relationEntry.value) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
           <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
