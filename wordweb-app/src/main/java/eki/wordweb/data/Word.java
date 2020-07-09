@@ -8,6 +8,8 @@ public class Word extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
+	private String alternativeWord;
+
 	private String wordClass;
 
 	private String morphCode;
@@ -52,6 +54,14 @@ public class Word extends WordTypeData {
 	private boolean wordRelationsExist;
 
 	private boolean selected;
+
+	public String getAlternativeWord() {
+		return alternativeWord;
+	}
+
+	public void setAlternativeWord(String alternativeWord) {
+		this.alternativeWord = alternativeWord;
+	}
 
 	public String getWordClass() {
 		return wordClass;

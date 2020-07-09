@@ -129,6 +129,11 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
 					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
+				String alternativeWord = relatedWords.stream()
+						.filter(relatedWord -> StringUtils.equals(relatedWord.getWordRelTypeCode(), WORD_REL_TYPE_CODE_DERIVATIVE_BASE))
+						.map(TypeWordRelation::getWord)
+						.findFirst().orElse(null);
+				word.setAlternativeWord(alternativeWord);
 				word.getRelatedWords().addAll(relatedWords);
 				for (TypeWordRelation wordRelation : relatedWords) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);

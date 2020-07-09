@@ -64,5 +64,7 @@ public interface SystemConstant {
 
 	String WORD_REL_TYPE_CODE_RAW = "raw";
 
+	String WORD_REL_TYPE_CODE_DERIVATIVE_BASE = "deriv_base";
+
 	char TEMP_CONVERSION_PLACEHOLDER = '`';
 }
