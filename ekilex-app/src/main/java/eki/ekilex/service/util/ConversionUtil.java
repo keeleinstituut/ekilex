@@ -847,7 +847,7 @@ public class ConversionUtil implements GlobalConstant {
 		return meaningWordLangGroups;
 	}
 
-	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<?> lexemes, Tag activeTag) {
+	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<? extends LexemeTag> lexemes, Tag activeTag) {
 
 		if (userRole == null) {
 			return false;

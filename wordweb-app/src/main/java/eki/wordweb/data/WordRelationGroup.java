@@ -20,6 +20,8 @@ public class WordRelationGroup extends AbstractDataObject {
 
 	private boolean asMap;
 
+	private boolean empty;
+
 	public Classifier getWordRelType() {
 		return wordRelType;
 	}
@@ -58,6 +60,14 @@ public class WordRelationGroup extends AbstractDataObject {
 
 	public void setAsMap(boolean asMap) {
 		this.asMap = asMap;
+	}
+
+	public boolean isEmpty() {
+		return empty;
+	}
+
+	public void setEmpty(boolean empty) {
+		this.empty = empty;
 	}
 
 }

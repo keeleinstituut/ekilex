@@ -64,5 +64,9 @@ public interface SystemConstant {
 
 	String WORD_REL_TYPE_CODE_RAW = "raw";
 
+	String WORD_REL_TYPE_CODE_COMP = "ühend";
+
+	String[] PRIMARY_WORD_REL_TYPE_CODES = new String[] {WORD_REL_TYPE_CODE_COMP, WORD_REL_TYPE_CODE_RAW};
+
 	char TEMP_CONVERSION_PLACEHOLDER = '`';
 }

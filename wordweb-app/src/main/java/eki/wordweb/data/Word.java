@@ -35,7 +35,9 @@ public class Word extends WordTypeData {
 
 	private List<TypeWordRelation> relatedWords;
 
-	private List<WordRelationGroup> relatedWordTypeGroups;
+	private List<WordRelationGroup> primaryRelatedWordTypeGroups;
+
+	private List<WordRelationGroup> secondaryRelatedWordTypeGroups;
 
 	private List<WordGroup> wordGroups;
 
@@ -157,12 +159,20 @@ public class Word extends WordTypeData {
 		this.relatedWords = relatedWords;
 	}
 
-	public List<WordRelationGroup> getRelatedWordTypeGroups() {
-		return relatedWordTypeGroups;
+	public List<WordRelationGroup> getPrimaryRelatedWordTypeGroups() {
+		return primaryRelatedWordTypeGroups;
 	}
 
-	public void setRelatedWordTypeGroups(List<WordRelationGroup> relatedWordTypeGroups) {
-		this.relatedWordTypeGroups = relatedWordTypeGroups;
+	public void setPrimaryRelatedWordTypeGroups(List<WordRelationGroup> primaryRelatedWordTypeGroups) {
+		this.primaryRelatedWordTypeGroups = primaryRelatedWordTypeGroups;
+	}
+
+	public List<WordRelationGroup> getSecondaryRelatedWordTypeGroups() {
+		return secondaryRelatedWordTypeGroups;
+	}
+
+	public void setSecondaryRelatedWordTypeGroups(List<WordRelationGroup> secondaryRelatedWordTypeGroups) {
+		this.secondaryRelatedWordTypeGroups = secondaryRelatedWordTypeGroups;
 	}
 
 	public List<WordGroup> getWordGroups() {

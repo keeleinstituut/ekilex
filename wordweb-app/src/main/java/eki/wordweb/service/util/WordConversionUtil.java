@@ -3,12 +3,14 @@ package eki.wordweb.service.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -117,44 +119,41 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 		word.setWordGroups(new ArrayList<>());
 		word.setRelatedWords(new ArrayList<>());
-		word.setRelatedWordTypeGroups(new ArrayList<>());
+		word.setPrimaryRelatedWordTypeGroups(new ArrayList<>());
+		word.setSecondaryRelatedWordTypeGroups(new ArrayList<>());
 
 		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
-		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
 		List<Complexity> combinedLexComplexity = Arrays.asList(lexComplexity, Complexity.ANY);
 
-		List<TypeWordRelation> relatedWords = wordRelationsTuple.getRelatedWords();
-		if (CollectionUtils.isNotEmpty(relatedWords)) {
-			relatedWords = relatedWords.stream()
+		List<TypeWordRelation> wordRelations = wordRelationsTuple.getRelatedWords();
+		Map<String, List<TypeWordRelation>> wordRelationsMap = new HashMap<>();
+		if (CollectionUtils.isNotEmpty(wordRelations)) {
+			wordRelations = wordRelations.stream()
 					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
 					.collect(Collectors.toList());
-			if (CollectionUtils.isNotEmpty(relatedWords)) {
-				word.getRelatedWords().addAll(relatedWords);
-				for (TypeWordRelation wordRelation : relatedWords) {
+			if (CollectionUtils.isNotEmpty(wordRelations)) {
+				word.getRelatedWords().addAll(wordRelations);
+				for (TypeWordRelation wordRelation : wordRelations) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
 					setWordTypeFlags(wordRelation);
 				}
-				Map<String, List<TypeWordRelation>> relatedWordsMap = relatedWords.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
-				for (String wordRelTypeCode : wordRelTypeCodes) {
-					List<TypeWordRelation> relatedWordsOfType = relatedWordsMap.get(wordRelTypeCode);
-					if (CollectionUtils.isNotEmpty(relatedWordsOfType)) {
-						Classifier wordRelType = relatedWordsOfType.get(0).getWordRelType();
-						if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, wordRelTypeCode)) {
-							Map<Boolean, List<TypeWordRelation>> wordRelationSynOrMatchMap = relatedWordsOfType.stream()
-									.collect(Collectors.groupingBy(wordRelation -> StringUtils.equals(word.getLang(), wordRelation.getLang())));
-							List<TypeWordRelation> relatedWordsAsSyn = wordRelationSynOrMatchMap.get(Boolean.TRUE);
-							Classifier wordRelTypeSyn = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.syn");
-							appendRelatedWordTypeGroup(word, wordRelTypeSyn, relatedWordsAsSyn, null);
-							List<TypeWordRelation> relatedWordsAsMatch = wordRelationSynOrMatchMap.get(Boolean.FALSE);
-							Classifier wordRelTypeMatch = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.match");
-							appendRelatedWordTypeGroup(word, wordRelTypeMatch, relatedWordsAsMatch, langOrderByMap);
-						} else {
-							appendRelatedWordTypeGroup(word, wordRelType, relatedWordsOfType, null);
-						}
-					}
-				}
+				wordRelationsMap = wordRelations.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
 			}
 		}
+
+		for (Classifier wordRelType : wordRelTypes) {
+			String wordRelTypeCode = wordRelType.getCode();
+			List<TypeWordRelation> relatedWordsOfType = wordRelationsMap.get(wordRelTypeCode);
+			List<WordRelationGroup> wordRelationGroups;
+			if (ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, wordRelTypeCode)) {
+				wordRelationGroups = word.getPrimaryRelatedWordTypeGroups();
+				handleWordRelType(word, wordRelType, relatedWordsOfType, wordRelationGroups, langOrderByMap);
+			} else if (CollectionUtils.isNotEmpty(relatedWordsOfType)) {
+				wordRelationGroups = word.getSecondaryRelatedWordTypeGroups();
+				handleWordRelType(word, wordRelType, relatedWordsOfType, wordRelationGroups, langOrderByMap);
+			}
+		}
+
 		List<TypeWordRelation> allWordGroupMembers = wordRelationsTuple.getWordGroupMembers();
 		if (CollectionUtils.isNotEmpty(allWordGroupMembers)) {
 			Map<Long, List<TypeWordRelation>> wordGroupMap = allWordGroupMembers.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordGroupId));
@@ -181,27 +180,58 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			}
 		}
 
-		boolean wordRelationsExist = CollectionUtils.isNotEmpty(word.getRelatedWords()) || CollectionUtils.isNotEmpty(word.getWordGroups());
+		boolean wordRelationsExist = CollectionUtils.isNotEmpty(word.getSecondaryRelatedWordTypeGroups()) || CollectionUtils.isNotEmpty(word.getWordGroups());
 		word.setWordRelationsExist(wordRelationsExist);
 	}
 
-	private void appendRelatedWordTypeGroup(Word word, Classifier wordRelType, List<TypeWordRelation> relatedWordsOfType, Map<String, Long> langOrderByMap) {
-		if (CollectionUtils.isEmpty(relatedWordsOfType)) {
-			return;
-		}
-		WordRelationGroup wordRelationGroup = new WordRelationGroup();
-		wordRelationGroup.setWordRelType(wordRelType);
+	private void handleWordRelType(
+			Word word, Classifier wordRelType, List<TypeWordRelation> wordRelations, List<WordRelationGroup> wordRelationGroups, Map<String, Long> langOrderByMap) {
 
-		if (MapUtils.isNotEmpty(langOrderByMap)) {
-			Map<String, List<TypeWordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(TypeWordRelation::getLang));
-			Map<String, List<TypeWordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
-			wordRelationGroup.setRelatedWordsByLang(relatedWordsByLangOrdered);
-			wordRelationGroup.setAsMap(true);
+		WordRelationGroup wordRelationGroup;
+		if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, wordRelType.getCode())) {
+			List<TypeWordRelation> wordRelationSyns = null;
+			List<TypeWordRelation> wordRelationMatches = null;
+			if (CollectionUtils.isNotEmpty(wordRelations)) {
+				Map<Boolean, List<TypeWordRelation>> wordRelationSynOrMatchMap = wordRelations.stream()
+						.collect(Collectors.groupingBy(wordRelation -> StringUtils.equals(word.getLang(), wordRelation.getLang())));
+				wordRelationSyns = wordRelationSynOrMatchMap.get(Boolean.TRUE);
+				wordRelationMatches = wordRelationSynOrMatchMap.get(Boolean.FALSE);
+			}
+			// raw rel syn group
+			Classifier wordRelTypeSyn = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.syn");
+			wordRelationGroup = new WordRelationGroup();
+			wordRelationGroup.setWordRelType(wordRelTypeSyn);
+			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelationSyns, null);
+
+			// raw rel match group w lang grouping
+			Classifier wordRelTypeMatch = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.match");
+			wordRelationGroup = new WordRelationGroup();
+			wordRelationGroup.setWordRelType(wordRelTypeMatch);
+			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelationMatches, langOrderByMap);
 		} else {
-			wordRelationGroup.setRelatedWords(relatedWordsOfType);	
-			wordRelationGroup.setAsList(true);
+			wordRelationGroup = new WordRelationGroup();
+			wordRelationGroup.setWordRelType(wordRelType);
+			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelations, null);
 		}
-		word.getRelatedWordTypeGroups().add(wordRelationGroup);
+	}
+
+	private void appendRelatedWordTypeGroup(
+			WordRelationGroup wordRelationGroup, List<WordRelationGroup> wordRelationGroups, List<TypeWordRelation> relatedWordsOfType, Map<String, Long> langOrderByMap) {
+
+		if (CollectionUtils.isEmpty(relatedWordsOfType)) {
+			wordRelationGroup.setEmpty(true);
+		} else {
+			if (MapUtils.isEmpty(langOrderByMap)) {
+				wordRelationGroup.setRelatedWords(relatedWordsOfType);
+				wordRelationGroup.setAsList(true);
+			} else {
+				Map<String, List<TypeWordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(TypeWordRelation::getLang));
+				Map<String, List<TypeWordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
+				wordRelationGroup.setRelatedWordsByLang(relatedWordsByLangOrdered);
+				wordRelationGroup.setAsMap(true);
+			}
+		}
+		wordRelationGroups.add(wordRelationGroup);
 	}
 
 	public List<String> collectAllRelatedWords(Word word) {
