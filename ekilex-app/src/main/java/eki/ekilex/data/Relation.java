@@ -41,15 +41,29 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private boolean foreign;
 
+	private Integer wordHomonymNr;
+
+	private boolean homonymsExist;
+
+	private List<String> wordDefinitions;
+
+	private List<String> wordLexemesPoses;
+
+	private Float wordLexemesMaxFrequency;
+
 	private List<String> datasetCodes;
 
 	private String relTypeCode;
 
 	private String relTypeLabel;
 
-	private Long orderBy;
-
 	private RelationStatus relationStatus;
+
+	private RelationStatus oppositeRelationStatus;
+
+	private List<TypeWordRelParam> relationParams;
+
+	private Long orderBy;
 
 	public Long getId() {
 		return id;
@@ -191,6 +205,46 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 		this.foreign = foreign;
 	}
 
+	public Integer getWordHomonymNr() {
+		return wordHomonymNr;
+	}
+
+	public void setWordHomonymNr(Integer wordHomonymNr) {
+		this.wordHomonymNr = wordHomonymNr;
+	}
+
+	public boolean isHomonymsExist() {
+		return homonymsExist;
+	}
+
+	public void setHomonymsExist(boolean homonymsExist) {
+		this.homonymsExist = homonymsExist;
+	}
+
+	public List<String> getWordDefinitions() {
+		return wordDefinitions;
+	}
+
+	public void setWordDefinitions(List<String> wordDefinitions) {
+		this.wordDefinitions = wordDefinitions;
+	}
+
+	public List<String> getWordLexemesPoses() {
+		return wordLexemesPoses;
+	}
+
+	public void setWordLexemesPoses(List<String> wordLexemesPoses) {
+		this.wordLexemesPoses = wordLexemesPoses;
+	}
+
+	public Float getWordLexemesMaxFrequency() {
+		return wordLexemesMaxFrequency;
+	}
+
+	public void setWordLexemesMaxFrequency(Float wordLexemesMaxFrequency) {
+		this.wordLexemesMaxFrequency = wordLexemesMaxFrequency;
+	}
+
 	public List<String> getDatasetCodes() {
 		return datasetCodes;
 	}
@@ -203,8 +257,8 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 		return relTypeCode;
 	}
 
-	public void setRelTypeCode(String relTypeLabel) {
-		this.relTypeCode = relTypeLabel;
+	public void setRelTypeCode(String relTypeCode) {
+		this.relTypeCode = relTypeCode;
 	}
 
 	public String getRelTypeLabel() {
@@ -215,14 +269,6 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 		this.relTypeLabel = relTypeLabel;
 	}
 
-	public Long getOrderBy() {
-		return orderBy;
-	}
-
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
-	}
-
 	public RelationStatus getRelationStatus() {
 		return relationStatus;
 	}
@@ -231,4 +277,27 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 		this.relationStatus = relationStatus;
 	}
 
+	public RelationStatus getOppositeRelationStatus() {
+		return oppositeRelationStatus;
+	}
+
+	public void setOppositeRelationStatus(RelationStatus oppositeRelationStatus) {
+		this.oppositeRelationStatus = oppositeRelationStatus;
+	}
+
+	public List<TypeWordRelParam> getRelationParams() {
+		return relationParams;
+	}
+
+	public void setRelationParams(List<TypeWordRelParam> relationParams) {
+		this.relationParams = relationParams;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
 }

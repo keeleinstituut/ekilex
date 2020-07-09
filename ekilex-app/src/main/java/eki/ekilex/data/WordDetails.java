@@ -17,9 +17,7 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordLexeme> lexemes;
 
-	private List<Relation> wordRelations;
-
-	private List<SynRelation> wordSynRelations;
+	private List<Relation> relations;
 
 	private List<WordEtym> wordEtymology;
 
@@ -68,12 +66,12 @@ public class WordDetails extends AbstractDataObject {
 		this.lexemes = lexemes;
 	}
 
-	public List<Relation> getWordRelations() {
-		return wordRelations;
+	public List<Relation> getRelations() {
+		return relations;
 	}
 
-	public void setWordRelations(List<Relation> wordRelations) {
-		this.wordRelations = wordRelations;
+	public void setRelations(List<Relation> relations) {
+		this.relations = relations;
 	}
 
 	public List<WordEtym> getWordEtymology() {
@@ -98,14 +96,6 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setOdWordRecommendations(List<FreeForm> odWordRecommendations) {
 		this.odWordRecommendations = odWordRecommendations;
-	}
-
-	public List<SynRelation> getWordSynRelations() {
-		return wordSynRelations;
-	}
-
-	public void setWordSynRelations(List<SynRelation> wordSynRelations) {
-		this.wordSynRelations = wordSynRelations;
 	}
 
 	public String getFirstDefinitionValue() {

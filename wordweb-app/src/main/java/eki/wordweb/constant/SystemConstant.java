@@ -24,6 +24,14 @@ public interface SystemConstant {
 
 	String[] SUPPORTED_SIMPLE_DESTIN_LANG_FILTERS = new String[] {DESTIN_LANG_ALL, DESTIN_LANG_EST, DESTIN_LANG_RUS};
 
+	String WORD_REL_TYPE_CODE_DERIVATIVE_BASE = "deriv_base";
+
+	String WORD_REL_TYPE_CODE_RAW = "raw";
+
+	String WORD_REL_TYPE_CODE_COMP = "ühend";
+
+	String[] PRIMARY_WORD_REL_TYPE_CODES = new String[] {WORD_REL_TYPE_CODE_COMP, WORD_REL_TYPE_CODE_RAW};
+
 	String DATASET_TYPE_LEX = "lex";
 
 	String DATASET_TYPE_TERM = "term";
@@ -61,12 +69,6 @@ public interface SystemConstant {
 	String WORD_SEARCH_GROUP_AS_WORD = "as_word";
 
 	String WORD_SEARCH_GROUP_FORM = "form";
-
-	String WORD_REL_TYPE_CODE_RAW = "raw";
-
-	String WORD_REL_TYPE_CODE_COMP = "ühend";
-
-	String[] PRIMARY_WORD_REL_TYPE_CODES = new String[] {WORD_REL_TYPE_CODE_COMP, WORD_REL_TYPE_CODE_RAW};
 
 	char TEMP_CONVERSION_PLACEHOLDER = '`';
 }

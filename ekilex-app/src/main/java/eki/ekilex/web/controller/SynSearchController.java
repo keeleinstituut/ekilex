@@ -31,7 +31,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
-import eki.ekilex.data.WordSynDetails;
+import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.SynSearchService;
 
@@ -179,15 +179,13 @@ public class SynSearchController extends AbstractSearchController {
 		logger.debug("Requesting details by word {}", wordId);
 
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		List<String> synCandidateLangCodes = userContextData.getSynCandidateLangCodes();
 		List<String> synMeaningWordLangCodes = userContextData.getSynMeaningWordLangCodes();
 		Tag activeTag = userContextData.getActiveTag();
 
-		WordSynDetails details = synSearchService.getWordSynDetails(
-				wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userId, userRole);
+		WordDetails details = synSearchService.getWordSynDetails(wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userRole);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);

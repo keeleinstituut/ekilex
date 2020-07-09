@@ -232,8 +232,8 @@
                           sec:authorize="#vars.details.word.crudGrant">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <table class="orderable" data-op-code="word_relation" th:if="${not #lists.isEmpty(details.wordRelations)}">
-                    <tr th:each="relation, itemIter : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+                  <table class="orderable" data-op-code="word_relation" th:if="${not #lists.isEmpty(details.relations)}">
+                    <tr th:each="relation, itemIter : ${details.relations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                       <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
                       </td>

@@ -112,9 +112,9 @@
     <div class="level-3-panel meaning-panel row d-block" th:if="${!wordData.lexemesExist}">
       <div class="col-12 meaning">
         <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole</span>
-        <span th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
+        <span th:if="${not #strings.isEmpty(wordData.word.alternativeWord)}">
           <span th:text="#{label.word.suggest}">Seni vaata</span>
-          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, wordData.word.relatedWords.get(0).word)}}" th:text="${wordData.word.relatedWords.get(0).word}"></a>
+          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, wordData.word.alternativeWord)}}" th:text="${wordData.word.alternativeWord}"></a>
         </span>
       </div>
     </div>

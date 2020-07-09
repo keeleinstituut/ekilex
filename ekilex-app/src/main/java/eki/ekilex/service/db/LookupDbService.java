@@ -48,8 +48,8 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -178,13 +178,13 @@ public class LookupDbService extends AbstractSearchDbService {
 				.fetchOneInto(String.class);
 	}
 
-	public List<SynRelation> getWordRelations(Long wordId, String relTypeCode) {
+	public List<Relation> getWordRelations(Long wordId, String relTypeCode) {
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.WORD1_ID.eq(wordId))
 				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
 				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetchInto(SynRelation.class);
+				.fetchInto(Relation.class);
 	}
 
 	public Map<Long, WordStress> getWordStressData(Long wordId1, Long wordId2, char displayFormStressSym) {

@@ -115,7 +115,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setParadigms(paradigms);
 		wordDetails.setLexemes(lexemes);
-		wordDetails.setWordRelations(wordRelations);
+		wordDetails.setRelations(wordRelations);
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setWordGroups(wordGroups);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);

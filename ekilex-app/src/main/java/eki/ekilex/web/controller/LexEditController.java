@@ -84,7 +84,6 @@ public class LexEditController extends AbstractPageController {
 		}
 
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
@@ -95,7 +94,7 @@ public class LexEditController extends AbstractPageController {
 		}
 
 		List<WordLexeme> sourceLexemes = lookupService
-				.getWordLexemesOfJoinCandidates(userId, userRole, datasetCodes, searchFilter, wordHomonymNumber, sourceLexemeMeaningId, tagNames);
+				.getWordLexemesOfJoinCandidates(userRole, datasetCodes, searchFilter, wordHomonymNumber, sourceLexemeMeaningId, tagNames);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
@@ -334,11 +333,10 @@ public class LexEditController extends AbstractPageController {
 		String language = wordDetails.getLanguage();
 
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
 
-		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(userId, userRole, wordValue, language, meaningId, tagNames);
+		MeaningWordCandidates meaningWordCandidates = lookupService.getMeaningWordCandidates(userRole, wordValue, language, meaningId, tagNames);
 		model.addAttribute("meaningWordCandidates", meaningWordCandidates);
 
 		return WORD_SELECT_PAGE;

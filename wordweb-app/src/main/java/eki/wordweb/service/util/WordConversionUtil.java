@@ -132,11 +132,16 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
 					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(wordRelations)) {
-				word.getRelatedWords().addAll(wordRelations);
+				String alternativeWord = null;
 				for (TypeWordRelation wordRelation : wordRelations) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
 					setWordTypeFlags(wordRelation);
+					if (StringUtils.equals(wordRelation.getWordRelTypeCode(), WORD_REL_TYPE_CODE_DERIVATIVE_BASE)) {
+						alternativeWord = wordRelation.getWord();
+					}
 				}
+				word.setAlternativeWord(alternativeWord);
+				word.getRelatedWords().addAll(wordRelations);
 				wordRelationsMap = wordRelations.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
 			}
 		}

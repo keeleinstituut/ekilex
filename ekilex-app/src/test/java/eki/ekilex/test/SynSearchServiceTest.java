@@ -16,7 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
-import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.Relation;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @RunWith(SpringRunner.class)
@@ -38,7 +38,7 @@ public class SynSearchServiceTest extends AbstractTest {
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<SynRelation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"));
+		List<Relation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"));
 		assertThat(relations.size()).isEqualTo(2);
 	}
 }
