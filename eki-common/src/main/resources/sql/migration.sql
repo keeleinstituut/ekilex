@@ -373,6 +373,7 @@ from (select ls.id lexeme_id,
            lexeme lp
       where ls.type = 'SECONDARY'
         and lp.type = 'PRIMARY'
+        and lp.process_state_code = 'avalik'
         and lp.word_id = ls.word_id
       group by ls.id) l_c
 where l.id = l_c.lexeme_id;
