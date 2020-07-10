@@ -364,5 +364,6 @@ drop table process_log_source_link;
 drop table process_log;
 drop table layer_state;
 
+-- haldusolekute piiramine
 delete from process_state where code not in ('avalik', 'mitteavalik');
 update process_state set datasets = '{}';
