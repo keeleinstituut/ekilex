@@ -85,6 +85,16 @@ public class LookupService extends AbstractWordSearchService {
 	private PermCalculator permCalculator;
 
 	@Transactional
+	public String getLexemeWordValue(Long lexemeId) {
+		return lookupDbService.getLexemeWordValue(lexemeId);
+	}
+
+	@Transactional
+	public String getLexemeDatasetCode(Long lexemeId) {
+		return lookupDbService.getLexemeDatasetCode(lexemeId);
+	}
+
+	@Transactional
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
 		return lookupDbService.meaningHasWord(meaningId, wordValue, language);
 	}
@@ -328,7 +338,7 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public Long getMeaningId(Long lexemeId) {
-		return lookupDbService.getMeaningId(lexemeId);
+		return lookupDbService.getLexemeMeaningId(lexemeId);
 	}
 
 	@Transactional

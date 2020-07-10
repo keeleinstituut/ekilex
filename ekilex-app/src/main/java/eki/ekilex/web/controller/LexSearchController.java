@@ -211,13 +211,11 @@ public class LexSearchController extends AbstractSearchController {
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 
-		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId, languagesOrder);
-
+		String lexemeDatasetCode = lookupService.getLexemeDatasetCode(lexemeId);
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
-		List<String> datasetCodes = Arrays.asList(lexeme.getDatasetCode());
+		List<String> datasetCodes = Arrays.asList(lexemeDatasetCode);
 
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
 

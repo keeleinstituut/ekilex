@@ -128,6 +128,174 @@ public class LookupDbService extends AbstractSearchDbService {
 				.fetchMaps();
 	}
 
+	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
+	
+		String wordValue = targetWord.getWordValue();
+		String wordLang = targetWord.getLang();
+		Long wordIdToExclude = targetWord.getWordId();
+		boolean isPrefixoid = targetWord.isPrefixoid();
+		boolean isSuffixoid = targetWord.isSuffixoid();
+	
+		Condition whereCondition = FORM.VALUE.like(wordValue)
+				.and(FORM.MODE.eq(FormMode.WORD.name()))
+				.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+				.and(PARADIGM.WORD_ID.eq(WORD.ID)).and(LEXEME.WORD_ID.eq(WORD.ID))
+				.and(WORD.ID.ne(wordIdToExclude))
+				.and(WORD.LANG.eq(wordLang))
+				.andExists(DSL
+						.select(LEXEME.ID)
+						.from(LEXEME)
+						.where(
+								LEXEME.WORD_ID.eq(WORD.ID)
+										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(LEXEME.DATASET_CODE.in(userPrefDatasetCodes))));
+	
+		if (isPrefixoid) {
+			whereCondition = whereCondition.andExists(DSL
+					.select(WORD_WORD_TYPE.ID)
+					.from(WORD_WORD_TYPE)
+					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID)));
+		} else if (isSuffixoid) {
+			whereCondition = whereCondition.andExists(DSL
+					.select(WORD_WORD_TYPE.ID)
+					.from(WORD_WORD_TYPE)
+					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_SUFFIXOID)));
+		} else {
+			whereCondition = whereCondition.andNotExists(DSL
+					.select(WORD_WORD_TYPE.ID)
+					.from(WORD_WORD_TYPE)
+					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
+					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID)));
+		}
+	
+		Table<Record4<Long, Long, String, String>> wl = DSL
+				.select(
+						WORD.ID.as("word_id"),
+						LEXEME.ID.as("lexeme_id"),
+						LEXEME.DATASET_CODE.as("dataset_code"),
+						LEXEME.PROCESS_STATE_CODE.as("process_state_code"))
+				.from(WORD, PARADIGM, FORM, LEXEME)
+				.where(whereCondition)
+				.asTable("wl");
+	
+		return create
+				.selectDistinct(wl.field("word_id"))
+				.from(wl)
+				.where(wl.field("process_state_code", String.class).eq(PROCESS_STATE_PUBLIC)
+						.or(wl.field("dataset_code", String.class).in(userVisibleDatasetCodes)))
+				.fetchInto(Long.class);
+	}
+
+	public List<Relation> getWordRelations(Long wordId, String relTypeCode) {
+		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.WORD1_ID.eq(wordId))
+				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
+				.orderBy(WORD_RELATION.ORDER_BY)
+				.fetchInto(Relation.class);
+	}
+
+	public Map<Long, WordStress> getWordStressData(Long wordId1, Long wordId2, char displayFormStressSym) {
+	
+		Form f = FORM.as("f");
+		Form fm = FORM.as("fm");
+		Paradigm p = PARADIGM.as("p");
+	
+		String displayFormStressCrit = new StringBuilder().append('%').append(displayFormStressSym).append('%').toString();
+		Field<Boolean> dfsf = DSL.field(f.DISPLAY_FORM.like(displayFormStressCrit));
+		Field<Boolean> wmef = DSL.field(DSL.exists(DSL.select(fm.ID).from(fm).where(fm.PARADIGM_ID.eq(p.ID).and(fm.MODE.eq(FormMode.FORM.name())))));
+	
+		Map<Long, List<WordStress>> wordStressFullDataMap = create
+				.select(
+						p.WORD_ID,
+						f.ID.as("form_id"),
+						f.VALUE_PRESE,
+						f.DISPLAY_FORM,
+						dfsf.as("stress_exists"),
+						wmef.as("morph_exists"))
+				.from(f, p)
+				.where(p.WORD_ID.in(wordId1, wordId2)
+						.and(f.PARADIGM_ID.eq(p.ID))
+						.and(f.MODE.eq(FormMode.WORD.name())))
+				.fetchGroups(p.WORD_ID, WordStress.class);
+	
+		Map<Long, WordStress> wordStressSingleDataMap = wordStressFullDataMap.entrySet().stream()
+				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
+					List<WordStress> wordStressCandidates = entry.getValue();
+					if (wordStressCandidates.size() == 1) {
+						return wordStressCandidates.get(0);
+					}
+					List<WordStress> wordStressWithMorphCandidates = wordStressCandidates.stream().filter(WordStress::isMorphExists).collect(Collectors.toList());
+					if (wordStressWithMorphCandidates.size() == 1) {
+						return wordStressWithMorphCandidates.get(0);
+					}
+					return wordStressCandidates.get(0);
+				}));
+	
+		return wordStressSingleDataMap;
+	}
+
+	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
+	
+		return create
+				.select(DSL.max(LEXEME.LEVEL1))
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.fetchOptionalInto(Integer.class)
+				.orElse(0);
+	}
+
+	public String getLexemeWordValue(Long lexemeId) {
+	
+		Lexeme l = LEXEME.as("l");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+	
+		return create
+				.select(DSL.field("(array_agg(distinct f.value))[1]").as("word_value"))
+				.from(l, p, f)
+				.where(
+						l.ID.eq(lexemeId)
+								.and(l.WORD_ID.eq(p.WORD_ID))
+								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(f.MODE.eq(FormMode.WORD.name())))
+				.groupBy(l.ID)
+				.fetchOptionalInto(String.class)
+				.orElse(null);
+	}
+
+	public String getLexemeDatasetCode(Long lexemeId) {
+
+		return create
+				.select(LEXEME.DATASET_CODE)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchOneInto(String.class);
+	}
+
+	public Long getLexemeMeaningId(Long lexemeId) {
+	
+		return create
+				.select(LEXEME.MEANING_ID)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(Long.class);
+	}
+
+	public LexemeType getLexemeType(Long lexemeId) {
+	
+		return create
+				.select(LEXEME.TYPE)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(LexemeType.class);
+	}
+
 	public Long getLexemePosId(Long lexemeId, String posCode) {
 		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
 		return lexemePosRecord.getId();
@@ -169,6 +337,20 @@ public class LookupDbService extends AbstractSearchDbService {
 		return meaningSemanticTypeRecord.getId();
 	}
 
+	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
+	
+		return create
+				.select(LEXEME.ID)
+				.from(LEXEME, WORD)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
+								.and(WORD.LANG.eq(lang)))
+				.fetchInto(Long.class);
+	}
+
 	public String getImageTitle(Long imageId) {
 		return create
 				.select(FREEFORM.VALUE_TEXT)
@@ -176,55 +358,6 @@ public class LookupDbService extends AbstractSearchDbService {
 				.where(FREEFORM.PARENT_ID.eq(imageId)
 						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
 				.fetchOneInto(String.class);
-	}
-
-	public List<Relation> getWordRelations(Long wordId, String relTypeCode) {
-		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
-				.from(WORD_RELATION)
-				.where(WORD_RELATION.WORD1_ID.eq(wordId))
-				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
-				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetchInto(Relation.class);
-	}
-
-	public Map<Long, WordStress> getWordStressData(Long wordId1, Long wordId2, char displayFormStressSym) {
-
-		Form f = FORM.as("f");
-		Form fm = FORM.as("fm");
-		Paradigm p = PARADIGM.as("p");
-
-		String displayFormStressCrit = new StringBuilder().append('%').append(displayFormStressSym).append('%').toString();
-		Field<Boolean> dfsf = DSL.field(f.DISPLAY_FORM.like(displayFormStressCrit));
-		Field<Boolean> wmef = DSL.field(DSL.exists(DSL.select(fm.ID).from(fm).where(fm.PARADIGM_ID.eq(p.ID).and(fm.MODE.eq(FormMode.FORM.name())))));
-
-		Map<Long, List<WordStress>> wordStressFullDataMap = create
-				.select(
-						p.WORD_ID,
-						f.ID.as("form_id"),
-						f.VALUE_PRESE,
-						f.DISPLAY_FORM,
-						dfsf.as("stress_exists"),
-						wmef.as("morph_exists"))
-				.from(f, p)
-				.where(p.WORD_ID.in(wordId1, wordId2)
-						.and(f.PARADIGM_ID.eq(p.ID))
-						.and(f.MODE.eq(FormMode.WORD.name())))
-				.fetchGroups(p.WORD_ID, WordStress.class);
-
-		Map<Long, WordStress> wordStressSingleDataMap = wordStressFullDataMap.entrySet().stream()
-				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
-					List<WordStress> wordStressCandidates = entry.getValue();
-					if (wordStressCandidates.size() == 1) {
-						return wordStressCandidates.get(0);
-					}
-					List<WordStress> wordStressWithMorphCandidates = wordStressCandidates.stream().filter(WordStress::isMorphExists).collect(Collectors.toList());
-					if (wordStressWithMorphCandidates.size() == 1) {
-						return wordStressWithMorphCandidates.get(0);
-					}
-					return wordStressCandidates.get(0);
-				}));
-
-		return wordStressSingleDataMap;
 	}
 
 	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
@@ -249,67 +382,6 @@ public class LookupDbService extends AbstractSearchDbService {
 				.selectFrom(wv)
 				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
 				.fetchMap(wordValue, homonymNumbers);
-	}
-
-	public List<Long> getWordIdsOfJoinCandidates(eki.ekilex.data.Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
-
-		String wordValue = targetWord.getWordValue();
-		String wordLang = targetWord.getLang();
-		Long wordIdToExclude = targetWord.getWordId();
-		boolean isPrefixoid = targetWord.isPrefixoid();
-		boolean isSuffixoid = targetWord.isSuffixoid();
-
-		Condition whereCondition =
-				FORM.VALUE.like(wordValue)
-						.and(FORM.MODE.eq(FormMode.WORD.name()))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID)).and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(WORD.ID.ne(wordIdToExclude))
-						.and(WORD.LANG.eq(wordLang))
-						.andExists(DSL
-								.select(LEXEME.ID)
-								.from(LEXEME)
-								.where(
-										LEXEME.WORD_ID.eq(WORD.ID)
-												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-												.and(LEXEME.DATASET_CODE.in(userPrefDatasetCodes))));
-
-		if (isPrefixoid) {
-			whereCondition = whereCondition.andExists(DSL
-					.select(WORD_WORD_TYPE.ID)
-					.from(WORD_WORD_TYPE)
-					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
-					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID)));
-		} else if (isSuffixoid) {
-			whereCondition = whereCondition.andExists(DSL
-					.select(WORD_WORD_TYPE.ID)
-					.from(WORD_WORD_TYPE)
-					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
-					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_SUFFIXOID)));
-		} else {
-			whereCondition = whereCondition.andNotExists(DSL
-					.select(WORD_WORD_TYPE.ID)
-					.from(WORD_WORD_TYPE)
-					.where(WORD_WORD_TYPE.WORD_ID.eq(WORD.ID))
-					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID)));
-		}
-
-		Table<Record4<Long, Long, String, String>> wl = DSL
-				.select(
-						WORD.ID.as("word_id"),
-						LEXEME.ID.as("lexeme_id"),
-						LEXEME.DATASET_CODE.as("dataset_code"),
-						LEXEME.PROCESS_STATE_CODE.as("process_state_code"))
-				.from(WORD, PARADIGM, FORM, LEXEME)
-				.where(whereCondition)
-				.asTable("wl");
-
-		return create
-				.selectDistinct(wl.field("word_id"))
-				.from(wl)
-				.where(wl.field("process_state_code", String.class).eq(PROCESS_STATE_PUBLIC)
-						.or(wl.field("dataset_code", String.class).in(userVisibleDatasetCodes)))
-				.fetchInto(Long.class);
 	}
 
 	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId, String datasetCode) {
@@ -382,17 +454,8 @@ public class LookupDbService extends AbstractSearchDbService {
 				.fetchInto(eki.ekilex.data.Meaning.class);
 	}
 
-	public Long getMeaningId(Long lexemeId) {
-
-		return create
-				.select(LEXEME.MEANING_ID)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(Long.class);
-	}
-
 	public List<Classifier> getLexemeOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
-		
+
 		return create
 				.select(LEX_REL_TYPE_LABEL.CODE, LEX_REL_TYPE_LABEL.VALUE)
 				.from(LEX_REL_MAPPING, LEX_REL_TYPE_LABEL)
@@ -430,28 +493,6 @@ public class LookupDbService extends AbstractSearchDbService {
 				.fetchInto(Classifier.class);
 	}
 
-	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
-
-		return create
-				.select(DSL.max(LEXEME.LEVEL1))
-				.from(LEXEME)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.fetchOptionalInto(Integer.class)
-				.orElse(0);
-	}
-
-	public LexemeType getLexemeType(Long lexemeId) {
-
-		return create
-				.select(LEXEME.TYPE)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(LexemeType.class);
-	}
-
 	public Tag getTag(String tagName) {
 
 		return create
@@ -485,20 +526,6 @@ public class LookupDbService extends AbstractSearchDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public List<Long> getMeaningLexemeIds(Long meaningId, String lang, String datasetCode) {
-
-		return create
-				.select(LEXEME.ID)
-				.from(LEXEME, WORD)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(WORD.LANG.eq(lang)))
-				.fetchInto(Long.class);
-	}
-
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
 
 		return create
@@ -506,13 +533,12 @@ public class LookupDbService extends AbstractSearchDbService {
 				.from(LEXEME, WORD, PARADIGM, FORM)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name()))
-						.and(FORM.VALUE.eq(wordValue))
-						.and(WORD.LANG.eq(language))
-						)
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(FORM.VALUE.eq(wordValue))
+								.and(WORD.LANG.eq(language)))
 				.fetchSingleInto(Boolean.class);
 	}
 

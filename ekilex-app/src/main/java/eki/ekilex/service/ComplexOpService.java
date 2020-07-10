@@ -128,7 +128,7 @@ public class ComplexOpService {
 		}
 
 		String datasetCode = userRole.getDatasetCode();
-		Long meaningId = lookupDbService.getMeaningId(lexemeId);
+		Long meaningId = lookupDbService.getLexemeMeaningId(lexemeId);
 		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningLexemeIds(meaningId, meaningLexemesLang, datasetCode);
 		if (!lexemeIdsToDelete.contains(lexemeId)) {
 			lexemeIdsToDelete.add(lexemeId);
