@@ -122,194 +122,218 @@
               <div th:replace="lexdialog :: edit_word_gender_dlg"></div>
               <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
               <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
-              <div class="pt-3 mb-2">
-                <div class="card-body pt-0 pb-0">
-                  <span class="lbl">ÕS soovitab</span>
-                  <button type="button" class="btn badge badge-success"
-                          title="Lisa ÕS soovitab" data-toggle="modal"
-                          th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
-                          sec:authorize="#vars.details.word.crudGrant">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                  </button>
-                  <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
-                    <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
-                    <div class="col hidden-buttons pr-5">
-                      <div class="action-buttons-anchor">
-                        <span th:utext="${odWordRecommendation.valuePrese}"></span>
-                        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'"></span>
-                        <div class="action-buttons-2">
-                          <button type="button" class="btn badge badge-primary"
-                                  title="Muuda"
-                                  data-toggle="modal"
-                                  th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
-                                  sec:authorize="#vars.details.word.crudGrant">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${odWordRecommendation.id}"
-                                  data-op-code="od_word_recommendation"
-                                  data-toggle="delete-confirm"
-                                  data-placement="right"
-                                  sec:authorize="#vars.details.word.crudGrant">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
+              <div class="mb-2">
+                <!-- here -->
+
+                <div class="ekiAccordion" data-plugin="ekiAccordion">
+                  <div class="ekiAccordion__instance">
+                    <div class="ekiAccordion__title">
+                      ÕS soovitab
+                      <button type="button" class="ekiAccordion__add"
+                        title="Lisa ÕS soovitab" data-toggle="modal"
+                        th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
+                        sec:authorize="#vars.details.word.crudGrant">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        
+                      </button>
+                    </div><!--/ekiAccordion__title-->
+                    <div class="ekiAccordion__content">
+                      <div  th:if="${#lists.isEmpty(details.odWordRecommendations)}">
+                        Sisu puudub...
+                      </div>
+
+                      <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
+                        <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
+                        <div class="col hidden-buttons pr-5">
+                          <div class="action-buttons-anchor">
+                            <span th:utext="${odWordRecommendation.valuePrese}"></span>
+                            <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'"></span>
+                            <div class="action-buttons-2">
+                              <button type="button" class="btn badge badge-primary"
+                                      title="Muuda"
+                                      data-toggle="modal"
+                                      th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
+                                      sec:authorize="#vars.details.word.crudGrant">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                              </button>
+                              <button type="button" class="btn badge badge-warning"
+                                      th:data-id="${odWordRecommendation.id}"
+                                      data-op-code="od_word_recommendation"
+                                      data-toggle="delete-confirm"
+                                      data-placement="right"
+                                      sec:authorize="#vars.details.word.crudGrant">
+                                <i class="fa fa-remove" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                  <hr/>
-                </div>
-                <div class="card-body pt-0 pb-0">
-                  <span class="lbl">Keelendi märkused</span>
-                  <button type="button" class="btn badge badge-success"
-                          title="Lisa uus" data-toggle="modal"
-                          th:data-target="${'#addWordNoteDlg_' + wordId}"
-                          sec:authorize="#vars.details.word.crudGrant">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                  </button>
-                  <div th:each="note : ${details.word.notes}">
-                    <div th:replace="lexdialog :: edit_word_note_dlg"></div>
-                    <div class="col hidden-buttons pr-5">
-                      <div class="action-buttons-anchor">
-                        <span th:utext="${note.valuePrese}"></span>
-                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
-                        <div class="action-buttons-2">
-                          <button type="button" class="btn badge badge-primary"
-                                  title="Muuda"
-                                  data-toggle="modal"
-                                  th:data-target="${'#editWordNoteDlg_' + note.id}"
-                                  sec:authorize="#vars.details.word.crudGrant">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${note.id}"
-                                  data-op-code="word_note"
-                                  data-toggle="delete-confirm"
-                                  data-placement="right"
-                                  sec:authorize="#vars.details.word.crudGrant">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
+                    </div><!--/ekiAccordion__content-->
+                  </div><!--/ekiAccordion__instance-->
+
+                  <div class="ekiAccordion__instance">
+                    <div class="ekiAccordion__title">
+                      Keelendi märkused
+                      <button type="button" class="ekiAccordion__add"
+                              title="Lisa uus" data-toggle="modal"
+                              th:data-target="${'#addWordNoteDlg_' + wordId}"
+                              sec:authorize="#vars.details.word.crudGrant">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </div><!--/ekiAccordion__title-->
+                    <div class="ekiAccordion__content">
+
+                      <div th:each="note : ${details.word.notes}">
+                        <div th:replace="lexdialog :: edit_word_note_dlg"></div>
+                        <div class="col hidden-buttons pr-5">
+                          <div class="action-buttons-anchor">
+                            <span th:utext="${note.valuePrese}"></span>
+                            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
+                            <div class="action-buttons-2">
+                              <button type="button" class="btn badge badge-primary"
+                                      title="Muuda"
+                                      data-toggle="modal"
+                                      th:data-target="${'#editWordNoteDlg_' + note.id}"
+                                      sec:authorize="#vars.details.word.crudGrant">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                              </button>
+                              <button type="button" class="btn badge badge-warning"
+                                      th:data-id="${note.id}"
+                                      data-op-code="word_note"
+                                      data-toggle="delete-confirm"
+                                      data-placement="right"
+                                      sec:authorize="#vars.details.word.crudGrant">
+                                <i class="fa fa-remove" aria-hidden="true"></i>
+                              </button>
+                            </div>
+                          </div>
                         </div>
                       </div>
+                      <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
+                        <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
+                          <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="p-1">
+                            <div th:if="${not #lists.isEmpty(paradigm.forms)}">
+                              <table>
+                                <tr th:each="form : ${paradigm.forms}">
+                                  <td style="width: 200px" class="text-right pr-1">
+                                    <span th:text="${form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}" style="font-size: 80%; color: #999"></span>
+                                  </td>
+                                  <td class="pr-1">
+                                    <span th:text="${form.value}" th:title="${form.formFrequencies}"></span>
+                                  </td>
+                                  <td class="pr-1">
+                                    <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>
+                                  </td>
+                                  <td>
+                                    <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}" style="font-size: 80%; color: #999"></span>
+                                  </td>
+                                </tr>
+                              </table>
+                            </div>
+                          </div>
+                        </div>
+                        <hr/>
+                      </div><!--/card-body-->
+                    </div><!--/ekiAccordion__content-->
+                  </div><!--/ekiAccordion__instance-->
+
+                  <div class="ekiAccordion__instance">
+                    <div class="ekiAccordion__title">
+                      Keelendi seosed
+                      <button type="button" class="ekiAccordion__add"
+                              title="Lisa seos" data-toggle="modal"
+                              th:data-target="${'#addWordRelationDlg_' + wordId}"
+                              sec:authorize="#vars.details.word.crudGrant">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
                     </div>
-                  </div>
-                  <hr/>
-                </div>
-                <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
-                  <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
-                    <button class="btn btn-info ml-3" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
-                      <span th:text="${paradigmIter.count + '.'}" th:if="${paradigmIter.size > 1}"></span>
-                      <span>vormid</span>
-                    </button>
-                    <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="collapse p-1">
-                      <div th:if="${not #lists.isEmpty(paradigm.forms)}">
-                        <table>
-                          <tr th:each="form : ${paradigm.forms}">
-                            <td style="width: 200px" class="text-right pr-1">
-                              <span th:text="${form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}" style="font-size: 80%; color: #999"></span>
-                            </td>
-                            <td class="pr-1">
-                              <span th:text="${form.value}" th:title="${form.formFrequencies}"></span>
-                            </td>
-                            <td class="pr-1">
-                              <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>
-                            </td>
-                            <td>
-                              <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}" style="font-size: 80%; color: #999"></span>
-                            </td>
-                          </tr>
-                        </table>
+                    <div class="ekiAccordion__content">
+                      <div  th:if="${#lists.isEmpty(details.relations)}">
+                        Sisu puudub...
                       </div>
-                    </div>
-                  </div>
-                  <hr/>
-                </div>
-                <div class="card-body pt-0 pb-0">
-                  <span class="lbl">Keelendi seosed</span>
-                  <button type="button" class="btn badge badge-success"
-                          title="Lisa seos" data-toggle="modal"
-                          th:data-target="${'#addWordRelationDlg_' + wordId}"
-                          sec:authorize="#vars.details.word.crudGrant">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                  </button>
-                  <table class="orderable" data-op-code="word_relation" th:if="${not #lists.isEmpty(details.relations)}">
-                    <tr th:each="relation, itemIter : ${details.relations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                      <td class="action-column">
-                        <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
-                      </td>
-                      <td class="invisible-buttons">
-                        <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
-                          <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-id="${relation.id}"
-                                data-op-code="word_relation"
-                                data-toggle="delete-confirm"
-                                data-placement="left"
-                                sec:authorize="#vars.details.word.crudGrant">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                      </td>
-                      <td>
-                        <span th:text="${relation.relTypeLabel}"></span>
-                      </td>
-                    </tr>
-                  </table>
-                  <table th:if="${not #lists.isEmpty(details.wordGroups)}">
-                    <tr th:each="wordGroup : ${details.wordGroups}">
-                      <td class="invisible-buttons">
-                        <span th:each="relation, itemIter : ${wordGroup.members}">
-                          <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
-                            <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${relation.id}"
-                                  data-op-code="word_relation"
-                                  data-toggle="delete-confirm"
-                                  data-placement="left"
-                                  sec:authorize="#vars.details.word.crudGrant">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                          <span th:unless="${itemIter.last}"></span>
-                        </span>
-                      </td>
-                      <td>
-                        <span th:text="${wordGroup.groupTypeLabel}"></span>
-                      </td>
-                    </tr>
-                  </table>
-                  <hr/>
-                </div>
-                <div class="card-body pt-0 pb-0" th:if="${not #lists.isEmpty(details.wordEtymology)}">
-                  <span class="lbl">Keelendi etümoloogia</span>
-                  <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
-                    <div>
-                      <div>
-                        <span th:if="${wordEtym.questionable}">?</span>
-                        <span th:if="${wordEtym.etymologyTypeCode != null}" th:text="${wordEtym.etymologyTypeCode}"></span>
-                        <span th:if="${wordEtym.etymologyYear != null}" th:text="${wordEtym.etymologyYear}"></span>
-                      </div>
-                      <div th:each="wordEtymSourceLink : ${wordEtym.wordEtymSourceLinks}">
-                        <span th:text="${wordEtymSourceLink.value}"></span>
-                      </div>
-                      <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
-                        <button type="button" class="btn btn-link btn-xs" th:data-id="${wordEtymRel.relatedWordId}" name="word-details-btn">
-                          <span>
-                            <span th:if="${wordEtymRel.questionable}">?</span>
-                            <span th:if="${wordEtymRel.compound}">+</span>
-                            <span th:text="${wordEtymRel.relatedWord + ' (' + viewUtil.getLangIso2(wordEtymRel.relatedWordLang) + ')'}"></span>
-                          </span>
-                        </button>
-                        <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
-                      </div>
-                      <div th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}"></div>
-                    </div>
-                    <div th:unless="${itemIter.last}">
-                      <hr/>
-                    </div>
-                  </th:block>
-                  <hr/>
-                </div>
+                      <table class="orderable" data-op-code="word_relation" th:if="${not #lists.isEmpty(details.relations)}">
+                        <tr th:each="relation, itemIter : ${details.relations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+                          <td class="action-column">
+                            <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
+                          </td>
+                          <td class="invisible-buttons">
+                            <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
+                              <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                            </button>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-id="${relation.id}"
+                                    data-op-code="word_relation"
+                                    data-toggle="delete-confirm"
+                                    data-placement="left"
+                                    sec:authorize="#vars.details.word.crudGrant">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                          </td>
+                          <td>
+                            <span th:text="${relation.relTypeLabel}"></span>
+                          </td>
+                        </tr>
+                      </table>
+                      <table th:if="${not #lists.isEmpty(details.wordGroups)}">
+                        <tr th:each="wordGroup : ${details.wordGroups}">
+                          <td class="invisible-buttons">
+                            <span th:each="relation, itemIter : ${wordGroup.members}">
+                              <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
+                                <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
+                              </button>
+                              <button type="button" class="btn badge badge-warning"
+                                      th:data-id="${relation.id}"
+                                      data-op-code="word_relation"
+                                      data-toggle="delete-confirm"
+                                      data-placement="left"
+                                      sec:authorize="#vars.details.word.crudGrant">
+                                <i class="fa fa-remove" aria-hidden="true"></i>
+                              </button>
+                              <span th:unless="${itemIter.last}"></span>
+                            </span>
+                          </td>
+                          <td>
+                            <span th:text="${wordGroup.groupTypeLabel}"></span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div><!--/ekiAccordion__content-->
+                  </div><!--/ekiAccordion__instance-->
+
+                  <div class="ekiAccordion__instance" th:if="${not #lists.isEmpty(details.wordEtymology)}">
+                    <div class="ekiAccordion__title">Keelendi etümoloogia</div>
+                    <div class="ekiAccordion__content">
+                      <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
+                        <div>
+                          <div>
+                            <span th:if="${wordEtym.questionable}">?</span>
+                            <span th:if="${wordEtym.etymologyTypeCode != null}" th:text="${wordEtym.etymologyTypeCode}"></span>
+                            <span th:if="${wordEtym.etymologyYear != null}" th:text="${wordEtym.etymologyYear}"></span>
+                          </div>
+                          <div th:each="wordEtymSourceLink : ${wordEtym.wordEtymSourceLinks}">
+                            <span th:text="${wordEtymSourceLink.value}"></span>
+                          </div>
+                          <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
+                            <button type="button" class="btn btn-link btn-xs" th:data-id="${wordEtymRel.relatedWordId}" name="word-details-btn">
+                              <span>
+                                <span th:if="${wordEtymRel.questionable}">?</span>
+                                <span th:if="${wordEtymRel.compound}">+</span>
+                                <span th:text="${wordEtymRel.relatedWord + ' (' + viewUtil.getLangIso2(wordEtymRel.relatedWordLang) + ')'}"></span>
+                              </span>
+                            </button>
+                            <span th:if="${wordEtymRel.comment != null}" th:utext="${wordEtymRel.comment}"></span>
+                          </div>
+                          <div th:if="${wordEtym.comment != null}" th:utext="${wordEtym.comment}"></div>
+                        </div>
+                        <div th:unless="${itemIter.last}">
+                          <hr/>
+                        </div>
+                      </th:block>
+                    </div><!--/ekiAccordion__content-->
+                  </div><!--/ekiAccordion__instance-->
+
+                </div><!--/ekiAccordion-->
+
               </div>
             </div>
           </div>

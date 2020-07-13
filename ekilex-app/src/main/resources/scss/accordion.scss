@@ -1,0 +1,67 @@
+.ekiAccordion {
+  margin: -1px 0 0 0;
+  position: relative;
+  &__instance {
+    border: #CCD9E0 1pxi solid;
+    margin-bottom: -1pxi;
+    &--active {
+      .ekiAccordion__title:before {
+        content: '\f0d7';
+      }
+      .ekiAccordion__content {
+        display: block;
+      }
+    }
+  }
+  &__title {
+    font-family: Inter;
+    font-size: 14px;
+    line-height: 17px;
+    background: #ECF0F2;
+    padding:6px 56px 6px 24px;
+    cursor: pointer;
+    position: relative;
+    &:before {
+      content: "\f0d8";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 3px;
+      font-family:FontAwesome;
+      width: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #7D8C9B;
+    }
+  }
+  &__add {
+    position: absolute;
+    top: 4px;
+    right: 0;
+    bottom: 4px;
+    width: 32px;
+    border: none;
+    padding: 0;
+    background: none;
+    border-left: #CCD9E0 1px solid;
+    display: flex;
+    appearance: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #7D8C9B;
+  }
+  &__content {
+    padding:8px;
+    overflow-x: auto;
+    display: none;
+  }
+
+  table {
+    td:first-child {
+      white-space: nowrap;
+    }
+  }
+}
