@@ -956,7 +956,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteLexemeAndMeaningLexemes(Long lexemeId, String meaningLexemesLang, String datasetCode) {
-		Long meaningId = lookupDbService.getMeaningId(lexemeId);
+		Long meaningId = lookupDbService.getLexemeMeaningId(lexemeId);
 		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningLexemeIds(meaningId, meaningLexemesLang, datasetCode);
 		if (!lexemeIdsToDelete.contains(lexemeId)) {
 			lexemeIdsToDelete.add(lexemeId);

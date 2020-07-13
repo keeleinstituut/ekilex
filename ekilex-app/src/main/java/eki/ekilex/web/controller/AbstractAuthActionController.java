@@ -27,7 +27,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	protected UserProfileService userProfileService;
 
 	@Autowired
-	private LookupService lookupService;
+	protected LookupService lookupService;
 
 	protected String getDatasetCodeFromRole() {
 		EkiUser user = userContext.getUser();

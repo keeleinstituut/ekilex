@@ -126,16 +126,6 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public WordLexeme getDefaultWordLexeme(Long lexemeId, List<ClassifierSelect> languagesOrder) throws Exception {
-
-		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
-		if (lexeme != null) {
-			populateLexeme(lexeme, languagesOrder, new DatasetPermission(), null, true);
-		}
-		return lexeme;
-	}
-
-	@Transactional
 	public WordLexeme getWordLexeme(
 			Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, DatasetPermission userRole, boolean isFullData) throws Exception {
 

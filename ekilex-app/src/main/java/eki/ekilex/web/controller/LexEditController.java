@@ -32,6 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
@@ -69,24 +70,25 @@ public class LexEditController extends AbstractPageController {
 	private CudService cudService;
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
-	public String search(
+	public String lexJoin(
 			@PathVariable("targetLexemeId") Long targetLexemeId,
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		WordLexeme targetLexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId, languagesOrder);
+		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
+		DatasetPermission userRole = userContextData.getUserRole();
+		List<String> tagNames = userContextData.getTagNames();
+		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, userRole, true);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
 		if (searchFilter == null) {
 			searchFilter = targetLexemeWord;
 		}
-
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		List<String> tagNames = userContextData.getTagNames();
-		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
 		Integer wordHomonymNumber = null;
 		if (StringUtils.equals(searchFilter, targetLexemeWord)) {
@@ -150,12 +152,10 @@ public class LexEditController extends AbstractPageController {
 			@RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
-		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(targetLexemeId, languagesOrder);
+		String lexemeWordValue = lookupService.getLexemeWordValue(targetLexemeId);
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String firstWordValue = lexeme.getWordValue();
-		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
+		String searchUri = searchHelper.composeSearchUri(datasets, lexemeWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
@@ -163,13 +163,11 @@ public class LexEditController extends AbstractPageController {
 	@GetMapping(LEX_SEPARATE_URI + "/{lexemeId}")
 	public String separate(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		WordLexeme lexeme = lexSearchService.getDefaultWordLexeme(lexemeId, languagesOrder);
+		String lexemeWordValue = lookupService.getLexemeWordValue(lexemeId);
 		compositionService.separateLexemeMeanings(lexemeId);
 
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String firstWordValue = lexeme.getWordValue();
-		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
+		String searchUri = searchHelper.composeSearchUri(datasets, lexemeWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
