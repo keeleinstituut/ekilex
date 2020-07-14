@@ -25,23 +25,23 @@
   align-items: center;
   appearance: none;
   font-size: 18px;
-  background: #ECF0F2;
-  border: 1px solid #CCD9E0;
-  color: #7D8C9B;
+  background: $gray-100;
+  border: 1px solid $gray-200;
+  color: $gray-300;
   margin-right: 8px;
   cursor: pointer;
   flex-grow: 0;
   flex-shrink: 0;
   transition: color .25s, background-color .25s, border-color .25s;
   &:hover {
-    color: #3f3f3f;
+    color: $gray-900;
     background-color: #d5dee2;
     border-color: #acc1cd;
   }
   &.active {
-    background: #7D8C9B;
-    border-color: #7D8C9B;
-    color: #fff;
+    background: $gray-300;
+    border-color: $gray-300;
+    color: $white;
   }
 }
 
