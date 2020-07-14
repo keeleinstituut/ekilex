@@ -166,7 +166,7 @@ function loadWordDetails(wordId) {
 		closeWaitDlg();
 
 		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
-		$wpm.bindObjects(detailsDiv);
+		$wpm.bindObjects();
 	}).fail(function(data) {
 		console.log(data);
 		closeWaitDlg();
@@ -190,7 +190,7 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 		$('.tooltip').remove();
 		closeWaitDlg();
 		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
-		$wpm.bindObjects(detailsDiv);
+		$wpm.bindObjects();
 	}).fail(function(data) {
 		console.log(data);
 		closeWaitDlg();

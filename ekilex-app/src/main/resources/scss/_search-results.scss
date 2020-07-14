@@ -12,3 +12,41 @@
     }
   }
 }
+
+#searchColumn, #toolsColumn {
+  display: none;
+}
+.searchResultsToggle{
+  display: flex;
+  border-radius: 2px;
+  width: 33px;
+  height: 33px;
+  justify-content: center;
+  align-items: center;
+  appearance: none;
+  font-size: 18px;
+  background: $gray-100;
+  border: 1px solid $gray-200;
+  color: $gray-300;
+  margin-right: 8px;
+  cursor: pointer;
+  flex-grow: 0;
+  flex-shrink: 0;
+  transition: color .25s, background-color .25s, border-color .25s;
+  &:hover {
+    color: $gray-900;
+    background-color: #d5dee2;
+    border-color: #acc1cd;
+  }
+  &.active {
+    background: $gray-300;
+    border-color: $gray-300;
+    color: $white;
+  }
+}
+
+#resultColumn .searchResultsToggle{
+  margin:0 0 0 8px;
+  height: 24px;
+  width: 30px;
+}

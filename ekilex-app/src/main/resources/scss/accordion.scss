@@ -1,8 +1,9 @@
 .ekiAccordion {
   margin: -1px 0 0 0;
   position: relative;
+
   &__instance {
-    border: #CCD9E0 1pxi solid;
+    border: $gray-200 1pxi solid;
     margin-bottom: -1pxi;
     &--active {
       .ekiAccordion__title:before {
@@ -13,11 +14,12 @@
       }
     }
   }
+
   &__title {
     font-family: Inter;
     font-size: 14px;
     line-height: 17px;
-    background: #ECF0F2;
+    background: $gray-100;
     padding:6px 56px 6px 24px;
     cursor: pointer;
     position: relative;
@@ -33,9 +35,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #7D8C9B;
+      color: $gray-300;
     }
   }
+
   &__add {
     position: absolute;
     top: 4px;
@@ -45,14 +48,15 @@
     border: none;
     padding: 0;
     background: none;
-    border-left: #CCD9E0 1px solid;
+    border-left: $gray-200 1px solid;
     display: flex;
     appearance: none;
     justify-content: center;
     align-items: center;
     font-size: 14px;
-    color: #7D8C9B;
+    color: $gray-300;
   }
+
   &__content {
     padding:8px;
     overflow-x: auto;
@@ -64,4 +68,5 @@
       white-space: nowrap;
     }
   }
+
 }

@@ -22,12 +22,12 @@
       <div th:text="#{lex.search.invalid}"></div>
     </div>
     <div class="row no-gutters py-3 flex-grow-1 h-100" th:unless="${noResults}">
-      <div class="col-3 pr-2 h-100">
+      <div class="col-3 pr-2 h-100" id="searchColumn">
         <div id="results_div" class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div th:replace="lexcomp :: search_result"></div>
         </div>
       </div>
-      <div class="col-9 h-100 d-flex flex-column">
+      <div class="col-9 h-100 d-flex flex-column" id="resultColumn">
         <div id="word-details-area"></div>
       </div>
     </div>
@@ -85,6 +85,11 @@
                     </div>
                   </div>
                 </div>
+                <div
+                  data-plugin="paneToggle"
+                  data-hideable="toolsColumn"
+                  data-extendable="contentColumn"
+                  class="searchResultsToggle"><i class="fa fa-columns" aria-hidden="true"></i></div>
               </div>
             </div>
             <div class="d-flex flex-row">
@@ -96,7 +101,7 @@
             </div>
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
-            <div class="col-8 overflow-auto h-100 pt-3">
+            <div class="col-8 overflow-auto h-100 pt-3" id="contentColumn">
               <th:block th:each="lexeme : ${details.lexemes}">
                 <div th:id="${'lexeme-details-' + lexeme.lexemeId}">
                   <th:block th:if="${#lists.size(details.lexemes) > 1}">
@@ -108,7 +113,7 @@
                 </div>
               </th:block>
             </div>
-            <div class="col-4 border-left border-light h-100 overflow-auto">
+            <div class="col-4 border-left border-light h-100 overflow-auto" id="toolsColumn">
               <div th:replace="lexdialog :: add_word_relation_dlg"></div>
               <div th:replace="lexdialog :: add_od_word_recommendation_dlg"></div>
               <div th:replace="lexdialog :: add_word_note_dlg"></div>
@@ -123,7 +128,6 @@
               <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
               <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
               <div class="mb-2">
-                <!-- here -->
 
                 <div class="ekiAccordion" data-plugin="ekiAccordion">
                   <div class="ekiAccordion__instance">
@@ -136,7 +140,7 @@
                         <i class="fa fa-plus" aria-hidden="true"></i>
                         
                       </button>
-                    </div><!--/ekiAccordion__title-->
+                    </div>
                     <div class="ekiAccordion__content">
                       <div  th:if="${#lists.isEmpty(details.odWordRecommendations)}">
                         Sisu puudub...
@@ -168,9 +172,8 @@
                           </div>
                         </div>
                       </div>
-                    </div><!--/ekiAccordion__content-->
-                  </div><!--/ekiAccordion__instance-->
-
+                    </div>
+                  </div>
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       Keelendi märkused
@@ -180,9 +183,8 @@
                               sec:authorize="#vars.details.word.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
-                    </div><!--/ekiAccordion__title-->
+                    </div>
                     <div class="ekiAccordion__content">
-
                       <div th:each="note : ${details.word.notes}">
                         <div th:replace="lexdialog :: edit_word_note_dlg"></div>
                         <div class="col hidden-buttons pr-5">
@@ -233,10 +235,9 @@
                           </div>
                         </div>
                         <hr/>
-                      </div><!--/card-body-->
-                    </div><!--/ekiAccordion__content-->
-                  </div><!--/ekiAccordion__instance-->
-
+                      </div>
+                    </div>
+                  </div>
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       Keelendi seosed
@@ -297,9 +298,8 @@
                           </td>
                         </tr>
                       </table>
-                    </div><!--/ekiAccordion__content-->
-                  </div><!--/ekiAccordion__instance-->
-
+                    </div>
+                  </div>
                   <div class="ekiAccordion__instance" th:if="${not #lists.isEmpty(details.wordEtymology)}">
                     <div class="ekiAccordion__title">Keelendi etümoloogia</div>
                     <div class="ekiAccordion__content">
@@ -329,11 +329,9 @@
                           <hr/>
                         </div>
                       </th:block>
-                    </div><!--/ekiAccordion__content-->
-                  </div><!--/ekiAccordion__instance-->
-
-                </div><!--/ekiAccordion-->
-
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
