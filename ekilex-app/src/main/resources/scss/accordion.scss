@@ -1,6 +1,7 @@
 .ekiAccordion {
   margin: -1px 0 0 0;
   position: relative;
+
   &__instance {
     border: #CCD9E0 1pxi solid;
     margin-bottom: -1pxi;
@@ -13,6 +14,7 @@
       }
     }
   }
+
   &__title {
     font-family: Inter;
     font-size: 14px;
@@ -36,6 +38,7 @@
       color: #7D8C9B;
     }
   }
+
   &__add {
     position: absolute;
     top: 4px;
@@ -53,6 +56,7 @@
     font-size: 14px;
     color: #7D8C9B;
   }
+
   &__content {
     padding:8px;
     overflow-x: auto;
@@ -64,4 +68,5 @@
       white-space: nowrap;
     }
   }
+
 }

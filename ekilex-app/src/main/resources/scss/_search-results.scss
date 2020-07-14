@@ -12,3 +12,41 @@
     }
   }
 }
+
+#searchColumn, #toolsColumn {
+  display: none;
+}
+.searchResultsToggle{
+  display: flex;
+  border-radius: 2px;
+  width: 33px;
+  height: 33px;
+  justify-content: center;
+  align-items: center;
+  appearance: none;
+  font-size: 18px;
+  background: #ECF0F2;
+  border: 1px solid #CCD9E0;
+  color: #7D8C9B;
+  margin-right: 8px;
+  cursor: pointer;
+  flex-grow: 0;
+  flex-shrink: 0;
+  transition: color .25s, background-color .25s, border-color .25s;
+  &:hover {
+    color: #3f3f3f;
+    background-color: #d5dee2;
+    border-color: #acc1cd;
+  }
+  &.active {
+    background: #7D8C9B;
+    border-color: #7D8C9B;
+    color: #fff;
+  }
+}
+
+#resultColumn .searchResultsToggle{
+  margin:0 0 0 8px;
+  height: 24px;
+  width: 30px;
+}

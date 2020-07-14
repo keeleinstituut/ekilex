@@ -79,7 +79,7 @@ class EkiAccordion {
 /*
   jQuery plugin wrapper for EkiAccordion class.
   Can be reused accross the application;
-    $(element).ekiAccordion();
+    $(element).accordion();
 */
 
 $.fn.ekiAccordion = function() {
