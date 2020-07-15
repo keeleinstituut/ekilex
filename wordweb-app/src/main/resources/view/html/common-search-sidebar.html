@@ -265,29 +265,16 @@
   </th:block>
   <th:block th:fragment="word-rel-group">
     <th:block th:if="${relationTypeGroup.asList}">
-      <div>
+      <div th:id="${'word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}">
         <th:block th:each="relation, relationIter : ${relationTypeGroup.relatedWords}"
                   th:with="
                   isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                   isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-          <span class="word-options text-nowrap mb-1" th:if="${!isCollapsable}">
+          <span class="word-options text-nowrap mb-1" th:classappend="${isCollapsable ? 'collapse':''}">
             <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
               <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
             </a>
-            <span th:unless="${relationIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
-          </span>
-        </th:block>
-      </div>
-      <div th:id="${'word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}" class="collapse">
-        <th:block th:each="relation, relationIter : ${relationTypeGroup.relatedWords}"
-                  th:with="
-                  isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
-                  isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-          <span class="word-options text-nowrap mb-1" th:if="${isCollapsable}">
-            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
-              <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
-            </a>
-            <span th:unless="${relationIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
+            <span th:unless="${relationIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
           </span>
         </th:block>
       </div>
@@ -296,7 +283,7 @@
               aria-expanded="false"
               data-toggle="collapse"
               data-dynamic-text="true"
-              th:data-target="${'#word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}"
+              th:data-target="${'#word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index + ' .collapse'}"
               th:if="${#lists.size(relationTypeGroup.relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
         <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -310,7 +297,7 @@
     <th:block th:if="${relationTypeGroup.asMap}">
       <th:block th:each="relationEntry,relEntryIter : ${relationTypeGroup.relatedWordsByLang}"
                 th:with="relatedWords=${relationEntry.value}">
-        <div class="d-flex flex-wrap">
+        <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="d-flex flex-wrap">
           <span class="lang-code lang-code-sm mr-2 align-self-start"
                 th:with="langData=${viewUtil.getLangData(relationEntry.key)}"
                 th:text="${langData.codeIso2}" th:title="${langData.label}">
@@ -319,33 +306,20 @@
                     th:with="
                     isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                     isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-            <span class="word-options text-nowrap mb-1" th:if="${!isCollapsable}">
+            <span class="word-options text-nowrap mb-1" th:classappend="${isCollapsable ? 'collapse' : ''}">
               <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                 <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
               </a>
-              <span th:unless="${relationIter.last}" class="ml-n1 mr-1" th:style="${isLimit ? 'display: none' : ''}">,</span>
+              <span th:unless="${relationIter.last}" class="ml-n1 mr-1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
             </span>
           </th:block>
-          <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="collapse">
-            <th:block th:each="relation, relationIter : ${relatedWords}"
-                      th:with="
-                      isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
-                      isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-              <span class="word-options text-nowrap mb-1" th:if="${isCollapsable}" >
-                <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
-                  <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
-                </a>
-                <span th:unless="${relationIter.last}" class="ml-n1 mr-1" th:style="${isLimit ? 'display: none' : ''}">,</span>
-              </span>
-            </th:block>
-          </div>
         </div>
         <button class="btn btn-collapse btn-link-muted btn-sm ml-n2"
                 type="button"
                 aria-expanded="false"
                 data-toggle="collapse"
                 data-dynamic-text="true"
-                th:data-target="${'#word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}"
+                th:data-target="${'#word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index + ' .collapse'}"
                 th:if="${#lists.size(relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
           <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
             <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
