@@ -70,7 +70,11 @@ class ContextMenu {
 
   handleContextMenuEvent(task) {
     const taskName = task.charAt(0).toUpperCase() + task.slice(1);
-    this[`on${taskName}`]();
+    try {
+      this[`on${taskName}`]();
+    } catch(err) {
+      console.log(`${taskName} method doesnt exist!`);
+    };
   }
 
   removeInstance(from) {
@@ -132,6 +136,16 @@ class ContextMenu {
   }
 
   /*
+    <button
+      data-plugin="contextmenu"
+      data-id="9191919191919191919"
+      data-contextmenu:join="Ühenda"
+      data-contextmenu:rearrange="Tõsta ümber / Muuda järjekorda"
+      data-contextmenu:move="Tõsta uude (term)mõistesse/ (leks)homonüümi"
+      data-contextmenu:share="Jaga linki"
+      data-contextmenu:edit="Muuda"
+      data-contextmenu:delete="Kustuta">Context test</button>
+
     custom contextmenu events
     data-contextmenu:rearrange -> onRearrange
     data-contextmenu:move -> onMove

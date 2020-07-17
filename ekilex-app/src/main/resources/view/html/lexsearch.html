@@ -128,7 +128,6 @@
               <div th:replace="lexdialog :: edit_word_aspect_dlg"></div>
               <div th:replace="lexdialog :: edit_word_vocal_form_dlg"></div>
               <div class="mb-2">
-
                 <div class="ekiAccordion" data-plugin="ekiAccordion">
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
@@ -138,7 +137,6 @@
                         th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
                         sec:authorize="#vars.details.word.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
-                        
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
