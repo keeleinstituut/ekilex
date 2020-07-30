@@ -1,4 +1,10 @@
 $(function(){
+
+	$(document).on("show.bs.modal", "[id^=addLexemeDataDlg_]", function() {
+		initAddMultiDataDlg($(this));
+		$wpm.bindObjects($(this));
+	});
+	
 	$(document).on("show.bs.modal", "[id^=addDefinitionDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
@@ -152,4 +158,5 @@ $(function(){
 	$(document).on("show.bs.modal", "[id^=addLexemeTagDlg_]", function() {
 		initAddMultiDataDlg($(this));
 	});
+
 });

@@ -7,7 +7,7 @@
        class="modal" role="dialog" th:fragment="add_lexeme_data_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
+        <form th:action="@{/create_item}" method="post" data-plugin="formValidate">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="id2" th:value="${lexeme.meaningId}">

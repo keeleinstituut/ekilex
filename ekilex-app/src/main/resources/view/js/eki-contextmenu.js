@@ -177,6 +177,10 @@ class ContextMenu {
     console.log(this.elementId, 'Beep boop.. deleting');
   }
 
+  onCompare() {
+    loadWordDetails(this.elementId, 'compare');
+  }
+
 }
 
 $.fn.contextmenu = function() {

@@ -10,7 +10,11 @@
       <ul id="results" class="mb-0 pb-3 list-group">
         <th:block th:each="word : ${wordsResult.words}">
           <li th:id="${'word-result-' + word.wordId}" class="list-group-item search-result-item border-left-0 border-right-0 rounded-0 p-0">
-            <button type="button" class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0" th:data-id="${word.wordId}" name="word-details-btn">
+            <button
+              type="button"
+              class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0"
+              th:data-id="${word.wordId}"
+              name="word-details-btn">
               <span class="d-flex align-items-center">
                 <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
                 <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>

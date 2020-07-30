@@ -55,7 +55,7 @@ function submitForm(theForm, failMessage, callback) {
 		if (typeof callback === 'function') {
 			callback();
 		} else {
-			$('#refresh-details').trigger('click');
+			theForm.parents('#word-details-area:first').find('#refresh-details').trigger('click');
 		}
 	}).fail(function(data) {
 		console.log(data);

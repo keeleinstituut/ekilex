@@ -106,8 +106,8 @@ function initializeTermSearch() {
 	});
 
 	var detailsButtons = $('#results').find('[name="meaning-details-btn"]');
-	if (detailsButtons.length === 1) {
-		detailsButtons.trigger('click');
+	if (detailsButtons.length > 0) {
+		detailsButtons.first().trigger('click');
 	}
 
 	initNewWordDlg();

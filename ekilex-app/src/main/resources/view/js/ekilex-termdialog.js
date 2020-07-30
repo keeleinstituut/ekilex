@@ -1,4 +1,5 @@
 //addLexemeDataDlg_ select
+
 $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	var opCode = $(this).val();
 	var localForm = $(this).closest("form");
@@ -6,7 +7,7 @@ $(document).on("change", "select.lex-data-select[name='opCode']", function() {
 	var lexemeId = localForm.find("[name=id]").val();
 	var dlgElemId = "#" + opCode + '_' + lexemeId;
 	if (opCode.endsWith('Dlg')) {
-		$(dlgElemId).modal("show");
+    $(dlgElemId).modal("show");
 		$("#addLexemeDataDlg_" + lexemeId).modal("hide");
 	} else {
 		$(dlgElemId).show();
