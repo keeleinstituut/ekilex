@@ -1,4 +1,8 @@
 $(function(){
+	$(document).on("show.bs.modal", "[id^=addLexemeDataDlg_]", function() {
+		initAddMultiDataDlg($(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=addDefinitionDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
