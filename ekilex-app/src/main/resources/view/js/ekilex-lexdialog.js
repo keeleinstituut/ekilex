@@ -1,5 +1,5 @@
 //addLexemeDataDlg_ select
-$(function(){
+$(function() {
 	$(document).on("change", "select.lex-data-select[name='opCode']", function() {
 		var opCode = $(this).val();
 		var localForm = $(this).closest("form");
@@ -13,145 +13,145 @@ $(function(){
 			$(dlgElemId).show();
 		}
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addGovernmentDlg_]", function() {
 		initGenericTextAddDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editGovernmentDlg_]", function() {
 		initGenericTextEditDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addUsageAuthorDlg_]", function() {
 		initUsageAuthorDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addUsageMemberDlg_]", function() {
 		initUsageMemberDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editUsageTranslationDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editUsageDefinitionDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addWordRelationDlg_]", function() {
 		initMultiselectRelationDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addWordAspectDlg_]", function() {
 		initSelectDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editWordAspectDlg_]", function() {
 		initSelectDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addWordLangDlg_]", function() {
 		initSelectDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editLexemeLevelsDlg_]", function() {
 		initLexemeLevelsDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editLexemeComplexityDlg_]", function() {
 		initSelectDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addLexemePosDlg_]", function() {
 		initAddMultiDataDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addLexemeDerivDlg_]", function() {
 		initAddMultiDataDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addLexemeRegisterDlg_]", function() {
 		initAddMultiDataDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addMeaningDomainDlg_]", function() {
 		initAddMultiDataDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addLexemeGrammarDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addWordNoteDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editWordNoteDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addWordVocalFormDlg_]", function() {
 		initGenericTextEditDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editWordVocalFormDlg_]", function() {
 		initGenericTextEditDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addWordGenderDlg_]", function() {
 		initSelectDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addWordTypeDlg_]", function() {
 		initSelectDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addOdWordRecommendationDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editOdWordRecommendationDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addOdLexemeRecommendationDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editOdLexemeRecommendationDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editOdUsageDefinitionDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editOdUsageAlternativeDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editLexemeWeightDlg_]", function() {
 		initGenericTextEditDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editMeaningWordAndLexemeWeightDlg_]", function() {
 		initEditMeaningWordAndLexemeWeightDlg($(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=addLearnerCommentDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
-	
+
 	$(document).on("show.bs.modal", "[id^=editLearnerCommentDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
