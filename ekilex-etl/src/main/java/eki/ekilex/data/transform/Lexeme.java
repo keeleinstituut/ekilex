@@ -25,7 +25,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private String valueStateCode;
 
-	private String processStateCode;
+	private Boolean isPublic;
 
 	private Complexity complexity;
 
@@ -103,12 +103,12 @@ public class Lexeme extends AbstractDataObject {
 		this.valueStateCode = valueStateCode;
 	}
 
-	public String getProcessStateCode() {
-		return processStateCode;
+	public Boolean getIsPublic() {
+		return isPublic;
 	}
 
-	public void setProcessStateCode(String processStateCode) {
-		this.processStateCode = processStateCode;
+	public void setIsPublic(Boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public Complexity getComplexity() {

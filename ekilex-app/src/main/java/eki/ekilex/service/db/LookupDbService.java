@@ -170,12 +170,12 @@ public class LookupDbService extends AbstractSearchDbService {
 					.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID)));
 		}
 	
-		Table<Record4<Long, Long, String, String>> wl = DSL
+		Table<Record4<Long,Long,String,Boolean>> wl = DSL
 				.select(
 						WORD.ID.as("word_id"),
 						LEXEME.ID.as("lexeme_id"),
 						LEXEME.DATASET_CODE.as("dataset_code"),
-						LEXEME.PROCESS_STATE_CODE.as("process_state_code"))
+						LEXEME.IS_PUBLIC.as("is_public"))
 				.from(WORD, PARADIGM, FORM, LEXEME)
 				.where(whereCondition)
 				.asTable("wl");
@@ -183,7 +183,7 @@ public class LookupDbService extends AbstractSearchDbService {
 		return create
 				.selectDistinct(wl.field("word_id"))
 				.from(wl)
-				.where(wl.field("process_state_code", String.class).eq(PROCESS_STATE_PUBLIC)
+				.where(wl.field("is_public", boolean.class).eq(PUBLICITY_PUBLIC)
 						.or(wl.field("dataset_code", String.class).in(userVisibleDatasetCodes)))
 				.fetchInto(Long.class);
 	}
@@ -448,7 +448,7 @@ public class LookupDbService extends AbstractSearchDbService {
 						MEANING.ID.eq(mid.field("meaning_id", Long.class))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)
 										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
 				.groupBy(MEANING.ID)
 				.fetchInto(eki.ekilex.data.Meaning.class);
@@ -510,7 +510,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
 								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
-								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)))
+								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.fetchSingleInto(Boolean.class);
 	}
 
@@ -522,7 +522,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
-								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)))
+								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.fetchSingleInto(Boolean.class);
 	}
 

@@ -231,8 +231,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Float lexemeWeight, Complexity complexity) {
 		return create
-				.insertInto(LEXEME, LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE, LEXEME.WEIGHT, LEXEME.COMPLEXITY, LEXEME.PROCESS_STATE_CODE)
-				.values(wordId, meaningId, datasetCode, lexemeType.name(), BigDecimal.valueOf(lexemeWeight), complexity.name(), PROCESS_STATE_PUBLIC)
+				.insertInto(LEXEME, LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE, LEXEME.WEIGHT, LEXEME.COMPLEXITY, LEXEME.IS_PUBLIC)
+				.values(wordId, meaningId, datasetCode, lexemeType.name(), BigDecimal.valueOf(lexemeWeight), complexity.name(), PUBLICITY_PUBLIC)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();

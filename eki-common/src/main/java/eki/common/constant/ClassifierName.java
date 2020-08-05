@@ -19,7 +19,6 @@ public enum ClassifierName {
 	WORD_REL_TYPE(true),
 	FORM_REL_TYPE(true),
 	DISPLAY_MORPH(true),
-	PROCESS_STATE(false),
 	USAGE_AUTHOR_TYPE(true),
 	USAGE_TYPE(true),
 	VALUE_STATE(true),

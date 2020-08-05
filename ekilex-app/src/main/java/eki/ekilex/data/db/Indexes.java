@@ -132,7 +132,6 @@ public class Indexes {
     public static final Index LEXEME_COMPLEXITY_IDX = Indexes0.LEXEME_COMPLEXITY_IDX;
     public static final Index LEXEME_DATASET_CODE_IDX = Indexes0.LEXEME_DATASET_CODE_IDX;
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
-    public static final Index LEXEME_PROCESS_STATE_CODE_IDX = Indexes0.LEXEME_PROCESS_STATE_CODE_IDX;
     public static final Index LEXEME_TYPE_IDX = Indexes0.LEXEME_TYPE_IDX;
     public static final Index LEXEME_WORD_ID_IDX = Indexes0.LEXEME_WORD_ID_IDX;
     public static final Index LEXEME_DERIV_LEXEME_ID_IDX = Indexes0.LEXEME_DERIV_LEXEME_ID_IDX;
@@ -266,7 +265,6 @@ public class Indexes {
         public static Index LEXEME_COMPLEXITY_IDX = Internal.createIndex("lexeme_complexity_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.COMPLEXITY }, false);
         public static Index LEXEME_DATASET_CODE_IDX = Internal.createIndex("lexeme_dataset_code_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.DATASET_CODE }, false);
         public static Index LEXEME_MEANING_ID_IDX = Internal.createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
-        public static Index LEXEME_PROCESS_STATE_CODE_IDX = Internal.createIndex("lexeme_process_state_code_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.PROCESS_STATE_CODE }, false);
         public static Index LEXEME_TYPE_IDX = Internal.createIndex("lexeme_type_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.TYPE }, false);
         public static Index LEXEME_WORD_ID_IDX = Internal.createIndex("lexeme_word_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID }, false);
         public static Index LEXEME_DERIV_LEXEME_ID_IDX = Internal.createIndex("lexeme_deriv_lexeme_id_idx", LexemeDeriv.LEXEME_DERIV, new OrderField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID }, false);

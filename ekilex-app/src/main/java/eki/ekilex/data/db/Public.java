@@ -76,7 +76,6 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
@@ -161,7 +160,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -2130879169;
+    private static final long serialVersionUID = -1536201951;
 
     /**
      * The reference instance of <code>public</code>
@@ -529,11 +528,6 @@ public class Public extends SchemaImpl {
     public final PosLabel POS_LABEL = PosLabel.POS_LABEL;
 
     /**
-     * The table <code>public.process_state</code>.
-     */
-    public final ProcessState PROCESS_STATE = ProcessState.PROCESS_STATE;
-
-    /**
      * The table <code>public.region</code>.
      */
     public final Region REGION = Region.REGION;
@@ -877,7 +871,6 @@ public class Public extends SchemaImpl {
             Sequences.PARADIGM_ID_SEQ,
             Sequences.POS_GROUP_ORDER_BY_SEQ,
             Sequences.POS_ORDER_BY_SEQ,
-            Sequences.PROCESS_STATE_ORDER_BY_SEQ,
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
@@ -987,7 +980,6 @@ public class Public extends SchemaImpl {
             PosGroup.POS_GROUP,
             PosGroupLabel.POS_GROUP_LABEL,
             PosLabel.POS_LABEL,
-            ProcessState.PROCESS_STATE,
             Region.REGION,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,

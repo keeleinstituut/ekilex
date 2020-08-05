@@ -366,10 +366,10 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, lexemeId, processStateCode);
+	public void updateLexemeProcessState(Long lexemeId, boolean isPublic) {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PUBLICITY, lexemeId, String.valueOf(isPublic));
 		createLifecycleLog(logData);
-		cudDbService.updateLexemeProcessState(lexemeId, processStateCode);
+		cudDbService.updateLexemeProcessState(lexemeId, isPublic);
 	}
 
 	@Transactional
@@ -537,7 +537,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, value, valueAsWord, language, morphCode, dataset, PROCESS_STATE_PUBLIC, meaningId);
+				.createWordAndLexeme(value, value, valueAsWord, language, morphCode, dataset, PUBLICITY_PUBLIC, meaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
@@ -781,8 +781,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic) {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long definitionFreeformId = cudDbService.createDefinitionNote(definitionId, value, valuePrese, lang, isPublic);
-		LogData logData = new LogData(
-				LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionFreeformId, valuePrese);
+		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionFreeformId, valuePrese);
 		createLifecycleLog(logData);
 	}
 
@@ -835,7 +834,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, PROCESS_STATE_NOT_PUBLIC, null);
+				.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, PUBLICITY_PRIVATE, null);
 		// TODO set automatically tags - yogesh
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 

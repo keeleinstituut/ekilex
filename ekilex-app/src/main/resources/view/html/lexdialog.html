@@ -17,7 +17,6 @@
               <div class="col-md-6">
                 <select required class="form-control lex-data-select required-field" name="opCode">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option value="addLexemeProcessStateDlg" sec:authorize="#vars.lexeme.crudGrant">Haldusolek</option>
                   <option value="lexeme_value_state" sec:authorize="#vars.lexeme.crudGrant">Väärtusolek</option>
                   <option value="lexeme_frequency_group" sec:authorize="#vars.lexeme.crudGrant">Sagedusrühm</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Tähenduse seletus</option>
@@ -115,30 +114,6 @@
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" name="addLexemeDataBtn">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'addLexemeProcessStateDlg_' + lexeme.lexemeId}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_lexeme_process_state_dlg">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_process_state">
-            <div class="col-md-6">
-              <select required class="form-control value-select required-field" name="value">
-                <option value="" hidden disabled selected>vali väärtus...</option>
-                <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}">value</option>
-              </select>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -1222,17 +1197,18 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeProcessStateDlg_' + lexeme.lexemeId}"
+  <div th:id="${'editLexemePublicityDlg_' + lexeme.lexemeId}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_process_state_dlg">
+       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_publicity_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_process_state">
-            <select class="form-control" name="value">
-              <option th:each="item : ${processStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeProcessStateCode}">value</option>
+            <input type="hidden" name="opCode" value="lexeme_publicity">
+            <select class="form-control" name="public">
+              <option value="true" th:selected="${lexeme.public}">avalik</option>
+              <option value="false" th:selected="${!lexeme.public}">mitteavalik</option>
             </select>
           </div>
         </form>

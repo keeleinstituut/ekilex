@@ -7,7 +7,6 @@ import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_NR;
-import static eki.ekilex.data.db.Tables.PROCESS_STATE;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 
@@ -177,13 +176,6 @@ public class DatasetDbService {
 						.where(LANGUAGE.CODE.in(languageCodes))
 						.execute();
 
-			} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-				List<String> processStateCodes = addedClassifiers.stream().map(Classifier::getCode).collect(Collectors.toList());
-				create.update(PROCESS_STATE)
-						.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayAppend(PROCESS_STATE.DATASETS, datasetCode)))
-						.where(PROCESS_STATE.CODE.in(processStateCodes))
-						.execute();
-
 			} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 				List<Row2<String, String>> codeOriginTuples = addedClassifiers.stream().map(c -> DSL.row(DSL.val(c.getCode()), DSL.val(c.getOrigin()))).collect(Collectors.toList());
 				create.update(DOMAIN)
@@ -203,12 +195,6 @@ public class DatasetDbService {
 			create.update(LANGUAGE)
 					.set(LANGUAGE.DATASETS, DSL.field(PostgresDSL.arrayRemove(LANGUAGE.DATASETS, datasetCode)))
 					.where(DSL.val(datasetCode).eq(DSL.any(LANGUAGE.DATASETS)))
-					.execute();
-
-		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-			create.update(PROCESS_STATE)
-					.set(PROCESS_STATE.DATASETS, DSL.field(PostgresDSL.arrayRemove(PROCESS_STATE.DATASETS, datasetCode)))
-					.where(DSL.val(datasetCode).eq(DSL.any(PROCESS_STATE.DATASETS)))
 					.execute();
 
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {

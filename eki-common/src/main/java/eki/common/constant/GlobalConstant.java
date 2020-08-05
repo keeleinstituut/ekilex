@@ -6,9 +6,9 @@ public interface GlobalConstant {
 
 	String DATASET_SSS = "sss";
 
-	String PROCESS_STATE_PUBLIC = "avalik";
+	boolean PUBLICITY_PUBLIC = true;
 
-	String PROCESS_STATE_NOT_PUBLIC = "mitteavalik";
+	boolean PUBLICITY_PRIVATE = false;
 
 	String VALUE_STATE_MOST_PREFERRED = "eelistermin";
 

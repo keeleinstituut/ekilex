@@ -440,8 +440,6 @@ insert into pos_group (code, datasets) values ('K', '{}');
 insert into pos_group (code, datasets) values ('N', '{}');
 insert into pos_group (code, datasets) values ('S', '{}');
 insert into pos_group (code, datasets) values ('V', '{}');
-insert into process_state (code, datasets) values ('avalik', '{}');
-insert into process_state (code, datasets) values ('mitteavalik', '{}');
 insert into region (code, datasets) values ('CA', '{}');
 insert into region (code, datasets) values ('EU', '{}');
 insert into region (code, datasets) values ('NATO', '{}');

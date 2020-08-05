@@ -76,7 +76,6 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
@@ -181,7 +180,6 @@ import eki.ekilex.data.db.tables.records.PosGroupLabelRecord;
 import eki.ekilex.data.db.tables.records.PosGroupRecord;
 import eki.ekilex.data.db.tables.records.PosLabelRecord;
 import eki.ekilex.data.db.tables.records.PosRecord;
-import eki.ekilex.data.db.tables.records.ProcessStateRecord;
 import eki.ekilex.data.db.tables.records.RegionRecord;
 import eki.ekilex.data.db.tables.records.RegisterLabelRecord;
 import eki.ekilex.data.db.tables.records.RegisterRecord;
@@ -288,7 +286,6 @@ public class Keys {
     public static final Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Identities0.IDENTITY_PARADIGM;
     public static final Identity<PosRecord, Long> IDENTITY_POS = Identities0.IDENTITY_POS;
     public static final Identity<PosGroupRecord, Long> IDENTITY_POS_GROUP = Identities0.IDENTITY_POS_GROUP;
-    public static final Identity<ProcessStateRecord, Long> IDENTITY_PROCESS_STATE = Identities0.IDENTITY_PROCESS_STATE;
     public static final Identity<RegionRecord, Long> IDENTITY_REGION = Identities0.IDENTITY_REGION;
     public static final Identity<RegisterRecord, Long> IDENTITY_REGISTER = Identities0.IDENTITY_REGISTER;
     public static final Identity<SemanticTypeRecord, Long> IDENTITY_SEMANTIC_TYPE = Identities0.IDENTITY_SEMANTIC_TYPE;
@@ -411,7 +408,6 @@ public class Keys {
     public static final UniqueKey<PosGroupRecord> POS_GROUP_PKEY = UniqueKeys0.POS_GROUP_PKEY;
     public static final UniqueKey<PosGroupLabelRecord> POS_GROUP_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.POS_GROUP_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.POS_LABEL_CODE_LANG_TYPE_KEY;
-    public static final UniqueKey<ProcessStateRecord> PROCESS_STATE_PKEY = UniqueKeys0.PROCESS_STATE_PKEY;
     public static final UniqueKey<RegionRecord> REGION_PKEY = UniqueKeys0.REGION_PKEY;
     public static final UniqueKey<RegisterRecord> REGISTER_PKEY = UniqueKeys0.REGISTER_PKEY;
     public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.REGISTER_LABEL_CODE_LANG_TYPE_KEY;
@@ -528,7 +524,6 @@ public class Keys {
     public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_DATASET_CODE_FKEY;
     public static final ForeignKey<LexemeRecord, FrequencyGroupRecord> LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY;
     public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY;
-    public static final ForeignKey<LexemeRecord, ProcessStateRecord> LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY;
     public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeDerivRecord, DerivRecord> LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY = ForeignKeys0.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY;
     public static final ForeignKey<LexemeFreeformRecord, LexemeRecord> LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY;
@@ -618,7 +613,6 @@ public class Keys {
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY;
-    public static final ForeignKey<WordRelationParamRecord, WordRelationRecord> WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY = ForeignKeys0.WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, LanguageRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY;
@@ -685,7 +679,6 @@ public class Keys {
         public static Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Internal.createIdentity(Paradigm.PARADIGM, Paradigm.PARADIGM.ID);
         public static Identity<PosRecord, Long> IDENTITY_POS = Internal.createIdentity(Pos.POS, Pos.POS.ORDER_BY);
         public static Identity<PosGroupRecord, Long> IDENTITY_POS_GROUP = Internal.createIdentity(PosGroup.POS_GROUP, PosGroup.POS_GROUP.ORDER_BY);
-        public static Identity<ProcessStateRecord, Long> IDENTITY_PROCESS_STATE = Internal.createIdentity(ProcessState.PROCESS_STATE, ProcessState.PROCESS_STATE.ORDER_BY);
         public static Identity<RegionRecord, Long> IDENTITY_REGION = Internal.createIdentity(Region.REGION, Region.REGION.ORDER_BY);
         public static Identity<RegisterRecord, Long> IDENTITY_REGISTER = Internal.createIdentity(Register.REGISTER, Register.REGISTER.ORDER_BY);
         public static Identity<SemanticTypeRecord, Long> IDENTITY_SEMANTIC_TYPE = Internal.createIdentity(SemanticType.SEMANTIC_TYPE, SemanticType.SEMANTIC_TYPE.ORDER_BY);
@@ -806,7 +799,6 @@ public class Keys {
         public static final UniqueKey<PosGroupRecord> POS_GROUP_PKEY = Internal.createUniqueKey(PosGroup.POS_GROUP, "pos_group_pkey", new TableField[] { PosGroup.POS_GROUP.CODE }, true);
         public static final UniqueKey<PosGroupLabelRecord> POS_GROUP_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(PosGroupLabel.POS_GROUP_LABEL, "pos_group_label_code_lang_type_key", new TableField[] { PosGroupLabel.POS_GROUP_LABEL.CODE, PosGroupLabel.POS_GROUP_LABEL.LANG, PosGroupLabel.POS_GROUP_LABEL.TYPE }, true);
         public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(PosLabel.POS_LABEL, "pos_label_code_lang_type_key", new TableField[] { PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE }, true);
-        public static final UniqueKey<ProcessStateRecord> PROCESS_STATE_PKEY = Internal.createUniqueKey(ProcessState.PROCESS_STATE, "process_state_pkey", new TableField[] { ProcessState.PROCESS_STATE.CODE }, true);
         public static final UniqueKey<RegionRecord> REGION_PKEY = Internal.createUniqueKey(Region.REGION, "region_pkey", new TableField[] { Region.REGION.CODE }, true);
         public static final UniqueKey<RegisterRecord> REGISTER_PKEY = Internal.createUniqueKey(Register.REGISTER, "register_pkey", new TableField[] { Register.REGISTER.CODE }, true);
         public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(RegisterLabel.REGISTER_LABEL, "register_label_code_lang_type_key", new TableField[] { RegisterLabel.REGISTER_LABEL.CODE, RegisterLabel.REGISTER_LABEL.LANG, RegisterLabel.REGISTER_LABEL.TYPE }, true);
@@ -921,7 +913,6 @@ public class Keys {
         public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = Internal.createForeignKey(Keys.DATASET_PKEY, Lexeme.LEXEME, "lexeme_dataset_code_fkey", new TableField[] { Lexeme.LEXEME.DATASET_CODE }, true);
         public static final ForeignKey<LexemeRecord, FrequencyGroupRecord> LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY = Internal.createForeignKey(Keys.FREQUENCY_GROUP_PKEY, Lexeme.LEXEME, "lexeme_frequency_group_code_fkey", new TableField[] { Lexeme.LEXEME.FREQUENCY_GROUP_CODE }, true);
         public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = Internal.createForeignKey(Keys.VALUE_STATE_PKEY, Lexeme.LEXEME, "lexeme_value_state_code_fkey", new TableField[] { Lexeme.LEXEME.VALUE_STATE_CODE }, true);
-        public static final ForeignKey<LexemeRecord, ProcessStateRecord> LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(Keys.PROCESS_STATE_PKEY, Lexeme.LEXEME, "lexeme_process_state_code_fkey", new TableField[] { Lexeme.LEXEME.PROCESS_STATE_CODE }, true);
         public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_lexeme_id_fkey", new TableField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID }, true);
         public static final ForeignKey<LexemeDerivRecord, DerivRecord> LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY = Internal.createForeignKey(Keys.DERIV_PKEY, LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_deriv_code_fkey", new TableField[] { LexemeDeriv.LEXEME_DERIV.DERIV_CODE }, true);
         public static final ForeignKey<LexemeFreeformRecord, LexemeRecord> LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_lexeme_id_fkey", new TableField[] { LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID }, true);
@@ -1011,7 +1002,6 @@ public class Keys {
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = Internal.createForeignKey(Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation_word1_id_fkey", new TableField[] { WordRelation.WORD_RELATION.WORD1_ID }, true);
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = Internal.createForeignKey(Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation_word2_id_fkey", new TableField[] { WordRelation.WORD_RELATION.WORD2_ID }, true);
         public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = Internal.createForeignKey(Keys.WORD_REL_TYPE_PKEY, WordRelation.WORD_RELATION, "word_relation_word_rel_type_code_fkey", new TableField[] { WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE }, true);
-        public static final ForeignKey<WordRelationParamRecord, WordRelationRecord> WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY = Internal.createForeignKey(Keys.WORD_RELATION_PKEY, WordRelationParam.WORD_RELATION_PARAM, "word_relation_param_word_relation_id_fkey", new TableField[] { WordRelationParam.WORD_RELATION_PARAM.WORD_RELATION_ID }, true);
         public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(Keys.WORD_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_code_fkey", new TableField[] { WordTypeLabel.WORD_TYPE_LABEL.CODE }, true);
         public static final ForeignKey<WordTypeLabelRecord, LanguageRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_lang_fkey", new TableField[] { WordTypeLabel.WORD_TYPE_LABEL.LANG }, true);
         public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_type_fkey", new TableField[] { WordTypeLabel.WORD_TYPE_LABEL.TYPE }, true);

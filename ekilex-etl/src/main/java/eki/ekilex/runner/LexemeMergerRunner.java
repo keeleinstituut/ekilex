@@ -448,19 +448,17 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		}
 
 		// sum process state
-		List<String> processStateCodeCandidates = allLexemes.stream()
-				.filter(lexeme -> StringUtils.isNotBlank(lexeme.getProcessStateCode()))
-				.map(Lexeme::getProcessStateCode)
+		List<Boolean> publicityCandidates = allLexemes.stream()
+				.filter(lexeme -> lexeme.getIsPublic() != null)
+				.map(Lexeme::getIsPublic)
 				.distinct()
 				.collect(Collectors.toList());
-		String sumProcessStateCode;
-		if (CollectionUtils.isEmpty(processStateCodeCandidates)) {
-			sumProcessStateCode = PROCESS_STATE_PUBLIC;
-		} else if (processStateCodeCandidates.size() > 1) {
-			appendToReport(REPORT_LEXEME_DATA_CONFLICT, word, "ilmikutel kokku rohkem kui üks haldusolek", processStateCodeCandidates);
-			sumProcessStateCode = processStateCodeCandidates.get(0);
+		boolean sumPublicity;
+		if (publicityCandidates.size() > 1) {
+			appendToReport(REPORT_LEXEME_DATA_CONFLICT, word, "ilmikutel erinevad avalikkused", publicityCandidates);
+			sumPublicity = publicityCandidates.get(0);
 		} else {
-			sumProcessStateCode = processStateCodeCandidates.get(0);
+			sumPublicity = publicityCandidates.get(0);
 		}
 
 		// sum complexity
@@ -480,7 +478,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		sumLexeme.setLevel1(sumLevel1);
 		sumLexeme.setLevel2(sumLevel2);
 		sumLexeme.setValueStateCode(sumValueStateCode);
-		sumLexeme.setProcessStateCode(sumProcessStateCode);
+		sumLexeme.setIsPublic(sumPublicity);
 		sumLexeme.setComplexity(complexity);
 
 		return sumLexeme;
@@ -502,7 +500,6 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("datasetCodes", datasetCodes);
 		paramMap.put("mainDatasetCode", DATASET_CODE_SS1);
-		//paramMap.put("processState", PROCESS_STATE_PUBLIC);
 		List<WordMeaningPair> wordMeaningPairs = basicDbService.getResults(sqlSelectWordLexemeMeaningIds, paramMap, new WordMeaningPairRowMapper());
 		return wordMeaningPairs;
 	}
@@ -1216,7 +1213,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 			Integer level1 = rs.getObject("level1", Integer.class);
 			Integer level2 = rs.getObject("level2", Integer.class);
 			String valueStateCode = rs.getString("value_state_code");
-			String processStateCode = rs.getString("process_state_code");
+			boolean isPublic = rs.getBoolean("is_public");
 			String complexityStr = rs.getString("complexity");
 			Complexity complexity = null;
 			if (StringUtils.isNotBlank(complexityStr)) {
@@ -1234,7 +1231,7 @@ public class LexemeMergerRunner extends AbstractLoaderRunner implements GlobalCo
 			lexeme.setLevel1(level1);
 			lexeme.setLevel2(level2);
 			lexeme.setValueStateCode(valueStateCode);
-			lexeme.setProcessStateCode(processStateCode);
+			lexeme.setIsPublic(isPublic);
 			lexeme.setComplexity(complexity);
 			lexeme.setOrderBy(orderBy);
 			return lexeme;

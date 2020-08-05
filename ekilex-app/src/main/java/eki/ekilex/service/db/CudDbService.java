@@ -226,9 +226,9 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
+	public void updateLexemeProcessState(Long lexemeId, boolean isPublic) {
 		create.update(LEXEME)
-				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}
@@ -440,25 +440,25 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateMeaningLexemesProcessStateCode(Long meaningId, String processStateCode) {
+	public void updateMeaningLexemesPublicity(Long meaningId, boolean isPublic) {
 		create
 				.update(LEXEME)
-				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(LEXEME.PROCESS_STATE_CODE.ne(processStateCode)))
+								.and(LEXEME.IS_PUBLIC.ne(isPublic)))
 				.execute();
 	}
 
-	public void updateWordLexemesProcessStateCode(Long wordId, String processStateCode) {
+	public void updateWordLexemesPublicity(Long wordId, boolean isPublic) {
 		create
 				.update(LEXEME)
-				.set(LEXEME.PROCESS_STATE_CODE, processStateCode)
+				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(LEXEME.PROCESS_STATE_CODE.ne(processStateCode)))
+								.and(LEXEME.IS_PUBLIC.ne(isPublic)))
 				.execute();
 	}
 
@@ -530,7 +530,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexeme(
-			String value, String valuePrese, String valueAsWord, String lang, String morphCode, String dataset, String lexemeProcessStateCode, Long meaningId) {
+			String value, String valuePrese, String valueAsWord, String lang, String morphCode, String dataset, boolean isPublic, Long meaningId) {
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 
@@ -571,9 +571,9 @@ public class CudDbService extends AbstractDataDbService {
 		Long lexemeId = create
 				.insertInto(
 						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
 				.values(meaningId, wordId, dataset, LEXEME_TYPE_PRIMARY,
-						1, 1, lexemeProcessStateCode, COMPLEXITY_DETAIL)
+						1, 1, isPublic, COMPLEXITY_DETAIL)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
@@ -866,9 +866,9 @@ public class CudDbService extends AbstractDataDbService {
 		Long lexemeId = create
 				.insertInto(
 						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.PROCESS_STATE_CODE, LEXEME.COMPLEXITY)
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
 				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-						lexemeLevel1, 1, PROCESS_STATE_PUBLIC, COMPLEXITY_DETAIL)
+						lexemeLevel1, 1, PUBLICITY_PUBLIC, COMPLEXITY_DETAIL)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();

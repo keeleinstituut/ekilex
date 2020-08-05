@@ -166,9 +166,6 @@ public class EditController extends AbstractPageController {
 		case "lexeme_grammar":
 			cudService.createLexemeGrammar(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
-		case "lexeme_process_state":
-			cudService.updateLexemeProcessState(itemData.getId(), itemValue);
-			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), itemValue);
 			break;
@@ -297,8 +294,8 @@ public class EditController extends AbstractPageController {
 		case "word_lang":
 			cudService.updateWordLang(itemData.getId(), itemValue);
 			break;
-		case "lexeme_process_state":
-			cudService.updateLexemeProcessState(itemData.getId(), itemValue);
+		case "lexeme_publicity":
+			cudService.updateLexemeProcessState(itemData.getId(), itemData.isPublic());
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), itemValue);

@@ -33,7 +33,6 @@ import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
-import static eki.ekilex.data.db.Tables.PROCESS_STATE;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
@@ -311,18 +310,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						VALUE_STATE_LABEL.VALUE)
 				.from(VALUE_STATE_LABEL)
 				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)))
-				.fetchInto(Classifier.class);
-	}
-
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
-	public List<Classifier> getProcessStates() {
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.PROCESS_STATE),
-						PROCESS_STATE.CODE,
-						PROCESS_STATE.CODE.as("value"))
-				.from(PROCESS_STATE)
-				.orderBy(PROCESS_STATE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -999,12 +986,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 									.and(LANGUAGE_LABEL.TYPE.eq(labelType))
 									.and(LANGUAGE_LABEL.LANG.eq(labelLanguage))
 									.and(LANGUAGE.DATASETS.contains(datasetCodes)))
-					.fetchInto(Classifier.class);
-		} else if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-			return create.select(getClassifierNameField(ClassifierName.PROCESS_STATE), PROCESS_STATE.CODE, PROCESS_STATE.CODE.as("value"),
-					PROCESS_STATE.ORDER_BY.as("order_by"))
-					.from(PROCESS_STATE)
-					.where(PROCESS_STATE.DATASETS.contains(datasetCodes))
 					.fetchInto(Classifier.class);
 		} else if (ClassifierName.DOMAIN.equals(classifierName)) {
 			return create.select(

@@ -25,17 +25,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Record2;
-import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.SourceFreeform;
@@ -179,7 +176,7 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
 						LEXEME.VALUE_STATE_CODE,
-						LEXEME.PROCESS_STATE_CODE,
+						LEXEME.IS_PUBLIC,
 						LEXEME.COMPLEXITY,
 						LEXEME.WEIGHT,
 						LEXEME.ORDER_BY,

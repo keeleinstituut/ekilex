@@ -45,7 +45,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -183,7 +182,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		return create
 				.selectFrom(LEXEME).where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)
 										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
 				.fetch();
 	}
@@ -265,7 +264,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinLexemeRegions(lexemeId, sourceLexemeId);
 		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, lexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
 		joinLexemeRelations(lexemeId, sourceLexemeId);
-		joinLexemeProcessStateCodes(lexemeId, sourceLexemeId);
+		joinLexemePublicity(lexemeId, sourceLexemeId);
 		joinLexemeTags(lexemeId, sourceLexemeId);
 		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
 	}
@@ -286,16 +285,16 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	private void joinLexemeProcessStateCodes(Long targetLexemeId, Long sourceLexemeId) {
+	private void joinLexemePublicity(Long targetLexemeId, Long sourceLexemeId) {
 
-		String targetLexemeProcessStateCode = create.select(LEXEME.PROCESS_STATE_CODE).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(String.class);
-		if (StringUtils.equals(PROCESS_STATE_PUBLIC, targetLexemeProcessStateCode)) {
+		boolean targetLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(boolean.class);
+		if (PUBLICITY_PUBLIC == targetLexemePublicity) {
 			return;
 		}
 
-		String sourceLexemeProcessStateCode = create.select(LEXEME.PROCESS_STATE_CODE).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(String.class);
-		if (StringUtils.equals(PROCESS_STATE_PUBLIC, sourceLexemeProcessStateCode)) {
-			create.update(LEXEME).set(LEXEME.PROCESS_STATE_CODE, PROCESS_STATE_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
+		boolean sourceLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(boolean.class);
+		if (PUBLICITY_PUBLIC == sourceLexemePublicity) {
+			create.update(LEXEME).set(LEXEME.IS_PUBLIC, PUBLICITY_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
 		}
 	}
 
@@ -609,7 +608,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
 		clonedLexeme.changed(LEXEME.FREQUENCY_GROUP_CODE, false);
 		clonedLexeme.changed(LEXEME.CORPUS_FREQUENCY, false);
-		clonedLexeme.setProcessStateCode(PROCESS_STATE_PUBLIC);
+		clonedLexeme.setIsPublic(PUBLICITY_PUBLIC);
 		clonedLexeme.store();
 		return clonedLexeme.getId();
 	}

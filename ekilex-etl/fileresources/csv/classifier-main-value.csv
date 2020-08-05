@@ -1801,28 +1801,6 @@ pos_group	K	kaassõnaga	est	wordweb
 pos_group	N	arvsõnaga	est	wordweb
 pos_group	S	nimisõnaga	est	wordweb
 pos_group	V	tegusõnaga	est	wordweb
-process_state	määramata	-	-	-
-process_state	koostamisel	-	-	-
-process_state	koostatud	-	-	-
-process_state	ootel	-	-	-
-process_state	ajakohastamisel	-	-	-
-process_state	ajakohastatud	-	-	-
-process_state	vajab konsulteerimist	-	-	-
-process_state	saadetud konsulteerimisele	-	-	-
-process_state	konsulteerimisel	-	-	-
-process_state	heaks kiidetud	-	-	-
-process_state	tagasi lükatud	-	-	-
-process_state	lahenduseta	-	-	-
-process_state	toimetamisel	-	-	-
-process_state	toimetatud	-	-	-
-process_state	peatoimetamisel	-	-	-
-process_state	peatoimetatud	-	-	-
-process_state	valmis	-	-	-
-process_state	avalik	-	-	-
-process_state	arhiveeritud	-	-	-
-process_state	töös	-	-	-
-process_state	läbi vaatamata	-	-	-
-process_state	kustutatud	-	-	-
 region	CA	-	-	-
 region	EU	-	-	-
 region	NATO	-	-	-

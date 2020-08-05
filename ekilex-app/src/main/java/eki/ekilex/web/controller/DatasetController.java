@@ -65,11 +65,6 @@ public class DatasetController extends AbstractAuthActionController {
 		return commonDataService.getLanguages();
 	}
 
-	@ModelAttribute("processStates")
-	public List<Classifier> getProcessStates() {
-		return commonDataService.getProcessStates();
-	}
-
 	@ModelAttribute("origins")
 	public List<Origin> getOrigins() {
 		return commonDataService.getDomainOrigins();

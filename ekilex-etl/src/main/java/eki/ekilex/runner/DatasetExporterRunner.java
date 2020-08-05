@@ -374,7 +374,7 @@ public class DatasetExporterRunner extends AbstractLoaderCommons implements Tabl
 		paramMap.put("datasetCode", datasetCode);
 		if (isOnlyPublic) {
 			sql = StringUtils.remove(sql, "--");
-			paramMap.put("processStateCode", PROCESS_STATE_PUBLIC);			
+			paramMap.put("publicity", PUBLICITY_PUBLIC);			
 		}
 		List<Map<String, Object>> tableRows = basicDbService.queryList(sql, paramMap);
 		return tableRows;

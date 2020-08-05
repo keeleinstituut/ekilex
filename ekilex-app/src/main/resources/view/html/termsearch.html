@@ -637,14 +637,13 @@
                th:data-id="${lexeme.lexemeId}"
                th:data-orderby="${lexeme.orderBy}"
                class="card mb-2 shadow">
-            <div th:replace="termdialog :: add_lexeme_process_state_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
             <div th:replace="termdialog :: add_usage_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_relation_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_note_dlg"></div>
             <div th:replace="termdialog :: add_lexeme_tag_dlg"></div>
-            <div th:replace="termdialog :: edit_lexeme_process_state_dlg"></div>
+            <div th:replace="termdialog :: edit_lexeme_publicity_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
             <div th:replace="termdialog :: edit_lexeme_frequency_group_dlg"></div>
             <div th:replace="termdialog :: edit_word_value_dlg"></div>
@@ -695,7 +694,7 @@
                 <div th:replace="termcomp :: data_ids"></div>
                 <div th:replace="termcomp :: tags"></div>
                 <div th:replace="termcomp :: lexeme_complexity"></div>
-                <div th:replace="termcomp :: lexeme_process_state"></div>
+                <div th:replace="termcomp :: lexeme_publicity"></div>
                 <div th:replace="termcomp :: lexeme_value_state"></div>
                 <div th:replace="termcomp :: word_gender"></div>
                 <div th:replace="termcomp :: word_lang"></div>

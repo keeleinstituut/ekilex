@@ -577,7 +577,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 		Field<Boolean> lvsmpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
 		Field<Boolean> lvslpf = DSL.field(lo.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED));
-		Field<Boolean> lpspf = DSL.field(lo.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -617,7 +616,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						imwf.as("matching_word"),
 						lvsmpf.as("most_preferred"),
 						lvslpf.as("least_preferred"),
-						lpspf.as("is_public"),
+						lo.IS_PUBLIC,
 						wds.as("dataset_codes"),
 						wol.ORDER_BY.as("lang_order_by"),
 						lo.ORDER_BY.as("lex_order_by"))
@@ -724,7 +723,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 		Field<Boolean> lvsmpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
 		Field<Boolean> lvslpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED));
-		Field<Boolean> lpspf = DSL.field(lm.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC));
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -758,7 +756,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						wtz.as("foreign"),
 						lvsmpf.as("most_preferred"),
 						lvslpf.as("least_preferred"),
-						lpspf.as("is_public"),
+						lm.IS_PUBLIC,
 						wds.as("dataset_codes"))
 				.from(wmid
 						.innerJoin(lm).on(lm.WORD_ID.eq(wmid.field("word_id", Long.class)).and(lm.MEANING_ID.eq(wmid.field("meaning_id", Long.class))))
@@ -911,7 +909,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 						lfreq.as("lexeme_frequencies"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
+						l.IS_PUBLIC,
 						l.COMPLEXITY,
 						l.ORDER_BY,
 						lposf.as("pos"),

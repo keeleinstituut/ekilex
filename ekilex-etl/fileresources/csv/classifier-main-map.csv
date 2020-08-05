@@ -9,7 +9,7 @@ as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-
 as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-
 as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-
 as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-
-as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	läbi vaatamata
+as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	-	-
 att_tyyp	att_tyyp	all	alltähendus	et	-	-
 att_tyyp	att_tyyp	all	sense extension	en	-	-
 dk_tyyp	dk_tyyp	as	abstraktsubstantiiv	et	deriv	as
@@ -56,9 +56,9 @@ dk_tyyp	dk_tyyp	as	abstract substantive	en	deriv	as
 dk_tyyp	dk_tyyp	posit	positive degree	en	deriv	posit
 dk_tyyp	dk_tyyp	partits	partitsiip, kesksõna	et	display_morph	pts
 dk_tyyp	dk_tyyp	partits	participle	en	display_morph	pts
-entry class	Entry Class	määramata	määramata	et	process_state	määramata
-entry class	Entry Class	töös	töös	et	process_state	töös
-entry class	Entry Class	avalik	avalik	et	process_state	avalik
+entry class	Entry Class	määramata	määramata	et	-	-
+entry class	Entry Class	töös	töös	et	-	-
+entry class	Entry Class	avalik	avalik	et	-	-
 es_tyyp	es_tyyp	ab	andmebaasi element	et	-	-
 es_tyyp	es_tyyp	ab	andmebaasi element	en	-	-
 es_tyyp	es_tyyp	gen	genereeritud sünonüüm	et	-	-
@@ -1103,15 +1103,15 @@ sta_tyyp	sta_tyyp	{osa}	oluline osa	et	-	-
 sta_tyyp	sta_tyyp	{osa}	part of sth/sb	en	-	-
 sta_tyyp	sta_tyyp	{põhjus}	põhjus(taja), esilekutsuja, tingija (abstr/konkr)	et	-	-
 sta_tyyp	sta_tyyp	{põhjus}	cause of sth/sb	en	-	-
-staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	process_state	heaks kiidetud
-staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	process_state	konsulteerimisel
-staatus	Staatus	terminiprobleem	terminiprobleem	et	process_state	vajab konsulteerimist
-staatus	Staatus	määramata	määramata	et	process_state	määramata
-staatus	Staatus	arutlusel	arutlusel	et	process_state	konsulteerimisel
+staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	-	-
+staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	-	-
+staatus	Staatus	terminiprobleem	terminiprobleem	et	-	-
+staatus	Staatus	määramata	määramata	et	-	-
+staatus	Staatus	arutlusel	arutlusel	et	-	-
 staatus	Staatus	vananenud	vananenud	et	value_state	endine
 staatus	Staatus	neologism	neologism	et	register	uudis
-staatus	Staatus	heakskiidetud	heakskiidetud	et	process_state	heaks kiidetud
-staatus	Staatus	ettepanek	ettepanek	et	process_state	koostamisel
+staatus	Staatus	heakskiidetud	heakskiidetud	et	-	-
+staatus	Staatus	ettepanek	ettepanek	et	-	-
 termeki_pronunciation	-	ns	-	et	pos	s
 termeki_pronunciation	-	om	-	et	pos	adj
 termeki_pronunciation	-	os	-	et	pos	adj
@@ -1231,10 +1231,10 @@ v_tyyp	v_tyyp	trük	(ei ole kasutusel)	et	-	-
 v_tyyp	v_tyyp	müt	(ei ole kasutusel)	et	-	-
 v_tyyp	v_tyyp	paleont	(ei ole kasutusel)	et	-	-
 v_tyyp	v_tyyp	kok	(ei ole kasutusel)	et	-	-
-valmidus	Valmidus	vormiliselt korras	vormiliselt korras	et	process_state	läbi vaatamata
-valmidus	Valmidus	avalik	avalik	et	process_state	avalik
-valmidus	Valmidus	töös	töös	et	process_state	töös
-valmidus	Valmidus	määramata	määramata	et	process_state	määramata
+valmidus	Valmidus	vormiliselt korras	vormiliselt korras	et	-	-
+valmidus	Valmidus	avalik	avalik	et	-	-
+valmidus	Valmidus	töös	töös	et	-	-
+valmidus	Valmidus	määramata	määramata	et	-	-
 var_tyyp	var_tyyp	var	/ variant	et	-	-
 vk_tyyp	vk_tyyp	algvõrre	algvõrre	et	-	-
 vk_tyyp	vk_tyyp	algvõrre	positive degree	en	-	-

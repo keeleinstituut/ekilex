@@ -62,7 +62,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected Map<String, String> displayMorpCodes;
 	protected Map<String, String> frequencyGroupCodes;
 	protected Map<String, String> posCodes;
-	protected Map<String, String> processStateCodes;
 	protected Map<String, String> registerCodes;
 
 	protected abstract Map<String, String> xpathExpressions();
@@ -79,7 +78,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP, ClassifierName.DISPLAY_MORPH.name());
 		frequencyGroupCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MSAGTYYP);
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
-		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 		registerCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STYYP);
 	}
 

@@ -27,9 +27,10 @@
                 <small th:if="${not #lists.isEmpty(word.lexemesValueStateCodes)}">
                   <span th:text="${#strings.listJoin(word.lexemesValueStateCodes, ', ')}"></span>
                 </small>
-                <small th:if="${not #lists.isEmpty(word.lexemesProcessStateCodes)}">
+                <small th:if="${word.lexemesArePublic != null}">
                   <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateCodes)}">|</span>
-                  <span th:text="${#strings.listJoin(word.lexemesProcessStateCodes, ', ')}"></span>
+                  <span th:if="${word.lexemesArePublic}">avalik</span>
+                  <span th:unless="${word.lexemesArePublic}">mitteavalik</span>
                 </small>
                 <span class="badge badge-pill badge-light ml-auto" th:if="${not #lists.isEmpty(word.lexemesTagNames)}">
                   <span th:text="${#strings.listJoin(word.lexemesTagNames, ', ')}"></span>
@@ -100,16 +101,17 @@
       </button>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.lexemeProcessStateCode != null}" th:fragment="lexeme_process_state">
+  <div class="hidden-buttons row" th:fragment="lexeme_publicity">
     <div class="col pr-0 col-w13rem">
-      <span class="lbl">Haldusolek</span>
+      <span class="lbl">Avalikkus</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${lexeme.lexemeProcessStateCode}"></span>
+      <span th:if="${lexeme.public}">avalik</span>
+      <span th:unless="${lexeme.public}">mitteavalik</span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
-              th:data-target="${'#editLexemeProcessStateDlg_' + lexeme.lexemeId}"
+              th:data-target="${'#editLexemePublicityDlg_' + lexeme.lexemeId}"
               sec:authorize="#vars.lexeme.crudGrant">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>

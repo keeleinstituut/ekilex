@@ -1,5 +1,5 @@
 select l.*
 from lexeme l
 where l.dataset_code = :datasetCode
---and   l.process_state_code = :processStateCode
+--and   l.is_public = :publicity
 order by l.id

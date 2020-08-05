@@ -4,6 +4,6 @@ where exists (select l.id
               from lexeme l
               where l.meaning_id = m.id
               and   l.dataset_code = :datasetCode
-              --and   l.process_state_code = :processStateCode
+              --and   l.is_public = :publicity
               )
 order by m.id

@@ -86,7 +86,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 	protected static final String PREFIXOID_WORD_TYPE_CODE = "pf";
 	protected static final String SUFFIXOID_WORD_TYPE_CODE = "sf";
 	protected static final String DEFAULT_DEFINITION_TYPE_CODE = "määramata";
-	protected static final String DEFAULT_PROCESS_STATE_CODE = "avalik";
+	protected static final boolean DEFAULT_PUBLICITY = true;
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
@@ -854,8 +854,6 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		valueParamMap.put("complexity", complexity.name());
 		populateLexemeValueParamMap(lexeme, valueParamMap);
 		Long lexemeId = basicDbService.create(LEXEME, valueParamMap);
-		String processStateCode = (String) valueParamMap.get("process_state_code");
-		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, LifecycleEventType.UPDATE, processStateCode);
 		return lexemeId;
 	}
 
@@ -884,8 +882,6 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 			populateLexemeValueParamMap(lexeme, valueParamMap);
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
-				String processStateCode = (String) valueParamMap.get("process_state_code");
-				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, LifecycleEventType.UPDATE, processStateCode);
 			}
 		}
 		return lexemeId;
@@ -897,7 +893,7 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		Integer lexemeLevel2 = lexeme.getLevel2();
 		String frequencyGroupCode = lexeme.getFrequencyGroupCode();
 		String valueStateCode = lexeme.getValueStateCode();
-		String processStateCode = lexeme.getProcessStateCode();
+		Boolean isPublic = lexeme.getIsPublic();
 		Float corpusFrequency = lexeme.getCorpusFrequency();
 
 		if (lexemeLevel1 != null) {
@@ -912,13 +908,13 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		if (StringUtils.isNotBlank(valueStateCode)) {
 			valueParamMap.put("value_state_code", valueStateCode);
 		}
+		if (isPublic == null) {
+			valueParamMap.put("is_public", PUBLICITY_PUBLIC);
+		} else {
+			valueParamMap.put("is_public", isPublic);
+		}
 		if (corpusFrequency != null) {
 			valueParamMap.put("corpus_frequency", corpusFrequency);
-		}
-		if (StringUtils.isBlank(processStateCode)) {
-			valueParamMap.put("process_state_code", DEFAULT_PROCESS_STATE_CODE);
-		} else {
-			valueParamMap.put("process_state_code", processStateCode);			
 		}
 	}
 
@@ -973,15 +969,15 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		}
 	}
 
-	protected void updateLexemeProcessState(Long lexemeId, String processStateCode) throws Exception {
+	protected void updateLexemePublicity(Long lexemeId, boolean isPublic) throws Exception {
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("id", lexemeId);
 		Map<String, Object> valueParamMap = new HashMap<>();
-		valueParamMap.put("process_state_code", processStateCode);
+		valueParamMap.put("is_public", isPublic);
 		basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
 
-		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, LifecycleEventType.UPDATE, processStateCode);
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.PUBLICITY, LifecycleEventType.UPDATE, String.valueOf(isPublic));
 	}
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {

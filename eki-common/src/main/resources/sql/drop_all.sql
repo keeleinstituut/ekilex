@@ -109,7 +109,7 @@ drop table if exists word_rel_type;
 drop table if exists lex_rel_mapping;
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
-drop table if exists process_state;
+drop table if exists process_state; -- remove later
 drop table if exists region;
 drop table if exists word_type_label;
 drop table if exists word_type;

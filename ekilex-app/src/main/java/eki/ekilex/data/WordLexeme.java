@@ -49,13 +49,13 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private String lexemeValueStateCode;
 
-	private String lexemeProcessStateCode;
-
 	private String lexemeFrequencyGroupCode;
 
 	private List<String> lexemeFrequencies;
 
 	private List<String> tags;
+
+	private boolean isPublic;
 
 	private Complexity complexity;
 
@@ -272,14 +272,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.lexemeValueStateCode = lexemeValueStateCode;
 	}
 
-	public String getLexemeProcessStateCode() {
-		return lexemeProcessStateCode;
-	}
-
-	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
-		this.lexemeProcessStateCode = lexemeProcessStateCode;
-	}
-
 	public String getLexemeFrequencyGroupCode() {
 		return lexemeFrequencyGroupCode;
 	}
@@ -302,6 +294,14 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public Complexity getComplexity() {

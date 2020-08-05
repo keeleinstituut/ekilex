@@ -23,7 +23,7 @@ public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexe
 		Integer level1 = rs.getObject("level1", Integer.class);
 		Integer level2 = rs.getObject("level2", Integer.class);
 		String valueStateCode = rs.getString("value_state_code");
-		String processStateCode = rs.getString("process_state_code");
+		boolean isPublic = rs.getBoolean("is_public");
 		String complexityStr = rs.getString("complexity");
 		Complexity complexity = null;
 		if (StringUtils.isNotBlank(complexityStr)) {
@@ -41,7 +41,7 @@ public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexe
 		lexeme.setLevel1(level1);
 		lexeme.setLevel2(level2);
 		lexeme.setValueStateCode(valueStateCode);
-		lexeme.setProcessStateCode(processStateCode);
+		lexeme.setIsPublic(isPublic);
 		lexeme.setComplexity(complexity);
 		lexeme.setOrderBy(orderBy);
 		return lexeme;

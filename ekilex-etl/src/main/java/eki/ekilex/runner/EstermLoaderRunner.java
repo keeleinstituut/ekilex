@@ -68,8 +68,6 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private DateFormat reviewDateFormat;
 
-	private Map<String, String> meaningAndLexemeProcessStateCodes;
-
 	private Map<String, String> lexemeValueStateCodes;
 
 	private Map<String, String> wordTypeCodes;
@@ -81,17 +79,17 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 	@Override
 	public Complexity getLexemeComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Override
 	public Complexity getDefinitionComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Override
 	public Complexity getFreeformComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Transactional
@@ -109,13 +107,6 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 		Map<String, String> tempCodes;
 
-		// meaning/lexeme process state
-		meaningAndLexemeProcessStateCodes = new HashMap<>();
-		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ENTRY_CLASS, ClassifierName.PROCESS_STATE.name());
-		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
-		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
-		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
-
 		// word type
 		wordTypeCodes = new HashMap<>();
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP, ClassifierName.WORD_TYPE.name());
@@ -125,14 +116,6 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 
 		// lexeme value state
 		lexemeValueStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.VALUE_STATE.name());
-
-		//EKI_CLASSIFIER_MÕISTETÜÜP -> word_type
-		//EKI_CLASSIFIER_ENTRY_CLASS -> meaning process_state or lexeme process_state of all lexemes of the meaning
-		//EKI_CLASSIFIER_STAATUS -> meaning process_state or lexeme process_state of all lexemes of the meaning
-		//EKI_CLASSIFIER_KEELENDITÜÜP -> lexeme value_state, word_type
-		// count staatus & entry class conflicts
-		// entry class overrides
-		// mõistetüüp & keelenditüüp conflicts?
 	}
 
 	@Transactional
@@ -145,7 +128,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS, REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION,
 					REPORT_DEFINITIONS_NOTES_MISMATCH, REPORT_MISSING_VALUE);
-			reportHelper.setup(reportComposer, meaningAndLexemeProcessStateCodes, lexemeValueStateCodes);
+			//reportHelper.setup(reportComposer, meaningAndLexemeProcessStateCodes, lexemeValueStateCodes);
 		}
 		start();
 
@@ -161,7 +144,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		Long wordId, meaningId, lexemeId;
 		List<Content> definitions, usages, sources;
 		List<String> termWordTypeCodes;
-		String valueStr, concept, term, processStateCode, conceptWordTypeCode, termWordTypeCode;
+		String valueStr, concept, term, conceptWordTypeCode, termWordTypeCode;
 		String lang;
 		int homonymNr;
 		Word wordObj;
@@ -196,7 +179,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 			domainNodes = conceptGroupNode.selectNodes(subdomainExp);
 			saveDomains(concept, domainNodes, meaningId, originLtb);
 
-			processStateCode = extractProcessState(conceptGroupNode, processStateConflictCount);
+			boolean isPublic = extractPublicity(conceptGroupNode, processStateConflictCount);
 			conceptWordTypeCode = extractWordType(conceptGroupNode);
 
 			langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
@@ -252,7 +235,7 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 					lexemeObj = new Lexeme();
 					lexemeObj.setWordId(wordId);
 					lexemeObj.setMeaningId(meaningId);
-					lexemeObj.setProcessStateCode(processStateCode);
+					lexemeObj.setIsPublic(isPublic);
 					lexemeId = createOrSelectLexemeId(lexemeObj);
 
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode, fileName, term);
@@ -318,44 +301,28 @@ public class EstermLoaderRunner extends AbstractTermLoaderRunner {
 		end();
 	}
 
-	private String extractProcessState(Node conceptGroupNode, Count processStateConflictCount) {
+	private boolean extractPublicity(Node conceptGroupNode, Count processStateConflictCount) {
 
 		Element valueNode;
 		String valueStr;
-		String entryClass = null;
-		String staatus = null;
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(entryClassExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (meaningAndLexemeProcessStateCodes.containsKey(valueStr)) {
-				entryClass = meaningAndLexemeProcessStateCodes.get(valueStr);
-			} else {
-				logger.warn("Incorrect process state reference @ 'entry class': \"{}\"", valueStr);
+			if (StringUtils.equals(valueStr, processStateCodePublic)) {
+				return PUBLICITY_PUBLIC;
 			}
 		}
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(processStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (meaningAndLexemeProcessStateCodes.containsKey(valueStr)) {
-				staatus = meaningAndLexemeProcessStateCodes.get(valueStr);
-			} else {
-				logger.warn("Incorrect process state reference @ 'status': \"{}\"", valueStr);
+			if (StringUtils.equals(valueStr, processStateCodePublic)) {
+				return PUBLICITY_PUBLIC;
 			}
 		}
 
-		if (StringUtils.isNotBlank(entryClass) && StringUtils.isNotBlank(staatus)) {
-			logger.warn("Conflicting process states: \"{}\" vs \"{}\"", entryClass, staatus);
-			processStateConflictCount.increment();
-		}
-		if (StringUtils.isNotBlank(entryClass)) {
-			return entryClass;
-		}
-		if (StringUtils.isNotBlank(staatus)) {
-			return staatus;
-		}
-		return null;
+		return PUBLICITY_PRIVATE;
 	}
 
 	private String extractWordType(Node conceptGroupNode) {

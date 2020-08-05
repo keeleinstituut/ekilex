@@ -102,6 +102,8 @@ public interface TermLoaderConstant extends TableName {
 	String definitionTypeCodeDefinition = "definitsioon";
 	String definitionTypeCodeExplanation = "selgitus";
 
+	String processStateCodePublic = "avalik";
+
 	String EMPTY_CONTENT = "-";
 
 	char listingsDelimiter = '|';

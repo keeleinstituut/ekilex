@@ -115,12 +115,13 @@
                     <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
                   </div>
                 </div>
-                <div class="row" th:if="${lexeme.lexemeProcessStateCode != null}">
+                <div class="row">
                   <div class="col-1 pr-0">
-                    <span class="lbl">Haldusolek</span>
+                    <span class="lbl">Avalikkus</span>
                   </div>
                   <div class="col pl-0">
-                    <span th:text="${lexeme.lexemeProcessStateCode}"></span>
+                    <span th:if="${lexeme.public}">avalik</span>
+                    <span th:unless="${lexeme.public}">mitteavalik</span>
                   </div>
                 </div>
                 <div class="row" th:if="${lexeme.lexemeValueStateCode != null}">

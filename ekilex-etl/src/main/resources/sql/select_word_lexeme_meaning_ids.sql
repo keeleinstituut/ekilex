@@ -18,7 +18,6 @@ select (select array_to_string(array_agg(distinct f.value),',','*')
         and   ll.dataset_code = :mainDatasetCode) main_ds_lex_max_level1
 from lexeme l
 where l.dataset_code in (:datasetCodes)
--- and   l.process_state_code = :processState
 group by l.word_id,
          l.meaning_id
 order by l.word_id,

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -957329555;
+    private static final long serialVersionUID = 1649622817;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -96,11 +96,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     public final TableField<LexemeRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.lexeme.process_state_code</code>.
-     */
-    public final TableField<LexemeRecord, String> PROCESS_STATE_CODE = createField(DSL.name("process_state_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.lexeme.complexity</code>.
      */
     public final TableField<LexemeRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
@@ -119,6 +114,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.weight</code>.
      */
     public final TableField<LexemeRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), org.jooq.impl.SQLDataType.NUMERIC(5, 4).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.NUMERIC)), this, "");
+
+    /**
+     * The column <code>public.lexeme.is_public</code>.
+     */
+    public final TableField<LexemeRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.lexeme</code> table reference
@@ -160,7 +160,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_COMPLEXITY_IDX, Indexes.LEXEME_DATASET_CODE_IDX, Indexes.LEXEME_MEANING_ID_IDX, Indexes.LEXEME_PROCESS_STATE_CODE_IDX, Indexes.LEXEME_TYPE_IDX, Indexes.LEXEME_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.LEXEME_COMPLEXITY_IDX, Indexes.LEXEME_DATASET_CODE_IDX, Indexes.LEXEME_MEANING_ID_IDX, Indexes.LEXEME_TYPE_IDX, Indexes.LEXEME_WORD_ID_IDX);
     }
 
     @Override
@@ -180,7 +180,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     @Override
     public List<ForeignKey<LexemeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY, Keys.LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
     }
 
     public Word word() {
@@ -201,10 +201,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     public ValueState valueState() {
         return new ValueState(this, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
-    }
-
-    public ProcessState processState() {
-        return new ProcessState(this, Keys.LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY);
     }
 
     @Override
@@ -238,7 +234,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Long, Long, Long, String, String, BigDecimal, Integer, Integer, String, String, String, Long, String, BigDecimal> fieldsRow() {
+    public Row14<Long, Long, Long, String, String, BigDecimal, Integer, Integer, String, String, Long, String, BigDecimal, Boolean> fieldsRow() {
         return (Row14) super.fieldsRow();
     }
 }

@@ -56,11 +56,6 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
 	private static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
 
-	private static final String PROCESS_STATE_PUBLIC = "avalik";
-	private static final String PROCESS_STATE_NEW = "koostamisel";
-	private static final String PROCESS_STATE_APPROVED = "heaks kiidetud";
-	private static final String PROCESS_STATE_REJECTED = "tagasi lükatud";
-
 	private static final String RELATION_TYPE_OTHER = "määramata";
 	private static final String RELATION_TYPE_ANT = "vastand";
 	private static final String RELATION_TYPE_HYPO = "liigimõiste";
@@ -92,17 +87,17 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	public Complexity getLexemeComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Override
 	public Complexity getDefinitionComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Override
 	public Complexity getFreeformComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Override
@@ -344,7 +339,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			Timestamp modifiedOn = (Timestamp) term.get("change_time");
 			Boolean isPublic = (Boolean) term.get("is_public");
 			String administrativeStatus = (String) term.get("administrative_status");
-			Integer termStatus = (Integer) term.get("term_status");
+			//TODO not relevant any more?
+			//Integer termStatus = (Integer) term.get("term_status");
 			String termType = (String) term.get("term_type");
 			Boolean inDictionary = (Boolean) term.get("in_dictionary");
 
@@ -422,8 +418,7 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
-			String processStateFromTerm = extractProcessStateCode(termStatus);
-			lexeme.setProcessStateCode(processStateFromTerm);
+			lexeme.setIsPublic(PUBLICITY_PRIVATE);
 			lexeme.setValueStateCode(lexemeValueStateCode);
 			Long lexemeId = createLexemeIfNotExists(lexeme);
 			if (lexemeId != null) {
@@ -437,9 +432,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 				createLexemeSourceLink(context, sourceId, lexemeId);
 				createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
 				saveUsages(context, lexemeId, termId);
-				String processStateFromConcept = extractProcessStateCode(isPublic);
-				if (StringUtils.isNotBlank(processStateFromConcept)) {
-					updateLexemeProcessState(lexemeId, processStateFromConcept);
+				if (isPublic) {
+					updateLexemePublicity(lexemeId, isPublic);
 				}
 			}
 
@@ -726,28 +720,6 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 			String mappedPosCode = posCodes.get(posCode);
 			createLexemePos(lexemeId, mappedPosCode);
 		}
-	}
-
-	private String extractProcessStateCode(Integer termStatus) {
-
-		String processStateCode = null;
-		if (termStatus == 1) {
-			processStateCode = PROCESS_STATE_NEW;
-		} else if (termStatus == 3) {
-			processStateCode = PROCESS_STATE_REJECTED;
-		} else if (termStatus == 5) {
-			processStateCode = PROCESS_STATE_APPROVED;
-		}
-		return processStateCode;
-	}
-
-	private String extractProcessStateCode(Boolean isPublic) {
-
-		String processStateCode = null;
-		if (isPublic) {
-			processStateCode = PROCESS_STATE_PUBLIC;
-		}
-		return processStateCode;
 	}
 
 	private boolean hasTermDatabaseAndIsKnownDataset(Integer baseId, String dataset) throws Exception {

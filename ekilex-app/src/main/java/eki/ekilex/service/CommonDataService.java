@@ -145,11 +145,6 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<Classifier> getProcessStates() {
-		return commonDataDbService.getProcessStates();
-	}
-
-	@Transactional
 	public List<Classifier> getSemanticTypes() {
 		return commonDataDbService.getSemanticTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
@@ -203,9 +198,6 @@ public class CommonDataService implements SystemConstant {
 		}
 		if (ClassifierName.VALUE_STATE.equals(classifierName)) {
 			return getValueStates();
-		}
-		if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
-			return getProcessStates();
 		}
 		if (ClassifierName.SEMANTIC_TYPE.equals(classifierName)) {
 			return getSemanticTypes();

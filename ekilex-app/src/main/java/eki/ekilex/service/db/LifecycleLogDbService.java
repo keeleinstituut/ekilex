@@ -626,9 +626,9 @@ public class LifecycleLogDbService implements GlobalConstant {
 			logData.setRecent(recent);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createLexemeLifecycleLog(entityId, lifecycleLogId);
-		} else if (LifecycleProperty.PROCESS_STATE.equals(property)) {
+		} else if (LifecycleProperty.PUBLICITY.equals(property)) {
 			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-			String recent = (String) entityData.get("process_state_code");
+			String recent = entityData.get("is_public").toString();
 			boolean isRecentValueValid = validateAndSetRecentValue(logData, recent);
 			if (!isRecentValueValid) {
 				return;

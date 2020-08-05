@@ -30,9 +30,9 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private String lexemeValueStateCode;
 
-	private String lexemeProcessStateCode;
-
 	private List<String> tags;
+
+	private boolean isPublic;
 
 	private Complexity complexity;
 
@@ -154,20 +154,20 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.lexemeValueStateCode = lexemeValueStateCode;
 	}
 
-	public String getLexemeProcessStateCode() {
-		return lexemeProcessStateCode;
-	}
-
-	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
-		this.lexemeProcessStateCode = lexemeProcessStateCode;
-	}
-
 	public List<String> getTags() {
 		return tags;
 	}
 
 	public void setTags(List<String> tags) {
 		this.tags = tags;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	public Complexity getComplexity() {

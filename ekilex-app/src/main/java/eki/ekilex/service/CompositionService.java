@@ -84,7 +84,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		if (!importMeaningData) {
 			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-					.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, PROCESS_STATE_PUBLIC, meaningId);
+					.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, PUBLICITY_PUBLIC, meaningId);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 
@@ -339,7 +339,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
-		updateMeaningLexemesProcessStateCodes(targetMeaningId);
+		updateMeaningLexemesPublicity(targetMeaningId);
 	}
 
 	//TODO lifecycle log
@@ -373,7 +373,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
-		updateMeaningLexemesProcessStateCodes(targetMeaningId);
+		updateMeaningLexemesPublicity(targetMeaningId);
 	}
 
 	@Transactional
@@ -402,7 +402,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		joinLexemeData(targetWordId, sourceWordId);
 		joinParadigms(targetWordId, sourceWordId);
 		cudDbService.deleteWord(sourceWord);
-		updateWordLexemesProcessStateCodes(targetWordId);
+		updateWordLexemesPublicity(targetWordId);
 
 		return targetWordId;
 	}
@@ -541,19 +541,19 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 	}
 
-	private void updateMeaningLexemesProcessStateCodes(Long targetMeaningId) {
+	private void updateMeaningLexemesPublicity(Long targetMeaningId) {
 
 		boolean publicLexemeExists = lookupDbService.meaningPublicLexemeExists(targetMeaningId);
 		if (publicLexemeExists) {
-			cudDbService.updateMeaningLexemesProcessStateCode(targetMeaningId, PROCESS_STATE_PUBLIC);
+			cudDbService.updateMeaningLexemesPublicity(targetMeaningId, PUBLICITY_PUBLIC);
 		}
 	}
 
-	private void updateWordLexemesProcessStateCodes(Long targetWordId) {
+	private void updateWordLexemesPublicity(Long targetWordId) {
 
 		boolean publicLexemeExists = lookupDbService.wordPublicLexemeExists(targetWordId);
 		if (publicLexemeExists) {
-			cudDbService.updateWordLexemesProcessStateCode(targetWordId, PROCESS_STATE_PUBLIC);
+			cudDbService.updateWordLexemesPublicity(targetWordId, PUBLICITY_PUBLIC);
 		}
 	}
 

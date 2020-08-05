@@ -38,9 +38,9 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private boolean foreign;
 
-	private List<String> lexemesValueStateCodes;
+	private Boolean lexemesArePublic;
 
-	private List<String> lexemesProcessStateCodes;
+	private List<String> lexemesValueStateCodes;
 
 	private List<String> lexemesTagNames;
 
@@ -186,20 +186,20 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.foreign = foreign;
 	}
 
+	public Boolean getLexemesArePublic() {
+		return lexemesArePublic;
+	}
+
+	public void setLexemesArePublic(Boolean lexemesArePublic) {
+		this.lexemesArePublic = lexemesArePublic;
+	}
+
 	public List<String> getLexemesValueStateCodes() {
 		return lexemesValueStateCodes;
 	}
 
 	public void setLexemesValueStateCodes(List<String> lexemesValueStateCodes) {
 		this.lexemesValueStateCodes = lexemesValueStateCodes;
-	}
-
-	public List<String> getLexemesProcessStateCodes() {
-		return lexemesProcessStateCodes;
-	}
-
-	public void setLexemesProcessStateCodes(List<String> lexemesProcessStateCodes) {
-		this.lexemesProcessStateCodes = lexemesProcessStateCodes;
 	}
 
 	public List<String> getLexemesTagNames() {

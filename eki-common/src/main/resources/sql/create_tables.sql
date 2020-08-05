@@ -310,14 +310,6 @@ create table deriv_label
   unique(code, lang, type)
 );
 
--- protsessi staatus
-create table process_state
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null,
-  order_by bigserial
-);
-
 -- ilmiku seose liik
 create table lex_rel_type
 (
@@ -522,7 +514,7 @@ create table freeform
   classif_code varchar(100) null,
   lang char(3) references language(code) null,
   complexity varchar(100) null,
-  is_public boolean default true,
+  is_public boolean default true not null,
   order_by bigserial
 );
 alter sequence freeform_id_seq restart with 10000;
@@ -858,7 +850,7 @@ create table lexeme
   level1 integer default 0,
   level2 integer default 0,
   value_state_code varchar(100) references value_state(code) null,
-  process_state_code varchar(100) references process_state(code) null,
+  is_public boolean default true not null,
   complexity varchar(100) not null,
   weight numeric(5,4) default 1,
   order_by bigserial,
@@ -1142,7 +1134,6 @@ create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index lexeme_dataset_code_idx on lexeme(dataset_code);
 create index lexeme_type_idx on lexeme(type);
-create index lexeme_process_state_code_idx on lexeme(process_state_code);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
 create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);

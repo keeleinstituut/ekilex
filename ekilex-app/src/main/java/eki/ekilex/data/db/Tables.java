@@ -76,7 +76,6 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
@@ -495,11 +494,6 @@ public class Tables {
      * The table <code>public.pos_label</code>.
      */
     public static final PosLabel POS_LABEL = PosLabel.POS_LABEL;
-
-    /**
-     * The table <code>public.process_state</code>.
-     */
-    public static final ProcessState PROCESS_STATE = ProcessState.PROCESS_STATE;
 
     /**
      * The table <code>public.region</code>.

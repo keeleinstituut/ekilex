@@ -49,12 +49,6 @@ public abstract class AbstractSearchController extends AbstractPageController {
 		return commonDataService.getDatasetDomainsByOrigin(userRole.getDatasetCode());
 	}
 
-	@ModelAttribute("processStates")
-	public List<Classifier> getProcessStates() {
-
-		return commonDataService.getProcessStates();
-	}
-
 	@ModelAttribute("lexemeFrequencyGroups")
 	public List<Classifier> getLexemeFrequencyGroups() {
 		return commonDataService.getFrequencyGroups();

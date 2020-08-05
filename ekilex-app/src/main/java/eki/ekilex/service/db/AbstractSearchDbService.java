@@ -92,7 +92,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				//no restrictions
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
 				//all visible ds, only public
-				dsWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+				dsWhere = lexeme.IS_PUBLIC.eq(PUBLICITY_PUBLIC)
 						.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue())));
 			} else {
 				//all visible ds, selected perm
@@ -104,7 +104,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 					permDatasetCodeCond = lexeme.DATASET_CODE.in(userPermDatasetCodes);
 				}
 				dsWhere = DSL.or(
-						lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC)
+						lexeme.IS_PUBLIC.eq(PUBLICITY_PUBLIC)
 								.andExists(DSL.select(DATASET.CODE).from(DATASET).where(DATASET.CODE.eq(lexeme.DATASET_CODE).and(DATASET.IS_VISIBLE.isTrue()))),
 						permDatasetCodeCond);
 			}
@@ -121,12 +121,12 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				dsWhere = filteringDatasetCodeCond;
 			} else if (CollectionUtils.isEmpty(userPermDatasetCodes)) {
 				//selected ds, only public
-				dsWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond);
+				dsWhere = lexeme.IS_PUBLIC.eq(PUBLICITY_PUBLIC).and(filteringDatasetCodeCond);
 			} else {
 				Collection<String> filteringPermDatasetCodes = CollectionUtils.intersection(filteringDatasetCodes, userPermDatasetCodes);
 				if (CollectionUtils.isEmpty(filteringPermDatasetCodes)) {
 					//selected ds, only public
-					dsWhere = lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringDatasetCodeCond);
+					dsWhere = lexeme.IS_PUBLIC.eq(PUBLICITY_PUBLIC).and(filteringDatasetCodeCond);
 				} else {
 					//selected ds, some perm, some public
 					boolean isSingleFilteringPermDataset = CollectionUtils.size(filteringPermDatasetCodes) == 1;
@@ -150,7 +150,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 							filteringNoPermDatasetCodeCond = lexeme.DATASET_CODE.in(filteringNoPermDatasetCodes);
 						}
 						dsWhere = DSL.or(
-								lexeme.PROCESS_STATE_CODE.eq(PROCESS_STATE_PUBLIC).and(filteringNoPermDatasetCodeCond),
+								lexeme.IS_PUBLIC.eq(PUBLICITY_PUBLIC).and(filteringNoPermDatasetCodeCond),
 								filteringPermDatasetCodeCond);
 					}
 				}
@@ -824,11 +824,11 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtz = getWordIsForeignField(w.field("word_id", Long.class));
 
 		Field<String[]> lxvsf;
-		Field<String[]> lxpsf;
+		Field<Boolean> lxpsf;
 		Field<String[]> lxtnf;
 		if (userRole == null) {
 			lxvsf = DSL.field(DSL.val(new String[0]));
-			lxpsf = DSL.field(DSL.val(new String[0]));
+			lxpsf = DSL.field(DSL.val((Boolean) null));
 			lxtnf = DSL.field(DSL.val(new String[0]));
 		} else {
 			String userRoleDatasetCode = userRole.getDatasetCode();
@@ -840,11 +840,10 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 							.and(l.VALUE_STATE_CODE.isNotNull()))
 					.groupBy(w.field("word_id")));
 			lxpsf = DSL.field(DSL
-					.select(DSL.arrayAggDistinct(l.PROCESS_STATE_CODE))
+					.select(DSL.field(DSL.val(PUBLICITY_PUBLIC).eq(DSL.all(DSL.arrayAggDistinct(l.IS_PUBLIC)))))
 					.from(l)
 					.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
-							.and(l.DATASET_CODE.eq(userRoleDatasetCode))
-							.and(l.PROCESS_STATE_CODE.isNotNull()))
+							.and(l.DATASET_CODE.eq(userRoleDatasetCode)))
 					.groupBy(w.field("word_id")));
 
 			if (CollectionUtils.isEmpty(tagNames)) {
@@ -869,7 +868,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 						.and(l.DATASET_CODE.in(availableDatasetCodes)))
 				.groupBy(w.field("word_id")));
 
-		Table<Record16<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, String[], String[], String[], String[]>> ww = DSL
+		Table<Record16<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[]>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),
@@ -883,8 +882,8 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
+						lxpsf.as("lexemes_are_public"),
 						lxvsf.as("lexemes_value_state_codes"),
-						lxpsf.as("lexemes_process_state_codes"),
 						lxtnf.as("lexemes_tag_names"),
 						dscf.as("dataset_codes")
 						)

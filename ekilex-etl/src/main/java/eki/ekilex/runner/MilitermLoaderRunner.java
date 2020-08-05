@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -63,8 +64,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	private Map<String, String> lexemeValueStateCodes;
 
-	private Map<String, String> meaningAndLexemeProcessStateCodes;
-
 	private Map<String, String> registerConversionMap;
 
 	private Map<String, String> meaningSemanticTypeMap;
@@ -86,17 +85,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 
 	@Override
 	public Complexity getLexemeComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Override
 	public Complexity getDefinitionComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Override
 	public Complexity getFreeformComplexity() {
-		return Complexity.DEFAULT;
+		return Complexity.DETAIL;
 	}
 
 	@Transactional
@@ -117,12 +116,6 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.VALUE_STATE.name());
 		lexemeValueStateCodes.putAll(tempCodes);
 		lexemeValueStateCodes.replace("variant", "rööptermin");
-
-		meaningAndLexemeProcessStateCodes = new HashMap<>();
-		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
-		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
-		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VALMIDUS, ClassifierName.PROCESS_STATE.name());
-		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
 
 		registerConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.REGISTER.name());
 
@@ -210,7 +203,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		String lang;
 		List<String> termWordTypeCodes;
 		List<String> listValues = extractListValues(conceptGroupNode);
-		List<Node> readinessProcessStateValueNodes = conceptGroupNode.selectNodes(readinessProcessStateExp);
+		List<Node> readinessStateValueNodes = conceptGroupNode.selectNodes(readinessProcessStateExp);
 		List<Node> meaningTypeValueNodes = conceptGroupNode.selectNodes(meaningTypeExp);
 
 		Long meaningId = createMeaning();
@@ -343,16 +336,13 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 					}
 				}
 
-				for (Node readinessProcessStateValueNode : readinessProcessStateValueNodes) {
-					String value = ((Element) readinessProcessStateValueNode).getTextTrim();
-					if (meaningAndLexemeProcessStateCodes.containsKey(value)) {
-						String processStateCode = meaningAndLexemeProcessStateCodes.get(value);
-						updateLexemeProcessState(lexemeId, processStateCode);
-					} else if (ignoredValues.contains(value)) {
-						// do nothing
-					} else {
-						logger.warn("Incorrect 'Valmidus' lexeme process state reference: \"{}\"", value);
-					}
+				List<String> readinessStateValues = readinessStateValueNodes.stream()
+						.map(node -> ((Element) node).getTextTrim())
+						.filter(value -> StringUtils.isNotBlank(value))
+						.collect(Collectors.toList());
+
+				if (readinessStateValues.contains(processStateCodePublic)) {
+					updateLexemePublicity(lexemeId, PUBLICITY_PUBLIC);
 				}
 
 				for (Node meaningTypeValueNode : meaningTypeValueNodes) {
@@ -366,9 +356,8 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				List<Node> valueNodes = termGroupNode.selectNodes(processStateExp);
 				for (Node processStateValueNode : valueNodes) {
 					String value = ((Element) processStateValueNode).getTextTrim();
-					if (meaningAndLexemeProcessStateCodes.containsKey(value)) {
-						String processStateCode = meaningAndLexemeProcessStateCodes.get(value);
-						updateLexemeProcessState(lexemeId, processStateCode);
+					if (StringUtils.equals(value, processStateCodePublic)) {
+						updateLexemePublicity(lexemeId, PUBLICITY_PUBLIC);
 					} else if (lexemeValueStateCodes.containsKey(value)) {
 						Map<String, Object> criteriaParamMap = new HashMap<>();
 						criteriaParamMap.put("id", lexemeId);
