@@ -1053,7 +1053,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteLexemeRegion(Long lexemeId, String regionCode) {
 		if (StringUtils.isNotBlank(regionCode)) {
 			Long lexemeRegionId = lookupDbService.getLexemeRegionId(lexemeId, regionCode);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, regionCode, null);
+			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode, null);
 			createLifecycleLog(logData);
 			cudDbService.deleteLexemeRegion(lexemeRegionId);
 		}
