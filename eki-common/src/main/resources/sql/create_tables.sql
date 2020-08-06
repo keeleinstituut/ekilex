@@ -1134,6 +1134,7 @@ create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index lexeme_dataset_code_idx on lexeme(dataset_code);
 create index lexeme_type_idx on lexeme(type);
+create index lexeme_is_public_idx on lexeme(is_public);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);
 create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);

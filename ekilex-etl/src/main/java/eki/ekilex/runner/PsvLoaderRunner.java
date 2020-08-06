@@ -1090,7 +1090,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Node> synonymNodes = node.selectNodes(synonymExp);
 		for (Node synonymNode : synonymNodes) {
 			SynonymData data = new SynonymData();
-			data.reportingId = reportingId;
 			data.word = nodeCleanValue(synonymNode);
 			data.meaningId = meaningId;
 			String homonymNrAtrValue = ((Element)synonymNode).attributeValue(homonymNrAttr);
@@ -1527,7 +1526,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String word;
 		Long meaningId;
 		int homonymNr = 0;
-		String reportingId;
 		String definition;
 	}
 

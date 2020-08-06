@@ -75,10 +75,10 @@ public class UnifSearchService extends AbstractSearchService {
 			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
 			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
-			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 			lexemeConversionUtil.flagEmptyLexemes(lexLexemes);
 			lexLexemes = lexLexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			lexemeConversionUtil.sortLexemes(lexLexemes, DatasetType.LEX);
+			lexemeLevelPreseUtil.combineLevels(lexLexemes);
 		}
 
 		// term conv

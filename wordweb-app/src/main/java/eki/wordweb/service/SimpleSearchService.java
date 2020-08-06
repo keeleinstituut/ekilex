@@ -70,10 +70,10 @@ public class SimpleSearchService extends AbstractSearchService {
 			List<CollocationTuple> collocTuples = simpleSearchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
 			collocConversionUtil.compose(wordId, lexemes, collocTuples, dataFilter, displayLang);
-			lexemeLevelPreseUtil.combineLevels(lexemes);
 			lexemeConversionUtil.flagEmptyLexemes(lexemes);
 			lexemes = lexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			lexemeConversionUtil.sortLexemes(lexemes, DatasetType.LEX);
+			lexemeLevelPreseUtil.combineLevels(lexemes);
 		}
 
 		// word common
