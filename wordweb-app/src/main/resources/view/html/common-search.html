@@ -196,13 +196,13 @@
               </div>
               <div class="meaning-meta" th:if="${not #lists.isEmpty(lexeme.sourceLangMeaningWords)}">
                 <div class="synonyms">
-                  <div class="additional-meta d-flex flex-wrap">
+                  <div th:id="${'synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap">
                     <span th:text="#{label.same.as}" class="mr-2">sama mis</span>
                     <th:block th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}"
                               th:with="
                               isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
                               isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                      <span class="collapsable text-nowrap mr-1" th:if="${!isCollapsable}" >
+                      <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse' : ''}" >
                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                           <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                         </a>
@@ -211,50 +211,26 @@
                             <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
-                        <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
+                        <span th:unless="${meaningWordIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
                       </span>
                     </th:block>
                     <button th:id="${'synonym-show-more-btn-' + lexeme.lexemeId}"
-                            class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                            th:title="#{button.see.more}"
+                            class="btn btn-collapse btn-link-muted btn-sm text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
                             type="button"
                             data-toggle="collapse"
-                            data-tooltip="tooltip"
-                            th:data-target="${'#synonym-show-more-btn-' + lexeme.lexemeId + ',' + '#synonym-collapse-panel-' + lexeme.lexemeId}"
+                            data-dynamic-text="true"
+                            th:data-target="${'#synonym-collapse-panel-' + lexeme.lexemeId +' .collapse'}"
                             aria-expanded="false"
                             th:aria-controls="${'#synonym-collapse-panel-' + lexeme.lexemeId}"
                             th:if="${#lists.size(lexeme.sourceLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                      <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                      <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
+                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                      </span>
+                      <span class="btn-content see-less-content d-none">
+                        <i class="fa fa-angle-up" aria-hidden="true"></i>
+                        <span class="btn-txt" th:text="#{button.see.less}"></span>
+                      </span>
                     </button>
-                    <div th:id="${'synonym-collapse-panel-' + lexeme.lexemeId}" class="collapse w-100"
-                         th:if="${#lists.size(lexeme.sourceLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                      <th:block th:each="meaningWord,meaningWordIter : ${lexeme.sourceLangMeaningWords}"
-                                th:with="
-                                isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
-                                isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                        <span class="collapsable text-nowrap mr-1" th:if="${isCollapsable}">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
-                            <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
-                          </a>
-                          <span th:if="${meaningWord.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
-                            <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                              <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
-                            </th:block>
-                          </span>
-                          <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
-                        </span>
-                      </th:block>
-                      <div>
-                        <button class="btn btn-link-muted btn-sm btn-collapse ml-n2"
-                                type="button" data-toggle="collapse"
-                                th:data-target="${'#synonym-show-more-btn-' + lexeme.lexemeId +',' + '#synonym-collapse-panel-' + lexeme.lexemeId}"
-                                aria-expanded="true"
-                                th:aria-controls="${'#synonym-collapse-panel-' + lexeme.lexemeId}" >
-                          <i class="fa fa-angle-up" aria-hidden="true"></i>
-                          <span th:text="#{button.see.less}"></span>
-                        </button>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -262,7 +238,7 @@
                 <div class="additional-meta">
                   <th:block th:each="meaningWordEntry : ${lexeme.destinLangMatchWordsByLang}"
                             th:with="destinLangMeaningWords=${meaningWordEntry.value}">
-                    <div class="d-flex flex-wrap">
+                    <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}" class="d-flex flex-wrap">
                       <span class="lang-code lang-code-sm mr-2 align-self-start" 
                             th:with="langData=${viewUtil.getLangData(meaningWordEntry.key)}" 
                             th:text="${langData.codeIso2}" th:title="${langData.label}">
@@ -271,7 +247,7 @@
                                 th:with="
                                 isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
                                 isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                        <span class="text-nowrap mr-1" th:if="${!isCollapsable}">
+                        <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse':''}">
                           <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word "
                              th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
                             <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
@@ -282,52 +258,26 @@
                               <span class="type-two text-uppercase" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
                           </span>
-                          <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
+                          <span th:unless="${meaningWordIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
                         </span>
                       </th:block>
                       <button th:id="${'matches-show-more-btn-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
-                              class="btn btn-link-muted btn-sm btn-ellipsis text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
-                              th:title="#{button.see.more}"
+                              class="btn btn-link-muted btn-sm btn-collapse text-nowrap d-inline-flex align-items-end pb-0 ml-n2"
                               type="button"
                               data-toggle="collapse"
-                              data-tooltip="tooltip"
-                              th:data-target="${'#matches-show-more-btn-' + lexeme.lexemeId + '-' + meaningWordEntry.key + ', ' + '#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
+                              data-dynamic-text="true"
+                              th:data-target="${'#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key + ' .collapse'}"
                               aria-expanded="false"
                               th:aria-controls="${'#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
                               th:if="${#lists.size(destinLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                        <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
+                          <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                        </span>
+                        <span class="btn-content see-less-content d-none">
+                          <i class="fa fa-angle-up" aria-hidden="true"></i>
+                          <span class="btn-txt" th:text="#{button.see.less}"></span>
+                        </span>
                       </button>
-                      <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}" class="collapse w-100"
-                           th:if="${#lists.size(destinLangMeaningWords) > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                        <th:block th:each="meaningWord,meaningWordIter : ${destinLangMeaningWords}"
-                                  th:with="
-                                  isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
-                                  isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                          <span class="text-nowrap mr-1" th:if="${isCollapsable}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word "
-                               th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
-                              <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
-                            </a>
-                            <span th:if="${meaningWord.additionalDataExists}" class="text-small">
-                              <span th:if="${isTerm && (meaningWord.mwLexValueState != null)}" th:text="${meaningWord.mwLexValueState.value}"></span>
-                              <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                                <span class="type-two text-uppercase" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
-                              </th:block>
-                            </span>
-                            <span th:unless="${meaningWordIter.last}" class="ml-n1" th:style="${isLimit ? 'display: none' : ''}">,</span>
-                          </span>
-                        </th:block>
-                        <div>
-                         <button class="btn btn-link-muted btn-sm ml-n2"
-                                 data-toggle="collapse"
-                                 th:data-target="${'#matches-show-more-btn-' + lexeme.lexemeId + '-' + meaningWordEntry.key + ', ' + '#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}"
-                                 aria-expanded="true"
-                                 th:aria-controls="${'#matches-show-more-panel-' + lexeme.lexemeId + '-' + meaningWordEntry.key}">
-                            <i class="fa fa-angle-up" aria-hidden="true"></i>
-                            <span th:text="#{button.see.less}"></span>
-                          </button>
-                        </div>
-                      </div>
                     </div>
                   </th:block>
                 </div>
