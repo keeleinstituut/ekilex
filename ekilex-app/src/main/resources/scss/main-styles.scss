@@ -25,6 +25,7 @@
 .scrollable-area {
 	display: flex;
 	overflow: auto;
+	height: 100%;
 	&>div {
 		width: 50%;
 		flex-shrink: 0;

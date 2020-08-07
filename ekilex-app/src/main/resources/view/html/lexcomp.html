@@ -12,6 +12,8 @@
           <li th:id="${'word-result-' + word.wordId}" class="list-group-item search-result-item border-left-0 border-right-0 rounded-0 p-0">
             <button
               type="button"
+              data-plugin="contextmenu"
+              data-contextmenu:compare="Ava uues paneelis"
               class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0"
               th:data-id="${word.wordId}"
               name="word-details-btn">
