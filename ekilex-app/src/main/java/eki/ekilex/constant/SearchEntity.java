@@ -6,7 +6,7 @@ import static java.util.Arrays.asList;
 
 public enum SearchEntity {
 
-	HEADWORD(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
+	HEADWORD(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.TAG, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
