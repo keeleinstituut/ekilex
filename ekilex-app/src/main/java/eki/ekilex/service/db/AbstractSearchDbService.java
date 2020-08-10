@@ -630,7 +630,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 				if (CollectionUtils.isNotEmpty(positiveExistSearchCriteria)) {
 
-					containsSearchKeys = containsSearchKeys(negativeExistSearchCriteria, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME);
+					containsSearchKeys = containsSearchKeys(positiveExistSearchCriteria, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME);
 
 					if (containsSearchKeys) {
 						Paradigm p2 = Paradigm.PARADIGM.as("p2");
@@ -647,7 +647,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 						where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 						where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
-						where1 = applyIdFilters(SearchKey.ID, searchCriteria, w2.ID, where1);
+						where1 = applyIdFilters(SearchKey.ID, positiveExistSearchCriteria, w2.ID, where1);
 						where1 = applyValueFilters(SearchKey.LANGUAGE, positiveExistSearchCriteria, w2.LANG, where1, false);
 						where1 = applyValueFilters(SearchKey.VALUE, positiveExistSearchCriteria, f2.VALUE, where1, true);
 						where1 = applyLexemeSourceRefFilter(positiveExistSearchCriteria, l2.ID, where1);
