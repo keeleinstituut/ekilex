@@ -473,7 +473,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 			Condition tagCondition = lt.LEXEME_ID.eq(lexemeIdField);
 			for (SearchCriterion criterion : existsCriteria) {
 				if (criterion.getSearchValue() != null) {
-					tagCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, tagCondition, true);
+					tagCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, tagCondition, false);
 				}
 			}
 			condition = condition.andExists(DSL.select(lt.ID).from(lt).where(tagCondition));
@@ -483,7 +483,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 			Condition tagCondition = lt.LEXEME_ID.eq(lexemeIdField);
 			for (SearchCriterion criterion : notExistsCriteria) {
 				if (criterion.getSearchValue() != null) {
-					tagCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, tagCondition, true);
+					tagCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, tagCondition, false);
 				}
 			}
 			condition = condition.andNotExists(DSL.select(lt.ID).from(lt).where(tagCondition));
@@ -492,7 +492,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return condition;
 	}
 
-	protected Condition applyDomainFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition m1Where, Condition w1Where) {
+	protected Condition applyDomainFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition m1Where) {
 
 		List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
@@ -504,50 +504,20 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
 						&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
 
-		MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
+		MeaningDomain md = MEANING_DOMAIN.as("md");
 
 		if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
-			m1Where = m1Where.and(m1d.MEANING_ID.eq(m1.ID));
+			Condition where1 = md.MEANING_ID.eq(meaningIdField);
 			for (SearchCriterion criterion : domainCriteriaWithExists) {
 				Classifier domain = (Classifier) criterion.getSearchValue();
-				m1Where = m1Where.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
 			}
-			w1Where = w1Where.andExists(DSL.select(m1.ID).from(l1, m1, m1d).where(m1Where));
+			m1Where = m1Where.and(DSL.exists(DSL.select(md.ID).from(md).where(where1)));
 		}
 
 		if (isNotExistsFilter) {
-			m1Where = m1Where.andNotExists(DSL.select(m1d.ID).from(m1d).where(m1d.MEANING_ID.eq(m1.ID)));
-			w1Where = w1Where.andExists(DSL.select(m1.ID).from(l1, m1).where(m1Where));
-		}
-		return w1Where;
-	}
-
-	protected Condition applyDomainFilters(List<SearchCriterion> searchCriteria, Meaning m1, Condition m1Where) {
-
-		List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-						&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
-						&& (crit.getSearchValue() != null))
-				.collect(toList());
-
-		boolean isNotExistsFilter = searchCriteria.stream()
-				.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-						&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
-
-		MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
-
-		if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
-			Condition where1 = m1d.MEANING_ID.eq(m1.ID);
-			for (SearchCriterion criterion : domainCriteriaWithExists) {
-				Classifier domain = (Classifier) criterion.getSearchValue();
-				where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-			}
-			m1Where = m1Where.and(DSL.exists(DSL.select(m1d.ID).from(m1d).where(where1)));
-		}
-
-		if (isNotExistsFilter) {
-			Condition where1 = m1d.MEANING_ID.eq(m1.ID);
-			m1Where = m1Where.and(DSL.notExists(DSL.select(m1d.ID).from(m1d).where(where1)));
+			Condition where1 = md.MEANING_ID.eq(meaningIdField);
+			m1Where = m1Where.and(DSL.notExists(DSL.select(md.ID).from(md).where(where1)));
 		}
 		return m1Where;
 	}
@@ -601,14 +571,13 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 					where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
 				}
 
-				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.TAG);
+				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME);
 				if (containsSearchKeys) {
 					Condition where2 = l1.WORD_ID.eq(w1.ID)
 							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 					where2 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
 					where2 = applyLexemeSourceRefFilter(searchCriteria, l1.ID, where2);
 					where2 = applyLexemeSourceNameFilter(searchCriteria, l1.ID, where2);
-					where2 = applyLexemeTagFilter(searchCriteria, l1.ID, where2);
 					where = where.andExists(DSL.select(l1.ID).from(l1).where(where2));
 				}
 
@@ -696,14 +665,15 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 				Lexeme l1 = LEXEME.as("l1");
 				Meaning m1 = MEANING.as("m1");
+
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where = applyDomainFilters(searchCriteria, l1, m1, where1, where);
-
+				where1 = applyDomainFilters(searchCriteria, m1.ID, where1);
 				where1 = applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, where1);
+				where1 = applyLexemeTagFilter(searchCriteria, l1.ID, where1);
 				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
@@ -768,16 +738,16 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return where;
 	}
 
+	protected boolean containsSearchKeys(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
+		return searchCriteria.stream().map(SearchCriterion::getSearchKey).anyMatch(searchKey -> ArrayUtils.contains(searchKeys, searchKey));
+	}
+
 	private Condition composeWordDatasetsCondition(Word word, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Lexeme lfd = LEXEME.as("lfd");
 		Condition dsFiltWhere = applyDatasetRestrictions(lfd, searchDatasetsRestriction, null);
 		Condition where = DSL.exists(DSL.select(lfd.ID).from(lfd).where(lfd.WORD_ID.eq(word.ID).and(lfd.TYPE.eq(LEXEME_TYPE_PRIMARY)).and(dsFiltWhere)));
 		return where;
-	}
-
-	private boolean containsSearchKeys(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
-		return searchCriteria.stream().map(SearchCriterion::getSearchKey).anyMatch(searchKey -> ArrayUtils.contains(searchKeys, searchKey));
 	}
 
 	private List<SearchCriterion> filterPositiveExistCriteria(List<SearchCriterion> searchCriteria) {

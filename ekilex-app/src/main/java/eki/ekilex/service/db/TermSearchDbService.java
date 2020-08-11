@@ -194,26 +194,33 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			}
 			SearchEntity searchEntity = searchCriterionGroup.getEntity();
 
-			if (SearchEntity.WORD.equals(searchEntity)) {
+			if (SearchEntity.TERM.equals(searchEntity)) {
 
 				Form f1 = FORM.as("f1");
 				Paradigm p1 = PARADIGM.as("p1");
 
-				Condition wheref1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
-						.and(f1.PARADIGM_ID.eq(p1.ID))
-						.and(p1.WORD_ID.eq(w1.ID));
-				wheref1 = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wheref1);
-				wheref1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, wheref1, true);
-				wheref1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wheref1, false);
-				wherew = wherew.andExists(DSL.select(f1.ID).from(f1, p1).where(wheref1));
+				boolean containsSearchKeys;
 
+				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.VALUE);
+				if (containsSearchKeys) {
+					Condition wheref1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
+							.and(f1.PARADIGM_ID.eq(p1.ID))
+							.and(p1.WORD_ID.eq(w1.ID));
+					wheref1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, wheref1, true);
+					wherew = wherew.andExists(DSL.select(f1.ID).from(f1, p1).where(wheref1));
+				}
+
+				wherew = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
+				wherew = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wherew, false);
+
+				wherel = applyLexemeTagFilter(searchCriteria, l1.ID, wherel);
 				wherel = applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
 
 			} else if (SearchEntity.CONCEPT.equals(searchEntity)) {
 
 				wherem = applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
-				wherem = applyDomainFilters(searchCriteria, m1, wherem);
+				wherem = applyDomainFilters(searchCriteria, m1.ID, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_ON, searchCriteria, searchDatasetsRestriction, m1, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_BY, searchCriteria, searchDatasetsRestriction, m1, wherem);
 
@@ -271,9 +278,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Table<Record2<Long, Long>> lff2 = DSL
 						.select(l3.MEANING_ID, lff3.FREEFORM_ID)
 						.from(l3, lff3)
-						.where(
-								lff3.LEXEME_ID.eq(l3.ID)
-										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.where(lff3.LEXEME_ID.eq(l3.ID).and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.asTable("lff2");
 
 				// notes owners joined
@@ -742,7 +747,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		Table<Record14<Long,Long,String,String,Integer,String,String[],Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,String[]>> wmm = DSL
+		Table<Record14<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[]>> wmm = DSL
 				.select(
 						wmid.field("meaning_id", Long.class),
 						wmid.field("word_id", Long.class),
