@@ -252,19 +252,17 @@ public class LookupDbService extends AbstractSearchDbService {
 
 	public Complexity getWordSecondaryLexemesCalculatedComplexity(Long wordId) {
 
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Field<String> c_detail = field(DSL.val(Complexity.DETAIL.name()));
-		Field<String> c_any = field(DSL.val(Complexity.ANY.name()));
+		Lexeme lp = LEXEME.as("lp");
+		Field<String> complDetail = field(DSL.val(Complexity.DETAIL.name()));
+		Field<String> complAny = field(DSL.val(Complexity.ANY.name()));
 
 		return create
-				.select(DSL.when(DSL.condition("'DETAIL' = all (array_agg(l2.complexity))"), c_detail).otherwise(c_any))
-				.from(l1, l2)
+				.select(DSL.when(complDetail.eq(DSL.all(DSL.arrayAgg(lp.COMPLEXITY))), complDetail).otherwise(complAny))
+				.from(lp)
 				.where(
-						l1.WORD_ID.eq(wordId)
-								.and(l2.WORD_ID.eq(l1.WORD_ID))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l2.IS_PUBLIC.eq(true)))
+						lp.WORD_ID.eq(wordId)
+								.and(lp.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(lp.IS_PUBLIC.isTrue()))
 				.fetchOneInto(Complexity.class);
 	}
 

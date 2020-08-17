@@ -533,28 +533,28 @@ public class CudDbService extends AbstractDataDbService {
 
 		Lexeme lp = LEXEME.as("lp");
 		Lexeme ls = LEXEME.as("ls");
-		Field<String> c_detail = DSL.field(DSL.val(Complexity.DETAIL.name()));
-		Field<String> c_any = DSL.field(DSL.val(Complexity.ANY.name()));
+		Field<String> complDetail = DSL.field(DSL.val(Complexity.DETAIL.name()));
+		Field<String> complAny = DSL.field(DSL.val(Complexity.ANY.name()));
 
-		Table<Record2<Long, String>> lex_compl = DSL
+		Table<Record2<Long, String>> lc = DSL
 				.select(
 						ls.ID.as("lex_id"),
-						DSL.when(DSL.condition("'DETAIL' = all (array_agg(lp.complexity))"), c_detail).otherwise(c_any).as("lex_compl"))
+						DSL.when(complDetail.eq(DSL.all(DSL.arrayAgg(lp.COMPLEXITY))), complDetail).otherwise(complAny).as("lex_compl"))
 				.from(ls, lp)
 				.where(
 						lp.WORD_ID.eq(wordId)
 								.and(lp.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(lp.IS_PUBLIC.eq(true))
+								.and(lp.IS_PUBLIC.isTrue())
 								.and(ls.WORD_ID.eq(lp.WORD_ID))
 								.and(ls.TYPE.eq(LEXEME_TYPE_SECONDARY)))
 				.groupBy(ls.ID)
-				.asTable("lex_compl");
+				.asTable("lc");
 
 		create
 				.update(LEXEME)
-				.set(LEXEME.COMPLEXITY, lex_compl.field("lex_compl", String.class))
-				.from(lex_compl)
-				.where(LEXEME.ID.eq(lex_compl.field("lex_id", Long.class)))
+				.set(LEXEME.COMPLEXITY, lc.field("lex_compl", String.class))
+				.from(lc)
+				.where(LEXEME.ID.eq(lc.field("lex_id", Long.class)))
 				.execute();
 	}
 
