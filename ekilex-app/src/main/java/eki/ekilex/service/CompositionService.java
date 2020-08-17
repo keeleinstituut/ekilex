@@ -471,6 +471,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			} else {
 				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
 			}
+
+			cudDbService.adjustWordSecondaryLexemesComplexity(targetWordId);
+			cudDbService.adjustWordSecondaryLexemesComplexity(sourceWordId);
 		}
 	}
 
@@ -567,6 +570,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				Long sourceLexemeId = lexemeIdPair.getId2();
 				LexemeRecord targetLexeme = compositionDbService.getLexeme(targetLexemeId);
 				LexemeRecord sourceLexeme = compositionDbService.getLexeme(sourceLexemeId);
+				Long targetLexemeWordId = targetLexeme.getWordId();
+				Long sourceLexemeWordId = sourceLexeme.getWordId();
 				boolean isTargetLexemePrimaryType = StringUtils.equals(targetLexeme.getType(), LEXEME_TYPE_PRIMARY);
 				boolean isSourceLexemePrimaryType = StringUtils.equals(sourceLexeme.getType(), LEXEME_TYPE_PRIMARY);
 
@@ -580,13 +585,15 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 					compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
 				} else if (isSourceLexemePrimaryType) {
-					Long targetLexemeWordId = targetLexeme.getWordId();
 					String datasetCode = targetLexeme.getDatasetCode();
 					cudDbService.deleteLexeme(targetLexemeId);
 					connectLexemeToAnotherWord(targetLexemeWordId, sourceLexemeId, datasetCode);
 				} else {
 					cudDbService.deleteLexeme(sourceLexemeId);
 				}
+
+				cudDbService.adjustWordSecondaryLexemesComplexity(sourceLexemeWordId);
+				cudDbService.adjustWordSecondaryLexemesComplexity(targetLexemeWordId);
 			}
 		}
 	}

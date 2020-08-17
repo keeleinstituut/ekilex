@@ -250,6 +250,24 @@ public class LookupDbService extends AbstractSearchDbService {
 				.orElse(0);
 	}
 
+	public Complexity getWordSecondaryLexemesCalculatedComplexity(Long wordId) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Field<String> c_detail = field(DSL.val(Complexity.DETAIL.name()));
+		Field<String> c_any = field(DSL.val(Complexity.ANY.name()));
+
+		return create
+				.select(DSL.when(DSL.condition("'DETAIL' = all (array_agg(l2.complexity))"), c_detail).otherwise(c_any))
+				.from(l1, l2)
+				.where(
+						l1.WORD_ID.eq(wordId)
+								.and(l2.WORD_ID.eq(l1.WORD_ID))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(l2.IS_PUBLIC.eq(true)))
+				.fetchOneInto(Complexity.class);
+	}
+
 	public String getLexemeWordValue(Long lexemeId) {
 	
 		Lexeme l = LEXEME.as("l");
@@ -509,7 +527,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.fetchSingleInto(Boolean.class);
 	}
@@ -521,7 +539,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LexemeType.PRIMARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.fetchSingleInto(Boolean.class);
 	}
@@ -702,7 +720,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LexemeType.SECONDARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_SECONDARY))
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchSingleInto(Boolean.class);
 	}
@@ -713,7 +731,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.in(wordIds)
-								.and(LEXEME.TYPE.eq(LexemeType.SECONDARY.name()))
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_SECONDARY))
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchSingleInto(Boolean.class);
 	}
@@ -767,18 +785,6 @@ public class LookupDbService extends AbstractSearchDbService {
 						MEANING_RELATION.MEANING1_ID.eq(meaningId1)
 								.and(MEANING_RELATION.MEANING2_ID.eq(meaningId2))
 								.and(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(relationType)))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean wordPrimaryLexemesComplexityExists(Long wordId, Complexity complexity) {
-
-		return create
-				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("complexity_exists"))
-				.from(LEXEME)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(LEXEME.COMPLEXITY.eq(complexity.name())))
 				.fetchSingleInto(Boolean.class);
 	}
 

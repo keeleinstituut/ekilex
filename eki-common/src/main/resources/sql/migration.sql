@@ -6,3 +6,19 @@ alter table lexeme alter column is_public set not null;
 alter table freeform alter column is_public set not null;
 alter table lexeme drop column process_state_code cascade;
 drop table process_state cascade;
+
+update lexeme l
+set complexity = l_c.complexity
+from (select ls.id lexeme_id,
+             (case
+                when 'DETAIL' = all (array_agg(lp.complexity)) then 'DETAIL'
+                else 'ANY'
+              end) complexity
+      from lexeme ls,
+           lexeme lp
+      where ls.type = 'SECONDARY'
+        and lp.type = 'PRIMARY'
+        and lp.is_public = true
+        and lp.word_id = ls.word_id
+      group by ls.id) l_c
+where l.id = l_c.lexeme_id;

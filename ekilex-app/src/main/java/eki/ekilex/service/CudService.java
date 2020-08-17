@@ -325,7 +325,10 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void updateLexemeComplexity(Long lexemeId, String complexity) {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.COMPLEXITY, lexemeId, complexity);
 		createLifecycleLog(logData);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
+		Long wordId = wordLexemeMeaningId.getWordId();
 		cudDbService.updateLexemeComplexity(lexemeId, complexity);
+		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
 	}
 
 	@Transactional
@@ -618,6 +621,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		if (lexemeId == null) {
 			return;
 		}
+		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
 		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
 		createLifecycleLog(logData);
 	}
@@ -945,6 +949,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		updateLexemeLevels(lexemeId, "delete");
 
 		cudDbService.deleteLexeme(lexemeId);
+		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
 		if (isOnlyLexemeForMeaning) {
 			deleteMeaning(meaningId);
 		}
