@@ -8,7 +8,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -24,19 +23,9 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelationsTuple;
-import eki.wordweb.service.db.AbstractSearchDbService;
-import eki.wordweb.service.db.UnifSearchDbService;
 
 @Component
 public class UnifSearchService extends AbstractSearchService {
-
-	@Autowired
-	private UnifSearchDbService unifSearchDbService;
-
-	@Override
-	public AbstractSearchDbService getSearchDbService() {
-		return unifSearchDbService;
-	}
 
 	@Transactional
 	@Override
@@ -49,21 +38,21 @@ public class UnifSearchService extends AbstractSearchService {
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 
 		// word data
-		Word word = unifSearchDbService.getWord(wordId);
+		Word word = searchDbService.getWord(wordId);
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
-		WordRelationsTuple wordRelationsTuple = unifSearchDbService.getWordRelationsTuple(wordId);
+		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
-		List<WordEtymTuple> wordEtymTuples = unifSearchDbService.getWordEtymologyTuples(wordId);
+		List<WordEtymTuple> wordEtymTuples = searchDbService.getWordEtymologyTuples(wordId);
 		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
-		Map<Long, List<Form>> paradigmFormsMap = unifSearchDbService.getWordForms(wordId, maxDisplayLevel);
+		Map<Long, List<Form>> paradigmFormsMap = searchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
-		List<Lexeme> lexemes = unifSearchDbService.getLexemes(wordId, dataFilter);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = unifSearchDbService.getLexemeMeaningTuples(wordId);
+		List<Lexeme> lexemes = searchDbService.getLexemes(wordId, dataFilter);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = searchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
 		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, dataFilter, displayLang);
 
@@ -72,7 +61,7 @@ public class UnifSearchService extends AbstractSearchService {
 		// lex conv
 		List<Lexeme> lexLexemes = lexemeGroups.get(DatasetType.LEX);
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
-			List<CollocationTuple> collocTuples = unifSearchDbService.getCollocations(wordId);
+			List<CollocationTuple> collocTuples = searchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
 			collocConversionUtil.compose(wordId, lexLexemes, collocTuples, dataFilter, displayLang);
 			lexemeConversionUtil.flagEmptyLexemes(lexLexemes);

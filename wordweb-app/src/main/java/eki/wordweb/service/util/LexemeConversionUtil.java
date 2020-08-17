@@ -299,7 +299,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		applySourceLinks(filteredImageFiles, meaningFreeformSourceLinks);
 		lexeme.setMeaningNotes(notes);
 		lexeme.setMeaningNotesByLang(notesByLangOrdered);
-		lexeme.setImageFiles(imageFiles);
+		lexeme.setImageFiles(filteredImageFiles);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 

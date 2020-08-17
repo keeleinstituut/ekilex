@@ -36,7 +36,11 @@ drop type if exists type_meaning_relation;
 -- create extension pg_trgm;
 -- create extension fuzzystrmatch;
 
-create type type_lang_complexity as (lang varchar(10), complexity varchar(100));
+create type type_lang_complexity as (
+				lang varchar(10),
+				dataset_code varchar(10),
+				lex_complexity varchar(100),
+				data_complexity varchar(100));
 create type type_definition as (
 				lexeme_id bigint,
 				meaning_id bigint,
@@ -151,9 +155,7 @@ dblink(
 	crit text,
 	unacrit text,
 	lang_order_by bigint,
-	lang_complexities type_lang_complexity array,
-	detail_exists boolean,
-	simple_exists boolean
+	lang_complexities type_lang_complexity array
 );
 
 create materialized view mview_ww_word as
@@ -173,14 +175,12 @@ dblink(
 	morph_code varchar(100),
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
-	dataset_codes varchar(10) array,
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
 	od_word_recommendations text array,
-	lex_dataset_exists boolean,
-	term_dataset_exists boolean,
-	forms_exist boolean
+	forms_exist boolean,
+	min_ds_order_by bigint
 );
 
 create materialized view mview_ww_form as
@@ -402,17 +402,12 @@ create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
 create index mview_ww_word_search_crit_lower_prefix_idx on mview_ww_word_search (lower(crit) text_pattern_ops);
 create index mview_ww_word_search_unacrit_tri_idx on mview_ww_word_search using gin(unacrit gin_trgm_ops);
-create index mview_ww_word_search_detail_exists_idx on mview_ww_word_search (detail_exists);
-create index mview_ww_word_search_simple_exists_idx on mview_ww_word_search (simple_exists);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_value_idx on mview_ww_word (word);
 create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
 create index mview_ww_word_value_prefix_idx on mview_ww_word (word text_pattern_ops);
 create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
-create index mview_ww_word_dataset_codes_gin_idx on mview_ww_word using gin(dataset_codes);
-create index mview_ww_word_lex_dataset_exists_idx on mview_ww_word (lex_dataset_exists);
-create index mview_ww_word_term_dataset_exists_idx on mview_ww_word (term_dataset_exists);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
 create index mview_ww_form_word_idx on mview_ww_form (word);
 create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));

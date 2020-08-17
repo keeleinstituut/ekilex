@@ -45,10 +45,6 @@ public class Word extends WordTypeData {
 
 	private List<String> odWordRecommendations;
 
-	private boolean lexDatasetExists;
-
-	private boolean termDatasetExists;
-
 	private boolean formsExist;
 
 	private boolean singlePos;
@@ -199,22 +195,6 @@ public class Word extends WordTypeData {
 
 	public void setOdWordRecommendations(List<String> odWordRecommendations) {
 		this.odWordRecommendations = odWordRecommendations;
-	}
-
-	public boolean isLexDatasetExists() {
-		return lexDatasetExists;
-	}
-
-	public void setLexDatasetExists(boolean lexDatasetExists) {
-		this.lexDatasetExists = lexDatasetExists;
-	}
-
-	public boolean isTermDatasetExists() {
-		return termDatasetExists;
-	}
-
-	public void setTermDatasetExists(boolean termDatasetExists) {
-		this.termDatasetExists = termDatasetExists;
 	}
 
 	public boolean isFormsExist() {

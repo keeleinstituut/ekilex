@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -25,19 +24,9 @@ import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordRelationsTuple;
-import eki.wordweb.service.db.AbstractSearchDbService;
-import eki.wordweb.service.db.SimpleSearchDbService;
 
 @Component
 public class SimpleSearchService extends AbstractSearchService {
-
-	@Autowired
-	private SimpleSearchDbService simpleSearchDbService;
-
-	@Override
-	public AbstractSearchDbService getSearchDbService() {
-		return simpleSearchDbService;
-	}
 
 	@Transactional
 	@Override
@@ -50,24 +39,24 @@ public class SimpleSearchService extends AbstractSearchService {
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 
 		// word data
-		Word word = simpleSearchDbService.getWord(wordId);
+		Word word = searchDbService.getWord(wordId);
 		String wordLang = word.getLang();
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
-		WordRelationsTuple wordRelationsTuple = simpleSearchDbService.getWordRelationsTuple(wordId);
+		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
-		Map<Long, List<Form>> paradigmFormsMap = simpleSearchDbService.getWordForms(wordId, maxDisplayLevel);
+		Map<Long, List<Form>> paradigmFormsMap = searchDbService.getWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
-		List<Lexeme> lexemes = simpleSearchDbService.getLexemes(wordId, dataFilter);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = simpleSearchDbService.getLexemeMeaningTuples(wordId);
+		List<Lexeme> lexemes = searchDbService.getLexemes(wordId, dataFilter);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = searchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
 		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, dataFilter, displayLang);
 
 		if (CollectionUtils.isNotEmpty(lexemes)) {
-			List<CollocationTuple> collocTuples = simpleSearchDbService.getCollocations(wordId);
+			List<CollocationTuple> collocTuples = searchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
 			collocConversionUtil.compose(wordId, lexemes, collocTuples, dataFilter, displayLang);
 			lexemeConversionUtil.flagEmptyLexemes(lexemes);
