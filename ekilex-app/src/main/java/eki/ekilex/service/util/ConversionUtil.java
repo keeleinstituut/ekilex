@@ -408,8 +408,15 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<LexemeLangGroup> composeLexemeLangGroups(List<Lexeme> lexemes, List<ClassifierSelect> languagesOrder) {
 
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<String> langCodeOrder;
+		List<String> selectedLangCodes;
+		if (CollectionUtils.isEmpty(languagesOrder)) {
+			langCodeOrder = lexemes.stream().map(lexeme -> lexeme.getWord().getLang()).distinct().collect(Collectors.toList());
+			selectedLangCodes = new ArrayList<>();
+		} else {
+			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		}
 		List<LexemeLangGroup> lexemeLangGroups = new ArrayList<>();
 		Map<String, LexemeLangGroup> lexemeLangGroupMap = new HashMap<>();
 		List<Lexeme> lexemesOrderBy = lexemes.stream().sorted(Comparator.comparing(Lexeme::getOrderBy)).collect(Collectors.toList());
@@ -443,8 +450,15 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<NoteLangGroup> composeNoteLangGroups(List<? extends Note> notes, List<ClassifierSelect> languagesOrder) {
 
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<String> langCodeOrder;
+		List<String> selectedLangCodes;
+		if (CollectionUtils.isEmpty(languagesOrder)) {
+			langCodeOrder = notes.stream().map(Note::getLang).distinct().collect(Collectors.toList());
+			selectedLangCodes = new ArrayList<>();
+		} else {
+			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		}
 		List<NoteLangGroup> noteLangGroups = new ArrayList<>();
 		Map<String, NoteLangGroup> noteLangGroupMap = new HashMap<>();
 		List<Note> notesOrderBy = notes.stream().sorted(Comparator.comparing(Note::getOrderBy)).collect(Collectors.toList());

@@ -6,6 +6,7 @@ alter table lexeme alter column is_public set not null;
 alter table freeform alter column is_public set not null;
 alter table lexeme drop column process_state_code cascade;
 drop table process_state cascade;
+create index lexeme_is_public_idx on lexeme(is_public);
 
 update lexeme l
 set complexity = l_c.complexity
