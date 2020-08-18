@@ -87,11 +87,16 @@ public class CompositionService extends AbstractService implements GlobalConstan
 					.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, PUBLICITY_PUBLIC, meaningId);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
+			List<String> tagNames = cudDbService.createLexemeAutomaticTags(lexemeId);
 
 			LogData wordLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
 			createLifecycleLog(wordLogData);
 			LogData lexemeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, dataset);
 			createLifecycleLog(lexemeLogData);
+			tagNames.forEach(tagName -> {
+				LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
+				createLifecycleLog(tagLogData);
+			});
 		}
 
 		if (createRelation) {
@@ -584,6 +589,12 @@ public class CompositionService extends AbstractService implements GlobalConstan
 					createLifecycleLog(logData);
 
 					compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
+
+					List<String> tagNames = cudDbService.createLexemeAutomaticTags(targetLexemeId);
+					tagNames.forEach(tagName -> {
+						LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, targetLexemeId, tagName);
+						createLifecycleLog(tagLogData);
+					});
 				} else if (isSourceLexemePrimaryType) {
 					String datasetCode = targetLexeme.getDatasetCode();
 					cudDbService.deleteLexeme(targetLexemeId);
