@@ -3,7 +3,7 @@
 <head></head>
 <body>
   <div th:id="${'sourceSearchResult_' + source.id}" th:fragment="source_search_result">
-    <div class="col-auto form-inline" >
+    <div class="col-auto form-inline">
       <div class="ml-auto">
         <button type="button" class="btn badge badge-success float-right"
                 title="Lisa allikale uus atribuut"
@@ -26,10 +26,11 @@
                 data-toggle="delete-source-confirm"
                 sec:authorize="#vars.source.crudGrant">Eemalda allikas</button>
       </div>
+      <a th:href="@{'/sourcedetailsearch/' + ${source.id}}" class="btn btn-secondary btn-sm ml-4">Otsi viiteid</a>
       <a th:href="@{'/sourcelifecyclelog:' + ${source.id}}"
          data-toggle="modal"
          data-target="#sourceLifecycleLogDlg"
-         class="btn btn-secondary btn-sm ml-4"
+         class="btn btn-secondary btn-sm ml-2"
          sec:authorize="${#authentication.principal.datasetPermissionsExist}">Tegevuste logi</a>
     </div>
     <table class="w-100">
@@ -178,14 +179,14 @@
       </table>
     </div>
     <script th:inline="javascript">
-    	$('[data-toggle=join-confirm]').confirmation({
-    		btnOkLabel : 'Jah',
-    		btnCancelLabel : 'Ei',
-    		title : 'Kas olete kindel, et soovite allikad ühendada?',
-    		onConfirm : function() {
-    			$(this).closest('form').submit();
-    		}
-    	});
+      $('[data-toggle=join-confirm]').confirmation({
+        btnOkLabel: 'Jah',
+        btnCancelLabel: 'Ei',
+        title: 'Kas olete kindel, et soovite allikad ühendada?',
+        onConfirm: function() {
+          $(this).closest('form').submit();
+        }
+      });
     </script>
   </th:block>
 </body>

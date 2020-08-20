@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Source;
 import eki.ekilex.service.SourceService;
 
@@ -88,6 +90,17 @@ public class SourceSearchController extends AbstractSearchController {
 
 		List<String> sourceNames = sourceService.getSourceNames(nameSearchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 		return sourceNames;
+	}
+
+	@GetMapping(SOURCE_DETAIL_SEARCH_URI + "/{sourceId}")
+	public String sourceDetailSearch(@PathVariable("sourceId") Long sourceId) {
+
+		logger.debug("Source detail search by id: \"{}\"", sourceId);
+
+		List<String> selectedDatasets = getUserPreferredDatasetCodes();
+		SearchFilter detailSearchFilter = searchHelper.initSourceDetailSearchFilter(sourceId);
+		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.WORD, null);
+		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
 
 }

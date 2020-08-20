@@ -456,6 +456,13 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return filteredCriteria;
 	}
 
+	protected List<SearchCriterion> filterSourceIdCriteria(List<SearchCriterion> searchCriteria) {
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.SOURCE_ID) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.collect(toList());
+		return filteredCriteria;
+	}
+
 	protected Condition applyLexemeTagFilter(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream().filter(crit -> crit.getSearchKey().equals(SearchKey.TAG)).collect(toList());
