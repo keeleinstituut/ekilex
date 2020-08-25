@@ -8,6 +8,7 @@ alter table lexeme drop column process_state_code cascade;
 drop table process_state cascade;
 create index lexeme_is_public_idx on lexeme(is_public);
 
+-- roheliste ilmikute detailsus sõltuvalt mustade detailsusest
 update lexeme l
 set complexity = l_c.complexity
 from (select ls.id lexeme_id,
@@ -98,3 +99,31 @@ create index activity_log_event_on_ms_idx on activity_log((date_part('epoch', ev
 create index activity_log_event_by_idx on activity_log(event_by);
 create index activity_log_event_by_lower_idx on activity_log(lower(event_by));
 create index activity_log_owner_idx on activity_log(owner_name, owner_id);
+
+-- bookmarkide teisendamine ilmiku siltideks
+insert into tag select distinct value_text from freeform where type = 'BOOKMARK';
+
+insert into lexeme_tag (lexeme_id, tag_name)
+select distinct lff.lexeme_id, ff.value_text
+from lexeme_freeform lff,
+     freeform ff
+where lff.freeform_id = ff.id
+  and ff.type = 'BOOKMARK'
+  and not exists(select lt.id
+                 from lexeme_tag lt
+                 where lt.lexeme_id = lff.lexeme_id
+                   and lt.tag_name = ff.value_text);
+
+update lifecycle_log lcl
+set entity_id = lff.lexeme_id,
+    entity_name = 'LEXEME',
+    entity_prop = 'TAG'
+from lexeme_freeform lff,
+     freeform ff
+where lff.freeform_id = ff.id
+  and ff.type = 'BOOKMARK'
+  and lcl.entity_id = ff.id
+  and lcl.entry = ff.value_text;
+
+delete from freeform where type = 'BOOKMARK';
+

@@ -186,6 +186,8 @@ public interface WebConstant {
 
 	String SOURCE_NAME_SEARCH_URI = "/sourcenamesearch";
 
+	String SOURCE_DETAIL_SEARCH_URI = "/sourcedetailsearch";
+
 	String UPDATE_SOURCE_PROPERTY_URI = "/update_source_property";
 
 	String CREATE_SOURCE_PROPERTY_URI = "/create_source_property";

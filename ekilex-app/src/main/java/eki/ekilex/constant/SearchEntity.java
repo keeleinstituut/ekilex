@@ -16,7 +16,7 @@ public enum SearchEntity {
 	CONCEPT(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	CONCEPT_ID(new SearchKey[] {SearchKey.ID}),
-	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF})
+	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID})
 	;
 
 	private SearchKey[] keys;
