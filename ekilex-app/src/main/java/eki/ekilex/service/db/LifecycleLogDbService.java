@@ -44,6 +44,7 @@ import eki.ekilex.data.LogData;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 
+@Deprecated
 @Component
 public class LifecycleLogDbService implements GlobalConstant {
 

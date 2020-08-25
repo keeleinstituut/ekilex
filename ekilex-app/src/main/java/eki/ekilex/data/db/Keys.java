@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -49,6 +50,7 @@ import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
@@ -60,6 +62,7 @@ import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
@@ -92,6 +95,7 @@ import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
 import eki.ekilex.data.db.tables.ValueStateLabel;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
@@ -108,6 +112,7 @@ import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
+import eki.ekilex.data.db.tables.records.ActivityLogRecord;
 import eki.ekilex.data.db.tables.records.AspectLabelRecord;
 import eki.ekilex.data.db.tables.records.AspectRecord;
 import eki.ekilex.data.db.tables.records.CollocationFreeformRecord;
@@ -152,6 +157,7 @@ import eki.ekilex.data.db.tables.records.LexRelMappingRecord;
 import eki.ekilex.data.db.tables.records.LexRelTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.LexRelTypeRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
+import eki.ekilex.data.db.tables.records.LexemeActivityLogRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemeFrequencyRecord;
@@ -163,6 +169,7 @@ import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.LexemeSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.tables.records.LifecycleLogRecord;
+import eki.ekilex.data.db.tables.records.MeaningActivityLogRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningLifecycleLogRecord;
@@ -195,6 +202,7 @@ import eki.ekilex.data.db.tables.records.UsageTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.UsageTypeRecord;
 import eki.ekilex.data.db.tables.records.ValueStateLabelRecord;
 import eki.ekilex.data.db.tables.records.ValueStateRecord;
+import eki.ekilex.data.db.tables.records.WordActivityLogRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologyRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologyRelationRecord;
 import eki.ekilex.data.db.tables.records.WordEtymologySourceLinkRecord;
@@ -231,6 +239,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<ActivityLogRecord, Long> IDENTITY_ACTIVITY_LOG = Identities0.IDENTITY_ACTIVITY_LOG;
     public static final Identity<AspectRecord, Long> IDENTITY_ASPECT = Identities0.IDENTITY_ASPECT;
     public static final Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Identities0.IDENTITY_COLLOCATION;
     public static final Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Identities0.IDENTITY_COLLOCATION_FREEFORM;
@@ -264,6 +273,7 @@ public class Keys {
     public static final Identity<LexRelTypeRecord, Long> IDENTITY_LEX_REL_TYPE = Identities0.IDENTITY_LEX_REL_TYPE;
     public static final Identity<LexRelationRecord, Long> IDENTITY_LEX_RELATION = Identities0.IDENTITY_LEX_RELATION;
     public static final Identity<LexemeRecord, Long> IDENTITY_LEXEME = Identities0.IDENTITY_LEXEME;
+    public static final Identity<LexemeActivityLogRecord, Long> IDENTITY_LEXEME_ACTIVITY_LOG = Identities0.IDENTITY_LEXEME_ACTIVITY_LOG;
     public static final Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = Identities0.IDENTITY_LEXEME_DERIV;
     public static final Identity<LexemeFreeformRecord, Long> IDENTITY_LEXEME_FREEFORM = Identities0.IDENTITY_LEXEME_FREEFORM;
     public static final Identity<LexemeFrequencyRecord, Long> IDENTITY_LEXEME_FREQUENCY = Identities0.IDENTITY_LEXEME_FREQUENCY;
@@ -275,6 +285,7 @@ public class Keys {
     public static final Identity<LexemeTagRecord, Long> IDENTITY_LEXEME_TAG = Identities0.IDENTITY_LEXEME_TAG;
     public static final Identity<LifecycleLogRecord, Long> IDENTITY_LIFECYCLE_LOG = Identities0.IDENTITY_LIFECYCLE_LOG;
     public static final Identity<MeaningRecord, Long> IDENTITY_MEANING = Identities0.IDENTITY_MEANING;
+    public static final Identity<MeaningActivityLogRecord, Long> IDENTITY_MEANING_ACTIVITY_LOG = Identities0.IDENTITY_MEANING_ACTIVITY_LOG;
     public static final Identity<MeaningDomainRecord, Long> IDENTITY_MEANING_DOMAIN = Identities0.IDENTITY_MEANING_DOMAIN;
     public static final Identity<MeaningFreeformRecord, Long> IDENTITY_MEANING_FREEFORM = Identities0.IDENTITY_MEANING_FREEFORM;
     public static final Identity<MeaningLifecycleLogRecord, Long> IDENTITY_MEANING_LIFECYCLE_LOG = Identities0.IDENTITY_MEANING_LIFECYCLE_LOG;
@@ -298,6 +309,7 @@ public class Keys {
     public static final Identity<UsageTypeRecord, Long> IDENTITY_USAGE_TYPE = Identities0.IDENTITY_USAGE_TYPE;
     public static final Identity<ValueStateRecord, Long> IDENTITY_VALUE_STATE = Identities0.IDENTITY_VALUE_STATE;
     public static final Identity<WordRecord, Long> IDENTITY_WORD = Identities0.IDENTITY_WORD;
+    public static final Identity<WordActivityLogRecord, Long> IDENTITY_WORD_ACTIVITY_LOG = Identities0.IDENTITY_WORD_ACTIVITY_LOG;
     public static final Identity<WordEtymologyRecord, Long> IDENTITY_WORD_ETYMOLOGY = Identities0.IDENTITY_WORD_ETYMOLOGY;
     public static final Identity<WordEtymologyRelationRecord, Long> IDENTITY_WORD_ETYMOLOGY_RELATION = Identities0.IDENTITY_WORD_ETYMOLOGY_RELATION;
     public static final Identity<WordEtymologySourceLinkRecord, Long> IDENTITY_WORD_ETYMOLOGY_SOURCE_LINK = Identities0.IDENTITY_WORD_ETYMOLOGY_SOURCE_LINK;
@@ -316,6 +328,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<ActivityLogRecord> ACTIVITY_LOG_PKEY = UniqueKeys0.ACTIVITY_LOG_PKEY;
     public static final UniqueKey<AspectRecord> ASPECT_PKEY = UniqueKeys0.ASPECT_PKEY;
     public static final UniqueKey<AspectLabelRecord> ASPECT_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.ASPECT_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = UniqueKeys0.COLLOCATION_PKEY;
@@ -369,6 +382,8 @@ public class Keys {
     public static final UniqueKey<LexRelationRecord> LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = UniqueKeys0.LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY;
     public static final UniqueKey<LexemeRecord> LEXEME_PKEY = UniqueKeys0.LEXEME_PKEY;
     public static final UniqueKey<LexemeRecord> LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = UniqueKeys0.LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY;
+    public static final UniqueKey<LexemeActivityLogRecord> LEXEME_ACTIVITY_LOG_PKEY = UniqueKeys0.LEXEME_ACTIVITY_LOG_PKEY;
+    public static final UniqueKey<LexemeActivityLogRecord> LEXEME_ACTIVITY_LOG_LEXEME_ID_ACTIVITY_LOG_ID_KEY = UniqueKeys0.LEXEME_ACTIVITY_LOG_LEXEME_ID_ACTIVITY_LOG_ID_KEY;
     public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_PKEY = UniqueKeys0.LEXEME_DERIV_PKEY;
     public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = UniqueKeys0.LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY;
     public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = UniqueKeys0.LEXEME_FREEFORM_PKEY;
@@ -387,6 +402,8 @@ public class Keys {
     public static final UniqueKey<LexemeTagRecord> LEXEME_TAG_LEXEME_ID_TAG_NAME_KEY = UniqueKeys0.LEXEME_TAG_LEXEME_ID_TAG_NAME_KEY;
     public static final UniqueKey<LifecycleLogRecord> LIFECYCLE_LOG_PKEY = UniqueKeys0.LIFECYCLE_LOG_PKEY;
     public static final UniqueKey<MeaningRecord> MEANING_PKEY = UniqueKeys0.MEANING_PKEY;
+    public static final UniqueKey<MeaningActivityLogRecord> MEANING_ACTIVITY_LOG_PKEY = UniqueKeys0.MEANING_ACTIVITY_LOG_PKEY;
+    public static final UniqueKey<MeaningActivityLogRecord> MEANING_ACTIVITY_LOG_MEANING_ID_ACTIVITY_LOG_ID_KEY = UniqueKeys0.MEANING_ACTIVITY_LOG_MEANING_ID_ACTIVITY_LOG_ID_KEY;
     public static final UniqueKey<MeaningDomainRecord> MEANING_DOMAIN_PKEY = UniqueKeys0.MEANING_DOMAIN_PKEY;
     public static final UniqueKey<MeaningDomainRecord> MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY = UniqueKeys0.MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY;
     public static final UniqueKey<MeaningFreeformRecord> MEANING_FREEFORM_PKEY = UniqueKeys0.MEANING_FREEFORM_PKEY;
@@ -425,6 +442,8 @@ public class Keys {
     public static final UniqueKey<ValueStateRecord> VALUE_STATE_PKEY = UniqueKeys0.VALUE_STATE_PKEY;
     public static final UniqueKey<ValueStateLabelRecord> VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordRecord> WORD_PKEY = UniqueKeys0.WORD_PKEY;
+    public static final UniqueKey<WordActivityLogRecord> WORD_ACTIVITY_LOG_PKEY = UniqueKeys0.WORD_ACTIVITY_LOG_PKEY;
+    public static final UniqueKey<WordActivityLogRecord> WORD_ACTIVITY_LOG_WORD_ID_ACTIVITY_LOG_ID_KEY = UniqueKeys0.WORD_ACTIVITY_LOG_WORD_ID_ACTIVITY_LOG_ID_KEY;
     public static final UniqueKey<WordEtymologyRecord> WORD_ETYMOLOGY_PKEY = UniqueKeys0.WORD_ETYMOLOGY_PKEY;
     public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_PKEY = UniqueKeys0.WORD_ETYMOLOGY_RELATION_PKEY;
     public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_RELATED_WORD_ID_KEY = UniqueKeys0.WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_RELATED_WORD_ID_KEY;
@@ -524,6 +543,8 @@ public class Keys {
     public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_DATASET_CODE_FKEY;
     public static final ForeignKey<LexemeRecord, FrequencyGroupRecord> LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY;
     public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY;
+    public static final ForeignKey<LexemeActivityLogRecord, LexemeRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY;
+    public static final ForeignKey<LexemeActivityLogRecord, ActivityLogRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = ForeignKeys0.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY;
     public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeDerivRecord, DerivRecord> LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY = ForeignKeys0.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY;
     public static final ForeignKey<LexemeFreeformRecord, LexemeRecord> LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY;
@@ -541,6 +562,8 @@ public class Keys {
     public static final ForeignKey<LexemeSourceLinkRecord, SourceRecord> LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_SOURCE_ID_FKEY = ForeignKeys0.LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_SOURCE_ID_FKEY;
     public static final ForeignKey<LexemeTagRecord, LexemeRecord> LEXEME_TAG__LEXEME_TAG_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_TAG__LEXEME_TAG_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeTagRecord, TagRecord> LEXEME_TAG__LEXEME_TAG_TAG_NAME_FKEY = ForeignKeys0.LEXEME_TAG__LEXEME_TAG_TAG_NAME_FKEY;
+    public static final ForeignKey<MeaningActivityLogRecord, MeaningRecord> MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_MEANING_ID_FKEY = ForeignKeys0.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_MEANING_ID_FKEY;
+    public static final ForeignKey<MeaningActivityLogRecord, ActivityLogRecord> MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = ForeignKeys0.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY;
     public static final ForeignKey<MeaningDomainRecord, MeaningRecord> MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY = ForeignKeys0.MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY;
     public static final ForeignKey<MeaningDomainRecord, DomainRecord> MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY = ForeignKeys0.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY;
     public static final ForeignKey<MeaningFreeformRecord, MeaningRecord> MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY = ForeignKeys0.MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY;
@@ -590,6 +613,8 @@ public class Keys {
     public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_DISPLAY_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = ForeignKeys0.WORD__WORD_GENDER_CODE_FKEY;
     public static final ForeignKey<WordRecord, AspectRecord> WORD__WORD_ASPECT_CODE_FKEY = ForeignKeys0.WORD__WORD_ASPECT_CODE_FKEY;
+    public static final ForeignKey<WordActivityLogRecord, WordRecord> WORD_ACTIVITY_LOG__WORD_ACTIVITY_LOG_WORD_ID_FKEY = ForeignKeys0.WORD_ACTIVITY_LOG__WORD_ACTIVITY_LOG_WORD_ID_FKEY;
+    public static final ForeignKey<WordActivityLogRecord, ActivityLogRecord> WORD_ACTIVITY_LOG__WORD_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = ForeignKeys0.WORD_ACTIVITY_LOG__WORD_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY;
     public static final ForeignKey<WordEtymologyRecord, WordRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD_ID_FKEY = ForeignKeys0.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD_ID_FKEY;
     public static final ForeignKey<WordEtymologyRecord, EtymologyTypeRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY = ForeignKeys0.WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY;
     public static final ForeignKey<WordEtymologyRelationRecord, WordEtymologyRecord> WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_FKEY = ForeignKeys0.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_FKEY;
@@ -624,6 +649,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<ActivityLogRecord, Long> IDENTITY_ACTIVITY_LOG = Internal.createIdentity(ActivityLog.ACTIVITY_LOG, ActivityLog.ACTIVITY_LOG.ID);
         public static Identity<AspectRecord, Long> IDENTITY_ASPECT = Internal.createIdentity(Aspect.ASPECT, Aspect.ASPECT.ORDER_BY);
         public static Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Internal.createIdentity(Collocation.COLLOCATION, Collocation.COLLOCATION.ID);
         public static Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Internal.createIdentity(CollocationFreeform.COLLOCATION_FREEFORM, CollocationFreeform.COLLOCATION_FREEFORM.ID);
@@ -657,6 +683,7 @@ public class Keys {
         public static Identity<LexRelTypeRecord, Long> IDENTITY_LEX_REL_TYPE = Internal.createIdentity(LexRelType.LEX_REL_TYPE, LexRelType.LEX_REL_TYPE.ORDER_BY);
         public static Identity<LexRelationRecord, Long> IDENTITY_LEX_RELATION = Internal.createIdentity(LexRelation.LEX_RELATION, LexRelation.LEX_RELATION.ID);
         public static Identity<LexemeRecord, Long> IDENTITY_LEXEME = Internal.createIdentity(Lexeme.LEXEME, Lexeme.LEXEME.ID);
+        public static Identity<LexemeActivityLogRecord, Long> IDENTITY_LEXEME_ACTIVITY_LOG = Internal.createIdentity(LexemeActivityLog.LEXEME_ACTIVITY_LOG, LexemeActivityLog.LEXEME_ACTIVITY_LOG.ID);
         public static Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = Internal.createIdentity(LexemeDeriv.LEXEME_DERIV, LexemeDeriv.LEXEME_DERIV.ID);
         public static Identity<LexemeFreeformRecord, Long> IDENTITY_LEXEME_FREEFORM = Internal.createIdentity(LexemeFreeform.LEXEME_FREEFORM, LexemeFreeform.LEXEME_FREEFORM.ID);
         public static Identity<LexemeFrequencyRecord, Long> IDENTITY_LEXEME_FREQUENCY = Internal.createIdentity(LexemeFrequency.LEXEME_FREQUENCY, LexemeFrequency.LEXEME_FREQUENCY.ID);
@@ -668,6 +695,7 @@ public class Keys {
         public static Identity<LexemeTagRecord, Long> IDENTITY_LEXEME_TAG = Internal.createIdentity(LexemeTag.LEXEME_TAG, LexemeTag.LEXEME_TAG.ID);
         public static Identity<LifecycleLogRecord, Long> IDENTITY_LIFECYCLE_LOG = Internal.createIdentity(LifecycleLog.LIFECYCLE_LOG, LifecycleLog.LIFECYCLE_LOG.ID);
         public static Identity<MeaningRecord, Long> IDENTITY_MEANING = Internal.createIdentity(Meaning.MEANING, Meaning.MEANING.ID);
+        public static Identity<MeaningActivityLogRecord, Long> IDENTITY_MEANING_ACTIVITY_LOG = Internal.createIdentity(MeaningActivityLog.MEANING_ACTIVITY_LOG, MeaningActivityLog.MEANING_ACTIVITY_LOG.ID);
         public static Identity<MeaningDomainRecord, Long> IDENTITY_MEANING_DOMAIN = Internal.createIdentity(MeaningDomain.MEANING_DOMAIN, MeaningDomain.MEANING_DOMAIN.ID);
         public static Identity<MeaningFreeformRecord, Long> IDENTITY_MEANING_FREEFORM = Internal.createIdentity(MeaningFreeform.MEANING_FREEFORM, MeaningFreeform.MEANING_FREEFORM.ID);
         public static Identity<MeaningLifecycleLogRecord, Long> IDENTITY_MEANING_LIFECYCLE_LOG = Internal.createIdentity(MeaningLifecycleLog.MEANING_LIFECYCLE_LOG, MeaningLifecycleLog.MEANING_LIFECYCLE_LOG.ID);
@@ -691,6 +719,7 @@ public class Keys {
         public static Identity<UsageTypeRecord, Long> IDENTITY_USAGE_TYPE = Internal.createIdentity(UsageType.USAGE_TYPE, UsageType.USAGE_TYPE.ORDER_BY);
         public static Identity<ValueStateRecord, Long> IDENTITY_VALUE_STATE = Internal.createIdentity(ValueState.VALUE_STATE, ValueState.VALUE_STATE.ORDER_BY);
         public static Identity<WordRecord, Long> IDENTITY_WORD = Internal.createIdentity(Word.WORD, Word.WORD.ID);
+        public static Identity<WordActivityLogRecord, Long> IDENTITY_WORD_ACTIVITY_LOG = Internal.createIdentity(WordActivityLog.WORD_ACTIVITY_LOG, WordActivityLog.WORD_ACTIVITY_LOG.ID);
         public static Identity<WordEtymologyRecord, Long> IDENTITY_WORD_ETYMOLOGY = Internal.createIdentity(WordEtymology.WORD_ETYMOLOGY, WordEtymology.WORD_ETYMOLOGY.ID);
         public static Identity<WordEtymologyRelationRecord, Long> IDENTITY_WORD_ETYMOLOGY_RELATION = Internal.createIdentity(WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.ID);
         public static Identity<WordEtymologySourceLinkRecord, Long> IDENTITY_WORD_ETYMOLOGY_SOURCE_LINK = Internal.createIdentity(WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.ID);
@@ -707,6 +736,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<ActivityLogRecord> ACTIVITY_LOG_PKEY = Internal.createUniqueKey(ActivityLog.ACTIVITY_LOG, "activity_log_pkey", new TableField[] { ActivityLog.ACTIVITY_LOG.ID }, true);
         public static final UniqueKey<AspectRecord> ASPECT_PKEY = Internal.createUniqueKey(Aspect.ASPECT, "aspect_pkey", new TableField[] { Aspect.ASPECT.CODE }, true);
         public static final UniqueKey<AspectLabelRecord> ASPECT_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(AspectLabel.ASPECT_LABEL, "aspect_label_code_lang_type_key", new TableField[] { AspectLabel.ASPECT_LABEL.CODE, AspectLabel.ASPECT_LABEL.LANG, AspectLabel.ASPECT_LABEL.TYPE }, true);
         public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = Internal.createUniqueKey(Collocation.COLLOCATION, "collocation_pkey", new TableField[] { Collocation.COLLOCATION.ID }, true);
@@ -760,6 +790,8 @@ public class Keys {
         public static final UniqueKey<LexRelationRecord> LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = Internal.createUniqueKey(LexRelation.LEX_RELATION, "lex_relation_lexeme1_id_lexeme2_id_lex_rel_type_code_key", new TableField[] { LexRelation.LEX_RELATION.LEXEME1_ID, LexRelation.LEX_RELATION.LEXEME2_ID, LexRelation.LEX_RELATION.LEX_REL_TYPE_CODE }, true);
         public static final UniqueKey<LexemeRecord> LEXEME_PKEY = Internal.createUniqueKey(Lexeme.LEXEME, "lexeme_pkey", new TableField[] { Lexeme.LEXEME.ID }, true);
         public static final UniqueKey<LexemeRecord> LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = Internal.createUniqueKey(Lexeme.LEXEME, "lexeme_word_id_meaning_id_dataset_code_key", new TableField[] { Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID, Lexeme.LEXEME.DATASET_CODE }, true);
+        public static final UniqueKey<LexemeActivityLogRecord> LEXEME_ACTIVITY_LOG_PKEY = Internal.createUniqueKey(LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_pkey", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.ID }, true);
+        public static final UniqueKey<LexemeActivityLogRecord> LEXEME_ACTIVITY_LOG_LEXEME_ID_ACTIVITY_LOG_ID_KEY = Internal.createUniqueKey(LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_lexeme_id_activity_log_id_key", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.LEXEME_ID, LexemeActivityLog.LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_PKEY = Internal.createUniqueKey(LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_pkey", new TableField[] { LexemeDeriv.LEXEME_DERIV.ID }, true);
         public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = Internal.createUniqueKey(LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_lexeme_id_deriv_code_key", new TableField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID, LexemeDeriv.LEXEME_DERIV.DERIV_CODE }, true);
         public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = Internal.createUniqueKey(LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_pkey", new TableField[] { LexemeFreeform.LEXEME_FREEFORM.ID }, true);
@@ -778,6 +810,8 @@ public class Keys {
         public static final UniqueKey<LexemeTagRecord> LEXEME_TAG_LEXEME_ID_TAG_NAME_KEY = Internal.createUniqueKey(LexemeTag.LEXEME_TAG, "lexeme_tag_lexeme_id_tag_name_key", new TableField[] { LexemeTag.LEXEME_TAG.LEXEME_ID, LexemeTag.LEXEME_TAG.TAG_NAME }, true);
         public static final UniqueKey<LifecycleLogRecord> LIFECYCLE_LOG_PKEY = Internal.createUniqueKey(LifecycleLog.LIFECYCLE_LOG, "lifecycle_log_pkey", new TableField[] { LifecycleLog.LIFECYCLE_LOG.ID }, true);
         public static final UniqueKey<MeaningRecord> MEANING_PKEY = Internal.createUniqueKey(Meaning.MEANING, "meaning_pkey", new TableField[] { Meaning.MEANING.ID }, true);
+        public static final UniqueKey<MeaningActivityLogRecord> MEANING_ACTIVITY_LOG_PKEY = Internal.createUniqueKey(MeaningActivityLog.MEANING_ACTIVITY_LOG, "meaning_activity_log_pkey", new TableField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.ID }, true);
+        public static final UniqueKey<MeaningActivityLogRecord> MEANING_ACTIVITY_LOG_MEANING_ID_ACTIVITY_LOG_ID_KEY = Internal.createUniqueKey(MeaningActivityLog.MEANING_ACTIVITY_LOG, "meaning_activity_log_meaning_id_activity_log_id_key", new TableField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.MEANING_ID, MeaningActivityLog.MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final UniqueKey<MeaningDomainRecord> MEANING_DOMAIN_PKEY = Internal.createUniqueKey(MeaningDomain.MEANING_DOMAIN, "meaning_domain_pkey", new TableField[] { MeaningDomain.MEANING_DOMAIN.ID }, true);
         public static final UniqueKey<MeaningDomainRecord> MEANING_DOMAIN_MEANING_ID_DOMAIN_CODE_DOMAIN_ORIGIN_KEY = Internal.createUniqueKey(MeaningDomain.MEANING_DOMAIN, "meaning_domain_meaning_id_domain_code_domain_origin_key", new TableField[] { MeaningDomain.MEANING_DOMAIN.MEANING_ID, MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE, MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN }, true);
         public static final UniqueKey<MeaningFreeformRecord> MEANING_FREEFORM_PKEY = Internal.createUniqueKey(MeaningFreeform.MEANING_FREEFORM, "meaning_freeform_pkey", new TableField[] { MeaningFreeform.MEANING_FREEFORM.ID }, true);
@@ -816,6 +850,8 @@ public class Keys {
         public static final UniqueKey<ValueStateRecord> VALUE_STATE_PKEY = Internal.createUniqueKey(ValueState.VALUE_STATE, "value_state_pkey", new TableField[] { ValueState.VALUE_STATE.CODE }, true);
         public static final UniqueKey<ValueStateLabelRecord> VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(ValueStateLabel.VALUE_STATE_LABEL, "value_state_label_code_lang_type_key", new TableField[] { ValueStateLabel.VALUE_STATE_LABEL.CODE, ValueStateLabel.VALUE_STATE_LABEL.LANG, ValueStateLabel.VALUE_STATE_LABEL.TYPE }, true);
         public static final UniqueKey<WordRecord> WORD_PKEY = Internal.createUniqueKey(Word.WORD, "word_pkey", new TableField[] { Word.WORD.ID }, true);
+        public static final UniqueKey<WordActivityLogRecord> WORD_ACTIVITY_LOG_PKEY = Internal.createUniqueKey(WordActivityLog.WORD_ACTIVITY_LOG, "word_activity_log_pkey", new TableField[] { WordActivityLog.WORD_ACTIVITY_LOG.ID }, true);
+        public static final UniqueKey<WordActivityLogRecord> WORD_ACTIVITY_LOG_WORD_ID_ACTIVITY_LOG_ID_KEY = Internal.createUniqueKey(WordActivityLog.WORD_ACTIVITY_LOG, "word_activity_log_word_id_activity_log_id_key", new TableField[] { WordActivityLog.WORD_ACTIVITY_LOG.WORD_ID, WordActivityLog.WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final UniqueKey<WordEtymologyRecord> WORD_ETYMOLOGY_PKEY = Internal.createUniqueKey(WordEtymology.WORD_ETYMOLOGY, "word_etymology_pkey", new TableField[] { WordEtymology.WORD_ETYMOLOGY.ID }, true);
         public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_PKEY = Internal.createUniqueKey(WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, "word_etymology_relation_pkey", new TableField[] { WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.ID }, true);
         public static final UniqueKey<WordEtymologyRelationRecord> WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_RELATED_WORD_ID_KEY = Internal.createUniqueKey(WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, "word_etymology_relation_word_etym_id_related_word_id_key", new TableField[] { WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.WORD_ETYM_ID, WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID }, true);
@@ -913,6 +949,8 @@ public class Keys {
         public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = Internal.createForeignKey(Keys.DATASET_PKEY, Lexeme.LEXEME, "lexeme_dataset_code_fkey", new TableField[] { Lexeme.LEXEME.DATASET_CODE }, true);
         public static final ForeignKey<LexemeRecord, FrequencyGroupRecord> LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY = Internal.createForeignKey(Keys.FREQUENCY_GROUP_PKEY, Lexeme.LEXEME, "lexeme_frequency_group_code_fkey", new TableField[] { Lexeme.LEXEME.FREQUENCY_GROUP_CODE }, true);
         public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = Internal.createForeignKey(Keys.VALUE_STATE_PKEY, Lexeme.LEXEME, "lexeme_value_state_code_fkey", new TableField[] { Lexeme.LEXEME.VALUE_STATE_CODE }, true);
+        public static final ForeignKey<LexemeActivityLogRecord, LexemeRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_lexeme_id_fkey", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.LEXEME_ID }, true);
+        public static final ForeignKey<LexemeActivityLogRecord, ActivityLogRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = Internal.createForeignKey(Keys.ACTIVITY_LOG_PKEY, LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_activity_log_id_fkey", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_lexeme_id_fkey", new TableField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID }, true);
         public static final ForeignKey<LexemeDerivRecord, DerivRecord> LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY = Internal.createForeignKey(Keys.DERIV_PKEY, LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_deriv_code_fkey", new TableField[] { LexemeDeriv.LEXEME_DERIV.DERIV_CODE }, true);
         public static final ForeignKey<LexemeFreeformRecord, LexemeRecord> LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_lexeme_id_fkey", new TableField[] { LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID }, true);
@@ -930,6 +968,8 @@ public class Keys {
         public static final ForeignKey<LexemeSourceLinkRecord, SourceRecord> LEXEME_SOURCE_LINK__LEXEME_SOURCE_LINK_SOURCE_ID_FKEY = Internal.createForeignKey(Keys.SOURCE_PKEY, LexemeSourceLink.LEXEME_SOURCE_LINK, "lexeme_source_link_source_id_fkey", new TableField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.SOURCE_ID }, true);
         public static final ForeignKey<LexemeTagRecord, LexemeRecord> LEXEME_TAG__LEXEME_TAG_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeTag.LEXEME_TAG, "lexeme_tag_lexeme_id_fkey", new TableField[] { LexemeTag.LEXEME_TAG.LEXEME_ID }, true);
         public static final ForeignKey<LexemeTagRecord, TagRecord> LEXEME_TAG__LEXEME_TAG_TAG_NAME_FKEY = Internal.createForeignKey(Keys.TAG_PKEY, LexemeTag.LEXEME_TAG, "lexeme_tag_tag_name_fkey", new TableField[] { LexemeTag.LEXEME_TAG.TAG_NAME }, true);
+        public static final ForeignKey<MeaningActivityLogRecord, MeaningRecord> MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_MEANING_ID_FKEY = Internal.createForeignKey(Keys.MEANING_PKEY, MeaningActivityLog.MEANING_ACTIVITY_LOG, "meaning_activity_log_meaning_id_fkey", new TableField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.MEANING_ID }, true);
+        public static final ForeignKey<MeaningActivityLogRecord, ActivityLogRecord> MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = Internal.createForeignKey(Keys.ACTIVITY_LOG_PKEY, MeaningActivityLog.MEANING_ACTIVITY_LOG, "meaning_activity_log_activity_log_id_fkey", new TableField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final ForeignKey<MeaningDomainRecord, MeaningRecord> MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY = Internal.createForeignKey(Keys.MEANING_PKEY, MeaningDomain.MEANING_DOMAIN, "meaning_domain_meaning_id_fkey", new TableField[] { MeaningDomain.MEANING_DOMAIN.MEANING_ID }, true);
         public static final ForeignKey<MeaningDomainRecord, DomainRecord> MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY = Internal.createForeignKey(Keys.DOMAIN_PKEY, MeaningDomain.MEANING_DOMAIN, "meaning_domain_domain_code_fkey", new TableField[] { MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE, MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN }, true);
         public static final ForeignKey<MeaningFreeformRecord, MeaningRecord> MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY = Internal.createForeignKey(Keys.MEANING_PKEY, MeaningFreeform.MEANING_FREEFORM, "meaning_freeform_meaning_id_fkey", new TableField[] { MeaningFreeform.MEANING_FREEFORM.MEANING_ID }, true);
@@ -979,6 +1019,8 @@ public class Keys {
         public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = Internal.createForeignKey(Keys.DISPLAY_MORPH_PKEY, Word.WORD, "word_display_morph_code_fkey", new TableField[] { Word.WORD.DISPLAY_MORPH_CODE }, true);
         public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = Internal.createForeignKey(Keys.GENDER_PKEY, Word.WORD, "word_gender_code_fkey", new TableField[] { Word.WORD.GENDER_CODE }, true);
         public static final ForeignKey<WordRecord, AspectRecord> WORD__WORD_ASPECT_CODE_FKEY = Internal.createForeignKey(Keys.ASPECT_PKEY, Word.WORD, "word_aspect_code_fkey", new TableField[] { Word.WORD.ASPECT_CODE }, true);
+        public static final ForeignKey<WordActivityLogRecord, WordRecord> WORD_ACTIVITY_LOG__WORD_ACTIVITY_LOG_WORD_ID_FKEY = Internal.createForeignKey(Keys.WORD_PKEY, WordActivityLog.WORD_ACTIVITY_LOG, "word_activity_log_word_id_fkey", new TableField[] { WordActivityLog.WORD_ACTIVITY_LOG.WORD_ID }, true);
+        public static final ForeignKey<WordActivityLogRecord, ActivityLogRecord> WORD_ACTIVITY_LOG__WORD_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = Internal.createForeignKey(Keys.ACTIVITY_LOG_PKEY, WordActivityLog.WORD_ACTIVITY_LOG, "word_activity_log_activity_log_id_fkey", new TableField[] { WordActivityLog.WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final ForeignKey<WordEtymologyRecord, WordRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD_ID_FKEY = Internal.createForeignKey(Keys.WORD_PKEY, WordEtymology.WORD_ETYMOLOGY, "word_etymology_word_id_fkey", new TableField[] { WordEtymology.WORD_ETYMOLOGY.WORD_ID }, true);
         public static final ForeignKey<WordEtymologyRecord, EtymologyTypeRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY = Internal.createForeignKey(Keys.ETYMOLOGY_TYPE_PKEY, WordEtymology.WORD_ETYMOLOGY, "word_etymology_etymology_type_code_fkey", new TableField[] { WordEtymology.WORD_ETYMOLOGY.ETYMOLOGY_TYPE_CODE }, true);
         public static final ForeignKey<WordEtymologyRelationRecord, WordEtymologyRecord> WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_FKEY = Internal.createForeignKey(Keys.WORD_ETYMOLOGY_PKEY, WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, "word_etymology_relation_word_etym_id_fkey", new TableField[] { WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.WORD_ETYM_ID }, true);

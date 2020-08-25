@@ -85,7 +85,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		permCalculator.filterVisibility(userRole, wordNotes);
 		String headwordLang = word.getLang();
 
-		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
+		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, synMeaningWordLangCodes, userRole));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
@@ -119,11 +119,11 @@ public class SynSearchService extends AbstractWordSearchService {
 			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, headwordLanguage);
 		}
 
-		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, classifierLabelLang, classifierLabelTypeDescrip);
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(userRole, definitions);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip);
+				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 		permCalculator.filterVisibility(userRole, usages);
 

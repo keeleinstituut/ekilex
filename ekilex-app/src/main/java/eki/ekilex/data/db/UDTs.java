@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.udt.TypeActivityLogDiff;
 import eki.ekilex.data.db.udt.TypeClassifier;
 import eki.ekilex.data.db.udt.TypeCollocMember;
 import eki.ekilex.data.db.udt.TypeDefinition;
@@ -27,6 +28,11 @@ import eki.ekilex.data.db.udt.TypeWordRelation;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UDTs {
+
+    /**
+     * The type <code>public.type_activity_log_diff</code>
+     */
+    public static TypeActivityLogDiff TYPE_ACTIVITY_LOG_DIFF = eki.ekilex.data.db.udt.TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF;
 
     /**
      * The type <code>public.type_classifier</code>

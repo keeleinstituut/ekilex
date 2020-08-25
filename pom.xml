@@ -168,6 +168,11 @@
 				<artifactId>commons-fileupload</artifactId>
 				<version>1.4</version>
 			</dependency>
+			<dependency>
+				<groupId>com.flipkart.zjsonpatch</groupId>
+				<artifactId>zjsonpatch</artifactId>
+				<version>0.4.11</version>
+			</dependency>
 			<!-- markdown -->
 			<dependency>
 				<groupId>com.atlassian.commonmark</groupId>

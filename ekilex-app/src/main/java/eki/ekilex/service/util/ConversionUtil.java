@@ -572,15 +572,20 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<DefinitionLangGroup> composeMeaningDefinitionLangGroups(List<Definition> definitions, List<ClassifierSelect> languagesOrder) {
 
-		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
-		if (languagesOrder == null) {
-			return definitionLangGroups;
+		List<String> langCodeOrder;
+		List<String> selectedLangCodes;
+		if (CollectionUtils.isEmpty(languagesOrder)) {
+			langCodeOrder = definitions.stream().map(Definition::getLang).distinct().collect(Collectors.toList());
+			selectedLangCodes = new ArrayList<>();
+		} else {
+			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
 		}
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
 		Map<String, DefinitionLangGroup> definitionLangGroupMap = new HashMap<>();
+		List<Definition> definitionsOrderBy = definitions.stream().sorted(Comparator.comparing(Definition::getOrderBy)).collect(Collectors.toList());
 
-		for (Definition definition : definitions) {
+		for (Definition definition : definitionsOrderBy) {
 			String lang = definition.getLang();
 			DefinitionLangGroup definitionLangGroup = definitionLangGroupMap.get(lang);
 			if (definitionLangGroup == null) {

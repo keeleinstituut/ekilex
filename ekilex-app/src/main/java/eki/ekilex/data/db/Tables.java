@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -49,6 +50,7 @@ import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
@@ -60,6 +62,7 @@ import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
@@ -111,6 +114,7 @@ import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.ViewWwWordSearch;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
@@ -134,6 +138,11 @@ import eki.ekilex.data.db.tables.WordWordType;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.activity_log</code>.
+     */
+    public static final ActivityLog ACTIVITY_LOG = ActivityLog.ACTIVITY_LOG;
 
     /**
      * The table <code>public.aspect</code>.
@@ -361,6 +370,11 @@ public class Tables {
     public static final Lexeme LEXEME = Lexeme.LEXEME;
 
     /**
+     * The table <code>public.lexeme_activity_log</code>.
+     */
+    public static final LexemeActivityLog LEXEME_ACTIVITY_LOG = LexemeActivityLog.LEXEME_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.lexeme_deriv</code>.
      */
     public static final LexemeDeriv LEXEME_DERIV = LexemeDeriv.LEXEME_DERIV;
@@ -414,6 +428,11 @@ public class Tables {
      * The table <code>public.meaning</code>.
      */
     public static final Meaning MEANING = Meaning.MEANING;
+
+    /**
+     * The table <code>public.meaning_activity_log</code>.
+     */
+    public static final MeaningActivityLog MEANING_ACTIVITY_LOG = MeaningActivityLog.MEANING_ACTIVITY_LOG;
 
     /**
      * The table <code>public.meaning_domain</code>.
@@ -669,6 +688,11 @@ public class Tables {
      * The table <code>public.word</code>.
      */
     public static final Word WORD = Word.WORD;
+
+    /**
+     * The table <code>public.word_activity_log</code>.
+     */
+    public static final WordActivityLog WORD_ACTIVITY_LOG = WordActivityLog.WORD_ACTIVITY_LOG;
 
     /**
      * The table <code>public.word_etymology</code>.
