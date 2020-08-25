@@ -75,10 +75,12 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		uriBuf.append(searchMode);
 
 		// result mode
-		uriBuf.append(PATH_SEPARATOR);
-		uriBuf.append(RESULT_MODE);
-		uriBuf.append(PATH_SEPARATOR);
-		uriBuf.append(resultMode.name());
+		if (resultMode != null) {
+			uriBuf.append(PATH_SEPARATOR);
+			uriBuf.append(RESULT_MODE);
+			uriBuf.append(PATH_SEPARATOR);
+			uriBuf.append(resultMode.name());
+		}
 
 		// result lang
 		if (StringUtils.isNotEmpty(resultLang)) {
@@ -311,6 +313,8 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			searchEntity = SearchEntity.getLexEntities().get(0);
 		} else if (StringUtils.equals(TERM_SEARCH_PAGE, searchPage)) {
 			searchEntity = SearchEntity.getTermEntities().get(0);
+		} else if (StringUtils.equals(SOURCE_SEARCH_PAGE, searchPage)) {
+			searchEntity = SearchEntity.getSourceEntities().get(0);
 		}
 		searchKey = searchEntity.getKeys()[0];
 		searchOperand = searchKey.getOperands()[0];
@@ -325,7 +329,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		return detailSearch;
 	}
 
-	public SearchFilter initSourceDetailSearchFilter(Long sourceId) {
+	public SearchFilter createSourceDetailSearchFilter(Long sourceId) {
 
 		SearchEntity searchEntity = SearchEntity.CLUELESS;
 		SearchKey searchKey = SearchKey.SOURCE_ID;

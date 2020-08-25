@@ -16,7 +16,8 @@ public enum SearchEntity {
 	CONCEPT(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	CONCEPT_ID(new SearchKey[] {SearchKey.ID}),
-	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID})
+	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID}),
+	SOURCE(new SearchKey[] {SearchKey.VALUE, SearchKey.DATASET_USAGE, SearchKey.CREATED_BY, SearchKey.CREATED_ON, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON})
 	;
 
 	private SearchKey[] keys;
@@ -35,5 +36,9 @@ public enum SearchEntity {
 
 	public static List<SearchEntity> getTermEntities() {
 		return asList(TERM, CONCEPT, DEFINITION, USAGE, NOTE, CONCEPT_ID, CLUELESS);
+	}
+
+	public static List<SearchEntity> getSourceEntities() {
+		return asList(SOURCE);
 	}
 }

@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -26,7 +27,11 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
-import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.constant.SearchEntity;
+import eki.ekilex.constant.SearchKey;
+import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchCriterionGroup;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.db.tables.Freeform;
@@ -35,7 +40,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 
 @Component
-public class SourceDbService implements SystemConstant {
+public class SourceDbService extends AbstractSearchDbService {
 
 	private DSLContext create;
 
@@ -90,8 +95,13 @@ public class SourceDbService implements SystemConstant {
 		return getSources(s, sff, sp, spmf, sex);
 	}
 
-	private List<SourcePropertyTuple> getSources(
-			Source s, SourceFreeform sff, Freeform sp, Field<Boolean> spmf, Condition where) {
+	private List<SourcePropertyTuple> getSources(Source s, SourceFreeform sff, Freeform sp, Condition where) {
+
+		Field<Boolean> spmf = DSL.field(DSL.falseCondition());
+		return getSources(s, sff, sp, spmf, where);
+	}
+
+	private List<SourcePropertyTuple> getSources(Source s, SourceFreeform sff, Freeform sp, Field<Boolean> spmf, Condition where) {
 	
 		Field<Boolean> sptnf = DSL.field(sp.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 	
@@ -116,6 +126,47 @@ public class SourceDbService implements SystemConstant {
 						sp.ORDER_BY)
 				.fetch()
 				.into(SourcePropertyTuple.class);
+	}
+
+	public List<SourcePropertyTuple> getSources(SearchFilter searchFilter) throws Exception {
+
+		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
+
+		Source s = SOURCE.as("s");
+		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		Freeform sp = FREEFORM.as("sp");
+		SourceFreeform sffc = SOURCE_FREEFORM.as("sffc");
+		Freeform spc = FREEFORM.as("spc");
+
+		Condition where = sffc.SOURCE_ID.eq(s.ID).and(sffc.FREEFORM_ID.eq(spc.ID));
+
+		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
+			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
+				continue;
+			}
+			SearchEntity searchEntity = searchCriterionGroup.getEntity();
+			if (SearchEntity.SOURCE.equals(searchEntity)) {
+				boolean containsSearchKeys;
+
+				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.VALUE);
+				if (containsSearchKeys) {
+					where = applyValueFilters(SearchKey.VALUE, searchCriteria, spc.VALUE_TEXT, where, true);
+				}
+
+				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.DATASET_USAGE);
+				if (containsSearchKeys) {
+					// TODO yogesh
+				}
+			}
+		}
+
+		Condition conditonRename = DSL.exists(DSL
+						.select(sffc.ID)
+						.from(sffc, spc)
+						.where(where));
+
+		return getSources(s, sff, sp, conditonRename);
 	}
 
 	public Long getSourceId(Long sourcePropertyId) {
