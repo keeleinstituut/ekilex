@@ -1,10 +1,14 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
@@ -37,9 +41,15 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
@@ -163,9 +173,7 @@ public class SourceDbService extends AbstractSearchDbService {
 
 				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.DATASET_USAGE);
 				if (containsSearchKeys) {
-					where = applyLexemeSourceLinkDatasetFilters(searchCriteria, where);
-				// TODO definition source link?
-				// TODO lexeme, definition and meaning freeform source link?
+					where = applySourceLinkDatasetFilters(searchCriteria, where);
 				}
 			}
 		}
@@ -174,11 +182,17 @@ public class SourceDbService extends AbstractSearchDbService {
 		return getSources(s, sff, sp, spmf, where);
 	}
 
-	private Condition applyLexemeSourceLinkDatasetFilters(List<SearchCriterion> searchCriteria, Condition where) {
+	private Condition applySourceLinkDatasetFilters(List<SearchCriterion> searchCriteria, Condition where) {
 
 		Source s = SOURCE.as("s");
+		Definition d = DEFINITION.as("d");
 		Lexeme l = LEXEME.as("l");
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.DATASET_USAGE) && c.getSearchValue() != null)
@@ -189,14 +203,53 @@ public class SourceDbService extends AbstractSearchDbService {
 				SearchOperand searchOperand = criterion.getSearchOperand();
 				if (SearchOperand.EQUALS.equals(searchOperand)) {
 					String datasetCode = criterion.getSearchValue().toString();
-					Condition whereExists = DSL.exists(DSL
-							.select(l.ID)
-							.from(l, lsl)
-							.where(
-									l.DATASET_CODE.eq(datasetCode)
-											.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-											.and(lsl.LEXEME_ID.eq(l.ID))
-											.and(lsl.SOURCE_ID.eq(s.ID))));
+
+					Condition whereExists = DSL
+							.exists(DSL
+									.select(l.ID)
+									.from(l, lsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(lsl.LEXEME_ID.eq(l.ID))
+													.and(lsl.SOURCE_ID.eq(s.ID))))
+							.orExists(DSL
+									.select(l.ID)
+									.from(l, d, dsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(d.MEANING_ID.eq(l.MEANING_ID))
+													.and(dsl.DEFINITION_ID.eq(d.ID))
+													.and(dsl.SOURCE_ID.eq(s.ID))))
+							.orExists(DSL
+									.select(l.ID)
+									.from(l, lff, ffsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(lff.LEXEME_ID.eq(l.ID))
+													.and(ffsl.FREEFORM_ID.eq(lff.FREEFORM_ID))
+													.and(ffsl.SOURCE_ID.eq(s.ID))))
+							.orExists(DSL
+									.select(l.ID)
+									.from(l, mff, ffsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(mff.MEANING_ID.eq(l.MEANING_ID))
+													.and(ffsl.FREEFORM_ID.eq(mff.FREEFORM_ID))
+													.and(ffsl.SOURCE_ID.eq(s.ID))))
+							.orExists(DSL
+									.select(l.ID)
+									.from(l, d, dff, ffsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(d.MEANING_ID.eq(l.MEANING_ID))
+													.and(dff.DEFINITION_ID.eq(d.ID))
+													.and(ffsl.FREEFORM_ID.eq(dff.FREEFORM_ID))
+													.and(ffsl.SOURCE_ID.eq(s.ID))));
 
 					where = where.and(whereExists);
 				}
