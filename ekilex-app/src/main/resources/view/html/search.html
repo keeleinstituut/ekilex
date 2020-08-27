@@ -28,7 +28,7 @@
   <th:block th:fragment="simple_search">
     <div class="tab-pane fade " th:classappend="${searchMode =='SIMPLE' ? 'show active' : ''}" id="simple_search_filter">
       <div class="d-flex flex-row align-items-center">
-        <input type="text" class="form-control col-2" name="simpleSearchFilter" th:value="${simpleSearchFilter}" placeholder="sisesta otsitav vorm">
+        <input type="text" class="form-control col-2" name="simpleSearchFilter" th:value="${simpleSearchFilter}" th:placeholder="#{|search.placeholder.${searchPageName}|}">
         <button type="submit" class="btn btn-primary px-5 ml-2">Otsi</button>
       </div>
     </div>

@@ -134,6 +134,8 @@ public class SourceSearchController extends AbstractSearchController {
 		Source source = sourceService.getSource(sourceId, userRole);
 		sources.add(source);
 
+		initSearchForms(SOURCE_SEARCH_PAGE, model);
+
 		model.addAttribute("sources", sources);
 		model.addAttribute("sourceCount", sources.size());
 
