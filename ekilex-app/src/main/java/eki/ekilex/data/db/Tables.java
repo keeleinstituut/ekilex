@@ -85,6 +85,7 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.Tag;
@@ -543,6 +544,11 @@ public class Tables {
      * The table <code>public.source</code>.
      */
     public static final Source SOURCE = Source.SOURCE;
+
+    /**
+     * The table <code>public.source_activity_log</code>.
+     */
+    public static final SourceActivityLog SOURCE_ACTIVITY_LOG = SourceActivityLog.SOURCE_ACTIVITY_LOG;
 
     /**
      * The table <code>public.source_freeform</code>.

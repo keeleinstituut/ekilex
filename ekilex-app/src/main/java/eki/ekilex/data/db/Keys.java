@@ -85,6 +85,7 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.Tag;
@@ -192,6 +193,7 @@ import eki.ekilex.data.db.tables.records.RegisterLabelRecord;
 import eki.ekilex.data.db.tables.records.RegisterRecord;
 import eki.ekilex.data.db.tables.records.SemanticTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.SemanticTypeRecord;
+import eki.ekilex.data.db.tables.records.SourceActivityLogRecord;
 import eki.ekilex.data.db.tables.records.SourceFreeformRecord;
 import eki.ekilex.data.db.tables.records.SourceLifecycleLogRecord;
 import eki.ekilex.data.db.tables.records.SourceRecord;
@@ -301,6 +303,7 @@ public class Keys {
     public static final Identity<RegisterRecord, Long> IDENTITY_REGISTER = Identities0.IDENTITY_REGISTER;
     public static final Identity<SemanticTypeRecord, Long> IDENTITY_SEMANTIC_TYPE = Identities0.IDENTITY_SEMANTIC_TYPE;
     public static final Identity<SourceRecord, Long> IDENTITY_SOURCE = Identities0.IDENTITY_SOURCE;
+    public static final Identity<SourceActivityLogRecord, Long> IDENTITY_SOURCE_ACTIVITY_LOG = Identities0.IDENTITY_SOURCE_ACTIVITY_LOG;
     public static final Identity<SourceFreeformRecord, Long> IDENTITY_SOURCE_FREEFORM = Identities0.IDENTITY_SOURCE_FREEFORM;
     public static final Identity<SourceLifecycleLogRecord, Long> IDENTITY_SOURCE_LIFECYCLE_LOG = Identities0.IDENTITY_SOURCE_LIFECYCLE_LOG;
     public static final Identity<TagRecord, Long> IDENTITY_TAG = Identities0.IDENTITY_TAG;
@@ -431,6 +434,8 @@ public class Keys {
     public static final UniqueKey<SemanticTypeRecord> SEMANTIC_TYPE_PKEY = UniqueKeys0.SEMANTIC_TYPE_PKEY;
     public static final UniqueKey<SemanticTypeLabelRecord> SEMANTIC_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.SEMANTIC_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<SourceRecord> SOURCE_PKEY = UniqueKeys0.SOURCE_PKEY;
+    public static final UniqueKey<SourceActivityLogRecord> SOURCE_ACTIVITY_LOG_PKEY = UniqueKeys0.SOURCE_ACTIVITY_LOG_PKEY;
+    public static final UniqueKey<SourceActivityLogRecord> SOURCE_ACTIVITY_LOG_SOURCE_ID_ACTIVITY_LOG_ID_KEY = UniqueKeys0.SOURCE_ACTIVITY_LOG_SOURCE_ID_ACTIVITY_LOG_ID_KEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = UniqueKeys0.SOURCE_FREEFORM_PKEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = UniqueKeys0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<SourceLifecycleLogRecord> SOURCE_LIFECYCLE_LOG_PKEY = UniqueKeys0.SOURCE_LIFECYCLE_LOG_PKEY;
@@ -598,6 +603,8 @@ public class Keys {
     public static final ForeignKey<SemanticTypeLabelRecord, SemanticTypeRecord> SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_CODE_FKEY = ForeignKeys0.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<SemanticTypeLabelRecord, LanguageRecord> SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_LANG_FKEY = ForeignKeys0.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<SemanticTypeLabelRecord, LabelTypeRecord> SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_TYPE_FKEY;
+    public static final ForeignKey<SourceActivityLogRecord, SourceRecord> SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_SOURCE_ID_FKEY = ForeignKeys0.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_SOURCE_ID_FKEY;
+    public static final ForeignKey<SourceActivityLogRecord, ActivityLogRecord> SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = ForeignKeys0.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY;
     public static final ForeignKey<SourceFreeformRecord, SourceRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY = ForeignKeys0.SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY;
     public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY;
     public static final ForeignKey<SourceLifecycleLogRecord, SourceRecord> SOURCE_LIFECYCLE_LOG__SOURCE_LIFECYCLE_LOG_SOURCE_ID_FKEY = ForeignKeys0.SOURCE_LIFECYCLE_LOG__SOURCE_LIFECYCLE_LOG_SOURCE_ID_FKEY;
@@ -638,6 +645,7 @@ public class Keys {
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY;
+    public static final ForeignKey<WordRelationParamRecord, WordRelationRecord> WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY = ForeignKeys0.WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, LanguageRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY;
@@ -711,6 +719,7 @@ public class Keys {
         public static Identity<RegisterRecord, Long> IDENTITY_REGISTER = Internal.createIdentity(Register.REGISTER, Register.REGISTER.ORDER_BY);
         public static Identity<SemanticTypeRecord, Long> IDENTITY_SEMANTIC_TYPE = Internal.createIdentity(SemanticType.SEMANTIC_TYPE, SemanticType.SEMANTIC_TYPE.ORDER_BY);
         public static Identity<SourceRecord, Long> IDENTITY_SOURCE = Internal.createIdentity(Source.SOURCE, Source.SOURCE.ID);
+        public static Identity<SourceActivityLogRecord, Long> IDENTITY_SOURCE_ACTIVITY_LOG = Internal.createIdentity(SourceActivityLog.SOURCE_ACTIVITY_LOG, SourceActivityLog.SOURCE_ACTIVITY_LOG.ID);
         public static Identity<SourceFreeformRecord, Long> IDENTITY_SOURCE_FREEFORM = Internal.createIdentity(SourceFreeform.SOURCE_FREEFORM, SourceFreeform.SOURCE_FREEFORM.ID);
         public static Identity<SourceLifecycleLogRecord, Long> IDENTITY_SOURCE_LIFECYCLE_LOG = Internal.createIdentity(SourceLifecycleLog.SOURCE_LIFECYCLE_LOG, SourceLifecycleLog.SOURCE_LIFECYCLE_LOG.ID);
         public static Identity<TagRecord, Long> IDENTITY_TAG = Internal.createIdentity(Tag.TAG, Tag.TAG.ORDER_BY);
@@ -839,6 +848,8 @@ public class Keys {
         public static final UniqueKey<SemanticTypeRecord> SEMANTIC_TYPE_PKEY = Internal.createUniqueKey(SemanticType.SEMANTIC_TYPE, "semantic_type_pkey", new TableField[] { SemanticType.SEMANTIC_TYPE.CODE }, true);
         public static final UniqueKey<SemanticTypeLabelRecord> SEMANTIC_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(SemanticTypeLabel.SEMANTIC_TYPE_LABEL, "semantic_type_label_code_lang_type_key", new TableField[] { SemanticTypeLabel.SEMANTIC_TYPE_LABEL.CODE, SemanticTypeLabel.SEMANTIC_TYPE_LABEL.LANG, SemanticTypeLabel.SEMANTIC_TYPE_LABEL.TYPE }, true);
         public static final UniqueKey<SourceRecord> SOURCE_PKEY = Internal.createUniqueKey(Source.SOURCE, "source_pkey", new TableField[] { Source.SOURCE.ID }, true);
+        public static final UniqueKey<SourceActivityLogRecord> SOURCE_ACTIVITY_LOG_PKEY = Internal.createUniqueKey(SourceActivityLog.SOURCE_ACTIVITY_LOG, "source_activity_log_pkey", new TableField[] { SourceActivityLog.SOURCE_ACTIVITY_LOG.ID }, true);
+        public static final UniqueKey<SourceActivityLogRecord> SOURCE_ACTIVITY_LOG_SOURCE_ID_ACTIVITY_LOG_ID_KEY = Internal.createUniqueKey(SourceActivityLog.SOURCE_ACTIVITY_LOG, "source_activity_log_source_id_activity_log_id_key", new TableField[] { SourceActivityLog.SOURCE_ACTIVITY_LOG.SOURCE_ID, SourceActivityLog.SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = Internal.createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_pkey", new TableField[] { SourceFreeform.SOURCE_FREEFORM.ID }, true);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_source_id_freeform_id_key", new TableField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID }, true);
         public static final UniqueKey<SourceLifecycleLogRecord> SOURCE_LIFECYCLE_LOG_PKEY = Internal.createUniqueKey(SourceLifecycleLog.SOURCE_LIFECYCLE_LOG, "source_lifecycle_log_pkey", new TableField[] { SourceLifecycleLog.SOURCE_LIFECYCLE_LOG.ID }, true);
@@ -1004,6 +1015,8 @@ public class Keys {
         public static final ForeignKey<SemanticTypeLabelRecord, SemanticTypeRecord> SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(Keys.SEMANTIC_TYPE_PKEY, SemanticTypeLabel.SEMANTIC_TYPE_LABEL, "semantic_type_label_code_fkey", new TableField[] { SemanticTypeLabel.SEMANTIC_TYPE_LABEL.CODE }, true);
         public static final ForeignKey<SemanticTypeLabelRecord, LanguageRecord> SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, SemanticTypeLabel.SEMANTIC_TYPE_LABEL, "semantic_type_label_lang_fkey", new TableField[] { SemanticTypeLabel.SEMANTIC_TYPE_LABEL.LANG }, true);
         public static final ForeignKey<SemanticTypeLabelRecord, LabelTypeRecord> SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, SemanticTypeLabel.SEMANTIC_TYPE_LABEL, "semantic_type_label_type_fkey", new TableField[] { SemanticTypeLabel.SEMANTIC_TYPE_LABEL.TYPE }, true);
+        public static final ForeignKey<SourceActivityLogRecord, SourceRecord> SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_SOURCE_ID_FKEY = Internal.createForeignKey(Keys.SOURCE_PKEY, SourceActivityLog.SOURCE_ACTIVITY_LOG, "source_activity_log_source_id_fkey", new TableField[] { SourceActivityLog.SOURCE_ACTIVITY_LOG.SOURCE_ID }, true);
+        public static final ForeignKey<SourceActivityLogRecord, ActivityLogRecord> SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = Internal.createForeignKey(Keys.ACTIVITY_LOG_PKEY, SourceActivityLog.SOURCE_ACTIVITY_LOG, "source_activity_log_activity_log_id_fkey", new TableField[] { SourceActivityLog.SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final ForeignKey<SourceFreeformRecord, SourceRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY = Internal.createForeignKey(Keys.SOURCE_PKEY, SourceFreeform.SOURCE_FREEFORM, "source_freeform_source_id_fkey", new TableField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID }, true);
         public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = Internal.createForeignKey(Keys.FREEFORM_PKEY, SourceFreeform.SOURCE_FREEFORM, "source_freeform_freeform_id_fkey", new TableField[] { SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID }, true);
         public static final ForeignKey<SourceLifecycleLogRecord, SourceRecord> SOURCE_LIFECYCLE_LOG__SOURCE_LIFECYCLE_LOG_SOURCE_ID_FKEY = Internal.createForeignKey(Keys.SOURCE_PKEY, SourceLifecycleLog.SOURCE_LIFECYCLE_LOG, "source_lifecycle_log_source_id_fkey", new TableField[] { SourceLifecycleLog.SOURCE_LIFECYCLE_LOG.SOURCE_ID }, true);
@@ -1044,6 +1057,7 @@ public class Keys {
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = Internal.createForeignKey(Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation_word1_id_fkey", new TableField[] { WordRelation.WORD_RELATION.WORD1_ID }, true);
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = Internal.createForeignKey(Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation_word2_id_fkey", new TableField[] { WordRelation.WORD_RELATION.WORD2_ID }, true);
         public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = Internal.createForeignKey(Keys.WORD_REL_TYPE_PKEY, WordRelation.WORD_RELATION, "word_relation_word_rel_type_code_fkey", new TableField[] { WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE }, true);
+        public static final ForeignKey<WordRelationParamRecord, WordRelationRecord> WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY = Internal.createForeignKey(Keys.WORD_RELATION_PKEY, WordRelationParam.WORD_RELATION_PARAM, "word_relation_param_word_relation_id_fkey", new TableField[] { WordRelationParam.WORD_RELATION_PARAM.WORD_RELATION_ID }, true);
         public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(Keys.WORD_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_code_fkey", new TableField[] { WordTypeLabel.WORD_TYPE_LABEL.CODE }, true);
         public static final ForeignKey<WordTypeLabelRecord, LanguageRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_lang_fkey", new TableField[] { WordTypeLabel.WORD_TYPE_LABEL.LANG }, true);
         public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_type_fkey", new TableField[] { WordTypeLabel.WORD_TYPE_LABEL.TYPE }, true);

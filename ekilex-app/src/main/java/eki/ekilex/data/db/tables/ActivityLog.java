@@ -4,6 +4,7 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ActivityLogRecord;
@@ -16,6 +17,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.JSONB;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -35,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ActivityLog extends TableImpl<ActivityLogRecord> {
 
-    private static final long serialVersionUID = -1215230918;
+    private static final long serialVersionUID = -797298822;
 
     /**
      * The reference instance of <code>public.activity_log</code>
@@ -146,6 +148,11 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.ACTIVITY_LOG_EVENT_BY_IDX, Indexes.ACTIVITY_LOG_EVENT_ON_IDX, Indexes.ACTIVITY_LOG_OWNER_IDX);
     }
 
     @Override
