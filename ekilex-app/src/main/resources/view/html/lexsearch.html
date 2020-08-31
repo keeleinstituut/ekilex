@@ -133,19 +133,19 @@
                 <div class="ekiAccordion" data-plugin="ekiAccordion">
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
-                      ÕS soovitab
+                      <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.odWordRecommendations)}">•</span>
+                      <span>ÕS soovitab</span>
                       <button type="button" class="ekiAccordion__add"
-                        title="Lisa ÕS soovitab" data-toggle="modal"
-                        th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
-                        sec:authorize="#vars.details.word.crudGrant">
+                              title="Lisa ÕS soovitab" data-toggle="modal"
+                              th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
+                              sec:authorize="#vars.details.word.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div  th:if="${#lists.isEmpty(details.odWordRecommendations)}">
+                      <div th:if="${#lists.isEmpty(details.odWordRecommendations)}">
                         Sisu puudub...
                       </div>
-
                       <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
                         <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
                         <div class="col hidden-buttons pr-5">
@@ -176,7 +176,8 @@
                   </div>
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
-                      Keelendi märkused
+                      <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.word.notes)}">•</span>
+                      <span>Keelendi märkused</span>
                       <button type="button" class="ekiAccordion__add"
                               title="Lisa uus" data-toggle="modal"
                               th:data-target="${'#addWordNoteDlg_' + wordId}"
@@ -185,6 +186,9 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
+                      <div th:if="${#lists.isEmpty(details.word.notes)}">
+                        Sisu puudub...
+                      </div>
                       <div th:each="note : ${details.word.notes}">
                         <div th:replace="lexdialog :: edit_word_note_dlg"></div>
                         <div class="col hidden-buttons pr-5">
@@ -211,6 +215,14 @@
                           </div>
                         </div>
                       </div>
+                    </div>
+                  </div>
+                  <div class="ekiAccordion__instance">
+                    <div class="ekiAccordion__title">
+                      <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.paradigms)}">•</span>
+                      <span>Sõna vormid</span>
+                    </div>
+                    <div class="ekiAccordion__content">
                       <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
                         <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
                           <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="p-1">
@@ -240,7 +252,8 @@
                   </div>
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
-                      Keelendi seosed
+                      <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.relations)}">•</span>
+                      <span>Keelendi seosed</span>
                       <button type="button" class="ekiAccordion__add"
                               title="Lisa seos" data-toggle="modal"
                               th:data-target="${'#addWordRelationDlg_' + wordId}"
@@ -249,7 +262,7 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div  th:if="${#lists.isEmpty(details.relations)}">
+                      <div th:if="${#lists.isEmpty(details.relations)}">
                         Sisu puudub...
                       </div>
                       <table class="orderable" data-op-code="word_relation" th:if="${not #lists.isEmpty(details.relations)}">
@@ -301,7 +314,10 @@
                     </div>
                   </div>
                   <div class="ekiAccordion__instance" th:if="${not #lists.isEmpty(details.wordEtymology)}">
-                    <div class="ekiAccordion__title">Keelendi etümoloogia</div>
+                    <div class="ekiAccordion__title">
+                      <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.wordEtymology)}">•</span>
+                      <span>Keelendi etümoloogia</span>
+                    </div>
                     <div class="ekiAccordion__content">
                       <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
                         <div>

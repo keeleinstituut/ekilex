@@ -20,6 +20,17 @@ class EkiAccordion {
 
   toggleElement(target) {
     target.toggleClass(this.selectors.active.substr(1));
+    this.toggleDataExistsBadge(target);
+  }
+
+  toggleDataExistsBadge(target) {
+    let isTargetActive = target.hasClass("ekiAccordion__instance--active");
+    let dataExistsBadge = target.find('.badge-data-exists');
+    if (isTargetActive) {
+      dataExistsBadge.hide();
+    } else {
+      dataExistsBadge.show();
+    }
   }
 
   bindElements() {
