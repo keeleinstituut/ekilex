@@ -27,6 +27,8 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -204,16 +206,16 @@ public class SourceDbService extends AbstractSearchDbService {
 				if (SearchOperand.EQUALS.equals(searchOperand)) {
 					String datasetCode = criterion.getSearchValue().toString();
 
-					Condition whereExists = DSL
-							.exists(DSL
+					SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL
 									.select(l.ID)
 									.from(l, lsl)
 									.where(
 											l.DATASET_CODE.eq(datasetCode)
 													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 													.and(lsl.LEXEME_ID.eq(l.ID))
-													.and(lsl.SOURCE_ID.eq(s.ID))))
-							.orExists(DSL
+													.and(lsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL
 									.select(l.ID)
 									.from(l, d, dsl)
 									.where(
@@ -221,8 +223,9 @@ public class SourceDbService extends AbstractSearchDbService {
 													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 													.and(d.MEANING_ID.eq(l.MEANING_ID))
 													.and(dsl.DEFINITION_ID.eq(d.ID))
-													.and(dsl.SOURCE_ID.eq(s.ID))))
-							.orExists(DSL
+													.and(dsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectLexemeFreeformSourceLinks = DSL
 									.select(l.ID)
 									.from(l, lff, ffsl)
 									.where(
@@ -230,8 +233,9 @@ public class SourceDbService extends AbstractSearchDbService {
 													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 													.and(lff.LEXEME_ID.eq(l.ID))
 													.and(ffsl.FREEFORM_ID.eq(lff.FREEFORM_ID))
-													.and(ffsl.SOURCE_ID.eq(s.ID))))
-							.orExists(DSL
+													.and(ffsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectMeaningFreeformSourceLinks = DSL
 									.select(l.ID)
 									.from(l, mff, ffsl)
 									.where(
@@ -239,8 +243,9 @@ public class SourceDbService extends AbstractSearchDbService {
 													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 													.and(mff.MEANING_ID.eq(l.MEANING_ID))
 													.and(ffsl.FREEFORM_ID.eq(mff.FREEFORM_ID))
-													.and(ffsl.SOURCE_ID.eq(s.ID))))
-							.orExists(DSL
+													.and(ffsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectDefinitionFreeformSourceLinks = DSL
 									.select(l.ID)
 									.from(l, d, dff, ffsl)
 									.where(
@@ -249,9 +254,16 @@ public class SourceDbService extends AbstractSearchDbService {
 													.and(d.MEANING_ID.eq(l.MEANING_ID))
 													.and(dff.DEFINITION_ID.eq(d.ID))
 													.and(ffsl.FREEFORM_ID.eq(dff.FREEFORM_ID))
-													.and(ffsl.SOURCE_ID.eq(s.ID))));
+													.and(ffsl.SOURCE_ID.eq(s.ID)));
 
-					where = where.and(whereExists);
+					Table<Record1<Long>> all = selectLexemeSourceLinks
+							.unionAll(selectDefinitionSourceLinks)
+							.unionAll(selectLexemeFreeformSourceLinks)
+							.unionAll(selectMeaningFreeformSourceLinks)
+							.unionAll(selectDefinitionFreeformSourceLinks)
+							.asTable("all");
+
+					where = where.andExists(DSL.select(all.field("id")).from(all));
 				}
 			}
 		}
