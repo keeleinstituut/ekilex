@@ -220,7 +220,7 @@
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.paradigms)}">•</span>
-                      <span>Sõna vormid</span>
+                      <span>Sõnavormid</span>
                     </div>
                     <div class="ekiAccordion__content">
                       <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
@@ -253,7 +253,7 @@
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.relations)}">•</span>
-                      <span>Keelendi seosed</span>
+                      <span>Sõna seosed</span>
                       <button type="button" class="ekiAccordion__add"
                               title="Lisa seos" data-toggle="modal"
                               th:data-target="${'#addWordRelationDlg_' + wordId}"
@@ -316,7 +316,7 @@
                   <div class="ekiAccordion__instance" th:if="${not #lists.isEmpty(details.wordEtymology)}">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:if="${not #lists.isEmpty(details.wordEtymology)}">•</span>
-                      <span>Keelendi etümoloogia</span>
+                      <span>Päritolu</span>
                     </div>
                     <div class="ekiAccordion__content">
                       <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
