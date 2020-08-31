@@ -817,4 +817,12 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		return CollectionUtils.containsAll(permittedDatasets, linkedDatasets);
 	}
 
+	public boolean isMasterUser(Long userId) {
+
+		return create
+				.select(field(DSL.count(EKI_USER.ID).eq(1)).as("is_master"))
+				.from(EKI_USER)
+				.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_ENABLED.isTrue()))
+				.fetchSingleInto(Boolean.class);
+	}
 }
