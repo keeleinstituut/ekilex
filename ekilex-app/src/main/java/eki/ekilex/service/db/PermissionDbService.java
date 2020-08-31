@@ -730,7 +730,22 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean isGrantedForSource(Long userId, Long sourceId, String authItem, List<String> authOps) {
+	public boolean isGrantedForSource(Long userId, eki.ekilex.data.DatasetPermission userRole, Long sourceId, String requiredAuthItem, List<String> requiredAuthOps) {
+
+		if (userRole == null) {
+			return false;
+		}
+
+		String providedAuthItem = userRole.getAuthItem().name();
+		String providedAuthOp = userRole.getAuthOperation().name();
+		if (!requiredAuthItem.equals(providedAuthItem) || !requiredAuthOps.contains(providedAuthOp)) {
+			return false;
+		}
+
+		boolean isSuperiorDataset = userRole.isSuperiorDataset();
+		if (isSuperiorDataset) {
+			return true;
+		}
 
 		Table<Record1<String>> dffds = DSL
 				.select(DEFINITION_DATASET.DATASET_CODE)
@@ -795,8 +810,8 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.from(DATASET_PERMISSION)
 				.where(
 						DATASET_PERMISSION.USER_ID.eq(userId)
-								.and(DATASET_PERMISSION.AUTH_OPERATION.in(authOps))
-								.and(DATASET_PERMISSION.AUTH_ITEM.eq(authItem)))
+								.and(DATASET_PERMISSION.AUTH_OPERATION.in(requiredAuthOps))
+								.and(DATASET_PERMISSION.AUTH_ITEM.eq(requiredAuthItem)))
 				.fetchInto(String.class);
 
 		return CollectionUtils.containsAll(permittedDatasets, linkedDatasets);

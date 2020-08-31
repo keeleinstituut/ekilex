@@ -59,7 +59,7 @@ public class PermCalculator implements PermConstant {
 			} else if (crudEntity instanceof Source) {
 				Source source = (Source) crudEntity;
 				Long sourceId = source.getId();
-				isCrudGrant = permissionDbService.isGrantedForSource(userId, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				isCrudGrant = permissionDbService.isGrantedForSource(userId, userRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 			} else if (crudEntity instanceof Meaning) {
 				Meaning meaning = (Meaning) crudEntity;
 				Long meaningId = meaning.getMeaningId();
