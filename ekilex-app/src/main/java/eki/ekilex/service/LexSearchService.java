@@ -95,11 +95,11 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
-		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordLang, allWordRelationTypes);
-		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
-		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
+		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
+		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
+		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
@@ -121,11 +121,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setLexemes(lexemes);
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
+		wordDetails.setWordRelationDetails(wordRelationDetails);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 		wordDetails.setLastChangedOn(latestLogEventTime);
-
-		wordRelationDetails.setWordGroups(wordGroups);
-		wordDetails.setWordRelationDetails(wordRelationDetails);
 
 		return wordDetails;
 	}

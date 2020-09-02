@@ -97,7 +97,7 @@ public class SynSearchService extends AbstractWordSearchService {
 			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		}
 		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
-		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(relations, wordLang, allWordRelationTypes);
+		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(relations, null, wordLang, allWordRelationTypes);
 
 		WordDetails wordDetails = new WordDetails();
 		word.setNotes(wordNotes);

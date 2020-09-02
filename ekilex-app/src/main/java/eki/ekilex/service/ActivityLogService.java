@@ -281,11 +281,11 @@ public class ActivityLogService implements SystemConstant {
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
-		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordLang, allWordRelationTypes);
-		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
-		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
+		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
+		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
+		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
@@ -296,8 +296,6 @@ public class ActivityLogService implements SystemConstant {
 		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
-
-		wordRelationDetails.setWordGroups(wordGroups);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
 
 		ObjectMapper objectMapper = new ObjectMapper();
