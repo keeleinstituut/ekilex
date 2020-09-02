@@ -2149,6 +2149,8 @@ word_type	av	ahelverb	est	descrip
 word_type	tv	tugiverb	est	descrip
 word_type	vlj	väljend	est	descrip
 word_type	vlj	väljend	est	wordweb
+word_type	vv	väljend	est	wordweb
+word_type	av	ahelverb	est	wordweb
 word_type	ys	ühendsidesõna (nii et)	est	descrip
 word_type	ys	sidesõna	est	wordweb
 word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
