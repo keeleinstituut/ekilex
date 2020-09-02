@@ -16,6 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Relation;
 import eki.ekilex.service.db.SynSearchDbService;
 
@@ -23,7 +24,7 @@ import eki.ekilex.service.db.SynSearchDbService;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
 @Transactional
-public class SynSearchServiceTest extends AbstractTest {
+public class SynSearchServiceTest extends AbstractTest implements SystemConstant {
 
 	@Autowired
 	private TestEnvInitialiser testEnvInitialiser;
@@ -38,7 +39,7 @@ public class SynSearchServiceTest extends AbstractTest {
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<Relation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"));
+		List<Relation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		assertThat(relations.size()).isEqualTo(2);
 	}
 }

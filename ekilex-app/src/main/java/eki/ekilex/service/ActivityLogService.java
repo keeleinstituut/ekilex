@@ -50,6 +50,7 @@ import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -276,8 +277,11 @@ public class ActivityLogService implements SystemConstant {
 	private String getWordDetailsJson(Long wordId) throws Exception {
 
 		Word word = lexSearchDbService.getWord(wordId);
+		String wordLang = word.getLang();
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
+		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
+		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordLang, allWordRelationTypes);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
@@ -290,10 +294,11 @@ public class ActivityLogService implements SystemConstant {
 		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
-		wordDetails.setRelations(wordRelations);
 		wordDetails.setWordEtymology(wordEtymology);
-		wordDetails.setWordGroups(wordGroups);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
+
+		wordRelationDetails.setWordGroups(wordGroups);
+		wordDetails.setWordRelationDetails(wordRelationDetails);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String wordDetailsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wordDetails);

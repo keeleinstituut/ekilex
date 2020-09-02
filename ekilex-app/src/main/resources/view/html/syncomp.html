@@ -7,8 +7,8 @@
        data-panel-index="3"
        th:attrappend="data-active-panel=${markedSynWordId != null}?'true'"
        th:fragment="syn_candidate_list">
-    <ul th:if="${not #lists.isEmpty(details.relations)}" width="100%" class="orderable list-unstyled p-0" data-op-code="word_relation">
-      <li th:each="synRelation,relationIter : ${details.relations}"
+    <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordRelations)}" width="100%" class="orderable list-unstyled p-0" data-op-code="word_relation">
+      <li th:each="synRelation,relationIter : ${details.wordRelationDetails.wordRelations}"
           th:data-id="${synRelation.id}"
           th:data-orderby="${synRelation.orderBy}"
           th:data-navigate-index="${relationIter.index}"
@@ -86,7 +86,7 @@
         </div>
       </li>
     </ul>
-    <p th:unless="${not #lists.isEmpty(details.relations)}" class="text-secondary font-italic p-3">Vastete kandidaadid puuduvad valitud keeltes</p>
+    <p th:unless="${not #lists.isEmpty(details.wordRelationDetails.wordRelations)}" class="text-secondary font-italic p-3">Vastete kandidaadid puuduvad valitud keeltes</p>
   </div>
 
   <div class="card-body p-0 d-flex flex-column h-100" th:fragment="search_result">

@@ -9,7 +9,7 @@
       .ekiAccordion__title:before {
         content: '\f0d7';
       }
-      .ekiAccordion__content {
+      > .ekiAccordion__content {
         display: block;
       }
     }
