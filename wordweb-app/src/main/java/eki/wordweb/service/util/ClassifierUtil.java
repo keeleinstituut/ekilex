@@ -57,6 +57,9 @@ public class ClassifierUtil {
 		word.setWordTypes(classifiers);
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
+		if (classifier == null) {
+			classifier = new Classifier();
+		}
 		word.setAspect(classifier);
 	}
 
@@ -162,6 +165,9 @@ public class ClassifierUtil {
 		wordRelation.setWordRelType(classifier);
 		classifierCode = wordRelation.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
+		if (classifier == null) {
+			classifier = new Classifier();
+		}
 		wordRelation.setAspect(classifier);
 	}
 
