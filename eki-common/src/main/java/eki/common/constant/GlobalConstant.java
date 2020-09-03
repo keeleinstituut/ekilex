@@ -34,6 +34,8 @@ public interface GlobalConstant {
 
 	String[] WORD_TYPE_CODES_FOREIGN = new String[] {"z", "lz"};
 
+	String WORD_REL_TYPE_CODE_ASCPECTS = "ASPECTS";
+
 	String WORD_REL_TYPE_CODE_DERIVATIVE_BASE = "deriv_base";
 
 	String WORD_REL_TYPE_CODE_RAW = "raw";

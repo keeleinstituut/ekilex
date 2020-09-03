@@ -119,6 +119,7 @@ create type type_word_relation as (
 				word_prese text,
 				homonym_nr integer,
 				lang char(3),
+        aspect_code varchar(100),
 				word_type_codes varchar(100) array,
 				lex_complexities varchar(100) array);
 create type type_lexeme_relation as (

@@ -86,7 +86,8 @@ create type type_word_relation as (
 				word_prese text,
 				homonym_nr integer,
 				lang char(3),
-				word_type_codes varchar(100) array,
+        aspect_code varchar(100),
+        word_type_codes varchar(100) array,
 				lex_complexities varchar(100) array);
 create type type_lexeme_relation as (
                 lexeme_id bigint,
@@ -1312,6 +1313,7 @@ from word w
                             ' ' || wr.related_word_prese,
                             wr.related_word_homonym_nr,
                             wr.related_word_lang,
+                            wr.related_word_aspect_code,
                             wr.word_type_codes,
                             wr.lex_complexities
                           )::type_word_relation order by wr.word_rel_order_by) related_words
@@ -1324,6 +1326,7 @@ from word w
                                         w2.word_prese related_word_prese,
                                         w2.homonym_nr related_word_homonym_nr,
                                         w2.lang related_word_lang,
+                                        w2.aspect_code related_word_aspect_code,
                                         w2.word_type_codes,
                                         (select array_agg(distinct lc.complexity)
                                          from lexeme lc,
@@ -1340,6 +1343,7 @@ from word w
                                               (array_agg(distinct f.value_prese)) [1] as word_prese,
                                               w.homonym_nr,
                                               w.lang,
+                                              w.aspect_code,
                                               array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                        from word as w
                                          join paradigm as p on p.word_id = w.id
@@ -1365,6 +1369,7 @@ from word w
                             ' ' || wg.group_member_word_prese,
                             wg.group_member_homonym_nr,
                             wg.group_member_word_lang,
+                            wg.group_member_aspect_code,
                             wg.word_type_codes,
                             wg.lex_complexities
                           )::type_word_relation order by wg.word_group_id, wg.group_member_order_by) word_group_members
@@ -1376,6 +1381,7 @@ from word w
                                 w2.word_prese group_member_word_prese,
                                 w2.homonym_nr group_member_homonym_nr,
                                 w2.lang group_member_word_lang,
+                                w2.aspect_code group_member_aspect_code,
                                 w2.word_type_codes,
                                 (select array_agg(distinct lc.complexity)
                                  from lexeme lc,
@@ -1393,6 +1399,7 @@ from word w
                                       (array_agg(distinct f.value_prese)) [1] as word_prese,
                                       w.homonym_nr,
                                       w.lang,
+                                      w.aspect_code,
                                       array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                from word as w
                                  join paradigm as p on p.word_id = w.id
