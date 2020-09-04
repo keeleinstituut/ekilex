@@ -62,7 +62,7 @@ public class SourceSearchController extends AbstractSearchController {
 		String roleDatasetCode = getDatasetCodeFromRole();
 		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 
-		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, null, null);
+		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, SearchResultMode.SOURCE, null);
 
 		return "redirect:" + SOURCE_SEARCH_URI + searchUri;
 	}
@@ -157,7 +157,7 @@ public class SourceSearchController extends AbstractSearchController {
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		SearchFilter detailSearchFilter = searchHelper.createSourceDetailSearchFilter(sourceId);
-		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.WORD, null);
+		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.MEANING, null);
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
 
