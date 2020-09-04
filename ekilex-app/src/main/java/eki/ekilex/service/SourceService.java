@@ -25,6 +25,7 @@ import eki.common.constant.SourceType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.LogData;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
@@ -118,6 +119,19 @@ public class SourceService extends AbstractService {
 		Long excludedSourceId = excludedSource.getId();
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
 		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
+		permCalculator.applyCrud(userRole, sources);
+
+		return sources;
+	}
+
+	@Transactional
+	public List<Source> getSources(SearchFilter searchFilter, DatasetPermission userRole) throws Exception {
+
+		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+			return new ArrayList<>();
+		}
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter);
+		List<Source> sources = convert(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
 		return sources;

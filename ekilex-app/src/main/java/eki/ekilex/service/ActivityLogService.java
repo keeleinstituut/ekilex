@@ -54,6 +54,7 @@ import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -300,12 +301,15 @@ public class ActivityLogService implements SystemConstant {
 	private String getWordDetailsJson(Long wordId) throws Exception {
 
 		Word word = lexSearchDbService.getWord(wordId);
+		String wordLang = word.getLang();
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
-		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
-		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
+		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
+		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
+		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
+		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
@@ -314,10 +318,9 @@ public class ActivityLogService implements SystemConstant {
 		WordDetails wordDetails = new WordDetails();
 		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
-		wordDetails.setRelations(wordRelations);
 		wordDetails.setWordEtymology(wordEtymology);
-		wordDetails.setWordGroups(wordGroups);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
+		wordDetails.setWordRelationDetails(wordRelationDetails);
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		String wordDetailsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wordDetails);

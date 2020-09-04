@@ -68,6 +68,6 @@ public class SourceLinkController implements WebConstant {
 		Source source = sourceService.getSource(sourceId);
 		model.addAttribute("source", source);
 
-		return SOURCEVIEW_PAGE + PAGE_FRAGMENT_ELEM + "details";
+		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_link_details";
 	}
 }

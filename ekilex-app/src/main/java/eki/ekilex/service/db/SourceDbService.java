@@ -1,18 +1,25 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -20,22 +27,37 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
+import org.jooq.SelectHavingStep;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
-import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.constant.SearchEntity;
+import eki.ekilex.constant.SearchKey;
+import eki.ekilex.constant.SearchOperand;
+import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchCriterionGroup;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 
 @Component
-public class SourceDbService implements SystemConstant {
+public class SourceDbService extends AbstractSearchDbService {
 
 	private DSLContext create;
 
@@ -90,8 +112,7 @@ public class SourceDbService implements SystemConstant {
 		return getSources(s, sff, sp, spmf, sex);
 	}
 
-	private List<SourcePropertyTuple> getSources(
-			Source s, SourceFreeform sff, Freeform sp, Field<Boolean> spmf, Condition where) {
+	private List<SourcePropertyTuple> getSources(Source s, SourceFreeform sff, Freeform sp, Field<Boolean> spmf, Condition where) {
 	
 		Field<Boolean> sptnf = DSL.field(sp.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 	
@@ -116,6 +137,137 @@ public class SourceDbService implements SystemConstant {
 						sp.ORDER_BY)
 				.fetch()
 				.into(SourcePropertyTuple.class);
+	}
+
+	public List<SourcePropertyTuple> getSources(SearchFilter searchFilter) throws Exception {
+
+		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
+
+		Source s = SOURCE.as("s");
+		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		Freeform sp = FREEFORM.as("sp");
+		SourceFreeform sffc = SOURCE_FREEFORM.as("sffc");
+		Freeform spc = FREEFORM.as("spc");
+
+		Condition where = DSL.noCondition();
+
+		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
+			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
+				continue;
+			}
+			SearchEntity searchEntity = searchCriterionGroup.getEntity();
+			if (SearchEntity.SOURCE.equals(searchEntity)) {
+				boolean containsSearchKeys;
+
+				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.VALUE);
+				if (containsSearchKeys) {
+					Condition innerWhere = sffc.SOURCE_ID.eq(s.ID).and(sffc.FREEFORM_ID.eq(spc.ID));
+					innerWhere = applyValueFilters(SearchKey.VALUE, searchCriteria, spc.VALUE_TEXT, innerWhere, true);
+
+					Condition whereExists = DSL.exists(DSL
+							.select(sffc.ID)
+							.from(sffc, spc)
+							.where(innerWhere));
+
+					where = where.and(whereExists);
+				}
+
+				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.DATASET_USAGE);
+				if (containsSearchKeys) {
+					where = applySourceLinkDatasetFilters(searchCriteria, where);
+				}
+			}
+		}
+
+		Field<Boolean> spmf = DSL.field(DSL.falseCondition());
+		return getSources(s, sff, sp, spmf, where);
+	}
+
+	private Condition applySourceLinkDatasetFilters(List<SearchCriterion> searchCriteria, Condition where) {
+
+		Source s = SOURCE.as("s");
+		Definition d = DEFINITION.as("d");
+		Lexeme l = LEXEME.as("l");
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.DATASET_USAGE) && c.getSearchValue() != null)
+				.collect(toList());
+
+		if (CollectionUtils.isNotEmpty(filteredCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				SearchOperand searchOperand = criterion.getSearchOperand();
+				if (SearchOperand.EQUALS.equals(searchOperand)) {
+					String datasetCode = criterion.getSearchValue().toString();
+
+					SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL
+									.select(l.ID)
+									.from(l, lsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(lsl.LEXEME_ID.eq(l.ID))
+													.and(lsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL
+									.select(l.ID)
+									.from(l, d, dsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(d.MEANING_ID.eq(l.MEANING_ID))
+													.and(dsl.DEFINITION_ID.eq(d.ID))
+													.and(dsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectLexemeFreeformSourceLinks = DSL
+									.select(l.ID)
+									.from(l, lff, ffsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(lff.LEXEME_ID.eq(l.ID))
+													.and(ffsl.FREEFORM_ID.eq(lff.FREEFORM_ID))
+													.and(ffsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectMeaningFreeformSourceLinks = DSL
+									.select(l.ID)
+									.from(l, mff, ffsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(mff.MEANING_ID.eq(l.MEANING_ID))
+													.and(ffsl.FREEFORM_ID.eq(mff.FREEFORM_ID))
+													.and(ffsl.SOURCE_ID.eq(s.ID)));
+
+					SelectHavingStep<Record1<Long>> selectDefinitionFreeformSourceLinks = DSL
+									.select(l.ID)
+									.from(l, d, dff, ffsl)
+									.where(
+											l.DATASET_CODE.eq(datasetCode)
+													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+													.and(d.MEANING_ID.eq(l.MEANING_ID))
+													.and(dff.DEFINITION_ID.eq(d.ID))
+													.and(ffsl.FREEFORM_ID.eq(dff.FREEFORM_ID))
+													.and(ffsl.SOURCE_ID.eq(s.ID)));
+
+					Table<Record1<Long>> all = selectLexemeSourceLinks
+							.unionAll(selectDefinitionSourceLinks)
+							.unionAll(selectLexemeFreeformSourceLinks)
+							.unionAll(selectMeaningFreeformSourceLinks)
+							.unionAll(selectDefinitionFreeformSourceLinks)
+							.asTable("all");
+
+					where = where.andExists(DSL.select(all.field("id")).from(all));
+				}
+			}
+		}
+		return where;
 	}
 
 	public Long getSourceId(Long sourcePropertyId) {

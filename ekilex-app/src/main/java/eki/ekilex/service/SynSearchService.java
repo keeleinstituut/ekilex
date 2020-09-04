@@ -23,6 +23,7 @@ import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.LogData;
@@ -41,6 +42,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SynSearchDbService;
@@ -83,23 +85,25 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, wordNotes);
-		String headwordLang = word.getLang();
+		String wordLang = word.getLang();
 
 		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, headwordLang, synMeaningWordLangCodes, userRole));
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, wordLang, synMeaningWordLangCodes, userRole));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
 
 		List<Relation> relations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {
-			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes);
+			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		}
+		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
+		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(relations, null, wordLang, allWordRelationTypes);
 
 		WordDetails wordDetails = new WordDetails();
 		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
-		wordDetails.setRelations(relations);
+		wordDetails.setWordRelationDetails(wordRelationDetails);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;

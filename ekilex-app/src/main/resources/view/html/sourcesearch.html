@@ -8,34 +8,20 @@
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'source')"></th:block>
   <div class="container-fluid">
-    <div class="card shadow">
-      <div class="card-header">
-        <h5 class="card-title">Allikate otsing</h5>
-      </div>
-      <div class="card-body">
-        <button class="btn btn-primary position-right"
-                title="Lisa uus allikas"
-                data-toggle="modal"
-                data-target="#addSourceDlg"
-                sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">
-          Lisa uus allikas
-        </button>
-        <form id="sourceSearchForm" th:action="@{/sourcesearch}" method="post">
-          <div class="form-row">
-            <div class="col-12">
-              <div class="form-group row">
-                <label class="col-auto col-form-label">Otsing</label>
-                <div class="col-5">
-                  <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta mõni allika omaduse väärtus">
-                </div>
-                <div class="col-2">
-                  <button type="submit" class="btn btn-primary">Otsi</button>
-                </div>
-              </div>
-            </div>
-          </div>
+    <div class="card shadow rounded-0 border-0 flex-shrink-0">
+      <div class="card-body px-2 py-3">
+        <form th:action="@{/sourcesearch}" method="post">
+          <th:block th:replace="search :: search_form('source_search', false)"></th:block>
         </form>
       </div>
+    </div>
+    <div>
+      <button class="btn btn-secondary mt-2"
+              title="Lisa uus allikas"
+              data-toggle="modal"
+              data-target="#addSourceDlg"
+              sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">Lisa uus allikas
+      </button>
     </div>
     <div class="float-left w-50 mb-4" th:if="${sources != null}">
       <div class="mt-2">
@@ -63,7 +49,7 @@
   <div th:replace="sourcedialog :: add_source_dlg('source_search')"></div>
   <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">
-      initDeleteConfirmations();
+	  initDeleteConfirmations();
   </script>
 </body>
 </html>

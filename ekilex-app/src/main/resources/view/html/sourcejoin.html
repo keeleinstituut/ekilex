@@ -8,7 +8,7 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <form th:action="@{/sourcesearch}" method="post">
-        <input type="hidden" name="searchFilter" th:value="${previousSearch}">
+        <input type="hidden" name="simpleSearchFilter" th:value="${previousSearch}">
         <button type="submit" class="btn btn-sm btn-secondary">Tagasi</button>
       </form>
     </div>

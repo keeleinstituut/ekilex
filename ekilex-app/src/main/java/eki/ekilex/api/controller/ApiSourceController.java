@@ -85,10 +85,11 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(203)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSource(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("sourceType") SourceType sourceType) {
 
@@ -101,10 +102,12 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(204)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + DELETE_URI)
 	@ResponseBody
-	public ApiResponse deleteSource(@RequestParam("sourceId") Long sourceId) {
+	public ApiResponse deleteSource(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("sourceId") Long sourceId) {
 
 		try {
 			boolean isValidForDeletion = sourceService.validateSourceDelete(sourceId);
@@ -119,10 +122,11 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(205)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId1)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId1)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + JOIN_URI)
 	@ResponseBody
 	public ApiResponse joinSources(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@RequestParam("sourceId1") Long sourceId1,
 			@RequestParam("sourceId2") Long sourceId2) {
 
@@ -135,10 +139,11 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(206)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #sourceId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceProperty(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText) {
@@ -153,10 +158,11 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(207)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSourceProperty(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
 			@RequestParam("sourcePropertyId") Long sourcePropertyId,
 			@RequestParam("valueText") String valueText) {
 
@@ -170,10 +176,12 @@ public class ApiSourceController extends AbstractApiController {
 	}
 
 	@Order(208)
-	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #sourcePropertyId)")
+	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
 	@GetMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
 	@ResponseBody
-	public ApiResponse deleteSourceProperty(@RequestParam("sourcePropertyId") Long sourcePropertyId) {
+	public ApiResponse deleteSourceProperty(
+			@RequestParam("crudRoleDataset") String crudRoleDataset,
+			@RequestParam("sourcePropertyId") Long sourcePropertyId) {
 
 		try {
 			sourceService.deleteSourceProperty(sourcePropertyId);

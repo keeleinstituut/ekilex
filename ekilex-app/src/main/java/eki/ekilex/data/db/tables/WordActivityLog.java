@@ -4,6 +4,7 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordActivityLogRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -32,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordActivityLog extends TableImpl<WordActivityLogRecord> {
 
-    private static final long serialVersionUID = -960978174;
+    private static final long serialVersionUID = 655231858;
 
     /**
      * The reference instance of <code>public.word_activity_log</code>
@@ -98,6 +100,11 @@ public class WordActivityLog extends TableImpl<WordActivityLogRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.WORD_ACTIVITY_LOG_LOG_ID_IDX, Indexes.WORD_ACTIVITY_LOG_WORD_ID_IDX);
     }
 
     @Override

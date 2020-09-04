@@ -49,25 +49,33 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	// source
 
 	@Transactional
-	public boolean isSourceCrudGranted(Authentication authentication, Long sourceId) {
+	public boolean isSourceCrudGranted(Authentication authentication, String crudRoleDataset, Long sourceId) {
 
 		EkiUser user = (EkiUser) authentication.getPrincipal();
 		Long userId = user.getId();
-		boolean isGranted = permissionDbService.isGrantedForSource(userId, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
+		boolean isGranted = permissionDbService.isGrantedForSource(userId, crudRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;
 	}
 
 	@Transactional
-	public boolean isSourcePropertyCrudGranted(Authentication authentication, Long sourcePropertyId) {
+	public boolean isSourcePropertyCrudGranted(Authentication authentication, String crudRoleDataset, Long sourcePropertyId) {
 
 		EkiUser user = (EkiUser) authentication.getPrincipal();
 		Long userId = user.getId();
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
 		if (sourceProperty == null) {
 			return true;
 		}
 		Long sourceId = sourceProperty.getSourceId();
-		boolean isGranted = permissionDbService.isGrantedForSource(userId, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		boolean isGranted = permissionDbService.isGrantedForSource(userId, crudRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;
 	}
 
@@ -201,7 +209,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
 				isPermGranted = permissionDbService.isGrantedForUsage(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
 			} else if (StringUtils.equals(LifecycleEntity.SOURCE.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForSource(userId, entityId, requiredAuthItem.name(), requiredAuthOps);
+				isPermGranted = permissionDbService.isGrantedForSource(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
 			}
 		}
 

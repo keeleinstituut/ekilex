@@ -4,6 +4,7 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningActivityLogRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -32,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningActivityLog extends TableImpl<MeaningActivityLogRecord> {
 
-    private static final long serialVersionUID = -925660587;
+    private static final long serialVersionUID = -804701466;
 
     /**
      * The reference instance of <code>public.meaning_activity_log</code>
@@ -98,6 +100,11 @@ public class MeaningActivityLog extends TableImpl<MeaningActivityLogRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MEANING_ACTIVITY_LOG_LOG_ID_IDX, Indexes.MEANING_ACTIVITY_LOG_MEANING_ID_IDX);
     }
 
     @Override

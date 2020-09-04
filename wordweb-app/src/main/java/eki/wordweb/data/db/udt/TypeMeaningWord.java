@@ -23,7 +23,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
 
-    private static final long serialVersionUID = 597147875;
+    private static final long serialVersionUID = 113043764;
 
     /**
      * The reference instance of <code>public.type_meaning_word</code>
@@ -57,6 +57,11 @@ public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
      * The attribute <code>public.type_meaning_word.mw_lex_complexity</code>.
      */
     public static final UDTField<TypeMeaningWordRecord, String> MW_LEX_COMPLEXITY = createField(DSL.name("mw_lex_complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_meaning_word.mw_lex_type</code>.
+     */
+    public static final UDTField<TypeMeaningWordRecord, String> MW_LEX_TYPE = createField(DSL.name("mw_lex_type"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_meaning_word.mw_lex_weight</code>.

@@ -15,7 +15,7 @@
       </div>
       <div class="ml-2">
         <form th:action="@{/source_join}" method="post">
-          <input type="hidden" name="previousSearch" th:value="${searchFilter}">
+          <input type="hidden" name="previousSearch" th:value="${simpleSearchFilter}">
           <input type="hidden" name="sourceId" th:value="${source.id}">
           <button type="submit" class="btn btn-primary btn-sm" sec:authorize="#vars.source.crudGrant">Ühenda</button>
         </form>

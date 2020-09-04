@@ -85,6 +85,7 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.Tag;
@@ -165,7 +166,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1093983364;
+    private static final long serialVersionUID = 1809654036;
 
     /**
      * The reference instance of <code>public</code>
@@ -578,6 +579,11 @@ public class Public extends SchemaImpl {
     public final Source SOURCE = Source.SOURCE;
 
     /**
+     * The table <code>public.source_activity_log</code>.
+     */
+    public final SourceActivityLog SOURCE_ACTIVITY_LOG = SourceActivityLog.SOURCE_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.source_freeform</code>.
      */
     public final SourceFreeform SOURCE_FREEFORM = SourceFreeform.SOURCE_FREEFORM;
@@ -902,6 +908,7 @@ public class Public extends SchemaImpl {
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
+            Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.SOURCE_LIFECYCLE_LOG_ID_SEQ,
@@ -1018,6 +1025,7 @@ public class Public extends SchemaImpl {
             SemanticType.SEMANTIC_TYPE,
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
             Source.SOURCE,
+            SourceActivityLog.SOURCE_ACTIVITY_LOG,
             SourceFreeform.SOURCE_FREEFORM,
             SourceLifecycleLog.SOURCE_LIFECYCLE_LOG,
             Tag.TAG,

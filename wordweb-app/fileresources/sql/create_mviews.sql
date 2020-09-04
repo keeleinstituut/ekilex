@@ -93,6 +93,7 @@ create type type_meaning_word as (
 				meaning_id bigint,
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
+        mw_lex_type varchar(100),
 				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_freeform array,
 				mw_lex_register_codes varchar(100) array,
@@ -118,6 +119,7 @@ create type type_word_relation as (
 				word_prese text,
 				homonym_nr integer,
 				lang char(3),
+        aspect_code varchar(100),
 				word_type_codes varchar(100) array,
 				lex_complexities varchar(100) array);
 create type type_lexeme_relation as (

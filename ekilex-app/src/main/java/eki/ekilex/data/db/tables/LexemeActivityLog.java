@@ -4,6 +4,7 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeActivityLogRecord;
@@ -14,6 +15,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -32,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeActivityLog extends TableImpl<LexemeActivityLogRecord> {
 
-    private static final long serialVersionUID = 1143304302;
+    private static final long serialVersionUID = -374957374;
 
     /**
      * The reference instance of <code>public.lexeme_activity_log</code>
@@ -98,6 +100,11 @@ public class LexemeActivityLog extends TableImpl<LexemeActivityLogRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX, Indexes.LEXEME_ACTIVITY_LOG_LOG_ID_IDX);
     }
 
     @Override
