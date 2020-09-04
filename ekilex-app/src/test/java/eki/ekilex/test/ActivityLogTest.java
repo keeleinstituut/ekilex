@@ -71,8 +71,8 @@ public class ActivityLogTest extends AbstractTest {
 
 		String prevLang = commitedActivityLog.getPrevDiffs().stream().map(TypeActivityLogDiff::getValue).findFirst().get();
 		String currLang = commitedActivityLog.getCurrDiffs().stream().map(TypeActivityLogDiff::getValue).findFirst().get();
-		int associatedLexemeCount = activityLog.getPrevWlmIds().getLexemeIds().size();
-		int associatedMeaningCount = activityLog.getPrevWlmIds().getMeaningIds().size();
+		int associatedLexemeCount = activityLog.getPrevWlmIds().getLexemeIds().length;
+		int associatedMeaningCount = activityLog.getPrevWlmIds().getMeaningIds().length;
 
 		assertEquals("Unexpected update result", originalLang, prevLang);
 		assertEquals("Unexpected update result", modifiedLang, currLang);

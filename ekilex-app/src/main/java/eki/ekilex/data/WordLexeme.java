@@ -91,6 +91,8 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private Meaning meaning;
 
+	private List<MeaningWord> meaningWords;
+
 	private List<MeaningWordLangGroup> meaningWordLangGroups;
 
 	private boolean lexemeOrMeaningClassifiersExist;
@@ -440,6 +442,14 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setMeaning(Meaning meaning) {
 		this.meaning = meaning;
+	}
+
+	public List<MeaningWord> getMeaningWords() {
+		return meaningWords;
+	}
+
+	public void setMeaningWords(List<MeaningWord> meaningWords) {
+		this.meaningWords = meaningWords;
 	}
 
 	public List<MeaningWordLangGroup> getMeaningWordLangGroups() {

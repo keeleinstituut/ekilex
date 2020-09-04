@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.LexemeType;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
@@ -64,7 +66,7 @@ public class ActivityLogDbService implements GlobalConstant {
 				.getId();
 	}
 
-	public void createLexemesLog(Long activityLogId, List<Long> lexemeIds) {
+	public void createLexemesActivityLogs(Long activityLogId, Long ... lexemeIds) {
 
 		for (Long lexemeId : lexemeIds) {
 			create
@@ -76,7 +78,7 @@ public class ActivityLogDbService implements GlobalConstant {
 		}
 	}
 
-	public void createWordsLog(Long activityLogId, List<Long> wordIds) {
+	public void createWordsActivityLogs(Long activityLogId, Long ... wordIds) {
 
 		for (Long wordId : wordIds) {
 			create
@@ -88,7 +90,7 @@ public class ActivityLogDbService implements GlobalConstant {
 		}
 	}
 
-	public void createMeaningsLog(Long activityLogId, List<Long> meaningIds) {
+	public void createMeaningsActivityLogs(Long activityLogId, Long ... meaningIds) {
 
 		for (Long meaningId : meaningIds) {
 			create
@@ -98,6 +100,14 @@ public class ActivityLogDbService implements GlobalConstant {
 							.whereExists(DSL.select(MEANING.ID).from(MEANING).where(MEANING.ID.eq(meaningId))))
 					.execute();
 		}
+	}
+
+	public void createSourceActivityLog(Long activityLogId, Long sourceId) {
+
+		create
+				.insertInto(SOURCE_ACTIVITY_LOG, SOURCE_ACTIVITY_LOG.SOURCE_ID, SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID)
+				.values(sourceId, activityLogId)
+				.execute();
 	}
 
 	private TypeActivityLogDiffRecord[] convert(List<TypeActivityLogDiff> logDiffs) {
@@ -149,6 +159,7 @@ public class ActivityLogDbService implements GlobalConstant {
 				.where(
 						entityIdCond
 								.and(l.WORD_ID.eq(w.ID))
+								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(l.MEANING_ID.eq(m.ID)))
 				.groupBy(groupByField)
 				.fetchSingleInto(WordLexemeMeaningIds.class);

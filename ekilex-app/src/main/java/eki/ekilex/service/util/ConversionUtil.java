@@ -2,6 +2,7 @@ package eki.ekilex.service.util;
 
 import static java.util.stream.Collectors.groupingBy;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
+import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
@@ -58,7 +60,10 @@ import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TypeTermMeaningWord;
@@ -785,6 +790,50 @@ public class ConversionUtil implements GlobalConstant {
 				}
 			}
 		}
+	}
+
+	public List<Source> composeSources(List<SourcePropertyTuple> sourcePropertyTuples) {
+
+		List<Source> sources = new ArrayList<>();
+		Map<Long, Source> sourceMap = new HashMap<>();
+
+		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
+
+			Long sourceId = tuple.getSourceId();
+			Long sourcePropertyId = tuple.getSourcePropertyId();
+			FreeformType sourcePropertyType = tuple.getSourcePropertyType();
+			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
+			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
+			boolean sourcePropertyMatch = tuple.isSourcePropertyMatch();
+
+			Source source = sourceMap.get(sourceId);
+			if (source == null) {
+				source = new Source();
+				source.setId(sourceId);
+				source.setType(tuple.getSourceType());
+				source.setSourceProperties(new ArrayList<>());
+				sources.add(source);
+				sourceMap.put(sourceId, source);
+			}
+
+			SourceProperty sourceProperty = new SourceProperty();
+			sourceProperty.setId(sourcePropertyId);
+			sourceProperty.setType(sourcePropertyType);
+			sourceProperty.setValueText(sourcePropertyValueText);
+			sourceProperty.setValueDate(sourcePropertyValueDate);
+			sourceProperty.setValueMatch(sourcePropertyMatch);
+			source.getSourceProperties().add(sourceProperty);
+		}
+
+		sources.forEach(source -> {
+			List<SourceProperty> sourceProperties = source.getSourceProperties();
+			List<String> sourceNames = sourceProperties.stream()
+					.filter(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()))
+					.map(SourceProperty::getValueText)
+					.collect(Collectors.toList());
+			source.setSourceNames(sourceNames);
+		});
+		return sources;
 	}
 
 	public List<OrderedClassifier> removeOrderedClassifierDuplicates(List<OrderedClassifier> allClassifiers) {

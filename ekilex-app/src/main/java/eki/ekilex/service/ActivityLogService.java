@@ -1,11 +1,12 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,11 +35,14 @@ import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
+import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -53,6 +57,7 @@ import eki.ekilex.data.WordNote;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Component
@@ -70,6 +75,9 @@ public class ActivityLogService implements SystemConstant {
 	private LexSearchDbService lexSearchDbService;
 
 	@Autowired
+	private SourceDbService sourceDbService;
+
+	@Autowired
 	private CommonDataDbService commonDataDbService;
 
 	@Autowired
@@ -85,27 +93,30 @@ public class ActivityLogService implements SystemConstant {
 		activityLogData.setOwnerName(ownerName);
 
 		WordLexemeMeaningIds prevWlmIds;
+		String prevData;
 
 		if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
 			Long lexemeId = new Long(ownerId);
-			String prevData = getLexemeDetailsJson(lexemeId);
+			prevData = getLexemeDetailsJson(lexemeId);
 			prevWlmIds = activityLogDbService.getWordMeaningIds(lexemeId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
 		} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
 			Long wordId = new Long(ownerId);
-			String prevData = getWordDetailsJson(wordId);
+			prevData = getWordDetailsJson(wordId);
 			prevWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
 		} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
 			Long meaningId = new Long(ownerId);
-			String prevData = getMeaningDetailsJson(meaningId);
+			prevData = getMeaningDetailsJson(meaningId);
 			prevWlmIds = activityLogDbService.getLexemeWordIds(meaningId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
 		} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
-			// TODO implement
+			Long sourceId = new Long(ownerId);
+			prevData = getSourceJson(sourceId);
+			activityLogData.setPrevData(prevData);
 		}
 		return activityLogData;
 	}
@@ -141,7 +152,10 @@ public class ActivityLogService implements SystemConstant {
 			activityLogData.setCurrData(currData);
 			handleWlmActivityLog(activityLogData);
 		} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
-			// TODO implement
+			Long sourceId = new Long(ownerId);
+			currData = getSourceJson(sourceId);
+			activityLogData.setCurrData(currData);
+			handleSourceActivityLog(activityLogData);
 		}
 
 		return activityLogData;
@@ -154,24 +168,32 @@ public class ActivityLogService implements SystemConstant {
 		WordLexemeMeaningIds prevWlmIds = activityLogData.getPrevWlmIds();
 		WordLexemeMeaningIds currWlmIds = activityLogData.getCurrWlmIds();
 
-		List<Long> lexemeIds = collectIds(prevWlmIds.getLexemeIds(), currWlmIds.getLexemeIds());
-		List<Long> wordIds = collectIds(prevWlmIds.getWordIds(), currWlmIds.getWordIds());
-		List<Long> meaningIds = collectIds(prevWlmIds.getMeaningIds(), currWlmIds.getMeaningIds());
+		Long[] lexemeIds = collect(prevWlmIds.getLexemeIds(), currWlmIds.getLexemeIds());
+		Long[] wordIds = collect(prevWlmIds.getWordIds(), currWlmIds.getWordIds());
+		Long[] meaningIds = collect(prevWlmIds.getMeaningIds(), currWlmIds.getMeaningIds());
 
 		Long activityLogId = activityLogDbService.create(activityLogData);
-		activityLogDbService.createLexemesLog(activityLogId, lexemeIds);
-		activityLogDbService.createWordsLog(activityLogId, wordIds);
-		activityLogDbService.createMeaningsLog(activityLogId, meaningIds);
+		activityLogDbService.createLexemesActivityLogs(activityLogId, lexemeIds);
+		activityLogDbService.createWordsActivityLogs(activityLogId, wordIds);
+		activityLogDbService.createMeaningsActivityLogs(activityLogId, meaningIds);
 
 		activityLogData.setId(activityLogId);
 	}
 
-	private List<Long> collectIds(List<Long> ids1, List<Long> ids2) {
-		List<Long> ids = new ArrayList<>();
-		ids.addAll(ids1);
-		ids.addAll(ids2);
-		ids = ids.stream().distinct().collect(Collectors.toList());
+	private Long[] collect(Long[] ids1, Long[] ids2) {
+		Long[] ids = ArrayUtils.addAll(ids1, ids2);
+		ids = Arrays.stream(ids).distinct().toArray(Long[]::new);
 		return ids;
+	}
+
+	private void handleSourceActivityLog(ActivityLogData activityLogData) throws Exception {
+
+		calcDiffs(activityLogData);
+
+		Long activityLogId = activityLogDbService.create(activityLogData);
+		activityLogDbService.createSourceActivityLog(activityLogId, activityLogData.getOwnerId());
+
+		activityLogData.setId(activityLogId);
 	}
 
 	private void calcDiffs(ActivityLog activityLog) throws Exception {
@@ -237,6 +259,7 @@ public class ActivityLogService implements SystemConstant {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
+		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
@@ -255,6 +278,7 @@ public class ActivityLogService implements SystemConstant {
 		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.getSecondaryCollocationTuples(lexemeId);
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 
+		lexeme.setMeaningWords(meaningWords);
 		lexeme.setTags(tags);
 		lexeme.setGovernments(governments);
 		lexeme.setGrammars(grammars);
@@ -285,9 +309,9 @@ public class ActivityLogService implements SystemConstant {
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
+		word.setNotes(wordNotes);
 
 		WordDetails wordDetails = new WordDetails();
-		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setRelations(wordRelations);
@@ -338,5 +362,17 @@ public class ActivityLogService implements SystemConstant {
 		String meaningJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(meaning);
 
 		return meaningJson;
+	}
+
+	private String getSourceJson(Long sourceId) throws Exception {
+
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSource(sourceId);
+		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
+		Source source = sources.get(0);
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String sourceJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(source);
+
+		return sourceJson;
 	}
 }
