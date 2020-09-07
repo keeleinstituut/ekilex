@@ -26,7 +26,13 @@
                 data-toggle="delete-source-confirm"
                 sec:authorize="#vars.source.crudGrant">Eemalda allikas</button>
       </div>
-      <a th:href="@{'/sourcedetailsearch/' + ${source.id}}" class="btn btn-secondary btn-sm ml-4">Otsi viiteid</a>
+      <div class="dropdown">
+        <button class="btn btn-secondary btn-sm ml-4" id="detailSearchButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Otsi viiteid</button>
+        <div class="dropdown-menu" aria-labelledby="detailSearchButton">
+          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" th:href="@{'/sourcedetailsearch/lexsearch/' + ${source.id}}">Leks otsing</a>
+          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" th:href="@{'/sourcedetailsearch/termsearch/' + ${source.id}}">Term otsing</a>
+        </div>
+      </div>
       <a th:href="@{'/sourcelifecyclelog:' + ${source.id}}"
          data-toggle="modal"
          data-target="#sourceLifecycleLogDlg"

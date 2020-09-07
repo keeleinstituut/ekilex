@@ -150,15 +150,19 @@ public class SourceSearchController extends AbstractSearchController {
 		return sourceNames;
 	}
 
-	@GetMapping(SOURCE_DETAIL_SEARCH_URI + "/{sourceId}")
-	public String sourceDetailSearch(@PathVariable("sourceId") Long sourceId) {
+	@GetMapping(SOURCE_DETAIL_SEARCH_URI + "/{searchPage}/{sourceId}")
+	public String sourceDetailSearch(@PathVariable("searchPage") String searchPage, @PathVariable("sourceId") Long sourceId) {
 
 		logger.debug("Source detail search by id: \"{}\"", sourceId);
 
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
 		SearchFilter detailSearchFilter = searchHelper.createSourceDetailSearchFilter(sourceId);
 		String searchUri = searchHelper.composeSearchUri(SEARCH_MODE_DETAIL, selectedDatasets, null, detailSearchFilter, SearchResultMode.MEANING, null);
-		return "redirect:" + TERM_SEARCH_URI + searchUri;
+		if (LEX_SEARCH_PAGE.equals(searchPage)) {
+			return "redirect:" + LEX_SEARCH_URI + searchUri;
+		} else {
+			return "redirect:" + TERM_SEARCH_URI + searchUri;
+		}
 	}
 
 }
