@@ -859,7 +859,6 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		// word and meaningword select
 		where1 = l1.MEANING_ID.eq(l2.MEANING_ID)
 				.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-				.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 				.and(l2.WORD_ID.eq(w2.ID))
 				.and(p2.WORD_ID.eq(w2.ID))
 				.and(f2.PARADIGM_ID.eq(p2.ID))
