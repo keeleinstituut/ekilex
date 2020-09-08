@@ -52,7 +52,6 @@
          th:with="
            isMeaningLexemeCrudGranted=${#vars.lexeme.meaning.subGrant},
            isMeaningAnyLexemeCrudGranted=${#vars.lexeme.meaning.anyGrant}">
-      <div th:replace="lexdialog :: add_lexeme_process_state_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_data_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_tag_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_pos_dlg"></div>
