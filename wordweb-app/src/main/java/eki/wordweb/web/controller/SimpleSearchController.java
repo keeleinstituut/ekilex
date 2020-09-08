@@ -108,15 +108,16 @@ public class SimpleSearchController extends AbstractController {
 		return LITE_SEARCH_PAGE;
 	}
 
-	@GetMapping(value = SEARCH_WORD_FRAG_URI + LITE_URI + "/{destinLangs}/{wordFrag}", produces = "application/json;charset=UTF-8")
+	@GetMapping(value = SEARCH_WORD_FRAG_URI + LITE_URI + "/{wordFrag}", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public Map<String, List<String>> searchWordsByFragment(
-			@PathVariable(name = "destinLangs") String destinLangsStr,
-			@PathVariable("wordFrag") String wordFragment) {
+			@PathVariable("wordFrag") String wordFragment,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		String[] destinLangsArr = StringUtils.split(destinLangsStr, UI_FILTER_VALUES_SEPARATOR);
-		List<String> destinLangs = Arrays.asList(destinLangsArr);
-		return simpleSearchService.getWordsByInfixLev(wordFragment, destinLangs, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		List<String> destinLangs = sessionBean.getDestinLangs();
+		List<String> datasetCodes = sessionBean.getDatasetCodes();
+		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
+		return simpleSearchService.getWordsByInfixLev(wordFragment, searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 	}
 
 	@GetMapping(WORD_DETAILS_URI + LITE_URI + "/{wordId}")
@@ -164,6 +165,9 @@ public class SimpleSearchController extends AbstractController {
 			isValid = isValid & false;
 		}
 
+		// dataset
+		List<String> datasetCodes = Arrays.asList(DATASET_SSS);
+
 		// homonym nr
 		Integer homonymNr = nullSafe(homonymNrStr);
 		if (homonymNr == null) {
@@ -176,6 +180,7 @@ public class SimpleSearchController extends AbstractController {
 
 		SearchValidation searchValidation = new SearchValidation();
 		searchValidation.setDestinLangs(destinLangs);
+		searchValidation.setDatasetCodes(datasetCodes);
 		searchValidation.setSearchWord(searchWord);
 		searchValidation.setHomonymNr(homonymNr);
 		searchValidation.setSearchUri(searchUri);

@@ -20,10 +20,6 @@ import eki.ekilex.service.db.LexSearchDbService;
 @Component
 public abstract class AbstractWordSearchService extends AbstractSearchService {
 
-	protected final static String classifierLabelLang = "est";
-	protected final static String classifierLabelTypeDescrip = "descrip";
-	protected final static String classifierLabelTypeFull = "full";
-
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
 

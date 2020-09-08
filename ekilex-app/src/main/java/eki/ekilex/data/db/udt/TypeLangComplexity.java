@@ -20,7 +20,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeLangComplexity extends UDTImpl<TypeLangComplexityRecord> {
 
-    private static final long serialVersionUID = 2000572047;
+    private static final long serialVersionUID = -1343996192;
 
     /**
      * The reference instance of <code>public.type_lang_complexity</code>
@@ -41,9 +41,19 @@ public class TypeLangComplexity extends UDTImpl<TypeLangComplexityRecord> {
     public static final UDTField<TypeLangComplexityRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.VARCHAR(10), TYPE_LANG_COMPLEXITY, "");
 
     /**
-     * The attribute <code>public.type_lang_complexity.complexity</code>.
+     * The attribute <code>public.type_lang_complexity.dataset_code</code>.
      */
-    public static final UDTField<TypeLangComplexityRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_LANG_COMPLEXITY, "");
+    public static final UDTField<TypeLangComplexityRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10), TYPE_LANG_COMPLEXITY, "");
+
+    /**
+     * The attribute <code>public.type_lang_complexity.lex_complexity</code>.
+     */
+    public static final UDTField<TypeLangComplexityRecord, String> LEX_COMPLEXITY = createField(DSL.name("lex_complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_LANG_COMPLEXITY, "");
+
+    /**
+     * The attribute <code>public.type_lang_complexity.data_complexity</code>.
+     */
+    public static final UDTField<TypeLangComplexityRecord, String> DATA_COMPLEXITY = createField(DSL.name("data_complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_LANG_COMPLEXITY, "");
 
     /**
      * No further instances allowed

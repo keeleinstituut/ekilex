@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
@@ -26,6 +27,7 @@ import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelMapping;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
@@ -36,6 +38,7 @@ import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
@@ -45,11 +48,13 @@ import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
@@ -77,6 +82,9 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index ACTIVITY_LOG_EVENT_BY_IDX = Indexes0.ACTIVITY_LOG_EVENT_BY_IDX;
+    public static final Index ACTIVITY_LOG_EVENT_ON_IDX = Indexes0.ACTIVITY_LOG_EVENT_ON_IDX;
+    public static final Index ACTIVITY_LOG_OWNER_IDX = Indexes0.ACTIVITY_LOG_OWNER_IDX;
     public static final Index COLLOCATION_VALUE_IDX = Indexes0.COLLOCATION_VALUE_IDX;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_IDX;
     public static final Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Indexes0.COLLOCATION_FREEFORM_FREEFORM_ID_IDX;
@@ -131,9 +139,12 @@ public class Indexes {
     public static final Index LEX_RELATION_LEXEME2_ID_IDX = Indexes0.LEX_RELATION_LEXEME2_ID_IDX;
     public static final Index LEXEME_COMPLEXITY_IDX = Indexes0.LEXEME_COMPLEXITY_IDX;
     public static final Index LEXEME_DATASET_CODE_IDX = Indexes0.LEXEME_DATASET_CODE_IDX;
+    public static final Index LEXEME_IS_PUBLIC_IDX = Indexes0.LEXEME_IS_PUBLIC_IDX;
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
     public static final Index LEXEME_TYPE_IDX = Indexes0.LEXEME_TYPE_IDX;
     public static final Index LEXEME_WORD_ID_IDX = Indexes0.LEXEME_WORD_ID_IDX;
+    public static final Index LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX = Indexes0.LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX;
+    public static final Index LEXEME_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.LEXEME_ACTIVITY_LOG_LOG_ID_IDX;
     public static final Index LEXEME_DERIV_LEXEME_ID_IDX = Indexes0.LEXEME_DERIV_LEXEME_ID_IDX;
     public static final Index LEXEME_FREEFORM_FREEFORM_ID_IDX = Indexes0.LEXEME_FREEFORM_FREEFORM_ID_IDX;
     public static final Index LEXEME_FREEFORM_LEXEME_ID_IDX = Indexes0.LEXEME_FREEFORM_LEXEME_ID_IDX;
@@ -153,6 +164,8 @@ public class Indexes {
     public static final Index LEXEME_TAG_TAG_NAME_IDX = Indexes0.LEXEME_TAG_TAG_NAME_IDX;
     public static final Index LIFECYCLE_LOG_EVENT_BY_IDX = Indexes0.LIFECYCLE_LOG_EVENT_BY_IDX;
     public static final Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Indexes0.LIFECYCLE_LOG_EVENT_ON_ID_IDX;
+    public static final Index MEANING_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.MEANING_ACTIVITY_LOG_LOG_ID_IDX;
+    public static final Index MEANING_ACTIVITY_LOG_MEANING_ID_IDX = Indexes0.MEANING_ACTIVITY_LOG_MEANING_ID_IDX;
     public static final Index MEANING_DOMAIN_CODE_ORIGIN_IDX = Indexes0.MEANING_DOMAIN_CODE_ORIGIN_IDX;
     public static final Index MEANING_DOMAIN_LEXEME_ID_IDX = Indexes0.MEANING_DOMAIN_LEXEME_ID_IDX;
     public static final Index MEANING_FREEFORM_FREEFORM_ID_IDX = Indexes0.MEANING_FREEFORM_FREEFORM_ID_IDX;
@@ -169,6 +182,8 @@ public class Indexes {
     public static final Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Indexes0.MEANING_SEMANTIC_TYPE_MEANING_ID_IDX;
     public static final Index PARADIGM_WORD_ID_IDX = Indexes0.PARADIGM_WORD_ID_IDX;
     public static final Index SOURCE_TYPE_IDX = Indexes0.SOURCE_TYPE_IDX;
+    public static final Index SOURCE_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.SOURCE_ACTIVITY_LOG_LOG_ID_IDX;
+    public static final Index SOURCE_ACTIVITY_LOG_SOURCE_ID_IDX = Indexes0.SOURCE_ACTIVITY_LOG_SOURCE_ID_IDX;
     public static final Index SOURCE_FREEFORM_FREEFORM_ID_IDX = Indexes0.SOURCE_FREEFORM_FREEFORM_ID_IDX;
     public static final Index SOURCE_FREEFORM_SOURCE_ID_IDX = Indexes0.SOURCE_FREEFORM_SOURCE_ID_IDX;
     public static final Index SOURCE_LIFECYCLE_LOG_LOG_ID_IDX = Indexes0.SOURCE_LIFECYCLE_LOG_LOG_ID_IDX;
@@ -181,6 +196,8 @@ public class Indexes {
     public static final Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Indexes0.TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
+    public static final Index WORD_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.WORD_ACTIVITY_LOG_LOG_ID_IDX;
+    public static final Index WORD_ACTIVITY_LOG_WORD_ID_IDX = Indexes0.WORD_ACTIVITY_LOG_WORD_ID_IDX;
     public static final Index WORD_ETYM_ETYM_TYPE_CODE_IDX = Indexes0.WORD_ETYM_ETYM_TYPE_CODE_IDX;
     public static final Index WORD_ETYM_WORD_ID_IDX = Indexes0.WORD_ETYM_WORD_ID_IDX;
     public static final Index WORD_ETYM_REL_REL_WORD_ID_IDX = Indexes0.WORD_ETYM_REL_REL_WORD_ID_IDX;
@@ -210,6 +227,9 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index ACTIVITY_LOG_EVENT_BY_IDX = Internal.createIndex("activity_log_event_by_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.EVENT_BY }, false);
+        public static Index ACTIVITY_LOG_EVENT_ON_IDX = Internal.createIndex("activity_log_event_on_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.EVENT_ON }, false);
+        public static Index ACTIVITY_LOG_OWNER_IDX = Internal.createIndex("activity_log_owner_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.OWNER_NAME, ActivityLog.ACTIVITY_LOG.OWNER_ID }, false);
         public static Index COLLOCATION_VALUE_IDX = Internal.createIndex("collocation_value_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.VALUE }, false);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Internal.createIndex("collocation_freeform_collocation_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID }, false);
         public static Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("collocation_freeform_freeform_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, false);
@@ -264,9 +284,12 @@ public class Indexes {
         public static Index LEX_RELATION_LEXEME2_ID_IDX = Internal.createIndex("lex_relation_lexeme2_id_idx", LexRelation.LEX_RELATION, new OrderField[] { LexRelation.LEX_RELATION.LEXEME2_ID }, false);
         public static Index LEXEME_COMPLEXITY_IDX = Internal.createIndex("lexeme_complexity_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.COMPLEXITY }, false);
         public static Index LEXEME_DATASET_CODE_IDX = Internal.createIndex("lexeme_dataset_code_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.DATASET_CODE }, false);
+        public static Index LEXEME_IS_PUBLIC_IDX = Internal.createIndex("lexeme_is_public_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.IS_PUBLIC }, false);
         public static Index LEXEME_MEANING_ID_IDX = Internal.createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
         public static Index LEXEME_TYPE_IDX = Internal.createIndex("lexeme_type_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.TYPE }, false);
         public static Index LEXEME_WORD_ID_IDX = Internal.createIndex("lexeme_word_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID }, false);
+        public static Index LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX = Internal.createIndex("lexeme_activity_log_lexeme_id_idx", LexemeActivityLog.LEXEME_ACTIVITY_LOG, new OrderField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.LEXEME_ID }, false);
+        public static Index LEXEME_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("lexeme_activity_log_log_id_idx", LexemeActivityLog.LEXEME_ACTIVITY_LOG, new OrderField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
         public static Index LEXEME_DERIV_LEXEME_ID_IDX = Internal.createIndex("lexeme_deriv_lexeme_id_idx", LexemeDeriv.LEXEME_DERIV, new OrderField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID }, false);
         public static Index LEXEME_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("lexeme_freeform_freeform_id_idx", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.FREEFORM_ID }, false);
         public static Index LEXEME_FREEFORM_LEXEME_ID_IDX = Internal.createIndex("lexeme_freeform_lexeme_id_idx", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID }, false);
@@ -286,6 +309,8 @@ public class Indexes {
         public static Index LEXEME_TAG_TAG_NAME_IDX = Internal.createIndex("lexeme_tag_tag_name_idx", LexemeTag.LEXEME_TAG, new OrderField[] { LexemeTag.LEXEME_TAG.TAG_NAME }, false);
         public static Index LIFECYCLE_LOG_EVENT_BY_IDX = Internal.createIndex("lifecycle_log_event_by_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_BY }, false);
         public static Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Internal.createIndex("lifecycle_log_event_on_id_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_ON }, false);
+        public static Index MEANING_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("meaning_activity_log_log_id_idx", MeaningActivityLog.MEANING_ACTIVITY_LOG, new OrderField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
+        public static Index MEANING_ACTIVITY_LOG_MEANING_ID_IDX = Internal.createIndex("meaning_activity_log_meaning_id_idx", MeaningActivityLog.MEANING_ACTIVITY_LOG, new OrderField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.MEANING_ID }, false);
         public static Index MEANING_DOMAIN_CODE_ORIGIN_IDX = Internal.createIndex("meaning_domain_code_origin_idx", MeaningDomain.MEANING_DOMAIN, new OrderField[] { MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE, MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN }, false);
         public static Index MEANING_DOMAIN_LEXEME_ID_IDX = Internal.createIndex("meaning_domain_lexeme_id_idx", MeaningDomain.MEANING_DOMAIN, new OrderField[] { MeaningDomain.MEANING_DOMAIN.MEANING_ID }, false);
         public static Index MEANING_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("meaning_freeform_freeform_id_idx", MeaningFreeform.MEANING_FREEFORM, new OrderField[] { MeaningFreeform.MEANING_FREEFORM.FREEFORM_ID }, false);
@@ -302,6 +327,8 @@ public class Indexes {
         public static Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Internal.createIndex("meaning_semantic_type_meaning_id_idx", MeaningSemanticType.MEANING_SEMANTIC_TYPE, new OrderField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.MEANING_ID }, false);
         public static Index PARADIGM_WORD_ID_IDX = Internal.createIndex("paradigm_word_id_idx", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.WORD_ID }, false);
         public static Index SOURCE_TYPE_IDX = Internal.createIndex("source_type_idx", Source.SOURCE, new OrderField[] { Source.SOURCE.TYPE }, false);
+        public static Index SOURCE_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("source_activity_log_log_id_idx", SourceActivityLog.SOURCE_ACTIVITY_LOG, new OrderField[] { SourceActivityLog.SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
+        public static Index SOURCE_ACTIVITY_LOG_SOURCE_ID_IDX = Internal.createIndex("source_activity_log_source_id_idx", SourceActivityLog.SOURCE_ACTIVITY_LOG, new OrderField[] { SourceActivityLog.SOURCE_ACTIVITY_LOG.SOURCE_ID }, false);
         public static Index SOURCE_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("source_freeform_freeform_id_idx", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID }, false);
         public static Index SOURCE_FREEFORM_SOURCE_ID_IDX = Internal.createIndex("source_freeform_source_id_idx", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID }, false);
         public static Index SOURCE_LIFECYCLE_LOG_LOG_ID_IDX = Internal.createIndex("source_lifecycle_log_log_id_idx", SourceLifecycleLog.SOURCE_LIFECYCLE_LOG, new OrderField[] { SourceLifecycleLog.SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID }, false);
@@ -314,6 +341,8 @@ public class Indexes {
         public static Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Internal.createIndex("temp_ds_import_queue_table_name_idx", TempDsImportQueue.TEMP_DS_IMPORT_QUEUE, new OrderField[] { TempDsImportQueue.TEMP_DS_IMPORT_QUEUE.TABLE_NAME }, false);
         public static Index WORD_HOMONYM_NR_IDX = Internal.createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_LANG_IDX = Internal.createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
+        public static Index WORD_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("word_activity_log_log_id_idx", WordActivityLog.WORD_ACTIVITY_LOG, new OrderField[] { WordActivityLog.WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
+        public static Index WORD_ACTIVITY_LOG_WORD_ID_IDX = Internal.createIndex("word_activity_log_word_id_idx", WordActivityLog.WORD_ACTIVITY_LOG, new OrderField[] { WordActivityLog.WORD_ACTIVITY_LOG.WORD_ID }, false);
         public static Index WORD_ETYM_ETYM_TYPE_CODE_IDX = Internal.createIndex("word_etym_etym_type_code_idx", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.ETYMOLOGY_TYPE_CODE }, false);
         public static Index WORD_ETYM_WORD_ID_IDX = Internal.createIndex("word_etym_word_id_idx", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.WORD_ID }, false);
         public static Index WORD_ETYM_REL_REL_WORD_ID_IDX = Internal.createIndex("word_etym_rel_rel_word_id_idx", WordEtymologyRelation.WORD_ETYMOLOGY_RELATION, new OrderField[] { WordEtymologyRelation.WORD_ETYMOLOGY_RELATION.RELATED_WORD_ID }, false);

@@ -311,6 +311,8 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			searchEntity = SearchEntity.getLexEntities().get(0);
 		} else if (StringUtils.equals(TERM_SEARCH_PAGE, searchPage)) {
 			searchEntity = SearchEntity.getTermEntities().get(0);
+		} else if (StringUtils.equals(SOURCE_SEARCH_PAGE, searchPage)) {
+			searchEntity = SearchEntity.getSourceEntities().get(0);
 		}
 		searchKey = searchEntity.getKeys()[0];
 		searchOperand = searchKey.getOperands()[0];
@@ -323,6 +325,24 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		searchGroup.setSearchCriteria(asList(defaultCriterion));
 		detailSearch.setCriteriaGroups(asList(searchGroup));
 		return detailSearch;
+	}
+
+	public SearchFilter createSourceDetailSearchFilter(Long sourceId) {
+
+		SearchEntity searchEntity = SearchEntity.CLUELESS;
+		SearchKey searchKey = SearchKey.SOURCE_ID;
+		SearchOperand searchOperand = SearchOperand.EQUALS;
+
+		SearchFilter detailSearchFilter = new SearchFilter();
+		SearchCriterion criterion = new SearchCriterion();
+		criterion.setSearchKey(searchKey);
+		criterion.setSearchOperand(searchOperand);
+		criterion.setSearchValue(sourceId);
+		SearchCriterionGroup searchGroup = new SearchCriterionGroup();
+		searchGroup.setEntity(searchEntity);
+		searchGroup.setSearchCriteria(asList(criterion));
+		detailSearchFilter.setCriteriaGroups(asList(searchGroup));
+		return detailSearchFilter;
 	}
 
 	private boolean validateSearchFilter(String simpleSearchFilter, SearchFilter detailSearchFilter) {

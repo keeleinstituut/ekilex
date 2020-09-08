@@ -174,7 +174,7 @@
             <button class="btn btn-sm btn-primary" data-toggle="modal"
                     data-target="#newWordDlg"
                     th:data-meaning-id="${lexeme.meaningId}"
-                    sec:authorize="#vars.isMeaningAnyLexemeCrudGranted">Uus keelend</button>
+                    sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Uus keelend</button>
             <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
                     title="Loo uus ilmik ja tähendus"
                     th:data-lexeme-id="${lexeme.lexemeId}"

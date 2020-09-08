@@ -146,8 +146,6 @@ public interface WebConstant {
 
 	String LIFECYCLELOGVIEW_PAGE = "lifecyclelogview";
 
-	String SOURCEVIEW_PAGE = "sourceview";
-
 	String ERROR_PAGE = "error";
 
 	String LEX_CREATE_WORD_URI = "/lex_create_word";
@@ -185,6 +183,8 @@ public interface WebConstant {
 	String SOURCE_SEARCH_RESULT = "source_search_result";
 
 	String SOURCE_NAME_SEARCH_URI = "/sourcenamesearch";
+
+	String SOURCE_DETAIL_SEARCH_URI = "/sourcedetailsearch";
 
 	String UPDATE_SOURCE_PROPERTY_URI = "/update_source_property";
 

@@ -1775,6 +1775,7 @@ pos	postp	postposition	eng	descrip
 pos	prep	preposition	eng	descrip
 pos	prop	nimi	est	wordweb
 pos	prep	eessõna	est	wordweb
+pos	x	erivorm	est	wordweb
 pos	ord	järgarvsõna	est	wordweb
 pos	postp	tagasõna	est	wordweb
 pos	num	arvsõna	est	wordweb
@@ -2148,6 +2149,8 @@ word_type	av	ahelverb	est	descrip
 word_type	tv	tugiverb	est	descrip
 word_type	vlj	väljend	est	descrip
 word_type	vlj	väljend	est	wordweb
+word_type	vv	väljend	est	wordweb
+word_type	av	ahelverb	est	wordweb
 word_type	ys	ühendsidesõna (nii et)	est	descrip
 word_type	ys	sidesõna	est	wordweb
 word_type	rs	rühmsidesõna (ei .. ega)	est	descrip

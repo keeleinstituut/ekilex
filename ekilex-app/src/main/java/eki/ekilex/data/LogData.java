@@ -7,6 +7,7 @@ import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.common.data.AbstractDataObject;
 
+@Deprecated
 public class LogData extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

@@ -16,6 +16,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +29,11 @@ import org.jooq.Record3;
 import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
@@ -65,7 +67,8 @@ import eki.wordweb.data.db.tables.MviewWwWordSearch;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.service.util.JooqBugCompensator;
 
-public abstract class AbstractSearchDbService implements GlobalConstant, SystemConstant {
+@Component
+public class SearchDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -73,12 +76,8 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 	@Autowired
 	private JooqBugCompensator jooqBugCompensator;
 
-	protected abstract String[] getFilteringComplexityNames();
-
-	protected abstract Condition getWordSearchComplexityCond(MviewWwWordSearch f);
-
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, List<String> destinLangs, int maxWordCount) {
+	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, DataFilter dataFilter, int maxWordCount) {
 
 		String wordInfixLower = StringUtils.lowerCase(wordInfix);
 		String wordInfixCrit = '%' + wordInfixLower + '%';
@@ -99,8 +98,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.from(w)
 				.where(
 						w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
-								.and(w.UNACRIT.like(wordInfixCritUnaccent))
-								.and(getWordSearchComplexityCond(w)))
+								.and(w.UNACRIT.like(wordInfixCritUnaccent)))
 				.unionAll(DSL
 						.select(
 								wgf.as("sgroup"),
@@ -111,21 +109,16 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						.from(aw)
 						.where(
 								aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
-										.and(aw.UNACRIT.like(wordInfixCritUnaccent))
-										.and(getWordSearchComplexityCond(aw))))
+										.and(aw.UNACRIT.like(wordInfixCritUnaccent))))
 				.asTable("ws");
 
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), DSL.inline(wordInfixLower)));
-		Table<?> lc = DSL.unnest(ws.field("lang_complexities")).as("lc", "lang", "complexity");
-		Condition langCompWhere = lc.field("complexity", String.class).in(getFilteringComplexityNames());
-		if (CollectionUtils.isNotEmpty(destinLangs)) {
-			if (destinLangs.size() == 1) {
-				String destinLang = destinLangs.get(0);
-				langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
-			} else {
-				langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
-			}
-		}
+
+		Condition wsWhere = ws.field("crit").like(wordInfixCrit);
+		wsWhere = applyLangCompDatasetFilter(ws, dataFilter, wsWhere);
+
+		Condition fWhere = f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordInfixLower));
+		fWhere = applyLangCompDatasetFilter(f, dataFilter, fWhere);
 
 		Table<Record3<String, String, Integer>> wfs = DSL
 				.select(
@@ -133,9 +126,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						ws.field("word", String.class),
 						wlf.as("lev"))
 				.from(ws)
-				.where(
-						ws.field("crit").like(wordInfixCrit)
-								.andExists(DSL.selectFrom(lc).where(langCompWhere)))
+				.where(wsWhere)
 				.orderBy(
 						ws.field("lang_order_by"),
 						DSL.field("lev"))
@@ -146,10 +137,7 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 								f.WORD,
 								DSL.field(DSL.val(0)).as("lev"))
 						.from(f)
-						.where(
-								f.SGROUP.eq(WORD_SEARCH_GROUP_FORM)
-										.and(f.CRIT.eq(wordInfixLower))
-										.and(getWordSearchComplexityCond(f)))
+						.where(fWhere)
 						.orderBy(f.WORD)
 						.limit(maxWordCount))
 				.asTable("wfs");
@@ -164,9 +152,6 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 
 	public List<Word> getWords(String searchWord, DataFilter dataFilter) {
 
-		List<String> destinLangs = dataFilter.getDestinLangs();
-		List<String> datasetCodes = dataFilter.getDatasetCodes();
-
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
@@ -177,50 +162,33 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				.where(f.WORD_ID.eq(w.WORD_ID)
 						.and(DSL.lower(f.FORM).eq(searchWordLower))));
 
-		if (CollectionUtils.isNotEmpty(datasetCodes)) {
-			String[] datasetCodesArr = datasetCodes.toArray(new String[0]);
-			where = where.and(PostgresDSL.arrayOverlap(w.DATASET_CODES, datasetCodesArr));
-		}
-
-		Table<?> lc = DSL.unnest(w.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
-		Condition langCompWhere = lc.field("complexity", String.class).in(getFilteringComplexityNames());
-		if (CollectionUtils.isNotEmpty(destinLangs)) {
-			if (destinLangs.size() == 1) {
-				String destinLang = destinLangs.get(0);
-				langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
-			} else {
-				langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
-			}
-		}
-		where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
+		where = applyLangCompDatasetFilter(w, dataFilter, where);
 
 		return getWords(w, where);
 	}
 
-	private List<Word> getWords(MviewWwWord wordTable, Condition where) {
+	private List<Word> getWords(MviewWwWord w, Condition where) {
 
 		return create
 				.select(
-						wordTable.WORD_ID,
-						wordTable.WORD,
-						wordTable.WORD_PRESE,
-						wordTable.AS_WORD,
-						wordTable.WORD_CLASS,
-						wordTable.LANG,
-						wordTable.HOMONYM_NR,
-						wordTable.WORD_TYPE_CODES,
-						wordTable.MORPH_CODE,
-						wordTable.DISPLAY_MORPH_CODE,
-						wordTable.ASPECT_CODE,
-						wordTable.MEANING_WORDS,
-						wordTable.DEFINITIONS,
-						wordTable.OD_WORD_RECOMMENDATIONS,
-						wordTable.LEX_DATASET_EXISTS,
-						wordTable.TERM_DATASET_EXISTS,
-						wordTable.FORMS_EXIST)
-				.from(wordTable)
+						w.WORD_ID,
+						w.WORD,
+						w.WORD_PRESE,
+						w.AS_WORD,
+						w.WORD_CLASS,
+						w.LANG,
+						w.HOMONYM_NR,
+						w.WORD_TYPE_CODES,
+						w.MORPH_CODE,
+						w.DISPLAY_MORPH_CODE,
+						w.ASPECT_CODE,
+						w.MEANING_WORDS,
+						w.DEFINITIONS,
+						w.OD_WORD_RECOMMENDATIONS,
+						w.FORMS_EXIST)
+				.from(w)
 				.where(where)
-				.orderBy(wordTable.LEX_DATASET_EXISTS.desc(), wordTable.LANG_ORDER_BY, wordTable.HOMONYM_NR)
+				.orderBy(w.MIN_DS_ORDER_BY, w.LANG_ORDER_BY, w.HOMONYM_NR)
 				.fetch(record -> {
 					Word pojo = record.into(Word.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
@@ -232,13 +200,14 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
 
 		DatasetType datasetType = dataFilter.getDatasetType();
-		List<String> destinLangs = dataFilter.getDestinLangs();
 		List<String> datasetCodes = dataFilter.getDatasetCodes();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
 
-		Condition where = l.WORD_ID.eq(wordId).and(l.COMPLEXITY.in(getFilteringComplexityNames()));
+		Condition where = l.WORD_ID.eq(wordId).and(l.COMPLEXITY.in(complexityNames));
 		if (datasetType != null) {
 			where = where.and(l.DATASET_TYPE.eq(datasetType.name()));
 		}
@@ -247,20 +216,10 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				String datasetCode = datasetCodes.get(0);
 				where = where.and(l.DATASET_CODE.eq(datasetCode));
 			} else {
-				where = where.and(l.DATASET_CODE.in(datasetCodes));				
+				where = where.and(l.DATASET_CODE.in(datasetCodes));
 			}
 		}
-		Table<?> lc = DSL.unnest(l.LANG_COMPLEXITIES).as("lc", "lang", "complexity");
-		Condition langCompWhere = lc.field("complexity", String.class).in(getFilteringComplexityNames());
-		if (CollectionUtils.isNotEmpty(destinLangs)) {
-			if (destinLangs.size() == 1) {
-				String destinLang = destinLangs.get(0);
-				langCompWhere = langCompWhere.and(lc.field("lang", String.class).eq(destinLang));
-			} else {
-				langCompWhere = langCompWhere.and(lc.field("lang", String.class).in(destinLangs));
-			}
-		}
-		where = where.andExists(DSL.selectFrom(lc).where(langCompWhere));
+		where = applyLangCompDatasetFilter(l, dataFilter, where);
 
 		return getLexemes(l, lr, where);
 	}
@@ -316,6 +275,40 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 				});
 	}
 
+	private List<String> composeFilteringComplexityNames(Complexity lexComplexity) {
+		return Arrays.asList(Complexity.ANY.name(), lexComplexity.name());
+	}
+
+	private Condition applyLangCompDatasetFilter(Table<?> lcTable, DataFilter dataFilter, Condition where) {
+
+		List<String> destinLangs = dataFilter.getDestinLangs();
+		List<String> datasetCodes = dataFilter.getDatasetCodes();
+		Complexity lexComplexity = dataFilter.getLexComplexity();
+		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
+
+		Table<?> lc = DSL.unnest(lcTable.field("lang_complexities")).as("lc", "lang", "dataset_code", "lex_complexity", "data_complexity");
+		Condition lcWhere = lc.field("lex_complexity", String.class).in(complexityNames)
+				.and(lc.field("data_complexity", String.class).in(complexityNames));
+		if (CollectionUtils.isNotEmpty(destinLangs)) {
+			if (destinLangs.size() == 1) {
+				String destinLang = destinLangs.get(0);
+				lcWhere = lcWhere.and(lc.field("lang", String.class).eq(destinLang));
+			} else {
+				lcWhere = lcWhere.and(lc.field("lang", String.class).in(destinLangs));
+			}
+		}
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			if (datasetCodes.size() == 1) {
+				String datasetCode = datasetCodes.get(0);
+				lcWhere = lcWhere.and(lc.field("dataset_code", String.class).eq(datasetCode));
+			} else {
+				lcWhere = lcWhere.and(lc.field("dataset_code", String.class).in(datasetCodes));
+			}
+		}
+		where = where.andExists(DSL.selectFrom(lc).where(lcWhere));
+		return where;
+	}
+
 	public Word getWord(Long wordId) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
@@ -338,8 +331,6 @@ public abstract class AbstractSearchDbService implements GlobalConstant, SystemC
 						w.DEFINITIONS,
 						wesl.SOURCE_LINKS.as("word_etym_source_links"),
 						w.OD_WORD_RECOMMENDATIONS,
-						w.LEX_DATASET_EXISTS,
-						w.TERM_DATASET_EXISTS,
 						w.FORMS_EXIST)
 				.from(w.leftOuterJoin(wesl).on(wesl.WORD_ID.eq(wordId)))
 				.where(w.WORD_ID.eq(wordId))

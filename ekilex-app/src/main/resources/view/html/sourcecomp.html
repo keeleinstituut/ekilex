@@ -3,7 +3,7 @@
 <head></head>
 <body>
   <div th:id="${'sourceSearchResult_' + source.id}" th:fragment="source_search_result">
-    <div class="col-auto form-inline" >
+    <div class="col-auto form-inline">
       <div class="ml-auto">
         <button type="button" class="btn badge badge-success float-right"
                 title="Lisa allikale uus atribuut"
@@ -15,7 +15,7 @@
       </div>
       <div class="ml-2">
         <form th:action="@{/source_join}" method="post">
-          <input type="hidden" name="previousSearch" th:value="${searchFilter}">
+          <input type="hidden" name="previousSearch" th:value="${simpleSearchFilter}">
           <input type="hidden" name="sourceId" th:value="${source.id}">
           <button type="submit" class="btn btn-primary btn-sm" sec:authorize="#vars.source.crudGrant">Ühenda</button>
         </form>
@@ -26,11 +26,18 @@
                 data-toggle="delete-source-confirm"
                 sec:authorize="#vars.source.crudGrant">Eemalda allikas</button>
       </div>
+      <div class="dropdown">
+        <button class="btn btn-secondary btn-sm ml-4" id="detailSearchButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Otsi viiteid</button>
+        <div class="dropdown-menu" aria-labelledby="detailSearchButton">
+          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" th:href="@{'/sourcedetailsearch/lexsearch/' + ${source.id}}">Leks otsing</a>
+          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" th:href="@{'/sourcedetailsearch/termsearch/' + ${source.id}}">Term otsing</a>
+        </div>
+      </div>
       <a th:href="@{'/sourcelifecyclelog:' + ${source.id}}"
          data-toggle="modal"
          data-target="#sourceLifecycleLogDlg"
-         class="btn btn-secondary btn-sm ml-4"
-         sec:authorize="${#authentication.principal.datasetPermissionsExist}">Logi</a>
+         class="btn btn-secondary btn-sm ml-2"
+         sec:authorize="${#authentication.principal.datasetPermissionsExist}">Tegevuste logi</a>
     </div>
     <table class="w-100">
       <tr>
@@ -178,14 +185,14 @@
       </table>
     </div>
     <script th:inline="javascript">
-    	$('[data-toggle=join-confirm]').confirmation({
-    		btnOkLabel : 'Jah',
-    		btnCancelLabel : 'Ei',
-    		title : 'Kas olete kindel, et soovite allikad ühendada?',
-    		onConfirm : function() {
-    			$(this).closest('form').submit();
-    		}
-    	});
+      $('[data-toggle=join-confirm]').confirmation({
+        btnOkLabel: 'Jah',
+        btnCancelLabel: 'Ei',
+        title: 'Kas olete kindel, et soovite allikad ühendada?',
+        onConfirm: function() {
+          $(this).closest('form').submit();
+        }
+      });
     </script>
   </th:block>
 </body>

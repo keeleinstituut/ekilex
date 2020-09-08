@@ -2,12 +2,10 @@ $(document).ready(function () {
 
 	initialiseRecording(speechRecognitionServiceUrl);
 
-
 	var selectedHomonymItem = getSelectedHomonym();
 	selectedHomonymItem.delay(500).queue(function () {}).trigger('click');
 	selectedHomonymItem.addClass("animation-target");
 	setSelectedHomonymValueForMobile(getSelectedHomonym().html());
-
 
 	var searchWordAutocompleteMenuRenderer = function (ul, items) {
 		var self = this;
@@ -40,8 +38,7 @@ $(document).ready(function () {
 	var searchWordAutocompleteConfig = {
 		source: function (request, response) {
 			var wordFrag = request.term;
-			var destinLangsStr = $("input[name='destinLangsStr']").val();
-			var searchWordFragUrlWithParams = searchWordFragUrl + "/" + destinLangsStr + "/" + wordFrag;
+			var searchWordFragUrlWithParams = searchWordFragUrl + "/" + wordFrag;
 			$.ajax({
 				url: searchWordFragUrlWithParams,
 				type: "GET",

@@ -12,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -26,7 +25,6 @@ import eki.ekilex.data.StatDataRow;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserProfileService;
 import eki.ekilex.service.UserService;
-import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller

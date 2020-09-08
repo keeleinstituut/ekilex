@@ -66,10 +66,7 @@ public class Indexes {
     public static final Index MVIEW_WW_MEANING_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_MEANING_ID_IDX;
     public static final Index MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK_WORD_ID_IDX = Indexes0.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK_WORD_ID_IDX;
     public static final Index MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX;
-    public static final Index MVIEW_WW_WORD_DATASET_CODES_GIN_IDX = Indexes0.MVIEW_WW_WORD_DATASET_CODES_GIN_IDX;
     public static final Index MVIEW_WW_WORD_LANG_IDX = Indexes0.MVIEW_WW_WORD_LANG_IDX;
-    public static final Index MVIEW_WW_WORD_LEX_DATASET_EXISTS_IDX = Indexes0.MVIEW_WW_WORD_LEX_DATASET_EXISTS_IDX;
-    public static final Index MVIEW_WW_WORD_TERM_DATASET_EXISTS_IDX = Indexes0.MVIEW_WW_WORD_TERM_DATASET_EXISTS_IDX;
     public static final Index MVIEW_WW_WORD_VALUE_IDX = Indexes0.MVIEW_WW_WORD_VALUE_IDX;
     public static final Index MVIEW_WW_WORD_VALUE_PREFIX_IDX = Indexes0.MVIEW_WW_WORD_VALUE_PREFIX_IDX;
     public static final Index MVIEW_WW_WORD_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_WORD_ID_IDX;
@@ -78,9 +75,7 @@ public class Indexes {
     public static final Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_RELATION_WORD_ID_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_CRIT_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_CRIT_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX;
-    public static final Index MVIEW_WW_WORD_SEARCH_DETAIL_EXISTS_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_DETAIL_EXISTS_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_SGROUP_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_SGROUP_IDX;
-    public static final Index MVIEW_WW_WORD_SEARCH_SIMPLE_EXISTS_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_SIMPLE_EXISTS_IDX;
     public static final Index MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX = Indexes0.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX;
     public static final Index SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX;
     public static final Index SIMILARITY_JUDGEMENT_DATA_LANG_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_LANG_IDX;
@@ -123,10 +118,7 @@ public class Indexes {
         public static Index MVIEW_WW_MEANING_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_meaning_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.MEANING_ID }, false);
         public static Index MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK_WORD_ID_IDX = Internal.createIndex("mview_ww_meaning_freeform_source_link_word_id_idx", MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK, new OrderField[] { MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK.MEANING_ID }, false);
         public static Index MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_relation_meaning_id_idx", MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION, new OrderField[] { MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION.MEANING_ID }, false);
-        public static Index MVIEW_WW_WORD_DATASET_CODES_GIN_IDX = Internal.createIndex("mview_ww_word_dataset_codes_gin_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.DATASET_CODES }, false);
         public static Index MVIEW_WW_WORD_LANG_IDX = Internal.createIndex("mview_ww_word_lang_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.LANG }, false);
-        public static Index MVIEW_WW_WORD_LEX_DATASET_EXISTS_IDX = Internal.createIndex("mview_ww_word_lex_dataset_exists_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.LEX_DATASET_EXISTS }, false);
-        public static Index MVIEW_WW_WORD_TERM_DATASET_EXISTS_IDX = Internal.createIndex("mview_ww_word_term_dataset_exists_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.TERM_DATASET_EXISTS }, false);
         public static Index MVIEW_WW_WORD_VALUE_IDX = Internal.createIndex("mview_ww_word_value_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD }, false);
         public static Index MVIEW_WW_WORD_VALUE_PREFIX_IDX = Internal.createIndex("mview_ww_word_value_prefix_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD }, false);
         public static Index MVIEW_WW_WORD_WORD_ID_IDX = Internal.createIndex("mview_ww_word_word_id_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD_ID }, false);
@@ -135,9 +127,7 @@ public class Indexes {
         public static Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Internal.createIndex("mview_ww_word_relation_word_id_idx", MviewWwWordRelation.MVIEW_WW_WORD_RELATION, new OrderField[] { MviewWwWordRelation.MVIEW_WW_WORD_RELATION.WORD_ID }, false);
         public static Index MVIEW_WW_WORD_SEARCH_CRIT_IDX = Internal.createIndex("mview_ww_word_search_crit_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.CRIT }, false);
         public static Index MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX = Internal.createIndex("mview_ww_word_search_crit_prefix_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.CRIT }, false);
-        public static Index MVIEW_WW_WORD_SEARCH_DETAIL_EXISTS_IDX = Internal.createIndex("mview_ww_word_search_detail_exists_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.DETAIL_EXISTS }, false);
         public static Index MVIEW_WW_WORD_SEARCH_SGROUP_IDX = Internal.createIndex("mview_ww_word_search_sgroup_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.SGROUP }, false);
-        public static Index MVIEW_WW_WORD_SEARCH_SIMPLE_EXISTS_IDX = Internal.createIndex("mview_ww_word_search_simple_exists_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.SIMPLE_EXISTS }, false);
         public static Index MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX = Internal.createIndex("mview_ww_word_search_unacrit_tri_idx", MviewWwWordSearch.MVIEW_WW_WORD_SEARCH, new OrderField[] { MviewWwWordSearch.MVIEW_WW_WORD_SEARCH.UNACRIT }, false);
         public static Index SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX = Internal.createIndex("similarity_judgement_data_dataset_code_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.DATASET_CODE }, false);
         public static Index SIMILARITY_JUDGEMENT_DATA_LANG_IDX = Internal.createIndex("similarity_judgement_data_lang_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.LANG }, false);

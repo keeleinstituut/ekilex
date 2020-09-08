@@ -32,7 +32,7 @@ import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
-import eki.wordweb.service.db.AbstractSearchDbService;
+import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.CollocConversionUtil;
@@ -42,6 +42,9 @@ import eki.wordweb.service.util.ParadigmConversionUtil;
 import eki.wordweb.service.util.WordConversionUtil;
 
 public abstract class AbstractSearchService implements SystemConstant, WebConstant, GlobalConstant {
+
+	@Autowired
+	protected SearchDbService searchDbService;
 
 	@Autowired
 	protected CommonDataDbService commonDataDbService;
@@ -67,20 +70,15 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	@Autowired
 	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
-	public abstract AbstractSearchDbService getSearchDbService();
-
 	public abstract DataFilter getDataFilter(SearchFilter searchFilter);
 
 	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang);
 
 	@Transactional
-	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, List<String> destinLangs, int limit) {
+	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, SearchFilter searchFilter, int limit) {
 
-		AbstractSearchDbService searchDbService = getSearchDbService();
-		if (CollectionUtils.isNotEmpty(destinLangs)) {
-			destinLangs = destinLangs.stream().filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL)).collect(Collectors.toList());
-		}
-		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, destinLangs, limit);
+		DataFilter dataFilter = getDataFilter(searchFilter);
+		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, dataFilter, limit);
 		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
 		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
 		if (CollectionUtils.isEmpty(wordGroup)) {
@@ -111,7 +109,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		Integer homonymNr = searchFilter.getHomonymNr();
 
 		DataFilter dataFilter = getDataFilter(searchFilter);
-		AbstractSearchDbService searchDbService = getSearchDbService();
 		List<Word> allWords = searchDbService.getWords(searchWord, dataFilter);
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
@@ -133,7 +130,6 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 	protected void compensateNullWords(Long wordId, List<CollocationTuple> collocTuples) {
 
-		AbstractSearchDbService searchDbService = getSearchDbService();
 		for (CollocationTuple tuple : collocTuples) {
 			List<TypeCollocMember> collocMembers = tuple.getCollocMembers();
 			for (TypeCollocMember collocMem : collocMembers) {

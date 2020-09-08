@@ -8,14 +8,16 @@ public enum SearchEntity {
 
 	HEADWORD(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
+	TERM(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.TAG, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
-	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID}),
+	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.TAG}),
 	CONCEPT(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	CONCEPT_ID(new SearchKey[] {SearchKey.ID}),
-	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF})
+	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID}),
+	SOURCE(new SearchKey[] {SearchKey.VALUE, SearchKey.DATASET_USAGE, SearchKey.CREATED_BY, SearchKey.CREATED_ON, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON})
 	;
 
 	private SearchKey[] keys;
@@ -29,10 +31,14 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getLexEntities() {
-		return asList(HEADWORD, WORD, FORM, MEANING, DEFINITION, USAGE);
+		return asList(HEADWORD, WORD, FORM, MEANING, DEFINITION, USAGE, CLUELESS);
 	}
 
 	public static List<SearchEntity> getTermEntities() {
-		return asList(WORD, CONCEPT, DEFINITION, USAGE, NOTE, CONCEPT_ID, CLUELESS);
+		return asList(TERM, CONCEPT, DEFINITION, USAGE, NOTE, CONCEPT_ID, CLUELESS);
+	}
+
+	public static List<SearchEntity> getSourceEntities() {
+		return asList(SOURCE);
 	}
 }

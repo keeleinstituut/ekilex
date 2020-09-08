@@ -18,6 +18,8 @@ public interface GlobalConstant {
 
 	String LEXEME_TYPE_PRIMARY = LexemeType.PRIMARY.name();
 
+	String LEXEME_TYPE_SECONDARY = LexemeType.SECONDARY.name();
+
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
 
 	String DATASET_TYPE_TERM = DatasetType.TERM.name();
@@ -31,6 +33,16 @@ public interface GlobalConstant {
 	String[] WORD_TYPE_CODES_ABBREVIATION = new String[] {"l", "th"};
 
 	String[] WORD_TYPE_CODES_FOREIGN = new String[] {"z", "lz"};
+
+	String WORD_REL_TYPE_CODE_ASCPECTS = "ASPECTS";
+
+	String WORD_REL_TYPE_CODE_DERIVATIVE_BASE = "deriv_base";
+
+	String WORD_REL_TYPE_CODE_RAW = "raw";
+
+	String WORD_REL_TYPE_CODE_COMP = "ühend";
+
+	String[] PRIMARY_WORD_REL_TYPE_CODES = new String[] {WORD_REL_TYPE_CODE_COMP, WORD_REL_TYPE_CODE_RAW};
 
 	char DISPLAY_FORM_STRESS_SYMBOL = '"';
 

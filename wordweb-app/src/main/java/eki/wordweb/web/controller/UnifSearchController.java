@@ -113,13 +113,16 @@ public class UnifSearchController extends AbstractController {
 		return UNIF_SEARCH_PAGE;
 	}
 
-	@GetMapping(value = SEARCH_WORD_FRAG_URI + UNIF_URI + "/{destinLangs}/{wordFrag}", produces = "application/json;charset=UTF-8")
+	@GetMapping(value = SEARCH_WORD_FRAG_URI + UNIF_URI + "/{wordFrag}", produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public Map<String, List<String>> searchWordsByFragment(
-			@PathVariable(name = "destinLangs") String destinLangsStr,
-			@PathVariable("wordFrag") String wordFragment) {
+			@PathVariable("wordFrag") String wordFragment,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		return unifSearchService.getWordsByInfixLev(wordFragment, null, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		List<String> destinLangs = sessionBean.getDestinLangs();
+		List<String> datasetCodes = sessionBean.getDatasetCodes();
+		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
+		return unifSearchService.getWordsByInfixLev(wordFragment, searchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
 	}
 
 	@GetMapping(WORD_DETAILS_URI + UNIF_URI + "/{wordId}")

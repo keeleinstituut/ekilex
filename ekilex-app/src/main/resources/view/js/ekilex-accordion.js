@@ -34,6 +34,12 @@ class EkiAccordion {
     target.toggleClass(this.selectors.active.substr(1));
     const active = target.is(this.selectors.active);
     this.saveState(slug, active);
+
+    toggleDataExistsBadge(target);
+    let targetInnerInstances = target.find('.ekiAccordion__instance');
+    targetInnerInstances.each(function () {
+      toggleDataExistsBadge($(this));
+    });
   }
 
   bindElements() {
@@ -96,6 +102,16 @@ class EkiAccordion {
   initialize() {
     this.bindElements();
     this.bindResize();
+  }
+}
+
+function toggleDataExistsBadge(target) {
+  let isActive = target.hasClass("ekiAccordion__instance--active");
+  let dataExistsBadge = target.find('.badge-data-exists');
+  if (isActive) {
+    dataExistsBadge.hide();
+  } else {
+    dataExistsBadge.show();
   }
 }
 

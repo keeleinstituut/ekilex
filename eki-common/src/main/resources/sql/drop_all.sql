@@ -147,3 +147,8 @@ drop table if exists lifecycle_log;
 drop table if exists eki_user_application;
 drop table if exists eki_user;
 drop table if exists tag;
+drop table if exists lexeme_activity_log;
+drop table if exists word_activity_log;
+drop table if exists meaning_activity_log;
+drop table if exists activity_log;
+drop type if exists type_activity_log_diff;

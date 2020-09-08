@@ -9,15 +9,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -73,9 +78,13 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordRelationDetails;
 
 @Component
 public class ConversionUtil implements GlobalConstant {
+
+	@Autowired
+	private MessageSource messageSource;
 
 	public static String getClassifierValue(String code, List<Classifier> classifiers) {
 		Optional<Classifier> classifier = classifiers.stream().filter(c -> c.getCode().equals(code)).findFirst();
@@ -408,8 +417,15 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<LexemeLangGroup> composeLexemeLangGroups(List<Lexeme> lexemes, List<ClassifierSelect> languagesOrder) {
 
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<String> langCodeOrder;
+		List<String> selectedLangCodes;
+		if (CollectionUtils.isEmpty(languagesOrder)) {
+			langCodeOrder = lexemes.stream().map(lexeme -> lexeme.getWord().getLang()).distinct().collect(Collectors.toList());
+			selectedLangCodes = new ArrayList<>();
+		} else {
+			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		}
 		List<LexemeLangGroup> lexemeLangGroups = new ArrayList<>();
 		Map<String, LexemeLangGroup> lexemeLangGroupMap = new HashMap<>();
 		List<Lexeme> lexemesOrderBy = lexemes.stream().sorted(Comparator.comparing(Lexeme::getOrderBy)).collect(Collectors.toList());
@@ -443,8 +459,15 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<NoteLangGroup> composeNoteLangGroups(List<? extends Note> notes, List<ClassifierSelect> languagesOrder) {
 
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<String> langCodeOrder;
+		List<String> selectedLangCodes;
+		if (CollectionUtils.isEmpty(languagesOrder)) {
+			langCodeOrder = notes.stream().map(Note::getLang).distinct().collect(Collectors.toList());
+			selectedLangCodes = new ArrayList<>();
+		} else {
+			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		}
 		List<NoteLangGroup> noteLangGroups = new ArrayList<>();
 		Map<String, NoteLangGroup> noteLangGroupMap = new HashMap<>();
 		List<Note> notesOrderBy = notes.stream().sorted(Comparator.comparing(Note::getOrderBy)).collect(Collectors.toList());
@@ -558,15 +581,20 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<DefinitionLangGroup> composeMeaningDefinitionLangGroups(List<Definition> definitions, List<ClassifierSelect> languagesOrder) {
 
-		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
-		if (languagesOrder == null) {
-			return definitionLangGroups;
+		List<String> langCodeOrder;
+		List<String> selectedLangCodes;
+		if (CollectionUtils.isEmpty(languagesOrder)) {
+			langCodeOrder = definitions.stream().map(Definition::getLang).distinct().collect(Collectors.toList());
+			selectedLangCodes = new ArrayList<>();
+		} else {
+			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
 		}
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
 		Map<String, DefinitionLangGroup> definitionLangGroupMap = new HashMap<>();
+		List<Definition> definitionsOrderBy = definitions.stream().sorted(Comparator.comparing(Definition::getOrderBy)).collect(Collectors.toList());
 
-		for (Definition definition : definitions) {
+		for (Definition definition : definitionsOrderBy) {
 			String lang = definition.getLang();
 			DefinitionLangGroup definitionLangGroup = definitionLangGroupMap.get(lang);
 			if (definitionLangGroup == null) {
@@ -604,6 +632,87 @@ public class ConversionUtil implements GlobalConstant {
 			groups.add(wordGroup);
 		}
 		return groups;
+	}
+
+	public WordRelationDetails composeWordRelationDetails(List<Relation> wordRelations, List<WordGroup> wordGroups, String wordLang, List<Classifier> allWordRelationTypes) {
+
+		WordRelationDetails wordRelationDetails = new WordRelationDetails();
+		wordRelationDetails.setWordRelations(wordRelations);
+		wordRelationDetails.setWordGroups(wordGroups);
+		wordRelationDetails.setPrimaryWordRelationGroups(new ArrayList<>());
+		wordRelationDetails.setSecondaryWordRelationGroups(new ArrayList<>());
+
+		if (CollectionUtils.isEmpty(wordRelations)) {
+			return wordRelationDetails;
+		}
+
+		Map<String, List<Relation>> wordRelationsMap = wordRelations.stream().collect(groupingBy(Relation::getRelTypeCode));
+
+		for (Classifier wordRelationType : allWordRelationTypes) {
+			String relTypeCode = wordRelationType.getCode();
+			String relTypeLabel = wordRelationType.getValue();
+			List<Relation> relatedWordsOfType = wordRelationsMap.get(relTypeCode);
+			if (relatedWordsOfType == null) {
+				continue;
+			}
+
+			List<WordGroup> wordRelationGroups;
+			if (ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, relTypeCode)) {
+				wordRelationGroups = wordRelationDetails.getPrimaryWordRelationGroups();
+				handleWordRelType(relTypeCode, relTypeLabel, relatedWordsOfType, wordRelationGroups, wordLang);
+			} else if (CollectionUtils.isNotEmpty(relatedWordsOfType)) {
+				wordRelationGroups = wordRelationDetails.getSecondaryWordRelationGroups();
+				handleWordRelType(relTypeCode, relTypeLabel, relatedWordsOfType, wordRelationGroups, wordLang);
+			}
+		}
+
+		boolean groupRelationExists = CollectionUtils.isNotEmpty(wordRelationDetails.getSecondaryWordRelationGroups())
+				|| CollectionUtils.isNotEmpty(wordRelationDetails.getWordGroups());
+		boolean anyRelationExists = groupRelationExists
+				|| CollectionUtils.isNotEmpty(wordRelationDetails.getPrimaryWordRelationGroups());
+
+		wordRelationDetails.setGroupRelationExists(groupRelationExists);
+		wordRelationDetails.setAnyRelationExists(anyRelationExists);
+		return wordRelationDetails;
+	}
+
+	private void handleWordRelType(String relTypeCode, String relTypeLabel, List<Relation> wordRelations, List<WordGroup> wordRelationGroups, String wordLang) {
+
+		WordGroup wordRelationGroup;
+		if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, relTypeCode)) {
+			Locale locale = LocaleContextHolder.getLocale();
+			String synLabel = messageSource.getMessage("classifier.word_rel_type.raw.syn", new Object[0], locale);
+			String matchLabel = messageSource.getMessage("classifier.word_rel_type.raw.match", new Object[0], locale);
+			List<Relation> wordRelationSyns = null;
+			List<Relation> wordRelationMatches = null;
+			if (CollectionUtils.isNotEmpty(wordRelations)) {
+				Map<Boolean, List<Relation>> wordRelationSynOrMatchMap = wordRelations.stream()
+						.collect(Collectors.groupingBy(wordRelation -> StringUtils.equals(wordLang, wordRelation.getWordLang())));
+				wordRelationSyns = wordRelationSynOrMatchMap.get(Boolean.TRUE);
+				wordRelationMatches = wordRelationSynOrMatchMap.get(Boolean.FALSE);
+			}
+
+			// raw rel syn group
+			if (wordRelationSyns != null) {
+				wordRelationGroup = new WordGroup();
+				wordRelationGroup.setGroupTypeLabel(synLabel);
+				wordRelationGroup.setMembers(wordRelationSyns);
+				wordRelationGroups.add(wordRelationGroup);
+			}
+
+			// raw rel match group w lang grouping
+			if (wordRelationMatches != null) {
+				wordRelationGroup = new WordGroup();
+				wordRelationGroup.setGroupTypeLabel(matchLabel);
+				wordRelationGroup.setMembers(wordRelationMatches);
+				wordRelationGroups.add(wordRelationGroup);
+			}
+		} else {
+			wordRelationGroup = new WordGroup();
+			wordRelationGroup.setGroupTypeLabel(relTypeLabel);
+			wordRelationGroup.setMembers(wordRelations);
+			wordRelationGroups.add(wordRelationGroup);
+		}
 	}
 
 	public List<WordEtym> composeWordEtymology(List<WordEtymTuple> wordEtymTuples) {

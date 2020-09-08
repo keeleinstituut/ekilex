@@ -22,6 +22,7 @@ import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.TAG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -56,6 +57,7 @@ import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
@@ -529,6 +531,35 @@ public class CudDbService extends AbstractDataDbService {
 		}
 	}
 
+	public void adjustWordSecondaryLexemesComplexity(Long wordId) {
+
+		Lexeme lp = LEXEME.as("lp");
+		Lexeme ls = LEXEME.as("ls");
+		Field<String> complDetail = DSL.field(DSL.val(Complexity.DETAIL.name()));
+		Field<String> complAny = DSL.field(DSL.val(Complexity.ANY.name()));
+
+		Table<Record2<Long, String>> lc = DSL
+				.select(
+						ls.ID.as("lex_id"),
+						DSL.when(complDetail.eq(DSL.all(DSL.arrayAgg(lp.COMPLEXITY))), complDetail).otherwise(complAny).as("lex_compl"))
+				.from(ls, lp)
+				.where(
+						lp.WORD_ID.eq(wordId)
+								.and(lp.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(lp.IS_PUBLIC.isTrue())
+								.and(ls.WORD_ID.eq(lp.WORD_ID))
+								.and(ls.TYPE.eq(LEXEME_TYPE_SECONDARY)))
+				.groupBy(ls.ID)
+				.asTable("lc");
+
+		create
+				.update(LEXEME)
+				.set(LEXEME.COMPLEXITY, lc.field("lex_compl", String.class))
+				.from(lc)
+				.where(LEXEME.ID.eq(lc.field("lex_id", Long.class)))
+				.execute();
+	}
+
 	public WordLexemeMeaningIdTuple createWordAndLexeme(
 			String value, String valuePrese, String valueAsWord, String lang, String morphCode, String dataset, boolean isPublic, Long meaningId) {
 
@@ -992,6 +1023,30 @@ public class CudDbService extends AbstractDataDbService {
 					.getId();
 		}
 		return lexemeTagId;
+	}
+
+	public List<String> createLexemeAutomaticTags(Long lexemeId) {
+
+		LexemeTag lt = LEXEME_TAG.as("lt");
+		Tag t = TAG.as("t");
+
+		List<String> createdTagNames = create
+				.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
+				.select(DSL
+						.select(DSL.val(lexemeId), t.NAME)
+						.from(t)
+						.where(
+								t.SET_AUTOMATICALLY.isTrue()
+										.andNotExists(DSL
+												.select(lt.ID)
+												.from(lt)
+												.where(lt.LEXEME_ID.eq(lexemeId)
+														.and(lt.TAG_NAME.eq(t.NAME))))))
+				.returning(LEXEME_TAG.TAG_NAME)
+				.fetch()
+				.map(LexemeTagRecord::getTagName);
+
+		return createdTagNames;
 	}
 
 	public Long createLexemeDeriv(Long lexemeId, String derivCode) {

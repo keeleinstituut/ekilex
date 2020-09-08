@@ -10,6 +10,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
+import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record17;
+import org.jooq.Record19;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -38,6 +39,7 @@ import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
@@ -46,11 +48,12 @@ import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 @Component
 public class SynSearchDbService extends AbstractSearchDbService {
 
-	public List<Relation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
+	public List<Relation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		WordRelation oppr = WORD_RELATION.as("oppr");
 		WordRelationParam rp = WORD_RELATION_PARAM.as("rp");
+		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 		Paradigm p2 = PARADIGM.as("p2");
@@ -110,8 +113,10 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record17<Long, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
+		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
 				r.ID,
+				r.WORD_REL_TYPE_CODE.as("rel_type_code"),
+				rtl.VALUE.as("rel_type_label"),
 				r.RELATION_STATUS,
 				oppr.RELATION_STATUS.as("opposite_relation_status"),
 				relp.as("relation_params"),
@@ -135,12 +140,16 @@ public class SynSearchDbService extends AbstractSearchDbService {
 						.leftOuterJoin(oppr).on(
 								oppr.WORD1_ID.eq(r.WORD2_ID)
 										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
-										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE))))
+										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE)))
+						.leftOuterJoin(rtl).on(
+								r.WORD_REL_TYPE_CODE.eq(rtl.CODE)
+										.and(rtl.LANG.eq(classifierLabelLang)
+												.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(
 						r.WORD1_ID.eq(wordId)
 								.and(r.WORD_REL_TYPE_CODE.eq(relationType))
 								.and(w2.LANG.in(wordLangs)))
-				.groupBy(r.ID, w2.ID, oppr.RELATION_STATUS)
+				.groupBy(r.ID, rtl.VALUE, w2.ID, oppr.RELATION_STATUS)
 				.asTable("r");
 
 		Field<Boolean> rwhe = DSL
@@ -160,6 +169,8 @@ public class SynSearchDbService extends AbstractSearchDbService {
 
 		return create.select(
 				rr.field("id"),
+				rr.field("rel_type_code"),
+				rr.field("rel_type_label"),
 				rr.field("relation_status"),
 				rr.field("opposite_relation_status"),
 				rr.field("relation_params"),

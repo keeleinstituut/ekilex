@@ -378,6 +378,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				w.HOMONYM_NR,
 				w.LANG,
 				w.WORD_CLASS,
+				w.MORPH_CODE,
 				w.GENDER_CODE,
 				w.ASPECT_CODE,
 				wtf.as("word_type_codes"),

@@ -156,7 +156,7 @@ public class LookupService extends AbstractWordSearchService {
 		WordsResult words = getWords(wordValue, Collections.emptyList(), userRole, tagNames, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		for (Word word : words.getWords()) {
-			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
+			List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			boolean lexemeAlreadyExists = false;
 			if (sourceMeaningId != null) {
 				lexemeAlreadyExists = lexemes.stream().anyMatch(lexeme -> lexeme.getMeaningId().equals(sourceMeaningId));
@@ -223,7 +223,7 @@ public class LookupService extends AbstractWordSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		Word word = lexSearchDbService.getWord(wordId);
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
+		List<WordLexeme> lexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 
@@ -257,7 +257,7 @@ public class LookupService extends AbstractWordSearchService {
 					if ((wordHomonymNumber != null) && !word.getHomonymNr().equals(wordHomonymNumber)) {
 						continue;
 					}
-					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, classifierLabelLang, classifierLabelTypeDescrip);
+					List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(word.getWordId(), searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 					wordLexemes.removeIf(lex -> lex.getMeaningId().equals(excludedMeaningId));
 					wordLexemes.forEach(lexeme -> {
 						Long lexemeId = lexeme.getLexemeId();

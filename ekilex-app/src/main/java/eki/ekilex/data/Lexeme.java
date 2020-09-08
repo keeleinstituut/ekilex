@@ -154,10 +154,12 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.lexemeValueStateCode = lexemeValueStateCode;
 	}
 
+	@Override
 	public List<String> getTags() {
 		return tags;
 	}
 
+	@Override
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}

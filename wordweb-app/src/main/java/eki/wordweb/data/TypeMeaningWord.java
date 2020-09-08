@@ -3,6 +3,7 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.LexemeType;
 import eki.common.data.Classifier;
 
 public class TypeMeaningWord extends WordTypeData implements ComplexityType {
@@ -16,6 +17,8 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 	private Long mwLexemeId;
 
 	private Complexity mwLexComplexity;
+
+	private LexemeType mwLexType;
 
 	private Float mwLexWeight;
 
@@ -66,6 +69,14 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	public void setMwLexComplexity(Complexity mwLexComplexity) {
 		this.mwLexComplexity = mwLexComplexity;
+	}
+
+	public LexemeType getMwLexType() {
+		return mwLexType;
+	}
+
+	public void setMwLexType(LexemeType mwLexType) {
+		this.mwLexType = mwLexType;
 	}
 
 	public Float getMwLexWeight() {

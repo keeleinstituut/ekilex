@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
@@ -49,6 +50,7 @@ import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
@@ -60,6 +62,7 @@ import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
@@ -82,6 +85,7 @@ import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.SemanticType;
 import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.Tag;
@@ -111,6 +115,7 @@ import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.ViewWwWordSearch;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
@@ -127,6 +132,7 @@ import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.tables.WordWordType;
+import eki.ekilex.data.db.udt.TypeActivityLogDiff;
 import eki.ekilex.data.db.udt.TypeClassifier;
 import eki.ekilex.data.db.udt.TypeCollocMember;
 import eki.ekilex.data.db.udt.TypeDefinition;
@@ -160,12 +166,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1536201951;
+    private static final long serialVersionUID = 1809654036;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.activity_log</code>.
+     */
+    public final ActivityLog ACTIVITY_LOG = ActivityLog.ACTIVITY_LOG;
 
     /**
      * The table <code>public.aspect</code>.
@@ -393,6 +404,11 @@ public class Public extends SchemaImpl {
     public final Lexeme LEXEME = Lexeme.LEXEME;
 
     /**
+     * The table <code>public.lexeme_activity_log</code>.
+     */
+    public final LexemeActivityLog LEXEME_ACTIVITY_LOG = LexemeActivityLog.LEXEME_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.lexeme_deriv</code>.
      */
     public final LexemeDeriv LEXEME_DERIV = LexemeDeriv.LEXEME_DERIV;
@@ -446,6 +462,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning</code>.
      */
     public final Meaning MEANING = Meaning.MEANING;
+
+    /**
+     * The table <code>public.meaning_activity_log</code>.
+     */
+    public final MeaningActivityLog MEANING_ACTIVITY_LOG = MeaningActivityLog.MEANING_ACTIVITY_LOG;
 
     /**
      * The table <code>public.meaning_domain</code>.
@@ -556,6 +577,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.source</code>.
      */
     public final Source SOURCE = Source.SOURCE;
+
+    /**
+     * The table <code>public.source_activity_log</code>.
+     */
+    public final SourceActivityLog SOURCE_ACTIVITY_LOG = SourceActivityLog.SOURCE_ACTIVITY_LOG;
 
     /**
      * The table <code>public.source_freeform</code>.
@@ -703,6 +729,11 @@ public class Public extends SchemaImpl {
     public final Word WORD = Word.WORD;
 
     /**
+     * The table <code>public.word_activity_log</code>.
+     */
+    public final WordActivityLog WORD_ACTIVITY_LOG = WordActivityLog.WORD_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.word_etymology</code>.
      */
     public final WordEtymology WORD_ETYMOLOGY = WordEtymology.WORD_ETYMOLOGY;
@@ -798,6 +829,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.ACTIVITY_LOG_ID_SEQ,
             Sequences.ASPECT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
@@ -838,6 +870,7 @@ public class Public extends SchemaImpl {
             Sequences.LEX_REL_TYPE_ORDER_BY_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
+            Sequences.LEXEME_ACTIVITY_LOG_ID_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_DERIV_ORDER_BY_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
@@ -856,6 +889,7 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_TAG_ID_SEQ,
             Sequences.LIFECYCLE_LOG_ID_SEQ,
+            Sequences.MEANING_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
@@ -874,6 +908,7 @@ public class Public extends SchemaImpl {
             Sequences.REGION_ORDER_BY_SEQ,
             Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.SEMANTIC_TYPE_ORDER_BY_SEQ,
+            Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.SOURCE_LIFECYCLE_LOG_ID_SEQ,
@@ -882,6 +917,7 @@ public class Public extends SchemaImpl {
             Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
+            Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_RELATION_ID_SEQ,
@@ -908,6 +944,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            ActivityLog.ACTIVITY_LOG,
             Aspect.ASPECT,
             AspectLabel.ASPECT_LABEL,
             Collocation.COLLOCATION,
@@ -953,6 +990,7 @@ public class Public extends SchemaImpl {
             LexRelTypeLabel.LEX_REL_TYPE_LABEL,
             LexRelation.LEX_RELATION,
             Lexeme.LEXEME,
+            LexemeActivityLog.LEXEME_ACTIVITY_LOG,
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
             LexemeFrequency.LEXEME_FREQUENCY,
@@ -964,6 +1002,7 @@ public class Public extends SchemaImpl {
             LexemeTag.LEXEME_TAG,
             LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
+            MeaningActivityLog.MEANING_ACTIVITY_LOG,
             MeaningDomain.MEANING_DOMAIN,
             MeaningFreeform.MEANING_FREEFORM,
             MeaningLifecycleLog.MEANING_LIFECYCLE_LOG,
@@ -986,6 +1025,7 @@ public class Public extends SchemaImpl {
             SemanticType.SEMANTIC_TYPE,
             SemanticTypeLabel.SEMANTIC_TYPE_LABEL,
             Source.SOURCE,
+            SourceActivityLog.SOURCE_ACTIVITY_LOG,
             SourceFreeform.SOURCE_FREEFORM,
             SourceLifecycleLog.SOURCE_LIFECYCLE_LOG,
             Tag.TAG,
@@ -1015,6 +1055,7 @@ public class Public extends SchemaImpl {
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             ViewWwWordSearch.VIEW_WW_WORD_SEARCH,
             Word.WORD,
+            WordActivityLog.WORD_ACTIVITY_LOG,
             WordEtymology.WORD_ETYMOLOGY,
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,
@@ -1036,6 +1077,7 @@ public class Public extends SchemaImpl {
     @Override
     public final List<UDT<?>> getUDTs() {
         return Arrays.<UDT<?>>asList(
+            TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF,
             TypeClassifier.TYPE_CLASSIFIER,
             TypeCollocMember.TYPE_COLLOC_MEMBER,
             TypeDefinition.TYPE_DEFINITION,

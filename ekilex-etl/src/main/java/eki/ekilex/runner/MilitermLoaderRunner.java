@@ -249,7 +249,7 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 				Long lexemeId = createLexemeIfNotExists(lexeme);
 				createLexemeLifecycleLog(lexemeId, termGroupNode, term);
 
-				saveListValueFreeforms(lang, listValues, lexemeId);
+				saveListValueTags(listValues, lexemeId);
 
 				List<Node> sourceValueNodes = termGroupNode.selectNodes(sourceExp);
 				for (Node sourceValueNode : sourceValueNodes) {
@@ -392,17 +392,17 @@ public class MilitermLoaderRunner extends AbstractTermLoaderRunner {
 		return listValues;
 	}
 
-	private void saveListValueFreeforms(String lang, List<String> listValues, Long lexemeId) throws Exception {
+	private void saveListValueTags(List<String> listValues, Long lexemeId) throws Exception {
 
 		for (String listValue : listValues) {
 			boolean valuesSeparated = StringUtils.countMatches(listValue, listingsDelimiter) > 0;
 			if (valuesSeparated) {
 				String[] separateDomainCodes = StringUtils.split(listValue, listingsDelimiter);
 				for (String separateDomainCode : separateDomainCodes) {
-					createLexemeFreeform(lexemeId, FreeformType.BOOKMARK, separateDomainCode, lang);
+					createLexemeTag(lexemeId, separateDomainCode);
 				}
 			} else {
-				createLexemeFreeform(lexemeId, FreeformType.BOOKMARK, listValue, lang);
+				createLexemeTag(lexemeId, listValue);
 			}
 		}
 	}

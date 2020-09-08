@@ -57,6 +57,9 @@ public class ClassifierUtil {
 		word.setWordTypes(classifiers);
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
+		if (classifier == null) {
+			classifier = new Classifier();
+		}
 		word.setAspect(classifier);
 	}
 
@@ -160,6 +163,12 @@ public class ClassifierUtil {
 		classifierCode = wordRelation.getWordRelTypeCode();
 		classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
 		wordRelation.setWordRelType(classifier);
+		classifierCode = wordRelation.getAspectCode();
+		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
+		if (classifier == null) {
+			classifier = new Classifier();
+		}
+		wordRelation.setAspect(classifier);
 	}
 
 	public void applyClassifiers(WordEtymTuple tuple, String displayLang) {

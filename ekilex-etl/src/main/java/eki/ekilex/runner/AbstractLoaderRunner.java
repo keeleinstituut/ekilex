@@ -1360,6 +1360,18 @@ public abstract class AbstractLoaderRunner extends AbstractLifecycleLogger imple
 		}
 	}
 
+	protected void createLexemeTag(Long lexemeId, String tagName) throws Exception {
+
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("lexeme_id", lexemeId);
+		paramMap.put("tag_name", tagName);
+		Long lexemeTagId = basicDbService.createIfNotExists(LEXEME_TAG, paramMap);
+
+		if (lexemeTagId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, lexemeId, LifecycleEntity.LEXEME, LifecycleProperty.TAG, LifecycleEventType.CREATE, tagName);
+		}
+	}
+
 	protected Long createCollocation(String value, String definition, Float frequency, Float score, List<String> collocUsages, Complexity complexity) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();

@@ -147,6 +147,10 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.flipkart.zjsonpatch</groupId>
+			<artifactId>zjsonpatch</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.atlassian.commonmark</groupId>
 			<artifactId>commonmark</artifactId>
 		</dependency>

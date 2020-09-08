@@ -288,10 +288,12 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 		this.lexemeFrequencies = lexemeFrequencies;
 	}
 
+	@Override
 	public List<String> getTags() {
 		return tags;
 	}
 
+	@Override
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}

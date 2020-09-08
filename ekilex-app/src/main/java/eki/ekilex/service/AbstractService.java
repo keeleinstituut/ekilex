@@ -13,12 +13,14 @@ public abstract class AbstractService {
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
 
+	@Deprecated
 	protected void createLifecycleLog(LogData logData) {
 		String userName = userContext.getUserName();
 		logData.setUserName(userName);
 		lifecycleLogDbService.createLog(logData);
 	}
 
+	@Deprecated
 	protected void createListOrderingLifecycleLog(LogData logData) {
 		String userName = userContext.getUserName();
 		logData.setUserName(userName);

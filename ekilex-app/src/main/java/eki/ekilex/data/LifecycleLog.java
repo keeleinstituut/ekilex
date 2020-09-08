@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import eki.common.data.AbstractDataObject;
 
+@Deprecated
 public class LifecycleLog extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

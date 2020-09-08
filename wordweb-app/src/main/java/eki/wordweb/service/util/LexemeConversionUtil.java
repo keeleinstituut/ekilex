@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
+import eki.common.constant.LexemeType;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.wordweb.data.DataFilter;
@@ -216,6 +217,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		for (TypeMeaningWord meaningWord : meaningWords) {
 			String meaningWordLang = meaningWord.getLang();
+			LexemeType meaningWordLexemeType = meaningWord.getMwLexType();
 			cleanEscapeSym(meaningWord.getMwLexGovernments());
 			classifierUtil.applyClassifiers(meaningWord, displayLang);
 			setWordTypeFlags(meaningWord);
@@ -226,7 +228,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningWord.setAdditionalDataExists(additionalDataExists);
 			if (DatasetType.LEX.equals(lexeme.getDatasetType()) && StringUtils.equals(wordLang, meaningWordLang)) {
 				lexeme.getSourceLangMeaningWords().add(meaningWord);
-			} else {
+			} else if (LexemeType.PRIMARY.equals(meaningWordLexemeType)) {
 				lexeme.getDestinLangMatchWords().add(meaningWord);
 			}
 		}
@@ -299,7 +301,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		applySourceLinks(filteredImageFiles, meaningFreeformSourceLinks);
 		lexeme.setMeaningNotes(notes);
 		lexeme.setMeaningNotesByLang(notesByLangOrdered);
-		lexeme.setImageFiles(imageFiles);
+		lexeme.setImageFiles(filteredImageFiles);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 

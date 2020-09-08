@@ -87,11 +87,16 @@ public class CompositionService extends AbstractService implements GlobalConstan
 					.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, PUBLICITY_PUBLIC, meaningId);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
+			List<String> tagNames = cudDbService.createLexemeAutomaticTags(lexemeId);
 
 			LogData wordLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, wordValue);
 			createLifecycleLog(wordLogData);
 			LogData lexemeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, dataset);
 			createLifecycleLog(lexemeLogData);
+			tagNames.forEach(tagName -> {
+				LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
+				createLifecycleLog(tagLogData);
+			});
 		}
 
 		if (createRelation) {
@@ -471,6 +476,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			} else {
 				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
 			}
+
+			cudDbService.adjustWordSecondaryLexemesComplexity(targetWordId);
+			cudDbService.adjustWordSecondaryLexemesComplexity(sourceWordId);
 		}
 	}
 
@@ -567,6 +575,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				Long sourceLexemeId = lexemeIdPair.getId2();
 				LexemeRecord targetLexeme = compositionDbService.getLexeme(targetLexemeId);
 				LexemeRecord sourceLexeme = compositionDbService.getLexeme(sourceLexemeId);
+				Long targetLexemeWordId = targetLexeme.getWordId();
+				Long sourceLexemeWordId = sourceLexeme.getWordId();
 				boolean isTargetLexemePrimaryType = StringUtils.equals(targetLexeme.getType(), LEXEME_TYPE_PRIMARY);
 				boolean isSourceLexemePrimaryType = StringUtils.equals(sourceLexeme.getType(), LEXEME_TYPE_PRIMARY);
 
@@ -579,14 +589,22 @@ public class CompositionService extends AbstractService implements GlobalConstan
 					createLifecycleLog(logData);
 
 					compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
+
+					List<String> tagNames = cudDbService.createLexemeAutomaticTags(targetLexemeId);
+					tagNames.forEach(tagName -> {
+						LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, targetLexemeId, tagName);
+						createLifecycleLog(tagLogData);
+					});
 				} else if (isSourceLexemePrimaryType) {
-					Long targetLexemeWordId = targetLexeme.getWordId();
 					String datasetCode = targetLexeme.getDatasetCode();
 					cudDbService.deleteLexeme(targetLexemeId);
 					connectLexemeToAnotherWord(targetLexemeWordId, sourceLexemeId, datasetCode);
 				} else {
 					cudDbService.deleteLexeme(sourceLexemeId);
 				}
+
+				cudDbService.adjustWordSecondaryLexemesComplexity(sourceLexemeWordId);
+				cudDbService.adjustWordSecondaryLexemesComplexity(targetLexemeWordId);
 			}
 		}
 	}

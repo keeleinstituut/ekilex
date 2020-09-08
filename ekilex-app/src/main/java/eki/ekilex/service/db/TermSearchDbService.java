@@ -194,26 +194,33 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			}
 			SearchEntity searchEntity = searchCriterionGroup.getEntity();
 
-			if (SearchEntity.WORD.equals(searchEntity)) {
+			if (SearchEntity.TERM.equals(searchEntity)) {
 
 				Form f1 = FORM.as("f1");
 				Paradigm p1 = PARADIGM.as("p1");
 
-				Condition wheref1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
-						.and(f1.PARADIGM_ID.eq(p1.ID))
-						.and(p1.WORD_ID.eq(w1.ID));
-				wheref1 = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wheref1);
-				wheref1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, wheref1, true);
-				wheref1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wheref1, false);
-				wherew = wherew.andExists(DSL.select(f1.ID).from(f1, p1).where(wheref1));
+				boolean containsSearchKeys;
 
+				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.VALUE);
+				if (containsSearchKeys) {
+					Condition wheref1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
+							.and(f1.PARADIGM_ID.eq(p1.ID))
+							.and(p1.WORD_ID.eq(w1.ID));
+					wheref1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, wheref1, true);
+					wherew = wherew.andExists(DSL.select(f1.ID).from(f1, p1).where(wheref1));
+				}
+
+				wherew = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
+				wherew = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wherew, false);
+
+				wherel = applyLexemeTagFilter(searchCriteria, l1.ID, wherel);
 				wherel = applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
 
 			} else if (SearchEntity.CONCEPT.equals(searchEntity)) {
 
 				wherem = applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
-				wherem = applyDomainFilters(searchCriteria, m1, wherem);
+				wherem = applyDomainFilters(searchCriteria, m1.ID, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_ON, searchCriteria, searchDatasetsRestriction, m1, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_BY, searchCriteria, searchDatasetsRestriction, m1, wherem);
 
@@ -271,9 +278,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Table<Record2<Long, Long>> lff2 = DSL
 						.select(l3.MEANING_ID, lff3.FREEFORM_ID)
 						.from(l3, lff3)
-						.where(
-								lff3.LEXEME_ID.eq(l3.ID)
-										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.where(lff3.LEXEME_ID.eq(l3.ID).and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.asTable("lff2");
 
 				// notes owners joined
@@ -481,6 +486,10 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			filteredCriteria = filterSourceIdCriteria(searchCriteria);
+		}
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return wherem;
 		}
 
@@ -489,6 +498,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 		Lexeme l1 = LEXEME.as("l1");
 		LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
+		MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
+		DefinitionFreeform dff1 = DEFINITION_FREEFORM.as("dff1");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Definition d1 = DEFINITION.as("d1");
 		FreeformSourceLink ffsl1 = FREEFORM_SOURCE_LINK.as("ffsl1");
@@ -500,22 +511,46 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 			where1 = lsl1.LEXEME_ID.eq(l1.ID).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, lsl1.VALUE, where1, true);
+			where1 = applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, lsl1.SOURCE_ID, where1);
 			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL.select(l1.MEANING_ID).from(l1, lsl1).where(where1).groupBy(l1.MEANING_ID);
 
 			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.USAGE.name())).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
+			where1 = applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
 			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectUsageSourceLinks = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1, ffsl1).where(where1).groupBy(l1.MEANING_ID);
 
 			where1 = dsl1.DEFINITION_ID.eq(d1.ID).and(l1.MEANING_ID.eq(d1.MEANING_ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, dsl1.VALUE, where1, true);
+			where1 = applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, dsl1.SOURCE_ID, where1);
 			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL.select(d1.MEANING_ID).from(l1, d1, dsl1).where(where1).groupBy(d1.MEANING_ID);
+
+			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.NOTE.name())).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
+			where1 = applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
+			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectLexemeNoteSourceLinks = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1, ffsl1).where(where1).groupBy(l1.MEANING_ID);
+
+			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.NOTE.name())).and(mff1.FREEFORM_ID.eq(ff1.ID)).and(mff1.MEANING_ID.eq(l1.MEANING_ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
+			where1 = applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
+			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectMeaningNoteSourceLinks = DSL.select(l1.MEANING_ID).from(l1, mff1, ff1, ffsl1).where(where1).groupBy(l1.MEANING_ID);
+
+			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.NOTE.name())).and(dff1.FREEFORM_ID.eq(ff1.ID)).and(dff1.DEFINITION_ID.eq(d1.ID)).and(l1.MEANING_ID.eq(d1.MEANING_ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
+			where1 = applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
+			where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+			SelectHavingStep<Record1<Long>> selectDefinitionNoteSourceLinks = DSL.select(d1.MEANING_ID).from(l1, d1, dff1, ff1, ffsl1).where(where1).groupBy(d1.MEANING_ID);
 
 			Table<Record1<Long>> a1 = selectLexemeSourceLinks
 					.unionAll(selectUsageSourceLinks)
 					.unionAll(selectDefinitionSourceLinks)
+					.unionAll(selectLexemeNoteSourceLinks)
+					.unionAll(selectMeaningNoteSourceLinks)
+					.unionAll(selectDefinitionNoteSourceLinks)
 					.asTable("a1");
 
 			wherem = wherem.andExists(DSL.select(a1.field("meaning_id")).from(a1).where(a1.field("meaning_id", Long.class).eq(m1.ID)));
@@ -742,7 +777,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		Table<Record14<Long,Long,String,String,Integer,String,String[],Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,String[]>> wmm = DSL
+		Table<Record14<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[]>> wmm = DSL
 				.select(
 						wmid.field("meaning_id", Long.class),
 						wmid.field("word_id", Long.class),
