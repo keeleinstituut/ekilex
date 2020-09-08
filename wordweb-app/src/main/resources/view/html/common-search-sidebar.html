@@ -218,10 +218,10 @@
             <div class="mb-1"
                  th:each="wordGroup : ${wordData.word.wordGroups}"
                  th:with="isAspect=${wordGroup.wordRelTypeCode == T(eki.common.constant.GlobalConstant).WORD_REL_TYPE_CODE_ASCPECTS}">
-              <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ' :'}"></span>
+              <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ':'}"></span>
               <th:block th:if="${isAspect}">
                 <span th:utext="${viewUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-placement="top" th:title="${wordData.word.aspect.value}"></span>
-                <span class="ml-n1">,</span>
+                <span class="ml-n1">&nbsp;–</span>
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options text-nowrap mb-1">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">

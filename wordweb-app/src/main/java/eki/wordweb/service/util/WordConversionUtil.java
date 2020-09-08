@@ -180,6 +180,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					wordGroup.setWordRelTypeCode(firstWordGroupMember.getWordRelTypeCode());
 					wordGroup.setWordGroupMembers(wordGroupMembers);
 					classifierUtil.applyClassifiers(wordGroup, displayLang);
+					handleWordRelType(wordGroup);
 					word.getWordGroups().add(wordGroup);
 				}
 			}
@@ -217,6 +218,15 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			wordRelationGroup = new WordRelationGroup();
 			wordRelationGroup.setWordRelType(wordRelType);
 			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelations, null);
+		}
+	}
+
+	private void handleWordRelType(WordGroup wordGroup) {
+
+		if (StringUtils.equals(WORD_REL_TYPE_CODE_ASCPECTS, wordGroup.getWordRelTypeCode())) {
+			Classifier wordRelType = wordGroup.getWordRelType();
+			wordRelType = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.aspect");
+			wordGroup.setWordRelType(wordRelType);
 		}
 	}
 
