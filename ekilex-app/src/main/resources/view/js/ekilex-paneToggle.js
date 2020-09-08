@@ -7,16 +7,17 @@ class paneToggle {
     this.hideableColumn = $(`#${this.hideable}:first`);
     this.extendableColumn = $(`#${this.extendable}:first`);
 
-    const hideableColumnCols = this.hideableColumn.attr('class').match(/col-\d{1,2}/igm)[0];
-    const extendableColumnCols = this.extendableColumn.attr('class').match(/col-\d{1,2}/igm)[0];
+    this.classes = {};
 
-    let extendedClass = parseInt(extendableColumnCols.replace('col-', '')) + parseInt(hideableColumnCols.replace('col-', ''));
-    extendedClass = `col-${extendedClass}`;
-
-    this.classes = {
-      hidden: hideableColumnCols,
-      extended: extendedClass,
-    };
+    if (this.hideableColumn.length) {
+      const hideableColumnCols = this.hideableColumn.attr('class').match(/col-\d{1,2}/igm)[0];
+      const extendableColumnCols = this.extendableColumn.attr('class').match(/col-\d{1,2}/igm)[0];
+      
+      let extendedClass = parseInt(extendableColumnCols.replace('col-', '')) + parseInt(hideableColumnCols.replace('col-', ''));
+      extendedClass = `col-${extendedClass}`;
+      this.classes.extended = extendedClass;
+      this.classes.hidden = hideableColumnCols;
+    }
 
   }
 

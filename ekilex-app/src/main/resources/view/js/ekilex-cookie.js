@@ -4,9 +4,9 @@ class CookieService {
     if (days) {
         const date = new Date();
         date.setTime(date.getTime() + (days*24*60*60*1000));
-        expires = "; expires=" + date.toUTCString() + "; SameSite=None; Secure";
+        expires = "; expires=" + date.toUTCString() + "; SameSite=Strict; Secure";
     }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/; SameSite=Strict; Secure";
   }
   get(name) {
     const nameEQ = name + "=";
@@ -19,7 +19,7 @@ class CookieService {
     return null;
   }
   delete(name) {
-    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict; Secure';
   }
 }
 
