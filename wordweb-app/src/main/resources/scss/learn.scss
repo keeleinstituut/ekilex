@@ -1,36 +1,84 @@
-/* stylelint-disable */
 .learn-container {
-  text-align: left;
-}
-.learn-content{
   margin-bottom: 32px;
+  text-align: left;
+
+  .sticky-side-nav {
+    padding: 24px 0;
+  }
+}
+
+.learn-container-menu {
+  background-color: $white;
+
+  @include media-breakpoint-up(md){
+    @include border-top-left-radius(10px);
+    padding: 24px;
+    margin-top: 20px;
+    border-right: solid 1px $gray-200;
+  }
+
+}
+
+.learn-content-wrapper {
+  margin-top: 20px;
   //Hide overflow because content editors might make mistakes
   overflow: hidden;
   background: $white;
-  @include border-radius(10px);
+  @include border-top-right-radius(10px);
+
+  @include media-breakpoint-down(sm) {
+    @include border-top-left-radius(16px);
+  }
+
+  @include media-breakpoint-up(md) {
+    margin-top: 20px;
+  }
 }
-.col-num {
-  width: 4rem;
-  padding-right: 1rem;
-  font-weight: bold;
-  color: rgb(0, 157, 181);
+
+.learn-content {
+  padding: 16px 32px;
+}
+
+.learn-content-title {
+  padding: 16px;
+  font-size: 28px;
+  font-weight: $font-weight-bold;
+  border-bottom: solid 1px $border-color;
+}
+
+.number-rows {
+
+  .row {
+    margin-bottom: 8px;
+  }
+}
+
+.num {
+  // width: 4rem;
+  padding: 2px 4px;
+  // padding-right: 1rem;
+  font-weight: $font-weight-bold;
+  color: $gray-400;
+  // color: rgb(0, 157, 181);
   text-align: right;
+  background: $body-bg;
+  @include border-radius(3px);
 }
 
 .col-bold {
   width: 4rem;
   padding-left: 1rem;
-  font-weight: bold;
+  font-weight: $font-weight-bold;
   color: rgb(0, 157, 181);
 }
 
 .colored-bold {
-  font-weight: bold;
+  font-weight: $font-weight-bold;
   color: rgb(0, 157, 181);
 }
 
 .highlighted {
-  font-weight: bold;
+  font-weight: $font-weight-bold;
   color: rgb(0, 157, 181);
 }
 

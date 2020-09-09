@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<html lang="et"
+  xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="common-app :: common_header(~{::title},~{::links},_)">
   <title>Sõnaveeb - Õpi eesti keelt</title>
   <th:block th:fragment="links">
-    <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
-</th:block>
+    <script type="text/javascript"
+      th:src="@{/view/js/hash.js}"></script>
+    <script type="text/javascript"
+      th:src="@{/view/js/aside-menu.js}"></script>
+  </th:block>
 </head>
 
 <body>
@@ -14,1054 +18,2189 @@
   <th:block th:replace="common-app :: ie-user"></th:block>
   <div th:replace="common-app :: menu"></div>
   <div class="container">
-    <div class="row learn-container">
-      <aside class="col-12 col-md-4 "  role="navigation" id="sidebar">
-        <div class="sticky-side-nav">
-          <ul class="mt-4 list-unstyled">
-          <li><a href="#arvud">Arvud</a></li>
-          <li><a href="#margid">Märgid</a></li>
-          <li><a href="#aeg">Aeg</a></li>
-          <li><a href="#luhendid">Lühendid</a></li>
-          <li><a href="#kirjavahemargid">Kirjavahemärgid</a></li>
-          <li><a href="#kirjutamine">Kirjutamine</a></li>
-          <li><a href="#kiri" class="pl-4">Kiri</a></li>
-          <li><a href="#ekiri" class="pl-4">E-kiri</a></li>
-          <li><a href="#postkaart" class="pl-4">Postkaart</a></li>
-          <li><a href="#kutse" class="pl-4">Kutse</a></li>
-          <li><a href="#kavaldus" class="pl-4">Kaastunde avaldamine</a></li>
-          <li><a href="#sonum" class="pl-4">Sõnum</a></li>
-          <li><a href="#avaldus" class="pl-4">Avaldus</a></li>
-          <li><a href="#volitus" class="pl-4">Volitus</a></li>
-          <li><a href="#cv" class="pl-4">CV</a></li>
-          <li><a href="#kaaskiri" class="pl-4">Kaaskiri</a></li>
-          <li><a href="#kasulikke">Kasulikke väljendeid</a></li>
-        </ul>
+
+    <div class="row no-gutters learn-container">
+      <aside class="col-12 col-md-4  learn-container-menu">
+        <div class="dropdown dropdown--aside">
+          <button class="btn dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false">
+            Arvud
+          </button>
+          <ul class="dropdown-menu"
+            role="tablist">
+            <li>
+              <a class="nav-link active"
+                id="v-pills-arvud-tab"
+                data-toggle="pill"
+                href="#v-pills-arvud"
+                role="tab"
+                aria-controls="v-pills-arvud"
+                aria-selected="false">Arvud</a>
+            </li>
+            <li>
+              <a class="nav-link"
+                id="v-pills-margid-tab"
+                data-toggle="pill"
+                href="#v-pills-margid"
+                role="tab"
+                aria-controls="v-pills-margid"
+                aria-selected="false">Märgid</a>
+            </li>
+            <li>
+              <a class="nav-link"
+                id="v-pills-aeg-tab"
+                data-toggle="pill"
+                href="#v-pills-aeg"
+                role="tab"
+                aria-controls="v-pills-aeg"
+                aria-selected="false">Aeg</a>
+            </li>
+            <li>
+
+              <a class="nav-link"
+                id="v-pills-luhendid-tab"
+                data-toggle="pill"
+                href="#v-pills-luhendid"
+                role="tab"
+                aria-controls="v-pills-luhendid"
+                aria-selected="false">Lühendid</a>
+            </li>
+            <li>
+              <a class="nav-link"
+                id="v-pills-kirjavahemargid-tab"
+                data-toggle="pill"
+                href="#v-pills-kirjavahemargid"
+                role="tab"
+                aria-controls="v-pills-kirjavahemargid"
+                aria-selected="false">Kirjavahemärgid
+
+              </a>
+            </li>
+            <li class="has-submenu">
+              <a href="#v-pills-kirjutamine"
+                class="nav-link"
+                role="tab">Kirjutamine
+              </a>
+
+              <ul class="list-unstyled"
+                role="menu">
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kiri</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">E-kiri </a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Postkaart</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kutse</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kaastunde avaldamine</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Sõnum</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Avaldus</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Volitus</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">CV</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kaaskiri</a>
+                </li>
+              </ul>
+            </li>
+
+            <li class="has-submenu">
+              <a href="#v-pills-kasulikke"
+                class="nav-link"
+                role="tab">
+                Kasulikke väljendeid
+              </a>
+
+              <ul class="list-unstyled"
+                role="menu">
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Tervitused</a>
+                </li>
+                <li>
+
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Tervitusele järgnevad väljendid</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kellestki lahkumine</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Vabandused</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Tänu avaldamine</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Vastus tänu avaldamisele</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kohvikus või restoranis</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Telefonikõne</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Arsti juures</a>
+
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kuidas juhatada teed</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Õnnitlused, soovid, palved</a>
+
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Hoiatused</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kaastunde avaldamine</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Tutvus ja tutvustamine</a>
+
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Bussis, rongis, lennukis</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Hotellis</a>
+
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Poes</a>
+                </li>
+
+              </ul>
+            </li>
+
+
+
+
+            <li class="has-submenu">
+              <a class="nav-link"
+                href="#pildid">
+                Pildilehed
+              </a>
+
+              <ul class="list-unstyled"
+                role="menu">
+                <li>
+
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kehaosad</a>
+                </li>
+                <li>
+
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Riided</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Jalanõud</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Toit</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Puuviljad ja marjad</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Köögiviljad</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Loomad</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Linnud</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Putukad</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Lilled</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Sõidukid</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Mööbel</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Pillid</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Nõud</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Kontoritarbed</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Tööriistad</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Värvid</a>
+                </li>
+                <li>
+                  <a class="nav-link"
+                    href="#"
+                    role="menuitem">Tähtkujud</a>
+                </li>
+
+              </ul>
+            </li>
+
+            <li>
+              <a class="nav-link"
+                id="v-pills-grammatika-tab"
+                data-toggle="pill"
+                href="#v-pills-grammatika"
+                role="tab"
+                aria-controls="v-pills-grammatika"
+                aria-selected="false">Grammatikatabelid
+                <i class="fas fa-file-pdf"></i>
+              </a>
+            </li>
+
+            <li>
+              <a class="nav-link"
+                id="v-pills-regions-tab"
+                data-toggle="pill"
+                href="#v-pills-regions"
+                role="tab"
+                aria-controls="v-pills-regions"
+                aria-selected="false">Maad ja rahvad
+                <i class="fas fa-file-pdf"></i>
+              </a>
+            </li>
+
+          </ul>
         </div>
       </aside>
-      <div class="col-12 col-md-8 learn-content" id="main" role="main">
-        <div class="pb-4">
-          <a name="arvud"></a>
-        <h3 class="mt-4 mb-2 text-left">Arvud</h3>
 
-          <div class="row"><div class="col-num">0</div><div class="col-text">null</div><div class="col-num">26</div><div>kakskümmend kuus</div></div>
-          <div class="row"><div class="col-num">1</div><div class="col-text">üks</div><div class="col-num">27</div><div>kakskümmend seitse</div></div>
-          <div class="row"><div class="col-num">2</div><div class="col-text">kaks</div><div class="col-num">28</div><div>kakskümmend kaheksa</div></div>
-          <div class="row"><div class="col-num">3</div><div class="col-text">kolm</div><div class="col-num">29</div><div>kakskümmend üheksa</div></div>
-          <div class="row"><div class="col-num">4</div><div class="col-text">neli</div><div class="col-num">30</div><div>kolmkümmend</div></div>
-          <div class="row"><div class="col-num">5</div><div class="col-text">viis</div><div class="col-num">40</div><div>nelikümmend</div></div>
-          <div class="row"><div class="col-num">6</div><div class="col-text">kuus</div><div class="col-num">50</div><div>viiskümmend</div></div>
-          <div class="row"><div class="col-num">7</div><div class="col-text">seitse</div><div class="col-num">60</div><div>kuuskümmend</div></div>
-          <div class="row"><div class="col-num">8</div><div class="col-text">kaheksa</div><div class="col-num">70</div><div>seitsekümmend</div></div>
-          <div class="row"><div class="col-num">9</div><div class="col-text">üheksa</div><div class="col-num">80</div><div>kaheksakümmend</div></div>
-          <div class="row"><div class="col-num">10</div><div class="col-text">kümme</div><div class="col-num">90</div><div>üheksakümmend</div></div>
-          <div class="row"><div class="col-num">11</div><div class="col-text">üksteist</div><div class="col-num">100</div><div>sada</div></div>
-          <div class="row"><div class="col-num">12</div><div class="col-text">kaksteist</div><div class="col-num">101</div><div>sada üks</div></div>
-          <div class="row"><div class="col-num">13</div><div class="col-text">kolmteist</div><div class="col-num">102</div><div>sada kaks</div></div>
-          <div class="row"><div class="col-num">14</div><div class="col-text">neliteist</div><div class="col-num">200</div><div>kakssada</div></div>
-          <div class="row"><div class="col-num">15</div><div class="col-text">viisteist</div><div class="col-num">300</div><div>kolmsada</div></div>
-          <div class="row"><div class="col-num">16</div><div class="col-text">kuusteist</div><div class="col-num">400</div><div>nelisada</div></div>
-          <div class="row"><div class="col-num">17</div><div class="col-text">seitseteist</div><div class="col-num">500</div><div>viissada</div></div>
-          <div class="row"><div class="col-num">18</div><div class="col-text">kaheksateist</div><div class="col-num">600</div><div>kuussada</div></div>
-          <div class="row"><div class="col-num">19</div><div class="col-text">üheksateist</div><div class="col-num">700</div><div>seitsesada</div></div>
-          <div class="row"><div class="col-num">20</div><div class="col-text">kakskümmend</div><div class="col-num">800</div><div>kaheksasada</div></div>
-          <div class="row"><div class="col-num">21</div><div class="col-text">kakskümmend üks</div><div class="col-num">900</div><div>üheksasada</div></div>
-          <div class="row"><div class="col-num">22</div><div class="col-text">kakskümmend kaks</div><div class="col-num">1000</div><div>tuhat</div></div>
-          <div class="row"><div class="col-num">23</div><div class="col-text">kakskümmend kolm</div><div class="col-num">1110</div><div>tuhat ükssada kümme</div></div>
-          <div class="row"><div class="col-num">24</div><div class="col-text">kakskümmend neli</div><div class="col-num">2000</div><div>kaks tuhat</div></div>
-          <div class="row"><div class="col-num">25</div><div class="col-text">kakskümmend viis</div></div>
+      <div class="col-12 col-md-8 learn-content-wrapper"
+        id="main"
+        role="main">
 
-          <div class="row mt-4"><div class="col-num" style="width: 10rem;">10 000</div><div class="col-text">kümme tuhat</div></div>
-          <div class="row"><div class="col-num" style="width: 10rem;">50 000</div><div class="col-text">viiskümmend tuhat</div></div>
-          <div class="row"><div class="col-num" style="width: 10rem;">100 000</div><div class="col-text">sada tuhat</div></div>
-          <div class="row"><div class="col-num" style="width: 10rem;">1 000 000</div><div class="col-text">miljon</div></div>
-          <div class="row"><div class="col-num" style="width: 10rem;">1 000 000 000</div><div class="col-text">miljard</div></div>
+        <div class="tab-content"
+          id="v-pills-tabContent">
+          <div class="tab-pane fade show active"
+            id="v-pills-arvud"
+            role="tabpanel"
+            aria-labelledby="v-pills-arvud-tab">
+            <h3 class="learn-content-title">Arvud</h3>
+            <div class="learn-content">
+              <a name="arvud"></a>
+              <div class="row number-rows">
+                <div class="col-lg-6 col-sm-12">
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">0</span>
+                    </div>
+                    <div class="col-8">
+                      <div>null</div>
 
-          <div class="mt-3">
-            <h5 class="colored-bold">Mitmes? Mitmenda? Mitmendat?</h5>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">1</span>
+                    </div>
+                    <div class="col-8">
+                      <div>üks</div>
 
-            <div class="row"><div class="col-num">1.</div><div>esimene, esimese, esimest</div></div>
-            <div class="row"><div class="col-num">2.</div><div>teine, teise, teist</div></div>
-            <div class="row"><div class="col-num">3.</div><div>kolmas, kolmanda, kolmandat</div></div>
-            <div class="row"><div class="col-num">4.</div><div>neljas, neljanda, neljandat</div></div>
-            <div class="row"><div class="col-num">5.</div><div>viies, viienda, viiendat</div></div>
-            <div class="row"><div class="col-num">6.</div><div>kuues, kuuenda, kuuendat</div></div>
-            <div class="row"><div class="col-num">7.</div><div>seitsmes, seitsmenda, seitsmendat</div></div>
-            <div class="row"><div class="col-num">8.</div><div>kaheksas, kaheksanda, kaheksandat</div></div>
-            <div class="row"><div class="col-num">9.</div><div>üheksas, üheksanda, üheksandat</div></div>
-            <div class="row"><div class="col-num">10.</div><div>kümnes, kümnenda, kümnendat</div></div>
-            <div class="row"><div class="col-num">11.</div><div>üheteistkümnes, üheteistkümnenda, üheteistkümnendat</div></div>
-            <div class="row"><div class="col-num">12.</div><div>kaheteistkümnes, kaheteistkümnenda, kaheteistkümnendat</div></div>
-            <div class="row"><div class="col-num">13.</div><div>kolmeteistkümnes, kolmeteistkümnenda, kolmeteistkümnendat</div></div>
-            <div class="row"><div class="col-num">20.</div><div>kahekümnes, kahekümnenda, kahekümnendat</div></div>
-            <div class="row"><div class="col-num">21.</div><div>kahekümne esimene, kahekümne esimese, kahekümne esimest</div></div>
-            <div class="row"><div class="col-num">22.</div><div>kahekümne teine, kahekümne teise, kahekümne teist</div></div>
-            <div class="row"><div class="col-num">30.</div><div>kolmekümnes, kolmekümnenda, kolmekümnendat</div></div>
-            <div class="row"><div class="col-num">100.</div><div>sajas, sajanda, sajandat</div></div>
-            <div class="row"><div class="col-num">200.</div><div>kahesajas, kahesajanda, kahesajandat</div></div>
-            <div class="row"><div class="col-num">1000.</div><div>tuhandes, tuhandenda, tuhandendat</div></div>
-            <div class="row"><div class="col-num">2000.</div><div>kahetuhandes, kahetuhandenda, kahetuhandendat</div></div>
-          </div>
-          <div class="mt-3">
-            <div class="row"><div class="col-num">1/2</div><div>pool</div></div>
-            <div class="row"><div class="col-num">1/3</div><div>(üks) kolmandik</div></div>
-            <div class="row"><div class="col-num">1/4</div><div>(üks) neljandik, veerand</div></div>
-            <div class="row"><div class="col-num">1/5</div><div>(üks) viiendik</div></div>
-            <div class="row"><div class="col-num">3/4</div><div>kolm neljandikku, kolmveerand</div></div>
-            <div class="row"><div class="col-num">1 1/2</div><div>poolteist</div></div>
-          </div>
-          <div class="mt-3">
-            <h5 class="colored-bold">Kui vana sa oled?</h5>
-            <div>
-              Ma olen kuusteist / kuusteist aastat vana / kuueteistaastane (= 16). Ma olen kolmkümmend kuus / kolmkümmend kuus aastat vana / kolmekümne kuue aastane (= 36). Laps on aastane/üheaastane (= 1).
-            </div>
-          </div>
-          <div class="mt-3">
-            <h5 class="colored-bold">Mis on su telefoninumber?</h5>
-            <div>
-              Minu telefoninumber on 5654 3210 (loe nii: viis-kuus viis-neli kolm-kaks üks-null).
-            </div>
-          </div>
-        </div>
-        <div class="pb-4">
-          <a name="margid"></a>
-          <h3>Märgid</h3>
-          <div class="row"><div class="col-num">%</div><div style="width: 10%;">protsent</div><div style="width: 10%">45%</div><div>nelikümmend viis protsenti</div></div>
-          <div class="row"><div class="col-num">°</div><div style="width: 10%;">kraad</div><div style="width: 10%">22°</div><div>kakskümmend kaks kraadi</div></div>
-          <div class="row"><div class="col-num">+</div><div style="width: 10%;">pluss</div><div style="width: 10%">6 + 2= 8</div><div>kuus pluss kaks on kaheksa</div></div>
-          <div class="row"><div class="col-num">–</div><div style="width: 10%;">miinus</div><div style="width: 10%">6 – 2= 4</div><div>kuus miinus kaks on neli</div></div>
-          <div class="row"><div class="col-num">×</div><div style="width: 10%;">korda</div><div style="width: 10%">6 × 3 = 18</div><div>kuus korda kolm on kaheksateist</div></div>
-          <div class="row"><div class="col-num">·</div><div style="width: 10%;">korda</div><div style="width: 10%">6 · 3 = 18</div><div>kuus korda kolm on kaheksateist</div></div>
-          <div class="row"><div class="col-num">:</div><div style="width: 10%;">jagada</div><div style="width: 10%">24 : 4 = 6</div><div>kakskümmend neli jagada neljaga on kuus</div></div>
-          <div class="row"><div class="col-num">/</div><div style="width: 10%;">jagada</div><div style="width: 10%">24 / 4 = 6</div><div>kakskümmend neli jagada neljaga on kuus</div></div>
-        </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">2</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kaks</div>
 
-        <div class="pb-4">
-          <a name="aeg"></a>
-          <h3>Aeg</h3>
-          <h5 class="colored-bold">Mis kell on? Kui palju kell on?</h5>
-          <p>Eestis märgitakse aega kella järgi numbrite 0–24 abil. Kui on hommik, siis kirjutame nii: Kell on 7 (= seitse). Kui on õhtu, siis kirjutame nii: Kell on 19 (= seitse).</p>
-          <div class="row col-12">
-            <div class="col-3"><img th:src="@{/view/images/kell_k6mme_opt.jpeg}" width="100%"></div>
-            <div class="col-3"><img th:src="@{/view/images/kell_veerand_6ksteist_opt.jpeg}" width="100%"></div>
-            <div class="col-3"><img th:src="@{/view/images/kell_pool_6ksteist_opt.jpeg}" width="100%"></div>
-            <div class="col-3"><img th:src="@{/view/images/kell_kolmveerand_6kste_opt.jpeg}" width="100%"></div>
-          </div>
-          <div class="row col-12 mb-4 text-center">
-            <div class="col-3">Kell on kümme</div>
-            <div class="col-3">Kell on veerand üksteist</div>
-            <div class="col-3">Kell on pool üksteist</div>
-            <div class="col-3">Kell on kolmveerand üksteist</div>
-          </div>
-          <p>
-            <b>Kell on 10.05</b> Kell on viis minutit kümme läbi / kell on kümme ja viis minutit / kell on kümme null viis.<br>
-            <b>Kell on 10.20</b> Kell on kakskümmend minutit kümme läbi / kell on kümme ja kakskümmend minutit / kell on kümme kakskümmend.<br>
-            <b>Kell on 10.40</b> Kell on kahekümne minuti pärast üksteist / kell on kümme nelikümmend.
-          </p>
-          <p>
-            <b>Mis kell? Mis ajal?</b> Hommikul kell seitse. Öösel kell üks. Kella ühe paiku. Mis kellaks? Mis ajaks? Kella kümneks.<br>
-            <b>Mis kell? Mis kella ajal? Mis kell sa jõuad?</b> – Kahe-kolme ajal.<br>
-            <b>Mis kellast mis kellani?</b> Vastuvõtt on (kella) kaheksast kaheteistkümneni.
-          </p>
-          <h5 class="colored-bold">Aastaajad, kuud ja nädalapäevad</h5>
-          <p>
-            <span class="colored-bold">aastaajad</span><br>
-            <span class="pr-4">kevad</span>
-            <span class="pr-4">suvi</span>
-            <span class="pr-4">sügis</span>
-            <span class="pr-4">talv</span>
-          </p>
-          <p>
-            <span class="colored-bold">kuud</span><br>
-            <span class="pr-4">jaanuar</span>
-            <span class="pr-4">veebruar</span>
-            <span class="pr-4">märts</span>
-            <span class="pr-4">aprill</span>
-            <span class="pr-4">mai</span>
-            <span class="pr-4">juuni</span>
-            <span class="pr-4">juuli</span>
-            <span class="pr-4">august</span>
-            <span class="pr-4">september</span>
-            <span class="pr-4">oktoober</span>
-            <span class="pr-4">november</span>
-            <span class="pr-4">detsember</span>
-          </p>
-          <p>
-            <span class="colored-bold">nädalapäevad</span><br>
-            <span class="pr-4">esmaspäev</span>
-            <span class="pr-4">teisipäev</span>
-            <span class="pr-4">kolmapäev</span>
-            <span class="pr-4">neljapäev</span>
-            <span class="pr-4">reede</span>
-            <span class="pr-4">laupäev</span>
-            <span class="pr-4">pühapäev</span>
-          </p>
-          <p>
-            <span class="colored-bold">NB!</span> Info esitamisel kasutatakse nädalapäeva asemel tihti lühendit (E – esmaspäev, T – teisipäev,
-            K – kolmapäev, N – neljapäev, R – reede, L – laupäev, P – pühapäev)
-          </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">3</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kolm</div>
 
-          <h5 class="colored-bold">Kuidas kirjutada kuupäevi</h5>
-          <div class="row"><div style="width: 30%; margin-left: 1rem;">20.05.1995</div><div>02.08.2013</div></div>
-          <div class="row"><div style="width: 30%; margin-left: 1rem;">20. mai 1995</div><div>2. august 2013</div></div>
-          <div class="row"><div style="width: 30%; margin-left: 1rem;">20. mail 1995. a</div><div>2. augustil 2013. a</div></div>
-          <div class="row"><div style="width: 30%; margin-left: 1rem;">20. V 1995</div><div>2. VIII 2013</div></div>
-          <div class="row"><div style="width: 30%; margin-left: 1rem;">20.5.95</div><div>2.8.2013</div></div>
-          <div class="row"><div style="width: 30%; margin-left: 1rem;">12.5.–20.5.1995</div><div>21.05.–23.05.2013</div></div>
+                    </div>
+                  </div>
 
-          <h5 class="colored-bold mt-3">Kuidas kirjutada ajavahemikke</h5>
-          <p>
-            Ajavahemike vahele kirjutame tavaliselt pika kriipsu –, mis asendab sõna kuni, näiteks:
-            <ul>
-              <li>• konverents toimub 15.–19. oktoobril / 15.–19. oktoobrini / 15. oktoobrist (kuni) 19. oktoobrini</li>
-              <li>• kontor on kinni 24.–27.12 ja 31.12–05.01</li>
-              <li>• olen puhkusel 01.10.–14.10.2014</li>
-              <li>• postkontor on lahti T–L 9.30–18.00, pood on lahti iga päev 9–23</li>
-              <li>• uuring tehti 2010.–2013. aastal</li>
-            </ul>
-          </p>
-          <p>
-            Kui ajalised üksused on järjest, kirjutame arvude vahele lühikese kriipsu - või sõna ja, näiteks:
-            <ul>
-              <li>• konverents toimub 18.-19. oktoobril / 18. ja 19. oktoobril</li>
-              <li>• kontor on kinni 23.-24.02 / 23. ja 24.12</li>
-              <li>• küsitlus tehti 2012.-2013. aastal / 2012. ja 2013. aastal</li>
-            </ul>
-          </p>
-          <h5 class="colored-bold">Mis aasta(te)l?</h5>
-          <ul>
-            <li>• 2014. aastal (loe: kahe tuhande neljateistkümnendal aastal)</li>
-            <li>• 2011. a (loe: kahe tuhande üheteistkümnendal aastal)</li>
-            <li>• aastal 2013 (loe: aastal kaks tuhat kolmteist)</li>
-            <li>• aastad 1908–1918, 1908–18 (loe: aastad tuhat üheksasada kaheksa kuni tuhat üheksasada kaheksateist)</li>
-            <li>• aastail 1992–1999, 1992–99 (loe: aastail tuhat üheksasada üheksakümmend kaks kuni tuhat üheksasada üheksakümmend üheksa)</li>
-            <li>• 1940.–1970. aastad (loe: tuhande üheksasaja neljakümnendad kuni seitsmekümnendad aastad)</li>
-            <li>• 1960.–1980. aastatel (loe: tuhande üheksasaja kuuekümnendatel kuni kaheksakümnendatel aastatel)</li>
-            <li>• 1920ndail (loe: tuhande üheksasaja kahekümnendail)</li>
-            <li>• 1930. aastail (loe: tuhande üheksasaja kolmekümnendail aastail)</li>
-          </ul>
-          <h5 class="colored-bold">Mis kuupäev täna on? Mitmes täna on?</h5>
-          <p>
-            Täna on 02.01.2014 (loe: teine jaanuar kaks tuhat neliteist). Täna on 21.10 (loe: kahekümne esimene oktoober).
-          </p>
-          <h5 class="colored-bold">Millal?</h5>
-          <ul>
-            <li>• Üleeile, eile, täna, homme, ülehomme.</li>
-            <li>• Kaks nädalat tagasi, eelmisel nädalal, sel nädalal, järgmisel nädalal, tuleval nädalal, kahe nädala pärast.</li>
-            <li>• Hommikul, päeval, õhtul, öösel. Hommikul vara, õhtul hilja.</li>
-            <li>• Kohtume esmaspäeval, reedel, laupäeval.</li>
-            <li>• Puhkan veebruaris, mais, augustis, novembris; kevadel, suvel, sügisel, talvel.</li>
-          </ul>
-          <h5 class="colored-bold">Mis ajaks?</h5>
-          <ul>
-            <li>• Hommikuks, lõunaks, õhtuks.</li>
-            <li>• Tänaseks, homseks, ülehomseks.</li>
-            <li>• Juuniks, juuliks, augustiks.</li>
-          </ul>
-          <h5 class="colored-bold">Kui tihti? Kui sageli?</h5>
-          <ul>
-            <li>• Kolm korda päevas.</li>
-            <li>• Iga päev.</li>
-          </ul>
-          <h5 class="colored-bold">Kui kaua?</h5>
-          <ul>
-            <li>• Terve päev / terve päeva.</li>
-            <li>• Kogu päev / kogu päeva.</li>
-            <li>• Mitu päeva.</li>
-            <li>• Paar nädalat.</li>
-            <li>• Mõni kuu / mõned kuud.</li>
-          </ul>
-        </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">4</span>
+                    </div>
+                    <div class="col-8">
+                      <div>neli</div>
 
-        <div class="pb-4">
-          <a name="luhendid"></a>
-          <h3>Lühendid</h3>
-          <div class="row"><div class="col-bold">a</div><div style="width: 30%">aasta</div><div class="col-bold">mm</div><div>millimeeter</div></div>
-          <div class="row"><div class="col-bold">AS</div><div style="width: 30%">aktsiaselts</div><div class="col-bold">mnt</div><div>maantee</div></div>
-          <div class="row"><div class="col-bold">aü</div><div style="width: 30%">ametiühing</div><div class="col-bold">nr</div><div>number</div></div>
-          <div class="row"><div class="col-bold">cm</div><div style="width: 30%">sentimeeter</div><div class="col-bold">nt</div><div>näiteks</div></div>
-          <div class="row"><div class="col-bold">dr</div><div style="width: 30%">doktor</div><div class="col-bold">Oü</div><div>osaühing</div></div>
-          <div class="row"><div class="col-bold">g</div><div style="width: 30%">gramm</div><div class="col-bold">pr</div><div>proua</div></div>
-          <div class="row"><div class="col-bold">ha</div><div style="width: 30%">hektar</div><div class="col-bold">prl</div><div>preili</div></div>
-          <div class="row"><div class="col-bold">hr</div><div style="width: 30%">härra</div><div class="col-bold">prof</div><div>professor</div></div>
-          <div class="row"><div class="col-bold">jne</div><div style="width: 30%">ja nii edasi</div><div class="col-bold">pst</div><div>puiestee</div></div>
-          <div class="row"><div class="col-bold">jt</div><div style="width: 30%">ja teised</div><div class="col-bold">ptk</div><div>peatükk</div></div>
-          <div class="row"><div class="col-bold">k.a</div><div style="width: 30%">kaasa arvatud</div><div class="col-bold">t</div><div>tonn; tund</div></div>
-          <div class="row"><div class="col-bold">kg</div><div style="width: 30%">kilogramm</div><div class="col-bold">tel</div><div>telefoninumber</div></div>
-          <div class="row"><div class="col-bold">km</div><div style="width: 30%">kilomeeter</div><div class="col-bold">tn</div><div>tänav</div></div>
-          <div class="row"><div class="col-bold">l</div><div style="width: 30%">liiter</div><div class="col-bold">SA</div><div>sihtasutus</div></div>
-          <div class="row"><div class="col-bold">lk</div><div style="width: 30%">lehekülg</div><div class="col-bold">saj</div><div>sajand</div></div>
-          <div class="row"><div class="col-bold">lp</div><div style="width: 30%">lugupeetud</div><div class="col-bold">sh</div><div>sealhulgas</div></div>
-          <div class="row"><div class="col-bold">m</div><div style="width: 30%">meeter</div><div class="col-bold">u</div><div>umbes</div></div>
-          <div class="row"><div class="col-bold">m2</div><div style="width: 30%">ruutmeeter</div><div class="col-bold">v.a</div><div>välja arvatud</div></div>
-          <div class="row"><div class="col-bold">min</div><div style="width: 30%">minut</div><div class="col-bold">vms</div><div>või muud sellist, või muu selline</div></div>
-        </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">5</span>
+                    </div>
+                    <div class="col-8">
+                      <div>viis</div>
 
-        <div class="pb-4">
-          <a name="kirjavahemargid"></a>
-          <h3>Kirjavahemärgid</h3>
-          <div class="row">
-            <div class="col-1 border">
-              .
-            </div>
-            <div class="col-5 border">
-              • lause lõpus<br>
-              • lühendite sees<br>
-              • numbrite järel, kellaaja või kuupäeva sees<br>
-            </div>
-            <div class="col-5 border">
-              • Ma lähen jalutama.<br>
-              • v.a, k.a<br>
-              • Täna on 24. oktoober.<br>
-              • Kell on 21.43.<br>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              ?
-            </div>
-            <div class="col-5 border">
-              • küsimuse lõpus
-            </div>
-            <div class="col-5 border">
-              • Mis su nimi on? Kus sa elad?
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              !
-            </div>
-            <div class="col-5 border">
-              • sellise lause lõpus, mis väljendab käsku, keeldu, soovi või üllatust
-            </div>
-            <div class="col-5 border">
-              • Tule siia! Ära tee! Stopp! Oi, kui tore!
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              ,
-            </div>
-            <div class="col-5 border">
-              • loetelus<br>
-              • lause osade vahel, tavaliselt sidesõnade aga, et, kui, kuid, sest, siis ees
-            </div>
-            <div class="col-5 border">
-              • Ostsin poest leiba, saia, juustu ja piima.<br>
-              • Kui Arno isaga kooli jõudis, olid tunnid juba alanud. Ma tean, et sa valetad. Poiss on väike, aga tubli. Hilinesin, sest magasin sisse.
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              :
-            </div>
-            <div class="col-5 border">
-              • kui järgneb loetelu või selgitus<br>
-              • numbrite vahel<br>
-              • tekstis näitab, et järgnevad kellegi suuliselt öeldud sõnad
-            </div>
-            <div class="col-5 border">
-              • Lõunasöök oli lihtne: kartulid kastmega.<br>
-              • Eesti võitis 5 : 2.<br>
-              • Laps ütles: "Ma tahan magada."
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              ;
-            </div>
-            <div class="col-5 border">
-              • kui järgnevad loetelu rühmad<br>
-              • lause osade vahel
-            </div>
-            <div class="col-5 border">
-              • Poest sai osta kõike: saia, leiba ja muid toiduaineid; pliiatseid, paberit ja muid kontoritarbeid; pluuse, pükse ja muid riideid.<br>
-              • Ilm oli külm, tuuline ja märg; kõik sportlased olid väsinud, janus.
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              -
-            </div>
-            <div class="col-5 border">
-              • ühendab sõnu<br>
-              • liitsõnades, mille üks osa on näiteks täht või number<br>
-              • sõnades, kus muidu jääks kolm või neli ühesugust tähte kõrvuti<br>
-              • liitsõnades korduva osa asemel
-            </div>
-            <div class="col-5 border">
-              • edasi-tagasi, enam-vähem, võib-olla; Tallinna-Tartu liin; inglise-eesti sõnaraamat<br>
-              • 75-aastane, 20-kraadine; IT-osakond<br>
-              • iga-aastane, maa-ala<br>
-              • puu- ja juurviljad, era- ja kortermajad
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              -
-            </div>
-            <div class="col-5 border">
-              • loetelu järel<br>
-              • numbrite vahel sõna kuni asemel<br>
-              • tekstis eristab kahe eri inimese öeldud lauseid
-            </div>
-            <div class="col-5 border">
-              • Rahulik, nõudlik ja vähese jutuga – selline peabki üks ülemus olema.<br>
-              • 10–15 aastat, 9.00–17.30<br>
-              • Mis su nimi on? – Minu nimi on Karl.
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              ""
-            </div>
-            <div class="col-5 border">
-              • tekstis tähistavad kellegi suuliselt öeldud sõnu<br>
-              • tekstis tähistavad teoste, dokumentide, sarjade, ürituste pealkirju
-            </div>
-            <div class="col-5 border">
-              • "Ma olen väsinud," ütles Mari. Mari ütles: "Ma olen väsinud."<br>
-              • Oskar Lutsu kuulsaim romaan on "Kevade".
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-1 border">
-              '
-            </div>
-            <div class="col-5 border">
-              • võõrkeelse nime käänamisel
-            </div>
-            <div class="col-5 border">
-              • Ta elab Seattle’is. Käisin suvel Versailles’ lossis.
-            </div>
-          </div>
-        </div>
-        <div class="pb-4">
-          <a name="kirjutamine"></a>
-          <h3>Kirjutamine</h3>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">6</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kuus</div>
 
-          <a name="kiri"></a>
-          <h4>Kiri</h4>
-          <h5 class="colored-bold">Kuidas kirjutada ümbrikule aadressi</h5>
-          <div class="row">
-            <div class="col-4">
-              Lp Martin Must<br>
-              Estonia pst 21–46<br>
-              10141 Tallinn<br>
-            </div>
-            <div class="col-4">
-              Lp Karl Süda<br>
-              Tamme tee 15<br>
-              Aaviku küla<br>
-              Rae vald<br>
-              75305 Harjumaa<br>
-            </div>
-            <div class="col-4">
-              Peeter Põõsas<br>
-              Sepa 58–6<br>
-              EE-50113 Tartu<br>
-              Eesti<br>
-            </div>
-            <p class="ml-4">
-              <span class="colored-bold">NB!</span> Kui sa kirjutad tekstis aadressi ühele reale, kasuta komasid, näiteks: Estonia pst 21–46, 10141 Tallinn.
-            </p>
-          </div>
-          <h5 class="colored-bold">Ametlik kiri</h5>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-6">
-              juhatuse esimees Meelis Oja<br>
-              Eesti Kirjanduse Selts<br>
-              Vanemuise 19<br>
-              51014 Tartu<br>
-            </div>
-            <div class="col-6 text-right">
-              Meie 05.02.2014 nr 7-2/...
-            </div>
-            <div class="col-12 mt-4">
-              <p>Kutse</p>
-              <p>Austatud juhatuse esimees</p>
-              <p>Palume Teid osa võtma Tartu Ülikooli raamatukogu uue hoone avamisest 1. detsembril 2014. Sel puhul toimub raamatukogus pidulik vastuvõtt ja oleksime väga tänulikud, kui saaksite pidada lühikese ettekande.</p>
-              <p>Saadame ürituse täpse kava siis, kui programm on lõplikult selge. Loodame, et saate meie peol osaleda.</p>
-              <p>Lugupidamisega</p>
-              <p>Martin Kuusk<br>
-              raamatukogu juhataja</p>
-            </div>
-            <div class="col-12 text-center mt-4">
-              Tartu Ülikooli raamatukogu<br>
-              W. Struve 1, 50091 Tartu<br>
-              tel 737 5702, e-post raamatukogu@utlib.ee<br>
-              koduleht www.utlib.ee<br>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6">
-              <span class="colored-bold">• Kuidas pöörduda</span><br>
-              → Austatud härra minister<br>
-              → Lugupeetud Jüri Kask<br>
-              <span class="colored-bold">• Kuidas kirja alustada</span><br>
-              → Täname teid kirja eest!<br>
-              → Saadame/teatame teile ..<br>
-              → Palume teatada/saata/reserveerida ..<br>
-              → Vastuseks teie 9. oktoobri 2013. a kirjale teatame, et ..<br>
-              → Nagu teie kirjast selgus, olete huvitatud ..<br>
-            </div>
-            <div class="col-6">
-              → Meil on rõõm teatada, et ..<br>
-              → Palume vabandust vastuse hilinemise pärast.<br>
-              → Tänan kiire vastuse eest!<br>
-              <span class="colored-bold">• Kuidas kirja lõpetada</span><br>
-              → Lugupidamisega<br>
-              → Austusega<br>
-              → Vastust oodates / ootama jäädes<br>
-              → Meeldivale koostööle lootma jäädes<br>
-              → Ette tänades<br>
-              → Parimate soovidega<br>
-            </div>
-          </div>
-          <div class="row pb-4">
-            <div class="col-12">
-              <span class="colored-bold">NB!</span> Kui sa tahad olla viisakas, kirjuta Teie suure tähega. Kui kiri on
-              mõeldud korraga mitmele inimesele, kirjuta teie väikese tähega.
-            </div>
-          </div>
-          <h5 class="colored-bold">Kiri sõbrale</h5>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12">
-              <p>Tere, Julia!</p>
-              <p>Palun vabandust, et su kirjale alles nüüd vastan, aga mul on olnud kiire.</p>
-              <p>Meie reis läks hästi. Prantsusmaal on kaunis loodus ja Pariis on väga ilus linn. Ilmaga vedas – kõikidel päevadel paistis päike ja oli soe. Käisime Eiffeli tornis, Louvre’i muuseumis, istusime kohvikutes ja nautisime Prantsuse kööki. Soovitan sinul ka kindlasti Pariisi minna, kui võimalus tekib.</p>
-              <p>Mis teil uudist? Kuidas suvi möödus? Kuidas su vanemad elavad? Jään su vastust ootama.</p>
-              <p>Tervitades</p>
-              <p>Egle</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6">
-              <span class="colored-bold">• Kuidas kirja alustada</span><br>
-              → Aitäh kirja eest!<br>
-              → Kuidas sul läheb?<br>
-              → Kuidas elad?<br>
-              → Loodan, et sul läheb hästi.<br>
-              → Nii tore oli sinust kuulda.<br>
-              → Palun vabandust / anna andeks, et alles nüüd vastan.<br>
-            </div>
-            <div class="col-6">
-              <span class="colored-bold">• Kuidas kirja lõpetada</span><br>
-              → Jään su kirja/vastust ootama.<br>
-              → Loodetavasti varsti näeme!<br>
-              → Tervitades<br>
-              → Parimaga<br>
-              <span class="colored-bold">• Väga lähedasele sõbrale</span><br>
-              → Kallistan<br>
-              → Armastusega<br>
-            </div>
-          </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">7</span>
+                    </div>
+                    <div class="col-8">
+                      <div>seitse</div>
 
-          <a name="ekiri"></a>
-          <h4>E-kiri</h4>
-          <h5 class="colored-bold">Ametlik e-kiri</h5>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-3 mb-4">
-              Kellele<br>
-              Koopia
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">8</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kaheksa</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">9</span>
+                    </div>
+                    <div class="col-8">
+                      <div>üheksa</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">10</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kümme</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">11</span>
+                    </div>
+                    <div class="col-8">
+                      <div>üksteist</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">12</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kaksteist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">13</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kolmteist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">14</span>
+                    </div>
+                    <div class="col-8">
+                      <div>neliteist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">15</span>
+                    </div>
+                    <div class="col-8">
+                      <div>viisteist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">16</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kuusteist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">17</span>
+                    </div>
+                    <div class="col-8">
+                      <div>seitseteist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">18</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kaheksateist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">19</span>
+                    </div>
+                    <div class="col-8">
+                      <div>üheksateist</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">20</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend</div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">21</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend üks</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">22</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend kaks</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">23</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend kolm</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">24</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend neli</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">25</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend viis</div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">26</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend kuus</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">27</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend seitse</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">28</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend kaheksa</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">29</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakskümmend üheksa</div>
+
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">30</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kolmkümmend</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">40</span>
+                    </div>
+                    <div class="col-8">
+                      <div>nelikümmend</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">50</span>
+                    </div>
+                    <div class="col-8">
+                      <div>viiskümmend</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">60</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kuuskümmend</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">70</span>
+                    </div>
+                    <div class="col-8">
+                      <div>seitsekümmend</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">80</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kaheksakümmend</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">90</span>
+                    </div>
+                    <div class="col-8">
+                      <div>üheksakümmend</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">100</span>
+                    </div>
+                    <div class="col-8">
+                      <div>sada</div>
+
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">101</span>
+                    </div>
+                    <div class="col-8">
+                      <div>sada üks</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">102</span>
+                    </div>
+                    <div class="col-8">
+                      <div>sada kaks</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">200</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kakssada</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">300</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kolmsada</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">400</span>
+                    </div>
+                    <div class="col-8">
+                      <div>nelisada</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">500</span>
+                    </div>
+                    <div class="col-8">
+                      <div>viissada</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">600</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kuussada</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">700</span>
+                    </div>
+                    <div class="col-8">
+                      <div>seitsesada</div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">800</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kaheksasada</div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">900</span>
+                    </div>
+                    <div class="col-8">
+                      <div>üheksasada</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">1000</span>
+                    </div>
+                    <div class="col-8">
+                      <div>tuhat</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">1110</span>
+                    </div>
+                    <div class="col-8">
+                      <div>tuhat ükssada kümme</div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-4">
+                      <span class="num">2000</span>
+                    </div>
+                    <div class="col-8">
+                      <div>kaks tuhat</div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-6">
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="num">10 000</span>
+                    </div>
+                    <div class="col-6">
+                      <div>kümme tuhat</div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="num">50 000</span>
+                    </div>
+                    <div class="col-6">
+                      <div>viiskümmend tuhat</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="num">100 000</span>
+                    </div>
+                    <div class="col-6">
+                      <div>sada tuhat</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="num">1 000 000</span>
+                    </div>
+                    <div class="col-6">
+                      <div>miljon</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <span class="num">1 000 000 000</span>
+                    </div>
+                    <div class="col-6">
+                      <div>miljard</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+
+
+
+              <div class="mt-3">
+                <h5 class="colored-bold">Mitmes? Mitmenda? Mitmendat?</h5>
+
+                <div class="row">
+                  <div class="num">1.</div>
+                  <div>esimene, esimese, esimest</div>
+                </div>
+                <div class="row">
+                  <div class="num">2.</div>
+                  <div>teine, teise, teist</div>
+                </div>
+                <div class="row">
+                  <div class="num">3.</div>
+                  <div>kolmas, kolmanda, kolmandat</div>
+                </div>
+                <div class="row">
+                  <div class="num">4.</div>
+                  <div>neljas, neljanda, neljandat</div>
+                </div>
+                <div class="row">
+                  <div class="num">5.</div>
+                  <div>viies, viienda, viiendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">6.</div>
+                  <div>kuues, kuuenda, kuuendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">7.</div>
+                  <div>seitsmes, seitsmenda, seitsmendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">8.</div>
+                  <div>kaheksas, kaheksanda, kaheksandat</div>
+                </div>
+                <div class="row">
+                  <div class="num">9.</div>
+                  <div>üheksas, üheksanda, üheksandat</div>
+                </div>
+                <div class="row">
+                  <div class="num">10.</div>
+                  <div>kümnes, kümnenda, kümnendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">11.</div>
+                  <div>üheteistkümnes, üheteistkümnenda, üheteistkümnendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">12.</div>
+                  <div>kaheteistkümnes, kaheteistkümnenda, kaheteistkümnendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">13.</div>
+                  <div>kolmeteistkümnes, kolmeteistkümnenda, kolmeteistkümnendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">20.</div>
+                  <div>kahekümnes, kahekümnenda, kahekümnendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">21.</div>
+                  <div>kahekümne esimene, kahekümne esimese, kahekümne esimest</div>
+                </div>
+                <div class="row">
+                  <div class="num">22.</div>
+                  <div>kahekümne teine, kahekümne teise, kahekümne teist</div>
+                </div>
+                <div class="row">
+                  <div class="num">30.</div>
+                  <div>kolmekümnes, kolmekümnenda, kolmekümnendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">100.</div>
+                  <div>sajas, sajanda, sajandat</div>
+                </div>
+                <div class="row">
+                  <div class="num">200.</div>
+                  <div>kahesajas, kahesajanda, kahesajandat</div>
+                </div>
+                <div class="row">
+                  <div class="num">1000.</div>
+                  <div>tuhandes, tuhandenda, tuhandendat</div>
+                </div>
+                <div class="row">
+                  <div class="num">2000.</div>
+                  <div>kahetuhandes, kahetuhandenda, kahetuhandendat</div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div class="row">
+                  <div class="num">1/2</div>
+                  <div>pool</div>
+                </div>
+                <div class="row">
+                  <div class="num">1/3</div>
+                  <div>(üks) kolmandik</div>
+                </div>
+                <div class="row">
+                  <div class="num">1/4</div>
+                  <div>(üks) neljandik, veerand</div>
+                </div>
+                <div class="row">
+                  <div class="num">1/5</div>
+                  <div>(üks) viiendik</div>
+                </div>
+                <div class="row">
+                  <div class="num">3/4</div>
+                  <div>kolm neljandikku, kolmveerand</div>
+                </div>
+                <div class="row">
+                  <div class="num">1 1/2</div>
+                  <div>poolteist</div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <h5 class="colored-bold">Kui vana sa oled?</h5>
+                <div>
+                  Ma olen kuusteist / kuusteist aastat vana / kuueteistaastane (= 16). Ma olen kolmkümmend kuus /
+                  kolmkümmend kuus aastat vana / kolmekümne kuue aastane (= 36). Laps on aastane/üheaastane (= 1).
+                </div>
+              </div>
+              <div class="mt-3">
+                <h5 class="colored-bold">Mis on su telefoninumber?</h5>
+                <div>
+                  Minu telefoninumber on 5654 3210 (loe nii: viis-kuus viis-neli kolm-kaks üks-null).
+                </div>
+              </div>
             </div>
-            <div class="col-9">
-              info@pood.ee
+          </div>
+          <div class="tab-pane fade"
+            id="v-pills-margid"
+            role="tabpanel"
+            aria-labelledby="v-pills-margid-tab">
+            <h3 class="learn-content-title">Märgid</h3>
+            <div class="learn-content">
+              <a name="margid"></a>
+              <div class="row">
+                <div class="num">%</div>
+                <div style="width: 10%;">protsent</div>
+                <div style="width: 10%">45%</div>
+                <div>nelikümmend viis protsenti</div>
+              </div>
+              <div class="row">
+                <div class="num">°</div>
+                <div style="width: 10%;">kraad</div>
+                <div style="width: 10%">22°</div>
+                <div>kakskümmend kaks kraadi</div>
+              </div>
+              <div class="row">
+                <div class="num">+</div>
+                <div style="width: 10%;">pluss</div>
+                <div style="width: 10%">6 + 2= 8</div>
+                <div>kuus pluss kaks on kaheksa</div>
+              </div>
+              <div class="row">
+                <div class="num">–</div>
+                <div style="width: 10%;">miinus</div>
+                <div style="width: 10%">6 – 2= 4</div>
+                <div>kuus miinus kaks on neli</div>
+              </div>
+              <div class="row">
+                <div class="num">×</div>
+                <div style="width: 10%;">korda</div>
+                <div style="width: 10%">6 × 3 = 18</div>
+                <div>kuus korda kolm on kaheksateist</div>
+              </div>
+              <div class="row">
+                <div class="num">·</div>
+                <div style="width: 10%;">korda</div>
+                <div style="width: 10%">6 · 3 = 18</div>
+                <div>kuus korda kolm on kaheksateist</div>
+              </div>
+              <div class="row">
+                <div class="num">:</div>
+                <div style="width: 10%;">jagada</div>
+                <div style="width: 10%">24 : 4 = 6</div>
+                <div>kakskümmend neli jagada neljaga on kuus</div>
+              </div>
+              <div class="row">
+                <div class="num">/</div>
+                <div style="width: 10%;">jagada</div>
+                <div style="width: 10%">24 / 4 = 6</div>
+                <div>kakskümmend neli jagada neljaga on kuus</div>
+              </div>
             </div>
-            <div class="col-3">Teema</div>
-            <div class="col-9">Samsungi mobiiltelefon</div>
-            <div class="col-12 mt-4">
-              <p>Tere!</p>
-              <p>Ma soovin osta Samsungi mobiiltelefoni uut mudelit. Nägin teie kodulehelt, et pakute neid soodsa hinnaga. Mind huvitab punase korpusega mudel. Kas teil on neid veel poes saada? Kui on, siis ma paneksin ühe telefoni kinni ja tuleksin sellele homme poodi järele.</p>
+          </div>
+          <div class="tab-pane fade"
+            id="v-pills-aeg"
+            role="tabpanel"
+            aria-labelledby="v-pills-aeg-tab">
+            <div class="learn-content">
+              <a name="aeg"></a>
+              <h3>Aeg</h3>
+              <h5 class="colored-bold">Mis kell on? Kui palju kell on?</h5>
+              <p>Eestis märgitakse aega kella järgi numbrite 0–24 abil. Kui on hommik, siis kirjutame nii: Kell on 7 (=
+                seitse). Kui on õhtu, siis kirjutame nii: Kell on 19 (= seitse).</p>
+              <div class="row col-12">
+                <div class="col-3"><img th:src="@{/view/images/kell_k6mme_opt.jpeg}"
+                    width="100%"></div>
+                <div class="col-3"><img th:src="@{/view/images/kell_veerand_6ksteist_opt.jpeg}"
+                    width="100%"></div>
+                <div class="col-3"><img th:src="@{/view/images/kell_pool_6ksteist_opt.jpeg}"
+                    width="100%"></div>
+                <div class="col-3"><img th:src="@{/view/images/kell_kolmveerand_6kste_opt.jpeg}"
+                    width="100%"></div>
+              </div>
+              <div class="row col-12 mb-4 text-center">
+                <div class="col-3">Kell on kümme</div>
+                <div class="col-3">Kell on veerand üksteist</div>
+                <div class="col-3">Kell on pool üksteist</div>
+                <div class="col-3">Kell on kolmveerand üksteist</div>
+              </div>
               <p>
-                Lugupidamisega<br>
-                Kati Karu<br>
-                tel 612 3456<br>
-                e-post kati.karu@epost.ee<br>
-              </p>
-            </div>
-          </div>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-3 mb-4">
-              Kellele<br>
-              Koopia
-            </div>
-            <div class="col-9">
-              kati.karu@epost.ee
-            </div>
-            <div class="col-3">Teema</div>
-            <div class="col-9">RE: Samsungi mobiiltelefon</div>
-            <div class="col-12 mt-4">
-              <p>Lugupeetud Kati Karu</p>
-              <p>Täname Teid kirja eest! Samsungi punase korpusega mobiiltelefonid on praegu kahjuks laost otsas, saada on veel musta, valge ja sinise korpusega mudeleid. Järgmisel nädalal teeme uue tellimuse, partii jõuab poodi järgmise kuu alguses. Kas paneme Teile ühe punase telefoni kinni või soovite osta teist värvi mudelit?</p>
-              <p>
-                Vastust ootama jäädes<br>
-                Liisi Pirn<br>
-                kauplus Mööbel ja Tehnika<br>
-                tel 665 4321<br>
-                e-post info@pood.ee<br>
-              </p>
-            </div>
-          </div>
-          <h5 class="colored-bold">Kolleegile</h5>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-3 mb-4">
-              Kellele<br>
-              Koopia
-            </div>
-            <div class="col-9">
-              toomas@firma.ee, liina@firma.ee<br>
-              juhiabi@firma.ee
-            </div>
-            <div class="col-3">Teema</div>
-            <div class="col-9">haigus</div>
-            <div class="col-12 mt-4">
-              <p>Head kolleegid!</p>
-              <p>Jäin haigeks ja täna tööle ei tule. Loodetavasti saan homseks terveks.</p>
-              <p>
-                Tervitades<br>
-                Peeter<br>
-              </p>
-            </div>
-          </div>
-          <h5 class="colored-bold">Sõbrale</h5>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-3 mb-4">
-              Kellele<br>
-              Koopia
-            </div>
-            <div class="col-9">
-              ave@epost.ee
-            </div>
-            <div class="col-3">Teema</div>
-            <div class="col-9">kindad</div>
-            <div class="col-12 mt-4">
-              <p>Tere, Ave!</p>
-              <p>
-                Nii tore oli üle pika aja kokku saada.<br>
-                Ma vist unustasin eile midagi sinu juurde – kui sa leiad ühed sinised kindad, siis need on minu omad.<br>
-                Loodetavasti näeme varsti jälle!<br>
-                Tervita Toomast!
+                <b>Kell on 10.05</b> Kell on viis minutit kümme läbi / kell on kümme ja viis minutit / kell on kümme
+                null
+                viis.<br>
+                <b>Kell on 10.20</b> Kell on kakskümmend minutit kümme läbi / kell on kümme ja kakskümmend minutit /
+                kell on
+                kümme kakskümmend.<br>
+                <b>Kell on 10.40</b> Kell on kahekümne minuti pärast üksteist / kell on kümme nelikümmend.
               </p>
               <p>
-                Kallistades<br>
-                Kerli
+                <b>Mis kell? Mis ajal?</b> Hommikul kell seitse. Öösel kell üks. Kella ühe paiku. Mis kellaks? Mis
+                ajaks?
+                Kella kümneks.<br>
+                <b>Mis kell? Mis kella ajal? Mis kell sa jõuad?</b> – Kahe-kolme ajal.<br>
+                <b>Mis kellast mis kellani?</b> Vastuvõtt on (kella) kaheksast kaheteistkümneni.
               </p>
-            </div>
-          </div>
-
-          <a name="postkaart"></a>
-          <h4>Postkaart</h4>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12">
-              Kallis ema!<br>
-              Palju õnne 55. sünnipäeva puhul! Jõudu, jaksu ja tervist!
-            </div>
-            <div class="col-6">
-              Soovib Kadri perega
-            </div>
-            <div class="col-6 text-right">
-              2. veebruaril 2014
-            </div>
-          </div>
-
-          <a name="kutse"></a>
-          <h4>Kutse</h4>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12">
-              <p>Kallid Mari ja Marko!</p>
-              <p>Meil on rõõm paluda teid meie laulatusele 1. juulil 2014 kell 16 Tallinna Kaarli kirikus.</p>
-              <p>Kristel ja Karmo</p>
-              <p>Palun teatage oma tulekust hiljemalt 10. juuniks 2014 telefonil 612 3456.</p>
-            </div>
-          </div>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12 text-center">
-              <p>Armas Maarja!</p>
-              <p>Palun tule minu sünnipäevale neljapäeval, 26. oktoobril kell 19 restorani Must Lammas.</p>
-              <p>Tervitades<br>
-              Laura</p>
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-12">
-              <span class="colored-bold">• Kuidas kutsele vastata</span><br>
-              → Täname sind/teid kutse eest ja teatame oma osavõtust.<br>
-              → Tänan kutsumast, tulen hea meelega.<br>
-              → Tänan kutsumast, aga ma olen sel ajal kahjuks kinni/tööl/reisil.<br>
-              → Aitäh, aga ma ei saa kahjuks tulla/osaleda.<br>
-            </div>
-          </div>
-
-          <a name="kavaldus"></a>
-          <h4>Kaastunde avaldamine</h4>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12">
-              <p>Armas Henri!</p>
-              <p>Tunneme Sulle kaasa isa surma puhul.</p> 
-              <p>Oleme mõtetes Sinuga.</p>
-              <p>Kaur ja Liina</p>
-            </div>
-          </div>
-
-          <a name="sonum"></a>
-          <h4>Sõnum</h4>
-          <div class="row col-12 mb-4">
-            <img th:src="@{/view/images/sonum.png}">
-          </div>
-
-          <a name="avaldus"></a>
-          <h4>Avaldus</h4>
-          <h5 class="colored-bold">Asutuse sees</h5>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12 text-center mb-4">
-              Tartu Kesklinna Gümnaasiumi direktorile
-            </div>
-            <div class="col-12 text-right mb-4">
-              Jaan Tamm<br>
-              kehalise kasvatuse õpetaja
-            </div>
-            <div class="col-12 text-center mb-4">
-              Avaldus
-            </div>
-            <div class="col-12 mb-4">
-              Palun võimaldada mulle palgata puhkust 3.–9. novembril 2014.
-            </div>
-            <div class="col-6">
-              20.10.2014
-            </div>
-            <div class="col-6 text-right">
-              J. Tamm<br>
-              (allkiri)
-            </div>
-          </div>
-          <div class="row mb-4">
-            <div class="col-12">
-              → Palun lubada mind ..<br>
-              → Palun mind üle viia ..<br>
-              → Palun mind registreerida ..<br>
-              → Soovin kandideerida ..<br>
-            </div>
-          </div>
-          <h5 class="colored-bold">Asutusest välja</h5>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12 text-center mb-4">
-              Tallinna 21. Kooli direktorile
-            </div>
-            <div class="col-12 text-right mb-4">
-              Katri Kask<br>
-              isikukood 49727071236<br>
-              Kuuse 3–27, 12345 Tallinn<br>
-              katri.kask@epost.ee<br>
-              5654 3210<br>
-            </div>
-            <div class="col-12 text-center mb-4">
-              Avaldus
-            </div>
-            <div class="col-12 mb-4">
-              Palun mind vastu võtta Tallinna 21. Kooli 10. klassi.
-            </div>
-            <div class="col-6">
-              Tallinnas 1. juulil 2014
-            </div>
-            <div class="col-6 text-right">
-              K. Kask<br>
-              (allkiri)
-            </div>
-          </div>
-
-          <a name="volitus"></a>
-          <h4>Volitus</h4>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12 text-center mb-4">
-              Volitus
-            </div>
-            <div class="col-12 text-right mb-4">
-              Mari Maasikas<br>
-              isikukood 45802277771<br>
-              Raua 7–12<br>
-            </div>
-            <div class="col-12 mb-4">
-              Karl Õunapuul (isikukood 34303194321) on volitus esindada mind ühistu Raua 7 koosolekul, 26.05.2014.
-            </div>
-            <div class="col-6">
-              Tallinnas 22.05.2012
-            </div>
-            <div class="col-6 text-right">
-              M. Maasikas<br>
-              (allkiri)
-            </div>
-          </div>
-
-          <a name="cv"></a>
-          <h4>CV</h4>
-          <div class="row col-12  mb-4">
-            CV ehk curriculum vitae on inimese elulugu kirjeldav dokument.
-          </div>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12 text-center mb-4">
-              Curriculum vitae
-            </div>
-            <div class="col-4 mb-4">
-              <b>Nimi</b><br>
-              <b>Sünniaeg ja -koht</b><br>
-              <b>Aadress</b><br>
-              <b>Telefon</b><br>
-              <b>E-post</b><br>
-              <b>Kodakondsus</b><br>
-              <b>Perekonnaseis</b><br>
-            </div>
-            <div class="col-8">
-              <b>Robert Rohi</b><br>
-              27. juuli 1980, Tartu<br>
-              Pikk 9–46, Tartu<br>
-              5654 3210<br>
-              robert.rohi@epost.ee<br>
-              Eesti<br>
-              abielus, kaks last<br>
-            </div>
-            <div class="col-4 mb-4">
-              <b>Haridus</b><br>
-              1999–2003<br>
-              1987–1999
-            </div>
-            <div class="col-8">
-              <br>
-              Tartu Ülikool, eesti keele ja kirjanduse eriala<br>
-              Miina Härma Gümnaasium
-            </div>
-            <div class="col-4 mb-4">
-              <b>Töökoht ja amet</b><br>
-              2010–<br>
-              2003–2010
-            </div>
-            <div class="col-8">
-              <br>
-              Tartu Kesklinna Kool, eesti keele ja kirjanduse õpetaja<br>
-              Võru Kesklinna Gümnaasium, eesti keele ja kirjanduse õpetaja
-            </div>
-            <div class="col-4">
-              <b>Keeled</b>
-            </div>
-            <div class="col-2">
-              inglise keel<br>
-              vene keel<br>
-              soome keel
-            </div>
-            <div class="col-6 mb-4">
-              C1<br>
-              B2<br>
-              B1
-            </div>
-            <div class="col-4 mb-4">
-              <b>Arvutioskus</b>
-            </div>
-            <div class="col-8">
-              MS Excel, MS PowerPoint, MS Word, MS Outlook
-            </div>
-            <div class="col-4 mb-4">
-              <b>Juhiluba</b>
-            </div>
-            <div class="col-8">
-              B-kategooria
-            </div>
-            <div class="col-4 mb-4">
-              <b>Hobid</b>
-            </div>
-            <div class="col-8">
-              ujumine, tennis, reisimine, lugemine, teater
-            </div>
-          </div>
-          <div class="row col-12 mb-4">
-            <span class="colored-bold">NB!</span> CV tuleb sageli esitada koos kaaskirjaga (lühike tekst, mis tutvustab CV saatnud inimest).
-          </div>
-
-          <a name="kaaskiri"></a>
-          <h4>Kaaskiri</h4>
-          <div class="row border col-lg-12 col-12 mb-4">
-            <div class="col-12 text-right mb-4">
-              Tarmo Mets<br>
-              Kure tee 3–57, 10996 Tallinn<br>
-              tel 5987 6543<br>
-            </div>
-            <div class="col-6 mb-4">
-              Marko Mänd<br>
-              peatoimetaja<br>
-              ajakiri Looming<br>
-              Harju 1, 10500 Tallinn<br>
-            </div>
-            <div class="col-6 text-right">
-              <br><br><br>15. veebruar 2014
-            </div>
-            <div class="col-12 mb-4">
-              Kaaskiri<br>
-              Austatud Marko Mänd
-            </div>
-            <div class="col-12 mb-4">
-              <p>Lugesin 10. jaanuari Postimehest Teie asutuse kuulutust, kus Te otsite toimetajat. Olen hariduselt eesti keele ja kirjanduse õpetaja ning olen töötanud gümnaasiumis, lisaks olen andnud eesti keele tunde ka täiskasvanutele. Ülikoolis õppides töötasin kaks aastat ülikooli ajalehes peatoimetajana. Mulle meeldib väga lugeda ja kontsertidel käia. Samuti olen kursis enamiku uute etenduste, näituste ja filmidega, eriti olen huvitatud kodumaisest kunstist ja kultuurist.</p>
-              <p>Usun, et ajakiri Looming annaks mulle võimaluse arendada ennast valdkonnas, mis pakub mulle huvi, ning minu kogemustest ja oskustest oleks Teile kasu. Olen valmis vastama Teie küsimustele Teile sobival ajal.</p>
-              <p>Lugupidamisega</p> 
-              <p>Tarmo Mets<br>
-                allkiri
+              <h5 class="colored-bold">Aastaajad, kuud ja nädalapäevad</h5>
+              <p>
+                <span class="colored-bold">aastaajad</span><br>
+                <span class="pr-4">kevad</span>
+                <span class="pr-4">suvi</span>
+                <span class="pr-4">sügis</span>
+                <span class="pr-4">talv</span>
               </p>
-              <p>Lisa: CV</p>
+              <p>
+                <span class="colored-bold">kuud</span><br>
+                <span class="pr-4">jaanuar</span>
+                <span class="pr-4">veebruar</span>
+                <span class="pr-4">märts</span>
+                <span class="pr-4">aprill</span>
+                <span class="pr-4">mai</span>
+                <span class="pr-4">juuni</span>
+                <span class="pr-4">juuli</span>
+                <span class="pr-4">august</span>
+                <span class="pr-4">september</span>
+                <span class="pr-4">oktoober</span>
+                <span class="pr-4">november</span>
+                <span class="pr-4">detsember</span>
+              </p>
+              <p>
+                <span class="colored-bold">nädalapäevad</span><br>
+                <span class="pr-4">esmaspäev</span>
+                <span class="pr-4">teisipäev</span>
+                <span class="pr-4">kolmapäev</span>
+                <span class="pr-4">neljapäev</span>
+                <span class="pr-4">reede</span>
+                <span class="pr-4">laupäev</span>
+                <span class="pr-4">pühapäev</span>
+              </p>
+              <p>
+                <span class="colored-bold">NB!</span> Info esitamisel kasutatakse nädalapäeva asemel tihti lühendit (E –
+                esmaspäev, T – teisipäev,
+                K – kolmapäev, N – neljapäev, R – reede, L – laupäev, P – pühapäev)
+              </p>
+
+              <h5 class="colored-bold">Kuidas kirjutada kuupäevi</h5>
+              <div class="row">
+                <div style="width: 30%; margin-left: 1rem;">20.05.1995</div>
+                <div>02.08.2013</div>
+              </div>
+              <div class="row">
+                <div style="width: 30%; margin-left: 1rem;">20. mai 1995</div>
+                <div>2. august 2013</div>
+              </div>
+              <div class="row">
+                <div style="width: 30%; margin-left: 1rem;">20. mail 1995. a</div>
+                <div>2. augustil 2013. a</div>
+              </div>
+              <div class="row">
+                <div style="width: 30%; margin-left: 1rem;">20. V 1995</div>
+                <div>2. VIII 2013</div>
+              </div>
+              <div class="row">
+                <div style="width: 30%; margin-left: 1rem;">20.5.95</div>
+                <div>2.8.2013</div>
+              </div>
+              <div class="row">
+                <div style="width: 30%; margin-left: 1rem;">12.5.–20.5.1995</div>
+                <div>21.05.–23.05.2013</div>
+              </div>
+
+              <h5 class="colored-bold mt-3">Kuidas kirjutada ajavahemikke</h5>
+              <p>
+                Ajavahemike vahele kirjutame tavaliselt pika kriipsu –, mis asendab sõna kuni, näiteks:
+                <ul>
+                  <li>• konverents toimub 15.–19. oktoobril / 15.–19. oktoobrini / 15. oktoobrist (kuni) 19. oktoobrini
+                  </li>
+                  <li>• kontor on kinni 24.–27.12 ja 31.12–05.01</li>
+                  <li>• olen puhkusel 01.10.–14.10.2014</li>
+                  <li>• postkontor on lahti T–L 9.30–18.00, pood on lahti iga päev 9–23</li>
+                  <li>• uuring tehti 2010.–2013. aastal</li>
+                </ul>
+              </p>
+              <p>
+                Kui ajalised üksused on järjest, kirjutame arvude vahele lühikese kriipsu - või sõna ja, näiteks:
+                <ul>
+                  <li>• konverents toimub 18.-19. oktoobril / 18. ja 19. oktoobril</li>
+                  <li>• kontor on kinni 23.-24.02 / 23. ja 24.12</li>
+                  <li>• küsitlus tehti 2012.-2013. aastal / 2012. ja 2013. aastal</li>
+                </ul>
+              </p>
+              <h5 class="colored-bold">Mis aasta(te)l?</h5>
+              <ul>
+                <li>• 2014. aastal (loe: kahe tuhande neljateistkümnendal aastal)</li>
+                <li>• 2011. a (loe: kahe tuhande üheteistkümnendal aastal)</li>
+                <li>• aastal 2013 (loe: aastal kaks tuhat kolmteist)</li>
+                <li>• aastad 1908–1918, 1908–18 (loe: aastad tuhat üheksasada kaheksa kuni tuhat üheksasada
+                  kaheksateist)
+                </li>
+                <li>• aastail 1992–1999, 1992–99 (loe: aastail tuhat üheksasada üheksakümmend kaks kuni tuhat üheksasada
+                  üheksakümmend üheksa)</li>
+                <li>• 1940.–1970. aastad (loe: tuhande üheksasaja neljakümnendad kuni seitsmekümnendad aastad)</li>
+                <li>• 1960.–1980. aastatel (loe: tuhande üheksasaja kuuekümnendatel kuni kaheksakümnendatel aastatel)
+                </li>
+                <li>• 1920ndail (loe: tuhande üheksasaja kahekümnendail)</li>
+                <li>• 1930. aastail (loe: tuhande üheksasaja kolmekümnendail aastail)</li>
+              </ul>
+              <h5 class="colored-bold">Mis kuupäev täna on? Mitmes täna on?</h5>
+              <p>
+                Täna on 02.01.2014 (loe: teine jaanuar kaks tuhat neliteist). Täna on 21.10 (loe: kahekümne esimene
+                oktoober).
+              </p>
+              <h5 class="colored-bold">Millal?</h5>
+              <ul>
+                <li>• Üleeile, eile, täna, homme, ülehomme.</li>
+                <li>• Kaks nädalat tagasi, eelmisel nädalal, sel nädalal, järgmisel nädalal, tuleval nädalal, kahe
+                  nädala
+                  pärast.</li>
+                <li>• Hommikul, päeval, õhtul, öösel. Hommikul vara, õhtul hilja.</li>
+                <li>• Kohtume esmaspäeval, reedel, laupäeval.</li>
+                <li>• Puhkan veebruaris, mais, augustis, novembris; kevadel, suvel, sügisel, talvel.</li>
+              </ul>
+              <h5 class="colored-bold">Mis ajaks?</h5>
+              <ul>
+                <li>• Hommikuks, lõunaks, õhtuks.</li>
+                <li>• Tänaseks, homseks, ülehomseks.</li>
+                <li>• Juuniks, juuliks, augustiks.</li>
+              </ul>
+              <h5 class="colored-bold">Kui tihti? Kui sageli?</h5>
+              <ul>
+                <li>• Kolm korda päevas.</li>
+                <li>• Iga päev.</li>
+              </ul>
+              <h5 class="colored-bold">Kui kaua?</h5>
+              <ul>
+                <li>• Terve päev / terve päeva.</li>
+                <li>• Kogu päev / kogu päeva.</li>
+                <li>• Mitu päeva.</li>
+                <li>• Paar nädalat.</li>
+                <li>• Mõni kuu / mõned kuud.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="tab-pane fade"
+            id="v-pills-luhendid"
+            role="tabpanel"
+            aria-labelledby="v-pills-luhendid-tab">
+            <div class="learn-content">
+              <a name="luhendid"></a>
+              <h3>Lühendid</h3>
+              <div class="row">
+                <div class="col-bold">a</div>
+                <div style="width: 30%">aasta</div>
+                <div class="col-bold">mm</div>
+                <div>millimeeter</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">AS</div>
+                <div style="width: 30%">aktsiaselts</div>
+                <div class="col-bold">mnt</div>
+                <div>maantee</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">aü</div>
+                <div style="width: 30%">ametiühing</div>
+                <div class="col-bold">nr</div>
+                <div>number</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">cm</div>
+                <div style="width: 30%">sentimeeter</div>
+                <div class="col-bold">nt</div>
+                <div>näiteks</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">dr</div>
+                <div style="width: 30%">doktor</div>
+                <div class="col-bold">Oü</div>
+                <div>osaühing</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">g</div>
+                <div style="width: 30%">gramm</div>
+                <div class="col-bold">pr</div>
+                <div>proua</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">ha</div>
+                <div style="width: 30%">hektar</div>
+                <div class="col-bold">prl</div>
+                <div>preili</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">hr</div>
+                <div style="width: 30%">härra</div>
+                <div class="col-bold">prof</div>
+                <div>professor</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">jne</div>
+                <div style="width: 30%">ja nii edasi</div>
+                <div class="col-bold">pst</div>
+                <div>puiestee</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">jt</div>
+                <div style="width: 30%">ja teised</div>
+                <div class="col-bold">ptk</div>
+                <div>peatükk</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">k.a</div>
+                <div style="width: 30%">kaasa arvatud</div>
+                <div class="col-bold">t</div>
+                <div>tonn; tund</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">kg</div>
+                <div style="width: 30%">kilogramm</div>
+                <div class="col-bold">tel</div>
+                <div>telefoninumber</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">km</div>
+                <div style="width: 30%">kilomeeter</div>
+                <div class="col-bold">tn</div>
+                <div>tänav</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">l</div>
+                <div style="width: 30%">liiter</div>
+                <div class="col-bold">SA</div>
+                <div>sihtasutus</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">lk</div>
+                <div style="width: 30%">lehekülg</div>
+                <div class="col-bold">saj</div>
+                <div>sajand</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">lp</div>
+                <div style="width: 30%">lugupeetud</div>
+                <div class="col-bold">sh</div>
+                <div>sealhulgas</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">m</div>
+                <div style="width: 30%">meeter</div>
+                <div class="col-bold">u</div>
+                <div>umbes</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">m2</div>
+                <div style="width: 30%">ruutmeeter</div>
+                <div class="col-bold">v.a</div>
+                <div>välja arvatud</div>
+              </div>
+              <div class="row">
+                <div class="col-bold">min</div>
+                <div style="width: 30%">minut</div>
+                <div class="col-bold">vms</div>
+                <div>või muud sellist, või muu selline</div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade"
+            id="v-pills-kirjavahemargid"
+            role="tabpanel"
+            aria-labelledby="v-pills-kirjavahemargid-tab">
+            <div class="learn-content">
+              <a name="kirjavahemargid"></a>
+              <h3>Kirjavahemärgid</h3>
+              <div class="row">
+                <div class="col-1 border">
+                  .
+                </div>
+                <div class="col-5 border">
+                  • lause lõpus<br>
+                  • lühendite sees<br>
+                  • numbrite järel, kellaaja või kuupäeva sees<br>
+                </div>
+                <div class="col-5 border">
+                  • Ma lähen jalutama.<br>
+                  • v.a, k.a<br>
+                  • Täna on 24. oktoober.<br>
+                  • Kell on 21.43.<br>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  ?
+                </div>
+                <div class="col-5 border">
+                  • küsimuse lõpus
+                </div>
+                <div class="col-5 border">
+                  • Mis su nimi on? Kus sa elad?
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  !
+                </div>
+                <div class="col-5 border">
+                  • sellise lause lõpus, mis väljendab käsku, keeldu, soovi või üllatust
+                </div>
+                <div class="col-5 border">
+                  • Tule siia! Ära tee! Stopp! Oi, kui tore!
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  ,
+                </div>
+                <div class="col-5 border">
+                  • loetelus<br>
+                  • lause osade vahel, tavaliselt sidesõnade aga, et, kui, kuid, sest, siis ees
+                </div>
+                <div class="col-5 border">
+                  • Ostsin poest leiba, saia, juustu ja piima.<br>
+                  • Kui Arno isaga kooli jõudis, olid tunnid juba alanud. Ma tean, et sa valetad. Poiss on väike, aga
+                  tubli.
+                  Hilinesin, sest magasin sisse.
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  :
+                </div>
+                <div class="col-5 border">
+                  • kui järgneb loetelu või selgitus<br>
+                  • numbrite vahel<br>
+                  • tekstis näitab, et järgnevad kellegi suuliselt öeldud sõnad
+                </div>
+                <div class="col-5 border">
+                  • Lõunasöök oli lihtne: kartulid kastmega.<br>
+                  • Eesti võitis 5 : 2.<br>
+                  • Laps ütles: "Ma tahan magada."
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  ;
+                </div>
+                <div class="col-5 border">
+                  • kui järgnevad loetelu rühmad<br>
+                  • lause osade vahel
+                </div>
+                <div class="col-5 border">
+                  • Poest sai osta kõike: saia, leiba ja muid toiduaineid; pliiatseid, paberit ja muid kontoritarbeid;
+                  pluuse, pükse ja muid riideid.<br>
+                  • Ilm oli külm, tuuline ja märg; kõik sportlased olid väsinud, janus.
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  -
+                </div>
+                <div class="col-5 border">
+                  • ühendab sõnu<br>
+                  • liitsõnades, mille üks osa on näiteks täht või number<br>
+                  • sõnades, kus muidu jääks kolm või neli ühesugust tähte kõrvuti<br>
+                  • liitsõnades korduva osa asemel
+                </div>
+                <div class="col-5 border">
+                  • edasi-tagasi, enam-vähem, võib-olla; Tallinna-Tartu liin; inglise-eesti sõnaraamat<br>
+                  • 75-aastane, 20-kraadine; IT-osakond<br>
+                  • iga-aastane, maa-ala<br>
+                  • puu- ja juurviljad, era- ja kortermajad
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  -
+                </div>
+                <div class="col-5 border">
+                  • loetelu järel<br>
+                  • numbrite vahel sõna kuni asemel<br>
+                  • tekstis eristab kahe eri inimese öeldud lauseid
+                </div>
+                <div class="col-5 border">
+                  • Rahulik, nõudlik ja vähese jutuga – selline peabki üks ülemus olema.<br>
+                  • 10–15 aastat, 9.00–17.30<br>
+                  • Mis su nimi on? – Minu nimi on Karl.
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  ""
+                </div>
+                <div class="col-5 border">
+                  • tekstis tähistavad kellegi suuliselt öeldud sõnu<br>
+                  • tekstis tähistavad teoste, dokumentide, sarjade, ürituste pealkirju
+                </div>
+                <div class="col-5 border">
+                  • "Ma olen väsinud," ütles Mari. Mari ütles: "Ma olen väsinud."<br>
+                  • Oskar Lutsu kuulsaim romaan on "Kevade".
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-1 border">
+                  '
+                </div>
+                <div class="col-5 border">
+                  • võõrkeelse nime käänamisel
+                </div>
+                <div class="col-5 border">
+                  • Ta elab Seattle’is. Käisin suvel Versailles’ lossis.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade"
+            id="v-pills-kirjutamine"
+            role="tabpanel"
+            aria-labelledby="v-pills-kirjutamine-tab">
+            <div class="learn-content">
+              <a name="kirjutamine"></a>
+              <h3>Kirjutamine</h3>
+
+              <a name="kiri"></a>
+              <h4>Kiri</h4>
+              <h5 class="colored-bold">Kuidas kirjutada ümbrikule aadressi</h5>
+              <div class="row">
+                <div class="col-4">
+                  Lp Martin Must<br>
+                  Estonia pst 21–46<br>
+                  10141 Tallinn<br>
+                </div>
+                <div class="col-4">
+                  Lp Karl Süda<br>
+                  Tamme tee 15<br>
+                  Aaviku küla<br>
+                  Rae vald<br>
+                  75305 Harjumaa<br>
+                </div>
+                <div class="col-4">
+                  Peeter Põõsas<br>
+                  Sepa 58–6<br>
+                  EE-50113 Tartu<br>
+                  Eesti<br>
+                </div>
+                <p class="ml-4">
+                  <span class="colored-bold">NB!</span> Kui sa kirjutad tekstis aadressi ühele reale, kasuta komasid,
+                  näiteks: Estonia pst 21–46, 10141 Tallinn.
+                </p>
+              </div>
+              <h5 class="colored-bold">Ametlik kiri</h5>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-6">
+                  juhatuse esimees Meelis Oja<br>
+                  Eesti Kirjanduse Selts<br>
+                  Vanemuise 19<br>
+                  51014 Tartu<br>
+                </div>
+                <div class="col-6 text-right">
+                  Meie 05.02.2014 nr 7-2/...
+                </div>
+                <div class="col-12 mt-4">
+                  <p>Kutse</p>
+                  <p>Austatud juhatuse esimees</p>
+                  <p>Palume Teid osa võtma Tartu Ülikooli raamatukogu uue hoone avamisest 1. detsembril 2014. Sel puhul
+                    toimub raamatukogus pidulik vastuvõtt ja oleksime väga tänulikud, kui saaksite pidada lühikese
+                    ettekande.</p>
+                  <p>Saadame ürituse täpse kava siis, kui programm on lõplikult selge. Loodame, et saate meie peol
+                    osaleda.
+                  </p>
+                  <p>Lugupidamisega</p>
+                  <p>Martin Kuusk<br>
+                    raamatukogu juhataja</p>
+                </div>
+                <div class="col-12 text-center mt-4">
+                  Tartu Ülikooli raamatukogu<br>
+                  W. Struve 1, 50091 Tartu<br>
+                  tel 737 5702, e-post raamatukogu@utlib.ee<br>
+                  koduleht www.utlib.ee<br>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <span class="colored-bold">• Kuidas pöörduda</span><br>
+                  → Austatud härra minister<br>
+                  → Lugupeetud Jüri Kask<br>
+                  <span class="colored-bold">• Kuidas kirja alustada</span><br>
+                  → Täname teid kirja eest!<br>
+                  → Saadame/teatame teile ..<br>
+                  → Palume teatada/saata/reserveerida ..<br>
+                  → Vastuseks teie 9. oktoobri 2013. a kirjale teatame, et ..<br>
+                  → Nagu teie kirjast selgus, olete huvitatud ..<br>
+                </div>
+                <div class="col-6">
+                  → Meil on rõõm teatada, et ..<br>
+                  → Palume vabandust vastuse hilinemise pärast.<br>
+                  → Tänan kiire vastuse eest!<br>
+                  <span class="colored-bold">• Kuidas kirja lõpetada</span><br>
+                  → Lugupidamisega<br>
+                  → Austusega<br>
+                  → Vastust oodates / ootama jäädes<br>
+                  → Meeldivale koostööle lootma jäädes<br>
+                  → Ette tänades<br>
+                  → Parimate soovidega<br>
+                </div>
+              </div>
+              <div class="row learn-content">
+                <div class="col-12">
+                  <span class="colored-bold">NB!</span> Kui sa tahad olla viisakas, kirjuta Teie suure tähega. Kui kiri
+                  on
+                  mõeldud korraga mitmele inimesele, kirjuta teie väikese tähega.
+                </div>
+              </div>
+              <h5 class="colored-bold">Kiri sõbrale</h5>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12">
+                  <p>Tere, Julia!</p>
+                  <p>Palun vabandust, et su kirjale alles nüüd vastan, aga mul on olnud kiire.</p>
+                  <p>Meie reis läks hästi. Prantsusmaal on kaunis loodus ja Pariis on väga ilus linn. Ilmaga vedas –
+                    kõikidel päevadel paistis päike ja oli soe. Käisime Eiffeli tornis, Louvre’i muuseumis, istusime
+                    kohvikutes ja nautisime Prantsuse kööki. Soovitan sinul ka kindlasti Pariisi minna, kui võimalus
+                    tekib.
+                  </p>
+                  <p>Mis teil uudist? Kuidas suvi möödus? Kuidas su vanemad elavad? Jään su vastust ootama.</p>
+                  <p>Tervitades</p>
+                  <p>Egle</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <span class="colored-bold">• Kuidas kirja alustada</span><br>
+                  → Aitäh kirja eest!<br>
+                  → Kuidas sul läheb?<br>
+                  → Kuidas elad?<br>
+                  → Loodan, et sul läheb hästi.<br>
+                  → Nii tore oli sinust kuulda.<br>
+                  → Palun vabandust / anna andeks, et alles nüüd vastan.<br>
+                </div>
+                <div class="col-6">
+                  <span class="colored-bold">• Kuidas kirja lõpetada</span><br>
+                  → Jään su kirja/vastust ootama.<br>
+                  → Loodetavasti varsti näeme!<br>
+                  → Tervitades<br>
+                  → Parimaga<br>
+                  <span class="colored-bold">• Väga lähedasele sõbrale</span><br>
+                  → Kallistan<br>
+                  → Armastusega<br>
+                </div>
+              </div>
+
+              <a name="ekiri"></a>
+              <h4>E-kiri</h4>
+              <h5 class="colored-bold">Ametlik e-kiri</h5>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-3 mb-4">
+                  Kellele<br>
+                  Koopia
+                </div>
+                <div class="col-9">
+                  info@pood.ee
+                </div>
+                <div class="col-3">Teema</div>
+                <div class="col-9">Samsungi mobiiltelefon</div>
+                <div class="col-12 mt-4">
+                  <p>Tere!</p>
+                  <p>Ma soovin osta Samsungi mobiiltelefoni uut mudelit. Nägin teie kodulehelt, et pakute neid soodsa
+                    hinnaga. Mind huvitab punase korpusega mudel. Kas teil on neid veel poes saada? Kui on, siis ma
+                    paneksin
+                    ühe telefoni kinni ja tuleksin sellele homme poodi järele.</p>
+                  <p>
+                    Lugupidamisega<br>
+                    Kati Karu<br>
+                    tel 612 3456<br>
+                    e-post kati.karu@epost.ee<br>
+                  </p>
+                </div>
+              </div>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-3 mb-4">
+                  Kellele<br>
+                  Koopia
+                </div>
+                <div class="col-9">
+                  kati.karu@epost.ee
+                </div>
+                <div class="col-3">Teema</div>
+                <div class="col-9">RE: Samsungi mobiiltelefon</div>
+                <div class="col-12 mt-4">
+                  <p>Lugupeetud Kati Karu</p>
+                  <p>Täname Teid kirja eest! Samsungi punase korpusega mobiiltelefonid on praegu kahjuks laost otsas,
+                    saada
+                    on veel musta, valge ja sinise korpusega mudeleid. Järgmisel nädalal teeme uue tellimuse, partii
+                    jõuab
+                    poodi järgmise kuu alguses. Kas paneme Teile ühe punase telefoni kinni või soovite osta teist värvi
+                    mudelit?</p>
+                  <p>
+                    Vastust ootama jäädes<br>
+                    Liisi Pirn<br>
+                    kauplus Mööbel ja Tehnika<br>
+                    tel 665 4321<br>
+                    e-post info@pood.ee<br>
+                  </p>
+                </div>
+              </div>
+              <h5 class="colored-bold">Kolleegile</h5>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-3 mb-4">
+                  Kellele<br>
+                  Koopia
+                </div>
+                <div class="col-9">
+                  toomas@firma.ee, liina@firma.ee<br>
+                  juhiabi@firma.ee
+                </div>
+                <div class="col-3">Teema</div>
+                <div class="col-9">haigus</div>
+                <div class="col-12 mt-4">
+                  <p>Head kolleegid!</p>
+                  <p>Jäin haigeks ja täna tööle ei tule. Loodetavasti saan homseks terveks.</p>
+                  <p>
+                    Tervitades<br>
+                    Peeter<br>
+                  </p>
+                </div>
+              </div>
+              <h5 class="colored-bold">Sõbrale</h5>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-3 mb-4">
+                  Kellele<br>
+                  Koopia
+                </div>
+                <div class="col-9">
+                  ave@epost.ee
+                </div>
+                <div class="col-3">Teema</div>
+                <div class="col-9">kindad</div>
+                <div class="col-12 mt-4">
+                  <p>Tere, Ave!</p>
+                  <p>
+                    Nii tore oli üle pika aja kokku saada.<br>
+                    Ma vist unustasin eile midagi sinu juurde – kui sa leiad ühed sinised kindad, siis need on minu
+                    omad.<br>
+                    Loodetavasti näeme varsti jälle!<br>
+                    Tervita Toomast!
+                  </p>
+                  <p>
+                    Kallistades<br>
+                    Kerli
+                  </p>
+                </div>
+              </div>
+
+              <a name="postkaart"></a>
+              <h4>Postkaart</h4>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12">
+                  Kallis ema!<br>
+                  Palju õnne 55. sünnipäeva puhul! Jõudu, jaksu ja tervist!
+                </div>
+                <div class="col-6">
+                  Soovib Kadri perega
+                </div>
+                <div class="col-6 text-right">
+                  2. veebruaril 2014
+                </div>
+              </div>
+
+              <a name="kutse"></a>
+              <h4>Kutse</h4>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12">
+                  <p>Kallid Mari ja Marko!</p>
+                  <p>Meil on rõõm paluda teid meie laulatusele 1. juulil 2014 kell 16 Tallinna Kaarli kirikus.</p>
+                  <p>Kristel ja Karmo</p>
+                  <p>Palun teatage oma tulekust hiljemalt 10. juuniks 2014 telefonil 612 3456.</p>
+                </div>
+              </div>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12 text-center">
+                  <p>Armas Maarja!</p>
+                  <p>Palun tule minu sünnipäevale neljapäeval, 26. oktoobril kell 19 restorani Must Lammas.</p>
+                  <p>Tervitades<br>
+                    Laura</p>
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <span class="colored-bold">• Kuidas kutsele vastata</span><br>
+                  → Täname sind/teid kutse eest ja teatame oma osavõtust.<br>
+                  → Tänan kutsumast, tulen hea meelega.<br>
+                  → Tänan kutsumast, aga ma olen sel ajal kahjuks kinni/tööl/reisil.<br>
+                  → Aitäh, aga ma ei saa kahjuks tulla/osaleda.<br>
+                </div>
+              </div>
+
+              <a name="kavaldus"></a>
+              <h4>Kaastunde avaldamine</h4>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12">
+                  <p>Armas Henri!</p>
+                  <p>Tunneme Sulle kaasa isa surma puhul.</p>
+                  <p>Oleme mõtetes Sinuga.</p>
+                  <p>Kaur ja Liina</p>
+                </div>
+              </div>
+
+              <a name="sonum"></a>
+              <h4>Sõnum</h4>
+              <div class="row col-12 mb-4">
+                <img th:src="@{/view/images/sonum.png}">
+              </div>
+
+              <a name="avaldus"></a>
+              <h4>Avaldus</h4>
+              <h5 class="colored-bold">Asutuse sees</h5>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12 text-center mb-4">
+                  Tartu Kesklinna Gümnaasiumi direktorile
+                </div>
+                <div class="col-12 text-right mb-4">
+                  Jaan Tamm<br>
+                  kehalise kasvatuse õpetaja
+                </div>
+                <div class="col-12 text-center mb-4">
+                  Avaldus
+                </div>
+                <div class="col-12 mb-4">
+                  Palun võimaldada mulle palgata puhkust 3.–9. novembril 2014.
+                </div>
+                <div class="col-6">
+                  20.10.2014
+                </div>
+                <div class="col-6 text-right">
+                  J. Tamm<br>
+                  (allkiri)
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-12">
+                  → Palun lubada mind ..<br>
+                  → Palun mind üle viia ..<br>
+                  → Palun mind registreerida ..<br>
+                  → Soovin kandideerida ..<br>
+                </div>
+              </div>
+              <h5 class="colored-bold">Asutusest välja</h5>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12 text-center mb-4">
+                  Tallinna 21. Kooli direktorile
+                </div>
+                <div class="col-12 text-right mb-4">
+                  Katri Kask<br>
+                  isikukood 49727071236<br>
+                  Kuuse 3–27, 12345 Tallinn<br>
+                  katri.kask@epost.ee<br>
+                  5654 3210<br>
+                </div>
+                <div class="col-12 text-center mb-4">
+                  Avaldus
+                </div>
+                <div class="col-12 mb-4">
+                  Palun mind vastu võtta Tallinna 21. Kooli 10. klassi.
+                </div>
+                <div class="col-6">
+                  Tallinnas 1. juulil 2014
+                </div>
+                <div class="col-6 text-right">
+                  K. Kask<br>
+                  (allkiri)
+                </div>
+              </div>
+
+              <a name="volitus"></a>
+              <h4>Volitus</h4>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12 text-center mb-4">
+                  Volitus
+                </div>
+                <div class="col-12 text-right mb-4">
+                  Mari Maasikas<br>
+                  isikukood 45802277771<br>
+                  Raua 7–12<br>
+                </div>
+                <div class="col-12 mb-4">
+                  Karl Õunapuul (isikukood 34303194321) on volitus esindada mind ühistu Raua 7 koosolekul, 26.05.2014.
+                </div>
+                <div class="col-6">
+                  Tallinnas 22.05.2012
+                </div>
+                <div class="col-6 text-right">
+                  M. Maasikas<br>
+                  (allkiri)
+                </div>
+              </div>
+
+              <a name="cv"></a>
+              <h4>CV</h4>
+              <div class="row col-12  mb-4">
+                CV ehk curriculum vitae on inimese elulugu kirjeldav dokument.
+              </div>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12 text-center mb-4">
+                  Curriculum vitae
+                </div>
+                <div class="col-4 mb-4">
+                  <b>Nimi</b><br>
+                  <b>Sünniaeg ja -koht</b><br>
+                  <b>Aadress</b><br>
+                  <b>Telefon</b><br>
+                  <b>E-post</b><br>
+                  <b>Kodakondsus</b><br>
+                  <b>Perekonnaseis</b><br>
+                </div>
+                <div class="col-8">
+                  <b>Robert Rohi</b><br>
+                  27. juuli 1980, Tartu<br>
+                  Pikk 9–46, Tartu<br>
+                  5654 3210<br>
+                  robert.rohi@epost.ee<br>
+                  Eesti<br>
+                  abielus, kaks last<br>
+                </div>
+                <div class="col-4 mb-4">
+                  <b>Haridus</b><br>
+                  1999–2003<br>
+                  1987–1999
+                </div>
+                <div class="col-8">
+                  <br>
+                  Tartu Ülikool, eesti keele ja kirjanduse eriala<br>
+                  Miina Härma Gümnaasium
+                </div>
+                <div class="col-4 mb-4">
+                  <b>Töökoht ja amet</b><br>
+                  2010–<br>
+                  2003–2010
+                </div>
+                <div class="col-8">
+                  <br>
+                  Tartu Kesklinna Kool, eesti keele ja kirjanduse õpetaja<br>
+                  Võru Kesklinna Gümnaasium, eesti keele ja kirjanduse õpetaja
+                </div>
+                <div class="col-4">
+                  <b>Keeled</b>
+                </div>
+                <div class="col-2">
+                  inglise keel<br>
+                  vene keel<br>
+                  soome keel
+                </div>
+                <div class="col-6 mb-4">
+                  C1<br>
+                  B2<br>
+                  B1
+                </div>
+                <div class="col-4 mb-4">
+                  <b>Arvutioskus</b>
+                </div>
+                <div class="col-8">
+                  MS Excel, MS PowerPoint, MS Word, MS Outlook
+                </div>
+                <div class="col-4 mb-4">
+                  <b>Juhiluba</b>
+                </div>
+                <div class="col-8">
+                  B-kategooria
+                </div>
+                <div class="col-4 mb-4">
+                  <b>Hobid</b>
+                </div>
+                <div class="col-8">
+                  ujumine, tennis, reisimine, lugemine, teater
+                </div>
+              </div>
+              <div class="row col-12 mb-4">
+                <span class="colored-bold">NB!</span> CV tuleb sageli esitada koos kaaskirjaga (lühike tekst, mis
+                tutvustab
+                CV saatnud inimest).
+              </div>
+
+              <a name="kaaskiri"></a>
+              <h4>Kaaskiri</h4>
+              <div class="row border col-lg-12 col-12 mb-4">
+                <div class="col-12 text-right mb-4">
+                  Tarmo Mets<br>
+                  Kure tee 3–57, 10996 Tallinn<br>
+                  tel 5987 6543<br>
+                </div>
+                <div class="col-6 mb-4">
+                  Marko Mänd<br>
+                  peatoimetaja<br>
+                  ajakiri Looming<br>
+                  Harju 1, 10500 Tallinn<br>
+                </div>
+                <div class="col-6 text-right">
+                  <br><br><br>15. veebruar 2014
+                </div>
+                <div class="col-12 mb-4">
+                  Kaaskiri<br>
+                  Austatud Marko Mänd
+                </div>
+                <div class="col-12 mb-4">
+                  <p>Lugesin 10. jaanuari Postimehest Teie asutuse kuulutust, kus Te otsite toimetajat. Olen hariduselt
+                    eesti keele ja kirjanduse õpetaja ning olen töötanud gümnaasiumis, lisaks olen andnud eesti keele
+                    tunde
+                    ka täiskasvanutele. Ülikoolis õppides töötasin kaks aastat ülikooli ajalehes peatoimetajana. Mulle
+                    meeldib väga lugeda ja kontsertidel käia. Samuti olen kursis enamiku uute etenduste, näituste ja
+                    filmidega, eriti olen huvitatud kodumaisest kunstist ja kultuurist.</p>
+                  <p>Usun, et ajakiri Looming annaks mulle võimaluse arendada ennast valdkonnas, mis pakub mulle huvi,
+                    ning
+                    minu kogemustest ja oskustest oleks Teile kasu. Olen valmis vastama Teie küsimustele Teile sobival
+                    ajal.
+                  </p>
+                  <p>Lugupidamisega</p>
+                  <p>Tarmo Mets<br>
+                    allkiri
+                  </p>
+                  <p>Lisa: CV</p>
+                </div>
+              </div>
+
             </div>
           </div>
 
+          <div class="tab-pane fade"
+            id="#v-pills-kasulikke"
+            role="tabpanel"
+            aria-labelledby="v-pills-kasulikke-tab">
+            <div class="learn-content">
+              <a name="kasulikke"></a>
+              <h3>Kasulikke väljendeid</h3>
+              <div class="row">
+                <div class="col-6">
+                  <span class="colored-bold">• Tervitused<br></span>
+                  → Tere!<br>
+                  → Tervist!<br>
+                  → Tere tulemast!<br>
+                  → Tere hommikust!<br>
+                  → Tere päevast!<br>
+                  → Tere õhtust!<br>
+                  <span class="colored-bold">• Tervitusele järgnevad väljendid</span><br>
+                  → Rõõm sind näha.<br>
+                  → Kui tore, et kohtusime.<br>
+                  → Kuidas elad?<br>
+                  → Kuidas läheb?<br>
+                  → Kuidas käsi käib? → Mis uudist?<br>
+                  <span class="colored-bold">• Kellestki lahkumine</span><br>
+                  → Nägemist!<br>
+                  → Nägemiseni!<br>
+                  → Head aega!<br>
+                  → Kohtumiseni!<br>
+                  → Hüvasti!<br>
+                  → Homseni!<br>
+                  → Homme näeme!<br>
+                  <span class="colored-bold">• Vabandused</span><br>
+                  → Vabandust!<br>
+                  → Vabandage, palun!<br>
+                  → Vabanda, et ma tülitan.<br>
+                  → Palun vabandust!<br>
+                  → Palun andeks!<br>
+                  → Anna (mulle) andeks.<br>
+                  → Pean sult vabandust paluma.<br>
+                  → Palun ära ole pahane.<br>
+                  → Ma ei tahtnud sind solvata.<br>
+                  <span class="colored-bold">• Tänu avaldamine</span><br>
+                  → Aitäh!<br>
+                  → Suur tänu!<br>
+                  → Tänan väga.<br>
+                  → Olen sulle väga tänulik.<br>
+                  → Tänan info/abi eest!<br>
+                  <span class="colored-bold">• Vastus tänu avaldamisele</span><br>
+                  → Palun!<br>
+                  → Võta heaks!<br>
+                  → Pole tänu väärt.<br>
+                  → Aitasin sind hea meelega.<br>
+                  <span class="colored-bold">• Kohvikus või restoranis</span><br>
+                  → Sooviksin reserveerida laua neljale.<br>
+                  → Kas see laud on vaba?<br>
+                  → See laud on kahjuks reserveeritud.<br>
+                  → Sooviksin istuda akna all.<br>
+                  → Palun tooge mulle menüü.<br>
+                  → Palun mulle supp ja praad.<br>
+                  → Kas siin tohib suitsetada?<br>
+                  → Palun tooge mulle arve.<br>
+                  → Ma sooviksin arvet.<br>
+                  → Ma sooviksin maksta kaardiga.<br>
+                  <span class="colored-bold">• Telefonikõne</span><br>
+                  → Halloo!<br>
+                  → Jaa, Tarmo kuuleb.<br>
+                  → Tere, kas Jüri Tamm kuuleb?<br>
+                  → Ei, te helistasite Marko Trummile.<br>
+                  → Vabandust, vale number.<br>
+                  <span class="colored-bold">• Arsti juures</span><br>
+                  → Ma ei tunne ennast hästi.<br>
+                  → Mul on palavik/köha/nohu.<br>
+                  → Hingata on valus/raske.<br>
+                  → Mul pea/kurk/kõrv/hammas valutab.<br>
+                  → Ma olen väga väsinud.<br>
+                  → Mul käib pea ringi.<br>
+                  → Mul on paha/halb olla.<br>
+                  → Mul ei ole isu.<br>
+                  <span class="colored-bold">• Kuidas juhatada teed</span><br>
+                  → Pöörake paremale/vasakule.<br>
+                  → Kõndige otse (edasi).<br>
+                  → Bussijaam asub vasakut/paremat kätt.<br>
+                  → Apteek on teisel pool teed.<br>
+                </div>
+                <div class="col-6">
+                  <span class="colored-bold">• Õnnitlused, soovid, palved</span><br>
+                  → Palju õnne sünnipäevaks!<br>
+                  → Õnnitlen/õnnitleme sünnipäeva puhul!<br>
+                  → (Palju) õnne!<br>
+                  → Südamlik õnnesoov millekski / millegi puhul.<br>
+                  → Häid pühi!<br>
+                  → Häid jõule!<br>
+                  → Head/õnnelikku uut aastat!<br>
+                  → Head vana aasta lõppu!<br>
+                  → Rõõmsat aastavahetust!<br>
+                  → Head päeva!<br>
+                  → Toredat/ilusat/head õhtut!<br>
+                  → Head ööd!<br>
+                  → Head und!<br>
+                  → Ilusaid unenägusid!<br>
+                  → Head reisi!<br>
+                  → Toredat puhkust!<br>
+                  → Head nädalalõppu!<br>
+                  → Kõike head!<br>
+                  → Kõike paremat!<br>
+                  → Saa ruttu terveks!<br>
+                  → Head isu!<br>
+                  → Ole tubli!<br>
+                  <span class="colored-bold">• Hoiatused</span><br>
+                  → Seis!<br>
+                  → Oota/oodake!<br>
+                  → Ettevaatust!<br>
+                  → Tähelepanu!<br>
+                  → Tasa!<br>
+                  → Aeglasemalt!<br>
+                  → Kiiremini!<br>
+                  → Tulekahju!<br>
+                  <span class="colored-bold">• Kaastunde avaldamine</span><br>
+                  → Minu (sügav) kaastunne.<br>
+                  → Tunnen (sulle) kaasa!<br>
+                  → Avaldan kaastunnet.<br>
+                  <span class="colored-bold">• Tutvus ja tutvustamine</span><br>
+                  → Mina olen ..<br>
+                  → Minu nimi on ..<br>
+                  → Kas teie olete / teie nimi on .. ?<br>
+                  → Vabandust, kuidas on teie nimi?<br>
+                  → Palun saage tuttavaks ..<br>
+                  → Ma teen teid tuttavaks.<br>
+                  → Meeldiv tutvuda!<br>
+                  → Me oleme vist juba kohtunud.<br>
+                  → Olen teist palju kuulnud.<br>
+                  <span class="colored-bold">• Bussis, rongis, lennukis</span><br>
+                  → Kuhu see buss/rong sõidab?<br>
+                  → Mis kell buss/rong/lennuk väljub?<br>
+                  → Kas see buss/rong sõidab otse või pean vahepeal ümber istuma?<br>
+                  → Soovin sõita esimeses/teises klassis.<br>
+                  → Kas see buss peatub lennujaama juures?<br>
+                  → Mitu peatust sinna on?<br>
+                  → Mis peatuses ma pean maha minema?<br>
+                  → Kui palju pilet maksab? → Kust ma saan pileti osta?<br>
+                  <span class="colored-bold">• Hotellis</span><br>
+                  → Kas teil on vabu tube?<br>
+                  → Soovin tuba broneerida.<br>
+                  → Soovin tuba kahele inimesele kolmeks ööks.<br>
+                  → Kas toas on külmkapp?<br>
+                  → Kas teil wifi on?<br>
+                  → Mis kell on hommikusöök?<br>
+                  → Palun äratage mind enne hommikusööki.<br>
+                  <span class="colored-bold">• Poes</span><br>
+                  → Kas te saate mind aidata?<br>
+                  → Kas ma saan teile abiks olla?<br>
+                  → See number ei sobi.<br>
+                  → See on natuke kitsas/lai.<br>
+                  → Palun suuremat/väiksemat numbrit.<br>
+                  → See on paras.<br>
+                  → See sobib väga hästi.<br>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="pb-4">
-          <a name="kasulikke"></a>
-          <h3>Kasulikke väljendeid</h3>
-          <div class="row">
-            <div class="col-6">
-              <span class="colored-bold">• Tervitused<br></span>
-              → Tere!<br>
-              → Tervist!<br>
-              → Tere tulemast!<br>
-              → Tere hommikust!<br>
-              → Tere päevast!<br>
-              → Tere õhtust!<br>
-              <span class="colored-bold">• Tervitusele järgnevad väljendid</span><br>
-              → Rõõm sind näha.<br>
-              → Kui tore, et kohtusime.<br>
-              → Kuidas elad?<br>
-              → Kuidas läheb?<br>
-              → Kuidas käsi käib? → Mis uudist?<br>
-              <span class="colored-bold">• Kellestki lahkumine</span><br>
-              → Nägemist!<br>
-              → Nägemiseni!<br>
-              → Head aega!<br>
-              → Kohtumiseni!<br>
-              → Hüvasti!<br>
-              → Homseni!<br>
-              → Homme näeme!<br>
-              <span class="colored-bold">• Vabandused</span><br>
-              → Vabandust!<br>
-              → Vabandage, palun!<br>
-              → Vabanda, et ma tülitan.<br>
-              → Palun vabandust!<br>
-              → Palun andeks!<br>
-              → Anna (mulle) andeks.<br>
-              → Pean sult vabandust paluma.<br>
-              → Palun ära ole pahane.<br>
-              → Ma ei tahtnud sind solvata.<br>
-              <span class="colored-bold">• Tänu avaldamine</span><br>
-              → Aitäh!<br>
-              → Suur tänu!<br>
-              → Tänan väga.<br>
-              → Olen sulle väga tänulik.<br>
-              → Tänan info/abi eest!<br>
-              <span class="colored-bold">• Vastus tänu avaldamisele</span><br>
-              → Palun!<br>
-              → Võta heaks!<br>
-              → Pole tänu väärt.<br>
-              → Aitasin sind hea meelega.<br>
-              <span class="colored-bold">• Kohvikus või restoranis</span><br>
-              → Sooviksin reserveerida laua neljale.<br>
-              → Kas see laud on vaba?<br>
-              → See laud on kahjuks reserveeritud.<br>
-              → Sooviksin istuda akna all.<br>
-              → Palun tooge mulle menüü.<br>
-              → Palun mulle supp ja praad.<br>
-              → Kas siin tohib suitsetada?<br>
-              → Palun tooge mulle arve.<br>
-              → Ma sooviksin arvet.<br>
-              → Ma sooviksin maksta kaardiga.<br>
-              <span class="colored-bold">• Telefonikõne</span><br>
-              → Halloo!<br>
-              → Jaa, Tarmo kuuleb.<br>
-              → Tere, kas Jüri Tamm kuuleb?<br>
-              → Ei, te helistasite Marko Trummile.<br>
-              → Vabandust, vale number.<br>
-              <span class="colored-bold">• Arsti juures</span><br>
-              → Ma ei tunne ennast hästi.<br>
-              → Mul on palavik/köha/nohu.<br>
-              → Hingata on valus/raske.<br>
-              → Mul pea/kurk/kõrv/hammas valutab.<br>
-              → Ma olen väga väsinud.<br>
-              → Mul käib pea ringi.<br>
-              → Mul on paha/halb olla.<br>
-              → Mul ei ole isu.<br>
-              <span class="colored-bold">• Kuidas juhatada teed</span><br>
-              → Pöörake paremale/vasakule.<br>
-              → Kõndige otse (edasi).<br>
-              → Bussijaam asub vasakut/paremat kätt.<br>
-              → Apteek on teisel pool teed.<br>
-            </div>
-            <div class="col-6">
-              <span class="colored-bold">• Õnnitlused, soovid, palved</span><br>
-              → Palju õnne sünnipäevaks!<br>
-              → Õnnitlen/õnnitleme sünnipäeva puhul!<br>
-              → (Palju) õnne!<br>
-              → Südamlik õnnesoov millekski / millegi puhul.<br>
-              → Häid pühi!<br>
-              → Häid jõule!<br>
-              → Head/õnnelikku uut aastat!<br>
-              → Head vana aasta lõppu!<br>
-              → Rõõmsat aastavahetust!<br>
-              → Head päeva!<br>
-              → Toredat/ilusat/head õhtut!<br>
-              → Head ööd!<br>
-              → Head und!<br>
-              → Ilusaid unenägusid!<br>
-              → Head reisi!<br>
-              → Toredat puhkust!<br>
-              → Head nädalalõppu!<br>
-              → Kõike head!<br>
-              → Kõike paremat!<br>
-              → Saa ruttu terveks!<br>
-              → Head isu!<br>
-              → Ole tubli!<br>
-              <span class="colored-bold">• Hoiatused</span><br>
-              → Seis!<br>
-              → Oota/oodake!<br>
-              → Ettevaatust!<br>
-              → Tähelepanu!<br>
-              → Tasa!<br>
-              → Aeglasemalt!<br>
-              → Kiiremini!<br>
-              → Tulekahju!<br>
-              <span class="colored-bold">• Kaastunde avaldamine</span><br>
-              → Minu (sügav) kaastunne.<br>
-              → Tunnen (sulle) kaasa!<br>
-              → Avaldan kaastunnet.<br>
-              <span class="colored-bold">• Tutvus ja tutvustamine</span><br>
-              → Mina olen ..<br>
-              → Minu nimi on ..<br>
-              → Kas teie olete / teie nimi on .. ?<br>
-              → Vabandust, kuidas on teie nimi?<br>
-              → Palun saage tuttavaks ..<br>
-              → Ma teen teid tuttavaks.<br>
-              → Meeldiv tutvuda!<br>
-              → Me oleme vist juba kohtunud.<br>
-              → Olen teist palju kuulnud.<br>
-              <span class="colored-bold">• Bussis, rongis, lennukis</span><br>
-              → Kuhu see buss/rong sõidab?<br>
-              → Mis kell buss/rong/lennuk väljub?<br>
-              → Kas see buss/rong sõidab otse või pean vahepeal ümber istuma?<br>
-              → Soovin sõita esimeses/teises klassis.<br>
-              → Kas see buss peatub lennujaama juures?<br>
-              → Mitu peatust sinna on?<br>
-              → Mis peatuses ma pean maha minema?<br>
-              → Kui palju pilet maksab? → Kust ma saan pileti osta?<br>
-              <span class="colored-bold">• Hotellis</span><br>
-              → Kas teil on vabu tube?<br>
-              → Soovin tuba broneerida.<br>
-              → Soovin tuba kahele inimesele kolmeks ööks.<br>
-              → Kas toas on külmkapp?<br>
-              → Kas teil wifi on?<br>
-              → Mis kell on hommikusöök?<br>
-              → Palun äratage mind enne hommikusööki.<br>
-              <span class="colored-bold">• Poes</span><br>
-              → Kas te saate mind aidata?<br>
-              → Kas ma saan teile abiks olla?<br>
-              → See number ei sobi.<br>
-              → See on natuke kitsas/lai.<br>
-              → Palun suuremat/väiksemat numbrit.<br>
-              → See on paras.<br>
-              → See sobib väga hästi.<br>
-            </div>
-          </div>
-        </div>
+
+
+
+
+
+
+
+
+
+
+
       </div>
     </div>
   </div>
@@ -1069,7 +2208,7 @@
   <th:block th:replace="common-app :: content-top"></th:block>
   <script th:inline="javascript">
     setActiveMenuItem('learn');
-    $(document).on("click", ".back", function(e) {
+    $(document).on("click", ".back", function (e) {
       window.location = applicationUrl;
     });
   </script>
