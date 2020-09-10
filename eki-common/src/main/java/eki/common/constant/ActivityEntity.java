@@ -79,6 +79,5 @@ public enum ActivityEntity {
 	GENUS,
 	FAMILY,
 	DESCRIBER,
-	DESCRIBING_YEAR,
-	BOOKMARK
+	DESCRIBING_YEAR
 }

@@ -47,14 +47,12 @@ import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordNote;
-import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -65,6 +63,60 @@ import eki.ekilex.service.util.ConversionUtil;
 public class ActivityLogService implements SystemConstant {
 
 	private static final String ACTIVITY_LOG_DIFF_FIELD_NAME = "diff";
+
+	private static final List<ActivityEntity> FIRST_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
+			ActivityEntity.GOVERNMENT,
+			ActivityEntity.GOVERNMENT_TYPE,
+			ActivityEntity.USAGE,
+			ActivityEntity.USAGE_TYPE,
+			ActivityEntity.GRAMMAR,
+			ActivityEntity.CONCEPT_ID,
+			ActivityEntity.LTB_ID,
+			ActivityEntity.LTB_SOURCE,
+			ActivityEntity.ADVICE_NOTE,
+			ActivityEntity.UNCLASSIFIED,
+			ActivityEntity.SOURCE_NAME,
+			ActivityEntity.SOURCE_RT,
+			ActivityEntity.SOURCE_CELEX,
+			ActivityEntity.SOURCE_WWW,
+			ActivityEntity.SOURCE_AUTHOR,
+			ActivityEntity.SOURCE_ISBN,
+			ActivityEntity.SOURCE_ISSN,
+			ActivityEntity.SOURCE_PUBLISHER,
+			ActivityEntity.SOURCE_PUBLICATION_YEAR,
+			ActivityEntity.SOURCE_PUBLICATION_PLACE,
+			ActivityEntity.SOURCE_PUBLICATION_NAME,
+			ActivityEntity.SOURCE_FILE,
+			ActivityEntity.SOURCE_EXPLANATION,
+			ActivityEntity.SOURCE_ARTICLE_TITLE,
+			ActivityEntity.SOURCE_ARTICLE_AUTHOR,
+			ActivityEntity.EXTERNAL_SOURCE_ID,
+			ActivityEntity.LEARNER_COMMENT,
+			ActivityEntity.IMAGE_FILE,
+			ActivityEntity.SEMANTIC_TYPE,
+			ActivityEntity.SYSTEMATIC_POLYSEMY_PATTERN,
+			ActivityEntity.GENUS,
+			ActivityEntity.FAMILY,
+			ActivityEntity.DESCRIBER,
+			ActivityEntity.DESCRIBING_YEAR,
+			ActivityEntity.OD_WORD_RECOMMENDATION,
+			ActivityEntity.OD_LEXEME_RECOMMENDATION,
+			ActivityEntity.WORD_NOTE,
+			ActivityEntity.MEANING_NOTE,
+			ActivityEntity.LEXEME_NOTE,
+			ActivityEntity.SOURCE_NOTE,
+			ActivityEntity.ADVICE_NOTE);
+
+	private static final List<ActivityEntity> SECOND_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
+			ActivityEntity.GOVERNMENT_PLACEMENT,
+			ActivityEntity.GOVERNMENT_VARIANT,
+			ActivityEntity.GOVERNMENT_OPTIONAL,
+			ActivityEntity.OD_USAGE_DEFINITION,
+			ActivityEntity.OD_USAGE_ALTERNATIVE,
+			ActivityEntity.IMAGE_TITLE,
+			ActivityEntity.SEMANTIC_TYPE_GROUP,
+			ActivityEntity.USAGE_TRANSLATION,
+			ActivityEntity.USAGE_DEFINITION);
 
 	@Autowired
 	protected UserContext userContext;
@@ -83,6 +135,32 @@ public class ActivityLogService implements SystemConstant {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	public Long getOwnerId(Long entityId, ActivityEntity entity) {
+		if (FIRST_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
+			return activityLogDbService.getFirstDepthFreeformOwnerId(entityId);
+		} else if (SECOND_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
+			return activityLogDbService.getSecondDepthFreeformOwnerId(entityId);
+		} else if (ActivityEntity.WORD_TYPE.equals(entity)) {
+			return activityLogDbService.getWordTypeOwnerId(entityId);
+		} else if (ActivityEntity.WORD_ETYMOLOGY.equals(entity)) {
+			return activityLogDbService.getWordEtymologyOwnerId(entityId);
+		} else if (ActivityEntity.WORD_RELATION.equals(entity)) {
+			return activityLogDbService.getWordRelationOwnerId(entityId);
+		} else if (ActivityEntity.LEXEME_RELATION.equals(entity)) {
+			return activityLogDbService.getLexemeRelationOwnerId(entityId);
+		} else if (ActivityEntity.MEANING_RELATION.equals(entity)) {
+			return activityLogDbService.getMeaningRelationOwnerId(entityId);
+		} else if (ActivityEntity.DOMAIN.equals(entity)) {
+			return activityLogDbService.getMeaningDomainOwnerId(entityId);
+		} else if (ActivityEntity.DEFINITION.equals(entity)) {
+			return activityLogDbService.getMeaningDefinitionOwnerId(entityId);
+		} else if (ActivityEntity.DEFINITION_NOTE.equals(entity)) {
+			Long definitionId = activityLogDbService.getFirstDepthFreeformOwnerId(entityId);
+			return activityLogDbService.getMeaningDefinitionOwnerId(definitionId);
+		}
+		return null;
+	}
 
 	public ActivityLogData prepareActivityLog(String functName, Long ownerId, LifecycleLogOwner ownerName) throws Exception {
 
@@ -122,7 +200,28 @@ public class ActivityLogService implements SystemConstant {
 		return activityLogData;
 	}
 
-	public ActivityLog createActivityLog(ActivityLogData activityLogData, Long entityId, ActivityEntity entityName) throws Exception {
+	public void createActivityLog(String functName, Long ownerId, LifecycleLogOwner ownerName) throws Exception {
+
+		String userName = userContext.getUserName();
+		ActivityLogData activityLogData = new ActivityLogData();
+		activityLogData.setEventBy(userName);
+		activityLogData.setFunctName(functName);
+		activityLogData.setOwnerId(ownerId);
+		activityLogData.setOwnerName(ownerName);
+		activityLogData.setPrevData("{}");
+		activityLogData.setPrevWlmIds(new WordLexemeMeaningIds());
+
+		Long entityId = new Long(ownerId);
+		ActivityEntity entityName = ActivityEntity.valueOf(ownerName.name());
+
+		createActivityLog(activityLogData, entityId, entityName);
+	}
+
+	public void createActivityLogUnknownEntity(ActivityLogData activityLogData, ActivityEntity entityName) throws Exception {
+		createActivityLog(activityLogData, -1L, entityName);
+	}
+
+	public void createActivityLog(ActivityLogData activityLogData, Long entityId, ActivityEntity entityName) throws Exception {
 
 		activityLogData.setEntityId(entityId);
 		activityLogData.setEntityName(entityName);
@@ -158,8 +257,6 @@ public class ActivityLogService implements SystemConstant {
 			activityLogData.setCurrData(currData);
 			handleSourceActivityLog(activityLogData);
 		}
-
-		return activityLogData;
 	}
 
 	private void handleWlmActivityLog(ActivityLogData activityLogData) throws Exception {
@@ -177,11 +274,18 @@ public class ActivityLogService implements SystemConstant {
 		activityLogDbService.createLexemesActivityLogs(activityLogId, lexemeIds);
 		activityLogDbService.createWordsActivityLogs(activityLogId, wordIds);
 		activityLogDbService.createMeaningsActivityLogs(activityLogId, meaningIds);
-
-		activityLogData.setId(activityLogId);
 	}
 
 	private Long[] collect(Long[] ids1, Long[] ids2) {
+		if ((ids1 == null) && (ids2 == null)) {
+			return ArrayUtils.EMPTY_LONG_OBJECT_ARRAY;
+		}
+		if (ids1 == null) {
+			return ids2;
+		}
+		if (ids2 == null) {
+			return ids1;
+		}
 		Long[] ids = ArrayUtils.addAll(ids1, ids2);
 		ids = Arrays.stream(ids).distinct().toArray(Long[]::new);
 		return ids;
@@ -301,29 +405,25 @@ public class ActivityLogService implements SystemConstant {
 	private String getWordDetailsJson(Long wordId) throws Exception {
 
 		Word word = lexSearchDbService.getWord(wordId);
-		String wordLang = word.getLang();
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
-		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
-		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
-		word.setNotes(wordNotes);
 
-		WordDetails wordDetails = new WordDetails();
-		wordDetails.setWord(word);
-		wordDetails.setWordTypes(wordTypes);
-		wordDetails.setWordEtymology(wordEtymology);
-		wordDetails.setOdWordRecommendations(odWordRecommendations);
-		wordDetails.setWordRelationDetails(wordRelationDetails);
+		word.setWordTypes(wordTypes);
+		word.setNotes(wordNotes);
+		word.setRelations(wordRelations);
+		word.setGroups(wordGroups);
+		word.setEtymology(wordEtymology);
+		word.setOdWordRecommendations(odWordRecommendations);
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		String wordDetailsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(wordDetails);
+		String wordDetailsJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(word);
 
 		return wordDetailsJson;
 	}
