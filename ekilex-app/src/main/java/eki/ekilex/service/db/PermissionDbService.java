@@ -822,7 +822,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		return create
 				.select(field(DSL.count(EKI_USER.ID).eq(1)).as("is_master"))
 				.from(EKI_USER)
-				.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_ENABLED.isTrue()))
+				.where(EKI_USER.ID.eq(userId).and(EKI_USER.IS_MASTER.isTrue()))
 				.fetchSingleInto(Boolean.class);
 	}
 }
