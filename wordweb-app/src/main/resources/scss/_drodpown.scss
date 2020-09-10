@@ -59,7 +59,7 @@
 
     &::after {
       font-size: 20px;
-      color: #8996a4;
+      color: $gray-500;
     }
   }
 
@@ -145,7 +145,7 @@
   @media (max-width: 767px) {
 
     .dropdown-toggle {
-      border: solid 2px #8996a4;
+      border: solid 2px $gray-500;
       @include border-radius(0);
       @include border-top-right-radius(3px);
       @include border-bottom-right-radius(3px);

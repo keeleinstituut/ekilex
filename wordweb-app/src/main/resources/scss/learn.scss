@@ -10,7 +10,7 @@
 .learn-container-menu {
   background-color: $white;
 
-  @include media-breakpoint-up(md){
+  @include media-breakpoint-up(md) {
     @include border-top-left-radius(10px);
     padding: 24px;
     margin-top: 20px;
@@ -36,7 +36,34 @@
 }
 
 .learn-content {
-  padding: 16px 32px;
+  // padding: 16px 32px;
+  margin: 16px 32px;
+
+  @include media-breakpoint-down(md) {
+    margin: 12px 8px;
+  }
+
+  &--border-bottom {
+
+    &::after {
+      // position: absolute;
+      position: relative;
+      left: 0;
+      display: block;
+      height: 1px;
+      margin-top: 16px;
+      margin-right: -100%;
+      margin-left: -100%;
+      content: " ";
+      border-bottom: 1px solid $gray-200;
+    }
+  }
+
+  ul {
+    li {
+      margin-bottom: 8px;
+    }
+  }
 }
 
 .learn-content-title {
@@ -46,10 +73,69 @@
   border-bottom: solid 1px $border-color;
 }
 
+.learn-content-subtitle {
+  font-size: 16px;
+  font-weight: $font-weight-bold;
+  color: $gray-400;
+}
+
 .number-rows {
 
   .row {
     margin-bottom: 8px;
+  }
+}
+
+.learn-table {
+
+  @include media-breakpoint-down(md) {
+    margin: 0 20px 10px 20px;
+    border-bottom: solid 1px $gray-500;
+  }
+
+  &__header {
+    padding: 18px 0;
+    text-align: center;
+    border: solid 1px $gray-500;
+  }
+
+  &:last-of-type {
+    border-bottom: solid 1px $gray-500;
+  }
+
+  ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+
+    &:first-of-type {
+      padding-top: 8px;
+    }
+  }
+
+
+  &__left,
+  &__right {
+    display: flex;
+    align-items: center;
+  }
+
+  &__left {
+    border-right: solid 1px $gray-500;
+    border-left: solid 1px $gray-500;
+  }
+
+  &__right {
+    border-right: solid 1px $gray-500;
+
+    @include media-breakpoint-down(md) {
+      border-left: solid 1px $gray-500;
+    }
   }
 }
 
@@ -65,16 +151,15 @@
   @include border-radius(3px);
 }
 
+.text {
+  color: $gray-400;
+}
+
 .col-bold {
   width: 4rem;
   padding-left: 1rem;
   font-weight: $font-weight-bold;
-  color: rgb(0, 157, 181);
-}
-
-.colored-bold {
-  font-weight: $font-weight-bold;
-  color: rgb(0, 157, 181);
+  color: $gray-400;
 }
 
 .highlighted {
