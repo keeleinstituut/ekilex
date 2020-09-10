@@ -1,12 +1,8 @@
 package eki.ekilex.service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -131,7 +127,7 @@ public class SourceService extends AbstractService {
 			return new ArrayList<>();
 		}
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter);
-		List<Source> sources = convert(sourcePropertyTuples);
+		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
