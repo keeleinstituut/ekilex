@@ -3,5 +3,6 @@ package eki.ekilex.constant;
 public enum SearchResultMode {
 
 	MEANING,
-	WORD
+	WORD,
+	SOURCE
 }

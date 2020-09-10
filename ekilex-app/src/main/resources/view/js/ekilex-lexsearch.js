@@ -1,5 +1,18 @@
 function initializeLexSearch() {
 
+	$(window).on('update:wordId', () => {
+		const idList = [];
+		$('#resultColumn').find('[data-rel="details-area"]').each((index, element) => {
+			idList.push($(element).attr('data-id'));
+		});
+		const idString = idList.join(',');
+		if (idList.length === 0) {
+			QueryParams.delete('wordId');
+		} else {
+			QueryParams.set('wordId', idString);
+		}
+	});
+
 	$(document).on("click", ":button[name='word-details-btn']", function() {
 		const wordId = $(this).data('id');
 		const behaviour = $(this).data('behaviour') || false;
@@ -112,14 +125,15 @@ function initializeLexSearch() {
 			data: form.serialize(),
 			method: 'POST',
 		}).done(function (data) {
-			closeWaitDlg();
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
 			$('#word-details-area').empty();
+			$wpm.bindObjects();
 		}).fail(function (data) {
 			console.log(data);
-			closeWaitDlg();
 			openAlertDlg('Lehekülje muutmine ebaõnnestus');
+		}).always(function() {
+			closeWaitDlg();
 		});
 
 	});
@@ -140,8 +154,18 @@ function initializeLexSearch() {
 	});
 
 	let detailButtons = $('#results').find('[name="word-details-btn"]');
-	if (detailButtons.length > 0) {
-		detailButtons.eq(0).trigger('click');
+	if (QueryParams.get('wordId')) {
+		const scrollableArea = $('#resultColumn .scrollable-area');
+		scrollableArea.empty();
+		const idList = QueryParams.get('wordId').split(',');
+		idList.forEach((value, index) => {
+			scrollableArea.append(`<div data-id="${value}" id="word-details-area" class="h-100 ui-sortable-placeholder" data-rel="details-area"></div>`);
+			loadWordDetails(value, 'replace', value);
+		});
+	} else {
+		if (detailButtons.length > 0) {
+			detailButtons.eq(0).trigger('click');
+		}
 	}
 
 	initNewWordDlg();
@@ -158,13 +182,21 @@ function loadWordDetails(wordId, task, lastWordId) {
 	openWaitDlg();
 	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
 	$.get(wordDetailsUrl).done(function(data) {
+
+		closeWaitDlg();
+
 		let detailsDiv = $('#word-details-area');
 		let scrollPos = detailsDiv.scrollTop();
+		
 		if (!task) {
+			if (detailsDiv.length === 0) {
+				$('#resultColumn:first').find('.scrollable-area').append(detailsDiv = $('<div data-rel="details-area"></div>'));
+			}
 			$('#resultColumn:first').find('[data-rel="details-area"]').not(':first').remove();
 			detailsDiv.replaceWith(data);
 			detailsDiv = $('#word-details-area');
 		} else {
+
 			const dataObject = $(data);
 			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordId}`);
 			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordId}`);
@@ -175,16 +207,24 @@ function loadWordDetails(wordId, task, lastWordId) {
 				detailsDiv = $('#resultColumn:first').find(`[data-rel="details-area"][data-id="${lastWordId}"]`);
 				detailsDiv.replaceWith(dataObject[0].outerHTML);
 			} else {
-				$('#resultColumn:first').find('[data-rel="details-area"]:last').after(detailsDiv = $(dataObject[0].outerHTML));
+				const lastDetailsArea = $('#resultColumn:first').find('[data-rel="details-area"]:last');
+				if (lastDetailsArea.length === 0) {
+					$('#resultColumn:first').find('.scrollable-area').append(detailsDiv = $(dataObject[0].outerHTML));
+				} else {
+					lastDetailsArea.after(detailsDiv = $(dataObject[0].outerHTML));
+				}
 			}
 		}
+
 		
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
 		detailsDiv.scrollTop(scrollPos);
+
+		$(window).trigger('update:wordId');
+
 		$("#word_select_wait_" + wordId).hide();
 		$('.tooltip').remove();
-		closeWaitDlg();
 
 		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
 
@@ -194,11 +234,23 @@ function loadWordDetails(wordId, task, lastWordId) {
 			$("#word-result-" + id).addClass('active');
 		});
 
+		$('#results_div .list-group-item').each((index, element) => {
+			const elem = $(element);
+			const button = elem.find('button');
+			if( elem.is('.active') ) {
+				button.removeAttr('data-contextmenu:compare');
+				button.attr('data-contextmenu:closePanel', 'Sulge paneel');
+			} else {
+				button.removeAttr('data-contextmenu:closePanel');
+				button.attr('data-contextmenu:compare', 'Ava uues paneelis');
+			}
+		});
+
 		$wpm.bindObjects();
 	}).fail(function(data) {
-		console.log(data);
-		closeWaitDlg();
 		alert('Keelendi detailide päring ebaõnnestus');
+	}).always(function() {
+		closeWaitDlg();
 	});
 };
 
@@ -220,9 +272,9 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
 		$wpm.bindObjects();
 	}).fail(function(data) {
-		console.log(data);
-		closeWaitDlg();
 		alert('Lekseemi detailide päring ebaõnnestus');
+	}).always(function() {
+		closeWaitDlg();
 	});
 };
 

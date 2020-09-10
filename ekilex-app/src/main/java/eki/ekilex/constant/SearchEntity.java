@@ -31,7 +31,7 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getLexEntities() {
-		return asList(HEADWORD, WORD, FORM, MEANING, DEFINITION, USAGE);
+		return asList(HEADWORD, WORD, FORM, MEANING, DEFINITION, USAGE, CLUELESS);
 	}
 
 	public static List<SearchEntity> getTermEntities() {

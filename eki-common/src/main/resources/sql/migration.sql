@@ -52,6 +52,11 @@ where lff.freeform_id = ff.id
 
 delete from freeform where type = 'BOOKMARK';
 
+-- aspektide sildid sõnaveebis
+insert into aspect_label (code, value, lang, type) values ('сов.', 'совершенный вид (что сделать)', 'est', 'wordweb');
+insert into aspect_label (code, value, lang, type) values ('несов.', 'несовершенный вид (что делать)', 'est', 'wordweb');
+insert into aspect_label (code, value, lang, type) values ('сов. и несов.', 'совершенный и несовершенный', 'est', 'wordweb');
+
 ---------------------------------------------
 -- lifecycle log to activity log migration --
 ---------------------------------------------

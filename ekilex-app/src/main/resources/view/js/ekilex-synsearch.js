@@ -21,7 +21,7 @@ function initializeSynSearch() {
 	$(document).on("click", "#activeTagCompleteBtn", function() {
 		let wordId = $(this).data('word-id');
 		let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
-		let callbackFunc = () => refreshDetails();
+		let callbackFunc = () => refreshSynDetails();
 		doPostRelationChange(actionUrl, callbackFunc);
 	});
 
@@ -109,7 +109,7 @@ function initializeSynSearch() {
 					openWaitDlg();
 					postJson(applicationUrl + 'update_ordering', orderingData);
 					if (orderingBtn.hasClass('do-refresh')) {
-						refreshDetails();
+						refreshSynDetails();
 					}
 				}
 			});
@@ -140,7 +140,7 @@ function initializeSynSearch() {
 					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
 
 					openWaitDlg();
-					let callbackFunc = () => refreshDetails();
+					let callbackFunc = () => refreshSynDetails();
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
 			});
@@ -169,7 +169,7 @@ function initializeSynSearch() {
 		let id = $(this).data('id');
 		let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
 
-		let callbackFunc = () => refreshDetails();
+		let callbackFunc = () => refreshSynDetails();
 
 		doPostRelationChange(actionUrl, callbackFunc);
 
@@ -180,7 +180,7 @@ function initializeSynSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, -1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetails();
+			refreshSynDetails();
 		}
 	});
 
@@ -189,7 +189,7 @@ function initializeSynSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetails();
+			refreshSynDetails();
 		}
 	});
 
@@ -288,7 +288,7 @@ function initAddSynRelationDlg(addDlg) {
 						method: 'POST',
 					}).done(function() {
 						addDlg.modal('hide');
-						refreshDetails();
+						refreshSynDetails();
 					}).fail(function(data) {
 						addDlg.modal('hide');
 						console.log(data);
@@ -334,7 +334,7 @@ function validateAndSubmitLangSelectForm(dlg) {
 			method: 'POST',
 		}).done(function() {
 			dlg.modal('hide');
-			refreshDetails();
+			refreshSynDetails();
 		}).fail(function(data) {
 			dlg.modal('hide');
 			console.log(data);
@@ -612,7 +612,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 				let meaningId = currentSelectedItem.data('meaning-id');
 
 				let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
-				let callbackFunc = () => refreshDetails();
+				let callbackFunc = () => refreshSynDetails();
 				doPostRelationChange(actionUrl, callbackFunc);
 
 			} else {
@@ -684,7 +684,7 @@ function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 	$('.keyboard-nav-list-item-active .list-item-value').tooltip(displayOption);
 }
 
-function refreshDetails() {
+function refreshSynDetails() {
 	let selectedWordId = $('#syn-details-area').data('id');
 	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
 

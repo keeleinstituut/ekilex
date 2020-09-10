@@ -7,6 +7,7 @@ class ContextMenu {
     this.options;
     this.id = `contextmenu-${Math.random().toString().substr(2)}`;
     this.elementId = element.attr('data-id');
+    this.clickEevent = element.attr('data-leftClick') ? 'click' : 'contextmenu';
     this.menu;
     this.cursorPosition;
     this.destroyEvents = [
@@ -18,7 +19,7 @@ class ContextMenu {
   }
 
   bindEvents() {
-    this.element.on('contextmenu', (e) => {
+    this.element.on(this.clickEevent, (e) => {
       e.preventDefault();
       e.stopImmediatePropagation();
       this.cursorPosition = {
@@ -73,7 +74,7 @@ class ContextMenu {
     try {
       this[`on${taskName}`]();
     } catch(err) {
-      console.log(`${taskName} method doesnt exist!`);
+      console.log(`on${taskName} method doesnt exist!`);
     };
   }
 
@@ -106,6 +107,7 @@ class ContextMenu {
 
   showMenu() {
     this.destroyMenu();
+    this.getOptions();
     let optionsHtml = '';
     this.options.forEach((item) => {
       optionsHtml+= `<button data-task="${item.task}">${item.value}</button>`;
@@ -118,20 +120,31 @@ class ContextMenu {
   }
 
   positionMenu() {
-    let left = this.cursorPosition.x + 10;
-    const menuWidth = this.menu.outerWidth();
-    const windowWidth = $(window).width();
-    if (left + menuWidth >= windowWidth) {
-      left = this.cursorPosition.x - menuWidth - 10;
+
+    let left; let top;
+
+    if (this.clickEevent === 'contextmenu') {
+      left = this.cursorPosition.x + 10;
+      const menuWidth = this.menu.outerWidth();
+      const windowWidth = $(window).width();
+      if (left + menuWidth >= windowWidth) {
+        left = this.cursorPosition.x - menuWidth - 10;
+      } 
+      top = this.cursorPosition.y;
+    } else if (this.clickEevent === 'click') {
+      left = this.element.offset().left + this.element.outerWidth() - this.menu.outerWidth();
+      top = this.element.offset().top + this.element.outerHeight() + 8;
+      
     }
+
+
     this.menu.css({
-      top: this.cursorPosition.y,
+      top,
       left,
-    })
+    });
   }
 
   initialize() {
-    this.getOptions();
     this.bindEvents();
   }
 
@@ -179,6 +192,24 @@ class ContextMenu {
 
   onCompare() {
     loadWordDetails(this.elementId, 'compare');
+  }
+
+  onClosepanel() {
+    $(`#word-details-area[data-id="${this.elementId}"]`).animate({
+      opacity: 0,
+    }, 250, function() {
+      $(this).remove();
+      $(window).trigger('update:wordId');
+    });
+    $(`#word-result-${this.elementId}`).removeClass('active');
+    const button = $(`#word-result-${this.elementId}`).find('button');
+    button.removeAttr('data-contextmenu:closePanel');
+    button.attr('data-contextmenu:compare', 'Ava uues paneelis');
+  }
+
+  onSharelink() {
+    const url = `${window.location.href.split('?')[0]}?wordId=${this.elementId}`;
+    window.open(url, '_blank');
   }
 
 }

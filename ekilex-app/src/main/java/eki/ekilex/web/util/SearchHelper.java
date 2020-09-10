@@ -75,12 +75,10 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		uriBuf.append(searchMode);
 
 		// result mode
-		if (resultMode != null) {
-			uriBuf.append(PATH_SEPARATOR);
-			uriBuf.append(RESULT_MODE);
-			uriBuf.append(PATH_SEPARATOR);
-			uriBuf.append(resultMode.name());
-		}
+		uriBuf.append(PATH_SEPARATOR);
+		uriBuf.append(RESULT_MODE);
+		uriBuf.append(PATH_SEPARATOR);
+		uriBuf.append(resultMode.name());
 
 		// result lang
 		if (StringUtils.isNotEmpty(resultLang)) {

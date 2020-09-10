@@ -7,7 +7,7 @@ const $root = {
    "class": new Array(),
 
    "prefix": "data-",
-
+   resizeArray: new Array(),
 };
 
 const $wpm = {
@@ -23,7 +23,6 @@ const $wpm = {
       }
 
       var resizeDelay = 200;
-      $root.resizeArray = new Array();
       var resizeDebounce = false;
 
       $(window).bind("resize", function(e){

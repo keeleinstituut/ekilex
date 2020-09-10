@@ -18,8 +18,22 @@ class EkiAccordion {
     this.debounce;
   }
 
+  getStorageData() {
+    return Cookies.get('accordionState') ? JSON.parse(Cookies.get('accordionState')) : {};
+  }
+  saveState(slug, state) {
+    const cookies = this.getStorageData();
+    cookies[slug] = state;
+    Cookies.set('accordionState', JSON.stringify(cookies));
+  }
+
   toggleElement(target) {
+    const id = target.attr('id');
+    const idParts = id.split('-');
+    const slug = idParts.slice(0, idParts.length-1).join('-');
     target.toggleClass(this.selectors.active.substr(1));
+    const active = target.is(this.selectors.active);
+    this.saveState(slug, active);
 
     toggleDataExistsBadge(target);
     let targetInnerInstances = target.find('.ekiAccordion__instance');
@@ -29,6 +43,15 @@ class EkiAccordion {
   }
 
   bindElements() {
+    const cookies = this.getStorageData();
+    this.elements.each((index, element) => {
+      const slug = slugify($(element).find(this.selectors.toggles).text());
+      $(element).attr('id', `${slug}-${this.id}`);
+      if (cookies[slug]) {
+        $(element).addClass(this.selectors.active.substr(1));
+      }
+    });
+
     this.elements.find(this.selectors.toggles).on('click', (e) => {
       if ($(e.target).is(this.selectors.toggles)) {
         e.preventDefault();
