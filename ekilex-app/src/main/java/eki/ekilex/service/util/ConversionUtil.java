@@ -679,8 +679,8 @@ public class ConversionUtil implements GlobalConstant {
 	private void handleWordRelType(String relTypeCode, String relTypeLabel, List<Relation> wordRelations, List<WordGroup> wordRelationGroups, String wordLang) {
 
 		WordGroup wordRelationGroup;
+		Locale locale = LocaleContextHolder.getLocale();
 		if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, relTypeCode)) {
-			Locale locale = LocaleContextHolder.getLocale();
 			String synLabel = messageSource.getMessage("classifier.word_rel_type.raw.syn", new Object[0], locale);
 			String matchLabel = messageSource.getMessage("classifier.word_rel_type.raw.match", new Object[0], locale);
 			List<Relation> wordRelationSyns = null;
@@ -707,9 +707,10 @@ public class ConversionUtil implements GlobalConstant {
 				wordRelationGroup.setMembers(wordRelationMatches);
 				wordRelationGroups.add(wordRelationGroup);
 			}
-		} else {
+		} else if (StringUtils.equals(WORD_REL_TYPE_CODE_COMP, relTypeCode)){
+			String compGroupLabel = messageSource.getMessage("classifier.word_rel_type.comp", new Object[0], locale);
 			wordRelationGroup = new WordGroup();
-			wordRelationGroup.setGroupTypeLabel(relTypeLabel);
+			wordRelationGroup.setGroupTypeLabel(compGroupLabel);
 			wordRelationGroup.setMembers(wordRelations);
 			wordRelationGroups.add(wordRelationGroup);
 		}
