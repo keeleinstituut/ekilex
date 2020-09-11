@@ -7,9 +7,9 @@ function initializeLexSearch() {
 		});
 		const idString = idList.join(',');
 		if (idList.length === 0) {
-			QueryParams.delete('wordId');
+			QueryParams.delete('id');
 		} else {
-			QueryParams.set('wordId', idString);
+			QueryParams.set('id', idString);
 		}
 	});
 
@@ -127,7 +127,6 @@ function initializeLexSearch() {
 		}).done(function (data) {
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
-			$('#word-details-area').empty();
 			$wpm.bindObjects();
 		}).fail(function (data) {
 			console.log(data);
@@ -154,10 +153,10 @@ function initializeLexSearch() {
 	});
 
 	let detailButtons = $('#results').find('[name="word-details-btn"]');
-	if (QueryParams.get('wordId')) {
+	if (QueryParams.get('id')) {
 		const scrollableArea = $('#resultColumn .scrollable-area');
 		scrollableArea.empty();
-		const idList = QueryParams.get('wordId').split(',');
+		const idList = QueryParams.get('id').split(',');
 		idList.forEach((value, index) => {
 			scrollableArea.append(`<div data-id="${value}" id="word-details-area" class="h-100 ui-sortable-placeholder" data-rel="details-area"></div>`);
 			loadWordDetails(value, 'replace', value);

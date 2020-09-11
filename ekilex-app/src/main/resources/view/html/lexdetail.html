@@ -18,7 +18,14 @@
               <span th:unless="${lexeme.wordLang == meaningWordLangGroup.lang}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
               <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
                 <span class="btn-custom">
-                  <button type="button" class="btn btn-link p-0" th:data-id="${meaningWord.wordId}" name="word-details-btn" data-behaviour="replace">
+                  <button
+                    type="button"
+                    class="btn btn-link p-0"
+                    th:data-id="${meaningWord.wordId}"
+                    name="word-details-btn"
+                    data-plugin="contextmenu"
+                    data-contextmenu:compare="Ava uues paneelis"
+                    data-behaviour="replace">
                     <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
                     <span th:text="${meaningWord.homonymNr}"></span>
                     <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
@@ -119,7 +126,14 @@
                             sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-arrow-left" aria-hidden="true"></i>
                     </button>
-                    <button type="button" class="btn btn-link p-0" th:data-id="${meaningWord.wordId}" name="word-details-btn"  data-behaviour="replace">
+                    <button
+                      type="button"
+                      class="btn btn-link p-0"
+                      th:data-id="${meaningWord.wordId}"
+                      name="word-details-btn"
+                      data-behaviour="replace"
+                      data-plugin="contextmenu"
+                      data-contextmenu:compare="Ava uues paneelis">
                       <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
                       <span th:text="${meaningWord.homonymNr}"></span>
                       <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
@@ -681,7 +695,14 @@
                 </td>
                 <td class="pr-3">
                   <th:block th:each="relation, iter : ${relations}">
-                    <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="word-details-btn" data-behaviour="replace">
+                    <button
+                      type="button"
+                      class="btn btn-link btn-xs"
+                      th:data-id="${relation.wordId}"
+                      name="word-details-btn"
+                      data-behaviour="replace"
+                      data-plugin="contextmenu"
+                      data-contextmenu:compare="Ava uues paneelis">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                       <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                       <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
@@ -1220,7 +1241,14 @@
                   <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
                 </td>
                 <td class="pr-3 invisible-buttons">
-                  <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="word-details-btn" data-behaviour="replace">
+                  <button
+                    type="button"
+                    class="btn btn-link btn-xs"
+                    th:data-id="${relation.wordId}"
+                    name="word-details-btn"
+                    data-plugin="contextmenu"
+                    data-contextmenu:compare="Ava uues paneelis"
+                    data-behaviour="replace">
                     <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                   </button>
                   <button type="button" class="btn badge badge-warning"
@@ -1267,7 +1295,14 @@
                       </td>
                       <td>
                         <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
-                          <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="word-details-btn" data-behaviour="replace">
+                          <button
+                            type="button"
+                            class="btn btn-link"
+                            th:data-id="${collocMember.wordId}"
+                            name="word-details-btn"
+                            data-plugin="contextmenu"
+                            data-contextmenu:compare="Ava uues paneelis"
+                            data-behaviour="replace">
                             <span th:text="${(collocMember.wordModeWord ? '' : '(') + collocMember.word + (collocMember.wordModeWord ? '' : ')')}"></span>
                             <code>
                               [<span th:text="${collocMember.weight}"></span>]
@@ -1311,7 +1346,14 @@
                 </td>
                 <td>
                   <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
-                    <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="word-details-btn" data-behaviour="replace">
+                    <button
+                      type="button"
+                      class="btn btn-link"
+                      th:data-id="${collocMember.wordId}"
+                      name="word-details-btn"
+                      data-plugin="contextmenu"
+                      data-contextmenu:compare="Ava uues paneelis"
+                      data-behaviour="replace">
                       <span th:text="${collocMember.word}"></span>
                       <code>
                         [<span th:text="${collocMember.weight}"></span>]

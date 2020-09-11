@@ -23,6 +23,9 @@
     padding:6px 56px 6px 24px;
     cursor: pointer;
     position: relative;
+    span {
+      pointer-events: none;
+    }
     &:before {
       content: "\f0d8";
       display: block;

@@ -289,7 +289,14 @@
                               <tr th:each="wordGroup : ${details.wordRelationDetails.wordGroups}">
                                 <td class="invisible-buttons">
                                   <span th:each="relation, itemIter : ${wordGroup.members}">
-                                    <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
+                                    <button
+                                      type="button"
+                                      class="btn btn-link btn-xs"
+                                      th:data-id="${relation.wordId}"
+                                      data-plugin="contextmenu"
+                                      data-contextmenu:compare="Ava uues paneelis"
+                                      data-behaviour="replace"
+                                      name="word-details-btn">
                                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                                     </button>
                                     <button type="button" class="btn badge badge-warning"
@@ -316,7 +323,14 @@
                                   <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
                                 </td>
                                 <td class="invisible-buttons">
-                                  <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
+                                  <button
+                                    type="button"
+                                    class="btn btn-link btn-text-wrap btn-xs"
+                                    th:data-id="${relation.wordId}"
+                                    data-plugin="contextmenu"
+                                    data-contextmenu:compare="Ava uues paneelis"
+                                    data-behaviour="replace"
+                                    name="word-details-btn">
                                     <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                                   </button>
                                   <button type="button" class="btn badge badge-warning"
@@ -348,7 +362,14 @@
                                 <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
                               </td>
                               <td class="invisible-buttons">
-                                <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="word-details-btn">
+                                <button
+                                  type="button"
+                                  class="btn btn-link btn-text-wrap btn-xs"
+                                  th:data-id="${relation.wordId}"
+                                  data-plugin="contextmenu"
+                                  data-contextmenu:compare="Ava uues paneelis"
+                                  data-behaviour="replace"
+                                  name="word-details-btn">
                                   <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                                 </button>
                                 <button type="button" class="btn badge badge-warning"
@@ -386,7 +407,14 @@
                             <span th:text="${wordEtymSourceLink.value}"></span>
                           </div>
                           <div th:each="wordEtymRel : ${wordEtym.wordEtymRelations}">
-                            <button type="button" class="btn btn-link btn-xs" th:data-id="${wordEtymRel.relatedWordId}" name="word-details-btn">
+                            <button
+                              type="button"
+                              class="btn btn-link btn-xs"
+                              th:data-id="${wordEtymRel.relatedWordId}"
+                              data-plugin="contextmenu"
+                              data-contextmenu:compare="Ava uues paneelis"
+                              data-behaviour="replace"
+                              name="word-details-btn">
                               <span>
                                 <span th:if="${wordEtymRel.questionable}">?</span>
                                 <span th:if="${wordEtymRel.compound}">+</span>
