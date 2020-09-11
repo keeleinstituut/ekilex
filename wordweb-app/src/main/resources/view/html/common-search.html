@@ -88,8 +88,8 @@
   </th:block>
   <th:block th:fragment="word-data">
     <div class="col-12 content-title d-flex align-items-center flex-wrap">
-      <span class="additional-meta lang-code" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-      <h1 class="mb-0 font-weight-bold">
+      <h1 class="mb-0 font-weight-bold d-flex align-items-start align-items-lg-center">
+        <span class="additional-meta lang-code mt-2 mt-lg-0" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
         <span class="homonym-name" th:utext="${viewUtil.getWordValueMarkup(wordData.word)}">tee</span>
       </h1>
       <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
@@ -247,7 +247,7 @@
                                 th:with="
                                 isCollapsable=${meaningWordIter.count > T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT},
                                 isLimit=${meaningWordIter.count == T(eki.wordweb.constant.WebConstant).MEANING_WORDS_DISPLAY_LIMIT}">
-                        <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse':''}">
+                        <span class="mr-1" th:classappend="${isCollapsable ? 'collapse':''}">
                           <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="matching-word "
                              th:classappend="${meaningWord.wordId == wordId ? 'match' : ''}">
                             <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>

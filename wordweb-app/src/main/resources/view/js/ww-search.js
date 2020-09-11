@@ -68,6 +68,11 @@ $(document).on("click", ".menu-btn", function () {
     }
 });
 
+//Hide tooltips on click on mobile
+$(document).on("click", ".btn-ellipsis", function(e) {
+    $(this).tooltip('hide');
+});
+
 function activateCollapseBtn(){
     $(".btn-collapse").on("click", function () {
         $(this).toggleClass('show');
@@ -84,6 +89,7 @@ function activateCollapseBtn(){
         }
         if($(this).data("dynamic-text")){
             $(this).find('.btn-content').toggleClass('d-none');
+            $(this).find('.see-more-content').tooltip('hide');
         }
     });
 }
