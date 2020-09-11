@@ -4,11 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.ekilex.data.LogData;
 import eki.ekilex.service.db.LifecycleLogDbService;
+import eki.ekilex.service.util.ConversionUtil;
 
 public abstract class AbstractService {
 
 	@Autowired
 	protected UserContext userContext;
+
+	@Autowired
+	protected ConversionUtil conversionUtil;
 
 	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;

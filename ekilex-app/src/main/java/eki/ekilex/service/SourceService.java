@@ -1,12 +1,8 @@
 package eki.ekilex.service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -56,7 +52,7 @@ public class SourceService extends AbstractService {
 			logger.warn("No source found for id {}", sourceId);
 			return null;
 		}
-		List<Source> sources = convert(sourcePropertyTuples);
+		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 		if (sources.size() > 1) {
 			logger.error("Single source query for id {} returned several. Fix this!", sourceId);
@@ -103,7 +99,7 @@ public class SourceService extends AbstractService {
 			return new ArrayList<>();
 		}
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType);
-		List<Source> sources = convert(sourcePropertyTuples);
+		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
@@ -118,7 +114,7 @@ public class SourceService extends AbstractService {
 		SourceType sourceType = excludedSource.getType();
 		Long excludedSourceId = excludedSource.getId();
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter, sourceType, excludedSourceId);
-		List<Source> sources = convert(sourcePropertyTuples);
+		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
@@ -131,7 +127,7 @@ public class SourceService extends AbstractService {
 			return new ArrayList<>();
 		}
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSources(searchFilter);
-		List<Source> sources = convert(sourcePropertyTuples);
+		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		permCalculator.applyCrud(userRole, sources);
 
 		return sources;
@@ -237,50 +233,6 @@ public class SourceService extends AbstractService {
 		List<String> names = sourceDbService.getSourceAttributesByType(sourceId, FreeformType.SOURCE_NAME);
 		String joinedNames = StringUtils.join(names, "; ");
 		return joinedNames;
-	}
-
-	private List<Source> convert(List<SourcePropertyTuple> sourcePropertyTuples) {
-
-		List<Source> sources = new ArrayList<>();
-		Map<Long, Source> sourceMap = new HashMap<>();
-
-		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
-
-			Long sourceId = tuple.getSourceId();
-			Long sourcePropertyId = tuple.getSourcePropertyId();
-			FreeformType sourcePropertyType = tuple.getSourcePropertyType();
-			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
-			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
-			boolean sourcePropertyMatch = tuple.isSourcePropertyMatch();
-
-			Source source = sourceMap.get(sourceId);
-			if (source == null) {
-				source = new Source();
-				source.setId(sourceId);
-				source.setType(tuple.getSourceType());
-				source.setSourceProperties(new ArrayList<>());
-				sources.add(source);
-				sourceMap.put(sourceId, source);
-			}
-
-			SourceProperty sourceProperty = new SourceProperty();
-			sourceProperty.setId(sourcePropertyId);
-			sourceProperty.setType(sourcePropertyType);
-			sourceProperty.setValueText(sourcePropertyValueText);
-			sourceProperty.setValueDate(sourcePropertyValueDate);
-			sourceProperty.setValueMatch(sourcePropertyMatch);
-			source.getSourceProperties().add(sourceProperty);
-		}
-
-		sources.forEach(source -> {
-			List<SourceProperty> sourceProperties = source.getSourceProperties();
-			List<String> sourceNames = sourceProperties.stream()
-					.filter(sourceProperty -> FreeformType.SOURCE_NAME.equals(sourceProperty.getType()))
-					.map(SourceProperty::getValueText)
-					.collect(Collectors.toList());
-			source.setSourceNames(sourceNames);
-		});
-		return sources;
 	}
 
 }

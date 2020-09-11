@@ -28,9 +28,9 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String displayMorphCode;
 
-	private List<WordNote> notes;
-
 	private String[] wordTypeCodes;
+
+	private List<Classifier> wordTypes;
 
 	private boolean prefixoid;
 
@@ -45,6 +45,16 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 	private List<String> lexemesTagNames;
 
 	private List<String> datasetCodes;
+
+	private List<WordNote> notes;
+
+	private List<Relation> relations;
+
+	private List<WordGroup> groups;
+
+	private List<WordEtym> etymology;
+
+	private List<FreeForm> odWordRecommendations;
 
 	public Long getWordId() {
 		return wordId;
@@ -138,14 +148,6 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.displayMorphCode = displayMorphCode;
 	}
 
-	public List<WordNote> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(List<WordNote> notes) {
-		this.notes = notes;
-	}
-
 	@Override
 	public String[] getWordTypeCodes() {
 		return wordTypeCodes;
@@ -154,6 +156,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 	@Override
 	public void setWordTypeCodes(String[] wordTypeCodes) {
 		this.wordTypeCodes = wordTypeCodes;
+	}
+
+	public List<Classifier> getWordTypes() {
+		return wordTypes;
+	}
+
+	public void setWordTypes(List<Classifier> wordTypes) {
+		this.wordTypes = wordTypes;
 	}
 
 	@Override
@@ -216,6 +226,46 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setDatasetCodes(List<String> datasetCodes) {
 		this.datasetCodes = datasetCodes;
+	}
+
+	public List<WordNote> getNotes() {
+		return notes;
+	}
+
+	public void setNotes(List<WordNote> notes) {
+		this.notes = notes;
+	}
+
+	public List<Relation> getRelations() {
+		return relations;
+	}
+
+	public void setRelations(List<Relation> relations) {
+		this.relations = relations;
+	}
+
+	public List<WordGroup> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(List<WordGroup> groups) {
+		this.groups = groups;
+	}
+
+	public List<WordEtym> getEtymology() {
+		return etymology;
+	}
+
+	public void setEtymology(List<WordEtym> etymology) {
+		this.etymology = etymology;
+	}
+
+	public List<FreeForm> getOdWordRecommendations() {
+		return odWordRecommendations;
+	}
+
+	public void setOdWordRecommendations(List<FreeForm> odWordRecommendations) {
+		this.odWordRecommendations = odWordRecommendations;
 	}
 
 }
