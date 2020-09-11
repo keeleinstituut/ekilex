@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.LifecycleLogOwner;
 import eki.common.test.TestEnvInitialiser;
-import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.service.ActivityLogService;
@@ -55,7 +54,6 @@ public class ActivityLogTest extends AbstractTest {
 		Long entityId;
 		ActivityEntity entityName;
 		ActivityLogData activityLog;
-		ActivityLog commitedActivityLog;
 		TypeActivityLogDiff currWordTypeLogDiff;
 		String modifiedWordTypeCode;
 
@@ -67,12 +65,12 @@ public class ActivityLogTest extends AbstractTest {
 
 		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
 		cudDbService.updateWordLang(wordId, modifiedLang);
-		commitedActivityLog = activityLogService.createActivityLog(activityLog, entityId, entityName);
+		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
-		String prevLang = commitedActivityLog.getPrevDiffs().stream().map(TypeActivityLogDiff::getValue).findFirst().get();
-		String currLang = commitedActivityLog.getCurrDiffs().stream().map(TypeActivityLogDiff::getValue).findFirst().get();
-		int associatedLexemeCount = activityLog.getPrevWlmIds().getLexemeIds().size();
-		int associatedMeaningCount = activityLog.getPrevWlmIds().getMeaningIds().size();
+		String prevLang = activityLog.getPrevDiffs().stream().map(TypeActivityLogDiff::getValue).findFirst().get();
+		String currLang = activityLog.getCurrDiffs().stream().map(TypeActivityLogDiff::getValue).findFirst().get();
+		int associatedLexemeCount = activityLog.getPrevWlmIds().getLexemeIds().length;
+		int associatedMeaningCount = activityLog.getPrevWlmIds().getMeaningIds().length;
 
 		assertEquals("Unexpected update result", originalLang, prevLang);
 		assertEquals("Unexpected update result", modifiedLang, currLang);
@@ -85,12 +83,12 @@ public class ActivityLogTest extends AbstractTest {
 
 		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
 		entityId = cudDbService.createWordType(wordId, modifiedWordTypeCode);
-		commitedActivityLog = activityLogService.createActivityLog(activityLog, entityId, entityName);
+		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
-		long prevWordTypeCount = commitedActivityLog.getPrevDiffs().stream()
-				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/word/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).count();
-		currWordTypeLogDiff = commitedActivityLog.getCurrDiffs().stream()
-				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/word/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).findFirst().get();
+		long prevWordTypeCount = activityLog.getPrevDiffs().stream()
+				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).count();
+		currWordTypeLogDiff = activityLog.getCurrDiffs().stream()
+				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).findFirst().get();
 
 		assertEquals("Unexpected update result", 0, prevWordTypeCount);
 		assertEquals("Unexpected update result", "[" + modifiedWordTypeCode + "]", currWordTypeLogDiff.getValue());
@@ -101,10 +99,10 @@ public class ActivityLogTest extends AbstractTest {
 
 		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
 		entityId = cudDbService.createWordType(wordId, modifiedWordTypeCode);
-		commitedActivityLog = activityLogService.createActivityLog(activityLog, entityId, entityName);
+		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
-		currWordTypeLogDiff = commitedActivityLog.getCurrDiffs().stream()
-				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/word/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).findFirst().get();
+		currWordTypeLogDiff = activityLog.getCurrDiffs().stream()
+				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).findFirst().get();
 
 		assertEquals("Unexpected update result", modifiedWordTypeCode, currWordTypeLogDiff.getValue());
 
@@ -114,10 +112,10 @@ public class ActivityLogTest extends AbstractTest {
 
 		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
 		cudDbService.deleteWordWordType(entityId);
-		commitedActivityLog = activityLogService.createActivityLog(activityLog, entityId, entityName);
+		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
-		long currWordTypeCount = commitedActivityLog.getCurrDiffs().stream()
-				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/word/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).count();
+		long currWordTypeCount = activityLog.getCurrDiffs().stream()
+				.filter(logDiff -> StringUtils.startsWith(logDiff.getPath(), "/wordTypeCodes") && !StringUtils.equals("-", logDiff.getValue())).count();
 
 		assertEquals("Unexpected update result", 0, currWordTypeCount);
 	}

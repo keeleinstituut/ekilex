@@ -15,12 +15,8 @@ import eki.ekilex.data.PagingResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
-import eki.ekilex.service.util.ConversionUtil;
 
 public abstract class AbstractSearchService extends AbstractService implements SystemConstant, GlobalConstant, PermConstant {
-
-	@Autowired
-	protected ConversionUtil conversionUtil;
 
 	@Autowired
 	protected CommonDataDbService commonDataDbService;
