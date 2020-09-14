@@ -455,6 +455,8 @@ function initMultiselectRelationDlg(dlg) {
 
 	dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		dlg.find('.form-control').first().focus();
+		let relationTypeSelect = dlg.find("select[name='relationType']");
+		changeOppositeRelationSelectData(relationTypeSelect);
 	});
 
 	$(document).on("change", "select[name='relationType']", function() {

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -160,6 +161,14 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 	@ModelAttribute("wordRelationTypes")
 	public List<Classifier> getWordRelationTypes() {
 		return commonDataService.getWordRelationTypes();
+	}
+
+	@ModelAttribute("groupWordRelationTypes")
+	public List<Classifier> getGroupWordRelationTypes() {
+		List<Classifier> allWordRelationTypes = commonDataService.getWordRelationTypes();
+		return allWordRelationTypes.stream()
+				.filter(wordRelType -> !ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, wordRelType.getCode()))
+				.collect(Collectors.toList());
 	}
 
 	@ModelAttribute("lexemeRelationTypes")

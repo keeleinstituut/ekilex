@@ -647,20 +647,12 @@ public class ConversionUtil implements GlobalConstant {
 		wordRelationDetails.setPrimaryWordRelationGroups(new ArrayList<>());
 		wordRelationDetails.setSecondaryWordRelationGroups(new ArrayList<>());
 
-		if (CollectionUtils.isEmpty(wordRelations)) {
-			return wordRelationDetails;
-		}
-
 		Map<String, List<Relation>> wordRelationsMap = wordRelations.stream().collect(groupingBy(Relation::getRelTypeCode));
 
 		for (Classifier wordRelationType : allWordRelationTypes) {
 			String relTypeCode = wordRelationType.getCode();
 			String relTypeLabel = wordRelationType.getValue();
 			List<Relation> relatedWordsOfType = wordRelationsMap.get(relTypeCode);
-			if (relatedWordsOfType == null) {
-				continue;
-			}
-
 			List<WordGroup> wordRelationGroups;
 			if (ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, relTypeCode)) {
 				wordRelationGroups = wordRelationDetails.getPrimaryWordRelationGroups();
@@ -673,11 +665,8 @@ public class ConversionUtil implements GlobalConstant {
 
 		boolean groupRelationExists = CollectionUtils.isNotEmpty(wordRelationDetails.getSecondaryWordRelationGroups())
 				|| CollectionUtils.isNotEmpty(wordRelationDetails.getWordGroups());
-		boolean anyRelationExists = groupRelationExists
-				|| CollectionUtils.isNotEmpty(wordRelationDetails.getPrimaryWordRelationGroups());
-
 		wordRelationDetails.setGroupRelationExists(groupRelationExists);
-		wordRelationDetails.setAnyRelationExists(anyRelationExists);
+
 		return wordRelationDetails;
 	}
 
@@ -698,28 +687,28 @@ public class ConversionUtil implements GlobalConstant {
 			}
 
 			// raw rel syn group
-			if (wordRelationSyns != null) {
-				wordRelationGroup = new WordGroup();
-				wordRelationGroup.setGroupTypeLabel(synLabel);
-				wordRelationGroup.setMembers(wordRelationSyns);
-				wordRelationGroups.add(wordRelationGroup);
-			}
+			wordRelationGroup = new WordGroup();
+			wordRelationGroup.setGroupTypeCode(relTypeCode);
+			wordRelationGroup.setGroupTypeLabel(synLabel);
+			wordRelationGroup.setMembers(wordRelationSyns);
+			wordRelationGroups.add(wordRelationGroup);
 
 			// raw rel match group w lang grouping
-			if (wordRelationMatches != null) {
-				wordRelationGroup = new WordGroup();
-				wordRelationGroup.setGroupTypeLabel(matchLabel);
-				wordRelationGroup.setMembers(wordRelationMatches);
-				wordRelationGroups.add(wordRelationGroup);
-			}
+			wordRelationGroup = new WordGroup();
+			wordRelationGroup.setGroupTypeCode(relTypeCode);
+			wordRelationGroup.setGroupTypeLabel(matchLabel);
+			wordRelationGroup.setMembers(wordRelationMatches);
+			wordRelationGroups.add(wordRelationGroup);
 		} else if (StringUtils.equals(WORD_REL_TYPE_CODE_COMP, relTypeCode)) {
 			String compGroupLabel = messageSource.getMessage("classifier.word_rel_type.comp", new Object[0], locale);
 			wordRelationGroup = new WordGroup();
+			wordRelationGroup.setGroupTypeCode(relTypeCode);
 			wordRelationGroup.setGroupTypeLabel(compGroupLabel);
 			wordRelationGroup.setMembers(wordRelations);
 			wordRelationGroups.add(wordRelationGroup);
 		} else {
 			wordRelationGroup = new WordGroup();
+			wordRelationGroup.setGroupTypeCode(relTypeCode);
 			wordRelationGroup.setGroupTypeLabel(relTypeLabel);
 			wordRelationGroup.setMembers(wordRelations);
 			wordRelationGroups.add(wordRelationGroup);
