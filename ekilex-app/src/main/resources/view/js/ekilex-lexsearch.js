@@ -171,6 +171,12 @@ function initializeLexSearch() {
 	initClassifierAutocomplete();
 };
 
+function getBreadcrumbsData(detailsDiv, word) {
+	const crumbs = detailsDiv.attr('data-breadcrumbs') ? JSON.parse(detailsDiv.attr('data-breadcrumbs')) : [];
+	crumbs.push(word);
+	return crumbs;
+}
+
 function loadWordDetails(wordId, task, lastWordId) {
 	$("[id^='word_select_wait_']").hide();
 	$("#word_select_wait_" + wordId).show();
@@ -192,7 +198,13 @@ function loadWordDetails(wordId, task, lastWordId) {
 				$('#resultColumn:first').find('.scrollable-area').append(detailsDiv = $('<div data-rel="details-area"></div>'));
 			}
 			$('#resultColumn:first').find('[data-rel="details-area"]').not(':first').remove();
-			detailsDiv.replaceWith(data);
+			const dataObject = $(data);
+			const breadCrumbs = getBreadcrumbsData(detailsDiv, {
+				id: parseInt(wordId),
+				word: dataObject.attr('data-word'),
+			});
+			dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
+			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#word-details-area');
 		} else {
 
@@ -204,9 +216,21 @@ function loadWordDetails(wordId, task, lastWordId) {
 
 			if (task === 'replace') {
 				detailsDiv = $('#resultColumn:first').find(`[data-rel="details-area"][data-id="${lastWordId}"]`);
+				const breadCrumbs = getBreadcrumbsData(detailsDiv, {
+					id: parseInt(wordId),
+					word: dataObject.attr('data-word'),
+				});
+				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 				detailsDiv.replaceWith(dataObject[0].outerHTML);
 			} else {
 				const lastDetailsArea = $('#resultColumn:first').find('[data-rel="details-area"]:last');
+
+				const breadCrumbs = getBreadcrumbsData(dataObject, {
+					id: parseInt(wordId),
+					word: dataObject.attr('data-word'),
+				});
+				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
+
 				if (lastDetailsArea.length === 0) {
 					$('#resultColumn:first').find('.scrollable-area').append(detailsDiv = $(dataObject[0].outerHTML));
 				} else {
