@@ -16,8 +16,6 @@ public class WordRelationDetails extends AbstractDataObject {
 
 	private List<WordGroup> wordGroups;
 
-	private boolean anyRelationExists;
-
 	private boolean groupRelationExists;
 
 	public List<Relation> getWordRelations() {
@@ -50,14 +48,6 @@ public class WordRelationDetails extends AbstractDataObject {
 
 	public void setWordGroups(List<WordGroup> wordGroups) {
 		this.wordGroups = wordGroups;
-	}
-
-	public boolean isAnyRelationExists() {
-		return anyRelationExists;
-	}
-
-	public void setAnyRelationExists(boolean anyRelationExists) {
-		this.anyRelationExists = anyRelationExists;
 	}
 
 	public boolean isGroupRelationExists() {
