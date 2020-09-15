@@ -2,16 +2,20 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -20,14 +24,15 @@ import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSONB;
-import org.jooq.Record4;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,6 +43,8 @@ import eki.common.constant.LexemeType;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
+import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -124,7 +131,9 @@ public class ActivityLogDbService implements GlobalConstant {
 
 		create
 				.insertInto(SOURCE_ACTIVITY_LOG, SOURCE_ACTIVITY_LOG.SOURCE_ID, SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID)
-				.values(sourceId, activityLogId)
+				.select(DSL
+						.select(DSL.val(sourceId), DSL.val(activityLogId))
+						.whereExists(DSL.select(SOURCE.ID).from(SOURCE).where(SOURCE.ID.eq(sourceId))))
 				.execute();
 	}
 
@@ -180,75 +189,68 @@ public class ActivityLogDbService implements GlobalConstant {
 								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(l.MEANING_ID.eq(m.ID)))
 				.groupBy(groupByField)
-				.fetchSingleInto(WordLexemeMeaningIds.class);
+				.fetchOptionalInto(WordLexemeMeaningIds.class)
+				.orElse(new WordLexemeMeaningIds());
 	}
 
-	public Long getFirstDepthFreeformOwnerId(Long freeformId) {
+	public Map<String, Object> getFirstDepthFreeformOwnerDataMap(Long freeformId) {
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		WordFreeform wff = WORD_FREEFORM.as("wff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
-
-		Record4<Long, Long, Long, Long> ownerIds = create.select(
-				DSL.field(DSL.select(lff.LEXEME_ID).from(lff).where(lff.FREEFORM_ID.eq(freeformId))),
-				DSL.field(DSL.select(wff.WORD_ID).from(wff).where(wff.FREEFORM_ID.eq(freeformId))),
-				DSL.field(DSL.select(mff.MEANING_ID).from(mff).where(mff.FREEFORM_ID.eq(freeformId))),
-				DSL.field(DSL.select(sff.SOURCE_ID).from(sff).where(sff.FREEFORM_ID.eq(freeformId))))
-				.fetchOptional()
-				.orElse(null);
-
-		return getOwnerId(ownerIds);
-	}
-
-	public Long getSecondDepthFreeformOwnerId(Long freeformId) {
-
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		WordFreeform wff = WORD_FREEFORM.as("wff");
-		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
+		Definition d = DEFINITION.as("d");
 		Freeform ff = FREEFORM.as("ff");
 
-		Record4<Long, Long, Long, Long> ownerIds = create.select(
+		return create.select(
+				ff.TYPE,
 				lff.LEXEME_ID,
 				wff.WORD_ID,
 				mff.MEANING_ID,
+				d.MEANING_ID.as("d_meaning_id"),
+				sff.SOURCE_ID)
+				.from(
+						ff
+								.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ff.ID))
+								.leftOuterJoin(wff).on(wff.FREEFORM_ID.eq(ff.ID))
+								.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.ID))
+								.leftOuterJoin(sff).on(sff.FREEFORM_ID.eq(ff.ID))
+								.leftOuterJoin(dff).on(dff.FREEFORM_ID.eq(ff.ID))
+								.leftOuterJoin(d).on(d.ID.eq(dff.DEFINITION_ID)))
+				.where(ff.ID.eq(freeformId))
+				.fetchOptionalMap()
+				.orElse(null);
+	}
+
+	public Map<String, Object> getSecondDepthFreeformOwnerDataMap(Long freeformId) {
+
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		WordFreeform wff = WORD_FREEFORM.as("wff");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
+		Definition d = DEFINITION.as("d");
+		Freeform ff = FREEFORM.as("ff");
+
+		return create.select(
+				ff.TYPE,
+				lff.LEXEME_ID,
+				wff.WORD_ID,
+				mff.MEANING_ID,
+				d.MEANING_ID.as("d_meaning_id"),
 				sff.SOURCE_ID)
 				.from(
 						ff
 								.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ff.PARENT_ID))
 								.leftOuterJoin(wff).on(wff.FREEFORM_ID.eq(ff.PARENT_ID))
 								.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.PARENT_ID))
-								.leftOuterJoin(sff).on(sff.FREEFORM_ID.eq(ff.PARENT_ID)))
+								.leftOuterJoin(sff).on(sff.FREEFORM_ID.eq(ff.PARENT_ID))
+								.leftOuterJoin(dff).on(dff.FREEFORM_ID.eq(ff.PARENT_ID))
+								.leftOuterJoin(d).on(d.ID.eq(dff.DEFINITION_ID)))
 				.where(ff.ID.eq(freeformId))
-				.fetchOptional()
+				.fetchOptionalMap()
 				.orElse(null);
-
-		return getOwnerId(ownerIds);
-	}
-
-	private Long getOwnerId(Record4<Long, Long, Long, Long> ownerIds) {
-		if (ownerIds == null) {
-			return null;
-		}
-		Long id;
-		id = ownerIds.getValue("lexeme_id", Long.class);
-		if (id != null) {
-			return id;
-		}
-		id = ownerIds.getValue("word_id", Long.class);
-		if (id != null) {
-			return id;
-		}
-		id = ownerIds.getValue("meaning_id", Long.class);
-		if (id != null) {
-			return id;
-		}
-		id = ownerIds.getValue("source_id", Long.class);
-		if (id != null) {
-			return id;
-		}
-		return null;
 	}
 
 	public Long getWordRelationOwnerId(Long wordRelationId) {
@@ -279,4 +281,19 @@ public class ActivityLogDbService implements GlobalConstant {
 		return create.select(MEANING_RELATION.MEANING1_ID).from(MEANING_RELATION).where(MEANING_RELATION.ID.eq(meaningRelationId)).fetchOptionalInto(Long.class).orElse(null);
 	}
 
+	public Long getFreeformSourceLinkFreeformId(Long sourceLinkId) {
+		return create.select(FREEFORM_SOURCE_LINK.FREEFORM_ID).from(FREEFORM_SOURCE_LINK).where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId)).fetchOptionalInto(Long.class).orElse(null);
+	}
+
+	public Long getLexemeSourceLinkOwnerId(Long sourceLinkId) {
+		return create.select(LEXEME_SOURCE_LINK.LEXEME_ID).from(LEXEME_SOURCE_LINK).where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId)).fetchOptionalInto(Long.class).orElse(null);
+	}
+
+	public Long getDefinitionSourceLinkOwnerId(Long sourceLinkId) {
+		return create
+				.select(DEFINITION.MEANING_ID)
+				.from(DEFINITION, DEFINITION_SOURCE_LINK)
+				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId).and(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID)))
+				.fetchOptionalInto(Long.class).orElse(null);
+	}
 }

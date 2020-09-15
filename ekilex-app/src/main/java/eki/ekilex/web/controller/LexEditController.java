@@ -164,7 +164,7 @@ public class LexEditController extends AbstractPageController {
 	public String separate(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		String lexemeWordValue = lookupService.getLexemeWordValue(lexemeId);
-		compositionService.separateLexemeMeanings(lexemeId);
+		compositionService.separateLexemeMeaning(lexemeId);
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String searchUri = searchHelper.composeSearchUri(datasets, lexemeWordValue);
@@ -214,7 +214,7 @@ public class LexEditController extends AbstractPageController {
 
 	@ResponseBody
 	@PostMapping(MEANING_WORD_AND_LEX_DUPLICATE_URI + "/{lexemeId}")
-	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId) {
+	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
 		String userName = userContext.getUserName();
 		compositionService.duplicateLexemeAndWord(lexemeId, userName);
@@ -241,7 +241,7 @@ public class LexEditController extends AbstractPageController {
 	}
 
 	@PostMapping(WORD_JOIN_URI)
-	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds) {
+	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds) throws Exception {
 
 		Long joinedWordId = compositionService.joinWords(targetWordId, sourceWordIds);
 		return "redirect:" + WORD_BACK_URI + "/" + joinedWordId;
@@ -251,7 +251,7 @@ public class LexEditController extends AbstractPageController {
 	public String createWord(
 			WordLexemeMeaningDetails wordDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+			RedirectAttributes attributes) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
@@ -288,7 +288,7 @@ public class LexEditController extends AbstractPageController {
 	@PostMapping(CREATE_HOMONYM_URI)
 	public String createWord(
 			WordLexemeMeaningDetails wordDetails,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
@@ -310,7 +310,7 @@ public class LexEditController extends AbstractPageController {
 
 	@PostMapping(UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI)
 	@ResponseBody
-	public String updateWordDataAndLexemeWeight(@RequestBody WordLexemeMeaningDetails wordDataAndLexemeWeight) {
+	public String updateWordDataAndLexemeWeight(@RequestBody WordLexemeMeaningDetails wordDataAndLexemeWeight) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordDataAndLexemeWeight);
 		cudService.updateWordDataAndLexemeWeight(wordDataAndLexemeWeight);
@@ -345,7 +345,7 @@ public class LexEditController extends AbstractPageController {
 			@PathVariable("dataset") String dataset,
 			@PathVariable("wordId") Long wordId,
 			@PathVariable("meaningId") String meaningIdCode,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
 		cudService.createLexeme(wordId, dataset, meaningId);
@@ -363,7 +363,7 @@ public class LexEditController extends AbstractPageController {
 
 	@PostMapping(UPDATE_WORD_ACTIVE_TAG_COMPLETE_URI + "/{wordId}")
 	@ResponseBody
-	public String updateWordLexemesActiveTagComplete(@PathVariable Long wordId) {
+	public String updateWordLexemesActiveTagComplete(@PathVariable Long wordId) throws Exception {
 
 		UserContextData userContextData = getUserContextData();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();

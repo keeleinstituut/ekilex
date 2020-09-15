@@ -44,6 +44,17 @@ public class ActivityLogTest extends AbstractTest {
 	}
 
 	@Test
+	public void testNullContentActivityLog() throws Exception {
+
+		final Long ownerId = 123456L;
+
+		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.LEXEME);
+		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.WORD);
+		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.MEANING);
+		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.SOURCE);
+	}
+
+	@Test
 	public void testWordActivityLog() throws Exception {
 
 		final Long wordId = 1001L;

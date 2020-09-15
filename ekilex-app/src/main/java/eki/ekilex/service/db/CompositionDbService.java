@@ -528,16 +528,17 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	public void separateLexemeMeanings(Long lexemeId) {
+	public Long separateLexemeMeaning(Long lexemeId) {
 
 		Long newMeaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-		Long lexemeMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
+		Long lexemeMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();//just one?
 
 		separateMeaningDefinitions(newMeaningId, lexemeMeaningId);
 		separateMeaningDomains(newMeaningId, lexemeMeaningId);
 		separateMeaningRelations(newMeaningId, lexemeMeaningId);
 		separateMeaningFreeforms(newMeaningId, lexemeMeaningId);
 		create.update(LEXEME).set(LEXEME.MEANING_ID, newMeaningId).where(LEXEME.ID.eq(lexemeId)).execute();
+		return newMeaningId;
 	}
 
 	private void separateMeaningFreeforms(Long newMeaningId, Long lexemeMeaningId) {

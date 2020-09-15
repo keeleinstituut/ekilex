@@ -384,6 +384,20 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
+	public eki.ekilex.data.Meaning getMeaning(Long meaningId) {
+		return create
+				.select(
+						MEANING.ID.as("meaning_id"),
+						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
+				.from(MEANING, LEXEME)
+				.where(
+						MEANING.ID.eq(meaningId)
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
+				.groupBy(MEANING.ID)
+				.fetchOptionalInto(eki.ekilex.data.Meaning.class)
+				.orElse(null);
+	}
+
 	public List<FreeForm> getMeaningFreeforms(Long meaningId, String... excludeTypes) {
 		return create
 				.select(
