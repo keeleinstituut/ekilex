@@ -347,8 +347,8 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 	});
 };
 
-function refreshDetailsLexSearch() {
-	var refreshButton = $('#refresh-details');
+function refreshDetailsLexSearch(id) {
+	var refreshButton = $(`[data-rel="details-area"][data-id="${id}"]:first`).find('#refresh-details');
 	refreshButton.trigger('click');
 };
 

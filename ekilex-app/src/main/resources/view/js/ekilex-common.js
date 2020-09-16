@@ -416,6 +416,7 @@ function initMultiselectRelationDlg(dlg) {
 		searchBtn.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
 		let searchForm = $(this).closest('form');
 		let searchUrl = searchForm.attr('action') + '?' + searchForm.serialize();
+		const id = searchForm.parents('[data-id]:first').attr('data-id');
 
 		$.get(searchUrl).done(function(data) {
 			dlg.find('[data-name=dialogContent]').replaceWith(data);
@@ -437,7 +438,7 @@ function initMultiselectRelationDlg(dlg) {
 						method: 'POST',
 					}).done(function(data) {
 						dlg.modal('hide');
-						refreshDetails();
+						refreshDetailsLexSearch(id);
 					}).fail(function(data) {
 						dlg.modal('hide');
 						console.log(data);
