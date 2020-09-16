@@ -21,7 +21,7 @@
 
 .main-search-input {
   height: 64px;
-  padding-right: 40px;
+  padding-right: 56px;
   border-color: $gray-100;
 
   @include border-radius(32px);
@@ -67,6 +67,11 @@
   @include box-shadow(0 .125rem .625rem rgba(0, 17, 36, .3));
   @include media-breakpoint-up(md) {
     font-size: 20px;
+  }
+}
+.btn-icon{
+  &.clear-btn{
+    background: $white;
   }
 }
 
