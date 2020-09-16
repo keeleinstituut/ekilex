@@ -64,7 +64,7 @@ public class EditController extends AbstractPageController {
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
-	public String createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String createItem(@RequestBody CreateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Add new item : {}", itemData);
 
@@ -219,7 +219,7 @@ public class EditController extends AbstractPageController {
 
 	@ResponseBody
 	@PostMapping(UPDATE_ITEM_URI)
-	public String updateItem(@RequestBody UpdateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String updateItem(@RequestBody UpdateItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Update item : {}", itemData);
 
@@ -295,7 +295,7 @@ public class EditController extends AbstractPageController {
 			cudService.updateWordLang(itemData.getId(), itemValue);
 			break;
 		case "lexeme_publicity":
-			cudService.updateLexemeProcessState(itemData.getId(), itemData.isPublic());
+			cudService.updateLexemePublicity(itemData.getId(), itemData.isPublic());
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), itemValue);
@@ -336,7 +336,7 @@ public class EditController extends AbstractPageController {
 
 	@ResponseBody
 	@PostMapping(UPDATE_ORDERING_URI)
-	public String updateOrdering(@RequestBody UpdateListRequest listData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String updateOrdering(@RequestBody UpdateListRequest listData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Update ordering {}", listData);
 
@@ -388,7 +388,7 @@ public class EditController extends AbstractPageController {
 
 	@ResponseBody
 	@PostMapping(UPDATE_LEVELS_URI)
-	public String updateLexemeLevels(@RequestParam("id") Long lexemeId, @RequestParam("action") String action) {
+	public String updateLexemeLevels(@RequestParam("id") Long lexemeId, @RequestParam("action") String action) throws Exception {
 
 		logger.debug("Change lexeme levels for id {}, action {}", lexemeId, action);
 
@@ -428,7 +428,7 @@ public class EditController extends AbstractPageController {
 	public String deleteItem(
 			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
-			@RequestParam(value = "value", required = false) String valueToDelete) {
+			@RequestParam(value = "value", required = false) String valueToDelete) throws Exception {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
 
@@ -573,7 +573,7 @@ public class EditController extends AbstractPageController {
 
 	@PostMapping(UPDATE_WORD_VALUE_URI)
 	@ResponseBody
-	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String value) {
+	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String value) throws Exception {
 
 		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
 
@@ -592,7 +592,7 @@ public class EditController extends AbstractPageController {
 			@RequestParam(name = "oppositeRelationType", required = false) String oppositeRelationType,
 			@RequestParam(name = "weight", required = false) String weightStr,
 			@RequestParam("id") Long id1,
-			@RequestParam("ids") List<Long> ids) {
+			@RequestParam("ids") List<Long> ids) throws Exception {
 
 		String datasetCode = null;
 		for (Long id2 : ids) {

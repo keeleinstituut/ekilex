@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,9 +21,11 @@ import com.flipkart.zjsonpatch.JsonDiff;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleLogOwner;
+import eki.common.exception.IllegalParamException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.ActivityLogData;
+import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
@@ -64,6 +69,8 @@ public class ActivityLogService implements SystemConstant {
 
 	private static final String ACTIVITY_LOG_DIFF_FIELD_NAME = "diff";
 
+	private static final String EMPTY_CONTENT_JSON = "{}";
+
 	private static final List<ActivityEntity> FIRST_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
 			ActivityEntity.GOVERNMENT,
 			ActivityEntity.GOVERNMENT_TYPE,
@@ -105,6 +112,7 @@ public class ActivityLogService implements SystemConstant {
 			ActivityEntity.MEANING_NOTE,
 			ActivityEntity.LEXEME_NOTE,
 			ActivityEntity.SOURCE_NOTE,
+			ActivityEntity.DEFINITION_NOTE,
 			ActivityEntity.ADVICE_NOTE);
 
 	private static final List<ActivityEntity> SECOND_DEPTH_FREEFORM_ENTITIES = Arrays.asList(
@@ -136,11 +144,45 @@ public class ActivityLogService implements SystemConstant {
 	@Autowired
 	private ConversionUtil conversionUtil;
 
-	public Long getOwnerId(Long entityId, ActivityEntity entity) {
+	public ActivityLogOwnerEntityDescr getFreeformOwnerDescr(Long freeformId) throws Exception {
+		Map<String, Object> freeformOwnerDataMap = activityLogDbService.getFirstDepthFreeformOwnerDataMap(freeformId);
+		return resolveOwnerDescr(freeformOwnerDataMap);
+	}
+
+	public ActivityLogOwnerEntityDescr getFreeformSourceLinkOwnerDescrByFreeform(Long freeformId) throws Exception {
+		ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(freeformId);
+		ActivityEntity sourceLinkActivityEntityName;
+		if (ActivityEntity.LEXEME_NOTE.equals(freeformOwnerDescr.getEntityName())) {
+			sourceLinkActivityEntityName = ActivityEntity.LEXEME_NOTE_SOURCE_LINK;
+		} else if (ActivityEntity.USAGE.equals(freeformOwnerDescr.getEntityName())) {
+			sourceLinkActivityEntityName = ActivityEntity.USAGE_SOURCE_LINK;
+		} else if (ActivityEntity.MEANING_NOTE.equals(freeformOwnerDescr.getEntityName())) {
+			sourceLinkActivityEntityName = ActivityEntity.MEANING_NOTE_SOURCE_LINK;
+		} else if (ActivityEntity.IMAGE_FILE.equals(freeformOwnerDescr.getEntityName())) {
+			sourceLinkActivityEntityName = ActivityEntity.IMAGE_FILE_SOURCE_LINK;
+		} else if (ActivityEntity.DEFINITION_NOTE.equals(freeformOwnerDescr.getEntityName())) {
+			sourceLinkActivityEntityName = ActivityEntity.DEFINITION_NOTE_SOURCE_LINK;
+		} else {
+			throw new IllegalParamException("Missing activity entity source link owner mapping for " + freeformOwnerDescr.getEntityName());
+		}
+		return new ActivityLogOwnerEntityDescr(freeformOwnerDescr.getOwnerName(), freeformOwnerDescr.getOwnerId(), sourceLinkActivityEntityName);
+	}
+
+	public ActivityLogOwnerEntityDescr getFreeformSourceLinkOwnerDescrBySourceLink(Long sourceLinkId) throws Exception {
+		Long freeformId = activityLogDbService.getFreeformSourceLinkFreeformId(sourceLinkId);
+		return getFreeformSourceLinkOwnerDescrByFreeform(freeformId);
+	}
+
+	public Long getOwnerId(Long entityId, ActivityEntity entity) throws Exception {
 		if (FIRST_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
-			return activityLogDbService.getFirstDepthFreeformOwnerId(entityId);
+			ActivityLogOwnerEntityDescr freeformOwnerDescr = getFreeformOwnerDescr(entityId);
+			return freeformOwnerDescr.getOwnerId();
 		} else if (SECOND_DEPTH_FREEFORM_ENTITIES.contains(entity)) {
-			return activityLogDbService.getSecondDepthFreeformOwnerId(entityId);
+			Map<String, Object> freeformOwnerDataMap = activityLogDbService.getSecondDepthFreeformOwnerDataMap(entityId);
+			ActivityLogOwnerEntityDescr freeformOwnerDescr = resolveOwnerDescr(freeformOwnerDataMap);
+			return freeformOwnerDescr.getOwnerId();
+		} else if (ActivityEntity.LEXEME_SOURCE_LINK.equals(entity)) {
+			return activityLogDbService.getLexemeSourceLinkOwnerId(entityId);
 		} else if (ActivityEntity.WORD_TYPE.equals(entity)) {
 			return activityLogDbService.getWordTypeOwnerId(entityId);
 		} else if (ActivityEntity.WORD_ETYMOLOGY.equals(entity)) {
@@ -155,11 +197,86 @@ public class ActivityLogService implements SystemConstant {
 			return activityLogDbService.getMeaningDomainOwnerId(entityId);
 		} else if (ActivityEntity.DEFINITION.equals(entity)) {
 			return activityLogDbService.getMeaningDefinitionOwnerId(entityId);
-		} else if (ActivityEntity.DEFINITION_NOTE.equals(entity)) {
-			Long definitionId = activityLogDbService.getFirstDepthFreeformOwnerId(entityId);
-			return activityLogDbService.getMeaningDefinitionOwnerId(definitionId);
+		} else if (ActivityEntity.DEFINITION_SOURCE_LINK.equals(entity)) {
+			return activityLogDbService.getDefinitionSourceLinkOwnerId(entityId);
+		} else {
+			throw new IllegalParamException("Missing activity entity owner mapping for " + entity);
 		}
-		return null;
+	}
+
+	private ActivityLogOwnerEntityDescr resolveOwnerDescr(Map<String, Object> freeformOwnerDataMap) throws Exception {
+		if (MapUtils.isEmpty(freeformOwnerDataMap)) {
+			throw new IllegalParamException("Unable to locate freeform");
+		}
+		String ffTypeName = (String) freeformOwnerDataMap.get("type");
+		ActivityEntity activityEntity;
+		Long id;
+		id = (Long) freeformOwnerDataMap.get("lexeme_id");
+		if (id != null) {
+			if (StringUtils.equals(FreeformType.NOTE.name(), ffTypeName)) {
+				activityEntity = ActivityEntity.LEXEME_NOTE;
+			} else {
+				try {
+					activityEntity = ActivityEntity.valueOf(ffTypeName);
+				} catch (Exception e) {
+					throw new IllegalParamException("Missing activity entity owner mapping for lexeme freeform " + ffTypeName);
+				}
+			}
+			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.LEXEME, id, activityEntity);
+		}
+		id = (Long) freeformOwnerDataMap.get("word_id");
+		if (id != null) {
+			if (StringUtils.equals(FreeformType.NOTE.name(), ffTypeName)) {
+				activityEntity = ActivityEntity.WORD_NOTE;
+			} else {
+				try {
+					activityEntity = ActivityEntity.valueOf(ffTypeName);
+				} catch (Exception e) {
+					throw new IllegalParamException("Missing activity entity owner mapping for word freeform " + ffTypeName);
+				}
+			}
+			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.WORD, id, activityEntity);
+		}
+		id = (Long) freeformOwnerDataMap.get("meaning_id");
+		if (id != null) {
+			if (StringUtils.equals(FreeformType.NOTE.name(), ffTypeName)) {
+				activityEntity = ActivityEntity.MEANING_NOTE;
+			} else {
+				try {
+					activityEntity = ActivityEntity.valueOf(ffTypeName);
+				} catch (Exception e) {
+					throw new IllegalParamException("Missing activity entity owner mapping for meaning freeform " + ffTypeName);
+				}
+			}
+			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.MEANING, id, activityEntity);
+		}
+		id = (Long) freeformOwnerDataMap.get("d_meaning_id");
+		if (id != null) {
+			if (StringUtils.equals(FreeformType.NOTE.name(), ffTypeName)) {
+				activityEntity = ActivityEntity.DEFINITION_NOTE;
+			} else {
+				try {
+					activityEntity = ActivityEntity.valueOf(ffTypeName);
+				} catch (Exception e) {
+					throw new IllegalParamException("Missing activity entity owner mapping for definition freeform " + ffTypeName);
+				}
+			}
+			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.MEANING, id, activityEntity);
+		}
+		id = (Long) freeformOwnerDataMap.get("source_id");
+		if (id != null) {
+			if (StringUtils.equals(FreeformType.NOTE.name(), ffTypeName)) {
+				activityEntity = ActivityEntity.SOURCE_NOTE;
+			} else {
+				try {
+					activityEntity = ActivityEntity.valueOf(ffTypeName);
+				} catch (Exception e) {
+					throw new IllegalParamException("Missing activity entity owner mapping for source freeform " + ffTypeName);
+				}
+			}
+			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.SOURCE, id, activityEntity);
+		}
+		throw new IllegalParamException("Unable to locate owner of the freeform");
 	}
 
 	public ActivityLogData prepareActivityLog(String functName, Long ownerId, LifecycleLogOwner ownerName) throws Exception {
@@ -208,7 +325,7 @@ public class ActivityLogService implements SystemConstant {
 		activityLogData.setFunctName(functName);
 		activityLogData.setOwnerId(ownerId);
 		activityLogData.setOwnerName(ownerName);
-		activityLogData.setPrevData("{}");
+		activityLogData.setPrevData(EMPTY_CONTENT_JSON);
 		activityLogData.setPrevWlmIds(new WordLexemeMeaningIds());
 
 		Long entityId = new Long(ownerId);
@@ -256,6 +373,16 @@ public class ActivityLogService implements SystemConstant {
 			currData = getSourceJson(sourceId);
 			activityLogData.setCurrData(currData);
 			handleSourceActivityLog(activityLogData);
+		}
+	}
+
+	public void createActivityLog(ActivityLogData activityLogData, Long entityId, FreeformType freeformType) throws Exception {
+
+		try {
+			ActivityEntity entityName = ActivityEntity.valueOf(freeformType.name());
+			createActivityLog(activityLogData, entityId, entityName);
+		} catch (Exception e) {
+			throw new IllegalParamException("Missing entity mapping for " + freeformType);
 		}
 	}
 
@@ -359,7 +486,9 @@ public class ActivityLogService implements SystemConstant {
 	private String getLexemeDetailsJson(Long lexemeId) throws Exception {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-
+		if (lexeme == null) {
+			return EMPTY_CONTENT_JSON;
+		}
 		final String[] excludeLexemeAttributeTypes = new String[] {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
@@ -405,6 +534,9 @@ public class ActivityLogService implements SystemConstant {
 	private String getWordDetailsJson(Long wordId) throws Exception {
 
 		Word word = lexSearchDbService.getWord(wordId);
+		if (word == null) {
+			return EMPTY_CONTENT_JSON;
+		}
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
@@ -430,6 +562,10 @@ public class ActivityLogService implements SystemConstant {
 
 	private String getMeaningDetailsJson(Long meaningId) throws Exception {
 
+		Meaning meaning = commonDataDbService.getMeaning(meaningId);
+		if (meaning == null) {
+			return EMPTY_CONTENT_JSON;
+		}
 		final String[] excludeMeaningAttributeTypes = new String[] {
 				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name()};
 
@@ -449,7 +585,6 @@ public class ActivityLogService implements SystemConstant {
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, null, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, null);
 
-		Meaning meaning = new Meaning();
 		meaning.setMeaningId(meaningId);
 		meaning.setDomains(meaningDomains);
 		meaning.setDefinitions(definitions);
@@ -470,6 +605,9 @@ public class ActivityLogService implements SystemConstant {
 	private String getSourceJson(Long sourceId) throws Exception {
 
 		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSource(sourceId);
+		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
+			return EMPTY_CONTENT_JSON;
+		}
 		List<Source> sources = conversionUtil.composeSources(sourcePropertyTuples);
 		Source source = sources.get(0);
 
@@ -478,4 +616,5 @@ public class ActivityLogService implements SystemConstant {
 
 		return sourceJson;
 	}
+
 }

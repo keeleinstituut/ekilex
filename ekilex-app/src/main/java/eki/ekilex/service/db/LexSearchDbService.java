@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.FORM_FREQUENCY;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
+import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
@@ -54,6 +55,7 @@ import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
@@ -311,7 +313,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 								.and(l.MEANING_ID.eq(m.ID))
 								.and(l.DATASET_CODE.eq(ds.CODE)))
 				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
-				.fetchSingleInto(WordLexeme.class);
+				.fetchOptionalInto(WordLexeme.class)
+				.orElse(null);
 	}
 
 	public List<MeaningWord> getMeaningWords(Long lexemeId) {
@@ -364,11 +367,17 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Paradigm p = PARADIGM.as("p");
 		Form f = FORM.as("f");
 		Lexeme l = LEXEME.as("l");
+		LexemeTag lt = LEXEME_TAG.as("lt");
 
 		Field<String[]> wtf = getWordTypesField(w.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
+		Field<String[]> lxtnf = DSL.field(DSL
+				.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
+				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
+				.where(l.WORD_ID.eq(w.ID).and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(w.ID));
 
 		return create.select(
 				w.ID.as("word_id"),
@@ -384,7 +393,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				wtf.as("word_type_codes"),
 				wtpf.as("prefixoid"),
 				wtsf.as("suffixoid"),
-				wtz.as("foreign"))
+				wtz.as("foreign"),
+				lxtnf.as("lexemes_tag_names"))
 				.from(w, p, f)
 				.where(w.ID.eq(wordId)
 						.and(p.WORD_ID.eq(w.ID))

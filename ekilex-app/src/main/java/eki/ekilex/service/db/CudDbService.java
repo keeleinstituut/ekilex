@@ -264,24 +264,28 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateWordVocalForm(Long wordId, String vocalForm) {
-		create.update(FORM)
+	public Long updateWordVocalForm(Long wordId, String vocalForm) {
+		return create.update(FORM)
 				.set(FORM.VOCAL_FORM, vocalForm)
 				.from(PARADIGM)
 				.where(PARADIGM.WORD_ID.eq(wordId)
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.execute();
+				.returning(FORM.ID)
+				.fetchOne()
+				.getId();
 	}
 
-	public void updateWordMorphCode(Long wordId, String morphCode) {
-		create.update(FORM)
+	public Long updateWordMorphCode(Long wordId, String morphCode) {
+		return create.update(FORM)
 				.set(FORM.MORPH_CODE, morphCode)
 				.from(PARADIGM)
 				.where(PARADIGM.WORD_ID.eq(wordId)
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.execute();
+				.returning(FORM.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public void updateWordGender(Long wordId, String genderCode) {
@@ -1103,11 +1107,13 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeRegionId;
 	}
 
-	public void createImageTitle(Long imageId, String value) {
-		create
+	public Long createImageTitle(Long imageId, String value) {
+		return create
 				.insertInto(FREEFORM, FREEFORM.PARENT_ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
 				.values(imageId, FreeformType.IMAGE_TITLE.name(), value, value)
-				.execute();
+				.returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public Long createOdWordRecommendation(Long wordId, String value, String valuePrese, Complexity complexity) {
@@ -1354,11 +1360,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void deleteImageTitle(Long imageFreeformId) {
-		create.delete(FREEFORM)
+	public Long deleteImageTitle(Long imageFreeformId) {
+		return create.delete(FREEFORM)
 				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
 						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-				.execute();
+				.returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	private List<Long> getMeaningDefinitionIds(Long meaningId) {

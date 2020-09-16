@@ -131,7 +131,7 @@ public class TermEditController extends AbstractPageController {
 	}
 
 	@PostMapping(MEANING_JOIN_URI)
-	public String joinMeanings(@RequestParam("targetMeaningId") Long targetMeaningId, @RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds) {
+	public String joinMeanings(@RequestParam("targetMeaningId") Long targetMeaningId, @RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds) throws Exception {
 
 		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds);
 
@@ -174,7 +174,7 @@ public class TermEditController extends AbstractPageController {
 			WordLexemeMeaningDetails wordDetails,
 			@RequestParam("backUri") String backUri,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+			RedirectAttributes attributes) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
@@ -298,7 +298,7 @@ public class TermEditController extends AbstractPageController {
 
 	@PostMapping(UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI + "/{meaningId}")
 	@ResponseBody
-	public String updateMeaningLexemesActiveTagComplete(@PathVariable Long meaningId) {
+	public String updateMeaningLexemesActiveTagComplete(@PathVariable Long meaningId) throws Exception {
 
 		UserContextData userContextData = getUserContextData();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();

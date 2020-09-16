@@ -123,8 +123,7 @@ public class LookupDbService extends AbstractSearchDbService {
 				.join(WORD_GROUP).on(WORD_GROUP.ID.eq(WORD_GROUP_MEMBER.WORD_GROUP_ID))
 				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(WORD_GROUP_MEMBER.WORD_ID))
 				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-				.where(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId)
-						.and(FORM.MODE.eq("WORD")))
+				.where(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId).and(FORM.MODE.eq(FormMode.WORD.name())))
 				.fetchMaps();
 	}
 

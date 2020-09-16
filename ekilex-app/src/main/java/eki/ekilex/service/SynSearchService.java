@@ -16,13 +16,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.Complexity;
 import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
+import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
@@ -143,7 +146,7 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public void changeRelationStatus(Long relationId, String relationStatus) {
+	public void changeRelationStatus(Long relationId, String relationStatus) throws Exception {
 
 		LogData logData;
 		if (RelationStatus.DELETED.name().equals(relationStatus)) {
@@ -153,17 +156,24 @@ public class SynSearchService extends AbstractWordSearchService {
 			logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, relationId, relationStatus);
 		}
 		createLifecycleLog(logData);
+		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, LifecycleLogOwner.WORD);
 		synSearchDbService.changeRelationStatus(relationId, relationStatus);
+		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 	}
 
 	@Transactional
-	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) {
+	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) throws Exception {
 
+		ActivityLogData activityLog;
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(relationId);
 		Float lexemeWeight = getCalculatedLexemeWeight(typeWordRelParams);
 		Complexity complexity = lookupDbService.getWordSecondaryLexemesCalculatedComplexity(wordId);
 
+		activityLog = activityLogService.prepareActivityLog("createSecondarySynLexeme", existingLexemeId, LifecycleLogOwner.LEXEME);
 		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, complexity);
+		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+
 		SimpleWord synWord = lookupDbService.getSimpleWord(wordId);
 		String synWordValue = synWord.getWordValue();
 		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, existingLexemeId, synWordValue);
@@ -171,19 +181,25 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		LogData relationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, relationId, RelationStatus.PROCESSED.name());
 		createLifecycleLog(relationLogData);
+		Long relationWordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
+		activityLog = activityLogService.prepareActivityLog("createSecondarySynLexeme", relationWordId, LifecycleLogOwner.WORD);
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
+		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 
 		Word word = synSearchDbService.getWordDetails(wordId);
-		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Collections.singletonList(word.getLang()), Collections.singletonList(LexemeType.PRIMARY));
+		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Arrays.asList(word.getLang()), Arrays.asList(LexemeType.PRIMARY));
 
 		for (MeaningWord meaningWord : meaningWords) {
-			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWord.getWordId(), wordId, RAW_RELATION_CODE);
+			Long meaningWordId = meaningWord.getWordId();
+			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWordId, wordId, RAW_RELATION_CODE);
 
 			if (meaningWordRelationId != null) {
 				LogData oppositeRelationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, meaningWordRelationId,
 						RelationStatus.PROCESSED.name());
 				createLifecycleLog(oppositeRelationLogData);
+				activityLog = activityLogService.prepareActivityLog("createSecondarySynLexeme", meaningWordId, LifecycleLogOwner.WORD);
 				synSearchDbService.changeRelationStatus(meaningWordRelationId, RelationStatus.PROCESSED.name());
+				activityLogService.createActivityLog(activityLog, meaningWordRelationId, ActivityEntity.WORD_RELATION);
 			}
 		}
 	}
