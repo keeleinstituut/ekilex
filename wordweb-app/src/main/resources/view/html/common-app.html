@@ -217,7 +217,7 @@
               <span class="fa fa-times"></span>
             </a>
           </div>
-          <div name="dataDiv" class="modal-body">
+          <div id="dataDiv" class="modal-body">
             <div class="modal-radio mb-3" id="feedbackMaterial">
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="feedbackWordRadio" checked name="feedbackRadio" class="custom-control-input">
@@ -236,11 +236,11 @@
               <th:block th:insert="common-app :: feedback_comment"></th:block>
             </div>
           </div>
-          <div name="responseDiv" class="modal-body" hidden>
+          <div id="responseDiv" class="modal-body d-none">
             <div class="form-row">
               <div class="form-group col-12">
-                <div class="has-error mt-2" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-                <label class="positive-feedback" name="ok_message"></label>
+                <div id="feedbackFailMsg" class="alert alert-danger d-none" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+                <div id="feedbackSuccessMsg" class="alert alert-success d-none" th:text="#{label.fb.new.word.success}" >Aitähh saime tagasiside kätte</div>
               </div>
             </div>
             <div class="form-group">

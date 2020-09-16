@@ -46,10 +46,10 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 		return;
 	}
 
-	var dataDiv = $('#feedbackModal').find('[name=dataDiv]');
-	var responseDiv = $('#feedbackModal').find('[name=responseDiv]');
-	var okMessageElement = responseDiv.find('[name=ok_message]');
-	var errorMessageElement = feedbackForm.find('[name=error_message]');
+	var dataDiv = $('#feedbackModal').find('#dataDiv');
+	var responseDiv = $('#feedbackModal').find('#responseDiv');
+	var okMessageElement = responseDiv.find('#feedbackSuccessMsg');
+	var errorMessageElement = responseDiv.find('#feedbackFailMsg');
 	var okMessage = feedbackForm.find('[name=ok_message]').text();
     var acceptPrivacyStatement = feedbackForm.find('.modal-check');
 	$.ajax({
@@ -60,18 +60,19 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 		contentType: 'application/json'
 	}).done(function(data) {
 		if (data.status === 'ok') {
-			dataDiv.attr('hidden', true);
-			responseDiv.attr('hidden', false);
+			dataDiv.addClass('d-none');
+			responseDiv.removeClass('d-none');
 			okMessageElement.text(okMessage);
-			okMessageElement.attr('hidden', false);
+			okMessageElement.removeClass('d-none');
 			acceptPrivacyStatement.trigger('click');
 		} else {
-			errorMessageElement.attr('hidden', false);
+			errorMessageElement.removeClass('d-none');
 		}
 	}).fail(function(data) {
-		dataDiv.attr('hidden', true);
-		responseDiv.attr('hidden', false);
-		responseDiv.find('.has-error').show();
+		console.log("TOTAL FAIL");
+		dataDiv.addClass('d-none');
+		responseDiv.removeClass('d-none');
+		errorMessageElement.removeClass('d-none');
 		acceptPrivacyStatement.trigger('click');
 	});
 });
@@ -100,8 +101,8 @@ $(document).on("click", "#feedbackCommentRadio", function() {
 $(document).on('show.bs.modal', '#feedbackModal', function() {
 	var fbModal = $(this);
 	clearMessages(fbModal);
-	fbModal.find('[name=dataDiv]').attr('hidden', false);
-	fbModal.find('[name=responseDiv]').attr('hidden', true);
+	fbModal.find('#dataDiv').removeClass('d-none');
+	fbModal.find('#responseDiv').addClass('d-none');
 	fbModal.modal('toggle');
 	fbModal.off('shown.bs.modal').on('shown.bs.modal', function() {
 		fbModal.find('.close').focus()
