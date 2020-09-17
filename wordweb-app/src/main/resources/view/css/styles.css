@@ -16576,7 +16576,6 @@ body.hidden-scroll {
   transition: 0ms !important;
 }
 
-.homonym-name,
 .homonym-matches,
 .homonym-intro {
   line-height: 1.4;
@@ -16884,7 +16883,6 @@ body.hidden-scroll {
   .homonym-item-wrap {
     max-width: 100%;
   }
-  .homonym-name,
   .homonym-matches,
   .homonym-intro {
     max-width: 100%;
@@ -18299,7 +18297,7 @@ body {
 
 .main-search-input {
   height: 64px;
-  padding-right: 40px;
+  padding-right: 56px;
   border-color: #ecf0f2;
   border-radius: 32px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
@@ -18357,6 +18355,10 @@ body {
   .search-btn {
     font-size: 20px;
   }
+}
+
+.btn-icon.clear-btn {
+  background: #fff;
 }
 
 .clear-btn,

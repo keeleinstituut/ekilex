@@ -14,12 +14,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.WordMeaningRelationsDetails;
+import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.SimpleWord;
@@ -59,7 +62,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	private TextDecorationService textDecorationService;
 
 	@Transactional
-	public void createWordAndMeaningAndRelations(WordMeaningRelationsDetails wordMeaningRelationsDetails) {
+	public void createWordAndMeaningAndRelations(WordMeaningRelationsDetails wordMeaningRelationsDetails) throws Exception {
 
 		String wordValue = wordMeaningRelationsDetails.getWordValue();
 		String language = wordMeaningRelationsDetails.getLanguage();
@@ -74,11 +77,10 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			if (importMeaningData) {
 				String userName = wordMeaningRelationsDetails.getUserName();
 				List<String> userPermDatasetCodes = wordMeaningRelationsDetails.getUserPermDatasetCodes();
-				Long duplicatedMeaningId = duplicateMeaningWithLexemesAndUpdateDataset(relatedMeaningId, userName, dataset, userPermDatasetCodes);
-				meaningId = duplicatedMeaningId;
+				meaningId = duplicateMeaningWithLexemesAndUpdateDataset(relatedMeaningId, userName, dataset, userPermDatasetCodes);
 			} else {
-				Long createdMeaningId = cudDbService.createMeaning();
-				meaningId = createdMeaningId;
+				meaningId = cudDbService.createMeaning();
+				activityLogService.createActivityLog("createWordAndMeaningAndRelations", meaningId, LifecycleLogOwner.MEANING);
 			}
 		}
 
@@ -97,12 +99,17 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
 				createLifecycleLog(tagLogData);
 			});
+			activityLogService.createActivityLog("createWordAndMeaningAndRelations", wordId, LifecycleLogOwner.WORD);
+			activityLogService.createActivityLog("createWordAndMeaningAndRelations", lexemeId, LifecycleLogOwner.LEXEME);
 		}
 
 		if (createRelation) {
 			String relationType = wordMeaningRelationsDetails.getRelationType();
 			String oppositeRelationType = wordMeaningRelationsDetails.getOppositeRelationType();
+			ActivityLogData activityLog;
+			activityLog = activityLogService.prepareActivityLog("createWordAndMeaningAndRelations", meaningId, LifecycleLogOwner.MEANING);
 			Long relationId = cudDbService.createMeaningRelation(meaningId, relatedMeaningId, relationType);
+			activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
 			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
 			createLifecycleLog(relationLogData);
 			if (StringUtils.isNotEmpty(oppositeRelationType)) {
@@ -110,7 +117,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				if (oppositeRelationExists) {
 					return;
 				}
+				activityLog = activityLogService.prepareActivityLog("createWordAndMeaningAndRelations", relatedMeaningId, LifecycleLogOwner.MEANING);
 				Long oppositeRelationId = cudDbService.createMeaningRelation(relatedMeaningId, meaningId, oppositeRelationType);
+				activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
 				LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
 				createLifecycleLog(oppositeRelationLogData);
 			}
@@ -118,57 +127,63 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, String userName) {
+	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, String userName) throws Exception {
 		return Optional.of(duplicateMeaningWithLexemes(meaningId, userName));
 	}
 
-	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String userName, String dataset, List<String> userPermDatasetCodes) {
+	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String userName, String dataset, List<String> userPermDatasetCodes) throws Exception {
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, userPermDatasetCodes);
-		meaningLexemes.forEach(meaningLexeme -> {
-			Long lexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, userName);
-			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
-		});
-		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
-
-		for (Map.Entry<Long, Long> lexemeIdAndDuplicateLexemeId : lexemeIdAndDuplicateLexemeIdMap.entrySet()) {
-			Long duplicateLexemeId = lexemeIdAndDuplicateLexemeId.getValue();
-			cudDbService.updateLexemeDataset(duplicateLexemeId, dataset);
+		for (LexemeRecord meaningLexeme : meaningLexemes) {
+			Long meaningLexemeId = meaningLexeme.getId();
+			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, userName);
+			lexemeIdAndDuplicateLexemeIdMap.put(meaningLexemeId, duplicateLexemeId);
 		}
+		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
+		updateLexemesDataset(lexemeIdAndDuplicateLexemeIdMap, dataset);
 		return duplicateMeaningId;
 	}
 
+	private void updateLexemesDataset(Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap, String dataset) throws Exception {
+		for (Map.Entry<Long, Long> lexemeIdAndDuplicateLexemeId : lexemeIdAndDuplicateLexemeIdMap.entrySet()) {
+			Long duplicateLexemeId = lexemeIdAndDuplicateLexemeId.getValue();
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemesDataset", duplicateLexemeId, LifecycleLogOwner.LEXEME);
+			cudDbService.updateLexemeDataset(duplicateLexemeId, dataset);
+			activityLogService.createActivityLog(activityLog, duplicateLexemeId, ActivityEntity.LEXEME);
+		}
+	}
+
 	@Transactional
-	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId, String userName) {
+	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId, String userName) throws Exception {
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		String datasetCode = lexeme.getDatasetCode();
 		Long meaningId = lexeme.getMeaningId();
-
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, datasetCode);
-		meaningLexemes.forEach(meaningLexeme -> {
+		for (LexemeRecord meaningLexeme : meaningLexemes) {
 			Long meaningLexemeId = meaningLexeme.getId();
 			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, userName);
 			lexemeIdAndDuplicateLexemeIdMap.put(meaningLexemeId, duplicateLexemeId);
-		});
+		}
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
 		List<Long> duplicateLexemeIds = new ArrayList<>(lexemeIdAndDuplicateLexemeIdMap.values());
 		return duplicateLexemeIds;
 	}
 
 	@Transactional
-	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId, String userName) {
+	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId, String userName) throws Exception {
 		Long duplicateMeaningId = cudDbService.createMeaning();
+		activityLogService.createActivityLog("duplicateEmptyLexemeAndMeaning", duplicateMeaningId, LifecycleLogOwner.MEANING);
 		Long duplicateLexemeId = compositionDbService.cloneEmptyLexeme(lexemeId, duplicateMeaningId);
 		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
-		String targetLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(duplicateLexemeId);
+		activityLogService.createActivityLog("duplicateEmptyLexemeAndMeaning", duplicateLexemeId, LifecycleLogOwner.LEXEME);
 
+		String targetLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(duplicateLexemeId);
 		LogData meaningLogData = new LogData();
 		meaningLogData.setUserName(userName);
 		meaningLogData.setEventType(LifecycleEventType.CREATE);
@@ -191,7 +206,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public void duplicateLexemeAndWord(Long lexemeId, String userName) {
+	public void duplicateLexemeAndWord(Long lexemeId, String userName) throws Exception {
 
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		Long wordId = lexeme.getWordId();
@@ -199,21 +214,21 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		duplicateLexemeData(lexemeId, null, duplicateWordId, userName);
 	}
 
-	private Long duplicateMeaningWithLexemes(Long meaningId, String userName) {
+	private Long duplicateMeaningWithLexemes(Long meaningId, String userName) throws Exception {
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
 		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
-		meaningLexemes.forEach(meaningLexeme -> {
+		for (LexemeRecord meaningLexeme : meaningLexemes) {
 			Long lexemeId = meaningLexeme.getId();
 			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, userName);
 			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
-		});
+		}
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
 		return duplicateMeaningId;
 	}
 
-	private Long duplicateLexemeData(Long lexemeId, Long meaningId, Long wordId, String userName) {
+	private Long duplicateLexemeData(Long lexemeId, Long meaningId, Long wordId, String userName) throws Exception {
 
 		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId, wordId);
 		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
@@ -223,9 +238,10 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		compositionDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeCollocations(lexemeId, duplicateLexemeId);
+		activityLogService.createActivityLog("duplicateLexemeData", duplicateLexemeId, LifecycleLogOwner.LEXEME);
+
 		String sourceLexemeDescription = lifecycleLogDbService.getSimpleLexemeDescription(lexemeId);
 		String targetLexemeDescription = lifecycleLogDbService.getExtendedLexemeDescription(duplicateLexemeId);
-
 		LogData logData = new LogData();
 		logData.setUserName(userName);
 		logData.setEventType(LifecycleEventType.CLONE);
@@ -239,7 +255,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		return duplicateLexemeId;
 	}
 
-	private Long duplicateWordData(Long wordId, String userName) {
+	private Long duplicateWordData(Long wordId, String userName) throws Exception {
 
 		SimpleWord simpleWord = compositionDbService.getSimpleWord(wordId);
 		Long duplicateWordId = compositionDbService.cloneWord(simpleWord);
@@ -249,8 +265,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		compositionDbService.cloneWordGroupMembers(wordId, duplicateWordId);
 		compositionDbService.cloneWordFreeforms(wordId, duplicateWordId);
 		compositionDbService.cloneWordEtymology(wordId, duplicateWordId);
-		String wordDescription = simpleWord.getWordValue() + " - " + simpleWord.getLang();
+		activityLogService.createActivityLog("duplicateWordData", duplicateWordId, LifecycleLogOwner.WORD);
 
+		String wordDescription = simpleWord.getWordValue() + " - " + simpleWord.getLang();
 		LogData logData = new LogData();
 		logData.setUserName(userName);
 		logData.setEventType(LifecycleEventType.CLONE);
@@ -263,15 +280,16 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		return duplicateWordId;
 	}
 
-	private Long duplicateMeaningData(Long meaningId, String userName) {
+	private Long duplicateMeaningData(Long meaningId, String userName) throws Exception {
 
 		Long duplicateMeaningId = compositionDbService.cloneMeaning(meaningId);
 		compositionDbService.cloneMeaningDomains(meaningId, duplicateMeaningId);
 		compositionDbService.cloneMeaningRelations(meaningId, duplicateMeaningId);
 		compositionDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId);
 		duplicateMeaningDefinitions(meaningId, duplicateMeaningId);
-		String targetMeaningDescription = lifecycleLogDbService.getCombinedMeaningDefinitions(duplicateMeaningId);
+		activityLogService.createActivityLog("duplicateMeaningData", duplicateMeaningId, LifecycleLogOwner.MEANING);
 
+		String targetMeaningDescription = lifecycleLogDbService.getCombinedMeaningDefinitions(duplicateMeaningId);
 		LogData logData = new LogData();
 		logData.setUserName(userName);
 		logData.setEventType(LifecycleEventType.CLONE);
@@ -280,26 +298,28 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		logData.setEntityId(duplicateMeaningId);
 		logData.setEntry(targetMeaningDescription);
 		lifecycleLogDbService.createLog(logData);
+
 		return duplicateMeaningId;
 	}
 
-	private void duplicateMeaningDefinitions(Long meaningId, Long duplicateMeaningId) {
+	private void duplicateMeaningDefinitions(Long meaningId, Long duplicateMeaningId) throws Exception {
 
 		List<DefinitionRecord> meaningDefinitions = compositionDbService.getMeaningDefinitions(meaningId);
-		meaningDefinitions.forEach(meaningDefinition -> {
+		for (DefinitionRecord meaningDefinition : meaningDefinitions) {
 			Long duplicateDefinintionId = compositionDbService.cloneMeaningDefinition(meaningDefinition.getId(), duplicateMeaningId);
 			compositionDbService.cloneDefinitionFreeforms(meaningDefinition.getId(), duplicateDefinintionId);
 			compositionDbService.cloneDefinitionDatasets(meaningDefinition.getId(), duplicateDefinintionId);
 			compositionDbService.cloneDefinitionSourceLinks(meaningDefinition.getId(), duplicateDefinintionId);
-		});
+		}
 	}
 
-	private void duplicateLexemeRelations(Map<Long, Long> existingLexemeIdAndDuplicateLexemeIdMap) {
+	private void duplicateLexemeRelations(Map<Long, Long> existingLexemeIdAndDuplicateLexemeIdMap) throws Exception {
 
 		for (Map.Entry<Long, Long> lexemeIdAndDuplicateLexemeId : existingLexemeIdAndDuplicateLexemeIdMap.entrySet()) {
 
 			Long existingLexemeId = lexemeIdAndDuplicateLexemeId.getKey();
 			Long duplicateLexemeId = lexemeIdAndDuplicateLexemeId.getValue();
+			ActivityLogData activityLog;
 
 			List<LexRelationRecord> existingLexemeRelations = compositionDbService.getLexemeRelations(existingLexemeId);
 			for (LexRelationRecord existingLexemeRelation : existingLexemeRelations) {
@@ -307,20 +327,29 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				Long existingLexeme1Id = existingLexemeRelation.getLexeme1Id();
 				Long existingLexeme2Id = existingLexemeRelation.getLexeme2Id();
 				String lexRelTypeCode = existingLexemeRelation.getLexRelTypeCode();
+				Long lexemeRelationId;
 
 				if (existingLexeme1Id.equals(existingLexemeId)) {
 					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme2Id)) {
 						Long duplicateLexeme2Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme2Id);
-						cudDbService.createLexemeRelation(duplicateLexemeId, duplicateLexeme2Id, lexRelTypeCode);
+						activityLog = activityLogService.prepareActivityLog("duplicateLexemeRelations", duplicateLexemeId, LifecycleLogOwner.LEXEME);
+						lexemeRelationId = cudDbService.createLexemeRelation(duplicateLexemeId, duplicateLexeme2Id, lexRelTypeCode);
+						activityLogService.createActivityLog(activityLog, lexemeRelationId, ActivityEntity.LEXEME_RELATION);
 					} else {
-						cudDbService.createLexemeRelation(duplicateLexemeId, existingLexeme2Id, lexRelTypeCode);
+						activityLog = activityLogService.prepareActivityLog("duplicateLexemeRelations", duplicateLexemeId, LifecycleLogOwner.LEXEME);
+						lexemeRelationId = cudDbService.createLexemeRelation(duplicateLexemeId, existingLexeme2Id, lexRelTypeCode);
+						activityLogService.createActivityLog(activityLog, lexemeRelationId, ActivityEntity.LEXEME_RELATION);
 					}
 				} else {
 					if (existingLexemeIdAndDuplicateLexemeIdMap.containsKey(existingLexeme1Id)) {
 						Long duplicateLexeme1Id = existingLexemeIdAndDuplicateLexemeIdMap.get(existingLexeme1Id);
-						cudDbService.createLexemeRelation(duplicateLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+						activityLog = activityLogService.prepareActivityLog("duplicateLexemeRelations", duplicateLexemeId, LifecycleLogOwner.LEXEME);
+						lexemeRelationId = cudDbService.createLexemeRelation(duplicateLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+						activityLogService.createActivityLog(activityLog, lexemeRelationId, ActivityEntity.LEXEME_RELATION);
 					} else {
-						cudDbService.createLexemeRelation(existingLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+						activityLog = activityLogService.prepareActivityLog("duplicateLexemeRelations", duplicateLexemeId, LifecycleLogOwner.LEXEME);
+						lexemeRelationId = cudDbService.createLexemeRelation(existingLexeme1Id, duplicateLexemeId, lexRelTypeCode);
+						activityLogService.createActivityLog(activityLog, lexemeRelationId, ActivityEntity.LEXEME_RELATION);
 					}
 				}
 			}
@@ -328,13 +357,13 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public void joinMeanings(Long targetMeaningId, List<Long> sourceMeaningIds) {
+	public void joinMeanings(Long targetMeaningId, List<Long> sourceMeaningIds) throws Exception {
 		for (Long sourceMeaningId : sourceMeaningIds) {
 			joinMeanings(targetMeaningId, sourceMeaningId);
 		}
 	}
 
-	private void joinMeanings(Long targetMeaningId, Long sourceMeaningId) {
+	private void joinMeanings(Long targetMeaningId, Long sourceMeaningId) throws Exception {
 
 		String logEntrySource = compositionDbService.getFirstDefinitionOfMeaning(sourceMeaningId);
 		String logEntryTarget  = compositionDbService.getFirstDefinitionOfMeaning(targetMeaningId);
@@ -342,25 +371,32 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, targetMeaningId, logEntrySource, logEntryTarget);
 		createLifecycleLog(logData);
 
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinMeanings", sourceMeaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinMeanings", targetMeaningId, LifecycleLogOwner.MEANING);
+
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
 		updateMeaningLexemesPublicity(targetMeaningId);
-	}
 
-	//TODO lifecycle log
-	@Transactional
-	public void separateLexemeMeanings(Long lexemeId) {
-		compositionDbService.separateLexemeMeanings(lexemeId);
+		activityLogService.createActivityLog(activityLog1, sourceMeaningId, ActivityEntity.MEANING);
+		activityLogService.createActivityLog(activityLog2, targetMeaningId, ActivityEntity.MEANING);
 	}
 
 	@Transactional
-	public void joinLexemes(Long targetLexemeId, List<Long> sourceLexemeIds) {
+	public void separateLexemeMeaning(Long lexemeId) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("separateLexemeMeaning", lexemeId, LifecycleLogOwner.LEXEME);
+		Long meaningId = compositionDbService.separateLexemeMeaning(lexemeId);
+		activityLogService.createActivityLog(activityLog, meaningId, ActivityEntity.MEANING);
+	}
+
+	@Transactional
+	public void joinLexemes(Long targetLexemeId, List<Long> sourceLexemeIds) throws Exception {
 		for (Long sourceLexemeId: sourceLexemeIds) {
 			joinLexemes(targetLexemeId, sourceLexemeId);
 		}
 	}
 
-	private void joinLexemes(Long targetLexemeId, Long sourceLexemeId) {
+	private void joinLexemes(Long targetLexemeId, Long sourceLexemeId) throws Exception {
 
 		LexemeRecord targetLexeme = compositionDbService.getLexeme(targetLexemeId);
 		LexemeRecord sourceLexeme = compositionDbService.getLexeme(sourceLexemeId);
@@ -376,20 +412,26 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				logEntryTarget);
 		createLifecycleLog(logData);
 
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinLexemes", sourceLexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinLexemes", targetLexemeId, LifecycleLogOwner.LEXEME);
+
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
 		updateMeaningLexemesPublicity(targetMeaningId);
+
+		activityLogService.createActivityLog(activityLog1, sourceLexemeId, ActivityEntity.LEXEME);
+		activityLogService.createActivityLog(activityLog2, targetLexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
-	public Long joinWords(Long targetWordId, List<Long> sourceWordIds) {
+	public Long joinWords(Long targetWordId, List<Long> sourceWordIds) throws Exception {
 		for (Long sourceWordId : sourceWordIds) {
 			targetWordId = joinWords(targetWordId, sourceWordId);
 		}
 		return targetWordId;
 	}
 
-	private Long joinWords(Long firstWordId, Long secondWordId) {
+	private Long joinWords(Long firstWordId, Long secondWordId) throws Exception {
 
 		SimpleWord firstWord = lookupDbService.getSimpleWord(firstWordId);
 		String wordValue = firstWord.getWordValue();
@@ -401,6 +443,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		LogData logData = new LogData(LifecycleEventType.JOIN, LifecycleEntity.WORD, LifecycleProperty.VALUE, targetWordId, wordValue, wordValue);
 		createLifecycleLog(logData);
 
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinWords", sourceWordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinWords", targetWordId, LifecycleLogOwner.WORD);
+
 		SimpleWord sourceWord = lookupDbService.getSimpleWord(sourceWordId);
 		compositionDbService.joinWordData(targetWordId, sourceWordId);
 		joinWordStressAndMarkupData(targetWordId, sourceWordId);
@@ -408,6 +453,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		joinParadigms(targetWordId, sourceWordId);
 		cudDbService.deleteWord(sourceWord);
 		updateWordLexemesPublicity(targetWordId);
+
+		activityLogService.createActivityLog(activityLog1, sourceWordId, ActivityEntity.WORD);
+		activityLogService.createActivityLog(activityLog2, targetWordId, ActivityEntity.WORD);
 
 		return targetWordId;
 	}
@@ -517,7 +565,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 	}
 
-	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) {
+	private void updateLexemeLevelsAfterDuplication(Long duplicateLexemeId) throws Exception {
 
 		LexemeRecord duplicatedLexeme = compositionDbService.getLexeme(duplicateLexemeId);
 		Integer level1 = duplicatedLexeme.getLevel1();
@@ -565,7 +613,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 	}
 
-	private void joinMeaningsCommonWordsLexemes(Long targetMeaningId, Long sourceMeaningId) {
+	//TODO revisit activity logging
+	private void joinMeaningsCommonWordsLexemes(Long targetMeaningId, Long sourceMeaningId) throws Exception {
 
 		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);
 		boolean meaningsShareCommonWord = CollectionUtils.isNotEmpty(meaningsCommonWordsLexemeIdPairs);

@@ -15,6 +15,9 @@ public abstract class AbstractService {
 	protected ConversionUtil conversionUtil;
 
 	@Autowired
+	protected ActivityLogService activityLogService;
+
+	@Autowired
 	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Deprecated

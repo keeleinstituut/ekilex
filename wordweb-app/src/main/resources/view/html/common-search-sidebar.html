@@ -206,7 +206,7 @@
       <div class="col-12 word-relations">
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
           <span th:text="#{label.word.relations}">Sõna seosed</span>
-          <button type="button" th:aria-label="#{label.word.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}">
+          <button type="button" th:aria-label="#{label.word.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.relations.info}">
             <i class="fas fa-info-circle"></i>
           </button>
         </h5>
@@ -262,7 +262,7 @@
           <div class="col-12 word-relations">
             <h5 class="font-weight-bold d-flex align-items-center text-dark">
               <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value)}">Sõna seose liik</span>
-              <button type="button" th:aria-label="#{label.word.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}">
+              <button type="button" th:aria-label="#{label.word.primary.relations.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.primary.relations.info}">
                 <i class="fas fa-info-circle"></i>
               </button>
             </h5>
@@ -353,7 +353,7 @@
       <div class="col">
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
           <span th:text="#{label.word.etymology}">Päritolu</span>
-          <button type="button" th:aria-label="#{label.word.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}">
+          <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
             <i class="fas fa-info-circle"></i>
           </button>
           <span class="tag" th:if="${(wordData.word.wordEtymology != null) and (wordData.word.wordEtymology.etymWrapup != null)}" th:utext="${wordData.word.wordEtymology.etymWrapup}"></span>
@@ -382,7 +382,7 @@
       <div class="col">
         <h5 class="font-weight-bold d-flex align-items-center text-dark">
           <span th:text="#{label.word.etymology}">Päritolu</span>
-          <button type="button" th:aria-label="#{label.word.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}">
+          <button type="button" th:aria-label="#{label.word.etymology.info}" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top" th:title="#{label.word.etymology.info}">
             <i class="fas fa-info-circle"></i>
           </button>
           <th:block th:if="${wordData.word.wordEtymologyTree != null}">

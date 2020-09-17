@@ -57,9 +57,46 @@ insert into aspect_label (code, value, lang, type) values ('сов.', 'сове�
 insert into aspect_label (code, value, lang, type) values ('несов.', 'несовершенный вид (что делать)', 'est', 'wordweb');
 insert into aspect_label (code, value, lang, type) values ('сов. и несов.', 'совершенный и несовершенный', 'est', 'wordweb');
 
+-- ilma keeleta märkustele keele määramine (tekkisid pärast Estermi laadimist)
+update freeform ff
+set lang = d.lang
+from definition_freeform dff,
+     definition d
+where ff.lang is null
+  and ff.type = 'NOTE'
+  and ff.id = dff.freeform_id
+  and dff.definition_id = d.id;
+
+update freeform ff
+set lang = w.lang
+from lexeme_freeform lff,
+     lexeme l,
+     word w
+where ff.lang is null
+  and ff.type = 'NOTE'
+  and ff.id = lff.freeform_id
+  and lff.lexeme_id = l.id
+  and l.word_id = w.id;
+
+update freeform ff
+set lang = case
+             when ff.value_text ilike 'note%' then 'eng'
+             else 'est'
+           end
+from meaning_freeform mff
+where ff.lang is null
+  and ff.type = 'NOTE'
+  and ff.id = mff.freeform_id;
+
 ---------------------------------------------
 -- lifecycle log to activity log migration --
 ---------------------------------------------
+
+create type type_activity_log_diff as (
+  op varchar(100),
+  path text,
+  value text
+);
 
 create table activity_log
 (
@@ -123,23 +160,8 @@ unique(lifecycle_log_id,activity_log_id)
 );
 alter sequence lifecycle_activity_log_id_seq restart with 10000;
 
-create index lexeme_activity_log_lexeme_id_idx on lexeme_activity_log(lexeme_id);
-create index lexeme_activity_log_log_id_idx on lexeme_activity_log(activity_log_id);
-create index word_activity_log_word_id_idx on word_activity_log(word_id);
-create index word_activity_log_log_id_idx on word_activity_log(activity_log_id);
-create index meaning_activity_log_meaning_id_idx on meaning_activity_log(meaning_id);
-create index meaning_activity_log_log_id_idx on meaning_activity_log(activity_log_id);
-create index source_activity_log_source_id_idx on source_activity_log(source_id);
-create index source_activity_log_log_id_idx on source_activity_log(activity_log_id);
-create index activity_log_event_on_idx on activity_log(event_on);
-create index activity_log_event_on_ms_idx on activity_log((date_part('epoch', event_on) * 1000));
-create index activity_log_event_by_idx on activity_log(event_by);
-create index activity_log_event_by_lower_idx on activity_log(lower(event_by));
-create index activity_log_owner_idx on activity_log(owner_name, owner_id);
-create index activity_funct_name_idx on activity_log(funct_name);
-create index activity_entity_name_idx on activity_log(entity_name);
-create index lifecycle_activity_log_ll_id_idx on lifecycle_activity_log(lifecycle_log_id);
-create index lifecycle_activity_log_al_id_idx on lifecycle_activity_log(activity_log_id);
+create index lifecycle_log_entity_id_idx on lifecycle_log(entity_id);
+create index lifecycle_log_entity_name_idx on lifecycle_log(entity_name);
 
 create type wlm_id as (
   lexeme_id bigint,
@@ -376,7 +398,7 @@ begin
   end loop;
 end $$;
 
--- run this procedure separately ~1hr
+-- run this procedure separately ~ 1 to 2 hrs
 
 do $$
 declare
@@ -776,5 +798,24 @@ drop function create_activity_log_for_owner_and_unknown_entity(bigint, text, tex
 drop function create_activity_log_for_owner_and_entity(bigint, text, lifecycle_log, text);
 drop function conv_event_type_to_op(varchar(100));
 drop type wlm_id;
-
 commit;
+
+create index lexeme_activity_log_lexeme_id_idx on lexeme_activity_log(lexeme_id);
+create index lexeme_activity_log_log_id_idx on lexeme_activity_log(activity_log_id);
+create index word_activity_log_word_id_idx on word_activity_log(word_id);
+create index word_activity_log_log_id_idx on word_activity_log(activity_log_id);
+create index meaning_activity_log_meaning_id_idx on meaning_activity_log(meaning_id);
+create index meaning_activity_log_log_id_idx on meaning_activity_log(activity_log_id);
+create index source_activity_log_source_id_idx on source_activity_log(source_id);
+create index source_activity_log_log_id_idx on source_activity_log(activity_log_id);
+create index activity_log_event_on_idx on activity_log(event_on);
+create index activity_log_event_on_ms_idx on activity_log((date_part('epoch', event_on) * 1000));
+create index activity_log_event_by_idx on activity_log(event_by);
+create index activity_log_event_by_lower_idx on activity_log(lower(event_by));
+create index activity_log_owner_idx on activity_log(owner_name, owner_id);
+create index activity_funct_name_idx on activity_log(funct_name);
+create index activity_entity_name_idx on activity_log(entity_name);
+create index lifecycle_activity_log_ll_id_idx on lifecycle_activity_log(lifecycle_log_id);
+create index lifecycle_activity_log_al_id_idx on lifecycle_activity_log(activity_log_id);
+commit;
+

@@ -61,3 +61,51 @@ footer p {
   text-align: center; 
   width: 100%;
 }
+
+.breadcrumbs {
+  line-height: 32px;
+  border-top: 1px solid #CCD9E0;
+  padding:0 8px;
+  flex-shrink: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+
+  ul, li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  ul {
+    display: flex;
+  }
+  li {
+    &:after{
+      content: '';
+      font-family: FontAwesome;
+      display: inline-block;
+      vertical-align: middle;
+      margin:0 8px;
+    }
+    button {
+      font-size: 12px;
+      line-height: 15px;
+      color: #3F3F3F;
+      appearance: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      background: none;
+    }
+    &:last-child {
+      &:after {
+        display: none;
+      }
+      padding-right: 20px;
+      pointer-events: none;
+      button {
+        color: #5D606E;
+      }
+    }
+  }
+}

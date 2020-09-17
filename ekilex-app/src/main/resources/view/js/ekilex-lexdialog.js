@@ -40,7 +40,11 @@ $(function() {
 		alignAndFocus(e, $(this));
 	});
 
-	$(document).on("show.bs.modal", "[id^=addWordRelationDlg_]", function() {
+	$(document).on("show.bs.modal", "[id^=addGroupWordRelationDlg_]", function() {
+		initMultiselectRelationDlg($(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=addPrimaryWordRelationDlg_]", function() {
 		initMultiselectRelationDlg($(this));
 	});
 

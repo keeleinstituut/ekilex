@@ -18,8 +18,7 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
         setHomonymNrVisibility();
         $('.word-details [data-toggle="tooltip"], [data-tooltip="tooltip"]').tooltip();
         $('[data-toggle="popover"]').popover({
-            placement: 'top',
-            trigger: 'focus'
+            placement: 'top'
         });
         var lightbox = new SimpleLightbox(
             '.gallery-image',
@@ -68,6 +67,24 @@ $(document).on("click", ".menu-btn", function () {
     }
 });
 
+//Dismiss popovers when clicked outside of it
+$(document).on('click', function (e) {
+    $('[data-toggle="popover"],[data-original-title]').each(function () {
+        //the 'is' for buttons that trigger popups
+        //the 'has' for icons within a button that triggers a popup
+        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+            if ($(this).data('bs.popover')) {
+                (($(this).popover('hide').data('bs.popover') || {}).inState || {}).click = false  // fix for BS 3.3.6
+            }
+        }
+    });
+});
+
+//Hide tooltips on click on mobile
+$(document).on("click", ".btn-ellipsis", function(e) {
+    $(this).tooltip('hide');
+});
+
 function activateCollapseBtn(){
     $(".btn-collapse").on("click", function () {
         $(this).toggleClass('show');
@@ -84,6 +101,7 @@ function activateCollapseBtn(){
         }
         if($(this).data("dynamic-text")){
             $(this).find('.btn-content').toggleClass('d-none');
+            $(this).find('.see-more-content').tooltip('hide');
         }
     });
 }

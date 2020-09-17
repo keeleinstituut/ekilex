@@ -10,6 +10,8 @@ public class WordGroup extends AbstractDataObject {
 
 	private Long id;
 
+	private String groupTypeCode;
+
 	private String groupTypeLabel;
 
 	private List<Relation> members;
@@ -20,6 +22,14 @@ public class WordGroup extends AbstractDataObject {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getGroupTypeCode() {
+		return groupTypeCode;
+	}
+
+	public void setGroupTypeCode(String groupTypeCode) {
+		this.groupTypeCode = groupTypeCode;
 	}
 
 	public String getGroupTypeLabel() {

@@ -70,7 +70,7 @@ public class SourceEditController extends AbstractPageController {
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("type") FreeformType type,
 			@RequestParam("valueText") String valueText,
-			Model model) {
+			Model model) throws Exception {
 
 		logger.debug("Creating property for source with id: {}", sourceId);
 
@@ -104,7 +104,7 @@ public class SourceEditController extends AbstractPageController {
 	public String updateSource(
 			@RequestParam("sourceId") Long sourceId,
 			@RequestParam("sourceType") SourceType type,
-			Model model) {
+			Model model) throws Exception {
 
 		logger.debug("Updating source type, source id: {}", sourceId);
 
@@ -120,7 +120,7 @@ public class SourceEditController extends AbstractPageController {
 
 	@PostMapping(CREATE_SOURCE_URI)
 	@ResponseBody
-	public String createSource(@RequestBody SourceRequest source) {
+	public String createSource(@RequestBody SourceRequest source) throws Exception {
 
 		String sourceName = source.getName();
 		SourceType sourceType = source.getType();
@@ -163,7 +163,7 @@ public class SourceEditController extends AbstractPageController {
 
 	@GetMapping(DELETE_SOURCE_URI + "/{sourceId}")
 	@ResponseBody
-	public String deleteSource(@PathVariable("sourceId") Long sourceId) {
+	public String deleteSource(@PathVariable("sourceId") Long sourceId) throws Exception {
 
 		logger.debug("Deleting source with id: {}", sourceId);
 
@@ -187,7 +187,9 @@ public class SourceEditController extends AbstractPageController {
 	}
 
 	@PostMapping(JOIN_SOURCES_URI)
-	public String joinSources(@RequestParam("targetSourceId") Long targetSourceId, @RequestParam("originSourceId") Long originSourceId) {
+	public String joinSources(
+			@RequestParam("targetSourceId") Long targetSourceId,
+			@RequestParam("originSourceId") Long originSourceId) throws Exception {
 
 		sourceService.joinSources(targetSourceId, originSourceId);
 		return "redirect:" + SOURCE_SEARCH_URI + "/" + targetSourceId;

@@ -955,7 +955,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addWordRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_relation_dlg">
+  <div th:id="${'addGroupWordRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_group_word_relation_dlg">
     <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -980,7 +980,53 @@
               <div class="col-md-6">
                 <select required class="form-control required-field" name="relationType">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option th:each="item : ${wordRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                  <option th:each="item : ${groupWordRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div data-name="oppositeRelation" data-entity="WORD" class="form-group row" style="display: none">
+              <div class="col-md-6">
+                <label class="col-form-label">
+                  vastassuuna seose tüüp
+                  <select required class="form-control required-field" name="oppositeRelationType">
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addPrimaryWordRelationDlg_' + wordId + '_' + relationGroup.groupTypeCode}" class="modal" role="dialog" th:fragment="add_primary_word_relation_dlg">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/wordsearch}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/create_relations}" method="post">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_relation">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control required-field" name="relationType">
+                  <option th:value="${relationGroup.groupTypeCode}" th:text="${relationGroup.groupTypeLabel}">value</option>
                 </select>
               </div>
             </div>
