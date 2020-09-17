@@ -20,6 +20,7 @@
   top: 80px;
   height: 100%;
   background-color: $white;
+  @include border-top-left-radius(10px);
 
   @include media-breakpoint-down(md) {
     position: sticky;

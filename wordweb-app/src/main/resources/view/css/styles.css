@@ -16965,6 +16965,7 @@ body.hidden-scroll {
   .dropdown--aside {
     z-index: 1;
     overflow-y: scroll;
+    border-top-left-radius: 10px;
   }
 }
 
@@ -18633,6 +18634,7 @@ eki-link {
   top: 80px;
   height: 100%;
   background-color: #fff;
+  border-top-left-radius: 10px;
 }
 
 @media (max-width: 991.98px) {
