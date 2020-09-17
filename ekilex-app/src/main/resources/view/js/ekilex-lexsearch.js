@@ -348,6 +348,14 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 };
 
 function refreshDetailsLexSearch(id) {
+	if (typeof id === 'object') {
+		var obj = id;
+		if (obj.attr('[data-rel]') === 'details-area') {
+			id = obj.attr('data-id');
+		} else {
+			id = obj.parents('[data-rel="details-area"]').attr('data-id');
+		}
+	}
 	var refreshButton = $(`[data-rel="details-area"][data-id="${id}"]:first`).find('#refresh-details');
 	refreshButton.trigger('click');
 };
