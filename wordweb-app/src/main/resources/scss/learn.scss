@@ -5,13 +5,12 @@
 
   @include media-breakpoint-up(md) {
     max-width: 80vw;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, .25);
     @include border-radius(10px);
   }
 
   .tab-content {
     overflow-x: hidden;
-    overflow-y: scroll;
   }
 }
 

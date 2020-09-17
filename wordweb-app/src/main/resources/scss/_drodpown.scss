@@ -28,7 +28,6 @@
 
   @include media-breakpoint-up(md) {
     z-index: 1;
-    overflow-y: scroll;
     @include border-top-left-radius(10px);
   }
 
