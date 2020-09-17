@@ -18617,8 +18617,8 @@ eki-link {
 @media (min-width: 768px) {
   .learn-container {
     max-width: 80vw;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
   }
 }
 
@@ -18643,13 +18643,6 @@ eki-link {
     z-index: 2;
     height: 56px;
     background-color: #f0f0f0;
-  }
-}
-
-@media (min-width: 768px) {
-  .learn-container-menu {
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
   }
 }
 
@@ -18780,7 +18773,7 @@ eki-link {
   border-bottom-right-radius: 10px;
 }
 
-@media (min-width: 576px) {
+@media (min-width: 768px) {
   .learn-content-wrapper {
     border-left: solid 1px #ccd9e0;
   }

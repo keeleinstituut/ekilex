@@ -5,8 +5,8 @@
 
   @include media-breakpoint-up(md) {
     max-width: 80vw;
-    @include border-top-left-radius(10px);
-    @include border-top-right-radius(10px);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    @include border-radius(10px);
   }
 
   .tab-content {
@@ -27,11 +27,6 @@
     z-index: 2;
     height: 56px;
     background-color: #f0f0f0;
-  }
-
-  @include media-breakpoint-up(md) {
-    @include border-top-left-radius(10px);
-    @include border-bottom-left-radius(10px);
   }
 }
 
@@ -146,7 +141,7 @@
   @include border-top-right-radius(10px);
   @include border-bottom-right-radius(10px);
 
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(md) {
     border-left: solid 1px $gray-200;
 
   }
