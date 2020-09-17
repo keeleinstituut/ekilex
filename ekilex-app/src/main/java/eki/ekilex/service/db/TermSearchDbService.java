@@ -213,7 +213,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				wherew = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
 				wherew = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wherew, false);
 
-				wherel = applyLexemeTagFilter(searchCriteria, l1.ID, wherel);
+				//wherel = applyLexemeTagFilter(searchCriteria, w1.ID, l1.ID, wherel);
 				wherel = applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
 
@@ -223,6 +223,12 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				wherem = applyDomainFilters(searchCriteria, m1.ID, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_ON, searchCriteria, searchDatasetsRestriction, m1, wherem);
 				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_BY, searchCriteria, searchDatasetsRestriction, m1, wherem);
+
+			} else if (SearchEntity.TAG.equals(searchEntity)) {
+
+				//TODO implement
+				//where = applyLexemeTagFilters(searchCriteria, w1, searchDatasetsRestriction, where);
+				//where = applyWordActivityLogFilters(searchCriteria, ActivityEntity.TAG, w1, where);
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
@@ -353,6 +359,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		return wm;
 	}
 
+	@Deprecated
 	private Condition composeMeaningLifecycleLogFilters(
 			SearchKey searchKey, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Meaning m1, Condition wherem1) throws Exception {
 
@@ -486,7 +493,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		List<SearchCriterion> filteredCriteria = filterSourceRefCriteria(searchCriteria);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			filteredCriteria = filterSourceIdCriteria(searchCriteria);
+			filteredCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.SOURCE_ID);
 		}
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
