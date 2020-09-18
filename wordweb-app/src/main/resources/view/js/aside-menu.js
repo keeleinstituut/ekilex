@@ -40,14 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
       })
 
       const sideMenuHeading = sideMenu.querySelector('.dropdown-toggle')
-      var parentList = $(el).closest('.nav-link').closest('ul')
-      
+      var parentList = $(el).closest('.nav-link').closest('ul')    
       var dropdownTitle
+
         if (!parentList.hasClass('dropdown-menu')) {
-          dropdownTitle = $(el).closest('ul').parent().find('.nav-link[data-toggle="pill"]').contents().get(0).nodeValue
-      } else {
+          var subMenuLink = $(el).closest('ul').parent().find('.nav-link[data-toggle="pill"]')
+          if ($(window).width() < mdBreakpoint) {
+            $(subMenuLink).addClass('active')
+          }
+          dropdownTitle = $(subMenuLink).contents().get(0).nodeValue
+        } else {
         dropdownTitle = $(el).contents().get(0).nodeValue
-      }
+        }
+
       sideMenuHeading.innerHTML = dropdownTitle
     })
   })
