@@ -28,7 +28,7 @@
 
   @include media-breakpoint-up(md) {
     z-index: 1;
-    @include border-top-left-radius(10px);
+
   }
 
   &.show {
@@ -58,15 +58,10 @@
     width: 100%;
     text-align: left;
     background-color: $white;
-    @include border-radius(0);
-    @include border-top-left-radius(4px);
-
+    @include border-radius(10px);
 
     @include media-breakpoint-down(md) {
       border: solid 2px $gray-500;
-      @include border-radius(0);
-      @include border-top-right-radius(3px);
-      @include border-top-left-radius(3px);
     }
 
     &::after {
