@@ -46,67 +46,66 @@
   flex-direction: column;
   justify-items: center;
   align-items: center;
+}
 
-  &__circle {
-    display: flex;
-    width: 140px;
-    height: 140px;
-    @include border-radius(50%);
+.color-element-title {
+  margin-top: 8px;
+  text-align: center;
+}
 
-    @include media-breakpoint-down(md) {
-      width: 134px;
-      height: 134px;
-    }
+.color-element-circle {
+  display: flex;
+  width: 140px;
+  height: 140px;
+  @include border-radius(50%);
 
-    &--black {
-      background-color: #000;
-    }
-
-    &--white {
-      background-color: $white;
-    }
-
-    &--red {
-      background-color: #e30f15;
-    }
-
-    &--green {
-      background-color: #2ea836;
-    }
-
-    &--yellow {
-      background-color: #ffed00;
-    }
-
-    &--blue {
-      background-color: #434f9e;
-    }
-
-    &--brown {
-      background-color: #7b3912;
-    }
-
-    &--pink {
-      background-color: #ef7c97;
-    }
-
-    &--orange {
-      background-color: #f18700;
-    }
-
-    &--grey {
-      background-color: #9d9d9c;
-    }
-
-    &--purple {
-      background-color: #a44392;
-    }
-
+  @include media-breakpoint-down(md) {
+    width: 134px;
+    height: 134px;
   }
 
-  &__title {
-    margin-top: 8px;
-    text-align: center;
+  &-black {
+    background-color: #000;
+  }
+
+  &-white {
+    background-color: $white;
+  }
+
+  &-red {
+    background-color: #e30f15;
+  }
+
+  &-green {
+    background-color: #2ea836;
+  }
+
+  &-yellow {
+    background-color: #ffed00;
+  }
+
+  &-blue {
+    background-color: #434f9e;
+  }
+
+  &-brown {
+    background-color: #7b3912;
+  }
+
+  &-pink {
+    background-color: #ef7c97;
+  }
+
+  &-orange {
+    background-color: #f18700;
+  }
+
+  &-grey {
+    background-color: #9d9d9c;
+  }
+
+  &-purple {
+    background-color: #a44392;
   }
 }
 
@@ -123,13 +122,13 @@
     max-height: 160px;
     overflow: hidden;
   }
+}
 
-  &__title {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+.image-card-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .learn-content-wrapper {
@@ -165,25 +164,25 @@
     }
   }
 
-  &--border-bottom {
-
-    &::after {
-      position: relative;
-      left: 0;
-      display: block;
-      height: 1px;
-      margin-top: 16px;
-      margin-right: -100%;
-      margin-left: -100%;
-      content: " ";
-      border-bottom: 1px solid $gray-200;
-    }
-  }
-
   ul {
     li {
       margin-bottom: 8px;
     }
+  }
+}
+
+.learn-content-border-bottom {
+
+  &::after {
+    position: relative;
+    left: 0;
+    display: block;
+    height: 1px;
+    margin-top: 16px;
+    margin-right: -100%;
+    margin-left: -100%;
+    content: " ";
+    border-bottom: 1px solid $gray-200;
   }
 }
 
@@ -234,12 +233,6 @@
     border-bottom: solid 1px $gray-500;
   }
 
-  &__header {
-    padding: 18px 0;
-    text-align: center;
-    border: solid 1px $gray-500;
-  }
-
   &:last-of-type {
     border-bottom: solid 1px $gray-500;
   }
@@ -248,36 +241,41 @@
     padding-left: 20px;
     margin: 0;
   }
+}
 
-  &__row {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
+.learn-table-left,
+.learn-table-right {
+  display: flex;
+  align-items: center;
+}
 
-    &:first-of-type {
-      padding-top: 8px;
-    }
-  }
+.learn-table-left {
+  border-right: solid 1px $gray-500;
+  border-left: solid 1px $gray-500;
+}
 
+.learn-table-right {
+  border-right: solid 1px $gray-500;
 
-  &__left,
-  &__right {
-    display: flex;
-    align-items: center;
-  }
-
-  &__left {
-    border-right: solid 1px $gray-500;
+  @include media-breakpoint-down(md) {
     border-left: solid 1px $gray-500;
   }
+}
 
-  &__right {
-    border-right: solid 1px $gray-500;
+.learn-table-row {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 
-    @include media-breakpoint-down(md) {
-      border-left: solid 1px $gray-500;
-    }
+  &:first-of-type {
+    padding-top: 8px;
   }
+}
+
+.learn-table-header {
+  padding: 18px 0;
+  text-align: center;
+  border: solid 1px $gray-500;
 }
 
 .number {

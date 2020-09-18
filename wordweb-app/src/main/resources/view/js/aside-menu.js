@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const sideMenu = document.querySelector('.dropdown--aside')
+  const sideMenu = document.querySelector('.dropdown-aside')
 
   nestedList = $(sideMenu).find('li.has-submenu')
   var mdBreakpoint = 768
