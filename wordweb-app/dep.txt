@@ -1,4 +1,4 @@
-eki.wordweb:wordweb-app:jar:1.18-SNAPSHOT
+eki.wordweb:wordweb-app:jar:1.19.0
 +- org.springframework.boot:spring-boot-starter-web:jar:2.3.0.RELEASE:compile
 |  +- org.springframework.boot:spring-boot-starter:jar:2.3.0.RELEASE:compile
 |  |  +- org.springframework.boot:spring-boot-starter-logging:jar:2.3.0.RELEASE:compile
@@ -44,7 +44,7 @@ eki.wordweb:wordweb-app:jar:1.18-SNAPSHOT
 |  +- org.springframework:spring-tx:jar:5.2.6.RELEASE:compile
 |  \- org.jooq:jooq:jar:3.13.2:compile
 |     \- org.reactivestreams:reactive-streams:jar:1.0.3:compile
-+- eki.common:eki-common:jar:1.18-SNAPSHOT:compile
++- eki.common:eki-common:jar:1.19.0:compile
 |  +- org.apache.commons:commons-lang3:jar:3.10:compile
 |  +- org.apache.commons:commons-text:jar:1.8:compile
 |  +- org.apache.commons:commons-collections4:jar:4.4:compile

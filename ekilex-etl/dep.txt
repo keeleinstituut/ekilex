@@ -1,5 +1,5 @@
-eki.ekilex:ekilex-etl:jar:1.18-SNAPSHOT
-+- eki.common:eki-common:jar:1.18-SNAPSHOT:compile
+eki.ekilex:ekilex-etl:jar:1.19.0
++- eki.common:eki-common:jar:1.19.0:compile
 |  +- org.springframework:spring-core:jar:5.2.6.RELEASE:compile
 |  |  \- org.springframework:spring-jcl:jar:5.2.6.RELEASE:compile
 |  +- org.springframework:spring-expression:jar:5.2.6.RELEASE:compile
