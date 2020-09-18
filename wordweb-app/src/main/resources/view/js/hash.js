@@ -1,7 +1,13 @@
 // The function actually applying the offset
 function offsetAnchor() {
+  var mdBreakpoint = 768;
+
   if (location.hash.length !== 0) {
     window.scrollTo(window.scrollX, window.scrollY - 100);
+  } 
+
+  if ($(window).width() < mdBreakpoint) {
+    window.scrollTo(window.scrollX, window.scrollY - 40);
   }
 }
 
