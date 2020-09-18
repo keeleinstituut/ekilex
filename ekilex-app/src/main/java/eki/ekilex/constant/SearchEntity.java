@@ -36,7 +36,7 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getTermEntities() {
-		return asList(TERM, CONCEPT, DEFINITION, USAGE, NOTE, CONCEPT_ID, CLUELESS);
+		return asList(TERM, CONCEPT, TAG, DEFINITION, USAGE, NOTE, CONCEPT_ID, CLUELESS);
 	}
 
 	public static List<SearchEntity> getSourceEntities() {

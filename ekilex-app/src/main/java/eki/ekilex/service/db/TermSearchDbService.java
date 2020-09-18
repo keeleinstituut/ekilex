@@ -41,6 +41,7 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
@@ -213,7 +214,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				wherew = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
 				wherew = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wherew, false);
 
-				//wherel = applyLexemeTagFilter(searchCriteria, w1.ID, l1.ID, wherel);
 				wherel = applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
 
@@ -226,9 +226,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
 
-				//TODO implement
-				//where = applyLexemeTagFilters(searchCriteria, w1, searchDatasetsRestriction, where);
-				//where = applyWordActivityLogFilters(searchCriteria, ActivityEntity.TAG, w1, where);
+				wherem = applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, m1, wherem);
+				wherem = applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, ActivityEntity.TAG, m1, wherem);
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 

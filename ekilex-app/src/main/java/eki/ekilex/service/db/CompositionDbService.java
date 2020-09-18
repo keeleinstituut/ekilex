@@ -9,6 +9,7 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
@@ -22,6 +23,7 @@ import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
@@ -29,6 +31,7 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
@@ -66,11 +69,14 @@ import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -241,31 +247,69 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.fetch();
 	}
 
-	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
+	public void joinMeanings(Long targetMeaningId, Long sourceMeaningId) {
 
-		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
-		joinMeaningDefinitions(meaningId, sourceMeaningId);
-		joinMeaningDomains(meaningId, sourceMeaningId);
-		joinMeaningFreeforms(meaningId, sourceMeaningId);
-		joinMeaningRelations(meaningId, sourceMeaningId);
-		joinMeaningSemanticTypes(meaningId, sourceMeaningId);
-		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
+		create.update(LEXEME).set(LEXEME.MEANING_ID, targetMeaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
+		joinMeaningDefinitions(targetMeaningId, sourceMeaningId);
+		joinMeaningDomains(targetMeaningId, sourceMeaningId);
+		joinMeaningFreeforms(targetMeaningId, sourceMeaningId);
+		joinMeaningRelations(targetMeaningId, sourceMeaningId);
+		joinMeaningSemanticTypes(targetMeaningId, sourceMeaningId);
+
+		// prehistoric
+		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, targetMeaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
+
+		// contemporary
+		MeaningActivityLog mals = MEANING_ACTIVITY_LOG.as("mals");
+		MeaningActivityLog malt = MEANING_ACTIVITY_LOG.as("malt");
+		create
+				.update(mals)
+				.set(mals.MEANING_ID, targetMeaningId)
+				.where(
+						mals.MEANING_ID.eq(sourceMeaningId)
+								.andNotExists(DSL
+										.select(malt.ID)
+										.from(malt)
+										.where(
+												malt.MEANING_ID.eq(targetMeaningId)
+														.and(malt.ACTIVITY_LOG_ID.eq(mals.ACTIVITY_LOG_ID)))))
+				.execute();
+
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
 	}
 
-	public void joinLexemes(Long lexemeId, Long sourceLexemeId) {
+	public void joinLexemes(Long targetLexemeId, Long sourceLexemeId) {
 
-		joinLexemeCollocations(lexemeId, sourceLexemeId);
-		joinLexemeSourceLinks(lexemeId, sourceLexemeId);
-		joinLexemeRegisters(lexemeId, sourceLexemeId);
-		joinLexemePos(lexemeId, sourceLexemeId);
-		joinLexemeFreeforms(lexemeId, sourceLexemeId);
-		joinLexemeDerivs(lexemeId, sourceLexemeId);
-		joinLexemeRegions(lexemeId, sourceLexemeId);
-		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, lexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
-		joinLexemeRelations(lexemeId, sourceLexemeId);
-		joinLexemePublicity(lexemeId, sourceLexemeId);
-		joinLexemeTags(lexemeId, sourceLexemeId);
+		joinLexemeCollocations(targetLexemeId, sourceLexemeId);
+		joinLexemeSourceLinks(targetLexemeId, sourceLexemeId);
+		joinLexemeRegisters(targetLexemeId, sourceLexemeId);
+		joinLexemePos(targetLexemeId, sourceLexemeId);
+		joinLexemeFreeforms(targetLexemeId, sourceLexemeId);
+		joinLexemeDerivs(targetLexemeId, sourceLexemeId);
+		joinLexemeRegions(targetLexemeId, sourceLexemeId);
+		joinLexemeRelations(targetLexemeId, sourceLexemeId);
+		joinLexemePublicity(targetLexemeId, sourceLexemeId);
+		joinLexemeTags(targetLexemeId, sourceLexemeId);
+
+		// prehistoric
+		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, targetLexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
+
+		// contemporary
+		LexemeActivityLog lals = LEXEME_ACTIVITY_LOG.as("lals");
+		LexemeActivityLog lalt = LEXEME_ACTIVITY_LOG.as("lalt");
+		create
+				.update(lals)
+				.set(lals.LEXEME_ID, targetLexemeId)
+				.where(
+						lals.LEXEME_ID.eq(sourceLexemeId)
+								.andNotExists(DSL
+										.select(lalt.ID)
+										.from(lalt)
+										.where(
+												lalt.LEXEME_ID.eq(targetLexemeId)
+														.and(lalt.ACTIVITY_LOG_ID.eq(lals.ACTIVITY_LOG_ID)))))
+				.execute();
+
 		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
 	}
 
@@ -1160,9 +1204,24 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		joinWordEtymologyRelations(targetWordId, sourceWordId);
 
+		// prehistoric
 		create.update(WORD_LIFECYCLE_LOG)
 				.set(WORD_LIFECYCLE_LOG.WORD_ID, targetWordId)
 				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
+				.execute();
+
+		// contemporary
+		WordActivityLog wals = WORD_ACTIVITY_LOG.as("wals");
+		WordActivityLog walt = WORD_ACTIVITY_LOG.as("walt");
+		create.update(wals)
+				.set(wals.WORD_ID, targetWordId)
+				.where(wals.WORD_ID.eq(sourceWordId)
+						.andNotExists(DSL
+								.select(walt.ID)
+								.from(walt)
+								.where(
+										walt.WORD_ID.eq(targetWordId)
+												.and(walt.ACTIVITY_LOG_ID.eq(wals.ACTIVITY_LOG_ID)))))
 				.execute();
 	}
 

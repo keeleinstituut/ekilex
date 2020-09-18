@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
@@ -8,6 +9,7 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
@@ -21,9 +23,6 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
-
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -69,6 +68,7 @@ import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -82,7 +82,6 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
 
@@ -443,32 +442,46 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
 	}
 
-	protected Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, Word w1, SearchDatasetsRestriction searchDatasetsRestriction, Condition condition) throws Exception {
-	
+	protected Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition condition) throws Exception {
+
+		Lexeme l1 = Lexeme.LEXEME.as("l1");
+		Condition where1 = l1.WORD_ID.eq(w1.ID);
+		return applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, l1, where1, condition);
+	}
+
+	protected Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Meaning m1, Condition condition) throws Exception {
+
+		Lexeme l1 = Lexeme.LEXEME.as("l1");
+		Condition where1 = l1.MEANING_ID.eq(m1.ID);
+		return applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, l1, where1, condition);
+	}
+
+	protected Condition applyLexemeTagFilters(
+			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Lexeme l1, Condition where1, Condition where) throws Exception {
+
 		List<SearchCriterion> tagNameEqualsCrit = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.TAG_NAME) && crit.getSearchOperand().equals(SearchOperand.EQUALS)).collect(toList());
 		List<SearchCriterion> tagNameNotExistsCrit = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.TAG_NAME) && crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
-	
+
 		if (CollectionUtils.isEmpty(tagNameEqualsCrit) && CollectionUtils.isEmpty(tagNameNotExistsCrit)) {
-			return condition;
+			return where;
 		}
-	
-		Lexeme l1 = Lexeme.LEXEME.as("l1");
+
 		LexemeTag lt = LEXEME_TAG.as("lt");
-		Condition where1 = l1.WORD_ID.eq(w1.ID)
+		where1 = where1
 				.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 				.and(lt.LEXEME_ID.eq(l1.ID));
-	
+
 		where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-	
+
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
 				if (criterion.getSearchValue() != null) {
 					where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
 				}
 			}
-			condition = condition.andExists(DSL.select(lt.ID).from(l1, lt).where(where1));
+			where = where.andExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotExistsCrit)) {
 			for (SearchCriterion criterion : tagNameNotExistsCrit) {
@@ -476,64 +489,9 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 					where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
 				}
 			}
-			condition = condition.andNotExists(DSL.select(lt.ID).from(l1, lt).where(where1));
+			where = where.andNotExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
-		return condition;
-	}
-
-	//TODO temporary - remove soon
-	protected Condition applyLexemeTagFilter(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Field<Long> lexemeIdField, Condition condition) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream().filter(crit -> crit.getSearchKey().equals(SearchKey.TAG_NAME)).collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return condition;
-		}
-
-		List<SearchCriterion> valueEqualsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EQUALS)).collect(toList());
-		List<SearchCriterion> notExistsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
-		List<SearchCriterion> valueHasBeenCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.HAS_BEEN)).collect(toList());
-
-		LexemeTag lt = LEXEME_TAG.as("lt");
-
-		if (CollectionUtils.isNotEmpty(valueEqualsCriteria)) {
-			Condition tagCondition = lt.LEXEME_ID.eq(lexemeIdField);
-			for (SearchCriterion criterion : valueEqualsCriteria) {
-				if (criterion.getSearchValue() != null) {
-					tagCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, tagCondition, false);
-				}
-			}
-			condition = condition.andExists(DSL.select(lt.ID).from(lt).where(tagCondition));
-		}
-
-		if (CollectionUtils.isNotEmpty(notExistsCriteria)) {
-			Condition tagCondition = lt.LEXEME_ID.eq(lexemeIdField);
-			for (SearchCriterion criterion : notExistsCriteria) {
-				if (criterion.getSearchValue() != null) {
-					tagCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, tagCondition, false);
-				}
-			}
-			condition = condition.andNotExists(DSL.select(lt.ID).from(lt).where(tagCondition));
-		}
-
-		if (CollectionUtils.isNotEmpty(valueHasBeenCriteria)) {
-			
-			WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
-			ActivityLog al = ACTIVITY_LOG.as("al");
-			Table<?> alcdun = DSL.unnest(al.CURR_DIFFS).as("alcd", "op", "path", "value");
-
-			Condition tagCondition = wal.WORD_ID.eq(wordIdField).and(wal.ACTIVITY_LOG_ID.eq(al.ID)).and(al.ENTITY_NAME.eq(ActivityEntity.TAG.name()));
-			for (SearchCriterion criterion : valueHasBeenCriteria) {
-				String critValue = criterion.getSearchValue().toString();
-				tagCondition = tagCondition.andExists(DSL
-						.select(alcdun.field("value"))
-						.from(alcdun)
-						.where(alcdun.field("value", String.class).eq(critValue)));
-			}
-			condition = condition.andExists(DSL.select(wal.ID).from(wal, al).where(tagCondition.andExists(DSL.select(DSL.field(FORCE_QUERY_LOG)))));
-		}
-
-		return condition;
+		return where;
 	}
 
 	protected Condition applyDomainFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition m1Where) {
@@ -566,8 +524,25 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return m1Where;
 	}
 
-	protected Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, ActivityEntity entityName, Word w1, Condition wherew1) throws Exception {
-	
+	protected Condition applyLexemeActivityLogFilters(
+			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, ActivityEntity entityName, Meaning m1, Condition wherem1) throws Exception {
+
+		Lexeme l1 = Lexeme.LEXEME.as("l1");
+		Condition where1 = l1.MEANING_ID.eq(m1.ID);
+		return applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, entityName, l1, where1, wherem1);
+	}
+
+	protected Condition applyLexemeActivityLogFilters(
+			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, ActivityEntity entityName, Word w1, Condition wherew1) throws Exception {
+
+		Lexeme l1 = Lexeme.LEXEME.as("l1");
+		Condition where1 = l1.WORD_ID.eq(w1.ID);
+		return applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, entityName, l1, where1, wherew1);
+	}
+
+	protected Condition applyLexemeActivityLogFilters(
+			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, ActivityEntity entityName, Lexeme l1, Condition where1, Condition where) throws Exception {
+
 		List<SearchCriterion> tagActivityLogCrit = searchCriteria.stream()
 				.filter(crit -> {
 					if (crit.getSearchKey().equals(SearchKey.CREATED_OR_UPDATED_BY)) {
@@ -581,15 +556,21 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 					}
 					return false;
 				}).collect(toList());
-	
+
 		if (CollectionUtils.isEmpty(tagActivityLogCrit)) {
-			return wherew1;
+			return where;
 		}
-	
-		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
+
+		LexemeActivityLog lal = LEXEME_ACTIVITY_LOG.as("lal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
-		Condition where1 = wal.WORD_ID.eq(w1.ID).and(wal.ACTIVITY_LOG_ID.eq(al.ID)).and(al.ENTITY_NAME.eq(entityName.name()));
-	
+		where1 = where1
+				.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+				.and(lal.LEXEME_ID.eq(l1.ID))
+				.and(lal.ACTIVITY_LOG_ID.eq(al.ID))
+				.and(al.ENTITY_NAME.eq(entityName.name()));
+
+		where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+
 		for (SearchCriterion criterion : searchCriteria) {
 			Object critValueObj = criterion.getSearchValue();
 			if (critValueObj == null) {
@@ -602,13 +583,18 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				where1 = applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 			} else if (criterion.getSearchOperand().equals(SearchOperand.HAS_BEEN)) {
 				Table<?> alcdun = DSL.unnest(al.CURR_DIFFS).as("alcd", "op", "path", "value");
+				Table<?> alpdun = DSL.unnest(al.PREV_DIFFS).as("alpd", "op", "path", "value");
 				where1 = where1.andExists(DSL
-						.select(alcdun.field("value"))
+						.select(alcdun.field("value", String.class))
 						.from(alcdun)
-						.where(alcdun.field("value", String.class).eq(critValue)));
+						.where(alcdun.field("value", String.class).eq(critValue))
+						.union(DSL
+								.select(alpdun.field("value", String.class))
+								.from(alpdun)
+								.where(alpdun.field("value", String.class).eq(critValue))));
 			}
 		}
-		return wherew1.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
+		return where.andExists(DSL.select(lal.ID).from(l1, lal, al).where(where1));
 	}
 
 	protected Condition createSearchCondition(Word word, Paradigm paradigm, String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction) {
@@ -735,8 +721,8 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
 
-				where = applyLexemeTagFilters(searchCriteria, w1, searchDatasetsRestriction, where);
-				where = applyWordActivityLogFilters(searchCriteria, ActivityEntity.TAG, w1, where);
+				where = applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, w1, where);
+				where = applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, ActivityEntity.TAG, w1, where);
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
@@ -766,7 +752,6 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyDomainFilters(searchCriteria, m1.ID, where1);
 				where1 = applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, where1);
-				//where1 = applyLexemeTagFilter(searchCriteria, w1.ID, l1.ID, where1);
 				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
