@@ -442,6 +442,36 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
 	}
 
+	protected Condition applyDomainFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition m1Where) {
+	
+		List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
+						&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
+						&& (crit.getSearchValue() != null))
+				.collect(toList());
+	
+		boolean isNotExistsFilter = searchCriteria.stream()
+				.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
+						&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
+	
+		MeaningDomain md = MEANING_DOMAIN.as("md");
+	
+		if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
+			Condition where1 = md.MEANING_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : domainCriteriaWithExists) {
+				Classifier domain = (Classifier) criterion.getSearchValue();
+				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+			}
+			m1Where = m1Where.and(DSL.exists(DSL.select(md.ID).from(md).where(where1)));
+		}
+	
+		if (isNotExistsFilter) {
+			Condition where1 = md.MEANING_ID.eq(meaningIdField);
+			m1Where = m1Where.and(DSL.notExists(DSL.select(md.ID).from(md).where(where1)));
+		}
+		return m1Where;
+	}
+
 	protected Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition condition) throws Exception {
 
 		Lexeme l1 = Lexeme.LEXEME.as("l1");
@@ -492,36 +522,6 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 			where = where.andNotExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
 		return where;
-	}
-
-	protected Condition applyDomainFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition m1Where) {
-
-		List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-						&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
-						&& (crit.getSearchValue() != null))
-				.collect(toList());
-
-		boolean isNotExistsFilter = searchCriteria.stream()
-				.anyMatch(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN)
-						&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
-
-		MeaningDomain md = MEANING_DOMAIN.as("md");
-
-		if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
-			Condition where1 = md.MEANING_ID.eq(meaningIdField);
-			for (SearchCriterion criterion : domainCriteriaWithExists) {
-				Classifier domain = (Classifier) criterion.getSearchValue();
-				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-			}
-			m1Where = m1Where.and(DSL.exists(DSL.select(md.ID).from(md).where(where1)));
-		}
-
-		if (isNotExistsFilter) {
-			Condition where1 = md.MEANING_ID.eq(meaningIdField);
-			m1Where = m1Where.and(DSL.notExists(DSL.select(md.ID).from(md).where(where1)));
-		}
-		return m1Where;
 	}
 
 	protected Condition applyLexemeActivityLogFilters(
