@@ -40,10 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
       })
 
       const sideMenuHeading = sideMenu.querySelector('.dropdown-toggle')
-
-      var dropdownTitle = [].reduce.call(el.childNodes, function (a, b) {
-        return a + (b.nodeType === 3 ? b.textContent : '');
-      }, '');
+      var parentList = $(el).closest('.nav-link').closest('ul')
+      
+      var dropdownTitle
+        if (!parentList.hasClass('dropdown-menu')) {
+          dropdownTitle = $(el).closest('ul').parent().find('.nav-link[data-toggle="pill"]').contents().get(0).nodeValue
+      } else {
+        dropdownTitle = $(el).contents().get(0).nodeValue
+      }
       sideMenuHeading.innerHTML = dropdownTitle
     })
   })
@@ -108,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.addEventListener('scroll', function (e) {
-    if ($('.has-submenu.open').length) {
+    if ($('.has-submenu.open').length && $(window).width() > mdBreakpoint) {
       onScroll(e)
     }
   })
