@@ -189,7 +189,8 @@
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SECONDARY_MEANING_WORD'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLICITY'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
@@ -205,7 +206,8 @@
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GRAMMAR'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">

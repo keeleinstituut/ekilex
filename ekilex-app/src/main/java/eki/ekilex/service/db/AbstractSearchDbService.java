@@ -675,7 +675,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 	protected Condition applyLexemeGrammarFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_GRAMMAR) && c.getSearchValue() != null)
+				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_GRAMMAR))
 				.collect(toList());
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
@@ -688,10 +688,17 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				.and(lff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.GRAMMAR.name()));
 
-		for (SearchCriterion criterion : filteredCriteria) {
-			lexFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, lexFreeformCondition, true);
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.LEXEME_GRAMMAR, searchCriteria);
+		if (isNotExistsSearch) {
+			condition = condition.and(DSL.notExists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
+			return condition;
 		}
 
+		for (SearchCriterion criterion : filteredCriteria) {
+			if (criterion.getSearchValue() != null) {
+				lexFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, lexFreeformCondition, true);
+			}
+		}
 		condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
 		return condition;
 	}

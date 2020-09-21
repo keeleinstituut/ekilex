@@ -17,7 +17,7 @@ public enum SearchKey {
 	DATASET_USAGE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	SECONDARY_MEANING_WORD(SearchOperandConstant.VALUE_OPERANDS, SearchValueType.TEXTUAL),
 	PUBLICITY(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.BOOLEAN),
-	LEXEME_GRAMMAR(SearchOperandConstant.VALUE_OPERANDS_WITHOUT_EXISTS, SearchValueType.TEXTUAL),
+	LEXEME_GRAMMAR(SearchOperandConstant.VALUE_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_POS(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	LEXEME_FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	OD_RECOMMENDATION(SearchOperandConstant.VALUE_OPERANDS_WITHOUT_EXISTS, SearchValueType.TEXTUAL),
