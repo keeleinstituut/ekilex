@@ -98,7 +98,6 @@ public class TermSearchController extends AbstractSearchController {
 		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
 
 		if (!searchUriData.isValid()) {
-			initSearchForms(searchPage, model);
 			model.addAttribute("termSearchResult", new TermSearchResult());
 			model.addAttribute("invalidSearch", true);
 			return TERM_SEARCH_PAGE;

@@ -13,6 +13,17 @@ function initializeLexSearch() {
 		}
 	});
 
+	$(document).on("click", "#share-details-link", function() {
+		let searchParams = new URLSearchParams(window.location.search);
+		let idParam = searchParams.get("id");
+		let shareLink = fullLexSearchUrl + '?id=' + idParam;
+		var tempCopyField = $("<input>");
+		$("body").append(tempCopyField);
+		tempCopyField.val(shareLink).select();
+		document.execCommand('copy');
+		tempCopyField.remove();
+	});
+
 	$(document).on("click", ":button[name='word-details-btn']", function() {
 		const wordId = $(this).data('id');
 		const behaviour = $(this).data('behaviour') || false;

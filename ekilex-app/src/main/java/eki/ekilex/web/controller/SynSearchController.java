@@ -50,9 +50,6 @@ public class SynSearchController extends AbstractSearchController {
 
 		initSearchForms(SYN_SEARCH_PAGE, model);
 
-		WordsResult wordsResult = new WordsResult();
-		model.addAttribute("wordsResult", wordsResult);
-
 		return SYN_SEARCH_PAGE;
 	}
 
@@ -91,9 +88,7 @@ public class SynSearchController extends AbstractSearchController {
 		SearchUriData searchUriData = searchHelper.parseSearchUri(SYN_SEARCH_PAGE, searchUri);
 
 		if (!searchUriData.isValid()) {
-			initSearchForms(SYN_SEARCH_PAGE, model);
-			model.addAttribute("wordsResult", new WordsResult());
-			model.addAttribute("noResults", true);
+			model.addAttribute("invalidSearch", Boolean.TRUE);
 			return SYN_SEARCH_PAGE;
 		}
 

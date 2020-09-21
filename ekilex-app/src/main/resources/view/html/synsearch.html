@@ -14,12 +14,15 @@
       </form>
     </div>
   </div>
-  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-hidden">
-    <div class="mt-4 float-left" th:if="${noResults}">
-      <div th:text="#{common.not.found}">Not found.</div>
+  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-hidden" th:with="isSearchResult = ${wordsResult != null}">
+    <div class="mt-4 float-left" th:if="${invalidSearch}">
+      <div th:text="#{lex.search.invalid}"></div>
     </div>
-    <div class="row no-gutters py-3 flex-grow-1 h-100" th:unless="${noResults}">
-      <div class="col-3 pr-2 h-100">
+    <div class="row no-gutters py-3 flex-grow-1 h-100">
+      <div class="col-3 pr-2 h-100" th:if="${isSearchResult}">
+        <div class="mt-4 float-left" th:if="${noResults == true}">
+          <div th:text="#{common.not.found}">Not found.</div>
+        </div>
         <div id="synSearchResultsDiv" class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div th:replace="syncomp :: search_result"></div>
         </div>
@@ -33,7 +36,6 @@
     <div th:data-id="${wordId}" id="syn-details-area" class="h-100">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="navigate-panel card shadow h-100">
-
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="px-2 d-flex flex-row align-items-center py-2">
             <h1 th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mr-3 mb-0">Aktiivne sõna</h1>

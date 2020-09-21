@@ -58,9 +58,6 @@ public class LexSearchController extends AbstractSearchController {
 
 		initSearchForms(LEX_SEARCH_PAGE, model);
 
-		WordsResult wordsResult = new WordsResult();
-		model.addAttribute("wordsResult", wordsResult);
-
 		return LEX_SEARCH_PAGE;
 	}
 
@@ -107,9 +104,7 @@ public class LexSearchController extends AbstractSearchController {
 		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
 
 		if (!searchUriData.isValid()) {
-			initSearchForms(searchPage, model);
-			model.addAttribute("wordsResult", new WordsResult());
-			model.addAttribute("invalidSearch", true);
+			model.addAttribute("invalidSearch", Boolean.TRUE);
 			return LEX_SEARCH_PAGE;
 		}
 

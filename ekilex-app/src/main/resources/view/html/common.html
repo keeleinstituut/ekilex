@@ -22,6 +22,7 @@
 <th:block th:replace="${links}" />
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
+	var fullLexSearchUrl = /*[[${appData.baseUrl + '/lexsearch'}]]*/'/lexsearch';
 </script>
 </head>
 <body>
