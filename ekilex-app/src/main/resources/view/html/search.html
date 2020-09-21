@@ -109,6 +109,14 @@
                     </optgroup>
                   </select>
                 </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'RELATION_TYPE'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                    <option th:each="relType : ${meaningRelationTypes}"
+                            th:value="${relType.code}"
+                            th:selected="${criteria.searchValue == relType.code}"
+                            th:text="${relType.value}">rel type</option>
+                  </select>
+                </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
@@ -283,6 +291,11 @@
                           th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
                           th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                 </optgroup>
+              </select>
+            </div>
+            <div name="RELATION_TYPE" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="relType : ${meaningRelationTypes}" th:value="${relType.code}" th:text="${relType.value}">rel type</option>
               </select>
             </div>
             <div name="SOURCE_REF" class="col-auto flex-grow-1 flex-shrink-1">

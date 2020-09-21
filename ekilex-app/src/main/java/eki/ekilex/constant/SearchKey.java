@@ -21,7 +21,7 @@ public enum SearchKey {
 	LEXEME_POS(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	LEXEME_FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	OD_RECOMMENDATION(SearchOperandConstant.VALUE_OPERANDS, SearchValueType.TEXTUAL),
-	RELATION_TYPE(new SearchOperand[] {SearchOperand.EXISTS}, SearchValueType.TEXTUAL)
+	RELATION_TYPE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL)
 	;
 
 	private SearchOperand[] operands;

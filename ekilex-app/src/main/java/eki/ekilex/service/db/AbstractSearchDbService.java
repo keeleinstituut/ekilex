@@ -21,6 +21,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -85,6 +86,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
+import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
@@ -713,6 +715,28 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return condition;
 	}
 
+	protected Condition applyMeaningRelationFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.RELATION_TYPE)
+						&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
+						&& (crit.getSearchValue() != null))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		for (SearchCriterion criterion : filteredCriteria) {
+			String relTypeCode = criterion.getSearchValue().toString();
+			Condition where1 = mr.MEANING1_ID.eq(meaningIdField)
+					.and(mr.MEANING_REL_TYPE_CODE.eq(relTypeCode));
+			condition = condition.and(DSL.exists(DSL.select(mr.ID).from(mr).where(where1)));
+		}
+		return condition;
+	}
+
 	protected Condition applyLexemeFreeformExistsFilter(FreeformType freeformType, List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
@@ -1005,6 +1029,7 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 				where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = applyDomainFilters(searchCriteria, m1.ID, where1);
 				where1 = applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, where1);
+				where1 = applyMeaningRelationFilters(searchCriteria, m1.ID, where1);
 				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
