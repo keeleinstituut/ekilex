@@ -779,47 +779,6 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 		return where;
 	}
 
-	protected Condition applySecondaryMeaningWordExistsFilter(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.SECONDARY_MEANING_WORD)
-						&& crit.getSearchValue() == null
-						&& (crit.getSearchOperand().equals(SearchOperand.EXISTS) || crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		boolean isNotExistsFilter = filteredCriteria.stream().anyMatch(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = Lexeme.LEXEME.as("l2");
-		Word w1 = Word.WORD.as("w1");
-		Word w2 = Word.WORD.as("w2");
-		Paradigm p2 = Paradigm.PARADIGM.as("p2");
-		Form f2 = Form.FORM.as("f2");
-
-		// TODO in progress - yogesh
-
-		Condition where1 = w1.ID.eq(wordIdField)
-				.and(l1.WORD_ID.eq(w1.ID))
-				.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-				.and(l2.TYPE.eq(LEXEME_TYPE_SECONDARY))
-				.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-				.and(l2.WORD_ID.eq(w2.ID))
-				.and(p2.WORD_ID.eq(w2.ID))
-				.and(f2.PARADIGM_ID.eq(p2.ID))
-				.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
-
-		if (isNotExistsFilter) {
-			where = where.andNotExists(DSL.select(w1.ID).from(w1, l1, l2, p2, f2, w2).where(where1));
-		} else {
-			where = where.andExists(DSL.select(w1.ID).from(w1, l1, l2, p2, f2, w2).where(where1));
-		}
-		return where;
-	}
-
 	protected Condition composeWordOdRecommendationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition condition) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
@@ -926,11 +885,14 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 							.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 					where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
-					where1 = applyValueFilters(SearchKey.SECONDARY_MEANING_WORD, searchCriteria, f2.VALUE, where1, true);
 
-					where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
-
-					// where = applySecondaryMeaningWordExistsFilter(searchCriteria, w1.ID, where);
+					boolean isNotExistsSearch = isNotExistsSearch(SearchKey.SECONDARY_MEANING_WORD, searchCriteria);
+					if (isNotExistsSearch) {
+						where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
+					} else {
+						where1 = applyValueFilters(SearchKey.SECONDARY_MEANING_WORD, searchCriteria, f2.VALUE, where1, true);
+						where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
+					}
 				}
 
 				where = applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, where);
@@ -1159,6 +1121,14 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 	protected boolean containsSearchKeys(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
 		return searchCriteria.stream().map(SearchCriterion::getSearchKey).anyMatch(searchKey -> ArrayUtils.contains(searchKeys, searchKey));
+	}
+
+	protected boolean isNotExistsSearch(SearchKey searchKey, List<SearchCriterion> searchCriteria) {
+
+		return searchCriteria.stream()
+				.anyMatch(crit -> crit.getSearchKey().equals(searchKey)
+						&& crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)
+						&& crit.getSearchValue() == null);
 	}
 
 	protected List<SearchCriterion> filterCriteriaBySearchKey(List<SearchCriterion> searchCriteria, SearchKey searchKey) {
