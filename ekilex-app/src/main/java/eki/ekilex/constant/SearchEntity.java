@@ -15,7 +15,7 @@ public enum SearchEntity {
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
-	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.ID, /* SearchKey.TAG_NAME*/ SearchKey.RELATION_TYPE}),
+	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, /* SearchKey.TAG_NAME*/ SearchKey.RELATION_TYPE}),
 	CONCEPT(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
