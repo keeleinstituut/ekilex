@@ -259,13 +259,17 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 			} else if (SearchEntity.NOTE.equals(searchEntity)) {
 
+				boolean isNotExistsSearch = isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
+
 				// notes
 				Freeform nff3 = FREEFORM.as("nff3");
 				Condition where3 = nff3.TYPE.eq(FreeformType.NOTE.name());
 
-				where3 = applyValueFilters(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3, true);
-				where3 = applyFreeformSourceNameFilter(searchCriteria, nff3.ID, where3);
-				where3 = applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
+				if (!isNotExistsSearch) {
+					where3 = applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, nff3.VALUE_TEXT, where3, true);
+					where3 = applyFreeformSourceNameFilter(searchCriteria, nff3.ID, where3);
+					where3 = applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
+				}
 
 				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
 
@@ -295,7 +299,11 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
 						.asTable("n1");
 
-				wherem = wherem.andExists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID)));
+				if (isNotExistsSearch) {
+					wherem = wherem.andNotExists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID)));
+				} else {
+					wherem = wherem.andExists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID)));
+				}
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 

@@ -1043,14 +1043,16 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 
 			} else if (SearchEntity.NOTE.equals(searchEntity)) {
 
-				// TODO copied from term, maybe refactor? - yogesh
+				boolean isNotExistsSearch = isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
 
 				Freeform nff3 = FREEFORM.as("nff3");
 				Condition where3 = nff3.TYPE.eq(FreeformType.NOTE.name());
 
-				where3 = applyValueFilters(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3, true);
-				where3 = applyFreeformSourceNameFilter(searchCriteria, nff3.ID, where3);
-				where3 = applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
+				if (!isNotExistsSearch) {
+					where3 = applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, nff3.VALUE_TEXT, where3, true);
+					where3 = applyFreeformSourceNameFilter(searchCriteria, nff3.ID, where3);
+					where3 = applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
+				}
 
 				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
 
@@ -1086,6 +1088,8 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 						.where(lff3.LEXEME_ID.eq(l3.ID).and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.asTable("lff2");
 
+				// TODO word note - yogesh
+
 				// notes owners joined
 				Table<Record1<Long>> n1 = DSL
 						.select(DSL.coalesce(mff2.field("word_id", Long.class), DSL.coalesce(dff2.field("word_id"), lff2.field("word_id"))).as("word_id"))
@@ -1095,7 +1099,11 @@ public abstract class AbstractSearchDbService extends AbstractDataDbService {
 								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
 						.asTable("n1");
 
-				where = where.andExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
+				if (isNotExistsSearch) {
+					where = where.andNotExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
+				} else {
+					where = where.andExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
+				}
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
