@@ -26,12 +26,16 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Record16;
+import org.jooq.Record8;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
@@ -67,9 +71,17 @@ import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
+import eki.ekilex.service.db.util.LexSearchConditionComposer;
+import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
-public class LexSearchDbService extends AbstractSearchDbService {
+public class LexSearchDbService extends AbstractDataDbService {
+
+	@Autowired
+	private LexSearchConditionComposer lexSearchConditionComposer;
+
+	@Autowired
+	private SearchFilterHelper searchFilterHelper;
 
 	public List<eki.ekilex.data.Word> getWords(
 			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
@@ -78,7 +90,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
-		Condition wordCondition = createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
+		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
 		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 	}
@@ -87,7 +99,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Word w1 = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
-		Condition wordCondition = createSearchCondition(w1, searchFilter.getCriteriaGroups(), searchDatasetsRestriction);
+		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchFilter.getCriteriaGroups(), searchDatasetsRestriction);
 
 		return count(w1, p, wordCondition);
 	}
@@ -98,7 +110,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createSearchCondition(word, paradigm, searchWordCrit, searchDatasetsRestriction);
+		Condition where = lexSearchConditionComposer.createSearchCondition(word, paradigm, searchWordCrit, searchDatasetsRestriction);
 
 		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 	}
@@ -107,7 +119,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
+		Condition where = lexSearchConditionComposer.createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
 
 		return count(word, paradigm, where);
 	}
@@ -190,7 +202,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
-		Condition dsWhere = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
+		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		Field<String[]> lff = DSL
 				.select(DSL.arrayAgg(DSL.concat(
@@ -637,5 +649,114 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
+	}
+
+	private List<eki.ekilex.data.Word> execute(
+			Word w1, Paradigm p1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction,
+			DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
+
+		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
+
+		Lexeme l = LEXEME.as("l");
+		LexemeTag lt = LEXEME_TAG.as("lt");
+		Form f1 = FORM.as("f1");
+		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
+		Field<String> wv = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
+		Field<String> wvp = DSL.field("array_to_string(array_agg(distinct f1.value_prese), ',', '*')").cast(String.class);
+
+		Table<Record8<Long, String, String, Integer, String, String, String, String>> w = DSL
+				.select(
+						w1.ID.as("word_id"),
+						wv.as("word_value"),
+						wvp.as("word_value_prese"),
+						w1.HOMONYM_NR,
+						w1.LANG,
+						w1.WORD_CLASS,
+						w1.GENDER_CODE,
+						w1.ASPECT_CODE)
+				.from(from)
+				.where(where)
+				.groupBy(w1.ID)
+				.asTable("w");
+
+		Field<String[]> wtf = getWordTypesField(w.field("word_id", Long.class));
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w.field("word_id", Long.class));
+		Field<Boolean> wtz = getWordIsForeignField(w.field("word_id", Long.class));
+
+		Field<String[]> lxvsf;
+		Field<Boolean> lxpsf;
+		Field<String[]> lxtnf;
+		if (userRole == null) {
+			lxvsf = DSL.field(DSL.val(new String[0]));
+			lxpsf = DSL.field(DSL.val((Boolean) null));
+			lxtnf = DSL.field(DSL.val(new String[0]));
+		} else {
+			String userRoleDatasetCode = userRole.getDatasetCode();
+			lxvsf = DSL.field(DSL
+					.select(DSL.arrayAggDistinct(l.VALUE_STATE_CODE))
+					.from(l)
+					.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+							.and(l.DATASET_CODE.eq(userRoleDatasetCode))
+							.and(l.VALUE_STATE_CODE.isNotNull()))
+					.groupBy(w.field("word_id")));
+			lxpsf = DSL.field(DSL
+					.select(DSL.field(DSL.val(PUBLICITY_PUBLIC).eq(DSL.all(DSL.arrayAggDistinct(l.IS_PUBLIC)))))
+					.from(l)
+					.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+							.and(l.DATASET_CODE.eq(userRoleDatasetCode)))
+					.groupBy(w.field("word_id")));
+
+			if (CollectionUtils.isEmpty(tagNames)) {
+				lxtnf = DSL.field(DSL.val(new String[0]));
+			} else {
+				lxtnf = DSL.field(DSL
+						.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
+						.from(l
+								.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID).and(lt.TAG_NAME.in(tagNames))))
+						.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(l.DATASET_CODE.eq(userRoleDatasetCode)))
+						.groupBy(w.field("word_id")));
+			}
+		}
+
+		Field<String[]> dscf = DSL.field(DSL
+				.select(DSL.arrayAggDistinct(l.DATASET_CODE))
+				.from(l)
+				.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
+						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l.DATASET_CODE.in(availableDatasetCodes)))
+				.groupBy(w.field("word_id")));
+
+		Table<Record16<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[]>> ww = DSL
+				.select(
+						w.field("word_id", Long.class),
+						w.field("word_value", String.class),
+						w.field("word_value_prese", String.class),
+						w.field("homonym_nr", Integer.class),
+						w.field("lang", String.class),
+						w.field("word_class", String.class),
+						w.field("gender_code", String.class),
+						w.field("aspect_code", String.class),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						lxpsf.as("lexemes_are_public"),
+						lxvsf.as("lexemes_value_state_codes"),
+						lxtnf.as("lexemes_tag_names"),
+						dscf.as("dataset_codes"))
+				.from(w)
+				.orderBy(
+						w.field("word_value"),
+						w.field("homonym_nr"))
+				.asTable("ww");
+
+		if (fetchAll) {
+			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
+		} else {
+			return create.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);
+		}
 	}
 }

@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -55,9 +56,13 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
-public class SourceDbService extends AbstractSearchDbService {
+public class SourceDbService implements GlobalConstant {
+
+	@Autowired
+	private SearchFilterHelper searchFilterHelper;
 
 	private DSLContext create;
 
@@ -160,10 +165,10 @@ public class SourceDbService extends AbstractSearchDbService {
 			if (SearchEntity.SOURCE.equals(searchEntity)) {
 				boolean containsSearchKeys;
 
-				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.VALUE);
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.VALUE);
 				if (containsSearchKeys) {
 					Condition innerWhere = sffc.SOURCE_ID.eq(s.ID).and(sffc.FREEFORM_ID.eq(spc.ID));
-					innerWhere = applyValueFilters(SearchKey.VALUE, searchCriteria, spc.VALUE_TEXT, innerWhere, true);
+					innerWhere = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, spc.VALUE_TEXT, innerWhere, true);
 
 					Condition whereExists = DSL.exists(DSL
 							.select(sffc.ID)
@@ -173,7 +178,7 @@ public class SourceDbService extends AbstractSearchDbService {
 					where = where.and(whereExists);
 				}
 
-				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.DATASET_USAGE);
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.DATASET_USAGE);
 				if (containsSearchKeys) {
 					where = applySourceLinkDatasetFilters(searchCriteria, where);
 				}
