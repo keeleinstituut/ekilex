@@ -41,6 +41,7 @@ import org.jooq.Record4;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.jooq.util.postgres.PostgresDSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -67,10 +68,14 @@ import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
 import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
+import eki.ekilex.service.db.util.SearchFilterHelper;
 
 //associated data lookup for complex business functions
 @Component
-public class LookupDbService extends AbstractSearchDbService {
+public class LookupDbService extends AbstractDataDbService {
+
+	@Autowired
+	private SearchFilterHelper searchFilterHelper;
 
 	public Long getWordWordTypeId(Long wordId, String typeCode) {
 		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
@@ -432,7 +437,7 @@ public class LookupDbService extends AbstractSearchDbService {
 			whereFormValue = DSL.lower(f.VALUE).equal(maskedSearchFilter);
 		}
 
-		Condition whereLexemeDataset = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
+		Condition whereLexemeDataset = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		Condition whereExcludeMeaningId = DSL.noCondition();
 		if (excludedMeaningId != null) {
