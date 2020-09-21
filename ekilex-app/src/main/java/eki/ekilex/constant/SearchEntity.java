@@ -6,13 +6,16 @@ import static java.util.Arrays.asList;
 
 public enum SearchEntity {
 
-	HEADWORD(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
+	HEADWORD(new SearchKey[] {
+			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.CREATED_OR_UPDATED_BY,
+			SearchKey.CREATED_OR_UPDATED_ON, SearchKey.SECONDARY_MEANING_WORD, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_POS,
+			SearchKey.OD_RECOMMENDATION, SearchKey.LEXEME_FREQUENCY}),
 	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
-	TERM(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, /*SearchKey.TAG_NAME, */SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
+	TERM(new SearchKey[] {SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, /*SearchKey.TAG_NAME, */SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
-	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID/*, SearchKey.TAG_NAME*/}),
+	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.ID, /* SearchKey.TAG_NAME*/ SearchKey.RELATION_TYPE}),
 	CONCEPT(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
@@ -32,7 +35,7 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getLexEntities() {
-		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, CLUELESS);
+		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, NOTE, CLUELESS);
 	}
 
 	public static List<SearchEntity> getTermEntities() {
