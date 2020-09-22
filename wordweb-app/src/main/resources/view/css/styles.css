@@ -16545,13 +16545,6 @@ body.hidden-scroll {
   border-radius: 10px;
 }
 
-@media (max-width: 767.98px) {
-  .dropdown-aside .dropdown-menu {
-    max-height: 350px;
-    overflow-y: scroll;
-  }
-}
-
 @media (max-width: 991.98px) {
   .dropdown-aside .dropdown-toggle {
     border: solid 2px #8996a4;
@@ -16586,6 +16579,13 @@ body.hidden-scroll {
 @media (max-width: 991.98px) {
   .dropdown-aside .dropdown-menu {
     padding: 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .dropdown-aside .dropdown-menu {
+    max-height: 350px;
+    overflow-y: scroll;
   }
 }
 
