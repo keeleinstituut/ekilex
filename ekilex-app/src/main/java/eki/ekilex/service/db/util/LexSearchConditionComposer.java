@@ -318,31 +318,34 @@ public class LexSearchConditionComposer implements GlobalConstant {
 
 				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
 
-				Lexeme ltemp = LEXEME.as("ltemp");
-				Meaning mtemp = MEANING.as("mtemp");
+				Lexeme l3 = LEXEME.as("l3");
+				Meaning m3 = MEANING.as("m3");
+				Definition d3 = DEFINITION.as("d3");
 
 				// notes owner #1
 				MeaningFreeform mff3 = MEANING_FREEFORM.as("mff3");
 				Table<Record2<Long, Long>> mff2 = DSL
-						.select(ltemp.WORD_ID, mff3.FREEFORM_ID)
-						.from(ltemp, mff3, mtemp)
-						.where(mff3.MEANING_ID.eq(mtemp.ID).and(ltemp.MEANING_ID.eq(mtemp.ID)))
+						.select(l3.WORD_ID, mff3.FREEFORM_ID)
+						.from(l3, mff3, m3)
+						.where(
+								mff3.MEANING_ID.eq(m3.ID)
+										.and(l3.MEANING_ID.eq(m3.ID))
+										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.asTable("mff2");
 
 				// notes owner #2
-				Definition d3 = DEFINITION.as("d3");
 				DefinitionFreeform dff3 = DEFINITION_FREEFORM.as("dff3");
 				Table<Record2<Long, Long>> dff2 = DSL
-						.select(ltemp.WORD_ID, dff3.FREEFORM_ID)
-						.from(ltemp, dff3, mtemp, d3)
+						.select(l3.WORD_ID, dff3.FREEFORM_ID)
+						.from(l3, dff3, m3, d3)
 						.where(
 								dff3.DEFINITION_ID.eq(d3.ID)
-										.and(d3.MEANING_ID.eq(mtemp.ID))
-										.and(ltemp.MEANING_ID.eq(mtemp.ID)))
+										.and(d3.MEANING_ID.eq(m3.ID))
+										.and(l3.MEANING_ID.eq(m3.ID))
+										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.asTable("dff2");
 
 				// notes owner #3
-				Lexeme l3 = LEXEME.as("l3");
 				LexemeFreeform lff3 = LEXEME_FREEFORM.as("lff3");
 				Table<Record2<Long, Long>> lff2 = DSL
 						.select(l3.WORD_ID, lff3.FREEFORM_ID)
@@ -350,12 +353,14 @@ public class LexSearchConditionComposer implements GlobalConstant {
 						.where(lff3.LEXEME_ID.eq(l3.ID).and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.asTable("lff2");
 
-				// TODO word note - yogesh
+				// notes owner #4
+				WordFreeform wff2 = WORD_FREEFORM.as("wff2");
 
 				// notes owners joined
 				Table<Record1<Long>> n1 = DSL
-						.select(DSL.coalesce(mff2.field("word_id", Long.class), DSL.coalesce(dff2.field("word_id"), lff2.field("word_id"))).as("word_id"))
+						.select(DSL.coalesce(wff2.WORD_ID, mff2.field("word_id", Long.class), dff2.field("word_id"), lff2.field("word_id")).as("word_id"))
 						.from(n2
+								.leftOuterJoin(wff2).on(wff2.FREEFORM_ID.eq(n2.field("freeform_id", Long.class)))
 								.leftOuterJoin(mff2).on(mff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
 								.leftOuterJoin(dff2).on(dff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
 								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
