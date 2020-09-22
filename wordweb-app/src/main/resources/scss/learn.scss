@@ -1,3 +1,23 @@
+.learn {
+  .learn-content {
+    margin: 16px 32px;
+
+    @include media-breakpoint-down(md) {
+      margin: 12px 8px;
+
+      ul {
+        padding-left: 20px;
+      }
+    }
+
+    ul {
+      li {
+        margin-bottom: 8px;
+      }
+    }
+  }
+}
+
 .learn-container {
   margin: 32px auto;
   scroll-behavior: smooth;
@@ -152,24 +172,6 @@
     @include border-bottom-left-radius(16px);
 
     margin-top: 16px;
-  }
-}
-
-.learn-content {
-  margin: 16px 32px;
-
-  @include media-breakpoint-down(md) {
-    margin: 12px 8px;
-
-    ul {
-      padding-left: 20px;
-    }
-  }
-
-  ul {
-    li {
-      margin-bottom: 8px;
-    }
   }
 }
 

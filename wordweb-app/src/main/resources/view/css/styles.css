@@ -18084,6 +18084,23 @@ eki-link {
   /* cursor: pointer; */
 }
 
+.learn .learn-content {
+  margin: 16px 32px;
+}
+
+@media (max-width: 991.98px) {
+  .learn .learn-content {
+    margin: 12px 8px;
+  }
+  .learn .learn-content ul {
+    padding-left: 20px;
+  }
+}
+
+.learn .learn-content ul li {
+  margin-bottom: 8px;
+}
+
 .learn-container {
   margin: 32px auto;
   scroll-behavior: smooth;
@@ -18248,23 +18265,6 @@ eki-link {
     border-bottom-left-radius: 16px;
     margin-top: 16px;
   }
-}
-
-.learn-content {
-  margin: 16px 32px;
-}
-
-@media (max-width: 991.98px) {
-  .learn-content {
-    margin: 12px 8px;
-  }
-  .learn-content ul {
-    padding-left: 20px;
-  }
-}
-
-.learn-content ul li {
-  margin-bottom: 8px;
 }
 
 .learn-content-border-bottom::after {
