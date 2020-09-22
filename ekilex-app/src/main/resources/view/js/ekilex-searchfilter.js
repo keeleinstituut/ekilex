@@ -130,6 +130,15 @@ function initialiseDetailSearch() {
 		} else if (searchKey == 'SOURCE_REF' && searchOperand == 'NOT_EXISTS') {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'VALUE_AND_EXISTS' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'SECONDARY_MEANING_WORD' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'LEXEME_GRAMMAR' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
 		} else {
 			searchValueElement.prop('hidden', false);
 			replaceSearchValueElement(searchKey, searchValueElement);

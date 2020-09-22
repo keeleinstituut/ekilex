@@ -20,6 +20,7 @@
         <th:block th:replace="::detail_search(${searchPageName})"></th:block>
         <th:block th:replace="::simple_search"></th:block>
       </div>
+      <button type="button" id="share-details-link" class="btn btn-light ml-2">Kopeeri</button>
     </div>
     <script th:inline="javascript">
 		initialiseSearchForm()
@@ -85,7 +86,7 @@
                             th:text="${language.value}">language</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG'}">
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
                     <option value="" selected>Kõik sildid</option>
                     <option th:each="tag : ${tags}"
@@ -109,10 +110,24 @@
                     </optgroup>
                   </select>
                 </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'RELATION_TYPE'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                    <option th:each="relType : ${meaningRelationTypes}"
+                            th:value="${relType.code}"
+                            th:selected="${criteria.searchValue == relType.code}"
+                            th:text="${relType.value}">rel type</option>
+                  </select>
+                </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE_AND_EXISTS'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ID'}">
                   <input type="text" class="form-control"
@@ -177,6 +192,42 @@
                             th:text="${dataset.name}">language</option>
                   </select>
                 </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SECONDARY_MEANING_WORD'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLICITY'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                    <option value="true" th:selected="${criteria.searchValue == 'true'}">avalik</option>
+                    <option value="false" th:selected="${criteria.searchValue == 'false'}">mitteavalik</option>
+                  </select>
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'OD_RECOMMENDATION'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GRAMMAR'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                    <option th:each="pos : ${allLexemePos}"
+                            th:value="${pos.code}"
+                            th:selected="${criteria.searchValue == pos.code}"
+                            th:text="${pos.value}">pos</option>
+                  </select>
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_FREQUENCY'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                </div>
                 <div class="col-auto">
                   <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
@@ -224,6 +275,9 @@
             <div name="VALUE" class="col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
+            <div name="VALUE_AND_EXISTS" class="col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
             <div name="ID" class="col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
@@ -233,7 +287,7 @@
                 <option th:each="language : ${allLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
               </select>
             </div>
-            <div name="TAG" class="col-auto flex-grow-1 flex-shrink-1">
+            <div name="TAG_NAME" class="col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option value="" selected>Kõik sildid</option>
                 <option th:each="tag : ${tags}" th:value="${tag}" th:text="${tag}">Täääg</option>
@@ -248,6 +302,11 @@
                           th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
                           th:title="${domain.origin + ' - ' + domain.code + ' - ' + domain.value}">domain</option>
                 </optgroup>
+              </select>
+            </div>
+            <div name="RELATION_TYPE" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="relType : ${meaningRelationTypes}" th:value="${relType.code}" th:text="${relType.value}">rel type</option>
               </select>
             </div>
             <div name="SOURCE_REF" class="col-auto flex-grow-1 flex-shrink-1">
@@ -293,6 +352,29 @@
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="dataset : ${userVisibleDatasets}" th:value="${dataset.code}" th:text="${dataset.name}">dataset</option>
               </select>
+            </div>
+            <div name="SECONDARY_MEANING_WORD" class="col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
+            <div name="PUBLICITY" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-style="btn-outline-secondary">
+                <option value="true">avalik</option>
+                <option value="false">mitteavalik</option>
+              </select>
+            </div>
+            <div name="OD_RECOMMENDATION" class="col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
+            <div name="LEXEME_GRAMMAR" class="col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
+            <div name="LEXEME_POS" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
+              </select>
+            </div>
+            <div name="LEXEME_FREQUENCY" class="col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
             </div>
           </div>
         </div>

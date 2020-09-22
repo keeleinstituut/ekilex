@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import eki.common.data.AppData;
 
@@ -33,11 +34,12 @@ public class AppDataHolder {
 			return appData;
 		}
 
+		String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+		boolean isDevEnv = StringUtils.isNotEmpty(envName);
 		long sessionTimeoutSec = sessionTimeout.getSeconds();
 
-		boolean isDevEnv = StringUtils.isNotEmpty(envName);
-
 		appData = new AppData();
+		appData.setBaseUrl(baseUrl);
 		appData.setDevEnv(isDevEnv);
 		appData.setEnvName(envName);
 		appData.setAppName(appName);
