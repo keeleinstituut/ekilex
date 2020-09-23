@@ -12,7 +12,9 @@
         data-plugin="paneToggle"
         data-hideable="searchColumn"
         data-extendable="resultColumn"
-        class="searchResultsToggle"><i class="fa fa-list" aria-hidden="true"></i></div>
+        class="searchResultsToggle">
+        <i class="fa fa-list" aria-hidden="true"></i>
+      </div>
       <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
       <input type="hidden" id="isSearchFilterValid" value="false">
       <div class="flex-shrink-0 flex-grow-0 pr-2" th:if="${!#lists.isEmpty(allDatasets) && showDatasetSelect}" th:insert="~{::dataset_select}"></div>
@@ -20,7 +22,9 @@
         <th:block th:replace="::detail_search(${searchPageName})"></th:block>
         <th:block th:replace="::simple_search"></th:block>
       </div>
-      <button type="button" id="share-details-link" class="btn btn-light ml-2">Kopeeri</button>
+      <div class="d-flex flex-row align-items-center" th:if="${searchPageName == 'lex_search'}">
+        <button type="button" id="share-details-link" class="btn btn-light ml-2">Kopeeri</button>
+      </div>
     </div>
     <script th:inline="javascript">
 		initialiseSearchForm()
@@ -173,6 +177,18 @@
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_ON'}">
+                  <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                    <input type="text" class="form-control"
+                           th:value="${criteria.searchValue}"
+                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                    <div class="input-group-addon input-group-append">
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar fa-lg"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
@@ -338,6 +354,18 @@
             </div>
             <div class="col-auto flex-grow-1 flex-shrink-1">
               <div name="CREATED_ON" class="col-auto flex-grow-0 px-0">
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" class="form-control">
+                  <div class="input-group-addon input-group-append">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-auto flex-grow-1 flex-shrink-1">
+              <div name="UPDATED_ON" class="col-auto flex-grow-0 px-0">
                 <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                   <input type="text" class="form-control">
                   <div class="input-group-addon input-group-append">

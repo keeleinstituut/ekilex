@@ -1,5 +1,6 @@
 package eki.ekilex.service.db.util;
 
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -8,15 +9,13 @@ import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
+import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -30,16 +29,17 @@ import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.SelectHavingStep;
-import org.jooq.SelectOrderByStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityFunct;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.LifecycleLogOwner;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -48,6 +48,7 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
@@ -56,18 +57,16 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
-import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordLifecycleLog;
+import eki.ekilex.data.db.tables.WordActivityLog;
 
 @Component
-public class TermSearchConditionComposer implements GlobalConstant {
+public class TermSearchConditionComposer implements GlobalConstant, ActivityFunct {
 
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
@@ -112,6 +111,7 @@ public class TermSearchConditionComposer implements GlobalConstant {
 
 				wherew = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wherew, false);
+				wherew = applyWordActivityLogFilters(searchCriteria, w1.ID, wherew);
 
 				wherel = searchFilterHelper.applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
@@ -120,8 +120,7 @@ public class TermSearchConditionComposer implements GlobalConstant {
 
 				wherem = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyDomainFilters(searchCriteria, m1.ID, wherem);
-				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_ON, searchCriteria, searchDatasetsRestriction, m1, wherem);
-				wherem = composeMeaningLifecycleLogFilters(SearchKey.CREATED_OR_UPDATED_BY, searchCriteria, searchDatasetsRestriction, m1, wherem);
+				wherem = applyMeaningActivityLogFilters(searchCriteria, m1.ID, wherem);
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
 
@@ -337,55 +336,6 @@ public class TermSearchConditionComposer implements GlobalConstant {
 		return wm;
 	}
 
-	@Deprecated
-	private Condition composeMeaningLifecycleLogFilters(
-			SearchKey searchKey, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Meaning m1, Condition wherem1) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return wherem1;
-		}
-
-		Lexeme l1 = LEXEME.as("l1");
-		Word w1 = WORD.as("w1");
-		MeaningLifecycleLog mll = MEANING_LIFECYCLE_LOG.as("mll");
-		LexemeLifecycleLog lll = LEXEME_LIFECYCLE_LOG.as("lll");
-		WordLifecycleLog wll = WORD_LIFECYCLE_LOG.as("wll");
-		LifecycleLog ll = LIFECYCLE_LOG.as("ll");
-
-		Condition condmll = mll.LIFECYCLE_LOG_ID.eq(ll.ID);
-		Condition condlll = lll.LEXEME_ID.eq(l1.ID).and(lll.LIFECYCLE_LOG_ID.eq(ll.ID));
-		condlll = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, condlll);
-		Condition condwll = wll.WORD_ID.eq(w1.ID).and(wll.LIFECYCLE_LOG_ID.eq(ll.ID)).and(l1.WORD_ID.eq(w1.ID));
-		condwll = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, condwll);
-
-		Field<?> searchField = null;
-		boolean isOnLowerValue = false;
-		if (searchKey.equals(SearchKey.CREATED_OR_UPDATED_ON)) {
-			searchField = ll.EVENT_ON;
-			isOnLowerValue = false;
-		} else if (searchKey.equals(SearchKey.CREATED_OR_UPDATED_BY)) {
-			searchField = ll.EVENT_BY;
-			isOnLowerValue = true;
-		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			condmll = searchFilterHelper.applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condmll, isOnLowerValue);
-			condlll = searchFilterHelper.applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condlll, isOnLowerValue);
-			condwll = searchFilterHelper.applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), searchField, condwll, isOnLowerValue);
-		}
-
-		SelectOrderByStep<Record1<Long>> mlwSelect = DSL
-				.select(mll.MEANING_ID).from(ll, mll).where(condmll)
-				.unionAll(DSL.select(l1.MEANING_ID).from(ll, lll, l1).where(condlll))
-				.unionAll(DSL.select(l1.MEANING_ID).from(ll, wll, l1, w1).where(condwll));
-
-		return wherem1.and(m1.ID.in(mlwSelect));
-	}
-
 	private Condition composeCluelessSourceFilter(Meaning m1, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Condition wherem) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterSourceRefCriteria(searchCriteria);
@@ -570,4 +520,93 @@ public class TermSearchConditionComposer implements GlobalConstant {
 		return wherem;
 	}
 
+	private Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition wherew) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchValue() != null)
+				.filter(crit -> {
+					if (SearchKey.CREATED_OR_UPDATED_BY.equals(crit.getSearchKey())) {
+						return true;
+					}
+					if (SearchKey.UPDATED_ON.equals(crit.getSearchKey())) {
+						return true;
+					}
+					return false;
+				})
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return wherew;
+		}
+
+		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		Condition where1 = wal.WORD_ID.eq(wordIdField).and(wal.ACTIVITY_LOG_ID.eq(al.ID));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			String critValue = criterion.getSearchValue().toString();
+			if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
+				where1 = where1
+						.and(al.OWNER_NAME.in(LifecycleLogOwner.WORD.name(), LifecycleLogOwner.LEXEME.name()))
+						.andNot(al.ENTITY_NAME.eq(ActivityEntity.GRAMMAR.name()))
+						.andNot(al.FUNCT_NAME.eq(JOIN).and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name())))
+						.andNot(al.FUNCT_NAME.eq(JOIN_WORDS));
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+			}
+		}
+		wherew = wherew.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
+		return wherew;
+	}
+
+	private Condition applyMeaningActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition wherem) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchValue() != null)
+				.filter(crit -> {
+					if (SearchKey.CREATED_OR_UPDATED_BY.equals(crit.getSearchKey())) {
+						return true;
+					}
+					if (SearchKey.UPDATED_ON.equals(crit.getSearchKey())) {
+						return true;
+					}
+					if (SearchKey.CREATED_ON.equals(crit.getSearchKey())) {
+						return true;
+					}
+					return false;
+				})
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return wherem;
+		}
+
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		Condition where1 = mal.MEANING_ID.eq(meaningIdField).and(mal.ACTIVITY_LOG_ID.eq(al.ID));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			String critValue = criterion.getSearchValue().toString();
+			if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
+				where1 = where1
+						.andNot(al.ENTITY_NAME.eq(ActivityEntity.GRAMMAR.name()))
+						.andNot(al.FUNCT_NAME.eq(JOIN).and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name())))
+						.andNot(al.FUNCT_NAME.eq(JOIN_WORDS))
+						.andNot(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()).and(al.FUNCT_NAME.eq(CREATE)));
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
+				where1 = where1
+						.and(al.OWNER_NAME.eq(LifecycleLogOwner.MEANING.name()))
+						.and(al.OWNER_ID.eq(meaningIdField))
+						.and(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
+						.and(al.FUNCT_NAME.eq(CREATE));
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+			}
+		}
+		wherem = wherem.andExists(DSL.select(mal.ID).from(mal, al).where(where1));
+		return wherem;
+	}
 }
