@@ -223,6 +223,18 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					}
 				}
 
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
+
+				if (containsSearchKeys) {
+					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+							.and(l2.WORD_ID.eq(w2.ID))
+							.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY));
+					where1 = applyWordActivityLogFilters(searchCriteria, w2.ID, where1);
+					where = where.andExists(DSL.select(l1.ID).from(l1, l2, w2).where(where1));
+				}
+
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
 
 				where = searchFilterHelper.applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, w1, where);
