@@ -132,12 +132,18 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				Definition d1 = DEFINITION.as("d1");
 
 				Condition whered1 = d1.MEANING_ID.eq(m1.ID);
-				whered1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, whered1, true);
-				whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, whered1, false);
-				whered1 = searchFilterHelper.applyDefinitionSourceNameFilter(searchCriteria, d1.ID, whered1);
-				whered1 = searchFilterHelper.applyDefinitionSourceRefFilter(searchCriteria, d1.ID, whered1);
 
-				wherem = wherem.andExists(DSL.select(d1.ID).from(d1).where(whered1));
+				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
+				if (isNotExistsSearch) {
+					wherem = wherem.andNotExists(DSL.select(d1.ID).from(d1).where(whered1));
+				} else {
+					whered1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, whered1, true);
+					whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, whered1, false);
+					whered1 = searchFilterHelper.applyDefinitionSourceNameFilter(searchCriteria, d1.ID, whered1);
+					whered1 = searchFilterHelper.applyDefinitionSourceRefFilter(searchCriteria, d1.ID, whered1);
+
+					wherem = wherem.andExists(DSL.select(d1.ID).from(d1).where(whered1));
+				}
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
@@ -148,21 +154,25 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 						.and(l1ff.FREEFORM_ID.eq(u1.ID))
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
 
-				whereff1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, whereff1, true);
-				whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, whereff1, false);
-				whereff1 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, u1.ID, whereff1);
-				whereff1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, whereff1);
+				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
+				if (isNotExistsSearch) {
+					wherel = wherel.andNotExists(DSL.select(l1ff.ID).from(l1ff, u1).where(whereff1));
+				} else {
+					whereff1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, whereff1, true);
+					whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, whereff1, false);
+					whereff1 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, u1.ID, whereff1);
+					whereff1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, whereff1);
 
-				wherel = wherel.andExists(DSL.select(l1ff.ID).from(l1ff, u1).where(whereff1));
+					wherel = wherel.andExists(DSL.select(l1ff.ID).from(l1ff, u1).where(whereff1));
+				}
 
 			} else if (SearchEntity.NOTE.equals(searchEntity)) {
-
-				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
 
 				// notes
 				Freeform nff3 = FREEFORM.as("nff3");
 				Condition where3 = nff3.TYPE.eq(FreeformType.NOTE.name());
 
+				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
 				if (!isNotExistsSearch) {
 					where3 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, nff3.VALUE_TEXT, where3, true);
 					where3 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, nff3.ID, where3);
