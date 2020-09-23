@@ -42,8 +42,8 @@
   @include border-top-left-radius(10px);
 
   @include media-breakpoint-up(md) {
+    height: calc(100vh - 100px);
     overflow-y: scroll;
-    height: calc(100vh - 100px);  
   }
 
   @include media-breakpoint-down(md) {

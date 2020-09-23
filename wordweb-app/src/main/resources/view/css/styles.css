@@ -18099,8 +18099,8 @@ eki-link {
 
 @media (min-width: 768px) {
   .learn-container-menu {
-    overflow-y: scroll;
     height: calc(100vh - 100px);
+    overflow-y: scroll;
   }
 }
 
