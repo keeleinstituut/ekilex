@@ -139,6 +139,9 @@ function initialiseDetailSearch() {
 		} else if (searchKey == 'LEXEME_GRAMMAR' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'OD_RECOMMENDATION' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
 		} else {
 			searchValueElement.prop('hidden', false);
 			replaceSearchValueElement(searchKey, searchValueElement);

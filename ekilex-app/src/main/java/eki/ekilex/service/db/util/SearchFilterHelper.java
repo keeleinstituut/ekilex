@@ -5,7 +5,6 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
@@ -35,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -234,21 +232,21 @@ public class SearchFilterHelper implements GlobalConstant {
 		return m1Where;
 	}
 
-	protected Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition condition) throws Exception {
+	public Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition condition) throws Exception {
 
 		Lexeme l1 = Lexeme.LEXEME.as("l1");
 		Condition where1 = l1.WORD_ID.eq(w1.ID);
 		return applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, l1, where1, condition);
 	}
 
-	protected Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Meaning m1, Condition condition) throws Exception {
+	public Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Meaning m1, Condition condition) throws Exception {
 
 		Lexeme l1 = Lexeme.LEXEME.as("l1");
 		Condition where1 = l1.MEANING_ID.eq(m1.ID);
 		return applyLexemeTagFilters(searchCriteria, searchDatasetsRestriction, l1, where1, condition);
 	}
 
-	protected Condition applyLexemeTagFilters(
+	public Condition applyLexemeTagFilters(
 			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Lexeme l1, Condition where1, Condition where) throws Exception {
 
 		List<SearchCriterion> tagNameEqualsCrit = searchCriteria.stream()
@@ -286,7 +284,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where;
 	}
 
-	protected Condition applyLexemeActivityLogFilters(
+	public Condition applyLexemeActivityLogFilters(
 			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, ActivityEntity entityName, Meaning m1, Condition wherem1) throws Exception {
 
 		Lexeme l1 = Lexeme.LEXEME.as("l1");
@@ -294,7 +292,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, entityName, l1, where1, wherem1);
 	}
 
-	protected Condition applyLexemeActivityLogFilters(
+	public Condition applyLexemeActivityLogFilters(
 			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, ActivityEntity entityName, Word w1, Condition wherew1) throws Exception {
 
 		Lexeme l1 = Lexeme.LEXEME.as("l1");
@@ -302,7 +300,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return applyLexemeActivityLogFilters(searchCriteria, searchDatasetsRestriction, entityName, l1, where1, wherew1);
 	}
 
-	protected Condition applyLexemeActivityLogFilters(
+	private Condition applyLexemeActivityLogFilters(
 			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, ActivityEntity entityName, Lexeme l1, Condition where1, Condition where) throws Exception {
 
 		List<SearchCriterion> tagActivityLogCrit = searchCriteria.stream()
@@ -359,7 +357,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where.andExists(DSL.select(lal.ID).from(l1, lal, al).where(where1));
 	}
 
-	protected Condition applyLexemePosFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
+	public Condition applyLexemePosFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.LEXEME_POS)
@@ -381,7 +379,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	protected Condition applyLexemeFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
+	public Condition applyLexemeFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.LEXEME_FREQUENCY)
@@ -425,7 +423,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	protected Condition applyLexemeGrammarFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
+	public Condition applyLexemeGrammarFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_GRAMMAR))
@@ -456,7 +454,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	protected Condition applyPublicityFilters(List<SearchCriterion> searchCriteria, Field<Boolean> lexemeIsPublicField, Condition condition) {
+	public Condition applyPublicityFilters(List<SearchCriterion> searchCriteria, Field<Boolean> lexemeIsPublicField, Condition condition) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.PUBLICITY)
@@ -500,7 +498,7 @@ public class SearchFilterHelper implements GlobalConstant {
 	public Condition applyWordOdRecommendationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition condition) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.OD_RECOMMENDATION) && c.getSearchValue() != null)
+				.filter(c -> c.getSearchKey().equals(SearchKey.OD_RECOMMENDATION))
 				.collect(toList());
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
@@ -513,10 +511,17 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(wff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
 
-		for (SearchCriterion criterion : filteredCriteria) {
-			wordFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, wordFreeformCondition, true);
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.OD_RECOMMENDATION, searchCriteria);
+		if (isNotExistsSearch) {
+			condition = condition.and(DSL.notExists(DSL.select(wff.ID).from(wff, ff).where(wordFreeformCondition)));
+			return condition;
 		}
 
+		for (SearchCriterion criterion : filteredCriteria) {
+			if (criterion.getSearchValue() != null) {
+				wordFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, wordFreeformCondition, true);
+			}
+		}
 		condition = condition.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
 		return condition;
 	}
@@ -628,49 +633,6 @@ public class SearchFilterHelper implements GlobalConstant {
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
 	}
-
-	public Condition applyLexemeFreeformExistsFilter(FreeformType freeformType, List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.VALUE)
-						&& crit.getSearchValue() == null
-						&& (crit.getSearchOperand().equals(SearchOperand.EXISTS) || crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)))
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		boolean isNotExistsFilter = filteredCriteria.stream().anyMatch(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
-
-		Lexeme l1 = LEXEME.as("l1");
-		LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
-		Freeform ff1 = FREEFORM.as("ff1");
-
-		Table<Record2<Long, Integer>> lexff = DSL
-				.select(l1.ID.as("lexeme_id"), DSL.count(ff1.ID).as("ff_count"))
-				.from(
-						l1
-								.leftOuterJoin(l1ff).on(l1ff.LEXEME_ID.eq(l1.ID))
-								.leftOuterJoin(ff1).on(ff1.ID.eq(l1ff.FREEFORM_ID).and(ff1.TYPE.eq(freeformType.name()))))
-				.where(
-						l1.WORD_ID.eq(wordIdField)
-								.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(l1.ID)
-				.asTable("lexff");
-
-		// TODO maybe change count to exists / not exists? - yogesh
-		Condition whereFreeformCount;
-		if (isNotExistsFilter) {
-			whereFreeformCount = lexff.field("ff_count", Integer.class).eq(0);
-		} else {
-			whereFreeformCount = lexff.field("ff_count", Integer.class).gt(0);
-		}
-
-		where = where.andExists(DSL.select(lexff.field("lexeme_id", Long.class)).from(lexff).where(whereFreeformCount));
-		return where;
-	}
-
 
 	public Condition applyFreeformSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> freeformIdField, Condition condition) throws Exception {
 
@@ -811,15 +773,19 @@ public class SearchFilterHelper implements GlobalConstant {
 		return filteredCriteria;
 	}
 
-	public List<SearchCriterion> filterPositiveExistCriteria(List<SearchCriterion> searchCriteria) {
+	public List<SearchCriterion> filterPositiveValueSearchCriteria(List<SearchCriterion> searchCriteria) {
 		// any other than NOT_EXISTS
-		List<SearchCriterion> positiveExistCriteria = searchCriteria.stream().filter(crit -> !SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand())).collect(
-				Collectors.toList());
+		List<SearchCriterion> positiveExistCriteria = searchCriteria.stream()
+				.filter(crit -> !SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
+				.collect(Collectors.toList());
 		return positiveExistCriteria;
 	}
 
-	public List<SearchCriterion> filterNegativeExistCriteria(List<SearchCriterion> searchCriteria) {
-		List<SearchCriterion> negativeExistCriteria = searchCriteria.stream().filter(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand())).collect(Collectors.toList());
+	public List<SearchCriterion> filterNegativeValueSearchCriteria(List<SearchCriterion> searchCriteria) {
+
+		List<SearchCriterion> negativeExistCriteria = searchCriteria.stream()
+				.filter(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
+				.collect(Collectors.toList());
 		return negativeExistCriteria;
 	}
 

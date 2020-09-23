@@ -25,8 +25,9 @@ public enum SearchKey {
 	LEXEME_GRAMMAR(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_POS(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	LEXEME_FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
-	OD_RECOMMENDATION(OperandSets.VALUE_OPERANDS, SearchValueType.TEXTUAL),
-	RELATION_TYPE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL)
+	OD_RECOMMENDATION(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	RELATION_TYPE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
+	COMPLEXITY(OperandSets.CLASSIFIER_VALUE_OPERANDS, SearchValueType.TEXTUAL)
 	;
 
 	private SearchOperand[] operands;
@@ -51,6 +52,9 @@ public enum SearchKey {
 		SearchOperand[] VALUE_OPERANDS = new SearchOperand[] {
 				SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.CONTAINS_WORD};
 		SearchOperand[] VALUE_AND_EXISTS_OPERANDS = ArrayUtils.addAll(VALUE_OPERANDS, SearchOperand.EXISTS, SearchOperand.NOT_EXISTS);
+		SearchOperand[] CLASSIFIER_VALUE_OPERANDS = new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EXISTS};
+		SearchOperand[] CLASSIFIER_VALUE_AND_EXISTS_OPERANDS = ArrayUtils.addAll(
+				CLASSIFIER_VALUE_OPERANDS, SearchOperand.ZERO, SearchOperand.ONE, SearchOperand.MORE_THAN_ZERO, SearchOperand.MORE_THAN_ONE);
 		SearchOperand[] DATUM_OPERANDS = new SearchOperand[] {SearchOperand.EARLIER_THAN, SearchOperand.LATER_THAN};
 		SearchOperand[] USER_NAME_OPERANDS = new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH};
 	}
