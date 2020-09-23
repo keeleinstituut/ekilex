@@ -41,6 +41,11 @@
   background-color: $white;
   @include border-top-left-radius(10px);
 
+  @include media-breakpoint-up(md) {
+    overflow-y: scroll;
+    height: calc(100vh - 100px);  
+  }
+
   @include media-breakpoint-down(md) {
     position: sticky;
     top: 65px;

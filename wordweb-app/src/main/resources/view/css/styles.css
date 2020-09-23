@@ -18097,6 +18097,13 @@ eki-link {
   border-top-left-radius: 10px;
 }
 
+@media (min-width: 768px) {
+  .learn-container-menu {
+    overflow-y: scroll;
+    height: calc(100vh - 100px);
+  }
+}
+
 @media (max-width: 991.98px) {
   .learn-container-menu {
     position: -webkit-sticky;
