@@ -1303,6 +1303,7 @@ create index activity_log_event_by_lower_idx on activity_log(lower(event_by));
 create index activity_log_owner_idx on activity_log(owner_name, owner_id);
 create index activity_funct_name_idx on activity_log(funct_name);
 create index activity_entity_name_idx on activity_log(entity_name);
+create index activity_entity_name_owner_name_event_on_idx on activity_log(entity_name, owner_name, (date_part('epoch', event_on) * 1000));
 create index lifecycle_activity_log_ll_id_idx on lifecycle_activity_log(lifecycle_log_id);
 create index lifecycle_activity_log_al_id_idx on lifecycle_activity_log(activity_log_id);
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);

@@ -321,7 +321,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
 				Freeform u1 = FREEFORM.as("u1");
 
-				Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY)).and(l1ff.LEXEME_ID.eq(l1.ID)).and(l1ff.FREEFORM_ID.eq(u1.ID))
+				Condition where1 = l1.WORD_ID.eq(w1.ID)
+						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+						.and(l1ff.LEXEME_ID.eq(l1.ID))
+						.and(l1ff.FREEFORM_ID.eq(u1.ID))
 						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
 
 				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
@@ -446,9 +449,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 	private Condition composeCluelessValueFilter(
 			Word w1, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Condition where) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.VALUE) && c.getSearchValue() != null)
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.VALUE);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
@@ -678,21 +679,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 	private Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition wherew) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchValue() != null)
-				.filter(crit -> {
-					if (SearchKey.CREATED_OR_UPDATED_BY.equals(crit.getSearchKey())) {
-						return true;
-					}
-					if (SearchKey.UPDATED_ON.equals(crit.getSearchKey())) {
-						return true;
-					}
-					if (SearchKey.CREATED_ON.equals(crit.getSearchKey())) {
-						return true;
-					}
-					return false;
-				})
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return wherew;
@@ -708,14 +695,14 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1
-						.andNot(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()).and(al.FUNCT_NAME.eq(CREATE)));
+						.andNot(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()).and(al.FUNCT_NAME.like(LIKE_CREATE)));
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1
 						.and(al.OWNER_NAME.eq(LifecycleLogOwner.WORD.name()))
 						.and(al.OWNER_ID.eq(wordIdField))
 						.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
-						.and(al.FUNCT_NAME.eq(CREATE));
+						.and(al.FUNCT_NAME.like(LIKE_CREATE));
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			}
 		}

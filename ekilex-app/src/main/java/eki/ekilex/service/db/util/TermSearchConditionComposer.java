@@ -80,8 +80,8 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		Meaning m1 = MEANING.as("m1");
 		Lexeme l1 = LEXEME.as("l1");
 
-		Condition wherem = DSL.trueCondition();
-		Condition wherew = DSL.trueCondition();
+		Condition wherem = DSL.noCondition();
+		Condition wherew = DSL.noCondition();
 		Condition wherel = l1.TYPE.eq(LEXEME_TYPE_PRIMARY);
 		wherel = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, wherel);
 
@@ -452,9 +452,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 	private Condition composeCluelessValueFilter(Word w1, Meaning m1, List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Condition wherem) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.VALUE) && c.getSearchValue() != null)
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.VALUE);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return wherem;
@@ -532,18 +530,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 	private Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition wherew) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchValue() != null)
-				.filter(crit -> {
-					if (SearchKey.CREATED_OR_UPDATED_BY.equals(crit.getSearchKey())) {
-						return true;
-					}
-					if (SearchKey.UPDATED_ON.equals(crit.getSearchKey())) {
-						return true;
-					}
-					return false;
-				})
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return wherew;
@@ -572,21 +559,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 	private Condition applyMeaningActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition wherem) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchValue() != null)
-				.filter(crit -> {
-					if (SearchKey.CREATED_OR_UPDATED_BY.equals(crit.getSearchKey())) {
-						return true;
-					}
-					if (SearchKey.UPDATED_ON.equals(crit.getSearchKey())) {
-						return true;
-					}
-					if (SearchKey.CREATED_ON.equals(crit.getSearchKey())) {
-						return true;
-					}
-					return false;
-				})
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return wherem;
@@ -605,14 +578,14 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 						.andNot(al.ENTITY_NAME.eq(ActivityEntity.GRAMMAR.name()))
 						.andNot(al.FUNCT_NAME.eq(JOIN).and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name())))
 						.andNot(al.FUNCT_NAME.eq(JOIN_WORDS))
-						.andNot(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()).and(al.FUNCT_NAME.eq(CREATE)));
+						.andNot(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()).and(al.FUNCT_NAME.like(LIKE_CREATE)));
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1
 						.and(al.OWNER_NAME.eq(LifecycleLogOwner.MEANING.name()))
 						.and(al.OWNER_ID.eq(meaningIdField))
 						.and(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
-						.and(al.FUNCT_NAME.eq(CREATE));
+						.and(al.FUNCT_NAME.like(LIKE_CREATE));
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			}
 		}

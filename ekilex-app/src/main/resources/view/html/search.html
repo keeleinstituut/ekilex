@@ -196,6 +196,11 @@
                     </div>
                   </div>
                 </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_BY'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
@@ -377,6 +382,9 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div name="UPDATED_BY" class="col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
             </div>
             <div class="col-auto flex-grow-1 flex-shrink-1">
               <div name="UPDATED_ON" class="col-auto flex-grow-0 px-0">

@@ -341,7 +341,7 @@ public class SearchFilterHelper implements GlobalConstant {
 				where1 = applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			} else if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
 				where1 = applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
-			} else if (criterion.getSearchOperand().equals(SearchOperand.HAS_BEEN)) {
+			} else if (SearchOperand.HAS_BEEN.equals(criterion.getSearchOperand())) {
 				Table<?> alcdun = DSL.unnest(al.CURR_DIFFS).as("alcd", "op", "path", "value");
 				Table<?> alpdun = DSL.unnest(al.PREV_DIFFS).as("alpd", "op", "path", "value");
 				where1 = where1.andExists(DSL
@@ -768,7 +768,16 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public List<SearchCriterion> filterCriteriaBySearchKey(List<SearchCriterion> searchCriteria, SearchKey searchKey) {
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.filter(crit -> crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.filter(crit -> crit.getSearchKey().equals(searchKey))
+				.collect(toList());
+		return filteredCriteria;
+	}
+
+	public List<SearchCriterion> filterCriteriaBySearchKeys(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.filter(crit -> ArrayUtils.contains(searchKeys, crit.getSearchKey()))
 				.collect(toList());
 		return filteredCriteria;
 	}
