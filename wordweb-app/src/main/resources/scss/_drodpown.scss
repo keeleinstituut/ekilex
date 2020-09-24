@@ -5,7 +5,7 @@
     max-height: calc(100vh - 20px);
     overflow: auto;
 
-    @include media-breakpoint-up(sm){
+    @include media-breakpoint-up(sm) {
       width: 300px;
       max-height: calc(100vh - 80px);
     }
@@ -20,6 +20,142 @@
       font-family: "Font Awesome 5 Free", sans-serif;
       font-weight: 900;
       content: "\f00c";
+    }
+  }
+}
+
+.dropdown-aside {
+
+  @include media-breakpoint-up(md) {
+    z-index: 1;
+
+  }
+
+  &.show {
+    .dropdown-toggle {
+      &::after {
+        transform: rotate(90deg);
+      }
+    }
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+
+    &.active {
+      font-weight: $font-weight-bold;
+      background-color: $gray-200;
+    }
+  }
+
+  .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+    background-color: $white;
+    @include border-radius(10px);
+
+    @include media-breakpoint-down(md) {
+      border: solid 2px $gray-500;
+    }
+
+    &::after {
+      font-size: 20px;
+      color: $gray-500;
+    }
+  }
+
+  .dropdown-item {
+    color: $blue-300;
+
+    &:hover {
+      background-color: transparent;
+    }
+
+    &.active {
+      font-weight: $font-weight-bold;
+    }
+  }
+
+  .dropdown-menu {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    padding: 24px;
+
+    @include media-breakpoint-down(md) {
+      padding: 0;
+    }
+
+    @include media-breakpoint-down(sm) {
+      max-height: 350px;
+      overflow-y: scroll;
+    }
+
+  }
+
+  .has-submenu {
+    position: relative;
+
+    button {
+      padding: 0;
+      font-size: 20px;
+      color: inherit;
+      background-color: transparent;
+      border: none;
+      transition-property: .3s ease-in-out;
+
+      span:first-of-type {
+        display: inline-block;
+        content: "";
+        border-top: 5px solid;
+        border-right: 5px solid transparent;
+        border-bottom: 0;
+        border-left: 5px solid transparent;
+      }
+    }
+
+    .list-unstyled {
+      display: none;
+      margin-left: 16px;
+    }
+  }
+
+  .has-submenu.open {
+
+    button {
+      transform: rotate(90deg);
+    }
+
+    .list-unstyled {
+      display: block;
+    }
+  }
+
+  @media (min-width: 767px) {
+
+    .nav-link {
+      &.active {
+        background-color: transparent;
+      }
+    }
+    .dropdown-menu {
+      display: block;
+      margin: 0;
+      box-shadow: none;
+    }
+
+    .dropdown-item {
+      padding: 6px 12px;
+    }
+
+    .dropdown-toggle {
+      display: none;
     }
   }
 }

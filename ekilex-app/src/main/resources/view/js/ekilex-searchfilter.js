@@ -96,15 +96,15 @@ function initialiseDetailSearch() {
 		let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
 		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
 		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
-		// NOT_EXISTS is not implemented everywhere
+		// NOT_EXISTS and NOT_EQUALS is not implemented everywhere
 		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
-			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
+			operandTemplate.find('option[value="NOT_EQUALS"]').remove();
 		}
 		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
 			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
 		}
 		if (pageName == 'term_search' && searchEntity == 'TERM' && searchKey == 'LANGUAGE') {
-			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
+			operandTemplate.find('option[value="NOT_EQUALS"]').remove();
 		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());
@@ -128,6 +128,18 @@ function initialiseDetailSearch() {
 			searchValueElement.parent().prop('hidden', true);
 			searchValueElement.selectpicker('refresh');
 		} else if (searchKey == 'SOURCE_REF' && searchOperand == 'NOT_EXISTS') {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'VALUE_AND_EXISTS' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'SECONDARY_MEANING_WORD' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'LEXEME_GRAMMAR' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'OD_RECOMMENDATION' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
 		} else {

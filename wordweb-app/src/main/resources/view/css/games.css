@@ -13,12 +13,8 @@
 
 .games-sub-nav {
     list-style: none;
-    display: -webkit-box;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
     flex-flow: row nowrap;
-    -webkit-box-pack: center;
     justify-content: center;
     padding: 0;
     margin-left: 0.9375rem;
@@ -31,7 +27,6 @@
 }
 
 .games-sub-nav li {
-    -webkit-box-flex: 0;
     flex: 0 0 auto;
     border-radius: 0.9375rem;
     border: 0.0625rem solid #CCC;
@@ -144,7 +139,6 @@ h2 {
     position: absolute;
     left: 50%;
     top: 50%;
-    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
     margin-top: 3.125rem;
 }
@@ -161,19 +155,14 @@ h2 {
 }
 
 .games-list {
-    display: -webkit-box;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
     flex-flow: row wrap;
-    -webkit-box-pack: center;
     justify-content: center;
     max-width: 64rem;
     margin: 0 auto;
 }
 
 .games-list .game-box {
-    -webkit-box-flex: 0;
     flex: 0 1 33%;
     display: block;;
     margin-top: 2.5rem;
@@ -182,7 +171,6 @@ h2 {
 
 @media (max-width: 991px) {
     .games-list .game-box {
-        -webkit-box-flex: 0;
         flex: 0 1 50%;
     }
 }
@@ -197,7 +185,6 @@ h2 {
 
 @media (max-width: 480px) {
     .games-list .game-box {
-        -webkit-box-flex: 0;
         flex: 0 1 100%;
     }
 }
@@ -207,10 +194,7 @@ h2 {
 }
 
 .game-box-form-content {
-    display: -webkit-box;
     display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
     flex-flow: column nowrap;
     height: 100%;
     border: 0.0625rem solid #000;
@@ -223,7 +207,6 @@ h2 {
     text-align: center;
     font-weight: bold;
     padding: 1.25rem 0;
-    -webkit-box-flex: 0;
     flex: 0 0 auto;
 }
 
@@ -231,12 +214,10 @@ h2 {
     text-align: center;
     font-size: 1rem;
     padding: 1.25rem 0 0;
-    -webkit-box-flex: 1;
     flex: 1 1 auto;
 }
 
 .game-box-actions {
-    -webkit-box-flex: 0;
     flex: 0 0 auto;
     padding: 1.25rem 0;
 }
@@ -342,18 +323,13 @@ h2 {
 
 /*Universal game buttons*/
 .key-row {
-    display: -webkit-box;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
     flex-flow: row nowrap;
-    -webkit-box-pack: center;
     justify-content: center;
 }
 
 .key-placeholder {
     display: inline-block;
-    -webkit-box-flex: 0;
     flex: 0 1 auto;
     width: 6.25rem;
     height: 6.25rem;
@@ -474,7 +450,6 @@ h2 {
     color: #000;
     line-height: 24;
     text-align: center;
-    display: -webkit-inline-box;
     display: inline-flex;
     vertical-align: middle;
     font-family: "Noto Sans", sans-serif;
@@ -651,7 +626,6 @@ h2 {
     top: 50%;
     left: 50%;
     margin-right: -50%;
-    -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
 }
 
@@ -833,13 +807,11 @@ h2 {
 }
 
 .slider-handle {
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #3c763d), to(#094)) !important;
     background-image: linear-gradient(to bottom, #3c763d 0, #094 100%) !important;
 }
 
 .slider-selection {
     position: absolute;
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #f9f9f9), to(#ccc)) !important;
     background-image: linear-gradient(to bottom, #f9f9f9 0, #ccc 100%) !important;
 }
 
@@ -1044,23 +1016,18 @@ h2 {
 
 /*RESULTS*/
 .results-wrapper {
-    display: -webkit-box;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
     flex-flow: row nowrap;
     min-height: 100vh;
     width: 100%;
 }
 
 .results-game-menu {
-    -webkit-box-flex: 0;
     flex: 0 0 20%;
     min-height: 100vh;
 }
 
 .results-tab-content {
-    -webkit-box-flex: 1;
     flex: 1 1 auto;
     background: #fff;
 }
@@ -1231,9 +1198,7 @@ td.total-nr {
 }
 
 .flexbox {
-    display: -webkit-box;
     display: flex;
-    -webkit-box-pack: justify;
     justify-content: space-between;
     max-width: 100%;
     margin: 0 auto;
@@ -1243,7 +1208,6 @@ td.total-nr {
 .flexbox .row {
     padding: 8px 24px;
     margin: 0 !important;
-    -webkit-box-pack: center;
     justify-content: center;
 }
 

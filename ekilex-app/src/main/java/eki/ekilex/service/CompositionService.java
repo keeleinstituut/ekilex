@@ -613,7 +613,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 	}
 
-	//TODO revisit activity logging
 	private void joinMeaningsCommonWordsLexemes(Long targetMeaningId, Long sourceMeaningId) throws Exception {
 
 		List<IdPair> meaningsCommonWordsLexemeIdPairs = compositionDbService.getMeaningsCommonWordsLexemeIdPairs(targetMeaningId, sourceMeaningId);

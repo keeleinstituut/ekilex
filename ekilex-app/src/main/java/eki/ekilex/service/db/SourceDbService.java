@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -10,10 +11,10 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE;
+import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
-import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,14 +27,17 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.SelectConditionStep;
 import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityFunct;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
+import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -43,6 +47,7 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
@@ -53,11 +58,16 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
-public class SourceDbService extends AbstractSearchDbService {
+public class SourceDbService implements GlobalConstant, ActivityFunct {
+
+	@Autowired
+	private SearchFilterHelper searchFilterHelper;
 
 	private DSLContext create;
 
@@ -69,12 +79,12 @@ public class SourceDbService extends AbstractSearchDbService {
 	public List<SourcePropertyTuple> getSource(Long sourceId) {
 
 		Source s = SOURCE.as("s");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		SourceFreeform spff = SOURCE_FREEFORM.as("spff");
 		Freeform sp = FREEFORM.as("sp");
 		Condition where = s.ID.equal(sourceId);
 		Field<Boolean> spmf = DSL.field(DSL.val(Boolean.FALSE));
 
-		return getSources(s, sff, sp, spmf, where);
+		return getSources(s, spff, sp, spmf, where);
 	}
 
 	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType) {
@@ -82,40 +92,35 @@ public class SourceDbService extends AbstractSearchDbService {
 	}
 
 	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType, Long sourceIdToExclude) {
-	
+
 		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
-	
+
 		Source s = SOURCE.as("s");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		SourceFreeform spff = SOURCE_FREEFORM.as("spff");
 		Freeform sp = FREEFORM.as("sp");
-		SourceFreeform sffc = SOURCE_FREEFORM.as("sffc");
+		SourceFreeform spcff = SOURCE_FREEFORM.as("spcff");
 		Freeform spc = FREEFORM.as("spc");
-	
-		SelectConditionStep<Record1<Long>> existCondition =
-				DSL
-				.select(sffc.ID)
-				.from(sffc, spc)
-				.where(
-						sffc.SOURCE_ID.eq(s.ID)
-						.and(sffc.FREEFORM_ID.eq(spc.ID))
-						.and(DSL.lower(spc.VALUE_TEXT).like(searchFilter)));
-	
+		Field<Boolean> spmf = DSL.field(DSL.lower(sp.VALUE_TEXT).like(searchFilter));
+
+		Condition where1 = spcff.SOURCE_ID.eq(s.ID)
+				.and(spcff.FREEFORM_ID.eq(spc.ID))
+				.and(DSL.lower(spc.VALUE_TEXT).like(searchFilter));
+
 		if (sourceType != null) {
-			existCondition = existCondition.and(s.TYPE.eq(sourceType.name()));
+			where1 = where1.and(s.TYPE.eq(sourceType.name()));
 		}
 		if (sourceIdToExclude != null) {
-			existCondition = existCondition.and(sffc.SOURCE_ID.notEqual(sourceIdToExclude));
+			where1 = where1.and(spcff.SOURCE_ID.notEqual(sourceIdToExclude));
 		}
-		Condition sex = DSL.exists(existCondition);
-		Field<Boolean> spmf = DSL.field(DSL.lower(sp.VALUE_TEXT).like(searchFilter));
-	
-		return getSources(s, sff, sp, spmf, sex);
+		Condition where = DSL.exists(DSL.select(spcff.ID).from(spcff, spc).where(where1));
+
+		return getSources(s, spff, sp, spmf, where);
 	}
 
-	private List<SourcePropertyTuple> getSources(Source s, SourceFreeform sff, Freeform sp, Field<Boolean> spmf, Condition where) {
-	
+	private List<SourcePropertyTuple> getSources(Source s, SourceFreeform spff, Freeform sp, Field<Boolean> spmf, Condition where) {
+
 		Field<Boolean> sptnf = DSL.field(sp.TYPE.eq(FreeformType.SOURCE_NAME.name()));
-	
+
 		return create
 				.select(
 						s.ID.as("source_id"),
@@ -124,19 +129,17 @@ public class SourceDbService extends AbstractSearchDbService {
 						sp.TYPE.as("source_property_type"),
 						sp.VALUE_TEXT.as("source_property_value_text"),
 						sp.VALUE_DATE.as("source_property_value_date"),
-						spmf.as("source_property_match")
-						)
+						spmf.as("source_property_match"))
 				.from(
 						s
-						.innerJoin(sff).on(s.ID.eq(sff.SOURCE_ID))
-						.innerJoin(sp).on(sff.FREEFORM_ID.eq(sp.ID)))
+								.innerJoin(spff).on(spff.SOURCE_ID.eq(s.ID))
+								.innerJoin(sp).on(sp.ID.eq(spff.FREEFORM_ID)))
 				.where(where)
 				.orderBy(
 						s.ID,
 						sptnf.desc(),
 						sp.ORDER_BY)
-				.fetch()
-				.into(SourcePropertyTuple.class);
+				.fetchInto(SourcePropertyTuple.class);
 	}
 
 	public List<SourcePropertyTuple> getSources(SearchFilter searchFilter) throws Exception {
@@ -144,10 +147,11 @@ public class SourceDbService extends AbstractSearchDbService {
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 
 		Source s = SOURCE.as("s");
-		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		SourceFreeform spff = SOURCE_FREEFORM.as("spff");
 		Freeform sp = FREEFORM.as("sp");
-		SourceFreeform sffc = SOURCE_FREEFORM.as("sffc");
+		SourceFreeform spcff = SOURCE_FREEFORM.as("spcff");
 		Freeform spc = FREEFORM.as("spc");
+		Field<Boolean> spmf = DSL.field(DSL.falseCondition());
 
 		Condition where = DSL.noCondition();
 
@@ -158,35 +162,32 @@ public class SourceDbService extends AbstractSearchDbService {
 			}
 			SearchEntity searchEntity = searchCriterionGroup.getEntity();
 			if (SearchEntity.SOURCE.equals(searchEntity)) {
+
 				boolean containsSearchKeys;
 
-				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.VALUE);
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.VALUE);
 				if (containsSearchKeys) {
-					Condition innerWhere = sffc.SOURCE_ID.eq(s.ID).and(sffc.FREEFORM_ID.eq(spc.ID));
-					innerWhere = applyValueFilters(SearchKey.VALUE, searchCriteria, spc.VALUE_TEXT, innerWhere, true);
-
-					Condition whereExists = DSL.exists(DSL
-							.select(sffc.ID)
-							.from(sffc, spc)
-							.where(innerWhere));
-
-					where = where.and(whereExists);
+					Condition where1 = spcff.SOURCE_ID.eq(s.ID).and(spcff.FREEFORM_ID.eq(spc.ID));
+					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, spc.VALUE_TEXT, where1, true);
+					where = where.andExists(DSL.select(spcff.ID).from(spcff, spc).where(where1));
 				}
 
-				containsSearchKeys = containsSearchKeys(searchCriteria, SearchKey.DATASET_USAGE);
-				if (containsSearchKeys) {
-					where = applySourceLinkDatasetFilters(searchCriteria, where);
-				}
+				where = applySourceLinkDatasetFilters(searchCriteria, s.ID, where);
+				where = applySourceActivityLogFilters(searchCriteria, s.ID, where);
 			}
 		}
 
-		Field<Boolean> spmf = DSL.field(DSL.falseCondition());
-		return getSources(s, sff, sp, spmf, where);
+		return getSources(s, spff, sp, spmf, where);
 	}
 
-	private Condition applySourceLinkDatasetFilters(List<SearchCriterion> searchCriteria, Condition where) {
+	private Condition applySourceLinkDatasetFilters(List<SearchCriterion> searchCriteria, Field<Long> sourceIdField, Condition where) {
 
-		Source s = SOURCE.as("s");
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.DATASET_USAGE);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
 		Definition d = DEFINITION.as("d");
 		Lexeme l = LEXEME.as("l");
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
@@ -196,77 +197,104 @@ public class SourceDbService extends AbstractSearchDbService {
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
 		DefinitionFreeform dff = DEFINITION_FREEFORM.as("dff");
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.DATASET_USAGE) && c.getSearchValue() != null)
-				.collect(toList());
+		for (SearchCriterion criterion : filteredCriteria) {
 
-		if (CollectionUtils.isNotEmpty(filteredCriteria)) {
-			for (SearchCriterion criterion : filteredCriteria) {
-				SearchOperand searchOperand = criterion.getSearchOperand();
-				if (SearchOperand.EQUALS.equals(searchOperand)) {
-					String datasetCode = criterion.getSearchValue().toString();
+			if (SearchOperand.EQUALS.equals(criterion.getSearchOperand())) {
 
-					SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL
-									.select(l.ID)
-									.from(l, lsl)
-									.where(
-											l.DATASET_CODE.eq(datasetCode)
-													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-													.and(lsl.LEXEME_ID.eq(l.ID))
-													.and(lsl.SOURCE_ID.eq(s.ID)));
+				String datasetCode = criterion.getSearchValue().toString();
 
-					SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL
-									.select(l.ID)
-									.from(l, d, dsl)
-									.where(
-											l.DATASET_CODE.eq(datasetCode)
-													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-													.and(d.MEANING_ID.eq(l.MEANING_ID))
-													.and(dsl.DEFINITION_ID.eq(d.ID))
-													.and(dsl.SOURCE_ID.eq(s.ID)));
+				SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL
+						.select(l.ID)
+						.from(l, lsl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(lsl.LEXEME_ID.eq(l.ID))
+										.and(lsl.SOURCE_ID.eq(sourceIdField)));
 
-					SelectHavingStep<Record1<Long>> selectLexemeFreeformSourceLinks = DSL
-									.select(l.ID)
-									.from(l, lff, ffsl)
-									.where(
-											l.DATASET_CODE.eq(datasetCode)
-													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-													.and(lff.LEXEME_ID.eq(l.ID))
-													.and(ffsl.FREEFORM_ID.eq(lff.FREEFORM_ID))
-													.and(ffsl.SOURCE_ID.eq(s.ID)));
+				SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL
+						.select(l.ID)
+						.from(l, d, dsl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(d.MEANING_ID.eq(l.MEANING_ID))
+										.and(dsl.DEFINITION_ID.eq(d.ID))
+										.and(dsl.SOURCE_ID.eq(sourceIdField)));
 
-					SelectHavingStep<Record1<Long>> selectMeaningFreeformSourceLinks = DSL
-									.select(l.ID)
-									.from(l, mff, ffsl)
-									.where(
-											l.DATASET_CODE.eq(datasetCode)
-													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-													.and(mff.MEANING_ID.eq(l.MEANING_ID))
-													.and(ffsl.FREEFORM_ID.eq(mff.FREEFORM_ID))
-													.and(ffsl.SOURCE_ID.eq(s.ID)));
+				SelectHavingStep<Record1<Long>> selectLexemeFreeformSourceLinks = DSL
+						.select(l.ID)
+						.from(l, lff, ffsl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(lff.LEXEME_ID.eq(l.ID))
+										.and(ffsl.FREEFORM_ID.eq(lff.FREEFORM_ID))
+										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
 
-					SelectHavingStep<Record1<Long>> selectDefinitionFreeformSourceLinks = DSL
-									.select(l.ID)
-									.from(l, d, dff, ffsl)
-									.where(
-											l.DATASET_CODE.eq(datasetCode)
-													.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-													.and(d.MEANING_ID.eq(l.MEANING_ID))
-													.and(dff.DEFINITION_ID.eq(d.ID))
-													.and(ffsl.FREEFORM_ID.eq(dff.FREEFORM_ID))
-													.and(ffsl.SOURCE_ID.eq(s.ID)));
+				SelectHavingStep<Record1<Long>> selectMeaningFreeformSourceLinks = DSL
+						.select(l.ID)
+						.from(l, mff, ffsl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(mff.MEANING_ID.eq(l.MEANING_ID))
+										.and(ffsl.FREEFORM_ID.eq(mff.FREEFORM_ID))
+										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
 
-					Table<Record1<Long>> all = selectLexemeSourceLinks
-							.unionAll(selectDefinitionSourceLinks)
-							.unionAll(selectLexemeFreeformSourceLinks)
-							.unionAll(selectMeaningFreeformSourceLinks)
-							.unionAll(selectDefinitionFreeformSourceLinks)
-							.asTable("all");
+				SelectHavingStep<Record1<Long>> selectDefinitionFreeformSourceLinks = DSL
+						.select(l.ID)
+						.from(l, d, dff, ffsl)
+						.where(
+								l.DATASET_CODE.eq(datasetCode)
+										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(d.MEANING_ID.eq(l.MEANING_ID))
+										.and(dff.DEFINITION_ID.eq(d.ID))
+										.and(ffsl.FREEFORM_ID.eq(dff.FREEFORM_ID))
+										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
 
-					where = where.andExists(DSL.select(all.field("id")).from(all));
-				}
+				Table<Record1<Long>> all = selectLexemeSourceLinks
+						.unionAll(selectDefinitionSourceLinks)
+						.unionAll(selectLexemeFreeformSourceLinks)
+						.unionAll(selectMeaningFreeformSourceLinks)
+						.unionAll(selectDefinitionFreeformSourceLinks)
+						.asTable("all");
+
+				where = where.andExists(DSL.select(all.field("id")).from(all));
 			}
 		}
+		return where;
+	}
+
+	private Condition applySourceActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> sourceIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_BY, SearchKey.CREATED_ON, SearchKey.UPDATED_BY, SearchKey.UPDATED_ON);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		SourceActivityLog sal = SOURCE_ACTIVITY_LOG.as("sal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		Condition where1 = sal.SOURCE_ID.eq(sourceIdField).and(sal.ACTIVITY_LOG_ID.eq(al.ID)).and(al.OWNER_NAME.eq(LifecycleLogOwner.SOURCE.name()));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			String critValue = criterion.getSearchValue().toString();
+			if (SearchKey.CREATED_BY.equals(criterion.getSearchKey())) {
+				where1 = where1.and(al.ENTITY_NAME.eq(ActivityEntity.SOURCE.name())).and(al.FUNCT_NAME.like(LIKE_CREATE));
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
+				where1 = where1.and(al.ENTITY_NAME.eq(ActivityEntity.SOURCE.name())).and(al.FUNCT_NAME.like(LIKE_CREATE));
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+			} else if (SearchKey.UPDATED_BY.equals(criterion.getSearchKey())) {
+				where1 = where1.and(al.FUNCT_NAME.like(LIKE_UPDATE));
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
+				where1 = where1.and(al.FUNCT_NAME.like(LIKE_UPDATE));
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+			}
+		}
+		where = where.andExists(DSL.select(sal.ID).from(sal, al).where(where1));
 		return where;
 	}
 
@@ -292,7 +320,7 @@ public class SourceDbService extends AbstractSearchDbService {
 				.from(SOURCE_FREEFORM, FREEFORM)
 				.where(
 						SOURCE_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)
-						.and(FREEFORM.ID.eq(sourcePropertyId)))
+								.and(FREEFORM.ID.eq(sourcePropertyId)))
 				.fetchOptionalInto(SourceProperty.class)
 				.orElse(null);
 	}
@@ -323,12 +351,11 @@ public class SourceDbService extends AbstractSearchDbService {
 
 	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) {
 
-		Long sourceId =
-				create.insertInto(SOURCE, SOURCE.TYPE)
-						.values(sourceType.name())
-						.returning(SOURCE.ID)
-						.fetchOne()
-						.getId();
+		Long sourceId = create.insertInto(SOURCE, SOURCE.TYPE)
+				.values(sourceType.name())
+				.returning(SOURCE.ID)
+				.fetchOne()
+				.getId();
 
 		for (SourceProperty sourceProperty : sourceProperties) {
 			createSourceProperty(sourceId, sourceProperty.getType(), sourceProperty.getValueText());
@@ -401,8 +428,7 @@ public class SourceDbService extends AbstractSearchDbService {
 
 		List<Long> uniqueFreeformsIds = originSourceFreeforms.stream()
 				.filter(origin -> targetSourceFreeforms.stream()
-						.noneMatch(target ->
-								target.getType().equals(origin.getType())
+						.noneMatch(target -> target.getType().equals(origin.getType())
 								&& Objects.nonNull(target.getValueText())
 								&& target.getValueText().equals(origin.getValueText())))
 				.map(FreeformRecord::getId)
@@ -413,7 +439,7 @@ public class SourceDbService extends AbstractSearchDbService {
 					.set(SOURCE_FREEFORM.SOURCE_ID, targetSourceId)
 					.where(
 							SOURCE_FREEFORM.SOURCE_ID.eq(originSourceId)
-							.and(SOURCE_FREEFORM.FREEFORM_ID.eq(freeformId)))
+									.and(SOURCE_FREEFORM.FREEFORM_ID.eq(freeformId)))
 					.execute();
 		}
 
@@ -436,22 +462,22 @@ public class SourceDbService extends AbstractSearchDbService {
 				.from(SOURCE)
 				.where(
 						SOURCE.ID.eq(sourceId)
-						.andNotExists(DSL
-								.select(DEFINITION_SOURCE_LINK.ID)
-								.from(DEFINITION_SOURCE_LINK)
-								.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
-						.andNotExists(DSL
-								.select(FREEFORM_SOURCE_LINK.ID)
-								.from(FREEFORM_SOURCE_LINK)
-								.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
-						.andNotExists(DSL
-								.select(LEXEME_SOURCE_LINK.ID)
-								.from(LEXEME_SOURCE_LINK)
-								.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
-						.andNotExists(DSL
-								.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
-								.from(WORD_ETYMOLOGY_SOURCE_LINK)
-								.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId))))
+								.andNotExists(DSL
+										.select(DEFINITION_SOURCE_LINK.ID)
+										.from(DEFINITION_SOURCE_LINK)
+										.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+								.andNotExists(DSL
+										.select(FREEFORM_SOURCE_LINK.ID)
+										.from(FREEFORM_SOURCE_LINK)
+										.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+								.andNotExists(DSL
+										.select(LEXEME_SOURCE_LINK.ID)
+										.from(LEXEME_SOURCE_LINK)
+										.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(sourceId)))
+								.andNotExists(DSL
+										.select(WORD_ETYMOLOGY_SOURCE_LINK.ID)
+										.from(WORD_ETYMOLOGY_SOURCE_LINK)
+										.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId))))
 				.fetchSingleInto(Boolean.class);
 	}
 

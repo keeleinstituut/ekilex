@@ -4,6 +4,8 @@ public class AppData extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private String baseUrl;
+
 	private boolean devEnv;
 
 	private String envName;
@@ -13,6 +15,14 @@ public class AppData extends AbstractDataObject {
 	private String appVersion;
 
 	private long sessionTimeoutSec;
+
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	public void setBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
 
 	public boolean isDevEnv() {
 		return devEnv;

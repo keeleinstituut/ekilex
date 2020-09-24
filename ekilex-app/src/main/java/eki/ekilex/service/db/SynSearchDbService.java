@@ -21,6 +21,7 @@ import org.jooq.Record1;
 import org.jooq.Record19;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -44,9 +45,13 @@ import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
+import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
-public class SynSearchDbService extends AbstractSearchDbService {
+public class SynSearchDbService extends AbstractDataDbService {
+
+	@Autowired
+	private SearchFilterHelper searchFilterHelper;
 
 	public List<Relation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
 
@@ -199,7 +204,7 @@ public class SynSearchDbService extends AbstractSearchDbService {
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
 
-		Condition dsWhere = applyDatasetRestrictions(l, searchDatasetsRestriction, null);
+		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
