@@ -250,11 +250,13 @@ public class SearchFilterHelper implements GlobalConstant {
 			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Lexeme l1, Condition where1, Condition where) throws Exception {
 
 		List<SearchCriterion> tagNameEqualsCrit = searchCriteria.stream()
+				.filter(crit -> crit.getSearchValue() != null)
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.TAG_NAME) && crit.getSearchOperand().equals(SearchOperand.EQUALS)).collect(toList());
-		List<SearchCriterion> tagNameNotExistsCrit = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.TAG_NAME) && crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS)).collect(toList());
+		List<SearchCriterion> tagNameNotEqualsCrit = searchCriteria.stream()
+				.filter(crit -> crit.getSearchValue() != null)
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.TAG_NAME) && crit.getSearchOperand().equals(SearchOperand.NOT_EQUALS)).collect(toList());
 
-		if (CollectionUtils.isEmpty(tagNameEqualsCrit) && CollectionUtils.isEmpty(tagNameNotExistsCrit)) {
+		if (CollectionUtils.isEmpty(tagNameEqualsCrit) && CollectionUtils.isEmpty(tagNameNotEqualsCrit)) {
 			return where;
 		}
 
@@ -267,17 +269,13 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
-				if (criterion.getSearchValue() != null) {
-					where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
-				}
+				where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
 			}
 			where = where.andExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
-		if (CollectionUtils.isNotEmpty(tagNameNotExistsCrit)) {
-			for (SearchCriterion criterion : tagNameNotExistsCrit) {
-				if (criterion.getSearchValue() != null) {
-					where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
-				}
+		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
+			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
+				where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
 			}
 			where = where.andNotExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
