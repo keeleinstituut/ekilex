@@ -542,9 +542,9 @@ public class SearchFilterHelper implements GlobalConstant {
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
 			condition = condition.and(textTypeSearchFieldCase.equal(searchValueStr));
-		} else if (SearchOperand.NOT_EXISTS.equals(searchOperand)) {
+		} else if (SearchOperand.NOT_EQUALS.equals(searchOperand)) {
 			//by value comparison it is exactly the same operation as equals
-			//the not exists operand rather translates into join condition elsewhere
+			//the not equals operand rather translates into join condition elsewhere
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
 			condition = condition.and(textTypeSearchFieldCase.equal(searchValueStr));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
@@ -783,9 +783,9 @@ public class SearchFilterHelper implements GlobalConstant {
 	}
 
 	public List<SearchCriterion> filterPositiveValueSearchCriteria(List<SearchCriterion> searchCriteria) {
-		// any other than NOT_EXISTS
+		// any other than NOT_EQUALS
 		List<SearchCriterion> positiveExistCriteria = searchCriteria.stream()
-				.filter(crit -> !SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
+				.filter(crit -> !SearchOperand.NOT_EQUALS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
 				.collect(Collectors.toList());
 		return positiveExistCriteria;
 	}
@@ -793,7 +793,7 @@ public class SearchFilterHelper implements GlobalConstant {
 	public List<SearchCriterion> filterNegativeValueSearchCriteria(List<SearchCriterion> searchCriteria) {
 
 		List<SearchCriterion> negativeExistCriteria = searchCriteria.stream()
-				.filter(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
+				.filter(crit -> SearchOperand.NOT_EQUALS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
 				.collect(Collectors.toList());
 		return negativeExistCriteria;
 	}
