@@ -451,7 +451,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegion", lexemeId, LifecycleLogOwner.LEXEME);
 		Long lexemeRegionId = cudDbService.updateLexemeRegion(lexemeId, currentRegion, newRegion);
 		activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegionId, currentRegion, newRegion);
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, currentRegion, newRegion);
 		createLifecycleLog(logData);
 	}
 
