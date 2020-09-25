@@ -18053,6 +18053,16 @@ eki-link {
   /* cursor: pointer; */
 }
 
+@media (max-width: 767.98px) {
+  .page-title {
+    position: absolute;
+    top: -42px;
+    left: 56px;
+    z-index: 1020;
+    font-size: 1.25rem;
+  }
+}
+
 .learn .learn-content {
   margin: 16px 32px;
 }
@@ -18071,7 +18081,7 @@ eki-link {
 }
 
 .learn-container {
-  margin: 32px auto;
+  margin: 12px auto;
   scroll-behavior: smooth;
   background-color: #fff;
 }
@@ -18109,11 +18119,11 @@ eki-link {
     position: -webkit-sticky;
     position: sticky;
     top: 65px;
-    z-index: 2;
+    z-index: 1020;
     height: 56px;
     background-color: #f0f0f0;
     border-radius: 0;
-}
+  }
 }
 
 .color-wrapper {

@@ -1,3 +1,12 @@
+.page-title{
+  @include media-breakpoint-down(sm) {
+    position: absolute;
+    top: -42px;
+    left: 56px;
+    z-index: $zindex-sticky;
+    font-size: $h4-font-size;
+  }
+}
 .learn {
   .learn-content {
     margin: 16px 32px;
@@ -19,7 +28,7 @@
 }
 
 .learn-container {
-  margin: 32px auto;
+  margin: 12px auto;
   scroll-behavior: smooth;
   background-color: $white;
 
@@ -49,7 +58,7 @@
   @include media-breakpoint-down(sm) {
     position: sticky;
     top: 65px;
-    z-index: 2;
+    z-index: $zindex-sticky;
     height: 56px;
     background-color: #f0f0f0;
     @include border-radius(0);
