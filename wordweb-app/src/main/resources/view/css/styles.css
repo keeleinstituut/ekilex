@@ -18104,7 +18104,7 @@ eki-link {
   }
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 767.98px) {
   .learn-container-menu {
     position: -webkit-sticky;
     position: sticky;
@@ -18113,7 +18113,7 @@ eki-link {
     height: 56px;
     background-color: #f0f0f0;
     border-radius: 0;
-  }
+}
 }
 
 .color-wrapper {

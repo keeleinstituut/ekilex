@@ -46,7 +46,7 @@
     overflow-y: auto;
   }
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(sm) {
     position: sticky;
     top: 65px;
     z-index: 2;
