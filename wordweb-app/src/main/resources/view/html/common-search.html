@@ -422,7 +422,7 @@
                       </th:block>
                       <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
                         <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text">
-                          <span class="example-text-value" th:utext="${usageTranslation}"></span>
+                          <span class="example-text-value" th:utext="${viewUtil.wrapDecorations(usageTranslation)}"></span>
                         </span>
                       </th:block>
                       <th:block th:if="${not #lists.isEmpty(usage.usageDefinitions)}">
