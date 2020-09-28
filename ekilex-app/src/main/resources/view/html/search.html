@@ -67,7 +67,11 @@
                    th:each="criteria, critStat: ${group.searchCriteria}"
                    name="detailCondition"
                    th:data-index="${critStat.index}"
-                   th:data-page="${searchPageName}">
+                   th:data-page="${searchPageName}"
+                   th:with="isExistsOperand = ${criteria.searchOperand.name() == 'NOT_EXISTS'
+                                                    || criteria.searchOperand.name() == 'EXISTS'
+                                                    || criteria.searchOperand.name() == 'SINGLE'
+                                                    || criteria.searchOperand.name() == 'MULTIPLE'}">
                 <div class="col-2">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
                     <option th:each="key : ${group.entity.keys}" th:value="${key}" th:selected="${criteria.searchKey == key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
@@ -246,7 +250,11 @@
                          th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
                     <option th:each="pos : ${allLexemePos}"
                             th:value="${pos.code}"
                             th:selected="${criteria.searchValue == pos.code}"
