@@ -142,6 +142,10 @@ function initialiseDetailSearch() {
 		} else if (searchKey == 'OD_RECOMMENDATION' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
+		} else if (searchKey == 'LEXEME_POS' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS' || searchOperand == 'SINGLE' || searchOperand == 'MULTIPLE')) {
+			searchValueElement.empty();
+			searchValueElement.parent().prop('hidden', true);
+			searchValueElement.selectpicker('refresh');
 		} else {
 			searchValueElement.prop('hidden', false);
 			replaceSearchValueElement(searchKey, searchValueElement);

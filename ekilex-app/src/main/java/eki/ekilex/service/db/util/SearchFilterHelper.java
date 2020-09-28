@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -355,11 +356,11 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where.andExists(DSL.select(lal.ID).from(l1, lal, al).where(where1));
 	}
 
-	public Condition applyLexemePosFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
+	public Condition applyLexemePosValueFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.LEXEME_POS)
-						&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
+						&& (crit.getSearchOperand().equals(SearchOperand.EQUALS) || crit.getSearchOperand().equals(SearchOperand.NOT_EQUALS))
 						&& crit.getSearchValue() != null)
 				.collect(toList());
 
@@ -375,6 +376,45 @@ public class SearchFilterHelper implements GlobalConstant {
 			condition = condition.and(DSL.exists(DSL.select(lpos.ID).from(lpos).where(where1)));
 		}
 		return condition;
+	}
+
+	public Condition applyLexemePosExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition where1, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_POS))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		LexemePos lpos1 = LEXEME_POS.as("lpos1");
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+
+			Table<Record2<Long, Integer>> lexPos = DSL
+					.select(l1.ID.as("lexeme_id"), DSL.count(lpos1.ID).as("lpos_count"))
+					.from(l1.leftOuterJoin(lpos1).on(lpos1.LEXEME_ID.eq(l1.ID)))
+					.where(where1)
+					.groupBy(l1.ID)
+					.asTable("lexpos");
+
+			Condition wherePosCount;
+			if (searchOperand.equals(SearchOperand.NOT_EXISTS)) {
+				wherePosCount = lexPos.field("lpos_count", Integer.class).eq(0);
+			} else if (searchOperand.equals(SearchOperand.EXISTS)) {
+				wherePosCount = lexPos.field("lpos_count", Integer.class).gt(0);
+			} else if (searchOperand.equals(SearchOperand.SINGLE)) {
+				wherePosCount = lexPos.field("lpos_count", Integer.class).eq(1);
+			} else if (searchOperand.equals(SearchOperand.MULTIPLE)) {
+				wherePosCount = lexPos.field("lpos_count", Integer.class).gt(1);
+			} else {
+				throw new IllegalArgumentException("Unsupported operand " + searchOperand);
+			}
+
+			where = where.andExists(DSL.select(lexPos.field("lexeme_id", Long.class)).from(lexPos).where(wherePosCount));
+		}
+		return where;
 	}
 
 	public Condition applyLexemeFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
@@ -782,18 +822,29 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public List<SearchCriterion> filterPositiveValueSearchCriteria(List<SearchCriterion> searchCriteria) {
 		// any other than NOT_EQUALS
-		List<SearchCriterion> positiveExistCriteria = searchCriteria.stream()
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> !SearchOperand.NOT_EQUALS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
 				.collect(Collectors.toList());
-		return positiveExistCriteria;
+		return filteredCriteria;
 	}
 
 	public List<SearchCriterion> filterNegativeValueSearchCriteria(List<SearchCriterion> searchCriteria) {
 
-		List<SearchCriterion> negativeExistCriteria = searchCriteria.stream()
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> SearchOperand.NOT_EQUALS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
 				.collect(Collectors.toList());
-		return negativeExistCriteria;
+		return filteredCriteria;
+	}
+
+	public List<SearchCriterion> filterExistsSearchCriteria(List<SearchCriterion> searchCriteria) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand())
+										|| SearchOperand.EXISTS.equals(crit.getSearchOperand())
+										|| SearchOperand.SINGLE.equals(crit.getSearchOperand())
+										|| SearchOperand.MULTIPLE.equals(crit.getSearchOperand()))
+				.collect(Collectors.toList());
+		return filteredCriteria;
 	}
 
 	public boolean containsSearchKeys(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {

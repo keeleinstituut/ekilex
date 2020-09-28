@@ -373,6 +373,10 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 						return true;
 					} else if (SearchOperand.EXISTS.equals(criteria.getSearchOperand())) {
 						return true;
+					} else if (SearchOperand.SINGLE.equals(criteria.getSearchOperand())) {
+						return true;
+					} else if (SearchOperand.MULTIPLE.equals(criteria.getSearchOperand())) {
+						return true;
 					}
 				}
 			}
