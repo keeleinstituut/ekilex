@@ -9,6 +9,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -56,6 +57,7 @@ import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
@@ -399,22 +401,78 @@ public class SearchFilterHelper implements GlobalConstant {
 					.groupBy(l1.ID)
 					.asTable("lexpos");
 
-			Condition wherePosCount;
-			if (searchOperand.equals(SearchOperand.NOT_EXISTS)) {
-				wherePosCount = lexPos.field("lpos_count", Integer.class).eq(0);
-			} else if (searchOperand.equals(SearchOperand.EXISTS)) {
-				wherePosCount = lexPos.field("lpos_count", Integer.class).gt(0);
-			} else if (searchOperand.equals(SearchOperand.SINGLE)) {
-				wherePosCount = lexPos.field("lpos_count", Integer.class).eq(1);
-			} else if (searchOperand.equals(SearchOperand.MULTIPLE)) {
-				wherePosCount = lexPos.field("lpos_count", Integer.class).gt(1);
-			} else {
-				throw new IllegalArgumentException("Unsupported operand " + searchOperand);
-			}
+			Condition wherePosCount = createCountCondition(searchOperand, lexPos, "lpos_count");
 
 			where = where.andExists(DSL.select(lexPos.field("lexeme_id", Long.class)).from(lexPos).where(wherePosCount));
 		}
 		return where;
+	}
+
+	public Condition applyLexemeRegisterValueFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.LEXEME_REGISTER)
+						&& (crit.getSearchOperand().equals(SearchOperand.EQUALS) || crit.getSearchOperand().equals(SearchOperand.NOT_EQUALS))
+						&& crit.getSearchValue() != null)
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		LexemeRegister lr = LEXEME_REGISTER.as("lr");
+		for (SearchCriterion criterion : filteredCriteria) {
+			String lexemeRegisterCode = criterion.getSearchValue().toString();
+			Condition where1 = lr.LEXEME_ID.eq(lexemeIdField)
+					.and(lr.REGISTER_CODE.eq(lexemeRegisterCode));
+			condition = condition.and(DSL.exists(DSL.select(lr.ID).from(lr).where(where1)));
+		}
+		return condition;
+	}
+
+	public Condition applyLexemeRegisterExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition where1, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_REGISTER))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		LexemeRegister lr1 = LEXEME_REGISTER.as("lr");
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+
+			Table<Record2<Long, Integer>> lexReg = DSL
+					.select(l1.ID.as("lexeme_id"), DSL.count(lr1.ID).as("lr_count"))
+					.from(l1.leftOuterJoin(lr1).on(lr1.LEXEME_ID.eq(l1.ID)))
+					.where(where1)
+					.groupBy(l1.ID)
+					.asTable("lexreg");
+
+			Condition whereRegisterCount = createCountCondition(searchOperand, lexReg, "lr_count");
+
+			where = where.andExists(DSL.select(lexReg.field("lexeme_id", Long.class)).from(lexReg).where(whereRegisterCount));
+		}
+		return where;
+	}
+
+	private Condition createCountCondition(SearchOperand searchOperand, Table<Record2<Long, Integer>> idAndCount, String countFieldName) {
+
+		Condition whereItemCount;
+		if (searchOperand.equals(SearchOperand.NOT_EXISTS)) {
+			whereItemCount = idAndCount.field(countFieldName, Integer.class).eq(0);
+		} else if (searchOperand.equals(SearchOperand.EXISTS)) {
+			whereItemCount = idAndCount.field(countFieldName, Integer.class).gt(0);
+		} else if (searchOperand.equals(SearchOperand.SINGLE)) {
+			whereItemCount = idAndCount.field(countFieldName, Integer.class).eq(1);
+		} else if (searchOperand.equals(SearchOperand.MULTIPLE)) {
+			whereItemCount = idAndCount.field(countFieldName, Integer.class).gt(1);
+		} else {
+			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
+		}
+		return whereItemCount;
 	}
 
 	public Condition applyLexemeFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {

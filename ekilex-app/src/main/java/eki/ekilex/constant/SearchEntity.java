@@ -8,7 +8,7 @@ public enum SearchEntity {
 
 	HEADWORD(new SearchKey[] {
 			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.SECONDARY_MEANING_WORD,
-			SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_POS, SearchKey.LEXEME_FREQUENCY, SearchKey.COMPLEXITY,
+			SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_FREQUENCY, SearchKey.COMPLEXITY,
 			SearchKey.OD_RECOMMENDATION, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
 	WORD(new SearchKey[] {
 			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME,

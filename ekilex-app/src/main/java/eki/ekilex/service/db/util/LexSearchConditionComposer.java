@@ -130,7 +130,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where = where.andExists(DSL.select(l1.ID).from(l1).where(where1));
 				}
 
-				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.COMPLEXITY, SearchKey.LEXEME_POS);
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
 				if (containsSearchKeys) {
 					List<SearchCriterion> positiveValueSearchCriteria = searchFilterHelper.filterPositiveValueSearchCriteria(searchCriteria);
 					List<SearchCriterion> negativeValueSearchCriteria = searchFilterHelper.filterNegativeValueSearchCriteria(searchCriteria);
@@ -143,17 +143,20 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					if (CollectionUtils.isNotEmpty(positiveValueSearchCriteria)) {
 						where2 = searchFilterHelper.applyValueFilters(SearchKey.COMPLEXITY, positiveValueSearchCriteria, l1.COMPLEXITY, where1, true);
 						where2 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where2);
+						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where2);
 						where = where.andExists(DSL.select(l1.ID).from(l1).where(where2));
 					}
 
 					if (CollectionUtils.isNotEmpty(negativeValueSearchCriteria)) {
 						where2 = searchFilterHelper.applyValueFilters(SearchKey.COMPLEXITY, negativeValueSearchCriteria, l1.COMPLEXITY, where1, true);
 						where2 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where2);
+						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where2);
 						where = where.andNotExists(DSL.select(l1.ID).from(l1).where(where2));
 					}
 
 					if (CollectionUtils.isNotEmpty(existsSearchCriteria)) {
 						where = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l1, where1, where);
+						where = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1, where1, where);
 					}
 				}
 
