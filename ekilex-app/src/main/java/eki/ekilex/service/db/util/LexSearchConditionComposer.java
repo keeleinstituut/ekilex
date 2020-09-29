@@ -199,6 +199,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 							.and(l2.TYPE.eq(LEXEME_TYPE_SECONDARY))
 							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 							.and(l2.WORD_ID.eq(w2.ID))
+							.and(w2.LANG.eq(w1.LANG))
 							.and(p2.WORD_ID.eq(w2.ID))
 							.and(f2.PARADIGM_ID.eq(p2.ID))
 							.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
