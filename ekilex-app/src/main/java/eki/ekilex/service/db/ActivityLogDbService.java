@@ -67,6 +67,7 @@ public class ActivityLogDbService implements GlobalConstant {
 	public List<ActivityLog> getWordActivityLog(Long wordId) {
 
 		return create.select(
+				ACTIVITY_LOG.ID,
 				ACTIVITY_LOG.EVENT_BY,
 				ACTIVITY_LOG.EVENT_ON,
 				ACTIVITY_LOG.FUNCT_NAME,
@@ -87,6 +88,7 @@ public class ActivityLogDbService implements GlobalConstant {
 	public List<ActivityLog> getMeaningActivityLog(Long meaningId) {
 
 		return create.select(
+				ACTIVITY_LOG.ID,
 				ACTIVITY_LOG.EVENT_BY,
 				ACTIVITY_LOG.EVENT_ON,
 				ACTIVITY_LOG.FUNCT_NAME,
@@ -107,6 +109,7 @@ public class ActivityLogDbService implements GlobalConstant {
 	public List<ActivityLog> getSourceActivityLog(Long sourceId) {
 
 		return create.select(
+				ACTIVITY_LOG.ID,
 				ACTIVITY_LOG.EVENT_BY,
 				ACTIVITY_LOG.EVENT_ON,
 				ACTIVITY_LOG.FUNCT_NAME,

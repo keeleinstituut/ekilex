@@ -17,6 +17,7 @@
             </div>
             <div class="col-3">
               <span th:text="#{|activitylog.entity.${logRow.entityName}|(${logRow.entityName})}"></span>
+              <a class="fa fa-info-circle float-right" data-toggle="collapse" th:href="${'#expandActivityLogRow_' + logRow.id}" title="Tehnilised parameetrid"></a>
             </div>
           </div>
           <div class="row">
@@ -31,6 +32,24 @@
                 <span class="badge badge-secondary" th:text="#{|activitylog.diff.op.${currDiff.op}|}"></span>
                 <span class="badge badge-light" th:text="${currDiff.path}"></span>
                 <strong th:utext="${currDiff.value}"></strong>
+              </div>
+            </div>
+          </div>
+          <div class="collapse" th:id="${'expandActivityLogRow_' + logRow.id}">
+            <div class="row">
+              <div class="col-10 ml-2">
+                <span class="lbl">owner</span>
+                <span th:text="${logRow.ownerName}"></span>
+                :
+                <span th:text="${logRow.ownerId}"></span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-10 ml-2">
+                <span class="lbl">entity</span>
+                <span th:text="${logRow.entityName}"></span>
+                :
+                <span th:text="${logRow.entityId}"></span>
               </div>
             </div>
           </div>
