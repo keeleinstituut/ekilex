@@ -33,11 +33,11 @@
           <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" th:href="@{'/sourcedetailsearch/termsearch/' + ${source.id}}">Term otsing</a>
         </div>
       </div>
-      <a th:href="@{'/sourcelifecyclelog:' + ${source.id}}"
+      <a th:href="@{'/sourceactivitylog:' + ${source.id}}"
          data-toggle="modal"
-         data-target="#sourceLifecycleLogDlg"
+         data-target="#sourceActivityLogDlg"
          class="btn btn-secondary btn-sm ml-2"
-         sec:authorize="${#authentication.principal.datasetPermissionsExist}">Tegevuste logi</a>
+         sec:authorize="${#authentication.principal.datasetPermissionsExist}">Logi</a>
     </div>
     <table class="w-100">
       <tr>

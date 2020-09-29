@@ -11,6 +11,7 @@ import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.ekilex.runner.AbstractLoaderRunner.ArticleLogData;
 
+@Deprecated
 public abstract class AbstractLifecycleLogger extends AbstractLoaderCommons {
 
 	private final static String CREATION_END = "(koostamise lõpp)";

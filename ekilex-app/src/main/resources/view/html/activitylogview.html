@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<body>
+  <th:block>
+    <div th:fragment="details" style="width: 100%">
+      <th:block th:each="logRow : ${activityLog}">
+        <div class="p-1 mt-1 border-bottom">
+          <div class="row">
+            <div class="col-3 stxt">
+              <span th:text="${#dates.format(logRow.eventOn, 'dd.MM.yyyy HH:mm')}"></span>
+            </div>
+            <div class="col-3 stxt">
+              <span th:text="${logRow.eventBy}"></span>
+            </div>
+            <div class="col-3">
+              <span class="badge badge-secondary" th:text="${logRow.functName}"></span>
+            </div>
+            <div class="col-3">
+              <span th:text="#{|activitylog.entity.${logRow.entityName}|(${logRow.entityName})}"></span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 text-left">
+              <div th:each="prevDiff : ${logRow.prevDiffs}">
+                <span class="badge badge-light" th:text="${prevDiff.path}"></span>
+                <strong th:utext="${prevDiff.value}"></strong>
+              </div>
+            </div>
+            <div class="col-6 text-left">
+              <div th:each="currDiff : ${logRow.currDiffs}">
+                <span class="badge badge-secondary" th:text="#{|activitylog.diff.op.${currDiff.op}|}"></span>
+                <span class="badge badge-light" th:text="${currDiff.path}"></span>
+                <strong th:utext="${currDiff.value}"></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+  </th:block>
+</body>
+</html>

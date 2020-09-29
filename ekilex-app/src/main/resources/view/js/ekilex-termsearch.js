@@ -94,7 +94,7 @@ function initializeTermSearch() {
 		$(this).closest('form').submit();
 	});
 
-	$(document).on('show.bs.modal', '#meaningLifecycleLogDlg', function(e) {
+	$(document).on('show.bs.modal', '#meaningActivityLogDlg', function(e) {
 		var dlg = $(this);
 		var link = $(e.relatedTarget);
 		var url = link.attr('href');
