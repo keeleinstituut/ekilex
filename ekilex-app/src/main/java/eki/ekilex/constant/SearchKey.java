@@ -23,11 +23,12 @@ public enum SearchKey {
 	SECONDARY_MEANING_WORD(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	PUBLICITY(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.BOOLEAN),
 	LEXEME_GRAMMAR(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
-	LEXEME_POS(OperandSets.CLASSIFIER_VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	LEXEME_POS(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	LEXEME_REGISTER(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	OD_RECOMMENDATION(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	RELATION_TYPE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
-	COMPLEXITY(OperandSets.CLASSIFIER_VALUE_OPERANDS, SearchValueType.TEXTUAL)
+	COMPLEXITY(OperandSets.CLASSIFIER_OPERANDS, SearchValueType.TEXTUAL)
 	;
 
 	private SearchOperand[] operands;
@@ -52,9 +53,8 @@ public enum SearchKey {
 		SearchOperand[] VALUE_OPERANDS = new SearchOperand[] {
 				SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.CONTAINS_WORD};
 		SearchOperand[] VALUE_AND_EXISTS_OPERANDS = ArrayUtils.addAll(VALUE_OPERANDS, SearchOperand.EXISTS, SearchOperand.NOT_EXISTS);
-		SearchOperand[] CLASSIFIER_VALUE_OPERANDS = new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS};
-		SearchOperand[] CLASSIFIER_VALUE_AND_EXISTS_OPERANDS = ArrayUtils.addAll(
-				CLASSIFIER_VALUE_OPERANDS, SearchOperand.NOT_EXISTS, SearchOperand.EXISTS, SearchOperand.SINGLE, SearchOperand.MULTIPLE);
+		SearchOperand[] CLASSIFIER_OPERANDS = new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS};
+		SearchOperand[] CLASSIFIER_AND_EXISTS_OPERANDS = ArrayUtils.addAll(CLASSIFIER_OPERANDS, SearchOperand.NOT_EXISTS, SearchOperand.EXISTS, SearchOperand.SINGLE, SearchOperand.MULTIPLE);
 		SearchOperand[] DATUM_OPERANDS = new SearchOperand[] {SearchOperand.EARLIER_THAN, SearchOperand.LATER_THAN};
 		SearchOperand[] USER_NAME_OPERANDS = new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH};
 	}

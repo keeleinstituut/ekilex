@@ -146,6 +146,10 @@ function initialiseDetailSearch() {
 			searchValueElement.empty();
 			searchValueElement.parent().prop('hidden', true);
 			searchValueElement.selectpicker('refresh');
+		} else if (searchKey == 'LEXEME_REGISTER' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS' || searchOperand == 'SINGLE' || searchOperand == 'MULTIPLE')) {
+			searchValueElement.empty();
+			searchValueElement.parent().prop('hidden', true);
+			searchValueElement.selectpicker('refresh');
 		} else {
 			searchValueElement.prop('hidden', false);
 			replaceSearchValueElement(searchKey, searchValueElement);

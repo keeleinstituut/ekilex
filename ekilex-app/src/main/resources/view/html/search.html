@@ -261,6 +261,18 @@
                             th:text="${pos.value}">pos</option>
                   </select>
                 </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_REGISTER'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="register : ${allLexemeRegisters}"
+                            th:value="${register.code}"
+                            th:selected="${criteria.searchValue == register.code}"
+                            th:text="${register.value}">register</option>
+                  </select>
+                </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_FREQUENCY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
@@ -429,6 +441,11 @@
             <div name="LEXEME_POS" class="col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
+              </select>
+            </div>
+            <div name="LEXEME_REGISTER" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
               </select>
             </div>
             <div name="LEXEME_FREQUENCY" class="col-auto flex-grow-1 flex-shrink-1">
