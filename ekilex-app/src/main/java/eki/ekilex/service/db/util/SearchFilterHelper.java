@@ -15,6 +15,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -67,6 +68,7 @@ import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
 public class SearchFilterHelper implements GlobalConstant {
@@ -458,6 +460,34 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where;
 	}
 
+	public Condition applyWordTypeExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.WORD_TYPE))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+
+			Table<Record2<Long, Integer>> wordWordType = DSL
+					.select(wordIdField.as("word_id"), DSL.count(wwt.ID).as("wt_count"))
+					.from(wwt)
+					.where(wwt.WORD_ID.eq(wordIdField))
+					.groupBy(wordIdField)
+					.asTable("word_word_type");
+
+			Condition whereWordTypeCount = createCountCondition(searchOperand, wordWordType, "wt_count");
+
+			where = where.andExists(DSL.select(wordWordType.field("word_id", Long.class)).from(wordWordType).where(whereWordTypeCount));
+		}
+		return where;
+	}
+
 	private Condition createCountCondition(SearchOperand searchOperand, Table<Record2<Long, Integer>> idAndCount, String countFieldName) {
 
 		Condition whereItemCount;
@@ -535,7 +565,7 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(lff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.GRAMMAR.name()));
 
-		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.LEXEME_GRAMMAR, searchCriteria);
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.LEXEME_GRAMMAR, filteredCriteria);
 		if (isNotExistsSearch) {
 			condition = condition.and(DSL.notExists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
 			return condition;
@@ -607,7 +637,7 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(wff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
 
-		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.OD_RECOMMENDATION, searchCriteria);
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.OD_RECOMMENDATION, filteredCriteria);
 		if (isNotExistsSearch) {
 			condition = condition.and(DSL.notExists(DSL.select(wff.ID).from(wff, ff).where(wordFreeformCondition)));
 			return condition;
@@ -619,6 +649,53 @@ public class SearchFilterHelper implements GlobalConstant {
 			}
 		}
 		condition = condition.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
+		return condition;
+	}
+
+	public Condition applyWordAspectFilters(List<SearchCriterion> searchCriteria, Field<String> wordAspectField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.ASPECT))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		boolean isNotExistsSearch = filteredCriteria.stream().anyMatch(crit -> crit.getSearchOperand().equals(SearchOperand.NOT_EXISTS));
+		if (isNotExistsSearch) {
+			condition = condition.and(wordAspectField.isNull());
+			return condition;
+		}
+
+		boolean isExistsSearch = filteredCriteria.stream().anyMatch(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS));
+		if (isExistsSearch) {
+			condition = condition.and(wordAspectField.isNotNull());
+		}
+
+		List<SearchCriterion> aspectEqualsCrit = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchValue() != null)
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.EQUALS))
+				.collect(toList());
+		List<SearchCriterion> aspectNotEqualsCrit = filteredCriteria.stream()
+				.filter(crit -> crit.getSearchValue() != null)
+				.filter(crit -> crit.getSearchOperand().equals(SearchOperand.NOT_EQUALS))
+				.collect(toList());
+
+		if (CollectionUtils.isNotEmpty(aspectEqualsCrit)) {
+			for (SearchCriterion criterion : aspectEqualsCrit) {
+				String aspectCode = criterion.getSearchValue().toString();
+				condition = condition.and(wordAspectField.eq(aspectCode));
+			}
+		}
+
+		if (CollectionUtils.isNotEmpty(aspectNotEqualsCrit)) {
+			for (SearchCriterion criterion : aspectNotEqualsCrit) {
+				String aspectCode = criterion.getSearchValue().toString();
+				condition = condition.and(wordAspectField.ne(aspectCode));
+			}
+		}
+
 		return condition;
 	}
 

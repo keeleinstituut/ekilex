@@ -117,36 +117,24 @@ function initialiseDetailSearch() {
 
 	$(document).on("change", "select[name$='searchOperand']", function() {
 
+		const textTypeSearchKeys = ["SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "OD_RECOMMENDATION"];
+		const selectTypeSearchKeys = ["DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "WORD_TYPE", "ASPECT"];
+		const nonValueSearchOperands = ["NOT_EXISTS", "EXISTS", "SINGLE", "MULTIPLE"];
+
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');
 		let searchOperand = $(this).val();
 		let searchKeyElement = detailConditionElement.find('[name$="searchKey"] option:selected');
 		let searchKey = searchKeyElement.val();
-
 		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
-		if (searchKey == 'DOMAIN' && searchOperand == 'NOT_EXISTS') {
-			searchValueElement.empty();
-			searchValueElement.parent().prop('hidden', true);
-			searchValueElement.selectpicker('refresh');
-		} else if (searchKey == 'SOURCE_REF' && searchOperand == 'NOT_EXISTS') {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'VALUE_AND_EXISTS' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
+
+		let isTextTypeSearch = textTypeSearchKeys.includes(searchKey);
+		let isSelectTypeSearch = selectTypeSearchKeys.includes(searchKey);
+		let isNonValueSearch = nonValueSearchOperands.includes(searchOperand);
+
+		if (isTextTypeSearch && isNonValueSearch) {
 			searchValueElement.empty();
 			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'SECONDARY_MEANING_WORD' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'LEXEME_GRAMMAR' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'OD_RECOMMENDATION' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'LEXEME_POS' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS' || searchOperand == 'SINGLE' || searchOperand == 'MULTIPLE')) {
-			searchValueElement.empty();
-			searchValueElement.parent().prop('hidden', true);
-			searchValueElement.selectpicker('refresh');
-		} else if (searchKey == 'LEXEME_REGISTER' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS' || searchOperand == 'SINGLE' || searchOperand == 'MULTIPLE')) {
+		} else if (isSelectTypeSearch && isNonValueSearch) {
 			searchValueElement.empty();
 			searchValueElement.parent().prop('hidden', true);
 			searchValueElement.selectpicker('refresh');

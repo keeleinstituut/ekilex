@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -60,6 +61,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
 public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct {
@@ -142,21 +144,46 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 					if (CollectionUtils.isNotEmpty(positiveValueSearchCriteria)) {
 						where2 = searchFilterHelper.applyValueFilters(SearchKey.COMPLEXITY, positiveValueSearchCriteria, l1.COMPLEXITY, where1, true);
-						where2 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where2);
-						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where2);
+						where2 = searchFilterHelper.applyLexemePosValueFilters(positiveValueSearchCriteria, l1.ID, where2);
+						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(positiveValueSearchCriteria, l1.ID, where2);
 						where = where.andExists(DSL.select(l1.ID).from(l1).where(where2));
 					}
 
 					if (CollectionUtils.isNotEmpty(negativeValueSearchCriteria)) {
 						where2 = searchFilterHelper.applyValueFilters(SearchKey.COMPLEXITY, negativeValueSearchCriteria, l1.COMPLEXITY, where1, true);
-						where2 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where2);
-						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where2);
+						where2 = searchFilterHelper.applyLexemePosValueFilters(negativeValueSearchCriteria, l1.ID, where2);
+						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(negativeValueSearchCriteria, l1.ID, where2);
 						where = where.andNotExists(DSL.select(l1.ID).from(l1).where(where2));
 					}
 
 					if (CollectionUtils.isNotEmpty(existsSearchCriteria)) {
-						where = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l1, where1, where);
-						where = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1, where1, where);
+						where = searchFilterHelper.applyLexemePosExistsFilters(existsSearchCriteria, l1, where1, where);
+						where = searchFilterHelper.applyLexemeRegisterExistsFilters(existsSearchCriteria, l1, where1, where);
+					}
+				}
+
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.WORD_TYPE);
+				if (containsSearchKeys) {
+					List<SearchCriterion> positiveValueSearchCriteria = searchFilterHelper.filterPositiveValueSearchCriteria(searchCriteria);
+					List<SearchCriterion> negativeValueSearchCriteria = searchFilterHelper.filterNegativeValueSearchCriteria(searchCriteria);
+					List<SearchCriterion> existsSearchCriteria = searchFilterHelper.filterExistsSearchCriteria(searchCriteria);
+
+					WordWordType wwt = WORD_WORD_TYPE.as("wwt");
+					Condition where2 = wwt.WORD_ID.eq(w1.ID);
+					Condition where1;
+
+					if (CollectionUtils.isNotEmpty(positiveValueSearchCriteria)) {
+						where1 = searchFilterHelper.applyValueFilters(SearchKey.WORD_TYPE, positiveValueSearchCriteria, wwt.WORD_TYPE_CODE, where2, false);
+						where = where.andExists(DSL.select(wwt.ID).from(wwt).where(where1));
+					}
+
+					if (CollectionUtils.isNotEmpty(negativeValueSearchCriteria)) {
+						where1 = searchFilterHelper.applyValueFilters(SearchKey.WORD_TYPE, negativeValueSearchCriteria, wwt.WORD_TYPE_CODE, where2, false);
+						where = where.andNotExists(DSL.select(wwt.ID).from(wwt).where(where1));
+					}
+
+					if (CollectionUtils.isNotEmpty(existsSearchCriteria)) {
+						where = searchFilterHelper.applyWordTypeExistsFilters(existsSearchCriteria, w1.ID, where);
 					}
 				}
 
@@ -190,6 +217,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where, false);
 				where = searchFilterHelper.applyWordOdRecommendationFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordAspectFilters(searchCriteria, w1.ASPECT_CODE, where);
 				where = applyWordActivityLogFilters(searchCriteria, w1.ID, where);
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
