@@ -132,7 +132,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-		permCalculator.filterVisibility(userRole, usages);
+		usages = usages.stream().filter(Usage::isPublic).collect(Collectors.toList());
 
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 

@@ -211,13 +211,11 @@
   </div>
 
   <div th:data-id="${lexeme.lexemeId}" th:fragment="usages_data">
-    <div class="d-flex flex-wrap" th:if="${not #lists.isEmpty(lexeme.usages)}">
-      <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
-        <div th:with="usage= ${lexeme.usages[0]}">
-          <span class="text-secondary" th:utext="${usage.value}"></span>
-        </div>
-      </th:block>
-    </div>
+    <th:block th:if="${not #lists.isEmpty(lexeme.usages)}">
+      <div class="d-flex flex-wrap ml-3" th:each="usage : ${lexeme.usages}">
+        <span class="text-secondary" th:utext="${usage.value}"></span>
+      </div>
+    </th:block>
   </div>
 
   <th:block th:fragment="meaning_words_data(showLangLabel)" th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
