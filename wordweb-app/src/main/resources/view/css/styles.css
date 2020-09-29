@@ -18067,6 +18067,11 @@ eki-link {
   margin: 16px 32px;
 }
 
+.learn .learn-content img {
+  max-height: 350px;
+  object-fit: scale-down;
+}
+
 @media (max-width: 991.98px) {
   .learn .learn-content {
     margin: 12px 8px;

@@ -11,6 +11,11 @@
   .learn-content {
     margin: 16px 32px;
 
+    img {
+      max-height: 350px;
+      object-fit: scale-down;
+    }
+
     @include media-breakpoint-down(md) {
       margin: 12px 8px;
 
