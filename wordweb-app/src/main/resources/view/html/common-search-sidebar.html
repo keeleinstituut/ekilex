@@ -420,7 +420,7 @@
             <span th:if="${etymLevel.etymYear != null}" th:text="${etymLevel.etymYear}"></span>
             <span class="ml-n1">)</span>
           </th:block>
-          <span th:if="${etymLevel.comment != null}" th:utext="${etymLevel.comment}"></span>
+          <span th:if="${etymLevel.comment != null}" th:utext="${viewUtil.wrapDecorations(etymLevel.comment)}"></span>
         </span>
       </div>
       <th:block th:if="${not #lists.isEmpty(etymLevel.tree)}">
