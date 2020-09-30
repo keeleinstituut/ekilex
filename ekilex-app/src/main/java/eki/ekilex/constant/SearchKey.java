@@ -12,6 +12,7 @@ public enum SearchKey {
 	ASPECT(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS, SearchOperand.EXISTS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
 	TAG_NAME(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS, SearchOperand.HAS_BEEN}, SearchValueType.TEXTUAL),
 	DOMAIN(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
+	SEMANTIC_TYPE(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	SOURCE_REF(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
 	SOURCE_NAME(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS}, SearchValueType.TEXTUAL),
 	SOURCE_ID(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.NUMERIC),
@@ -56,7 +57,8 @@ public enum SearchKey {
 				SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.CONTAINS_WORD};
 		SearchOperand[] VALUE_AND_EXISTS_OPERANDS = ArrayUtils.addAll(VALUE_OPERANDS, SearchOperand.EXISTS, SearchOperand.NOT_EXISTS);
 		SearchOperand[] CLASSIFIER_OPERANDS = new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS};
-		SearchOperand[] CLASSIFIER_AND_EXISTS_OPERANDS = ArrayUtils.addAll(CLASSIFIER_OPERANDS, SearchOperand.NOT_EXISTS, SearchOperand.EXISTS, SearchOperand.SINGLE, SearchOperand.MULTIPLE);
+		SearchOperand[] CLASSIFIER_AND_EXISTS_OPERANDS = ArrayUtils.addAll(
+				CLASSIFIER_OPERANDS, SearchOperand.NOT_EXISTS, SearchOperand.EXISTS, SearchOperand.SINGLE, SearchOperand.MULTIPLE);
 		SearchOperand[] DATUM_OPERANDS = new SearchOperand[] {SearchOperand.EARLIER_THAN, SearchOperand.LATER_THAN};
 		SearchOperand[] USER_NAME_OPERANDS = new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH};
 	}

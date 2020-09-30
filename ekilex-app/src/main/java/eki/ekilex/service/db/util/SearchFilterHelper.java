@@ -14,6 +14,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
@@ -64,6 +65,7 @@ import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningRelation;
+import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
@@ -237,6 +239,27 @@ public class SearchFilterHelper implements GlobalConstant {
 		return m1Where;
 	}
 
+	public Condition applyMeaningSemanticTypeValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.SEMANTIC_TYPE)
+						&& (crit.getSearchOperand().equals(SearchOperand.EQUALS) || crit.getSearchOperand().equals(SearchOperand.NOT_EQUALS))
+						&& crit.getSearchValue() != null)
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
+		for (SearchCriterion criterion : filteredCriteria) {
+			String semanticTypeCode = criterion.getSearchValue().toString();
+			Condition where1 = mst.MEANING_ID.eq(meaningIdField).and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
+			condition = condition.and(DSL.exists(DSL.select(mst.ID).from(mst).where(where1)));
+		}
+		return condition;
+	}
+
 	public Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition condition) throws Exception {
 
 		Lexeme l1 = Lexeme.LEXEME.as("l1");
@@ -375,8 +398,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		LexemePos lpos = LEXEME_POS.as("lpos");
 		for (SearchCriterion criterion : filteredCriteria) {
 			String lexemePosCode = criterion.getSearchValue().toString();
-			Condition where1 = lpos.LEXEME_ID.eq(lexemeIdField)
-					.and(lpos.POS_CODE.eq(lexemePosCode));
+			Condition where1 = lpos.LEXEME_ID.eq(lexemeIdField).and(lpos.POS_CODE.eq(lexemePosCode));
 			condition = condition.and(DSL.exists(DSL.select(lpos.ID).from(lpos).where(where1)));
 		}
 		return condition;
@@ -425,8 +447,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		for (SearchCriterion criterion : filteredCriteria) {
 			String lexemeRegisterCode = criterion.getSearchValue().toString();
-			Condition where1 = lr.LEXEME_ID.eq(lexemeIdField)
-					.and(lr.REGISTER_CODE.eq(lexemeRegisterCode));
+			Condition where1 = lr.LEXEME_ID.eq(lexemeIdField).and(lr.REGISTER_CODE.eq(lexemeRegisterCode));
 			condition = condition.and(DSL.exists(DSL.select(lr.ID).from(lr).where(where1)));
 		}
 		return condition;
@@ -484,6 +505,36 @@ public class SearchFilterHelper implements GlobalConstant {
 			Condition whereWordTypeCount = createCountCondition(searchOperand, wordWordType, "wt_count");
 
 			where = where.andExists(DSL.select(wordWordType.field("word_id", Long.class)).from(wordWordType).where(whereWordTypeCount));
+		}
+		return where;
+	}
+
+	public Condition applyMeaningSemanticTypeExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition where1, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.SEMANTIC_TYPE))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+
+			Table<Record2<Long, Integer>> meaningSemanticType = DSL
+					.select(m1.ID.as("meaning_id"), DSL.count(mst.ID).as("mst_count"))
+					.from(
+							l1,
+							m1.leftOuterJoin(mst).on(mst.MEANING_ID.eq(m1.ID)))
+					.where(where1)
+					.groupBy(m1.ID)
+					.asTable("meaning_semantic_type");
+
+			Condition whereMstCount = createCountCondition(searchOperand, meaningSemanticType, "mst_count");
+			where = where.andExists(DSL.select(meaningSemanticType.field("meaning_id", Long.class)).from(meaningSemanticType).where(whereMstCount));
+
 		}
 		return where;
 	}
