@@ -82,6 +82,17 @@ function initializeLexSearch() {
 		});
 	});
 
+	$(document).on('show.bs.modal', '#meaningActivityLogDlg', function(e) {
+		var dlg = $(this);
+		var link = $(e.relatedTarget);
+		var url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
+
 	$(document).on('click', '[id^=duplicateLexemeBtn_]', function() {
 		var lexemeId = $(this).data('lexeme-id');
 		let url = applicationUrl + 'lexduplicate/' + lexemeId;
