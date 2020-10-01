@@ -11,7 +11,7 @@ public enum SearchKey {
 	WORD_TYPE(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	ASPECT(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS, SearchOperand.EXISTS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
 	TAG_NAME(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS, SearchOperand.HAS_BEEN}, SearchValueType.TEXTUAL),
-	DOMAIN(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
+	DOMAIN(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	SEMANTIC_TYPE(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	SOURCE_REF(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
 	SOURCE_NAME(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS}, SearchValueType.TEXTUAL),

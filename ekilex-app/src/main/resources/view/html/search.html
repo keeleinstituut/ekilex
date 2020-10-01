@@ -131,7 +131,8 @@
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
-                          th:hidden="${isExistsOperand}">
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
                     <option value="">Kõik valdkonnad</option>
                     <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
                       <option th:each="domain : ${origin.getValue()}"
