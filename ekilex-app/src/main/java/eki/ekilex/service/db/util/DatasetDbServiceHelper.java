@@ -258,6 +258,7 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
+	@Deprecated
 	public void deleteWordLifecycleLogs(String datasetCode, DSLContext create) {
 
 		Lexeme l1 = LEXEME.as("l1");
@@ -283,6 +284,7 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
+	@Deprecated
 	public void deleteLexemeLifecycleLogs(String datasetCode, DSLContext create) {
 
 		Lexeme l1 = LEXEME.as("l1");
@@ -306,6 +308,7 @@ public class DatasetDbServiceHelper {
 				.execute();
 	}
 
+	@Deprecated
 	public void deleteMeaningLifecycleLogs(String datasetCode, DSLContext create) {
 
 		Lexeme l1 = LEXEME.as("l1");

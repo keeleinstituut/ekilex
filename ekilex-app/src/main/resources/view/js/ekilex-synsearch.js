@@ -207,7 +207,7 @@ function initializeSynSearch() {
 		detailButtons.trigger('click');
 	}
 
-	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
+	$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
 		let dlg = $(this);
 		let link = $(e.relatedTarget);
 		let url = link.attr('href');

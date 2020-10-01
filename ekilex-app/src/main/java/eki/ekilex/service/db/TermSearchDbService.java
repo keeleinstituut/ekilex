@@ -144,14 +144,14 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.from(m
 						.innerJoin(pm).on(pm.WORD_ID.eq(m.field("word_id", Long.class)))
 						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name())))
-						.leftOuterJoin(lo).on(
+						.innerJoin(lo).on(
 								lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
 										.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(wherelods))
-						.leftOuterJoin(wo).on(wherewo)
-						.leftOuterJoin(po).on(po.WORD_ID.eq(wo.ID))
-						.leftOuterJoin(fo).on(fo.PARADIGM_ID.eq(po.ID).and(fo.MODE.eq(FormMode.WORD.name())))
-						.leftOuterJoin(wol).on(wol.CODE.eq(wo.LANG)))
+						.innerJoin(wo).on(wherewo)
+						.innerJoin(po).on(po.WORD_ID.eq(wo.ID))
+						.innerJoin(fo).on(fo.PARADIGM_ID.eq(po.ID).and(fo.MODE.eq(FormMode.WORD.name())))
+						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
 				.asTable("m");
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL

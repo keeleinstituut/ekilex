@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -143,6 +145,21 @@ public class ActivityLogService implements SystemConstant {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	@Transactional
+	public List<ActivityLog> getWordActivityLog(Long wordId) {
+		return activityLogDbService.getWordActivityLog(wordId);
+	}
+
+	@Transactional
+	public List<ActivityLog> getMeaningActivityLog(Long meaningId) {
+		return activityLogDbService.getMeaningActivityLog(meaningId);
+	}
+
+	@Transactional
+	public List<ActivityLog> getSourceActivityLog(Long sourceId) {
+		return activityLogDbService.getSourceActivityLog(sourceId);
+	}
 
 	public ActivityLogOwnerEntityDescr getFreeformOwnerDescr(Long freeformId) throws Exception {
 		Map<String, Object> freeformOwnerDataMap = activityLogDbService.getFirstDepthFreeformOwnerDataMap(freeformId);

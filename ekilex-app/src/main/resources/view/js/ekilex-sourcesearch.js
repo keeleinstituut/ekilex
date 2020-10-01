@@ -171,7 +171,7 @@ function deleteSourceAndUpdateSearch(deleteUrl) {
 
 $(function(){
 
-	$(document).on('show.bs.modal', '#sourceLifecycleLogDlg', function(e) {
+	$(document).on('show.bs.modal', '#sourceActivityLogDlg', function(e) {
 		var dlg = $(this);
 		var link = $(e.relatedTarget);
 		var url = link.attr('href');

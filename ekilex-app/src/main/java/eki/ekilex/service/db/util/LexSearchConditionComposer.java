@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -60,6 +61,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
 public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct {
@@ -132,31 +134,50 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
 				if (containsSearchKeys) {
-					List<SearchCriterion> positiveValueSearchCriteria = searchFilterHelper.filterPositiveValueSearchCriteria(searchCriteria);
-					List<SearchCriterion> negativeValueSearchCriteria = searchFilterHelper.filterNegativeValueSearchCriteria(searchCriteria);
-					List<SearchCriterion> existsSearchCriteria = searchFilterHelper.filterExistsSearchCriteria(searchCriteria);
+					List<SearchCriterion> valueSearchCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria,
+							SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
+					List<SearchCriterion> existsSearchCriteria = searchFilterHelper.filterExistsSearchCriteria(searchCriteria,
+							SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
 
 					Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					Condition where2;
 
-					if (CollectionUtils.isNotEmpty(positiveValueSearchCriteria)) {
-						where2 = searchFilterHelper.applyValueFilters(SearchKey.COMPLEXITY, positiveValueSearchCriteria, l1.COMPLEXITY, where1, true);
-						where2 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where2);
-						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where2);
+					if (CollectionUtils.isNotEmpty(valueSearchCriteria)) {
+						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(valueSearchCriteria, l1.ID, where1);
+						where2 = searchFilterHelper.applyLexemePosValueFilters(valueSearchCriteria, l1.ID, where2);
+						where2 = searchFilterHelper.applyLexemeComplexityFilters(valueSearchCriteria, l1.COMPLEXITY, where2);
 						where = where.andExists(DSL.select(l1.ID).from(l1).where(where2));
 					}
 
+					if (CollectionUtils.isNotEmpty(existsSearchCriteria)) {
+						where = searchFilterHelper.applyLexemePosExistsFilters(existsSearchCriteria, l1, where1, where);
+						where = searchFilterHelper.applyLexemeRegisterExistsFilters(existsSearchCriteria, l1, where1, where);
+					}
+				}
+
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.WORD_TYPE);
+				if (containsSearchKeys) {
+					List<SearchCriterion> positiveValueSearchCriteria = searchFilterHelper.filterPositiveValueSearchCriteria(searchCriteria, SearchKey.WORD_TYPE);
+					List<SearchCriterion> negativeValueSearchCriteria = searchFilterHelper.filterNegativeValueSearchCriteria(searchCriteria, SearchKey.WORD_TYPE);
+					List<SearchCriterion> existsSearchCriteria = searchFilterHelper.filterExistsSearchCriteria(searchCriteria, SearchKey.WORD_TYPE);
+
+					WordWordType wwt = WORD_WORD_TYPE.as("wwt");
+					Condition where2 = wwt.WORD_ID.eq(w1.ID);
+					Condition where1;
+
+					if (CollectionUtils.isNotEmpty(positiveValueSearchCriteria)) {
+						where1 = searchFilterHelper.applyValueFilters(SearchKey.WORD_TYPE, positiveValueSearchCriteria, wwt.WORD_TYPE_CODE, where2, false);
+						where = where.andExists(DSL.select(wwt.ID).from(wwt).where(where1));
+					}
+
 					if (CollectionUtils.isNotEmpty(negativeValueSearchCriteria)) {
-						where2 = searchFilterHelper.applyValueFilters(SearchKey.COMPLEXITY, negativeValueSearchCriteria, l1.COMPLEXITY, where1, true);
-						where2 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where2);
-						where2 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where2);
-						where = where.andNotExists(DSL.select(l1.ID).from(l1).where(where2));
+						where1 = searchFilterHelper.applyValueFilters(SearchKey.WORD_TYPE, negativeValueSearchCriteria, wwt.WORD_TYPE_CODE, where2, false);
+						where = where.andNotExists(DSL.select(wwt.ID).from(wwt).where(where1));
 					}
 
 					if (CollectionUtils.isNotEmpty(existsSearchCriteria)) {
-						where = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l1, where1, where);
-						where = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1, where1, where);
+						where = searchFilterHelper.applyWordTypeExistsFilters(existsSearchCriteria, w1.ID, where);
 					}
 				}
 
@@ -172,6 +193,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 							.and(l2.TYPE.eq(LEXEME_TYPE_SECONDARY))
 							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
 							.and(l2.WORD_ID.eq(w2.ID))
+							.and(w2.LANG.eq(w1.LANG))
 							.and(p2.WORD_ID.eq(w2.ID))
 							.and(f2.PARADIGM_ID.eq(p2.ID))
 							.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
@@ -190,12 +212,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where, false);
 				where = searchFilterHelper.applyWordOdRecommendationFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordAspectFilters(searchCriteria, w1.ASPECT_CODE, where);
 				where = applyWordActivityLogFilters(searchCriteria, w1.ID, where);
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
-
-				List<SearchCriterion> positiveValueSearchCriteria = searchFilterHelper.filterPositiveValueSearchCriteria(searchCriteria);
-				List<SearchCriterion> negativeValueSearchCriteria = searchFilterHelper.filterNegativeValueSearchCriteria(searchCriteria);
 
 				Lexeme l1 = Lexeme.LEXEME.as("l1");
 				Lexeme l2 = Lexeme.LEXEME.as("l2");
@@ -203,52 +223,51 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				boolean containsSearchKeys;
 
-				if (CollectionUtils.isNotEmpty(positiveValueSearchCriteria)) {
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria,
+						SearchKey.ID, SearchKey.LANGUAGE, SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME);
 
-					containsSearchKeys = searchFilterHelper.containsSearchKeys(positiveValueSearchCriteria,
+				if (containsSearchKeys) {
+					List<SearchCriterion> positiveValueSearchCriteria = searchFilterHelper.filterPositiveValueSearchCriteria(searchCriteria,
 							SearchKey.ID, SearchKey.LANGUAGE, SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME);
 
-					if (containsSearchKeys) {
-						Paradigm p2 = Paradigm.PARADIGM.as("p2");
-						Form f2 = Form.FORM.as("f2");
+					Paradigm p2 = Paradigm.PARADIGM.as("p2");
+					Form f2 = Form.FORM.as("f2");
 
-						Condition where1 = l1.WORD_ID.eq(w1.ID)
-								.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-								.and(l2.WORD_ID.eq(w2.ID))
-								.and(p2.WORD_ID.eq(w2.ID))
-								.and(f2.PARADIGM_ID.eq(p2.ID))
-								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
+					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+							.and(l2.WORD_ID.eq(w2.ID))
+							.and(p2.WORD_ID.eq(w2.ID))
+							.and(f2.PARADIGM_ID.eq(p2.ID))
+							.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
-						where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-						where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
-						where1 = searchFilterHelper.applyIdFilters(SearchKey.ID, positiveValueSearchCriteria, w2.ID, where1);
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, positiveValueSearchCriteria, w2.LANG, where1, false);
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, positiveValueSearchCriteria, f2.VALUE, where1, true);
-						where1 = searchFilterHelper.applyLexemeSourceRefFilter(positiveValueSearchCriteria, l2.ID, where1);
-						where1 = searchFilterHelper.applyLexemeSourceNameFilter(positiveValueSearchCriteria, l2.ID, where1);
+					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+					where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+					where1 = searchFilterHelper.applyIdFilters(SearchKey.ID, positiveValueSearchCriteria, w2.ID, where1);
+					where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, positiveValueSearchCriteria, w2.LANG, where1, false);
+					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, positiveValueSearchCriteria, f2.VALUE, where1, true);
+					where1 = searchFilterHelper.applyLexemeSourceRefFilter(positiveValueSearchCriteria, l2.ID, where1);
+					where1 = searchFilterHelper.applyLexemeSourceNameFilter(positiveValueSearchCriteria, l2.ID, where1);
 
-						where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
-					}
+					where = where.andExists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1));
 				}
 
-				if (CollectionUtils.isNotEmpty(negativeValueSearchCriteria)) {
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
 
-					containsSearchKeys = searchFilterHelper.containsSearchKeys(negativeValueSearchCriteria, SearchKey.LANGUAGE);
+				if (containsSearchKeys) {
+					List<SearchCriterion> negativeValueSearchCriteria = searchFilterHelper.filterNegativeValueSearchCriteria(searchCriteria, SearchKey.LANGUAGE);
 
-					if (containsSearchKeys) {
-						Condition where1 = l1.WORD_ID.eq(w1.ID)
-								.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-								.and(l2.WORD_ID.eq(w2.ID))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY));
+					Condition where1 = l1.WORD_ID.eq(w1.ID)
+							.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
+							.and(l1.MEANING_ID.eq(l2.MEANING_ID))
+							.and(l2.WORD_ID.eq(w2.ID))
+							.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY));
 
-						where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-						where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, negativeValueSearchCriteria, w2.LANG, where1, false);
+					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
+					where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
+					where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, negativeValueSearchCriteria, w2.LANG, where1, false);
 
-						where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, w2).where(where1));
-					}
+					where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, w2).where(where1));
 				}
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
@@ -288,13 +307,32 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				Lexeme l1 = LEXEME.as("l1");
 				Meaning m1 = MEANING.as("m1");
+				boolean containsSearchKeys;
 
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = searchFilterHelper.applyDomainFilters(searchCriteria, m1.ID, where1);
+
+				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchKey.DOMAIN);
+				if (containsSearchKeys) {
+					List<SearchCriterion> valueSearchCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchKey.DOMAIN);
+					List<SearchCriterion> existsSearchCriteria = searchFilterHelper.filterExistsSearchCriteria(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchKey.DOMAIN);
+
+					if (CollectionUtils.isNotEmpty(valueSearchCriteria)) {
+						Condition where2;
+						where2 = searchFilterHelper.applyMeaningSemanticTypeValueFilters(valueSearchCriteria, m1.ID, where1);
+						where2 = searchFilterHelper.applyDomainValueFilters(valueSearchCriteria, m1.ID, where2);
+						where = where.andExists(DSL.select(l1.ID).from(l1, m1).where(where2));
+					}
+
+					if (CollectionUtils.isNotEmpty(existsSearchCriteria)) {
+						where = searchFilterHelper.applyMeaningSemanticTypeExistsFilters(existsSearchCriteria, l1, m1, where1, where);
+						where = searchFilterHelper.applyDomainExistsFilters(existsSearchCriteria, l1, m1, where1, where);
+					}
+				}
+
 				where1 = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyMeaningRelationFilters(searchCriteria, m1.ID, where1);
 				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));

@@ -45,7 +45,6 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
-import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -54,9 +53,6 @@ public class TermSearchService extends AbstractSearchService {
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
-
-	@Autowired
-	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -164,7 +160,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
-		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForMeaning(meaningId);
+		Timestamp latestLogEventTime = activityLogDbService.getLatestLogTimeForMeaning(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();

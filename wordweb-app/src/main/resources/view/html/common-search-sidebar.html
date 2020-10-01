@@ -226,6 +226,7 @@
                   <span class="word-options text-nowrap mb-1">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect.value}">tee</span>
+                      <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                       <span th:unless="${relationIter.last}" class="ml-n1">,</span>
                     </a>
                   </span>
@@ -236,6 +237,7 @@
                   <span class="word-options text-nowrap mb-1">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+                      <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                       <span th:unless="${relationIter.last}" class="ml-n1">,</span>
                     </a>
                   </span>
@@ -289,6 +291,7 @@
           <span class="word-options text-nowrap mb-1" th:classappend="${isCollapsable ? 'collapse':''}">
             <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
               <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+              <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
             </a>
             <span th:unless="${relationIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
           </span>
@@ -325,6 +328,7 @@
             <span class="word-options text-nowrap mb-1" th:classappend="${isCollapsable ? 'collapse' : ''}">
               <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                 <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
+                <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
               </a>
               <span th:unless="${relationIter.last}" class="ml-n1 mr-1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
             </span>
@@ -420,7 +424,7 @@
             <span th:if="${etymLevel.etymYear != null}" th:text="${etymLevel.etymYear}"></span>
             <span class="ml-n1">)</span>
           </th:block>
-          <span th:if="${etymLevel.comment != null}" th:utext="${etymLevel.comment}"></span>
+          <span th:if="${etymLevel.comment != null}" th:utext="${viewUtil.wrapDecorations(etymLevel.comment)}"></span>
         </span>
       </div>
       <th:block th:if="${not #lists.isEmpty(etymLevel.tree)}">

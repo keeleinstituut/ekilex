@@ -182,12 +182,12 @@
     		title : 'Kinnita vaste ilmiku kustutamine',
     		onConfirm : deleteLexemeAndWordAndMeaning
     	});
-      $('[data-toggle=delete-confirm]').confirmation({
-        btnOkLabel : 'Jah',
-        btnCancelLabel : 'Ei',
-        title : 'Kinnita kustutamine',
-        onConfirm : executeDelete
-      });
+        $('[data-toggle=delete-confirm]').confirmation({
+          btnOkLabel : 'Jah',
+          btnCancelLabel : 'Ei',
+          title : 'Kinnita kustutamine',
+          onConfirm : executeDelete
+        });
     </script>
   </th:block>
   <div th:replace="common :: #waitDlg"></div>
