@@ -150,6 +150,18 @@
                             th:text="${relType.value}">rel type</option>
                   </select>
                 </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SEMANTIC_TYPE'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="semanticType : ${semanticTypes}"
+                            th:value="${semanticType.code}"
+                            th:selected="${criteria.searchValue == semanticType.code}"
+                            th:text="${semanticType.code}">semantic type</option>
+                  </select>
+                </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'COMPLEXITY'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
                     <option th:each="complexity : ${enabledComplexities}"
@@ -391,6 +403,11 @@
             <div name="RELATION_TYPE" class="col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="relType : ${meaningRelationTypes}" th:value="${relType.code}" th:text="${relType.value}">rel type</option>
+              </select>
+            </div>
+            <div name="SEMANTIC_TYPE" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}">semantic type</option>
               </select>
             </div>
             <div name="COMPLEXITY" class="col-auto flex-grow-1 flex-shrink-1">
