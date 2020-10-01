@@ -60,7 +60,7 @@ create type type_meaning_word as (
 				meaning_id bigint,
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
-        mw_lex_type varchar(100),
+				mw_lex_type varchar(100),
 				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_freeform array,
 				mw_lex_register_codes varchar(100) array,
@@ -81,13 +81,16 @@ create type type_word_etym_relation as (
 create type type_word_relation as (
 				word_group_id bigint,
 				word_rel_type_code varchar(100),
+				relation_status varchar(100),
+				order_by bigint,
 				word_id bigint,
 				word text,
 				word_prese text,
 				homonym_nr integer,
+				homonyms_exist boolean,
 				lang char(3),
-        aspect_code varchar(100),
-        word_type_codes varchar(100) array,
+				aspect_code varchar(100),
+				word_type_codes varchar(100) array,
 				lex_complexities varchar(100) array);
 create type type_lexeme_relation as (
                 lexeme_id bigint,
@@ -1308,10 +1311,13 @@ from word w
                           array_agg(row (
                             null,
                             wr.word_rel_type_code,
+                            wr.relation_status,
+                            wr.word_rel_order_by,
                             wr.related_word_id,
                             ' ' || wr.related_word,
                             ' ' || wr.related_word_prese,
                             wr.related_word_homonym_nr,
+                            wr.related_word_homonyms_exist,
                             wr.related_word_lang,
                             wr.related_word_aspect_code,
                             wr.word_type_codes,
@@ -1321,10 +1327,28 @@ from word w
                      inner join (select distinct r.word1_id,
                                         r.word2_id related_word_id,
                                         r.word_rel_type_code,
+                                        coalesce(r.relation_status, 'UNDEFINED') relation_status,
                                         r.order_by word_rel_order_by,
                                         w2.word related_word,
                                         w2.word_prese related_word_prese,
                                         w2.homonym_nr related_word_homonym_nr,
+                                        (select max(wh.homonym_nr) > 1
+                                         from word wh,
+                                              paradigm ph,
+                                              form fh
+                                         where wh.lang = w2.lang
+                                         and ph.word_id = wh.id
+                                         and fh.paradigm_id = ph.id
+                                         and fh.mode = 'WORD'
+                                         and fh.value = w2.word
+                                         and exists (select l.id
+                                                     from lexeme as l,
+                                                          dataset ds
+                                                     where l.type = 'PRIMARY'
+                                                     and   l.is_public = true
+                                                     and   ds.code = l.dataset_code
+                                                     and   ds.is_public = true
+                                                     and   l.word_id = wh.id)) as related_word_homonyms_exist,
                                         w2.lang related_word_lang,
                                         w2.aspect_code related_word_aspect_code,
                                         w2.word_type_codes,
@@ -1364,10 +1388,13 @@ from word w
                           array_agg(row (
                             wg.word_group_id,
                             wg.word_rel_type_code,
+                            null,
+                            wg.group_member_order_by,
                             wg.group_member_word_id,
                             ' ' || wg.group_member_word,
                             ' ' || wg.group_member_word_prese,
                             wg.group_member_homonym_nr,
+                            wg.group_member_homonyms_exist,
                             wg.group_member_word_lang,
                             wg.group_member_aspect_code,
                             wg.word_type_codes,
@@ -1380,6 +1407,23 @@ from word w
                                 w2.word group_member_word,
                                 w2.word_prese group_member_word_prese,
                                 w2.homonym_nr group_member_homonym_nr,
+                                (select max(wh.homonym_nr) > 1
+                                         from word wh,
+                                              paradigm ph,
+                                              form fh
+                                         where wh.lang = w2.lang
+                                         and ph.word_id = wh.id
+                                         and fh.paradigm_id = ph.id
+                                         and fh.mode = 'WORD'
+                                         and fh.value = w2.word
+                                         and exists (select l.id
+                                                     from lexeme as l,
+                                                          dataset ds
+                                                     where l.type = 'PRIMARY'
+                                                     and   l.is_public = true
+                                                     and   ds.code = l.dataset_code
+                                                     and   ds.is_public = true
+                                                     and   l.word_id = wh.id)) as group_member_homonyms_exist,
                                 w2.lang group_member_word_lang,
                                 w2.aspect_code group_member_aspect_code,
                                 w2.word_type_codes,

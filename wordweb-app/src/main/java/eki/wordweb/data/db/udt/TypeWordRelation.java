@@ -20,7 +20,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
 
-    private static final long serialVersionUID = -2099303267;
+    private static final long serialVersionUID = -1288996282;
 
     /**
      * The reference instance of <code>public.type_word_relation</code>
@@ -46,6 +46,16 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
     public static final UDTField<TypeWordRelationRecord, String> WORD_REL_TYPE_CODE = createField(DSL.name("word_rel_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD_RELATION, "");
 
     /**
+     * The attribute <code>public.type_word_relation.relation_status</code>.
+     */
+    public static final UDTField<TypeWordRelationRecord, String> RELATION_STATUS = createField(DSL.name("relation_status"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_word_relation.order_by</code>.
+     */
+    public static final UDTField<TypeWordRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, TYPE_WORD_RELATION, "");
+
+    /**
      * The attribute <code>public.type_word_relation.word_id</code>.
      */
     public static final UDTField<TypeWordRelationRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_WORD_RELATION, "");
@@ -64,6 +74,11 @@ public class TypeWordRelation extends UDTImpl<TypeWordRelationRecord> {
      * The attribute <code>public.type_word_relation.homonym_nr</code>.
      */
     public static final UDTField<TypeWordRelationRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER, TYPE_WORD_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_word_relation.homonyms_exist</code>.
+     */
+    public static final UDTField<TypeWordRelationRecord, Boolean> HOMONYMS_EXIST = createField(DSL.name("homonyms_exist"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_WORD_RELATION, "");
 
     /**
      * The attribute <code>public.type_word_relation.lang</code>.

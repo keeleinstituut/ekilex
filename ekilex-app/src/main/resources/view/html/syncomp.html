@@ -14,8 +14,7 @@
           th:data-navigate-index="${relationIter.index}"
           th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-marked' : ''}"
           th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'">
-        <div class="draggable-synonym d-flex flex-row hover-actions-container align-items-center pl-1" th:data-word-id="${synRelation.wordId}"
-             th:data-word="${synRelation.wordValue}">
+        <div class="draggable-synonym d-flex flex-row hover-actions-container align-items-center pl-1" th:data-word-id="${synRelation.wordId}" th:data-word="${synRelation.wordValue}">
           <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
             <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
           </span>
