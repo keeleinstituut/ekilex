@@ -103,9 +103,6 @@ function initialiseDetailSearch() {
 		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
 			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
 		}
-		if (pageName == 'term_search' && searchEntity == 'TERM' && searchKey == 'LANGUAGE') {
-			operandTemplate.find('option[value="NOT_EQUALS"]').remove();
-		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());
 		searchOperandElement.val(searchOperandElement.find('option').first().val());

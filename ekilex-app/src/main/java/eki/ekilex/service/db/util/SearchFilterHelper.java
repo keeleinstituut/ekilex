@@ -239,24 +239,29 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyMeaningSemanticTypeValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.SEMANTIC_TYPE)
-						&& (crit.getSearchOperand().equals(SearchOperand.EQUALS) || crit.getSearchOperand().equals(SearchOperand.NOT_EQUALS))
-						&& crit.getSearchValue() != null)
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return condition;
-		}
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.SEMANTIC_TYPE);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.SEMANTIC_TYPE);
 
 		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
-		Condition where1 = mst.MEANING_ID.eq(meaningIdField);
 
-		for (SearchCriterion criterion : filteredCriteria) {
-			String semanticTypeCode = criterion.getSearchValue().toString();
-			where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
+		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
+			Condition where1 = mst.MEANING_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : positiveValueCriteria) {
+				String semanticTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
+			}
+			condition = condition.and(DSL.exists(DSL.select(mst.ID).from(mst).where(where1)));
 		}
-		condition = condition.and(DSL.exists(DSL.select(mst.ID).from(mst).where(where1)));
+
+		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
+			Condition where1 = mst.MEANING_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : negativeValueCriteria) {
+				String semanticTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
+			}
+			condition = condition.and(DSL.notExists(DSL.select(mst.ID).from(mst).where(where1)));
+		}
+
 		return condition;
 	}
 
@@ -402,6 +407,56 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
+	public Condition applyWordTypeValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition condition) {
+
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.WORD_TYPE);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.WORD_TYPE);
+
+		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
+
+		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
+			Condition where1 = wwt.WORD_ID.eq(wordIdField);
+			for (SearchCriterion criterion : positiveValueCriteria) {
+				String wordTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(wwt.WORD_TYPE_CODE.eq(wordTypeCode));
+			}
+			condition = condition.andExists(DSL.select(wwt.ID).from(wwt).where(where1));
+		}
+
+		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
+			Condition where1 = wwt.WORD_ID.eq(wordIdField);
+			for (SearchCriterion criterion : negativeValueCriteria) {
+				String wordTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(wwt.WORD_TYPE_CODE.eq(wordTypeCode));
+			}
+			condition = condition.andNotExists(DSL.select(wwt.ID).from(wwt).where(where1));
+		}
+
+		return condition;
+	}
+
+	public Condition applyLangValueFilters(List<SearchCriterion> searchCriteria, Field<String> langField, Condition condition) {
+
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.LANGUAGE);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.LANGUAGE);
+
+		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
+			for (SearchCriterion criterion : positiveValueCriteria) {
+				String lang = criterion.getSearchValue().toString();
+				condition = condition.and(langField.eq(lang));
+			}
+		}
+
+		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
+			for (SearchCriterion criterion : negativeValueCriteria) {
+				String lang = criterion.getSearchValue().toString();
+				condition = condition.and(langField.ne(lang));
+			}
+		}
+
+		return condition;
+	}
+
 	public Condition applyLexemePosValueFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
 
 		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.LEXEME_POS);
@@ -432,9 +487,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyLexemePosExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition where1, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_POS))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.LEXEME_POS);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
@@ -488,9 +541,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyLexemeRegisterExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition where1, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_REGISTER))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.LEXEME_REGISTER);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
@@ -517,9 +568,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyLexemeRegisterExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_REGISTER))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.LEXEME_REGISTER);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
@@ -545,9 +594,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyWordTypeExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.WORD_TYPE))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.WORD_TYPE);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
@@ -573,9 +620,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyMeaningSemanticTypeExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition where1, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.SEMANTIC_TYPE))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.SEMANTIC_TYPE);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
@@ -603,9 +648,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyDomainExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition where1, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.DOMAIN))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.DOMAIN);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
@@ -633,9 +676,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyDomainExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.DOMAIN))
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.DOMAIN);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return where;
