@@ -16580,6 +16580,12 @@ body.hidden-scroll {
   border-left: 5px solid transparent;
 }
 
+@media (max-width: 767.98px) {
+  .dropdown-aside .has-submenu button {
+    display: none;
+  }
+}
+
 .dropdown-aside .has-submenu .list-unstyled {
   display: none;
   margin-left: 16px;
@@ -16591,6 +16597,12 @@ body.hidden-scroll {
 
 .dropdown-aside .has-submenu.open .list-unstyled {
   display: block;
+}
+
+@media (max-width: 767.98px) {
+  .dropdown-aside .has-submenu.open .list-unstyled {
+    display: none;
+  }
 }
 
 @media (min-width: 767px) {
