@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -24,7 +25,6 @@ import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -40,7 +40,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LexemeType;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
@@ -276,7 +275,6 @@ public class ActivityLogDbService implements GlobalConstant {
 				.where(
 						entityIdCond
 								.and(l.WORD_ID.eq(w.ID))
-								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(l.MEANING_ID.eq(m.ID)))
 				.groupBy(groupByField)
 				.fetchOptionalInto(WordLexemeMeaningIds.class)
