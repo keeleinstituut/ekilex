@@ -18081,6 +18081,7 @@ eki-link {
 
 .learn .learn-content img {
   max-height: 350px;
+  -o-object-fit: scale-down;
   object-fit: scale-down;
 }
 
