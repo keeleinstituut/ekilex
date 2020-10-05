@@ -435,7 +435,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	public Condition applyLangValueFilters(List<SearchCriterion> searchCriteria, Field<String> langField, Condition condition) {
+	public Condition applyLangFilters(List<SearchCriterion> searchCriteria, Field<String> langField, Condition condition) {
 
 		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.LANGUAGE);
 		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.LANGUAGE);

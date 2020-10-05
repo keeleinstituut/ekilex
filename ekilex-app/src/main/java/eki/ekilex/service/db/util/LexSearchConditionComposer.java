@@ -165,7 +165,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				}
 
 				where = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, where);
-				where = searchFilterHelper.applyLangValueFilters(searchCriteria, w1.LANG, where);
+				where = searchFilterHelper.applyLangFilters(searchCriteria, w1.LANG, where);
 				where = searchFilterHelper.applyWordOdRecommendationFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordAspectFilters(searchCriteria, w1.ASPECT_CODE, where);
 				where = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, where);
@@ -256,7 +256,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
-				where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1, false);
+				where1 = searchFilterHelper.applyLangFilters(searchCriteria, w1.LANG, where1);
 
 				where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
 
@@ -296,7 +296,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where = where.andNotExists(DSL.select(d1.ID).from(l1, m1, d1).where(where1));
 				} else {
 					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1, true);
-					where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1, false);
+					where1 = searchFilterHelper.applyLangFilters(searchCriteria, d1.LANG, where1);
 					where1 = searchFilterHelper.applyDefinitionSourceRefFilter(searchCriteria, d1.ID, where1);
 					where1 = searchFilterHelper.applyDefinitionSourceNameFilter(searchCriteria, d1.ID, where1);
 
@@ -322,7 +322,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where = where.andNotExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1));
 				} else {
 					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1, true);
-					where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1, false);
+					where1 = searchFilterHelper.applyLangFilters(searchCriteria, u1.LANG, where1);
 					where1 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, u1.ID, where1);
 					where1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, where1);
 
