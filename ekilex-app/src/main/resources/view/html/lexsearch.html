@@ -56,8 +56,6 @@
                     <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
                   </button>
                 </div>
-                <span class="lbl">Viimati muudetud: </span>
-                <span th:text="${#dates.format(details.lastChangedOn, 'dd.MM.yyyy')}"></span>
               </div>
               <div class="ml-2">
                 <form th:action="@{/wordjoin}" method="get">
@@ -77,6 +75,11 @@
                         sec:authorize="#vars.details.word.subGrant">Märgi tehtuks
                 </button>
               </div>
+              <div class="ml-2">
+                <div class="date-modified" title="Viimati muudetud" data-toggle="tooltip" data-placement="bottom">
+                  <i class="fa fa-calendar"></i><span th:text="${#dates.format(details.lastChangedOn, 'dd.MM.yyyy')}"></span>
+                </div><!--/date-modified-->
+              </div><!--/ml-2-->
               <div sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
                 <a th:href="@{'/wordlifecyclelog:' + ${wordId}}" data-toggle="modal"
                    data-target="#wordLifecycleLogDlg"
@@ -114,7 +117,7 @@
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
             <div class="col-8 h-100 d-flex flex-column" id="contentColumn">
-              <div class="overflow-auto pt-3 h-100">
+              <div class="overflow-auto pt-3 h-100" data-plugin="multiSelect">
                 <th:block th:each="lexeme : ${details.lexemes}">
                   <div th:id="${'lexeme-details-' + lexeme.lexemeId}">
                     <th:block th:if="${#lists.size(details.lexemes) > 1}">

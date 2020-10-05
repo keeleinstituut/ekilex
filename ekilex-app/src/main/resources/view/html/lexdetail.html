@@ -116,6 +116,7 @@
                 <span th:if="${lexeme.wordLang == meaningWordLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
                 <span th:unless="${lexeme.wordLang == meaningWordLangGroup.lang}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
                 <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
+                    class="orderable-item"
                      th:data-id="${meaningWord.lexemeId}"
                      th:data-orderby="${meaningWord.orderBy}">
                   <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
@@ -166,7 +167,6 @@
                             sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-arrow-right" aria-hidden="true"></i>
                     </button>
-                    <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
                   </div>
                 </div>
               </div>
