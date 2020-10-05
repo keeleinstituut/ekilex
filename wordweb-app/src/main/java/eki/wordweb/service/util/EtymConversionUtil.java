@@ -61,7 +61,7 @@ public class EtymConversionUtil {
 
 		List<String> etymLevelsWrapup = new ArrayList<>();
 		wordEtymology.setEtymLevelsWrapup(etymLevelsWrapup);
-		
+
 		composeEtymLevelsWrapup(etymLevelsWrapup, headwordId, headwordId, etymAltsMap, wordEtymSourceLinkMap);
 	}
 

@@ -610,16 +610,6 @@
               <span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
             </div>
           </div>
-          <div id="meaningActivityLogDlg" class="modal" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body"></div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
@@ -982,6 +972,7 @@
           </div>
         </div>
       </th:block>
+      <div th:replace="common :: #meaningActivityLogDlg"></div>
       <script th:replace="common :: confirmations"></script>
       <script>
         $('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
