@@ -210,6 +210,9 @@
                    sec:authorize="#vars.lexeme.crudGrant">Kustuta koos tähenduse ja venekeelsete vastetega</a>
               </span>
             </span>
+            <a th:href="@{'/meaningactivitylog:' + ${lexeme.meaningId}}" data-toggle="modal"
+               data-target="#meaningActivityLogDlg"
+               class="btn btn-secondary btn-compact ml-2">Logi</a>
           </div>
           <div class="ml-auto">
             <b th:text="${lexeme.datasetName}"></b>

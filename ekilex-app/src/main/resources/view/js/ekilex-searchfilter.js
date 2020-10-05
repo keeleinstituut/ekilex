@@ -97,14 +97,8 @@ function initialiseDetailSearch() {
 		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
 		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
 		// NOT_EXISTS and NOT_EQUALS is not implemented everywhere
-		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
-			operandTemplate.find('option[value="NOT_EQUALS"]').remove();
-		}
 		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
 			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
-		}
-		if (pageName == 'term_search' && searchEntity == 'TERM' && searchKey == 'LANGUAGE') {
-			operandTemplate.find('option[value="NOT_EQUALS"]').remove();
 		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());

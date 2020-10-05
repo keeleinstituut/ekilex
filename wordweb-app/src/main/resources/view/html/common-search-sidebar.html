@@ -390,8 +390,9 @@
             <i class="fas fa-info-circle"></i>
           </button>
           <th:block th:if="${wordData.word.wordEtymologyTree != null}">
-            <span class="tag">
-              <span th:if="${wordData.word.wordEtymologyTree.etymologyType != null}" th:text="${wordData.word.wordEtymologyTree.etymologyType.value}" style='font-variant: small-caps'></span>
+            <span class="tag" style='font-variant: small-caps'
+                  th:if="${wordData.word.wordEtymologyTree.etymologyType != null}"
+                  th:text="${wordData.word.wordEtymologyTree.etymologyType.value}">
             </span>
           </th:block>
         </h5>
