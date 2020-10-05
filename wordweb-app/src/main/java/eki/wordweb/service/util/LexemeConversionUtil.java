@@ -329,7 +329,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		lexeme.setRelatedMeanings(relatedMeanings);
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType = relatedMeanings.stream()
-					.sorted(((relation1, relation2) -> compareLangOrderby(relation1, relation2, wordLang, langOrderByMap)))
+					.sorted((relation1, relation2) -> compareLangOrderby(relation1, relation2, wordLang, langOrderByMap))
 					.collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType,
 							Collectors.groupingBy(TypeMeaningRelation::getMeaningId, Collectors.toList())))
 					.entrySet().stream()

@@ -118,6 +118,10 @@
         border-bottom: 0;
         border-left: 5px solid transparent;
       }
+
+      @include media-breakpoint-down(sm) {
+        display: none;
+      }
     }
 
     .list-unstyled {
@@ -134,6 +138,10 @@
 
     .list-unstyled {
       display: block;
+
+      @include media-breakpoint-down(sm) {
+        display: none;
+      }
     }
   }
 

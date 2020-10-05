@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
+import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Lexeme;
@@ -124,12 +125,22 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
 		List<Complexity> combinedLexComplexity = Arrays.asList(lexComplexity, Complexity.ANY);
+		List<RelationStatus> relationStatusOrder = Arrays.asList(RelationStatus.PROCESSED, RelationStatus.UNDEFINED, RelationStatus.DELETED);
 
 		List<TypeWordRelation> wordRelations = wordRelationsTuple.getRelatedWords();
 		Map<String, List<TypeWordRelation>> wordRelationsMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(wordRelations)) {
 			wordRelations = wordRelations.stream()
+					.filter(relation -> !RelationStatus.DELETED.equals(relation.getRelationStatus()))
 					.filter(relation -> CollectionUtils.isNotEmpty(CollectionUtils.intersection(relation.getLexComplexities(), combinedLexComplexity)))
+					.sorted((relation1, relation2) -> {
+						if (relation1.getRelationStatus().equals(relation2.getRelationStatus())) {
+							return (int) (relation1.getOrderBy() - relation2.getOrderBy());
+						}
+						int relationStatusOrder1 = relationStatusOrder.indexOf(relation1.getRelationStatus());
+						int relationStatusOrder2 = relationStatusOrder.indexOf(relation2.getRelationStatus());
+						return relationStatusOrder1 - relationStatusOrder2;
+					})
 					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(wordRelations)) {
 				String alternativeWord = null;
@@ -235,16 +246,14 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		if (CollectionUtils.isEmpty(relatedWordsOfType)) {
 			wordRelationGroup.setEmpty(true);
+		} else if (MapUtils.isEmpty(langOrderByMap)) {
+			wordRelationGroup.setRelatedWords(relatedWordsOfType);
+			wordRelationGroup.setAsList(true);
 		} else {
-			if (MapUtils.isEmpty(langOrderByMap)) {
-				wordRelationGroup.setRelatedWords(relatedWordsOfType);
-				wordRelationGroup.setAsList(true);
-			} else {
-				Map<String, List<TypeWordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(TypeWordRelation::getLang));
-				Map<String, List<TypeWordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
-				wordRelationGroup.setRelatedWordsByLang(relatedWordsByLangOrdered);
-				wordRelationGroup.setAsMap(true);
-			}
+			Map<String, List<TypeWordRelation>> relatedWordsByLangUnordered = relatedWordsOfType.stream().collect(Collectors.groupingBy(TypeWordRelation::getLang));
+			Map<String, List<TypeWordRelation>> relatedWordsByLangOrdered = composeOrderedMap(relatedWordsByLangUnordered, langOrderByMap);
+			wordRelationGroup.setRelatedWordsByLang(relatedWordsByLangOrdered);
+			wordRelationGroup.setAsMap(true);
 		}
 		wordRelationGroups.add(wordRelationGroup);
 	}

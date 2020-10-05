@@ -71,10 +71,21 @@ function initializeLexSearch() {
 		});
 	});
 
-	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
+	$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
 		let dlg = $(this);
 		let link = $(e.relatedTarget);
 		let url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
+
+	$(document).on('show.bs.modal', '#meaningActivityLogDlg', function(e) {
+		var dlg = $(this);
+		var link = $(e.relatedTarget);
+		var url = link.attr('href');
 		dlg.find('.close').focus();
 		dlg.find('.modal-body').html(null);
 		$.get(url).done(function(data) {

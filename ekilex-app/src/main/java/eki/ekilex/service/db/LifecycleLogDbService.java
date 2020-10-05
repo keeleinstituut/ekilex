@@ -17,7 +17,6 @@ import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,10 +24,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
-import org.jooq.Record8;
 import org.jooq.Result;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,7 +34,6 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.ekilex.data.Government;
-import eki.ekilex.data.LifecycleLog;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -48,8 +43,6 @@ import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 @Component
 public class LifecycleLogDbService implements GlobalConstant {
 
-	private static final String LOADER_USERNAME_PATTERN = "Ekilex %laadur";
-
 	@Autowired
 	private DSLContext create;
 
@@ -58,193 +51,6 @@ public class LifecycleLogDbService implements GlobalConstant {
 
 	@Autowired
 	private LifecycleLogDbServiceHelper helper;
-
-	public List<LifecycleLog> getLogForWord(Long wordId) {
-		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildWordLogUnionTable(wordId);
-		List<LifecycleLog> results = create
-				.select(
-						ll.field("entity_id", Long.class),
-						ll.field("entity_name", String.class),
-						ll.field("entity_prop", String.class),
-						ll.field("event_type", String.class),
-						ll.field("event_by", String.class),
-						ll.field("event_on", Timestamp.class),
-						ll.field("recent", String.class),
-						ll.field("entry", String.class))
-				.from(ll)
-				.orderBy(ll.field("event_on").desc())
-				.fetchInto(LifecycleLog.class);
-		return results;
-	}
-
-	public Timestamp getLatestLogTimeForWord(Long wordId) {
-		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildWordLogUnionTable(wordId);
-
-		Timestamp latestTimestamp = create
-				.select(
-						DSL.max(ll.field("event_on", Timestamp.class))
-				)
-				.from(ll)
-				.where(DSL.not(ll.field("event_by", String.class).like(LOADER_USERNAME_PATTERN)))
-				.fetchSingleInto(Timestamp.class);
-
-		return latestTimestamp;
-	}
-
-	private Table<Record8<Long, String, String, String, String, Timestamp, String, String>> buildWordLogUnionTable(Long wordId) {
-		return DSL
-				.select(
-						LIFECYCLE_LOG.ENTITY_ID,
-						LIFECYCLE_LOG.ENTITY_NAME,
-						LIFECYCLE_LOG.ENTITY_PROP,
-						LIFECYCLE_LOG.EVENT_TYPE,
-						LIFECYCLE_LOG.EVENT_BY,
-						LIFECYCLE_LOG.EVENT_ON,
-						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY)
-				.from(LEXEME, LEXEME_LIFECYCLE_LOG, LIFECYCLE_LOG)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
-				.unionAll(DSL
-						.select(
-								LIFECYCLE_LOG.ENTITY_ID,
-								LIFECYCLE_LOG.ENTITY_NAME,
-								LIFECYCLE_LOG.ENTITY_PROP,
-								LIFECYCLE_LOG.EVENT_TYPE,
-								LIFECYCLE_LOG.EVENT_BY,
-								LIFECYCLE_LOG.EVENT_ON,
-								LIFECYCLE_LOG.RECENT,
-								LIFECYCLE_LOG.ENTRY)
-						.from(WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
-						.where(
-								WORD_LIFECYCLE_LOG.WORD_ID.eq(wordId)
-										.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
-				.unionAll(DSL
-						.select(
-								LIFECYCLE_LOG.ENTITY_ID,
-								LIFECYCLE_LOG.ENTITY_NAME,
-								LIFECYCLE_LOG.ENTITY_PROP,
-								LIFECYCLE_LOG.EVENT_TYPE,
-								LIFECYCLE_LOG.EVENT_BY,
-								LIFECYCLE_LOG.EVENT_ON,
-								LIFECYCLE_LOG.RECENT,
-								LIFECYCLE_LOG.ENTRY)
-						.from(LEXEME, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
-						.where(
-								LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
-								.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
-				.asTable("ll");
-	}
-
-	public Timestamp getLatestLogTimeForMeaning(Long meaningId) {
-		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildMeaningLogUnionTable(meaningId);
-
-		Timestamp latestTimestamp = create
-				.select(
-						DSL.max(ll.field("event_on", Timestamp.class))
-				)
-				.from(ll)
-				.where(DSL.not(ll.field("event_by", String.class).like(LOADER_USERNAME_PATTERN)))
-				.fetchSingleInto(Timestamp.class);
-
-		return latestTimestamp;
-	}
-
-	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
-		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = buildMeaningLogUnionTable(meaningId);
-
-		List<LifecycleLog> results = create
-				.select(
-						ll.field("entity_id", Long.class),
-						ll.field("entity_name", String.class),
-						ll.field("entity_prop", String.class),
-						ll.field("event_type", String.class),
-						ll.field("event_by", String.class),
-						ll.field("event_on", Timestamp.class),
-						ll.field("recent", String.class),
-						ll.field("entry", String.class))
-				.from(ll)
-				.orderBy(ll.field("event_on").desc())
-				.fetchInto(LifecycleLog.class);
-		return results;
-	}
-
-	private Table<Record8<Long, String, String, String, String, Timestamp, String, String>> buildMeaningLogUnionTable(Long meaningId) {
-		return DSL
-				.select(
-						LIFECYCLE_LOG.ENTITY_ID,
-						LIFECYCLE_LOG.ENTITY_NAME,
-						LIFECYCLE_LOG.ENTITY_PROP,
-						LIFECYCLE_LOG.EVENT_TYPE,
-						LIFECYCLE_LOG.EVENT_BY,
-						LIFECYCLE_LOG.EVENT_ON,
-						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY)
-				.from(LEXEME, LEXEME_LIFECYCLE_LOG, LIFECYCLE_LOG)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
-								.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
-				.unionAll(DSL
-						.select(
-								LIFECYCLE_LOG.ENTITY_ID,
-								LIFECYCLE_LOG.ENTITY_NAME,
-								LIFECYCLE_LOG.ENTITY_PROP,
-								LIFECYCLE_LOG.EVENT_TYPE,
-								LIFECYCLE_LOG.EVENT_BY,
-								LIFECYCLE_LOG.EVENT_ON,
-								LIFECYCLE_LOG.RECENT,
-								LIFECYCLE_LOG.ENTRY)
-						.from(LEXEME, WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
-						.where(
-								LEXEME.MEANING_ID.eq(meaningId)
-										.and(WORD_LIFECYCLE_LOG.WORD_ID.eq(LEXEME.WORD_ID))
-										.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
-				.unionAll(DSL
-						.select(
-								LIFECYCLE_LOG.ENTITY_ID,
-								LIFECYCLE_LOG.ENTITY_NAME,
-								LIFECYCLE_LOG.ENTITY_PROP,
-								LIFECYCLE_LOG.EVENT_TYPE,
-								LIFECYCLE_LOG.EVENT_BY,
-								LIFECYCLE_LOG.EVENT_ON,
-								LIFECYCLE_LOG.RECENT,
-								LIFECYCLE_LOG.ENTRY)
-						.from(MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
-						.where(
-								MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId)
-										.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))))
-				.asTable("ll");
-	}
-
-	public List<LifecycleLog> getLogForSource(Long sourceId) {
-
-		List<LifecycleLog> results = create
-				.select(
-						LIFECYCLE_LOG.ENTITY_ID,
-						LIFECYCLE_LOG.ENTITY_NAME,
-						LIFECYCLE_LOG.ENTITY_PROP,
-						LIFECYCLE_LOG.EVENT_TYPE,
-						LIFECYCLE_LOG.EVENT_BY,
-						LIFECYCLE_LOG.EVENT_ON,
-						LIFECYCLE_LOG.RECENT,
-						LIFECYCLE_LOG.ENTRY)
-				.from(
-						SOURCE_LIFECYCLE_LOG, LIFECYCLE_LOG)
-				.where(
-						SOURCE_LIFECYCLE_LOG.SOURCE_ID.eq(sourceId)
-								.and(SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
-				.orderBy(
-						LIFECYCLE_LOG.EVENT_ON.desc())
-				.fetchInto(LifecycleLog.class);
-
-		return results;
-	}
 
 	public void createLog(LogData logData) {
 

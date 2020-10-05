@@ -67,7 +67,11 @@
                    th:each="criteria, critStat: ${group.searchCriteria}"
                    name="detailCondition"
                    th:data-index="${critStat.index}"
-                   th:data-page="${searchPageName}">
+                   th:data-page="${searchPageName}"
+                   th:with="isExistsOperand = ${criteria.searchOperand.name() == 'NOT_EXISTS'
+                                                    || criteria.searchOperand.name() == 'EXISTS'
+                                                    || criteria.searchOperand.name() == 'SINGLE'
+                                                    || criteria.searchOperand.name() == 'MULTIPLE'}">
                 <div class="col-2">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
                     <option th:each="key : ${group.entity.keys}" th:value="${key}" th:selected="${criteria.searchKey == key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
@@ -90,6 +94,30 @@
                             th:text="${language.value}">language</option>
                   </select>
                 </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_TYPE'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="wordType : ${wordTypes}"
+                            th:value="${wordType.code}"
+                            th:selected="${criteria.searchValue == wordType.code}"
+                            th:text="${wordType.value}">wordType</option>
+                  </select>
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ASPECT'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="aspect : ${wordAspects}"
+                            th:value="${aspect.code}"
+                            th:selected="${criteria.searchValue == aspect.code}"
+                            th:text="${aspect.value}">aspect</option>
+                  </select>
+                </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
                     <option value="" selected>Kõik sildid</option>
@@ -103,7 +131,8 @@
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
-                          th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS'}">
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
                     <option value="">Kõik valdkonnad</option>
                     <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
                       <option th:each="domain : ${origin.getValue()}"
@@ -120,6 +149,18 @@
                             th:value="${relType.code}"
                             th:selected="${criteria.searchValue == relType.code}"
                             th:text="${relType.value}">rel type</option>
+                  </select>
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SEMANTIC_TYPE'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="semanticType : ${semanticTypes}"
+                            th:value="${semanticType.code}"
+                            th:selected="${criteria.searchValue == semanticType.code}"
+                            th:text="${semanticType.code}">semantic type</option>
                   </select>
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'COMPLEXITY'}">
@@ -139,7 +180,7 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
+                         th:hidden="${isExistsOperand}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ID'}">
                   <input type="text" class="form-control"
@@ -150,7 +191,7 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS'}">
+                         th:hidden="${isExistsOperand}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
                   <input type="text" class="form-control"
@@ -225,7 +266,7 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
+                         th:hidden="${isExistsOperand}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLICITY'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
@@ -237,20 +278,36 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
+                         th:hidden="${isExistsOperand}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GRAMMAR'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS' || criteria.searchOperand.name() == 'EXISTS'}">
+                         th:hidden="${isExistsOperand}">
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
                     <option th:each="pos : ${allLexemePos}"
                             th:value="${pos.code}"
                             th:selected="${criteria.searchValue == pos.code}"
                             th:text="${pos.value}">pos</option>
+                  </select>
+                </div>
+                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_REGISTER'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="register : ${allLexemeRegisters}"
+                            th:value="${register.code}"
+                            th:selected="${criteria.searchValue == register.code}"
+                            th:text="${register.value}">register</option>
                   </select>
                 </div>
                 <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_FREQUENCY'}">
@@ -317,6 +374,16 @@
                 <option th:each="language : ${allLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
               </select>
             </div>
+            <div name="WORD_TYPE" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="wordType : ${wordTypes}" th:value="${wordType.code}" th:text="${wordType.value}">wordType</option>
+              </select>
+            </div>
+            <div name="ASPECT" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="aspect : ${wordAspects}" th:value="${aspect.code}" th:text="${aspect.value}">aspect</option>
+              </select>
+            </div>
             <div name="TAG_NAME" class="col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option value="" selected>Kõik sildid</option>
@@ -337,6 +404,11 @@
             <div name="RELATION_TYPE" class="col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="relType : ${meaningRelationTypes}" th:value="${relType.code}" th:text="${relType.value}">rel type</option>
+              </select>
+            </div>
+            <div name="SEMANTIC_TYPE" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}">semantic type</option>
               </select>
             </div>
             <div name="COMPLEXITY" class="col-auto flex-grow-1 flex-shrink-1">
@@ -421,6 +493,11 @@
             <div name="LEXEME_POS" class="col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
+              </select>
+            </div>
+            <div name="LEXEME_REGISTER" class="col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
               </select>
             </div>
             <div name="LEXEME_FREQUENCY" class="col-auto flex-grow-1 flex-shrink-1">

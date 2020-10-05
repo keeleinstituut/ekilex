@@ -58,7 +58,6 @@ import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
-import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
@@ -69,9 +68,6 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
-
-	@Autowired
-	private LifecycleLogDbService lifecycleLogDbService;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -104,7 +100,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, wordNotes);
-		Timestamp latestLogEventTime = lifecycleLogDbService.getLatestLogTimeForWord(wordId);
+		Timestamp latestLogEventTime = activityLogDbService.getLatestLogTimeForWord(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
 		for (WordLexeme lexeme : lexemes) {

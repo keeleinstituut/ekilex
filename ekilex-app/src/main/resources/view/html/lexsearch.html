@@ -81,19 +81,9 @@
                 </div><!--/date-modified-->
               </div><!--/ml-2-->
               <div sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
-                <a th:href="@{'/wordlifecyclelog:' + ${wordId}}" data-toggle="modal"
-                   data-target="#wordLifecycleLogDlg"
+                <a th:href="@{'/wordactivitylog:' + ${wordId}}" data-toggle="modal"
+                   data-target="#wordActivityLogDlg"
                    class="btn btn-secondary btn-compact ml-2">Logi</a>
-                <div id="wordLifecycleLogDlg" class="modal" role="dialog">
-                  <div class="modal-dialog modal-lg" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                      </div>
-                      <div class="modal-body" style="max-height: 90vh; overflow-y: auto;"></div>
-                    </div>
-                  </div>
-                </div>
                 <div data-plugin="paneToggle"
                      data-hideable="toolsColumn"
                      data-extendable="contentColumn"
@@ -439,6 +429,8 @@
           </div>
         </div>
       </div>
+      <div th:replace="common :: #wordActivityLogDlg"></div>
+      <div th:replace="common :: #meaningActivityLogDlg"></div>
       <script th:replace="common :: confirmations"></script>
     </div>
   </th:block>

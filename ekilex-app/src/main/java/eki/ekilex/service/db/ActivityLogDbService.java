@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -24,8 +25,8 @@ import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LexemeType;
 import eki.ekilex.data.ActivityLog;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
@@ -58,8 +58,97 @@ import eki.ekilex.data.db.udt.records.TypeActivityLogDiffRecord;
 @Component
 public class ActivityLogDbService implements GlobalConstant {
 
+	private static final String LOADER_USERNAME_PATTERN = "Ekilex %laadur";
+
 	@Autowired
 	private DSLContext create;
+
+	public List<ActivityLog> getWordActivityLog(Long wordId) {
+
+		return create.select(
+				ACTIVITY_LOG.ID,
+				ACTIVITY_LOG.EVENT_BY,
+				ACTIVITY_LOG.EVENT_ON,
+				ACTIVITY_LOG.FUNCT_NAME,
+				ACTIVITY_LOG.OWNER_ID,
+				ACTIVITY_LOG.OWNER_NAME,
+				ACTIVITY_LOG.ENTITY_ID,
+				ACTIVITY_LOG.ENTITY_NAME,
+				ACTIVITY_LOG.PREV_DIFFS,
+				ACTIVITY_LOG.CURR_DIFFS)
+				.from(ACTIVITY_LOG, WORD_ACTIVITY_LOG)
+				.where(
+						WORD_ACTIVITY_LOG.WORD_ID.eq(wordId)
+								.and(WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID)))
+				.orderBy(ACTIVITY_LOG.EVENT_ON.desc())
+				.fetchInto(ActivityLog.class);
+	}
+
+	public List<ActivityLog> getMeaningActivityLog(Long meaningId) {
+
+		return create.select(
+				ACTIVITY_LOG.ID,
+				ACTIVITY_LOG.EVENT_BY,
+				ACTIVITY_LOG.EVENT_ON,
+				ACTIVITY_LOG.FUNCT_NAME,
+				ACTIVITY_LOG.OWNER_ID,
+				ACTIVITY_LOG.OWNER_NAME,
+				ACTIVITY_LOG.ENTITY_ID,
+				ACTIVITY_LOG.ENTITY_NAME,
+				ACTIVITY_LOG.PREV_DIFFS,
+				ACTIVITY_LOG.CURR_DIFFS)
+				.from(ACTIVITY_LOG, MEANING_ACTIVITY_LOG)
+				.where(
+						MEANING_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
+								.and(MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID)))
+				.orderBy(ACTIVITY_LOG.EVENT_ON.desc())
+				.fetchInto(ActivityLog.class);
+	}
+
+	public List<ActivityLog> getSourceActivityLog(Long sourceId) {
+
+		return create.select(
+				ACTIVITY_LOG.ID,
+				ACTIVITY_LOG.EVENT_BY,
+				ACTIVITY_LOG.EVENT_ON,
+				ACTIVITY_LOG.FUNCT_NAME,
+				ACTIVITY_LOG.OWNER_ID,
+				ACTIVITY_LOG.OWNER_NAME,
+				ACTIVITY_LOG.ENTITY_ID,
+				ACTIVITY_LOG.ENTITY_NAME,
+				ACTIVITY_LOG.PREV_DIFFS,
+				ACTIVITY_LOG.CURR_DIFFS)
+				.from(ACTIVITY_LOG, SOURCE_ACTIVITY_LOG)
+				.where(
+						SOURCE_ACTIVITY_LOG.SOURCE_ID.eq(sourceId)
+								.and(SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID)))
+				.orderBy(ACTIVITY_LOG.EVENT_ON.desc())
+				.fetchInto(ActivityLog.class);
+	}
+
+	public Timestamp getLatestLogTimeForWord(Long wordId) {
+
+		return create
+				.select(DSL.max(ACTIVITY_LOG.EVENT_ON))
+				.from(ACTIVITY_LOG, WORD_ACTIVITY_LOG)
+				.where(
+						WORD_ACTIVITY_LOG.WORD_ID.eq(wordId)
+								.and(WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID))
+								.andNot(ACTIVITY_LOG.EVENT_BY.like(LOADER_USERNAME_PATTERN)))
+				.fetchSingleInto(Timestamp.class);
+	}
+
+	public Timestamp getLatestLogTimeForMeaning(Long meaningId) {
+
+		return create
+				.select(DSL.max(ACTIVITY_LOG.EVENT_ON))
+				.from(ACTIVITY_LOG, MEANING_ACTIVITY_LOG)
+				.where(
+						MEANING_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
+								.and(MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID))
+								.andNot(ACTIVITY_LOG.EVENT_BY.like(LOADER_USERNAME_PATTERN)))
+				.fetchSingleInto(Timestamp.class);
+	}
 
 	public Long create(ActivityLog activityLog) {
 
@@ -186,7 +275,6 @@ public class ActivityLogDbService implements GlobalConstant {
 				.where(
 						entityIdCond
 								.and(l.WORD_ID.eq(w.ID))
-								.and(l.TYPE.eq(LexemeType.PRIMARY.name()))
 								.and(l.MEANING_ID.eq(m.ID)))
 				.groupBy(groupByField)
 				.fetchOptionalInto(WordLexemeMeaningIds.class)
@@ -296,4 +384,5 @@ public class ActivityLogDbService implements GlobalConstant {
 				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId).and(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID)))
 				.fetchOptionalInto(Long.class).orElse(null);
 	}
+
 }

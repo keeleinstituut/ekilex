@@ -3,6 +3,7 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
 
 public class TypeWordRelation extends WordTypeData {
@@ -15,7 +16,13 @@ public class TypeWordRelation extends WordTypeData {
 
 	private Classifier wordRelType;
 
+	private RelationStatus relationStatus;
+
+	private Long orderBy;
+
 	private List<Complexity> lexComplexities;
+
+	private boolean homonymsExist;
 
 	public Long getWordGroupId() {
 		return wordGroupId;
@@ -41,12 +48,36 @@ public class TypeWordRelation extends WordTypeData {
 		this.wordRelType = wordRelType;
 	}
 
+	public RelationStatus getRelationStatus() {
+		return relationStatus;
+	}
+
+	public void setRelationStatus(RelationStatus relationStatus) {
+		this.relationStatus = relationStatus;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
+
 	public List<Complexity> getLexComplexities() {
 		return lexComplexities;
 	}
 
 	public void setLexComplexities(List<Complexity> lexComplexities) {
 		this.lexComplexities = lexComplexities;
+	}
+
+	public boolean isHomonymsExist() {
+		return homonymsExist;
+	}
+
+	public void setHomonymsExist(boolean homonymsExist) {
+		this.homonymsExist = homonymsExist;
 	}
 
 }

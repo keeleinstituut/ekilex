@@ -12,10 +12,10 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -110,16 +110,22 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				}
 
 				wherew = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
-				wherew = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, wherew, false);
+				wherew = searchFilterHelper.applyLangFilters(searchCriteria, w1.LANG, wherew);
 				wherew = applyWordActivityLogFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, wherew);
 
 				wherel = searchFilterHelper.applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
+				wherel = searchFilterHelper.applyPublicityFilters(searchCriteria, l1.IS_PUBLIC, wherel);
+				wherel = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, wherel);
+				wherel = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1.ID, wherel);
 
 			} else if (SearchEntity.CONCEPT.equals(searchEntity)) {
 
+				wherem = searchFilterHelper.applyDomainValueFilters(searchCriteria, m1.ID, wherem);
+				wherem = searchFilterHelper.applyDomainExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
-				wherem = searchFilterHelper.applyDomainFilters(searchCriteria, m1.ID, wherem);
 				wherem = applyMeaningActivityLogFilters(searchCriteria, m1.ID, wherem);
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
@@ -138,7 +144,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					wherem = wherem.andNotExists(DSL.select(d1.ID).from(d1).where(whered1));
 				} else {
 					whered1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, whered1, true);
-					whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, whered1, false);
+					whered1 = searchFilterHelper.applyLangFilters(searchCriteria, d1.LANG, whered1);
 					whered1 = searchFilterHelper.applyDefinitionSourceNameFilter(searchCriteria, d1.ID, whered1);
 					whered1 = searchFilterHelper.applyDefinitionSourceRefFilter(searchCriteria, d1.ID, whered1);
 
@@ -159,7 +165,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 					wherel = wherel.andNotExists(DSL.select(l1ff.ID).from(l1ff, u1).where(whereff1));
 				} else {
 					whereff1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, whereff1, true);
-					whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, whereff1, false);
+					whereff1 = searchFilterHelper.applyLangFilters(searchCriteria, u1.LANG, whereff1);
 					whereff1 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, u1.ID, whereff1);
 					whereff1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, whereff1);
 

@@ -115,11 +115,11 @@
                       data-callback="doNewSearchTermSearch"
                       data-toggle="deleteMeaningAndLexemesAndWords"
                       sec:authorize="#vars.isMeaningLexemeCrudGranted">Kustuta</button>
-              <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
+              <a th:href="@{'/meaningactivitylog:' + ${meaningId}}"
                  data-toggle="modal"
-                 data-target="#meaningLifecycleLogDlg"
-                 class="btn btn-secondary btn-sm  ml-4"
-                 sec:authorize="#vars.meaning.readGrant">Tegevuste logi</a>
+                 data-target="#meaningActivityLogDlg"
+                 class="btn btn-secondary btn-sm ml-4"
+                 sec:authorize="#vars.meaning.readGrant">Logi</a>
             </div>
           </div>
           <div th:replace="termcomp :: meaning_domain"></div>
@@ -610,16 +610,6 @@
               <span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
             </div>
           </div>
-          <div id="meaningLifecycleLogDlg" class="modal" role="dialog">
-            <div class="modal-dialog modal-lg" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body"></div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
@@ -982,6 +972,7 @@
           </div>
         </div>
       </th:block>
+      <div th:replace="common :: #meaningActivityLogDlg"></div>
       <script th:replace="common :: confirmations"></script>
       <script>
         $('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({

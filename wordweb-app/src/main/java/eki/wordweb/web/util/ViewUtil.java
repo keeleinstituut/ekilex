@@ -1,7 +1,9 @@
 package eki.wordweb.web.util;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,12 @@ public class ViewUtil implements WebConstant, SystemConstant {
 	private WebUtil webUtil;
 
 	private Map<String, LanguageData> langDataMap = null;
+
+	private Pattern ekilexMarkupPattern;
+
+	public ViewUtil() {
+		ekilexMarkupPattern = Pattern.compile("<[/]?eki-[^>]*>");
+	}
 
 	public LanguageData getLangData(String langIso3) {
 
@@ -129,6 +137,22 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		}
 		htmlBuf.append("</span>");
 		return htmlBuf.toString();
+	}
+
+	public String wrapDecorations(String value) {
+		if (StringUtils.isBlank(value)) {
+			return value;
+		}
+		String[] tokens = StringUtils.split(value, ' ');
+		tokens = Arrays.stream(tokens).map(token -> {
+			boolean tokenContainsEkilexMarkup = ekilexMarkupPattern.matcher(token).find();
+			if (tokenContainsEkilexMarkup) {
+				return "<span class='text-nowrap'>" + token + "</span>";
+			}
+			return token;
+		}).toArray(String[]::new);
+		value = StringUtils.join(tokens, ' ');
+		return value;
 	}
 
 	public String getSearchUri(SessionBean sessionBean, String searchMode, String word, Integer homonymNr) {

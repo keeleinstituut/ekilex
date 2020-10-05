@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -143,6 +145,21 @@ public class ActivityLogService implements SystemConstant {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	@Transactional
+	public List<ActivityLog> getWordActivityLog(Long wordId) {
+		return activityLogDbService.getWordActivityLog(wordId);
+	}
+
+	@Transactional
+	public List<ActivityLog> getMeaningActivityLog(Long meaningId) {
+		return activityLogDbService.getMeaningActivityLog(meaningId);
+	}
+
+	@Transactional
+	public List<ActivityLog> getSourceActivityLog(Long sourceId) {
+		return activityLogDbService.getSourceActivityLog(sourceId);
+	}
 
 	public ActivityLogOwnerEntityDescr getFreeformOwnerDescr(Long freeformId) throws Exception {
 		Map<String, Object> freeformOwnerDataMap = activityLogDbService.getFirstDepthFreeformOwnerDataMap(freeformId);
@@ -319,19 +336,35 @@ public class ActivityLogService implements SystemConstant {
 
 	public void createActivityLog(String functName, Long ownerId, LifecycleLogOwner ownerName) throws Exception {
 
-		String userName = userContext.getUserName();
-		ActivityLogData activityLogData = new ActivityLogData();
-		activityLogData.setEventBy(userName);
-		activityLogData.setFunctName(functName);
-		activityLogData.setOwnerId(ownerId);
-		activityLogData.setOwnerName(ownerName);
-		activityLogData.setPrevData(EMPTY_CONTENT_JSON);
-		activityLogData.setPrevWlmIds(new WordLexemeMeaningIds());
-
 		Long entityId = new Long(ownerId);
 		ActivityEntity entityName = ActivityEntity.valueOf(ownerName.name());
-
-		createActivityLog(activityLogData, entityId, entityName);
+		ActivityLogData activityLogData;
+		if (StringUtils.startsWith(functName, "delete")) {
+			activityLogData = prepareActivityLog(functName, ownerId, ownerName);
+			activityLogData.setEntityId(entityId);
+			activityLogData.setEntityName(entityName);
+			activityLogData.setCurrData(EMPTY_CONTENT_JSON);
+			activityLogData.setCurrWlmIds(new WordLexemeMeaningIds());
+			if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
+				handleWlmActivityLog(activityLogData);
+			} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
+				handleWlmActivityLog(activityLogData);
+			} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
+				handleWlmActivityLog(activityLogData);
+			} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
+				handleSourceActivityLog(activityLogData);
+			}
+		} else {
+			String userName = userContext.getUserName();
+			activityLogData = new ActivityLogData();
+			activityLogData.setEventBy(userName);
+			activityLogData.setFunctName(functName);
+			activityLogData.setOwnerId(ownerId);
+			activityLogData.setOwnerName(ownerName);
+			activityLogData.setPrevData(EMPTY_CONTENT_JSON);
+			activityLogData.setPrevWlmIds(new WordLexemeMeaningIds());
+			createActivityLog(activityLogData, entityId, entityName);
+		}
 	}
 
 	public void createActivityLogUnknownEntity(ActivityLogData activityLogData, ActivityEntity entityName) throws Exception {
@@ -349,24 +382,24 @@ public class ActivityLogService implements SystemConstant {
 
 		if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
 			Long lexemeId = new Long(ownerId);
-			currWlmIds = activityLogDbService.getWordMeaningIds(lexemeId);
 			currData = getLexemeDetailsJson(lexemeId);
-			activityLogData.setCurrWlmIds(currWlmIds);
+			currWlmIds = activityLogDbService.getWordMeaningIds(lexemeId);
 			activityLogData.setCurrData(currData);
+			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
 		} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
 			Long wordId = new Long(ownerId);
-			currWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			currData = getWordDetailsJson(wordId);
-			activityLogData.setCurrWlmIds(currWlmIds);
+			currWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setCurrData(currData);
+			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
 		} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
 			Long meaningId = new Long(ownerId);
-			currWlmIds = activityLogDbService.getLexemeWordIds(meaningId);
 			currData = getMeaningDetailsJson(meaningId);
-			activityLogData.setCurrWlmIds(currWlmIds);
+			currWlmIds = activityLogDbService.getLexemeWordIds(meaningId);
 			activityLogData.setCurrData(currData);
+			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
 		} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
 			Long sourceId = new Long(ownerId);

@@ -144,7 +144,10 @@ public interface WebConstant {
 
 	String TERMDIALOG_PAGE = "termdialog";
 
+	@Deprecated
 	String LIFECYCLELOGVIEW_PAGE = "lifecyclelogview";
+
+	String ACTIVITYLOGVIEW_PAGE = "activitylogview";
 
 	String ERROR_PAGE = "error";
 

@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.ASPECT;
 import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
@@ -11,7 +12,6 @@ import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.GENDER;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MORPH;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -117,15 +117,15 @@ public class StatDataDbService implements GlobalConstant {
 
 	public List<StatDataRow> getLifecycleUserStatData(Timestamp from) {
 
-		Field<Integer> rowCount = DSL.field((DSL.count(LIFECYCLE_LOG.ID)).as("row_count"));
+		Field<Integer> rowCount = DSL.field((DSL.count(ACTIVITY_LOG.ID)).as("row_count"));
 		return create
 				.select(
 						DSL.field(IGNORE_QUERY_LOG).as("comment"),
-						DSL.field(LIFECYCLE_LOG.EVENT_BY).as("name"),
+						DSL.field(ACTIVITY_LOG.EVENT_BY).as("name"),
 						rowCount)
-				.from(LIFECYCLE_LOG)
-				.where(DSL.field(LIFECYCLE_LOG.EVENT_ON).gt(from))
-				.groupBy(LIFECYCLE_LOG.EVENT_BY)
+				.from(ACTIVITY_LOG)
+				.where(DSL.field(ACTIVITY_LOG.EVENT_ON).gt(from))
+				.groupBy(ACTIVITY_LOG.EVENT_BY)
 				.orderBy(rowCount.desc())
 				.fetchInto(StatDataRow.class);
 	}

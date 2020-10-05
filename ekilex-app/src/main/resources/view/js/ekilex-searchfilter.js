@@ -97,14 +97,8 @@ function initialiseDetailSearch() {
 		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
 		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
 		// NOT_EXISTS and NOT_EQUALS is not implemented everywhere
-		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
-			operandTemplate.find('option[value="NOT_EQUALS"]').remove();
-		}
 		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
 			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
-		}
-		if (pageName == 'term_search' && searchEntity == 'TERM' && searchKey == 'LANGUAGE') {
-			operandTemplate.find('option[value="NOT_EQUALS"]').remove();
 		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());
@@ -117,31 +111,27 @@ function initialiseDetailSearch() {
 
 	$(document).on("change", "select[name$='searchOperand']", function() {
 
+		const textTypeSearchKeys = ["SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "OD_RECOMMENDATION"];
+		const selectTypeSearchKeys = ["DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE"];
+		const nonValueSearchOperands = ["NOT_EXISTS", "EXISTS", "SINGLE", "MULTIPLE"];
+
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');
 		let searchOperand = $(this).val();
 		let searchKeyElement = detailConditionElement.find('[name$="searchKey"] option:selected');
 		let searchKey = searchKeyElement.val();
-
 		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
-		if (searchKey == 'DOMAIN' && searchOperand == 'NOT_EXISTS') {
+
+		let isTextTypeSearch = textTypeSearchKeys.includes(searchKey);
+		let isSelectTypeSearch = selectTypeSearchKeys.includes(searchKey);
+		let isNonValueSearch = nonValueSearchOperands.includes(searchOperand);
+
+		if (isTextTypeSearch && isNonValueSearch) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (isSelectTypeSearch && isNonValueSearch) {
 			searchValueElement.empty();
 			searchValueElement.parent().prop('hidden', true);
 			searchValueElement.selectpicker('refresh');
-		} else if (searchKey == 'SOURCE_REF' && searchOperand == 'NOT_EXISTS') {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'VALUE_AND_EXISTS' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'SECONDARY_MEANING_WORD' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'LEXEME_GRAMMAR' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
-		} else if (searchKey == 'OD_RECOMMENDATION' && (searchOperand == 'NOT_EXISTS' || searchOperand == 'EXISTS')) {
-			searchValueElement.empty();
-			searchValueElement.prop('hidden', true);
 		} else {
 			searchValueElement.prop('hidden', false);
 			replaceSearchValueElement(searchKey, searchValueElement);

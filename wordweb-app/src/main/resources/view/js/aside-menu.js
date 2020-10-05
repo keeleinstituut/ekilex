@@ -5,10 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var mdBreakpoint = 768
   $(nestedList).on('click', function (e) {
     var target = $(e.target).closest('li')
-    if ($(target).hasClass('has-submenu')) {
-      if ($(window).width() < mdBreakpoint) {
-        e.stopImmediatePropagation()
-      }
+    if ($(target).hasClass('has-submenu')) {     
       if ($(target).hasClass('open')) {
         $(target).removeClass('open')
         $(e.target).attr("aria-expanded", false);
@@ -28,30 +25,40 @@ document.addEventListener('DOMContentLoaded', () => {
   let navLinks = sideMenu.querySelectorAll('.nav-link')
   navLinks.forEach(function (el, i) {
 
-    el.addEventListener('click', () => {
+    el.addEventListener('click', (element) => {
+      element.preventDefault()
       if ($(el).closest('ul').hasClass('dropdown-menu')) {
         $('.tab-content').animate({
           scrollTop: $(window).scrollTop(0)
         })
       }
 
-      navLinks.forEach(function (el, i) {
-        el.classList.remove('active')
-      })
+      targetHref = $(element.target).attr('href');
+      location.hash = targetHref;
+
+      function linkActive() {
+        $('.nav-link').removeClass('active')
+        $('a[href="' + targetHref + '"]').addClass('active')
+      }
+
+      window.setTimeout(linkActive, 50);
+
+      if (!$(el).parents().hasClass('has-submenu'))
+        $('.has-submenu.open').removeClass('open')
 
       const sideMenuHeading = sideMenu.querySelector('.dropdown-toggle')
-      var parentList = $(el).closest('.nav-link').closest('ul')    
+      var parentList = $(el).closest('.nav-link').closest('ul')
       var dropdownTitle
 
-        if (!parentList.hasClass('dropdown-menu')) {
-          var subMenuLink = $(el).closest('ul').parent().find('.nav-link[data-toggle="pill"]')
-          if ($(window).width() < mdBreakpoint) {
-            $(subMenuLink).addClass('active')
-          }
-          dropdownTitle = $(subMenuLink).contents().get(0).nodeValue
-        } else {
-        dropdownTitle = $(el).contents().get(0).nodeValue
+      if (!parentList.hasClass('dropdown-menu')) {
+        var subMenuLink = $(el).closest('ul').parent().find('.nav-link[data-toggle="pill"]')
+        if ($(window).width() < mdBreakpoint) {
+          $(subMenuLink).addClass('active')
         }
+        dropdownTitle = $(subMenuLink).contents().get(0).nodeValue
+      } else {
+        dropdownTitle = $(el).contents().get(0).nodeValue
+      }
 
       sideMenuHeading.innerHTML = dropdownTitle
     })
@@ -106,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return Array.prototype.slice.call(anchors).sort(sortByDistance)[0];
   };
   var anchors = document.body.querySelectorAll('.tab-content a[id]');
-  
+
   var onScroll = function (e) {
     e.preventDefault();
     var closest = findClosestAnchor(anchors);

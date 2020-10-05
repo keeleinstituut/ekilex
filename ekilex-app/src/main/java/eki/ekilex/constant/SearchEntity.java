@@ -7,19 +7,19 @@ import static java.util.Arrays.asList;
 public enum SearchEntity {
 
 	HEADWORD(new SearchKey[] {
-			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.SECONDARY_MEANING_WORD,
-			SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_POS, SearchKey.LEXEME_FREQUENCY, SearchKey.COMPLEXITY,
-			SearchKey.OD_RECOMMENDATION, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
+			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.ASPECT, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME,
+			SearchKey.SECONDARY_MEANING_WORD, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER,
+			SearchKey.LEXEME_FREQUENCY, SearchKey.COMPLEXITY, SearchKey.OD_RECOMMENDATION, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
 	WORD(new SearchKey[] {
 			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME,
 			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
 	TERM(new SearchKey[] {
-			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY,
-			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON}),
+			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.LEXEME_REGISTER, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME,
+			SearchKey.PUBLICITY, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
-	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.RELATION_TYPE}),
+	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.RELATION_TYPE, SearchKey.SEMANTIC_TYPE}),
 	CONCEPT(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
