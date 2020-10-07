@@ -96,7 +96,10 @@ function initialiseDetailSearch() {
 		let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
 		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
 		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
-		// NOT_EXISTS and NOT_EQUALS is not implemented everywhere
+		// NOT_EXISTS, NOT_EQUALS and NOT_CONTAINS is not implemented everywhere
+		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
+			operandTemplate.find('option[value="NOT_CONTAINS"]').remove();
+		}
 		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
 			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
 		}
