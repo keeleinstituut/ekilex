@@ -20,6 +20,7 @@ function fetchDetails(wordId, word, lang, wordSelectUrl) {
         $('[data-toggle="popover"]').popover({
             placement: 'top'
         });
+        $('.scrollable-table').scrollableTable();
         var lightbox = new SimpleLightbox(
             '.gallery-image',
             {
