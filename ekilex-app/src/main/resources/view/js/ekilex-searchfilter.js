@@ -217,8 +217,12 @@ function initConditionGroup(groupElement) {
 
 function initCondition(conditionElement) {
 	let searchKeySelect = conditionElement.find('select[name$="searchKey"]');
-	searchKeySelect.val(searchKeySelect.find('option').first().val());
+	const searchKey = searchKeySelect.find('option').first().val();
+	searchKeySelect.val(searchKey);
 	searchKeySelect.trigger('change');
+
+	const templClasslist = $('#searchValueTemplates').find('[name="' + searchKey + '"]')[0].classList;
+	$(conditionElement).find('.value-input-container')[0].classList = templClasslist ;
 	displayDetailConditionButtons();
 };
 
