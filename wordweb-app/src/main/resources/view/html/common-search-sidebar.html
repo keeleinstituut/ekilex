@@ -223,22 +223,22 @@
                 <span th:utext="${viewUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-placement="top" th:title="${wordData.word.aspect.value}"></span>
                 <span class="ml-n1">&nbsp;–</span>
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
-                  <span class="word-options text-nowrap mb-1">
+                  <span class="word-options mb-1">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect.value}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
-                      <span th:unless="${relationIter.last}" class="ml-n1">,</span>
+                      <span th:unless="${relationIter.last}" class="ml-n1 mr-1">,</span>
                     </a>
                   </span>
                 </th:block>
               </th:block>
               <th:block th:unless="${isAspect}">
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
-                  <span class="word-options text-nowrap mb-1">
+                  <span class="word-options mb-1">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
-                      <span th:unless="${relationIter.last}" class="ml-n1">,</span>
+                      <span th:unless="${relationIter.last}" class="ml-n1 mr-1">,</span>
                     </a>
                   </span>
                 </th:block>
@@ -283,17 +283,17 @@
   </th:block>
   <th:block th:fragment="word-rel-group">
     <th:block th:if="${relationTypeGroup.asList}">
-      <div th:id="${'word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}">
+      <div class="d-flex flex-wrap" th:id="${'word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}">
         <th:block th:each="relation, relationIter : ${relationTypeGroup.relatedWords}"
                   th:with="
                   isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                   isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-          <span class="word-options text-nowrap mb-1" th:classappend="${isCollapsable ? 'collapse':''}">
+          <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse':''}">
             <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
               <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
               <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
             </a>
-            <span th:unless="${relationIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
+            <span th:unless="${relationIter.last}" class="ml-n1 mr-1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
           </span>
         </th:block>
       </div>
@@ -325,7 +325,7 @@
                     th:with="
                     isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                     isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-            <span class="word-options text-nowrap mb-1" th:classappend="${isCollapsable ? 'collapse' : ''}">
+            <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse' : ''}">
               <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
                 <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                 <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
