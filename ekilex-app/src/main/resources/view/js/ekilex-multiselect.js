@@ -28,9 +28,9 @@ class MultiSelect {
   }
 
   onClick(e) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
     if (e.shiftKey) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
       this.selectElement(e);
     }
   }
