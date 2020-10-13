@@ -61,10 +61,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
-		Paradigm p2 = PARADIGM.as("p2");
-		Paradigm ph = PARADIGM.as("ph");
-		Form f2 = FORM.as("f2");
-		Form fh = FORM.as("fh");
 		Lexeme l2 = LEXEME.as("l");
 		Lexeme lh = LEXEME.as("lh");
 		LexemePos lp = LEXEME_POS.as("lp");
@@ -118,7 +114,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
+		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
 				r.ID,
 				r.WORD_REL_TYPE_CODE.as("rel_type_code"),
 				rtl.VALUE.as("rel_type_label"),
@@ -127,8 +123,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 				relp.as("relation_params"),
 				r.ORDER_BY,
 				w2.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f2.value), ',', '*')").as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct f2.value_prese), ',', '*')").as("word_value_prese"),
+				w2.VALUE.as("word_value"),
+				w2.VALUE_PRESE.as("word_value_prese"),
 				w2.HOMONYM_NR.as("word_homonym_nr"),
 				w2.LANG.as("word_lang"),
 				wtf.as("word_type_codes"),
@@ -140,8 +136,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 				rwlf.as("word_lexemes_max_frequency"))
 				.from(r
 						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
-						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-						.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
 						.leftOuterJoin(oppr).on(
 								oppr.WORD1_ID.eq(r.WORD2_ID)
 										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
@@ -159,17 +153,14 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Field<Boolean> rwhe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
-				.from(fh, ph, wh)
+				.from(wh)
 				.where(
-						fh.VALUE.eq(rr.field("word_value", String.class))
-								.and(fh.MODE.eq(FormMode.WORD.name()))
-								.and(fh.PARADIGM_ID.eq(ph.ID))
-								.and(ph.WORD_ID.eq(wh.ID))
+						wh.VALUE.eq(rr.field("word_value", String.class))
 								.andExists(DSL
 										.select(lh.ID)
 										.from(lh)
 										.where(lh.WORD_ID.eq(wh.ID).and(lh.DATASET_CODE.eq(datasetCode)))))
-				.groupBy(fh.VALUE)
+				.groupBy(wh.VALUE)
 				.asField();
 
 		return create.select(
@@ -254,6 +245,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.getId();
 	}
 
+	//TODO should there be word.morph_code?
 	public eki.ekilex.data.Word getWordDetails(Long wordId) {
 
 		Word w = WORD.as("w");
@@ -290,6 +282,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetchOneInto(eki.ekilex.data.Word.class);
 	}
 
+	//TODO should there be word.morph_code?
 	public List<MeaningWord> getSynMeaningWords(Long lexemeId, List<String> meaningWordLangs, List<LexemeType> lexemeTypes) {
 
 		Lexeme l1 = LEXEME.as("l1");

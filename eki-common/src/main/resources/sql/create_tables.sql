@@ -554,9 +554,12 @@ alter sequence source_lifecycle_log_id_seq restart with 10000;
 create table word
 (
   id bigserial primary key,
+  value text not null,
+  value_prese text not null,
+  value_as_word text null,
   lang char(3) references language(code) null,
-  morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1,
+  morph_code varchar(100) references morph(code) null,
   word_class varchar(100) null,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
@@ -1183,6 +1186,12 @@ create index form_frequency_form_value_idx on form_frequency(form_value);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
+create index word_value_idx on word(value);
+create index word_value_lower_idx on word(lower(value));
+create index word_value_lower_prefix_idx on word(lower(value) text_pattern_ops);
+create index word_value_as_word_idx on word(value_as_word);
+create index word_value_as_word_lower_idx on word(lower(value_as_word));
+create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) text_pattern_ops);
 create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_etym_rel_word_etym_id_idx on word_etymology_relation(word_etym_id);

@@ -1,13 +1,11 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
@@ -22,13 +20,10 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
-import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 
@@ -39,48 +34,39 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	public SimpleWord getSimpleWord(Long wordId) {
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		return create
 				.select(
 						w.ID.as("word_id"),
-						DSL.field("(array_agg(distinct f.value))[1]", String.class).as("word_value"),
+						w.VALUE.as("word_value"),
 						w.LANG)
-				.from(w, p, f)
-				.where(
-						w.ID.eq(wordId)
-								.and(p.WORD_ID.eq(w.ID))
-								.and(f.PARADIGM_ID.eq(p.ID))
-								.and(f.MODE.eq(FormMode.WORD.name())))
-				.groupBy(w.ID)
+				.from(w)
+				.where(w.ID.eq(wordId))
 				.fetchOneInto(SimpleWord.class);
 	}
 
 	public List<String> getWordsValues(List<Long> wordIds) {
 		return create
-				.select(DSL.field("(array_agg(distinct form.value))[1]", String.class))
-				.from(WORD, PARADIGM, FORM)
-				.where(
-						WORD.ID.in(wordIds)
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
+				.select(WORD.VALUE)
+				.from(WORD)
+				.where(WORD.ID.in(wordIds))
 				.fetchInto(String.class);
 	}
 
 	public List<String> getLexemesWordValues(List<Long> lexemeIds) {
 		return create
-				.select(DSL.field("(array_agg(distinct form.value))[1]", String.class))
-				.from(LEXEME, WORD, PARADIGM, FORM)
-				.where(
-						LEXEME.ID.in(lexemeIds)
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
+				.select(WORD.VALUE)
+				.from(LEXEME, WORD)
+				.where(LEXEME.ID.in(lexemeIds).and(LEXEME.WORD_ID.eq(WORD.ID)))
 				.fetchInto(String.class);
+	}
+
+	public String getLexemeWordValue(Long lexemeId) {
+		return create
+				.select(WORD.VALUE)
+				.from(LEXEME, WORD)
+				.where(LEXEME.ID.eq(lexemeId).and(LEXEME.WORD_ID.eq(WORD.ID)))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
 	}
 
 	protected Field<String[]> getWordTypesField(Field<Long> wordIdField) {

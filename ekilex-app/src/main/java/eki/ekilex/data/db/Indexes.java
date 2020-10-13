@@ -37,6 +37,7 @@ import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
+import eki.ekilex.data.db.tables.LifecycleActivityLog;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
@@ -82,9 +83,15 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index ACTIVITY_ENTITY_ID_IDX = Indexes0.ACTIVITY_ENTITY_ID_IDX;
+    public static final Index ACTIVITY_ENTITY_IDX = Indexes0.ACTIVITY_ENTITY_IDX;
+    public static final Index ACTIVITY_ENTITY_NAME_IDX = Indexes0.ACTIVITY_ENTITY_NAME_IDX;
+    public static final Index ACTIVITY_FUNCT_NAME_IDX = Indexes0.ACTIVITY_FUNCT_NAME_IDX;
     public static final Index ACTIVITY_LOG_EVENT_BY_IDX = Indexes0.ACTIVITY_LOG_EVENT_BY_IDX;
     public static final Index ACTIVITY_LOG_EVENT_ON_IDX = Indexes0.ACTIVITY_LOG_EVENT_ON_IDX;
     public static final Index ACTIVITY_LOG_OWNER_IDX = Indexes0.ACTIVITY_LOG_OWNER_IDX;
+    public static final Index ACTIVITY_OWNER_ID_IDX = Indexes0.ACTIVITY_OWNER_ID_IDX;
+    public static final Index ACTIVITY_OWNER_NAME_IDX = Indexes0.ACTIVITY_OWNER_NAME_IDX;
     public static final Index COLLOCATION_VALUE_IDX = Indexes0.COLLOCATION_VALUE_IDX;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_IDX;
     public static final Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Indexes0.COLLOCATION_FREEFORM_FREEFORM_ID_IDX;
@@ -162,6 +169,9 @@ public class Indexes {
     public static final Index LEXEME_SOURCE_LINK_VALUE_IDX = Indexes0.LEXEME_SOURCE_LINK_VALUE_IDX;
     public static final Index LEXEME_TAG_LEXEME_ID_IDX = Indexes0.LEXEME_TAG_LEXEME_ID_IDX;
     public static final Index LEXEME_TAG_TAG_NAME_IDX = Indexes0.LEXEME_TAG_TAG_NAME_IDX;
+    public static final Index LIFECYCLE_ACTIVITY_LOG_AL_ID_IDX = Indexes0.LIFECYCLE_ACTIVITY_LOG_AL_ID_IDX;
+    public static final Index LIFECYCLE_ACTIVITY_LOG_LL_ID_IDX = Indexes0.LIFECYCLE_ACTIVITY_LOG_LL_ID_IDX;
+    public static final Index LIFECYCLE_LOG_ENTITY_PROP_IDX = Indexes0.LIFECYCLE_LOG_ENTITY_PROP_IDX;
     public static final Index LIFECYCLE_LOG_EVENT_BY_IDX = Indexes0.LIFECYCLE_LOG_EVENT_BY_IDX;
     public static final Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Indexes0.LIFECYCLE_LOG_EVENT_ON_ID_IDX;
     public static final Index MEANING_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.MEANING_ACTIVITY_LOG_LOG_ID_IDX;
@@ -227,9 +237,15 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index ACTIVITY_ENTITY_ID_IDX = Internal.createIndex("activity_entity_id_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.ENTITY_ID }, false);
+        public static Index ACTIVITY_ENTITY_IDX = Internal.createIndex("activity_entity_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.ENTITY_NAME, ActivityLog.ACTIVITY_LOG.ENTITY_ID }, false);
+        public static Index ACTIVITY_ENTITY_NAME_IDX = Internal.createIndex("activity_entity_name_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.ENTITY_NAME }, false);
+        public static Index ACTIVITY_FUNCT_NAME_IDX = Internal.createIndex("activity_funct_name_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.FUNCT_NAME }, false);
         public static Index ACTIVITY_LOG_EVENT_BY_IDX = Internal.createIndex("activity_log_event_by_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.EVENT_BY }, false);
         public static Index ACTIVITY_LOG_EVENT_ON_IDX = Internal.createIndex("activity_log_event_on_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.EVENT_ON }, false);
         public static Index ACTIVITY_LOG_OWNER_IDX = Internal.createIndex("activity_log_owner_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.OWNER_NAME, ActivityLog.ACTIVITY_LOG.OWNER_ID }, false);
+        public static Index ACTIVITY_OWNER_ID_IDX = Internal.createIndex("activity_owner_id_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.OWNER_ID }, false);
+        public static Index ACTIVITY_OWNER_NAME_IDX = Internal.createIndex("activity_owner_name_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.OWNER_NAME }, false);
         public static Index COLLOCATION_VALUE_IDX = Internal.createIndex("collocation_value_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.VALUE }, false);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Internal.createIndex("collocation_freeform_collocation_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID }, false);
         public static Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("collocation_freeform_freeform_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, false);
@@ -307,6 +323,9 @@ public class Indexes {
         public static Index LEXEME_SOURCE_LINK_VALUE_IDX = Internal.createIndex("lexeme_source_link_value_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.VALUE }, false);
         public static Index LEXEME_TAG_LEXEME_ID_IDX = Internal.createIndex("lexeme_tag_lexeme_id_idx", LexemeTag.LEXEME_TAG, new OrderField[] { LexemeTag.LEXEME_TAG.LEXEME_ID }, false);
         public static Index LEXEME_TAG_TAG_NAME_IDX = Internal.createIndex("lexeme_tag_tag_name_idx", LexemeTag.LEXEME_TAG, new OrderField[] { LexemeTag.LEXEME_TAG.TAG_NAME }, false);
+        public static Index LIFECYCLE_ACTIVITY_LOG_AL_ID_IDX = Internal.createIndex("lifecycle_activity_log_al_id_idx", LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG, new OrderField[] { LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
+        public static Index LIFECYCLE_ACTIVITY_LOG_LL_ID_IDX = Internal.createIndex("lifecycle_activity_log_ll_id_idx", LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG, new OrderField[] { LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG.LIFECYCLE_LOG_ID }, false);
+        public static Index LIFECYCLE_LOG_ENTITY_PROP_IDX = Internal.createIndex("lifecycle_log_entity_prop_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.ENTITY_PROP }, false);
         public static Index LIFECYCLE_LOG_EVENT_BY_IDX = Internal.createIndex("lifecycle_log_event_by_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_BY }, false);
         public static Index LIFECYCLE_LOG_EVENT_ON_ID_IDX = Internal.createIndex("lifecycle_log_event_on_id_idx", LifecycleLog.LIFECYCLE_LOG, new OrderField[] { LifecycleLog.LIFECYCLE_LOG.EVENT_ON }, false);
         public static Index MEANING_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("meaning_activity_log_log_id_idx", MeaningActivityLog.MEANING_ACTIVITY_LOG, new OrderField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);

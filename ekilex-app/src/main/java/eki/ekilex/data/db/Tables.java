@@ -60,6 +60,7 @@ import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
+import eki.ekilex.data.db.tables.LifecycleActivityLog;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
@@ -419,6 +420,11 @@ public class Tables {
      * The table <code>public.lexeme_tag</code>.
      */
     public static final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
+
+    /**
+     * The table <code>public.lifecycle_activity_log</code>.
+     */
+    public static final LifecycleActivityLog LIFECYCLE_ACTIVITY_LOG = LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG;
 
     /**
      * The table <code>public.lifecycle_log</code>.

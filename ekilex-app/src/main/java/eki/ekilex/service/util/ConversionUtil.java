@@ -27,7 +27,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceOwner;
@@ -967,13 +966,10 @@ public class ConversionUtil implements GlobalConstant {
 
 	private void addCollocMember(CollocationTuple collocTuple, Collocation collocation) {
 
-		boolean isWordModeWord = StringUtils.equals(FormMode.WORD.name(), collocTuple.getCollocMemberMode());
 		CollocMember collocMember = new CollocMember();
 		collocMember.setWordId(collocTuple.getCollocMemberWordId());
 		collocMember.setWord(collocTuple.getCollocMemberWord());
 		collocMember.setWeight(collocTuple.getCollocMemberWeight());
-		collocMember.setWordModeWord(isWordModeWord);
-
 		collocation.getCollocMembers().add(collocMember);
 	}
 

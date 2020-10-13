@@ -146,6 +146,7 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 		return result;
 	}
 
+	//TODO should there be word.morph_code, word.vocal_form?
 	public Map<String, Object> getWordData(DSLContext create, Long entityId) {
 
 		Map<String, Object> result = create
@@ -180,14 +181,9 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 						LEXEME.COMPLEXITY,
 						LEXEME.WEIGHT,
 						LEXEME.ORDER_BY,
-						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value"))
-				.from(LEXEME, PARADIGM, FORM)
-				.where(
-						LEXEME.ID.eq(lexemeId)
-								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(LEXEME.ID)
+						WORD.VALUE)
+				.from(LEXEME, WORD)
+				.where(LEXEME.ID.eq(lexemeId).and(LEXEME.WORD_ID.eq(WORD.ID)))
 				.fetchSingleMap();
 		return result;
 	}
@@ -382,14 +378,13 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 	public List<String> getMeaningWords(DSLContext create, Long entityId) {
 
 		List<String> result = create
-				.select(FORM.VALUE)
-				.from(LEXEME)
-				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
-				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID).and(FORM.MODE.eq(FormMode.WORD.name())))
+				.select(WORD.VALUE)
+				.from(LEXEME, WORD)
 				.where(
 						LEXEME.MEANING_ID.eq(entityId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.fetch(0, String.class);
+								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
+								.and(LEXEME.WORD_ID.eq(WORD.ID)))
+				.fetchInto(String.class);
 		return result;
 	}
 

@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 1115942756;
+    private static final long serialVersionUID = 702579451;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -88,6 +88,21 @@ public class Word extends TableImpl<WordRecord> {
      * The column <code>public.word.aspect_code</code>.
      */
     public final TableField<WordRecord, String> ASPECT_CODE = createField(DSL.name("aspect_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.word.value</code>.
+     */
+    public final TableField<WordRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.word.value_prese</code>.
+     */
+    public final TableField<WordRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.word.value_as_word</code>.
+     */
+    public final TableField<WordRecord, String> VALUE_AS_WORD = createField(DSL.name("value_as_word"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.word</code> table reference
@@ -199,11 +214,11 @@ public class Word extends TableImpl<WordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, String, String, Integer, String, String, String, String> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row11<Long, String, String, Integer, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }
