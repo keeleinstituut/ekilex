@@ -85,8 +85,8 @@
                             th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option value="">Kõik keeled</option>
                     <option th:each="language : ${allLanguages}"
                             th:value="${language.code}"
@@ -94,10 +94,11 @@
                             th:text="${language.value}">language</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_TYPE'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_TYPE'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
+                          data-style="btn-outline-secondary"
                           th:hidden="${isExistsOperand}"
                           th:disabled="${isExistsOperand}">
                     <option th:each="wordType : ${wordTypes}"
@@ -106,10 +107,11 @@
                             th:text="${wordType.value}">wordType</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ASPECT'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ASPECT'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
+                          data-style="btn-outline-secondary"
                           th:hidden="${isExistsOperand}"
                           th:disabled="${isExistsOperand}">
                     <option th:each="aspect : ${wordAspects}"
@@ -118,8 +120,8 @@
                             th:text="${aspect.value}">aspect</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option value="" selected>Kõik sildid</option>
                     <option th:each="tag : ${tags}"
                             th:value="${tag}"
@@ -127,10 +129,11 @@
                             th:text="${tag}">Täääg</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
+                          data-style="btn-outline-secondary"
                           th:hidden="${isExistsOperand}"
                           th:disabled="${isExistsOperand}">
                     <option value="">Kõik valdkonnad</option>
@@ -143,18 +146,19 @@
                     </optgroup>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'RELATION_TYPE'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'RELATION_TYPE'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option th:each="relType : ${meaningRelationTypes}"
                             th:value="${relType.code}"
                             th:selected="${criteria.searchValue == relType.code}"
                             th:text="${relType.value}">rel type</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SEMANTIC_TYPE'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SEMANTIC_TYPE'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
+                          data-style="btn-outline-secondary"
                           th:hidden="${isExistsOperand}"
                           th:disabled="${isExistsOperand}">
                     <option th:each="semanticType : ${semanticTypes}"
@@ -163,52 +167,52 @@
                             th:text="${semanticType.code}">semantic type</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'COMPLEXITY'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'COMPLEXITY'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option th:each="complexity : ${enabledComplexities}"
                             th:value="${complexity}"
                             th:selected="${criteria.searchValue == complexity}"
                             th:text="#{'enum.complexity.' + ${complexity}}"></option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE_AND_EXISTS'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE_AND_EXISTS'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ID'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_ID'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_BY'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_ON'}">
+                <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
@@ -220,12 +224,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_BY'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_ON'}">
+                <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
@@ -237,12 +241,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_BY'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_ON'}">
+                <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
@@ -254,39 +258,39 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DATASET_USAGE'}">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DATASET_USAGE'}">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option th:each="dataset : ${userVisibleDatasets}"
                             th:value="${dataset.code}"
                             th:selected="${criteria.searchValue == dataset.code}"
                             th:text="${dataset.name}">language</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SECONDARY_MEANING_WORD'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SECONDARY_MEANING_WORD'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLICITY'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLICITY'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                     <option value="true" th:selected="${criteria.searchValue == 'true'}">avalik</option>
                     <option value="false" th:selected="${criteria.searchValue == 'false'}">mitteavalik</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'OD_RECOMMENDATION'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'OD_RECOMMENDATION'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GRAMMAR'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GRAMMAR'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
@@ -298,7 +302,7 @@
                             th:text="${pos.value}">pos</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_REGISTER'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_REGISTER'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                           data-live-search="true"
@@ -310,7 +314,7 @@
                             th:text="${register.value}">register</option>
                   </select>
                 </div>
-                <div class="col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_FREQUENCY'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_FREQUENCY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
@@ -428,44 +432,42 @@
             <div name="CREATED_OR_UPDATED_BY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
-            <div name="CREATED_OR_UPDATED_ON" class="value-input-container col-auto mr-auto flex-grow-0 flex-shrink-1">
-                <div class="col-auto flex-grow-0 px-0">
-                  <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                    <input type="text" class="form-control">
-                    <div class="input-group-addon input-group-append">
-                      <div class="input-group-text">
-                        <i class="fa fa-calendar"></i>
-                      </div>
+            <div class="value-input-container col-auto mr-auto flex-grow-0 flex-shrink-1">
+              <div name="CREATED_OR_UPDATED_ON" class="col-auto mr-auto flex-grow-0 flex-shrink-1">
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" class="form-control">
+                  <div class="input-group-addon input-group-append">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
             <div name="CREATED_BY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
-            <div  name="CREATED_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
-                <div class="col-auto flex-grow-0 px-0">
-                  <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                    <input type="text" class="form-control">
-                    <div class="input-group-addon input-group-append">
-                      <div class="input-group-text">
-                        <i class="fa fa-calendar"></i>
-                      </div>
+            <div class="col-auto flex-grow-1 flex-shrink-1 ">
+              <div name="CREATED_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" class="form-control">
+                  <div class="input-group-addon input-group-append">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
                     </div>
                   </div>
                 </div>
+              </div>
             </div>
             <div name="UPDATED_BY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
             <div name="UPDATED_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
-                <div class="col-auto flex-grow-0 px-0">
-                  <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                    <input type="text" class="form-control">
-                    <div class="input-group-addon input-group-append">
-                      <div class="input-group-text">
-                        <i class="fa fa-calendar"></i>
-                      </div>
+                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                  <input type="text" class="form-control">
+                  <div class="input-group-addon input-group-append">
+                    <div class="input-group-text">
+                      <i class="fa fa-calendar"></i>
                     </div>
                   </div>
                 </div>

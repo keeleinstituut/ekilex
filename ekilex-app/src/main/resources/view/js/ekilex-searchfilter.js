@@ -89,7 +89,6 @@ function initialiseDetailSearch() {
 	});
 
 	$(document).on("change", "select[name$='searchKey']", function() {
-
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');
 		let pageName = detailConditionElement.attr("data-page");
 		let searchKey = $(this).val();
@@ -148,6 +147,8 @@ function initialiseDetailSearch() {
 		let isAutofillElement = copyOfValueTemplate.attr('data-live-search') != undefined;
 		let previousElementWasAutofill = searchValueElement.parent().hasClass('bootstrap-select');
 
+		searchValueElement.parents(".value-input-container").attr('class',templateElement.attr('class'));
+
 		if (copyOfValueTemplate.hasClass('date')) {
 			copyOfValueTemplate.children().attr('name', searchValueElement.attr('name'));
 		} else {
@@ -169,7 +170,6 @@ function initialiseDetailSearch() {
 		if (isAutofillElement) {
 			copyOfValueTemplate.selectpicker({width: '100%'})
 		}
-
 	};
 
 	$(document).on("click", ":button[name='addDetailConditionBtn']", function() {

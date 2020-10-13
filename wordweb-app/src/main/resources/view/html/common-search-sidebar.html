@@ -1409,10 +1409,9 @@
                 <span class="ml-n1">&nbsp;–</span>
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect.value}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
-                      <span th:unless="${relationIter.last}" class="ml-n1 mr-1">,</span>
                     </a>
                   </span>
                 </th:block>
@@ -1420,10 +1419,9 @@
               <th:block th:unless="${isAspect}">
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
-                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
-                      <span th:unless="${relationIter.last}" class="ml-n1 mr-1">,</span>
                     </a>
                   </span>
                 </th:block>
@@ -1474,11 +1472,10 @@
                   isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                   isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
           <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse':''}">
-            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
               <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
               <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
             </a>
-            <span th:unless="${relationIter.last}" class="ml-n1 mr-1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
           </span>
         </th:block>
       </div>
@@ -1511,11 +1508,10 @@
                     isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                     isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
             <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse' : ''}">
-              <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}">
+              <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                 <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                 <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
               </a>
-              <span th:unless="${relationIter.last}" class="ml-n1 mr-1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
             </span>
           </th:block>
         </div>
