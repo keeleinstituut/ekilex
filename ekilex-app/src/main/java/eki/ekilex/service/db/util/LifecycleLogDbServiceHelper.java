@@ -3,7 +3,6 @@ package eki.ekilex.service.db.util;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -13,7 +12,6 @@ import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -25,21 +23,22 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
-import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.SourceFreeform;
+import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.service.db.AbstractDataDbService;
 
 @Component
-public class LifecycleLogDbServiceHelper implements GlobalConstant {
+public class LifecycleLogDbServiceHelper extends AbstractDataDbService {
 
 	public Map<String, Object> getFirstDepthFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
 
@@ -146,25 +145,22 @@ public class LifecycleLogDbServiceHelper implements GlobalConstant {
 		return result;
 	}
 
-	//TODO should there be word.morph_code, word.vocal_form?
 	public Map<String, Object> getWordData(DSLContext create, Long entityId) {
 
+		Word w = WORD.as("w");
+		Field<String> fvff = getFormVocalFormField(w.ID);
+		Field<String> fmcf = getFormMorphCodeField(w.ID);
 		Map<String, Object> result = create
 				.selectDistinct(
-						WORD.GENDER_CODE,
-						WORD.ASPECT_CODE,
-						WORD.LANG,
-						DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("value"),
-						DSL.field("array_to_string(array_agg(distinct form.value_prese), ',', '*')").cast(String.class).as("value_prese"),
-						DSL.field("array_to_string(array_agg(distinct form.vocal_form), ',')").cast(String.class).as("vocal_form"),
-						DSL.field("array_to_string(array_agg(distinct form.morph_code), ',')").cast(String.class).as("morph_code"))
-				.from(WORD, PARADIGM, FORM)
-				.where(
-						WORD.ID.eq(entityId)
-								.and(PARADIGM.WORD_ID.eq(entityId))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
+						w.GENDER_CODE,
+						w.ASPECT_CODE,
+						w.LANG,
+						w.VALUE,
+						w.VALUE_PRESE,
+						fvff.as("vocal_form"),
+						fmcf.as("morph_code"))
+				.from(w)
+				.where(w.ID.eq(entityId))
 				.fetchSingleMap();
 		return result;
 	}

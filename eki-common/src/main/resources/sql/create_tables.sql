@@ -559,7 +559,6 @@ create table word
   value_as_word text null,
   lang char(3) references language(code) null,
   homonym_nr integer default 1,
-  morph_code varchar(100) references morph(code) null,
   word_class varchar(100) null,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,

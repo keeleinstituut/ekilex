@@ -36,7 +36,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
@@ -51,7 +50,6 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -59,7 +57,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
@@ -305,26 +302,24 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	//TODO word.morph_code?
 	public List<MeaningWord> getMeaningWords(Long lexemeId) {
 
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
 
 		Field<String[]> wtf = getWordTypesField(w2.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String> fmcf = getFormMorphCodeField(w2.ID);
 
 		return create
 				.select(
 						w2.ID.as("word_id"),
-						f2.VALUE.as("word_value"),
-						f2.VALUE_PRESE.as("word_value_prese"),
-						f2.MORPH_CODE,
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
+						fmcf.as("morph_code"),
 						w2.HOMONYM_NR,
 						w2.LANG,
 						wtf.as("word_type_codes"),
@@ -334,28 +329,22 @@ public class LexSearchDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
 						l2.ORDER_BY)
-				.from(l1, l2, w2, p2, f2)
+				.from(l1, l2, w2)
 				.where(
 						l1.ID.eq(lexemeId)
 						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
 						.and(l2.ID.ne(l1.ID))
 						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
 						.and(l2.WORD_ID.eq(w2.ID))
-						.and(p2.WORD_ID.eq(w2.ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.eq(FormMode.WORD.name()))
 						)
-				.groupBy(w2.ID, f2.VALUE, f2.VALUE_PRESE, f2.MORPH_CODE, l2.ID)
+				.groupBy(w2.ID, l2.ID)
 				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}
 
-	//TODO word.vocal_form?
 	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 
@@ -363,6 +352,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
+		Field<String> fvff = getFormVocalFormField(w.ID);
+		Field<String> fmcf = getFormMorphCodeField(w.ID);
 		Field<String[]> lxtnf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
 				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
@@ -371,13 +362,13 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		return create.select(
 				w.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").cast(String.class).as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')").cast(String.class).as("word_value_prese"),
-				DSL.field("array_to_string(array_agg(distinct f.vocal_form), ',')").cast(String.class).as("vocal_form"),
+				w.VALUE.as("word_value"),
+				w.VALUE_PRESE.as("word_value_prese"),
+				fmcf.as("morph_code"),
+				fvff.as("vocal_form"),
 				w.HOMONYM_NR,
 				w.LANG,
 				w.WORD_CLASS,
-				w.MORPH_CODE,
 				w.GENDER_CODE,
 				w.ASPECT_CODE,
 				wtf.as("word_type_codes"),
@@ -385,18 +376,14 @@ public class LexSearchDbService extends AbstractDataDbService {
 				wtsf.as("suffixoid"),
 				wtz.as("foreign"),
 				lxtnf.as("lexemes_tag_names"))
-				.from(w, p, f)
+				.from(w)
 				.where(w.ID.eq(wordId)
-						.and(p.WORD_ID.eq(w.ID))
-						.and(f.PARADIGM_ID.eq(p.ID))
-						.and(f.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
 						.andExists(DSL
 								.select(l.ID)
 								.from(l)
 								.where(
 										l.WORD_ID.eq(w.ID)
 												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
-				.groupBy(w.ID)
 				.fetchOptionalInto(eki.ekilex.data.Word.class)
 				.orElse(null);
 	}

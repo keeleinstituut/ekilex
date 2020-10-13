@@ -196,6 +196,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateLexemeWeight(Long lexemeId, BigDecimal lexemeWeight) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.WEIGHT, lexemeWeight)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
 	public void updateLexemeLevels(Long lexemeId, Integer level1, Integer level2) {
 		create.update(LEXEME)
 				.set(LEXEME.LEVEL1, level1)
@@ -236,83 +244,6 @@ public class CudDbService extends AbstractDataDbService {
 		create.update(LEXEME)
 				.set(LEXEME.VALUE_STATE_CODE, valueStateCode)
 				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void updateWordValue(Long wordId, String value, String valuePrese) {
-		create.update(WORD)
-				.set(WORD.VALUE, value)
-				.set(WORD.VALUE_PRESE, valuePrese)
-				.where(WORD.ID.eq(wordId))
-				.execute();
-		create.update(FORM)
-				.set(FORM.VALUE, value)
-				.set(FORM.VALUE_PRESE, valuePrese)
-				.from(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.execute();
-	}
-
-	public void updateAsWordValue(Long wordId, String valueAsWord) {
-		create.update(WORD).set(WORD.VALUE_AS_WORD, valueAsWord).where(WORD.ID.eq(wordId)).execute();
-	}
-
-	public Long updateWordVocalForm(Long wordId, String vocalForm) {
-		return create.update(FORM)
-				.set(FORM.VOCAL_FORM, vocalForm)
-				.from(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.returning(FORM.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	//TODO should there be word.morph_code?
-	public Long updateWordMorphCode(Long wordId, String morphCode) {
-		return create.update(FORM)
-				.set(FORM.MORPH_CODE, morphCode)
-				.from(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.returning(FORM.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	public void updateWordGender(Long wordId, String genderCode) {
-		create.update(WORD)
-				.set(WORD.GENDER_CODE, genderCode)
-				.where(WORD.ID.eq(wordId))
-				.execute();
-	}
-
-	public Long updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
-		Long wordWordTypeId = create
-				.update(WORD_WORD_TYPE)
-				.set(WORD_WORD_TYPE.WORD_TYPE_CODE, newTypeCode)
-				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(currentTypeCode)))
-				.returning(WORD_WORD_TYPE.ID)
-				.fetchOne()
-				.getId();
-		return wordWordTypeId;
-	}
-
-	public void updateWordAspect(Long wordId, String aspectCode) {
-		create.update(WORD)
-				.set(WORD.ASPECT_CODE, aspectCode)
-				.where(WORD.ID.eq(wordId))
-				.execute();
-	}
-
-	public void updateWordLang(Long wordId, String langCode) {
-		create.update(WORD)
-				.set(WORD.LANG, langCode)
-				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
 
@@ -374,6 +305,94 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeRegionId;
 	}
 
+	public void updateWordValue(Long wordId, String value, String valuePrese) {
+		create.update(WORD)
+				.set(WORD.VALUE, value)
+				.set(WORD.VALUE_PRESE, valuePrese)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+		create.update(FORM)
+				.set(FORM.VALUE, value)
+				.set(FORM.VALUE_PRESE, valuePrese)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.execute();
+	}
+
+	public void updateWordValuePrese(Long wordId, String valuePrese) {
+		create.update(WORD)
+				.set(WORD.VALUE_PRESE, valuePrese)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+		create.update(FORM)
+				.set(FORM.VALUE_PRESE, valuePrese)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.execute();
+	}
+
+	public void updateAsWordValue(Long wordId, String valueAsWord) {
+		create.update(WORD).set(WORD.VALUE_AS_WORD, valueAsWord).where(WORD.ID.eq(wordId)).execute();
+	}
+
+	public Long updateWordVocalForm(Long wordId, String vocalForm) {
+		return create.update(FORM)
+				.set(FORM.VOCAL_FORM, vocalForm)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.returning(FORM.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public void updateWordGender(Long wordId, String genderCode) {
+		create.update(WORD)
+				.set(WORD.GENDER_CODE, genderCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
+	public Long updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
+		Long wordWordTypeId = create
+				.update(WORD_WORD_TYPE)
+				.set(WORD_WORD_TYPE.WORD_TYPE_CODE, newTypeCode)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(currentTypeCode)))
+				.returning(WORD_WORD_TYPE.ID)
+				.fetchOne()
+				.getId();
+		return wordWordTypeId;
+	}
+
+	public void updateWordAspect(Long wordId, String aspectCode) {
+		create.update(WORD)
+				.set(WORD.ASPECT_CODE, aspectCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
+	public void updateWordLang(Long wordId, String langCode) {
+		create.update(WORD)
+				.set(WORD.LANG, langCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
+	public void updateWordDisplayForm(Long wordId, String displayForm) {
+		create.update(FORM)
+				.set(FORM.DISPLAY_FORM, displayForm)
+				.from(PARADIGM)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.execute();
+	}
+
 	public Long updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
 		Long meaningDomainId = create
 				.update(MEANING_DOMAIN)
@@ -415,30 +434,6 @@ public class CudDbService extends AbstractDataDbService {
 				.update(WORD_RELATION)
 				.set(WORD_RELATION.ORDER_BY, orderBy)
 				.where(WORD_RELATION.ID.eq(relationId))
-				.execute();
-	}
-
-	public void updateLexemeWeight(Long lexemeId, BigDecimal lexemeWeight) {
-		create
-				.update(LEXEME)
-				.set(LEXEME.WEIGHT, lexemeWeight)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
-	public void updateFormDisplayForm(Long formId, String displayForm) {
-		create
-				.update(FORM)
-				.set(FORM.DISPLAY_FORM, displayForm)
-				.where(FORM.ID.eq(formId))
-				.execute();
-	}
-
-	public void updateFormValuePrese(Long formId, String valuePrese) {
-		create
-				.update(FORM)
-				.set(FORM.VALUE_PRESE, valuePrese)
-				.where(FORM.ID.eq(formId))
 				.execute();
 	}
 
@@ -552,13 +547,13 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexeme(
-			String value, String valuePrese, String valueAsWord, String lang, String morphCode, String dataset, boolean isPublic, Long meaningId) {
+			String value, String valuePrese, String valueAsWord, String lang, String dataset, boolean isPublic, Long meaningId) {
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
-				.from(WORD, PARADIGM, FORM)
+				.from(WORD)
 				.where(WORD.LANG.eq(lang).and(WORD.VALUE.eq(value)))
 				.fetchOneInto(Integer.class);
 
@@ -571,13 +566,6 @@ public class CudDbService extends AbstractDataDbService {
 				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.HOMONYM_NR, WORD.LANG)
 				.values(value, valuePrese, valueAsWord, homonymNumber, lang)
 				.returning(WORD.ID).fetchOne().getId();
-
-		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
-
-		create
-				.insertInto(FORM, FORM.PARADIGM_ID, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS, FORM.VALUE, FORM.VALUE_PRESE, FORM.DISPLAY_FORM)
-				.values(paradigmId, FormMode.WORD.name(), morphCode, true, value, valuePrese, value)
-				.execute();
 
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();

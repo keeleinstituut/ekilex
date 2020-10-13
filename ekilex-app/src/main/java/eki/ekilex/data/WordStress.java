@@ -8,8 +8,6 @@ public class WordStress extends AbstractDataObject {
 
 	private Long wordId;
 
-	private Long formId;
-
 	private String valuePrese;
 
 	private String displayForm;
@@ -24,14 +22,6 @@ public class WordStress extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
-	}
-
-	public Long getFormId() {
-		return formId;
-	}
-
-	public void setFormId(Long formId) {
-		this.formId = formId;
 	}
 
 	public String getValuePrese() {

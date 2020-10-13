@@ -187,7 +187,7 @@ public class EditController extends AbstractPageController {
 			break;
 		case "create_syn_word":
 			datasetCode = getDatasetCodeFromRole();
-			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, itemData.getLanguage(), itemData.getItemType(), itemData.getValue2());
+			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, itemData.getLanguage(), itemData.getValue());
 			break;
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(itemData.getId2(), itemValue);

@@ -15,6 +15,7 @@ and   alt.funct_name like 'delete%'
 and   alt.owner_name = alt.entity_name;
 
 -- keelendi väärtuse kolimine
+alter table word drop column morph_code cascade;
 alter table word add column value text, add column value_prese text, add column value_as_word text;
 
 update word wt

@@ -197,31 +197,41 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Relation.class);
 	}
 
-	//TODO should there be word.display_form?
 	public Map<Long, WordStress> getWordStressData(Long wordId1, Long wordId2, char displayFormStressSym) {
-	
-		Form f = FORM.as("f");
+
+		Word w = WORD.as("w");
 		Form fm = FORM.as("fm");
-		Paradigm p = PARADIGM.as("p");
-	
+		Paradigm pm = PARADIGM.as("pm");
+
 		String displayFormStressCrit = new StringBuilder().append('%').append(displayFormStressSym).append('%').toString();
-		Field<Boolean> dfsf = DSL.field(f.DISPLAY_FORM.like(displayFormStressCrit));
-		Field<Boolean> wmef = DSL.field(DSL.exists(DSL.select(fm.ID).from(fm).where(fm.PARADIGM_ID.eq(p.ID).and(fm.MODE.eq(FormMode.FORM.name())))));
-	
+		Field<Boolean> dfsf = DSL.field(DSL.exists(DSL
+				.select(fm.ID)
+				.from(pm, fm)
+				.where(
+						pm.WORD_ID.eq(w.ID)
+								.and(fm.PARADIGM_ID.eq(pm.ID))
+								.and(fm.MODE.eq(FormMode.WORD.name()))
+								.and(fm.DISPLAY_FORM.like(displayFormStressCrit)))));
+		Field<Boolean> wmef = DSL.field(DSL.exists(DSL
+				.select(fm.ID)
+				.from(pm, fm)
+				.where(
+						pm.WORD_ID.eq(w.ID)
+								.and(fm.PARADIGM_ID.eq(pm.ID))
+								.and(fm.MODE.eq(FormMode.FORM.name())))));
+		Field<String> fdff = getFormDisplayFormField(w.ID);
+
 		Map<Long, List<WordStress>> wordStressFullDataMap = create
 				.select(
-						p.WORD_ID,
-						f.ID.as("form_id"),
-						f.VALUE_PRESE,
-						f.DISPLAY_FORM,
+						w.ID.as("word_id"),
+						w.VALUE_PRESE,
+						fdff.as("display_form"),
 						dfsf.as("stress_exists"),
 						wmef.as("morph_exists"))
-				.from(f, p)
-				.where(p.WORD_ID.in(wordId1, wordId2)
-						.and(f.PARADIGM_ID.eq(p.ID))
-						.and(f.MODE.eq(FormMode.WORD.name())))
-				.fetchGroups(p.WORD_ID, WordStress.class);
-	
+				.from(w)
+				.where(w.ID.in(wordId1, wordId2))
+				.fetchGroups(w.ID, WordStress.class);
+
 		Map<Long, WordStress> wordStressSingleDataMap = wordStressFullDataMap.entrySet().stream()
 				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
 					List<WordStress> wordStressCandidates = entry.getValue();
@@ -234,7 +244,7 @@ public class LookupDbService extends AbstractDataDbService {
 					}
 					return wordStressCandidates.get(0);
 				}));
-	
+
 		return wordStressSingleDataMap;
 	}
 

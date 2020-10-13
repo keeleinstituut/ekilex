@@ -83,7 +83,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
-		Word word = synSearchDbService.getWordDetails(wordId);
+		Word word = synSearchDbService.getWord(wordId);
 		permCalculator.applyCrud(userRole, word);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
@@ -186,7 +186,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 
-		Word word = synSearchDbService.getWordDetails(wordId);
+		Word word = synSearchDbService.getWord(wordId);
 		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Arrays.asList(word.getLang()), Arrays.asList(LexemeType.PRIMARY));
 
 		for (MeaningWord meaningWord : meaningWords) {

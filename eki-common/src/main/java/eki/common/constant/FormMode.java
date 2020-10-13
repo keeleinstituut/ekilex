@@ -2,5 +2,10 @@ package eki.common.constant;
 
 public enum FormMode {
 
-	WORD, FORM, AS_WORD, UNKNOWN
+	WORD,
+	FORM,
+	@Deprecated
+	AS_WORD,
+	@Deprecated
+	UNKNOWN
 }

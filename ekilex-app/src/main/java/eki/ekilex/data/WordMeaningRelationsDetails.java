@@ -12,8 +12,6 @@ public class WordMeaningRelationsDetails extends AbstractDataObject {
 
 	private String language;
 
-	private String morphCode;
-
 	private Long meaningId;
 
 	private boolean importMeaningData;
@@ -48,14 +46,6 @@ public class WordMeaningRelationsDetails extends AbstractDataObject {
 
 	public void setLanguage(String language) {
 		this.language = language;
-	}
-
-	public String getMorphCode() {
-		return morphCode;
-	}
-
-	public void setMorphCode(String morphCode) {
-		this.morphCode = morphCode;
 	}
 
 	public Long getMeaningId() {

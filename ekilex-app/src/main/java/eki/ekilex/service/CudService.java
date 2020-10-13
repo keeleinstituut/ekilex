@@ -658,21 +658,11 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		Long wordId = wordDataAndLexemeWeight.getWordId();
 		Long lexemeId = wordDataAndLexemeWeight.getLexemeId();
-		String morphCode = wordDataAndLexemeWeight.getMorphCode();
 		String lexemeWeight = wordDataAndLexemeWeight.getLexemeWeight();
 		String wordValuePrese = wordDataAndLexemeWeight.getWordValuePrese();
 
 		updateWordValue(wordId, wordValuePrese);
 		updateLexemeWeight(lexemeId, lexemeWeight);
-		updateWordMorphCode(wordId, morphCode);
-	}
-
-	private void updateWordMorphCode(Long wordId, String morphCode) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.MORPH_CODE, wordId, morphCode);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordMorphCode", wordId, LifecycleLogOwner.WORD);
-		Long formId = cudDbService.updateWordMorphCode(wordId, morphCode);
-		activityLogService.createActivityLog(activityLog, formId, ActivityEntity.FORM);
 	}
 
 	// --- CREATE ---
@@ -682,14 +672,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		String value = wordDetails.getWordValue();
 		String language = wordDetails.getLanguage();
-		String morphCode = wordDetails.getMorphCode();
 		String dataset = wordDetails.getDataset();
 		Long meaningId = wordDetails.getMeaningId();
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, value, valueAsWord, language, morphCode, dataset, PUBLICITY_PUBLIC, meaningId);
+				.createWordAndLexeme(value, value, valueAsWord, language, dataset, PUBLICITY_PUBLIC, meaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
@@ -1069,12 +1058,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createWordAndSynRelation(
-			Long existingWordId, String valuePrese, String datasetCode, String language, String morphCode, String weightStr) throws Exception {
+			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, valuePrese, valueAsWord, language, morphCode, datasetCode, PUBLICITY_PRIVATE, null);
+				.createWordAndLexeme(value, valuePrese, valueAsWord, language, datasetCode, PUBLICITY_PRIVATE, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();
 

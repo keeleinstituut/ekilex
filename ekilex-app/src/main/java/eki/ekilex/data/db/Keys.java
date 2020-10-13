@@ -623,7 +623,6 @@ public class Keys {
     public static final ForeignKey<ValueStateLabelRecord, LanguageRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY = ForeignKeys0.VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY;
     public static final ForeignKey<ValueStateLabelRecord, LabelTypeRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY = ForeignKeys0.VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY;
     public static final ForeignKey<WordRecord, LanguageRecord> WORD__WORD_LANG_FKEY = ForeignKeys0.WORD__WORD_LANG_FKEY;
-    public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_DISPLAY_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = ForeignKeys0.WORD__WORD_GENDER_CODE_FKEY;
     public static final ForeignKey<WordRecord, AspectRecord> WORD__WORD_ASPECT_CODE_FKEY = ForeignKeys0.WORD__WORD_ASPECT_CODE_FKEY;
@@ -1039,7 +1038,6 @@ public class Keys {
         public static final ForeignKey<ValueStateLabelRecord, LanguageRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, ValueStateLabel.VALUE_STATE_LABEL, "value_state_label_lang_fkey", new TableField[] { ValueStateLabel.VALUE_STATE_LABEL.LANG }, true);
         public static final ForeignKey<ValueStateLabelRecord, LabelTypeRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, ValueStateLabel.VALUE_STATE_LABEL, "value_state_label_type_fkey", new TableField[] { ValueStateLabel.VALUE_STATE_LABEL.TYPE }, true);
         public static final ForeignKey<WordRecord, LanguageRecord> WORD__WORD_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, Word.WORD, "word_lang_fkey", new TableField[] { Word.WORD.LANG }, true);
-        public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = Internal.createForeignKey(Keys.MORPH_PKEY, Word.WORD, "word_morph_code_fkey", new TableField[] { Word.WORD.MORPH_CODE }, true);
         public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = Internal.createForeignKey(Keys.DISPLAY_MORPH_PKEY, Word.WORD, "word_display_morph_code_fkey", new TableField[] { Word.WORD.DISPLAY_MORPH_CODE }, true);
         public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = Internal.createForeignKey(Keys.GENDER_PKEY, Word.WORD, "word_gender_code_fkey", new TableField[] { Word.WORD.GENDER_CODE }, true);
         public static final ForeignKey<WordRecord, AspectRecord> WORD__WORD_ASPECT_CODE_FKEY = Internal.createForeignKey(Keys.ASPECT_PKEY, Word.WORD, "word_aspect_code_fkey", new TableField[] { Word.WORD.ASPECT_CODE }, true);

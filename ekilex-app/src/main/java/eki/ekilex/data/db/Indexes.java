@@ -206,6 +206,8 @@ public class Indexes {
     public static final Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Indexes0.TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
+    public static final Index WORD_VALUE_AS_WORD_IDX = Indexes0.WORD_VALUE_AS_WORD_IDX;
+    public static final Index WORD_VALUE_IDX = Indexes0.WORD_VALUE_IDX;
     public static final Index WORD_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.WORD_ACTIVITY_LOG_LOG_ID_IDX;
     public static final Index WORD_ACTIVITY_LOG_WORD_ID_IDX = Indexes0.WORD_ACTIVITY_LOG_WORD_ID_IDX;
     public static final Index WORD_ETYM_ETYM_TYPE_CODE_IDX = Indexes0.WORD_ETYM_ETYM_TYPE_CODE_IDX;
@@ -360,6 +362,8 @@ public class Indexes {
         public static Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Internal.createIndex("temp_ds_import_queue_table_name_idx", TempDsImportQueue.TEMP_DS_IMPORT_QUEUE, new OrderField[] { TempDsImportQueue.TEMP_DS_IMPORT_QUEUE.TABLE_NAME }, false);
         public static Index WORD_HOMONYM_NR_IDX = Internal.createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_LANG_IDX = Internal.createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
+        public static Index WORD_VALUE_AS_WORD_IDX = Internal.createIndex("word_value_as_word_idx", Word.WORD, new OrderField[] { Word.WORD.VALUE_AS_WORD }, false);
+        public static Index WORD_VALUE_IDX = Internal.createIndex("word_value_idx", Word.WORD, new OrderField[] { Word.WORD.VALUE }, false);
         public static Index WORD_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("word_activity_log_log_id_idx", WordActivityLog.WORD_ACTIVITY_LOG, new OrderField[] { WordActivityLog.WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
         public static Index WORD_ACTIVITY_LOG_WORD_ID_IDX = Internal.createIndex("word_activity_log_word_id_idx", WordActivityLog.WORD_ACTIVITY_LOG, new OrderField[] { WordActivityLog.WORD_ACTIVITY_LOG.WORD_ID }, false);
         public static Index WORD_ETYM_ETYM_TYPE_CODE_IDX = Internal.createIndex("word_etym_etym_type_code_idx", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.ETYMOLOGY_TYPE_CODE }, false);

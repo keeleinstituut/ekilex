@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 702579451;
+    private static final long serialVersionUID = 185713332;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -58,11 +58,6 @@ public class Word extends TableImpl<WordRecord> {
      * The column <code>public.word.lang</code>.
      */
     public final TableField<WordRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.word.morph_code</code>.
-     */
-    public final TableField<WordRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word.homonym_nr</code>.
@@ -144,7 +139,7 @@ public class Word extends TableImpl<WordRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_LANG_IDX);
+        return Arrays.<Index>asList(Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_LANG_IDX, Indexes.WORD_VALUE_AS_WORD_IDX, Indexes.WORD_VALUE_IDX);
     }
 
     @Override
@@ -164,15 +159,11 @@ public class Word extends TableImpl<WordRecord> {
 
     @Override
     public List<ForeignKey<WordRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY, Keys.WORD__WORD_GENDER_CODE_FKEY, Keys.WORD__WORD_ASPECT_CODE_FKEY);
+        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY, Keys.WORD__WORD_GENDER_CODE_FKEY, Keys.WORD__WORD_ASPECT_CODE_FKEY);
     }
 
     public Language language() {
         return new Language(this, Keys.WORD__WORD_LANG_FKEY);
-    }
-
-    public Morph morph() {
-        return new Morph(this, Keys.WORD__WORD_MORPH_CODE_FKEY);
     }
 
     public DisplayMorph displayMorph() {
@@ -214,11 +205,11 @@ public class Word extends TableImpl<WordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, String, String, Integer, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Long, String, Integer, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }
