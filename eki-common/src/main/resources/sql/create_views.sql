@@ -863,12 +863,12 @@ from lexeme l
                    				 from lexeme_register l_reg
                    				 where l_reg.lexeme_id = l2.id
                    				 group by l_reg.lexeme_id) mw_lex_register_codes,
-                   				l2.value_state_code mw_lex_value_state_code,
-                                w2.id mw_word_id,
-                                f2.value mw_word,
-                                f2.value_prese mw_word_prese,
-                                w2.homonym_nr mw_homonym_nr,
-                                w2.lang mw_lang,
+                   				 l2.value_state_code mw_lex_value_state_code,
+                                 w2.id mw_word_id,
+                                 f2.value mw_word,
+                                 f2.value_prese mw_word_prese,
+                                 w2.homonym_nr mw_homonym_nr,
+                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
                                  from word_word_type wt
                                  where wt.word_id = w2.id

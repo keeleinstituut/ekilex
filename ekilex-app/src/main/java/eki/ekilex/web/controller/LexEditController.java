@@ -259,12 +259,10 @@ public class LexEditController extends AbstractPageController {
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
-			String morphCode = wordDetails.getMorphCode();
 			String dataset = wordDetails.getDataset();
 			List<String> allDatasets = commonDataService.getDatasetCodes();
 
 			sessionBean.setRecentLanguage(language);
-			sessionBean.setRecentMorphCode(morphCode);
 
 			int wordCount = lexSearchService.countWords(wordValue, allDatasets);
 			if (wordCount == 0) {

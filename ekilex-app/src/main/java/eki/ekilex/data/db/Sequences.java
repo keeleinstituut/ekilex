@@ -310,6 +310,11 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_TAG_ID_SEQ = Internal.createSequence("lexeme_tag_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.lifecycle_activity_log_id_seq</code>
+     */
+    public static final Sequence<Long> LIFECYCLE_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("lifecycle_activity_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.lifecycle_log_id_seq</code>
      */
     public static final Sequence<Long> LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

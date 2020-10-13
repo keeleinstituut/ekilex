@@ -56,7 +56,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LexCollocationGroupTuple;
@@ -1048,13 +1047,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
-				.from(WORD, PARADIGM, FORM)
-				.where(
-						WORD.LANG.eq(lang)
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-								.and(FORM.VALUE.eq(wordValue))
-								.and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID)))
+				.from(WORD)
+				.where(WORD.LANG.eq(lang).and(WORD.VALUE.eq(wordValue)))
 				.fetchOneInto(Integer.class);
 
 		int homonymNumber = currentHomonymNumber + 1;

@@ -29,8 +29,6 @@ import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Record1;
 import org.jooq.Record16;
 import org.jooq.Record8;
 import org.jooq.Table;
@@ -38,7 +36,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
@@ -53,7 +50,6 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -61,7 +57,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
@@ -89,19 +84,17 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
-		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, p, wordCondition, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
+		return execute(w1, wordCondition, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		Word w1 = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchFilter.getCriteriaGroups(), searchDatasetsRestriction);
 
-		return count(w1, p, wordCondition);
+		return count(w1, wordCondition);
 	}
 
 	public List<eki.ekilex.data.Word> getWords(
@@ -109,39 +102,29 @@ public class LexSearchDbService extends AbstractDataDbService {
 			List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		Word word = WORD.as("w");
-		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = lexSearchConditionComposer.createSearchCondition(word, paradigm, searchWordCrit, searchDatasetsRestriction);
+		Condition where = lexSearchConditionComposer.createSearchCondition(word, searchWordCrit, searchDatasetsRestriction);
 
-		return execute(word, paradigm, where, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
+		return execute(word, where, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
 
 		Word word = WORD.as("w");
-		Paradigm paradigm = PARADIGM.as("p");
-		Condition where = lexSearchConditionComposer.createSearchCondition(word, paradigm, wordWithMetaCharacters, searchDatasetsRestriction);
+		Condition where = lexSearchConditionComposer.createSearchCondition(word, wordWithMetaCharacters, searchDatasetsRestriction);
 
-		return count(word, paradigm, where);
+		return count(word, where);
 	}
 
-	private int count(Word word, Paradigm paradigm, Condition where) {
+	private int count(Word word, Condition where) {
 
-		Form form = FORM.as("f");
-		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.MODE.eq(FormMode.WORD.name())))).on(paradigm.WORD_ID.eq(word.ID));
-
-		Table<Record1<Long>> w = create
+		Table<?> w = create
 				.select(word.ID.as("word_id"))
-				.from(from)
+				.from(word)
 				.where(where)
 				.groupBy(word.ID)
 				.asTable("w");
 
-		Table<?> ww = create
-				.select(w.field("word_id"))
-				.from(w)
-				.asTable("ww");
-
-		return create.fetchCount(ww);
+		return create.fetchCount(w);
 	}
 
 	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -186,8 +169,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 	public List<WordLexeme> getWordLexemes(Long wordId, SearchDatasetsRestriction searchDatasetsRestriction, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		Meaning m = MEANING.as("m");
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
@@ -216,8 +197,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		return create.select(
 				w.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')").as("word_value_prese"),
+				w.VALUE.as("word_value"),
+				w.VALUE_PRESE.as("word_value_prese"),
 				w.LANG.as("word_lang"),
 				w.HOMONYM_NR.as("word_homonym_nr"),
 				w.GENDER_CODE.as("word_gender_code"),
@@ -242,12 +223,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 				lposf.as("pos"),
 				lderf.as("derivs"),
 				lregf.as("registers"))
-				.from(f, p, w, l, m, ds)
+				.from(w, l, m, ds)
 				.where(
 						w.ID.eq(wordId)
-								.and(f.PARADIGM_ID.eq(p.ID))
-								.and(f.MODE.eq(FormMode.WORD.name()))
-								.and(p.WORD_ID.eq(w.ID))
 								.and(l.WORD_ID.eq(w.ID))
 								.and(l.MEANING_ID.eq(m.ID))
 								.and(l.DATASET_CODE.eq(ds.CODE))
@@ -261,8 +239,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 	public WordLexeme getLexeme(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		Meaning m = MEANING.as("m");
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
@@ -289,8 +265,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		return create.select(
 				w.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')").as("word_value_prese"),
+				w.VALUE.as("word_value"),
+				w.VALUE_PRESE.as("word_value_prese"),
 				w.LANG.as("word_lang"),
 				w.HOMONYM_NR.as("word_homonym_nr"),
 				w.GENDER_CODE.as("word_gender_code"),
@@ -315,13 +291,10 @@ public class LexSearchDbService extends AbstractDataDbService {
 				lposf.as("pos"),
 				lderf.as("derivs"),
 				lregf.as("registers"))
-				.from(f, p, w, l, m, ds)
+				.from(w, l, m, ds)
 				.where(
 						l.ID.eq(lexemeId)
 								.and(l.WORD_ID.eq(w.ID))
-								.and(p.WORD_ID.eq(w.ID))
-								.and(f.PARADIGM_ID.eq(p.ID))
-								.and(f.MODE.eq(FormMode.WORD.name()))
 								.and(l.MEANING_ID.eq(m.ID))
 								.and(l.DATASET_CODE.eq(ds.CODE)))
 				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
@@ -334,20 +307,19 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
 
 		Field<String[]> wtf = getWordTypesField(w2.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String> fmcf = getFormMorphCodeField(w2.ID);
 
 		return create
 				.select(
 						w2.ID.as("word_id"),
-						f2.VALUE.as("word_value"),
-						f2.VALUE_PRESE.as("word_value_prese"),
-						f2.MORPH_CODE,
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
+						fmcf.as("morph_code"),
 						w2.HOMONYM_NR,
 						w2.LANG,
 						wtf.as("word_type_codes"),
@@ -357,18 +329,15 @@ public class LexSearchDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
 						l2.ORDER_BY)
-				.from(l1, l2, w2, p2, f2)
+				.from(l1, l2, w2)
 				.where(
 						l1.ID.eq(lexemeId)
 						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
 						.and(l2.ID.ne(l1.ID))
 						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
 						.and(l2.WORD_ID.eq(w2.ID))
-						.and(p2.WORD_ID.eq(w2.ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.eq(FormMode.WORD.name()))
 						)
-				.groupBy(w2.ID, f2.VALUE, f2.VALUE_PRESE, f2.MORPH_CODE, l2.ID)
+				.groupBy(w2.ID, l2.ID)
 				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}
@@ -376,8 +345,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 
@@ -385,6 +352,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
+		Field<String> fvff = getFormVocalFormField(w.ID);
+		Field<String> fmcf = getFormMorphCodeField(w.ID);
 		Field<String[]> lxtnf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
 				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
@@ -393,13 +362,13 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		return create.select(
 				w.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").cast(String.class).as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')").cast(String.class).as("word_value_prese"),
-				DSL.field("array_to_string(array_agg(distinct f.vocal_form), ',')").cast(String.class).as("vocal_form"),
+				w.VALUE.as("word_value"),
+				w.VALUE_PRESE.as("word_value_prese"),
+				fmcf.as("morph_code"),
+				fvff.as("vocal_form"),
 				w.HOMONYM_NR,
 				w.LANG,
 				w.WORD_CLASS,
-				w.MORPH_CODE,
 				w.GENDER_CODE,
 				w.ASPECT_CODE,
 				wtf.as("word_type_codes"),
@@ -407,18 +376,14 @@ public class LexSearchDbService extends AbstractDataDbService {
 				wtsf.as("suffixoid"),
 				wtz.as("foreign"),
 				lxtnf.as("lexemes_tag_names"))
-				.from(w, p, f)
+				.from(w)
 				.where(w.ID.eq(wordId)
-						.and(p.WORD_ID.eq(w.ID))
-						.and(f.PARADIGM_ID.eq(p.ID))
-						.and(f.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
 						.andExists(DSL
 								.select(l.ID)
 								.from(l)
 								.where(
 										l.WORD_ID.eq(w.ID)
 												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
-				.groupBy(w.ID)
 				.fetchOptionalInto(eki.ekilex.data.Word.class)
 				.orElse(null);
 	}
@@ -429,8 +394,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		WordGroupMember wgrm2 = WORD_GROUP_MEMBER.as("wgrm2");
 		WordGroup wgr = WORD_GROUP.as("wgr");
 		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
 		WordRelTypeLabel wrtl = WORD_REL_TYPE_LABEL.as("wrtl");
 
 		Field<String[]> wtf = getWordTypesField(w2.ID);
@@ -443,8 +406,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wgrm2.ID,
 						wgr.ID.as("group_id"),
 						w2.ID.as("word_id"),
-						f2.VALUE.as("word_value"),
-						f2.VALUE_PRESE.as("word_value_prese"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
@@ -457,8 +420,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.innerJoin(wgr).on(wgr.ID.eq(wgrm1.WORD_GROUP_ID))
 								.innerJoin(wgrm2).on(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
 								.innerJoin(w2).on(w2.ID.eq(wgrm2.WORD_ID))
-								.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-								.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
 								.leftOuterJoin(wrtl).on(
 										wgr.WORD_REL_TYPE_CODE.eq(wrtl.CODE)
 												.and(wrtl.LANG.eq(classifierLabelLang)
@@ -473,8 +434,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		WordRelation r = WORD_RELATION.as("r");
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
 		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 
 		Field<String[]> wtf = getWordTypesField(w2.ID);
@@ -486,8 +445,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.selectDistinct(
 						r.ID.as("id"),
 						w2.ID.as("word_id"),
-						f2.VALUE.as("word_value"),
-						f2.VALUE_PRESE.as("word_value_prese"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
@@ -500,8 +459,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.from(
 						r
 								.innerJoin(w2).on(w2.ID.eq(r.WORD2_ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
-								.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-								.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
 								.leftOuterJoin(rtl).on(
 										r.WORD_REL_TYPE_CODE.eq(rtl.CODE)
 												.and(rtl.LANG.eq(classifierLabelLang)
@@ -517,8 +474,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		WordEtymologySourceLink wesl = WORD_ETYMOLOGY_SOURCE_LINK.as("wesl");
 		WordEtymologyRelation wer = WORD_ETYMOLOGY_RELATION.as("wer");
 		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
 
 		return create
 				.select(
@@ -535,14 +490,12 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wer.IS_QUESTIONABLE.as("word_etym_rel_questionable"),
 						wer.IS_COMPOUND.as("word_etym_rel_compound"),
 						w2.ID.as("related_word_id"),
-						f2.VALUE.as("related_word"),
+						w2.VALUE.as("related_word"),
 						w2.LANG.as("related_word_lang"))
 				.from(we
 						.leftOuterJoin(wesl).on(wesl.WORD_ETYM_ID.eq(we.ID))
 						.leftOuterJoin(wer).on(wer.WORD_ETYM_ID.eq(we.ID))
 						.leftOuterJoin(w2).on(w2.ID.eq(wer.RELATED_WORD_ID))
-						.leftOuterJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-						.leftOuterJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
 						)
 				.where(we.WORD_ID.eq(wordId))
 				.orderBy(we.ORDER_BY, wesl.ORDER_BY, wer.ORDER_BY)
@@ -557,8 +510,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
 		Collocation c = COLLOCATION.as("c");
 		Lexeme l2 = LEXEME.as("l2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
+		Word w2 = WORD.as("w2");
 
 		return create
 				.select(
@@ -575,10 +527,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 						c.SCORE.as("colloc_score"),
 						c.USAGES.as("colloc_usages"),
 						l2.WORD_ID.as("colloc_member_word_id"),
-						f2.VALUE.as("colloc_member_word"),
-						f2.MODE.as("colloc_member_mode"),
+						w2.VALUE.as("colloc_member_word"),
 						lc2.WEIGHT.as("colloc_member_weight"))
-				.from(pgr1, rgr1, lc1, lc2, c, l2, p2, f2)
+				.from(pgr1, rgr1, lc1, lc2, c, l2, w2)
 				.where(
 						pgr1.LEXEME_ID.eq(lexemeId)
 								.and(rgr1.POS_GROUP_ID.eq(pgr1.ID))
@@ -587,10 +538,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(lc2.COLLOCATION_ID.eq(c.ID))
 								.and(lc2.LEXEME_ID.eq(l2.ID))
 								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-								.and(l2.WORD_ID.eq(p2.WORD_ID))
-								.and(f2.PARADIGM_ID.eq(p2.ID))
-								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
-				.groupBy(c.ID, pgr1.ID, rgr1.ID, lc1.ID, lc2.ID, l2.ID, f2.VALUE, f2.MODE)
+								.and(l2.WORD_ID.eq(w2.ID))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(c.ID, pgr1.ID, rgr1.ID, lc1.ID, lc2.ID, l2.ID, w2.ID)
 				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
 				.fetchInto(CollocationTuple.class);
 	}
@@ -601,8 +551,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
 		Collocation c = COLLOCATION.as("c");
 		Lexeme l2 = LEXEME.as("l2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
+		Word w2 = WORD.as("w2");
 
 		return create
 				.select(
@@ -613,10 +562,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 						c.SCORE.as("colloc_score"),
 						c.USAGES.as("colloc_usages"),
 						l2.WORD_ID.as("colloc_member_word_id"),
-						f2.VALUE.as("colloc_member_word"),
-						f2.MODE.as("colloc_member_mode"),
+						w2.VALUE.as("colloc_member_word"),
 						lc2.WEIGHT.as("colloc_member_weight"))
-				.from(lc1, lc2, c, l2, p2, f2)
+				.from(lc1, lc2, c, l2, w2)
 				.where(
 						lc1.LEXEME_ID.eq(lexemeId)
 								.and(lc1.REL_GROUP_ID.isNull())
@@ -624,10 +572,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(lc2.COLLOCATION_ID.eq(c.ID))
 								.and(lc2.LEXEME_ID.eq(l2.ID))
 								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-								.and(l2.WORD_ID.eq(p2.WORD_ID))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(f2.PARADIGM_ID.eq(p2.ID))
-								.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
+								.and(l2.WORD_ID.eq(w2.ID))
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetchInto(CollocationTuple.class);
 	}
@@ -652,29 +598,25 @@ public class LexSearchDbService extends AbstractDataDbService {
 	}
 
 	private List<eki.ekilex.data.Word> execute(
-			Word w1, Paradigm p1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction,
+			Word w1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction,
 			DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
 
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
-		Form f1 = FORM.as("f1");
-		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
-		Field<String> wv = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
-		Field<String> wvp = DSL.field("array_to_string(array_agg(distinct f1.value_prese), ',', '*')").cast(String.class);
 
 		Table<Record8<Long, String, String, Integer, String, String, String, String>> w = DSL
 				.select(
 						w1.ID.as("word_id"),
-						wv.as("word_value"),
-						wvp.as("word_value_prese"),
+						w1.VALUE.as("word_value"),
+						w1.VALUE_PRESE.as("word_value_prese"),
 						w1.HOMONYM_NR,
 						w1.LANG,
 						w1.WORD_CLASS,
 						w1.GENDER_CODE,
 						w1.ASPECT_CODE)
-				.from(from)
+				.from(w1)
 				.where(where)
 				.groupBy(w1.ID)
 				.asTable("w");

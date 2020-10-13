@@ -233,6 +233,9 @@
                       <span>Sõnavormid</span>
                     </div>
                     <div class="ekiAccordion__content">
+                      <div th:if="${#lists.isEmpty(details.paradigms)}">
+                        Sisu puudub...
+                      </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
                         <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
                           <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="p-1">

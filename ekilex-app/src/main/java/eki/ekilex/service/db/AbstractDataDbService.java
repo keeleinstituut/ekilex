@@ -39,48 +39,39 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 
 	public SimpleWord getSimpleWord(Long wordId) {
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		return create
 				.select(
 						w.ID.as("word_id"),
-						DSL.field("(array_agg(distinct f.value))[1]", String.class).as("word_value"),
+						w.VALUE.as("word_value"),
 						w.LANG)
-				.from(w, p, f)
-				.where(
-						w.ID.eq(wordId)
-								.and(p.WORD_ID.eq(w.ID))
-								.and(f.PARADIGM_ID.eq(p.ID))
-								.and(f.MODE.eq(FormMode.WORD.name())))
-				.groupBy(w.ID)
+				.from(w)
+				.where(w.ID.eq(wordId))
 				.fetchOneInto(SimpleWord.class);
 	}
 
 	public List<String> getWordsValues(List<Long> wordIds) {
 		return create
-				.select(DSL.field("(array_agg(distinct form.value))[1]", String.class))
-				.from(WORD, PARADIGM, FORM)
-				.where(
-						WORD.ID.in(wordIds)
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
+				.select(WORD.VALUE)
+				.from(WORD)
+				.where(WORD.ID.in(wordIds))
 				.fetchInto(String.class);
 	}
 
 	public List<String> getLexemesWordValues(List<Long> lexemeIds) {
 		return create
-				.select(DSL.field("(array_agg(distinct form.value))[1]", String.class))
-				.from(LEXEME, WORD, PARADIGM, FORM)
-				.where(
-						LEXEME.ID.in(lexemeIds)
-								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.groupBy(WORD.ID)
+				.select(WORD.VALUE)
+				.from(LEXEME, WORD)
+				.where(LEXEME.ID.in(lexemeIds).and(LEXEME.WORD_ID.eq(WORD.ID)))
 				.fetchInto(String.class);
+	}
+
+	public String getLexemeWordValue(Long lexemeId) {
+		return create
+				.select(WORD.VALUE)
+				.from(LEXEME, WORD)
+				.where(LEXEME.ID.eq(lexemeId).and(LEXEME.WORD_ID.eq(WORD.ID)))
+				.fetchOptionalInto(String.class)
+				.orElse(null);
 	}
 
 	protected Field<String[]> getWordTypesField(Field<Long> wordIdField) {
@@ -120,6 +111,36 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 						WORD_WORD_TYPE.WORD_ID.eq(wordIdField)
 								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODES_FOREIGN)))));
 		return wtz;
+	}
+
+	protected Field<String> getFormVocalFormField(Field<Long> wordIdField) {
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		return DSL.field(DSL
+				.select(DSL.field("array_to_string(array_agg(distinct f.vocal_form), ',')").cast(String.class))
+				.from(p, f)
+				.where(p.WORD_ID.eq(wordIdField).and(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
+				.groupBy(wordIdField));
+	}
+
+	protected Field<String> getFormMorphCodeField(Field<Long> wordIdField) {
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		return DSL.field(DSL
+				.select(DSL.field("array_to_string(array_agg(distinct f.morph_code), ',')").cast(String.class))
+				.from(p, f)
+				.where(p.WORD_ID.eq(wordIdField).and(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
+				.groupBy(wordIdField));
+	}
+
+	protected Field<String> getFormDisplayFormField(Field<Long> wordIdField) {
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		return DSL.field(DSL
+				.select(DSL.field("array_to_string(array_agg(distinct f.display_form), ',')").cast(String.class))
+				.from(p, f)
+				.where(p.WORD_ID.eq(wordIdField).and(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
+				.groupBy(wordIdField));
 	}
 
 	protected Field<TypeClassifierRecord[]> getLexemePosField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {

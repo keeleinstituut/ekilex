@@ -10,7 +10,6 @@ import static eki.ekilex.data.db.Tables.DEFINITION_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREQUENCY_GROUP;
@@ -31,7 +30,6 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
-import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
@@ -61,7 +59,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.SourceType;
@@ -81,7 +78,6 @@ import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Language;
@@ -93,7 +89,6 @@ import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
@@ -596,8 +591,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform ff = FREEFORM.as("ff");
 		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
 
 		Field<String> mrtf = DSL.field(DSL
 				.select(mrtl.VALUE)
@@ -674,8 +667,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						lgf.as("lexeme_government_values"),
 						lobf.as("lexeme_order_by"),
 						w2.ID.as("word_id"),
-						DSL.field("array_to_string(array_agg(distinct f2.value), ',', '*')").as("word_value"),
-						DSL.field("array_to_string(array_agg(distinct f2.value_prese), ',', '*')").as("word_value_prese"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
 						w2.ASPECT_CODE.as("word_aspect_code"),
 						wtf.as("word_type_codes"),
@@ -689,9 +682,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
 								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID))
-								.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-								.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name()))))
+								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID)))
 				.where(mr.MEANING1_ID.eq(meaningId))
 				.groupBy(m2.ID, mr.ID, w2.ID)
 				.orderBy(mr.ID, DSL.field("lexeme_order_by"))
@@ -911,8 +902,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 		LexRelTypeLabel rtl = LEX_REL_TYPE_LABEL.as("rtl");
 		Lexeme l2 = LEXEME.as("l2");
 		Word w2 = WORD.as("w2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
 
 		Field<String[]> wtf = getWordTypesField(w2.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
@@ -925,8 +914,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.MEANING_ID,
 						l2.WORD_ID,
-						f2.VALUE.as("word_value"),
-						f2.VALUE_PRESE.as("word_value_prese"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
@@ -938,14 +927,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 						r
 						.innerJoin(l2).on(l2.ID.eq(r.LEXEME2_ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 						.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID))
-						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-						.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID)).and(f2.MODE.eq(FormMode.WORD.name()))
 						.leftOuterJoin(rtl).on(
 								r.LEX_REL_TYPE_CODE.eq(rtl.CODE)
 										.and(rtl.LANG.eq(classifierLabelLang)
 												.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(r.LEXEME1_ID.eq(lexemeId))
-				.groupBy(r.ID, l2.ID, w2.ID, f2.VALUE, f2.VALUE_PRESE, rtl.VALUE)
+				.groupBy(r.ID, l2.ID, w2.ID, rtl.VALUE)
 				.orderBy(r.ORDER_BY)
 				.fetchInto(Relation.class);
 	}
