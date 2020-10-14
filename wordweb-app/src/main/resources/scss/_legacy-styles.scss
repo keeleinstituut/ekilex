@@ -225,6 +225,11 @@
   .word-options:not(:last-child) a.is-homonym > span:after{
     margin-left: 5px;
   }
+  .collapse-panel:not(.expanded){
+    .word-options.limit a > span:after{
+      display: none;
+    }
+  }
 }
 
 

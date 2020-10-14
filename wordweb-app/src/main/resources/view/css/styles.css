@@ -17555,6 +17555,10 @@ body {
   margin-left: 5px;
 }
 
+.word-grouper-wrapper .collapse-panel:not(.expanded) .word-options.limit a > span:after {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .dependence-group {
     margin-right: 2.5rem;

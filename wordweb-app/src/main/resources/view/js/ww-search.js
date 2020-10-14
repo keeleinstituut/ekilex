@@ -104,6 +104,9 @@ function activateCollapseBtn(){
             $(this).find('.btn-content').toggleClass('d-none');
             $(this).find('.see-more-content').tooltip('hide');
         }
+        if($(this).data("toggle-container")){
+            $($(this).data("toggle-container")).toggleClass("expanded");
+        }
     });
 }
 
