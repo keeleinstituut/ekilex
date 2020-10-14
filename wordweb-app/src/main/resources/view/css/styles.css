@@ -17534,6 +17534,25 @@ body {
 
 .word-grouper-wrapper .word-options a {
   line-height: 1.3;
+  position: relative;
+}
+
+.word-grouper-wrapper .word-options sup {
+  position: absolute;
+  top: 3px;
+  right: 12px;
+}
+
+.word-grouper-wrapper .word-options:not(:last-child) a > span:after {
+  display: inline;
+  content: ",";
+  text-decoration: none;
+  color: #3f3f3f;
+  margin-right: .5rem;
+}
+
+.word-grouper-wrapper .word-options:not(:last-child) a.is-homonym > span:after {
+  margin-left: 5px;
 }
 
 @media (min-width: 768px) {
