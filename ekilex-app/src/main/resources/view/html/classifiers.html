@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title>Klassifikaatorid</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'classifiers')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 mb-4 shadow" th:each="classifiers : ${classifiersMap}">
+      <div class="card-header">
+        <h5 class="card-title d-inline-block" th:text="#{|classifier.${classifiers.key.name()}|}">classif name</h5>
+        <button class="btn btn-primary pull-right" title="Lisa uus" data-toggle="modal"
+                th:data-classifier-name="${classifiers.key.name()}"
+                th:data-target="${'#addClassifierDlg'}"
+                th:if="${classifiers.key.hasLabel()}">Lisa uus kood ja väärtused
+        </button>
+        <button class="btn btn-primary pull-right" title="Lisa uus" data-toggle="modal"
+                th:data-classifier-name="${classifiers.key.name()}"
+                th:data-target="${'#addClassifierCodeDlg'}"
+                th:unless="${classifiers.key.hasLabel()}">Lisa uus kood
+        </button>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped m-0 p-0 table-hover">
+          <tr>
+            <th class="m-1 p-1" style="width: 10%">kood</th>
+            <th class="m-1 p-1" style="width: 30%">descrip väärtus (eesti keeles)</th>
+            <th class="m-1 p-1" style="width: 55%">info</th>
+            <th class="m-1 p-1" style="width: 5%"></th>
+          </tr>
+          <tr th:each="classifier : ${classifiers.value}">
+            <td class="m-1 p-1">
+              <span th:text="${classifier.code}"></span>
+            </td>
+            <td class="m-1 p-1">
+              <span th:text="${classifier.value}" th:if="${classifiers.key.hasLabel()}"></span>
+            </td>
+            <td class="m-1 p-1">
+              <span class="small" th:text="${classifier.labelsTextAgg}" th:if="${classifiers.key.hasLabel()}"></span>
+            </td>
+            <td class="m-1 p-1">
+              <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal"
+                      data-target="#editClassifierDlg"
+                      th:data-classifier-name="${classifiers.key.name()}"
+                      th:data-classifier-code="${classifier.code}"
+                      th:if="${classifiers.key.hasLabel()}">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div th:replace="classifierdialog :: add_classifier_dialog"></div>
+  <div th:replace="classifierdialog :: add_classifier_code_dialog"></div>
+  <div th:replace="classifierdialog :: edit_classifier_dialog"></div>
+  <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #waitDlg"></div>
+  <script th:inline="javascript">
+	  initializeClassifiers();
+  </script>
+</body>

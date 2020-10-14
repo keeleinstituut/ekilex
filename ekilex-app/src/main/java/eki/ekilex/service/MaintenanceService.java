@@ -32,9 +32,10 @@ public class MaintenanceService implements SystemConstant {
 		clearDatasetCache();
 		clearUserCache();
 		clearTagCache();
+		clearLabelTypeCache();
 	}
 
-	private void clearClassifCache() {
+	public void clearClassifCache() {
 		cacheManager.getCache(CACHE_KEY_CLASSIF).clear();
 	}
 
@@ -50,6 +51,10 @@ public class MaintenanceService implements SystemConstant {
 		cacheManager.getCache(CACHE_KEY_TAG).clear();
 	}
 
+	private void clearLabelTypeCache() {
+		cacheManager.getCache(CACHE_KEY_LABEL_TYPE).clear();
+	}
+
 	@CacheEvict(allEntries = true, value = {CACHE_KEY_CLASSIF, CACHE_KEY_DATASET})
 	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
 	public void classifCacheEvict() {
@@ -63,6 +68,11 @@ public class MaintenanceService implements SystemConstant {
 	@CacheEvict(allEntries = true, value = CACHE_KEY_TAG)
 	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
 	public void tagCacheEvict() {
+	}
+
+	@CacheEvict(allEntries = true, value = CACHE_KEY_LABEL_TYPE)
+	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN, initialDelay = 5000)
+	public void labelTypeCacheEvict() {
 	}
 
 	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)

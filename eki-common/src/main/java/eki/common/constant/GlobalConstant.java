@@ -55,4 +55,6 @@ public interface GlobalConstant {
 	String LANGUAGE_CODE_EST = "est";
 
 	String LANGUAGE_CODE_RUS = "rus";
+
+	String LANGUAGE_CODE_ENG = "eng";
 }

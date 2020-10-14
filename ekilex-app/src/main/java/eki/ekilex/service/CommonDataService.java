@@ -202,6 +202,26 @@ public class CommonDataService implements SystemConstant {
 		if (ClassifierName.SEMANTIC_TYPE.equals(classifierName)) {
 			return getSemanticTypes();
 		}
+		if (ClassifierName.DISPLAY_MORPH.equals(classifierName)) {
+			// TODO - yogesh
+			// return getDisplayMorphs();
+		}
+		if (ClassifierName.GOVERNMENT_TYPE.equals(classifierName)) {
+			// TODO
+			// return getGovernmentTypes();
+		}
+		if (ClassifierName.ETYMOLOGY_TYPE.equals(classifierName)) {
+			// TODO
+			// return getEtymologyTypes();
+		}
+		if (ClassifierName.POS_GROUP.equals(classifierName)) {
+			// TODO
+			// return getPosGroups();
+		}
+		if (ClassifierName.USAGE_TYPE.equals(classifierName)) {
+			// TODO
+			// return getUsageTypes();
+		}
 		return null;
 	}
 
