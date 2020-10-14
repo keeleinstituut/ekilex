@@ -16580,17 +16580,11 @@ body.hidden-scroll {
   position: relative;
 }
 
-.dropdown-aside .has-submenu button {
-  padding: 0;
-  font-size: 20px;
-  color: inherit;
-  background-color: transparent;
-  border: none;
-  transition-property: .3s ease-in-out;
-}
-
-.dropdown-aside .has-submenu button span:first-of-type {
-  display: inline-block;
+.dropdown-aside .has-submenu::after {
+  position: absolute;
+  top: 20px;
+  right: 0;
+  color: #2c6fb6;
   content: "";
   border-top: 5px solid;
   border-right: 5px solid transparent;
@@ -16599,7 +16593,7 @@ body.hidden-scroll {
 }
 
 @media (max-width: 767.98px) {
-  .dropdown-aside .has-submenu button {
+  .dropdown-aside .has-submenu::after {
     display: none;
   }
 }
@@ -16609,7 +16603,7 @@ body.hidden-scroll {
   margin-left: 16px;
 }
 
-.dropdown-aside .has-submenu.open button {
+.dropdown-aside .has-submenu.open::after {
   transform: rotate(90deg);
 }
 
@@ -18454,7 +18448,7 @@ eki-link {
     position: -webkit-sticky;
     position: sticky;
     top: 65px;
-    z-index: 1020;
+    z-index: 10;
     height: 56px;
     background-color: #f0f0f0;
     border-radius: 0;

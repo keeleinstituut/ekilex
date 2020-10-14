@@ -63,7 +63,7 @@
   @include media-breakpoint-down(sm) {
     position: sticky;
     top: 65px;
-    z-index: $zindex-sticky;
+    z-index: 10;
     height: 56px;
     background-color: #f0f0f0;
     @include border-radius(0);
