@@ -101,10 +101,10 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
-					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
+							searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
+					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
+							searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
 						wherew = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, w1.LANG, wherew, false);
@@ -160,10 +160,10 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
-					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
+							searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
+					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
+							searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
 						whered1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, d1.LANG, whered2, false);
@@ -198,10 +198,10 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
 				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
-					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LANGUAGE,
-							SearchOperand.NOT_CONTAINS);
+					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
+							searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
+					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
+							searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
 						whereff1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, u1.LANG, whereff2, false);
@@ -419,31 +419,50 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectLexemeSourceLinks = DSL.select(l1.MEANING_ID).from(l1, lsl1).where(where1).groupBy(l1.MEANING_ID);
 
-			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.USAGE.name())).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
+					.and(ff1.TYPE.eq(FreeformType.USAGE.name()))
+					.and(lff1.FREEFORM_ID.eq(ff1.ID))
+					.and(lff1.LEXEME_ID.eq(l1.ID))
+					.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
 			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
 			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectUsageSourceLinks = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1, ffsl1).where(where1).groupBy(l1.MEANING_ID);
 
-			where1 = dsl1.DEFINITION_ID.eq(d1.ID).and(l1.MEANING_ID.eq(d1.MEANING_ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = dsl1.DEFINITION_ID.eq(d1.ID)
+					.and(l1.MEANING_ID.eq(d1.MEANING_ID))
+					.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, dsl1.VALUE, where1, true);
 			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, dsl1.SOURCE_ID, where1);
 			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectDefinitionSourceLinks = DSL.select(d1.MEANING_ID).from(l1, d1, dsl1).where(where1).groupBy(d1.MEANING_ID);
 
-			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.NOTE.name())).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
+					.and(ff1.TYPE.eq(FreeformType.NOTE.name()))
+					.and(lff1.FREEFORM_ID.eq(ff1.ID))
+					.and(lff1.LEXEME_ID.eq(l1.ID))
+					.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
 			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
 			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectLexemeNoteSourceLinks = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1, ffsl1).where(where1).groupBy(l1.MEANING_ID);
 
-			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.NOTE.name())).and(mff1.FREEFORM_ID.eq(ff1.ID)).and(mff1.MEANING_ID.eq(l1.MEANING_ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
+					.and(ff1.TYPE.eq(FreeformType.NOTE.name()))
+					.and(mff1.FREEFORM_ID.eq(ff1.ID))
+					.and(mff1.MEANING_ID.eq(l1.MEANING_ID))
+					.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
 			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
 			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 			SelectHavingStep<Record1<Long>> selectMeaningNoteSourceLinks = DSL.select(l1.MEANING_ID).from(l1, mff1, ff1, ffsl1).where(where1).groupBy(l1.MEANING_ID);
 
-			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID).and(ff1.TYPE.eq(FreeformType.NOTE.name())).and(dff1.FREEFORM_ID.eq(ff1.ID)).and(dff1.DEFINITION_ID.eq(d1.ID)).and(l1.MEANING_ID.eq(d1.MEANING_ID)).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
+			where1 = ffsl1.FREEFORM_ID.eq(ff1.ID)
+					.and(ff1.TYPE.eq(FreeformType.NOTE.name()))
+					.and(dff1.FREEFORM_ID.eq(ff1.ID))
+					.and(dff1.DEFINITION_ID.eq(d1.ID))
+					.and(l1.MEANING_ID.eq(d1.MEANING_ID))
+					.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 			where1 = searchFilterHelper.applyValueFilters(SearchKey.SOURCE_REF, filteredCriteria, ffsl1.VALUE, where1, true);
 			where1 = searchFilterHelper.applyIdFilters(SearchKey.SOURCE_ID, filteredCriteria, ffsl1.SOURCE_ID, where1);
 			where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
@@ -504,7 +523,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
 		Freeform ff1 = FREEFORM.as("ff1");
 		Condition where1, where2;
-		
+
 		// word select
 		where2 = l1.WORD_ID.eq(w1.ID).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 		Condition where3 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, w1.VALUE, DSL.noCondition(), true);

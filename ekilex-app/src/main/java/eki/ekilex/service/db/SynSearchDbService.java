@@ -109,26 +109,27 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
-				r.ID,
-				r.WORD_REL_TYPE_CODE.as("rel_type_code"),
-				rtl.VALUE.as("rel_type_label"),
-				r.RELATION_STATUS,
-				oppr.RELATION_STATUS.as("opposite_relation_status"),
-				relp.as("relation_params"),
-				r.ORDER_BY,
-				w2.ID.as("word_id"),
-				w2.VALUE.as("word_value"),
-				w2.VALUE_PRESE.as("word_value_prese"),
-				w2.HOMONYM_NR.as("word_homonym_nr"),
-				w2.LANG.as("word_lang"),
-				wtf.as("word_type_codes"),
-				wtpf.as("prefixoid"),
-				wtsf.as("suffixoid"),
-				wtz.as("foreign"),
-				rwd.as("word_definitions"),
-				rwlp.as("word_lexemes_poses"),
-				rwlf.as("word_lexemes_max_frequency"))
+		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL
+				.select(
+						r.ID,
+						r.WORD_REL_TYPE_CODE.as("rel_type_code"),
+						rtl.VALUE.as("rel_type_label"),
+						r.RELATION_STATUS,
+						oppr.RELATION_STATUS.as("opposite_relation_status"),
+						relp.as("relation_params"),
+						r.ORDER_BY,
+						w2.ID.as("word_id"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
+						w2.HOMONYM_NR.as("word_homonym_nr"),
+						w2.LANG.as("word_lang"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						rwd.as("word_definitions"),
+						rwlp.as("word_lexemes_poses"),
+						rwlf.as("word_lexemes_max_frequency"))
 				.from(r
 						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
 						.leftOuterJoin(oppr).on(
@@ -158,27 +159,28 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
-		return create.select(
-				rr.field("id"),
-				rr.field("rel_type_code"),
-				rr.field("rel_type_label"),
-				rr.field("relation_status"),
-				rr.field("opposite_relation_status"),
-				rr.field("relation_params"),
-				rr.field("order_by"),
-				rr.field("word_id"),
-				rr.field("word_value"),
-				rr.field("word_value_prese"),
-				rr.field("word_homonym_nr"),
-				rwhe.as("homonyms_exist"),
-				rr.field("word_lang"),
-				rr.field("word_type_codes"),
-				rr.field("prefixoid"),
-				rr.field("suffixoid"),
-				rr.field("foreign"),
-				rr.field("word_definitions"),
-				rr.field("word_lexemes_poses"),
-				rr.field("word_lexemes_max_frequency"))
+		return create
+				.select(
+						rr.field("id"),
+						rr.field("rel_type_code"),
+						rr.field("rel_type_label"),
+						rr.field("relation_status"),
+						rr.field("opposite_relation_status"),
+						rr.field("relation_params"),
+						rr.field("order_by"),
+						rr.field("word_id"),
+						rr.field("word_value"),
+						rr.field("word_value_prese"),
+						rr.field("word_homonym_nr"),
+						rwhe.as("homonyms_exist"),
+						rr.field("word_lang"),
+						rr.field("word_type_codes"),
+						rr.field("prefixoid"),
+						rr.field("suffixoid"),
+						rr.field("foreign"),
+						rr.field("word_definitions"),
+						rr.field("word_lexemes_poses"),
+						rr.field("word_lexemes_max_frequency"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
 				.fetchInto(Relation.class);
@@ -194,15 +196,16 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
-		return create.select(
-				l.MEANING_ID,
-				l.WORD_ID,
-				l.ID.as("lexeme_id"),
-				l.DATASET_CODE,
-				l.LEVEL1,
-				l.LEVEL2,
-				l.WEIGHT,
-				lposf.as("pos"))
+		return create
+				.select(
+						l.MEANING_ID,
+						l.WORD_ID,
+						l.ID.as("lexeme_id"),
+						l.DATASET_CODE,
+						l.LEVEL1,
+						l.LEVEL2,
+						l.WEIGHT,
+						lposf.as("pos"))
 				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
 				.where(
 						l.WORD_ID.eq(wordId)
@@ -251,23 +254,23 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
 		Field<String> fmcf = getFormMorphCodeField(w.ID);
 
-		return create.select(
-				w.ID.as("word_id"),
-				w.VALUE.as("word_value"),
-				w.VALUE_PRESE.as("word_value_prese"),
-				w.LANG,
-				fmcf.as("morph_code"),
-				wtf.as("word_type_codes"),
-				wtpf.as("prefixoid"),
-				wtsf.as("suffixoid"),
-				wtz.as("foreign"))
+		return create
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
+						w.LANG,
+						fmcf.as("morph_code"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"))
 				.from(w)
 				.where(w.ID.eq(wordId)
 						.andExists(DSL
 								.select(l.ID)
 								.from(l)
-								.where(l.WORD_ID.eq(w.ID)
-				)))
+								.where(l.WORD_ID.eq(w.ID))))
 				.fetchOneInto(eki.ekilex.data.Word.class);
 	}
 

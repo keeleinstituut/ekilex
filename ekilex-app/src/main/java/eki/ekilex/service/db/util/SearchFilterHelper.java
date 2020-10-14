@@ -37,7 +37,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
@@ -209,62 +208,6 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	public Condition applyDomainValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
-
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.EQUALS);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.NOT_EQUALS);
-
-		MeaningDomain md = MEANING_DOMAIN.as("md");
-
-		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
-			Condition where1 = md.MEANING_ID.eq(meaningIdField);
-			for (SearchCriterion criterion : positiveValueCriteria) {
-				Classifier domain = (Classifier) criterion.getSearchValue();
-				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-			}
-			where = where.and(DSL.exists(DSL.select(md.ID).from(md).where(where1)));
-		}
-
-		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
-			Condition where1 = md.MEANING_ID.eq(meaningIdField);
-			for (SearchCriterion criterion : negativeValueCriteria) {
-				Classifier domain = (Classifier) criterion.getSearchValue();
-				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-			}
-			where = where.and(DSL.notExists(DSL.select(md.ID).from(md).where(where1)));
-		}
-
-		return where;
-	}
-
-	public Condition applyMeaningSemanticTypeValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
-
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchOperand.EQUALS);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchOperand.NOT_EQUALS);
-
-		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
-
-		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
-			Condition where1 = mst.MEANING_ID.eq(meaningIdField);
-			for (SearchCriterion criterion : positiveValueCriteria) {
-				String semanticTypeCode = criterion.getSearchValue().toString();
-				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
-			}
-			condition = condition.and(DSL.exists(DSL.select(mst.ID).from(mst).where(where1)));
-		}
-
-		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
-			Condition where1 = mst.MEANING_ID.eq(meaningIdField);
-			for (SearchCriterion criterion : negativeValueCriteria) {
-				String semanticTypeCode = criterion.getSearchValue().toString();
-				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
-			}
-			condition = condition.and(DSL.notExists(DSL.select(mst.ID).from(mst).where(where1)));
-		}
-
-		return condition;
-	}
-
 	public Condition applyLexemeTagFilters(List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Word w1, Condition condition) throws Exception {
 
 		Lexeme l1 = Lexeme.LEXEME.as("l1");
@@ -384,7 +327,6 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where.andExists(DSL.select(lal.ID).from(l1, lal, al).where(where1));
 	}
 
-
 	public Condition applyLexemeComplexityFilters(List<SearchCriterion> searchCriteria, Field<String> lexemeComplexityField, Condition condition) {
 
 		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.COMPLEXITY, SearchOperand.EQUALS);
@@ -435,6 +377,29 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
+	public Condition applyWordTypeExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.WORD_TYPE);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
+		final String countFieldName = "cnt";
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			Table<Record1<Integer>> cntTbl = DSL
+					.select(DSL.count(wwt.ID).as(countFieldName))
+					.from(wwt)
+					.where(wwt.WORD_ID.eq(wordIdField))
+					.asTable("wwtcnt");
+			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
+			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+		}
+		return where;
+	}
+
 	public Condition applyLexemePosValueFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
 
 		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LEXEME_POS, SearchOperand.EQUALS);
@@ -463,7 +428,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	public Condition applyLexemePosExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition where1, Condition where) {
+	public Condition applyLexemePosExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition where) {
 
 		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.LEXEME_POS);
 
@@ -471,20 +436,17 @@ public class SearchFilterHelper implements GlobalConstant {
 			return where;
 		}
 
-		LexemePos lpos1 = LEXEME_POS.as("lpos1");
+		LexemePos lpos = LEXEME_POS.as("lpos");
+		final String countFieldName = "cnt";
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-
-			Table<Record2<Long, Integer>> lexPos = DSL
-					.select(l1.ID.as("lexeme_id"), DSL.count(lpos1.ID).as("lpos_count"))
-					.from(l1.leftOuterJoin(lpos1).on(lpos1.LEXEME_ID.eq(l1.ID)))
-					.where(where1)
-					.groupBy(l1.ID)
-					.asTable("lexpos");
-
-			Condition wherePosCount = createCountCondition(searchOperand, lexPos, "lpos_count");
-
-			where = where.andExists(DSL.select(lexPos.field("lexeme_id", Long.class)).from(lexPos).where(wherePosCount));
+			Table<Record1<Integer>> cntTbl = DSL
+					.select(DSL.count(lpos.ID).as(countFieldName))
+					.from(lpos)
+					.where(lpos.LEXEME_ID.eq(lexemeIdField))
+					.asTable("lposcnt");
+			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
+			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
 		return where;
 	}
@@ -494,55 +456,28 @@ public class SearchFilterHelper implements GlobalConstant {
 		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LEXEME_REGISTER, SearchOperand.EQUALS);
 		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LEXEME_REGISTER, SearchOperand.NOT_EQUALS);
 
-		LexemeRegister lr = LEXEME_REGISTER.as("lr");
+		LexemeRegister lreg = LEXEME_REGISTER.as("lreg");
 
 		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
-			Condition where1 = lr.LEXEME_ID.eq(lexemeIdField);
+			Condition where1 = lreg.LEXEME_ID.eq(lexemeIdField);
 			for (SearchCriterion criterion : positiveValueCriteria) {
 				String lexemeRegisterCode = criterion.getSearchValue().toString();
-				where1 = where1.and(lr.REGISTER_CODE.eq(lexemeRegisterCode));
+				where1 = where1.and(lreg.REGISTER_CODE.eq(lexemeRegisterCode));
 			}
-			condition = condition.and(DSL.exists(DSL.select(lr.ID).from(lr).where(where1)));
+			condition = condition.and(DSL.exists(DSL.select(lreg.ID).from(lreg).where(where1)));
 		}
 
 		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
-			Condition where1 = lr.LEXEME_ID.eq(lexemeIdField);
+			Condition where1 = lreg.LEXEME_ID.eq(lexemeIdField);
 			for (SearchCriterion criterion : negativeValueCriteria) {
 				String lexemeRegisterCode = criterion.getSearchValue().toString();
-				where1 = where1.and(lr.REGISTER_CODE.eq(lexemeRegisterCode));
+				where1 = where1.and(lreg.REGISTER_CODE.eq(lexemeRegisterCode));
 			}
-			condition = condition.and(DSL.notExists(DSL.select(lr.ID).from(lr).where(where1)));
+			condition = condition.and(DSL.notExists(DSL.select(lreg.ID).from(lreg).where(where1)));
 		}
 
 		return condition;
 	}
-
-	public Condition applyLexemeRegisterExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Condition where1, Condition where) {
-
-		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.LEXEME_REGISTER);
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		LexemeRegister lr = LEXEME_REGISTER.as("lr");
-		for (SearchCriterion criterion : filteredCriteria) {
-			SearchOperand searchOperand = criterion.getSearchOperand();
-
-			Table<Record2<Long, Integer>> lexReg = DSL
-					.select(l1.ID.as("lexeme_id"), DSL.count(lr.ID).as("lr_count"))
-					.from(l1.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l1.ID)))
-					.where(where1)
-					.groupBy(l1.ID)
-					.asTable("lexreg");
-
-			Condition whereRegisterCount = createCountCondition(searchOperand, lexReg, "lr_count");
-
-			where = where.andExists(DSL.select(lexReg.field("lexeme_id", Long.class)).from(lexReg).where(whereRegisterCount));
-		}
-		return where;
-	}
-
 
 	public Condition applyLexemeRegisterExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition where) {
 
@@ -552,51 +487,22 @@ public class SearchFilterHelper implements GlobalConstant {
 			return where;
 		}
 
-		LexemeRegister lr = LEXEME_REGISTER.as("lr");
+		LexemeRegister lreg = LEXEME_REGISTER.as("lreg");
+		final String countFieldName = "cnt";
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-
-			Table<Record2<Long, Integer>> lexReg = DSL
-					.select(lexemeIdField.as("lexeme_id"), DSL.count(lr.ID).as("lr_count"))
-					.from(lr)
-					.where(lr.LEXEME_ID.eq(lexemeIdField))
-					.groupBy(lexemeIdField)
-					.asTable("lexreg");
-
-			Condition whereRegisterCount = createCountCondition(searchOperand, lexReg, "lr_count");
-
-			where = where.andExists(DSL.select(lexReg.field("lexeme_id", Long.class)).from(lexReg).where(whereRegisterCount));
+			Table<Record1<Integer>> cntTbl = DSL
+					.select(DSL.count(lreg.ID).as(countFieldName))
+					.from(lreg)
+					.where(lreg.LEXEME_ID.eq(lexemeIdField))
+					.asTable("lregcnt");
+			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
+			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
 		return where;
 	}
 
-	public Condition applyWordTypeExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
-
-		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.WORD_TYPE);
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
-
-		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
-		for (SearchCriterion criterion : filteredCriteria) {
-			SearchOperand searchOperand = criterion.getSearchOperand();
-
-			Table<Record2<Long, Integer>> wordWordType = DSL
-					.select(wordIdField.as("word_id"), DSL.count(wwt.ID).as("wt_count"))
-					.from(wwt)
-					.where(wwt.WORD_ID.eq(wordIdField))
-					.groupBy(wordIdField)
-					.asTable("word_word_type");
-
-			Condition whereWordTypeCount = createCountCondition(searchOperand, wordWordType, "wt_count");
-
-			where = where.andExists(DSL.select(wordWordType.field("word_id", Long.class)).from(wordWordType).where(whereWordTypeCount));
-		}
-		return where;
-	}
-
-	public Condition applyMeaningSemanticTypeExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition where1, Condition where) {
+	public Condition applyMeaningSemanticTypeExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
 
 		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.SEMANTIC_TYPE);
 
@@ -605,49 +511,43 @@ public class SearchFilterHelper implements GlobalConstant {
 		}
 
 		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
-		where1 = where1.and(mst.MEANING_ID.eq(m1.ID));
-
+		final String countFieldName = "cnt";
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-
-			Table<Record2<Long, Integer>> meaningSemanticType = DSL
-					.select(m1.ID.as("meaning_id"), DSL.count(mst.ID).as("mst_count"))
-					.from(l1, m1, mst)
-					.where(where1)
-					.groupBy(m1.ID)
-					.asTable("meaning_semantic_type");
-
-			Condition whereMstCount = createCountCondition(searchOperand, meaningSemanticType, "mst_count");
-			where = where.andExists(DSL.select(meaningSemanticType.field("meaning_id", Long.class)).from(meaningSemanticType).where(whereMstCount));
-
+			Table<Record1<Integer>> cntTbl = DSL
+					.select(DSL.count(mst.ID).as(countFieldName))
+					.from(mst)
+					.where(mst.MEANING_ID.eq(meaningIdField))
+					.asTable("mstcnt");
+			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
+			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
 		return where;
 	}
 
-	public Condition applyDomainExistsFilters(List<SearchCriterion> searchCriteria, Lexeme l1, Meaning m1, Condition where1, Condition where) {
+	public Condition applyDomainValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
 
-		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.DOMAIN);
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return where;
-		}
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.NOT_EQUALS);
 
 		MeaningDomain md = MEANING_DOMAIN.as("md");
-		where1 = where1.and(md.MEANING_ID.eq(m1.ID));
 
-		for (SearchCriterion criterion : filteredCriteria) {
-			SearchOperand searchOperand = criterion.getSearchOperand();
-			Table<Record2<Long, Integer>> meaningDomain = DSL
-					.select(m1.ID.as("meaning_id"), DSL.count(md.ID).as("md_count"))
-					.from(l1, m1, md)
-					.where(where1)
-					.groupBy(m1.ID)
-					.asTable("meaning_domain");
+		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
+			Condition where1 = md.MEANING_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : positiveValueCriteria) {
+				Classifier domain = (Classifier) criterion.getSearchValue();
+				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+			}
+			where = where.and(DSL.exists(DSL.select(md.ID).from(md).where(where1)));
+		}
 
-			Condition whereDomainCount = createCountCondition(searchOperand, meaningDomain, "md_count");
-
-			where = where.andExists(DSL.select(meaningDomain.field("meaning_id", Long.class)).from(meaningDomain).where(whereDomainCount));
-
+		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
+			Condition where1 = md.MEANING_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : negativeValueCriteria) {
+				Classifier domain = (Classifier) criterion.getSearchValue();
+				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+			}
+			where = where.and(DSL.notExists(DSL.select(md.ID).from(md).where(where1)));
 		}
 		return where;
 	}
@@ -661,25 +561,49 @@ public class SearchFilterHelper implements GlobalConstant {
 		}
 
 		MeaningDomain md = MEANING_DOMAIN.as("md");
+		final String countFieldName = "cnt";
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-
-			Table<Record2<Long, Integer>> meaningDomain = DSL
-					.select(meaningIdField.as("meaning_id"), DSL.count(md.ID).as("md_count"))
+			Table<Record1<Integer>> cntTbl = DSL
+					.select(DSL.count(md.ID).as(countFieldName))
 					.from(md)
 					.where(md.MEANING_ID.eq(meaningIdField))
-					.groupBy(meaningIdField)
-					.asTable("meaning_domain");
-
-			Condition whereDomainCount = createCountCondition(searchOperand, meaningDomain, "md_count");
-
-			where = where.andExists(DSL.select(meaningDomain.field("meaning_id", Long.class)).from(meaningDomain).where(whereDomainCount));
-
+					.asTable("mdcnt");
+			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
+			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
 		return where;
 	}
 
-	private Condition createCountCondition(SearchOperand searchOperand, Table<Record2<Long, Integer>> idAndCount, String countFieldName) {
+	public Condition applyMeaningSemanticTypeValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
+
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchOperand.NOT_EQUALS);
+
+		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
+
+		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
+			Condition where1 = mst.MEANING_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : positiveValueCriteria) {
+				String semanticTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
+			}
+			condition = condition.and(DSL.exists(DSL.select(mst.ID).from(mst).where(where1)));
+		}
+
+		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
+			Condition where1 = mst.MEANING_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : negativeValueCriteria) {
+				String semanticTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
+			}
+			condition = condition.and(DSL.notExists(DSL.select(mst.ID).from(mst).where(where1)));
+		}
+
+		return condition;
+	}
+
+	private Condition createCountCondition(SearchOperand searchOperand, Table<Record1<Integer>> idAndCount, String countFieldName) {
 
 		Condition whereItemCount;
 		if (searchOperand.equals(SearchOperand.NOT_EXISTS)) {
