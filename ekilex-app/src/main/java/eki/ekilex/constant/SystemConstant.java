@@ -30,5 +30,7 @@ public interface SystemConstant {
 
 	String CACHE_KEY_TAG = "tag";
 
+	String CACHE_KEY_LABEL_TYPE = "labeltype";
+
 	int MAX_TEXT_LENGTH_LIMIT = 2000;
 }

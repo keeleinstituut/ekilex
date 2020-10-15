@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+  <div id="addClassifierDlg" class="modal classifier-dialog" role="dialog" th:fragment="add_classifier_dialog">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <form name="labelsForm" th:action="@{/create_classifier_and_labels}" method="post">
+          <div class="modal-header">
+            <label class="col-md-1 col-form-label">kood</label>
+            <input class="modal-title col-md-1 form-control font-weight-bold required-field" data-classif-name="" name="classifierCode">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div data-name="classifLabelsDiv"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary dataset-save-btn">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div th:replace="classifiercomp :: label_heading_template"></div>
+    <div th:replace="classifiercomp :: label_row_template"></div>
+  </div>
+  <div id="editClassifierDlg" class="modal classifier-dialog" role="dialog" th:fragment="edit_classifier_dialog">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <form name="labelsForm" th:action="@{/update_classifier}" method="post">
+          <div class="modal-header">
+            <label class="col-md-1 col-form-label">kood</label>
+            <input class="modal-title col-md-1 form-control font-weight-bold" data-classif-name="" name="classifierCode" disabled>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div data-name="classifLabelsDiv"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary dataset-save-btn">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div th:replace="classifiercomp :: label_heading_template"></div>
+    <div th:replace="classifiercomp :: label_row_template"></div>
+  </div>
+  <div id="addClassifierCodeDlg" class="modal" role="dialog" th:fragment="add_classifier_code_dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form name="codeForm" th:action="@{/create_classifier}" method="post">
+          <input type="hidden" name="classifierName">
+          <div class="modal-header">
+            <label class="col-md-2 col-form-label">kood</label>
+            <input class="modal-title col-md-2 form-control font-weight-bold required-field" name="classifierCode">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary dataset-save-btn">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div th:replace="classifiercomp :: label_heading_template"></div>
+    <div th:replace="classifiercomp :: label_row_template"></div>
+  </div>
+</body>
+</html>

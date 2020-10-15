@@ -150,6 +150,31 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Classifier> getDisplayMorphs() {
+		return commonDataDbService.getDisplayMorphs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
+	public List<Classifier> getGovernmentTypes() {
+		return commonDataDbService.getGovernmentTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
+	public List<Classifier> getEtymologyTypes() {
+		return commonDataDbService.getEtymologyTypes();
+	}
+
+	@Transactional
+	public List<Classifier> getPosGroups() {
+		return commonDataDbService.getPosGroups(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
+	public List<Classifier> getUsageTypes() {
+		return commonDataDbService.getUsageTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getClassifiers(ClassifierName classifierName) {
 		if (classifierName == null) {
 			return null;
@@ -201,6 +226,21 @@ public class CommonDataService implements SystemConstant {
 		}
 		if (ClassifierName.SEMANTIC_TYPE.equals(classifierName)) {
 			return getSemanticTypes();
+		}
+		if (ClassifierName.DISPLAY_MORPH.equals(classifierName)) {
+			return getDisplayMorphs();
+		}
+		if (ClassifierName.GOVERNMENT_TYPE.equals(classifierName)) {
+			return getGovernmentTypes();
+		}
+		if (ClassifierName.ETYMOLOGY_TYPE.equals(classifierName)) {
+			return getEtymologyTypes();
+		}
+		if (ClassifierName.POS_GROUP.equals(classifierName)) {
+			return getPosGroups();
+		}
+		if (ClassifierName.USAGE_TYPE.equals(classifierName)) {
+			return getUsageTypes();
 		}
 		return null;
 	}

@@ -34,6 +34,9 @@
         <p>
           <a th:href="@{/datasets}">Sõnakogude haldus</a>
         </p>
+        <p>
+          <a th:href="@{/classifiers}" sec:authorize="#vars.userRoleData.admin">Klassifikaatorite haldus</a>
+        </p>
         <p sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>

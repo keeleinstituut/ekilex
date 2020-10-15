@@ -56,8 +56,6 @@ public interface WebConstant {
 
 	String MEANING_DETAILS_URI = "/meaningdetails";
 
-	String CLASSIFIERS_URI = "/classifiers";
-
 	String DOMAINS_URI = "/domains";
 
 	String DOMAIN_ORIGINS_URI = "/domainorigins";
@@ -226,6 +224,20 @@ public interface WebConstant {
 	String VALIDATE_CREATE_DATASET_URI = "/validate_create_dataset";
 
 	String ORIGIN_DOMAINS_URI = "/origin_domains";
+
+	String CLASSIFIERS_URI = "/classifiers";
+
+	String CLASSIFIERS_PAGE = "classifiers";
+
+	String CLASSIFIER_URI = "/classifier";
+
+	String EMPTY_CLASSIFIER_URI = "/empty_classifier";
+
+	String CREATE_CLASSIFIER_URI = "/create_classifier";
+
+	String CREATE_CLASSIFIER_AND_LABELS_URI = "/create_classifier_and_labels";
+
+	String UPDATE_CLASSIFIER_URI = "/update_classifier";
 
 	String CHANGE_ROLE_URI = "/change_role";
 
