@@ -11,13 +11,18 @@ import static eki.ekilex.data.db.Tables.DEFINITION_TYPE;
 import static eki.ekilex.data.db.Tables.DEFINITION_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.DERIV;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
+import static eki.ekilex.data.db.Tables.DISPLAY_MORPH;
+import static eki.ekilex.data.db.Tables.DISPLAY_MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.Tables.ETYMOLOGY_TYPE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREQUENCY_GROUP;
 import static eki.ekilex.data.db.Tables.GENDER;
 import static eki.ekilex.data.db.Tables.GENDER_LABEL;
+import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE;
+import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -38,6 +43,8 @@ import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.MORPH;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.POS;
+import static eki.ekilex.data.db.Tables.POS_GROUP;
+import static eki.ekilex.data.db.Tables.POS_GROUP_LABEL;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER;
@@ -47,6 +54,7 @@ import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.TAG;
+import static eki.ekilex.data.db.Tables.USAGE_TYPE;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
@@ -145,6 +153,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREQUENCY_GROUP.CODE,
 						FREQUENCY_GROUP.CODE.as("value"))
 				.from(FREQUENCY_GROUP)
+				.orderBy(FREQUENCY_GROUP.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -182,6 +191,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						REGION.CODE,
 						REGION.CODE.as("value"))
 				.from(REGION)
+				.orderBy(REGION.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -403,6 +413,70 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(SEMANTIC_TYPE_LABEL, SEMANTIC_TYPE)
 				.where(SEMANTIC_TYPE_LABEL.LANG.eq(classifierLabelLang).and(SEMANTIC_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(SEMANTIC_TYPE_LABEL.CODE.eq(SEMANTIC_TYPE.CODE)))
 				.orderBy(SEMANTIC_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getDisplayMorphs(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.DISPLAY_MORPH),
+						DISPLAY_MORPH_LABEL.CODE,
+						DISPLAY_MORPH_LABEL.VALUE)
+				.from(DISPLAY_MORPH_LABEL, DISPLAY_MORPH)
+				.where(DISPLAY_MORPH_LABEL.LANG.eq(classifierLabelLang).and(DISPLAY_MORPH_LABEL.TYPE.eq(classifierLabelType)).and(DISPLAY_MORPH_LABEL.CODE.eq(DISPLAY_MORPH.CODE)))
+				.orderBy(DISPLAY_MORPH.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getGovernmentTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.GOVERNMENT_TYPE),
+						GOVERNMENT_TYPE_LABEL.CODE,
+						GOVERNMENT_TYPE_LABEL.VALUE)
+				.from(GOVERNMENT_TYPE_LABEL, GOVERNMENT_TYPE)
+				.where(GOVERNMENT_TYPE_LABEL.LANG.eq(classifierLabelLang).and(GOVERNMENT_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(GOVERNMENT_TYPE_LABEL.CODE.eq(GOVERNMENT_TYPE.CODE)))
+				.orderBy(GOVERNMENT_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public List<Classifier> getEtymologyTypes() {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.ETYMOLOGY_TYPE),
+						ETYMOLOGY_TYPE.CODE,
+						ETYMOLOGY_TYPE.CODE.as("value"))
+				.from(ETYMOLOGY_TYPE)
+				.orderBy(ETYMOLOGY_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getPosGroups(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.POS_GROUP),
+						POS_GROUP_LABEL.CODE,
+						POS_GROUP_LABEL.VALUE)
+				.from(POS_GROUP_LABEL, POS_GROUP)
+				.where(POS_GROUP_LABEL.LANG.eq(classifierLabelLang).and(POS_GROUP_LABEL.TYPE.eq(classifierLabelType)).and(POS_GROUP_LABEL.CODE.eq(POS_GROUP.CODE)))
+				.orderBy(POS_GROUP.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getUsageTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.USAGE_TYPE),
+						USAGE_TYPE_LABEL.CODE,
+						USAGE_TYPE_LABEL.VALUE)
+				.from(USAGE_TYPE_LABEL, USAGE_TYPE)
+				.where(USAGE_TYPE_LABEL.LANG.eq(classifierLabelLang).and(USAGE_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(USAGE_TYPE_LABEL.CODE.eq(USAGE_TYPE.CODE)))
+				.orderBy(USAGE_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 

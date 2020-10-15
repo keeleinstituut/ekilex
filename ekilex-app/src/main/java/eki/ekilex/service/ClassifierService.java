@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -119,7 +120,7 @@ public class ClassifierService implements GlobalConstant {
 
 		classifierDbService.createClassifier(classifierName, classifierCode);
 		for (ClassifierLabel classifierLabel : classifierLabels) {
-			if (classifierLabel.getValue() != null) {
+			if (StringUtils.isNotBlank(classifierLabel.getValue())) {
 				classifierDbService.createOrUpdateClassifierLabel(classifierLabel);
 			}
 		}
@@ -142,7 +143,7 @@ public class ClassifierService implements GlobalConstant {
 	public void updateClassifier(List<ClassifierLabel> classifierLabels) {
 
 		for (ClassifierLabel classifierLabel : classifierLabels) {
-			if (classifierLabel.getValue() != null) {
+			if (StringUtils.isNotBlank(classifierLabel.getValue())) {
 				classifierDbService.createOrUpdateClassifierLabel(classifierLabel);
 			} else {
 				classifierDbService.deleteClassifierLabel(classifierLabel);
