@@ -110,6 +110,7 @@ import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
+import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
@@ -166,7 +167,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1754648067;
+    private static final long serialVersionUID = 338743055;
 
     /**
      * The reference instance of <code>public</code>
@@ -704,6 +705,11 @@ public class Public extends SchemaImpl {
     public final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
 
     /**
+     * The table <code>public.view_ww_word</code>.
+     */
+    public final ViewWwWord VIEW_WW_WORD = ViewWwWord.VIEW_WW_WORD;
+
+    /**
      * The table <code>public.view_ww_word_etym_source_link</code>.
      */
     public final ViewWwWordEtymSourceLink VIEW_WW_WORD_ETYM_SOURCE_LINK = ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK;
@@ -1051,6 +1057,7 @@ public class Public extends SchemaImpl {
             ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
             ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA,
+            ViewWwWord.VIEW_WW_WORD,
             ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK,
             ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,

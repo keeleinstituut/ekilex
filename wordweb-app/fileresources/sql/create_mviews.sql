@@ -85,7 +85,6 @@ create type type_colloc_member as (
 				word text,
 				form text,
 				homonym_nr integer,
-				word_exists boolean,
 				conjunct varchar(100),
 				weight numeric(14,4));
 create type type_meaning_word as (
@@ -177,7 +176,6 @@ dblink(
 	homonym_nr integer,
 	word_class varchar(100),
 	word_type_codes varchar(100) array,
-	morph_code varchar(100),
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
 	lang_complexities type_lang_complexity array,

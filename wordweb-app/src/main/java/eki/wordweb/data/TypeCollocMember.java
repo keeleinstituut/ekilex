@@ -16,8 +16,6 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private Integer homonymNr;
 
-	private boolean wordExists;
-
 	private String conjunct;
 
 	private Float weight;
@@ -70,14 +68,6 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
-	}
-
-	public boolean isWordExists() {
-		return wordExists;
-	}
-
-	public void setWordExists(boolean wordExists) {
-		this.wordExists = wordExists;
 	}
 
 	public String getConjunct() {

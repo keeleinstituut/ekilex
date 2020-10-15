@@ -75,10 +75,12 @@ from (select ukw.*,
                          (select array_agg(l.id)
                           from lexeme l
                           where l.word_id = ukw.uw_id
+                          and   l.type = 'PRIMARY'
                           and   l.dataset_code = 'sss') uw_lex_ids,
                          (select array_agg(l.id)
                           from lexeme l
                           where l.word_id = ukw.kw_id
+                          and   l.type = 'PRIMARY'
                           and   l.dataset_code = 'sss') kw_lex_ids
                   from (select ukw.*,
                                ukw.kw_ids[1] kw_id
@@ -111,6 +113,7 @@ from (select ukw.*,
                                                   and   exists (select l.id
                                                                 from lexeme l
                                                                 where l.word_id = w.id
+                                                                and   l.type = 'PRIMARY'
                                                                 and   l.dataset_code = 'sss')) kw
                                               on kw.value = uw.value
                                              and kw.lang = uw.lang
@@ -137,6 +140,7 @@ from (select ukw.*
                    (select array_agg(l.id)
                     from lexeme l
                     where l.word_id = ukw.kw_id
+                    and   l.type = 'PRIMARY'
                     and   l.dataset_code = 'sss') kw_lex_ids
             from (select ukw.*,
                          ukw.kw_ids[1] kw_id
@@ -153,6 +157,7 @@ from (select ukw.*
                                     from word w,
                                          lexeme l
                                     where l.word_id = w.id
+                                    and   l.type = 'PRIMARY'
                                     and   l.dataset_code = 'sss'
                                     and   exists (select f.id
                                                   from paradigm p,
@@ -174,6 +179,7 @@ from (select ukw.*
                                             and   exists (select l.id
                                                           from lexeme l
                                                           where l.word_id = w.id
+                                                          and   l.type = 'PRIMARY'
                                                           and   l.dataset_code = 'sss')) kw
                                         on kw.value = uw.value
                                        and kw.lang = uw.lang
@@ -209,6 +215,7 @@ from (select ukw.*
                   from word w,
                        lexeme l
                   where l.word_id = w.id
+                  and   l.type = 'PRIMARY'
                   and   l.dataset_code = 'sss'
                   and   exists (select f.id
                                 from paradigm p,
@@ -230,6 +237,7 @@ from (select ukw.*
                           and   exists (select l.id
                                         from lexeme l
                                         where l.word_id = w.id
+                                        and   l.type = 'PRIMARY'
                                         and   l.dataset_code = 'sss')) kw
                       on kw.value = uw.value
                      and kw.lang = uw.lang
@@ -258,6 +266,7 @@ from (select uw.id uw_id,
       from word uw,
            lexeme uwl
       where uwl.word_id = uw.id
+      and   uwl.type = 'PRIMARY'
       and   uwl.dataset_code = 'sss'
       and   exists (select f.id
                     from paradigm p,
@@ -278,6 +287,7 @@ from (select uw.id uw_id,
                         and   exists (select l.id
                                       from lexeme l
                                       where l.word_id = kw.id
+                                      and   l.type = 'PRIMARY'
                                       and   l.dataset_code = 'sss'))
       group by uw.id,
                uwl.id) ukw

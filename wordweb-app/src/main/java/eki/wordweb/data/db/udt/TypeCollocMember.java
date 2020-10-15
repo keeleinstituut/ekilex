@@ -22,7 +22,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
 
-    private static final long serialVersionUID = 103604233;
+    private static final long serialVersionUID = 1199642265;
 
     /**
      * The reference instance of <code>public.type_colloc_member</code>
@@ -61,11 +61,6 @@ public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
      * The attribute <code>public.type_colloc_member.homonym_nr</code>.
      */
     public static final UDTField<TypeCollocMemberRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER, TYPE_COLLOC_MEMBER, "");
-
-    /**
-     * The attribute <code>public.type_colloc_member.word_exists</code>.
-     */
-    public static final UDTField<TypeCollocMemberRecord, Boolean> WORD_EXISTS = createField(DSL.name("word_exists"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.conjunct</code>.

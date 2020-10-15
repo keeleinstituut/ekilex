@@ -110,6 +110,7 @@ import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
+import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
@@ -669,6 +670,11 @@ public class Tables {
      * The table <code>public.view_ww_similarity_judgement_data</code>.
      */
     public static final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
+
+    /**
+     * The table <code>public.view_ww_word</code>.
+     */
+    public static final ViewWwWord VIEW_WW_WORD = ViewWwWord.VIEW_WW_WORD;
 
     /**
      * The table <code>public.view_ww_word_etym_source_link</code>.
