@@ -187,7 +187,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.FORMS_EXIST)
 				.from(w)
 				.where(where)
-				.orderBy(w.MIN_DS_ORDER_BY, w.LANG_ORDER_BY, w.HOMONYM_NR)
+				.orderBy(w.MIN_DS_ORDER_BY, w.LANG_ORDER_BY, w.WORD, w.WORD_TYPE_ORDER_BY, w.HOMONYM_NR)
 				.fetch(record -> {
 					Word pojo = record.into(Word.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());

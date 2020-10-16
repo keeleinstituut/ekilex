@@ -183,7 +183,8 @@ dblink(
 	definitions type_definition array,
 	od_word_recommendations text array,
 	forms_exist boolean,
-	min_ds_order_by bigint
+	min_ds_order_by bigint,
+	word_type_order_by integer
 );
 
 create materialized view mview_ww_form as

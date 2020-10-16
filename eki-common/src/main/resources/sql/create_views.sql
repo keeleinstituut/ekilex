@@ -307,7 +307,8 @@ select w.word_id,
        wd.definitions,
        od_ws.od_word_recommendations,
        w.forms_exist,
-       w.min_ds_order_by
+       w.min_ds_order_by,
+       w.word_type_order_by
 from (select w.id as word_id,
              w.value as word,
              w.value_prese as word_prese,
@@ -334,7 +335,11 @@ from (select w.id as word_id,
               and   l.type = 'PRIMARY'
               and   l.is_public = true
               and   ds.code = l.dataset_code
-              and   ds.is_public = true) min_ds_order_by
+              and   ds.is_public = true) min_ds_order_by,
+             (select count(wt.id)
+              from word_word_type wt
+              where wt.word_id = w.id
+              and wt.word_type_code = 'pf') word_type_order_by
       from word as w
       where exists (select l.id
                     from lexeme as l,

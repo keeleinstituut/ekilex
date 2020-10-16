@@ -19,7 +19,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row17;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 1042557513;
+    private static final long serialVersionUID = 376642255;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -135,6 +135,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, Long> MIN_DS_ORDER_BY = createField(DSL.name("min_ds_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.mview_ww_word.word_type_order_by</code>.
+     */
+    public final TableField<MviewWwWordRecord, Integer> WORD_TYPE_ORDER_BY = createField(DSL.name("word_type_order_by"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
      * Create a <code>public.mview_ww_word</code> table reference
      */
     public MviewWwWord() {
@@ -204,11 +209,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row17 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row17<Long, String, String, String, String, Long, Integer, String, String[], String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], Boolean, Long> fieldsRow() {
-        return (Row17) super.fieldsRow();
+    public Row18<Long, String, String, String, String, Long, Integer, String, String[], String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], Boolean, Long, Integer> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }
