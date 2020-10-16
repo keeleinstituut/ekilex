@@ -791,7 +791,30 @@ from lexeme l
                    group by lf.lexeme_id) odlr
                on odlr.lexeme_id = l.id
   left outer join (select mw.lexeme_id,
-                          array_agg(row (mw.lexeme_id, mw.meaning_id, mw.mw_lex_id, mw.mw_lex_complexity, mw.mw_lex_type, mw.mw_lex_weight, mw.mw_lex_governments, mw.mw_lex_register_codes, mw.mw_lex_value_state_code, mw.mw_word_id, ' ' || mw.mw_word, ' ' || mw.mw_word_prese, mw.mw_homonym_nr, mw.mw_lang, mw.mw_word_type_codes, mw.mw_aspect_code)::type_meaning_word order by mw.hw_lex_level1, mw.hw_lex_level2, mw.hw_lex_order_by, mw.mw_lex_order_by) meaning_words
+                          array_agg(row (
+                                mw.lexeme_id,
+                                mw.meaning_id,
+                                mw.mw_lex_id,
+                                mw.mw_lex_complexity,
+                                mw.mw_lex_type,
+                                mw.mw_lex_weight,
+                                mw.mw_lex_governments,
+                                mw.mw_lex_register_codes,
+                                mw.mw_lex_value_state_code,
+                                mw.mw_word_id,
+                                ' ' || mw.mw_word,
+                                ' ' || mw.mw_word_prese,
+                                mw.mw_homonym_nr,
+                                mw.mw_lang,
+                                mw.mw_word_type_codes,
+                                mw.mw_aspect_code
+                                )::type_meaning_word
+                                order by
+                                mw.hw_lex_level1,
+                                mw.hw_lex_level2,
+                                mw.hw_lex_order_by,
+                                mw.mw_lex_order_by
+                                ) meaning_words
                    from (select distinct l1.word_id,
                                 l1.id lexeme_id,
                                 l1.meaning_id,

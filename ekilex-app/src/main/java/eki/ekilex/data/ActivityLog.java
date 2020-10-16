@@ -35,6 +35,8 @@ public class ActivityLog extends AbstractDataObject {
 
 	private List<TypeActivityLogDiff> currDiffs;
 
+	private String wordValue;
+
 	public Long getId() {
 		return id;
 	}
@@ -129,6 +131,14 @@ public class ActivityLog extends AbstractDataObject {
 
 	public void setCurrDiffs(List<TypeActivityLogDiff> currDiffs) {
 		this.currDiffs = currDiffs;
+	}
+
+	public String getWordValue() {
+		return wordValue;
+	}
+
+	public void setWordValue(String wordValue) {
+		this.wordValue = wordValue;
 	}
 
 }
