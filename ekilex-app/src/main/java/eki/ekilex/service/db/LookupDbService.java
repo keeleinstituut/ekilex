@@ -230,7 +230,7 @@ public class LookupDbService extends AbstractDataDbService {
 						wmef.as("morph_exists"))
 				.from(w)
 				.where(w.ID.in(wordId1, wordId2))
-				.fetchGroups(w.ID, WordStress.class);
+				.fetchGroups(DSL.field("word_id", Long.class), WordStress.class);
 
 		Map<Long, WordStress> wordStressSingleDataMap = wordStressFullDataMap.entrySet().stream()
 				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
