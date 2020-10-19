@@ -235,8 +235,6 @@ public interface WebConstant {
 
 	String CREATE_CLASSIFIER_URI = "/create_classifier";
 
-	String CREATE_CLASSIFIER_AND_LABELS_URI = "/create_classifier_and_labels";
-
 	String UPDATE_CLASSIFIER_URI = "/update_classifier";
 
 	String CHANGE_ROLE_URI = "/change_role";

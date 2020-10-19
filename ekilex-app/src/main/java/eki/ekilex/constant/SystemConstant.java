@@ -20,6 +20,8 @@ public interface SystemConstant {
 
 	String CLASSIF_LABEL_TYPE_FULL = "full";
 
+	String CLASSIF_LABEL_TYPE_WORDWEB = "wordweb";
+
 	String CLASSIF_LABEL_TYPE_ISO2 = "iso2";
 
 	String CACHE_KEY_CLASSIF = "classif";
@@ -29,8 +31,6 @@ public interface SystemConstant {
 	String CACHE_KEY_USER = "user";
 
 	String CACHE_KEY_TAG = "tag";
-
-	String CACHE_KEY_LABEL_TYPE = "labeltype";
 
 	int MAX_TEXT_LENGTH_LIMIT = 2000;
 }

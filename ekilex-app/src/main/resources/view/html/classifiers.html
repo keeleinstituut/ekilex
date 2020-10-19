@@ -8,57 +8,116 @@
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'classifiers')"></th:block>
   <div class="container-fluid">
-    <div class="card mt-4 mb-4 shadow" th:each="classifiers : ${classifiersMap}">
+    <div class="card mt-4 mb-4 shadow">
+      <form name="getClassifierForm" th:action="@{/classifiers}" method="get">
+        <div class="card-header">
+          <span>Vali klassifikaator</span>
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <div class="col-md-3">
+              <select class="form-control value-select" name="classifierName">
+                <option th:each="classifName : ${allClassifierNames}"
+                        th:value="${classifName}"
+                        th:text="#{|classifier.${classifName}|}"
+                        th:selected="${classifName == classifierName}">name
+                </option>
+              </select>
+            </div>
+            <div id="originCodeDiv" class="col-md-3" style="display: none;">
+              <select class="form-control value-select" name="domainOriginCode">
+                <option th:each="originCode : ${allDomainOriginCodes}"
+                        th:value="${originCode}"
+                        th:text="${originCode}"
+                        th:selected="${originCode == domainOriginCode}">origin code
+                </option>
+              </select>
+            </div>
+            <div class="col-md-1">
+              <button type="submit" class="btn btn-primary">Vali</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="card mt-4 mb-4 shadow" th:if="${not #lists.isEmpty(classifiers)}">
       <div class="card-header">
-        <h5 class="card-title d-inline-block" th:text="#{|classifier.${classifiers.key.name()}|}">classif name</h5>
-        <button class="btn btn-primary pull-right" title="Lisa uus" data-toggle="modal"
-                th:data-classifier-name="${classifiers.key.name()}"
-                th:data-target="${'#addClassifierDlg'}"
-                th:if="${classifiers.key.hasLabel()}">Lisa uus kood ja väärtused
-        </button>
-        <button class="btn btn-primary pull-right" title="Lisa uus" data-toggle="modal"
-                th:data-classifier-name="${classifiers.key.name()}"
-                th:data-target="${'#addClassifierCodeDlg'}"
-                th:unless="${classifiers.key.hasLabel()}">Lisa uus kood
+        <h5 class="card-title d-inline-block">
+          <span th:text="#{|classifier.${classifierName}|}"></span>
+          <span th:text="${domainOriginCode}" th:if="domainOriginCode != null"></span>
+        </h5>
+        <button class="btn btn-primary pull-right"
+                title="Lisa uus"
+                data-toggle="modal"
+                th:data-target="${'#addClassifierCodeDlg_' + classifierName}">Lisa uus kood
         </button>
       </div>
       <div class="card-body">
-        <table class="table table-striped m-0 p-0 table-hover">
+        <table class="table table-striped m-0 p-0 table-hover" th:unless="${hasLabel}">
           <tr>
-            <th class="m-1 p-1" style="width: 10%">kood</th>
-            <th class="m-1 p-1" style="width: 30%">descrip väärtus (eesti keeles)</th>
-            <th class="m-1 p-1" style="width: 55%">info</th>
-            <th class="m-1 p-1" style="width: 5%"></th>
+            <th class="m-1 p-1">kood</th>
           </tr>
-          <tr th:each="classifier : ${classifiers.value}">
+          <tr th:each="classifier : ${classifiers}">
             <td class="m-1 p-1">
               <span th:text="${classifier.code}"></span>
             </td>
-            <td class="m-1 p-1">
-              <span th:text="${classifier.value}" th:if="${classifiers.key.hasLabel()}"></span>
-            </td>
-            <td class="m-1 p-1">
-              <span class="small" th:text="${classifier.labelsTextAgg}" th:if="${classifiers.key.hasLabel()}"></span>
-            </td>
-            <td class="m-1 p-1">
-              <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal"
-                      data-target="#editClassifierDlg"
-                      th:data-classifier-name="${classifiers.key.name()}"
-                      th:data-classifier-code="${classifier.code}"
-                      th:if="${classifiers.key.hasLabel()}">
-                <i class="fa fa-edit" aria-hidden="true"></i>
-              </button>
-            </td>
-          </tr>
+        </table>
+        <table class="table table-striped m-0 p-0 table-hover" th:if="${hasLabel}">
+          <th:block th:each="classifier,classifierIter : ${classifiers}">
+            <tr th:if="${classifierIter.first}">
+              <th class="m-1 p-1">kood</th>
+              <th class="m-1 p-1">keel</th>
+              <th class="m-1 p-1"
+                  th:each="label : ${classifier.labels}"
+                  th:text="${label.type}">
+              </th>
+              <th class="m-1 p-1"></th>
+            </tr>
+            <tr th:name="${classifier.code}">
+              <td class="m-1 p-1">
+                <span th:text="${classifier.code}"></span>
+              </td>
+              <td class="m-1 p-1">
+                <div class="col-form-label">est</div>
+                <div class="col-form-label">eng</div>
+                <div class="col-form-label">rus</div>
+              </td>
+              <td class="m-1 p-1" th:each="label : ${classifier.labels}">
+                <input type="text" class="form-control" disabled
+                       name="labelValue"
+                       data-label-lang="est"
+                       th:value="${label.labelEst}"
+                       th:data-label-type="${label.type}">
+                <input type="text" class="form-control" disabled
+                       name="labelValue"
+                       data-label-lang="eng"
+                       th:value="${label.labelEng}"
+                       th:data-label-type="${label.type}">
+                <input type="text" class="form-control" disabled
+                       name="labelValue"
+                       data-label-lang="rus"
+                       th:value="${label.labelRus}"
+                       th:data-label-type="${label.type}">
+              <td class="m-1 p-1">
+                <button type="button" class="btn btn-primary btn-compact" title="Muuda"
+                        name="editRowBtn"
+                        th:data-code="${classifier.code}">Muuda
+                </button>
+                <button type="button" class="btn btn-primary btn-compact" title="Salvesta" style="display: none"
+                        name="saveRowBtn"
+                        th:data-classif-code="${classifier.code}"
+                        th:data-classif-name="${classifierName}"
+                        th:data-domain-origin="${domainOriginCode}">Salvesta
+                </button>
+              </td>
+            </tr>
+          </th:block>
         </table>
       </div>
     </div>
   </div>
-  <div th:replace="classifierdialog :: add_classifier_dialog"></div>
   <div th:replace="classifierdialog :: add_classifier_code_dialog"></div>
-  <div th:replace="classifierdialog :: edit_classifier_dialog"></div>
   <div th:replace="common :: #alertDlg"></div>
-  <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
 	  initializeClassifiers();
   </script>
