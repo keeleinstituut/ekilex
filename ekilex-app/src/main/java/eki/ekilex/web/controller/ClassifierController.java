@@ -1,12 +1,8 @@
 package eki.ekilex.web.controller;
 
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -21,90 +17,61 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ClassifierName;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierFull;
 import eki.ekilex.data.ClassifierLabel;
 import eki.ekilex.service.ClassifierService;
-import eki.ekilex.service.MaintenanceService;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class ClassifierController extends AbstractPageController {
 
-	private static final Logger logger = LoggerFactory.getLogger(ClassifierController.class);
-
 	@Autowired
 	private ClassifierService classifierService;
 
-	@Autowired
-	private MaintenanceService maintenanceService;
-	
-	@GetMapping(CLASSIFIERS_URI)
-	public String classifiers(Model model) {
+	@GetMapping({
+			CLASSIFIERS_URI,
+			CLASSIFIERS_URI + "/{classifierName}",
+			CLASSIFIERS_URI + "/{classifierName}/{domainOriginCode}"})
+	public String classifiers(
+			@PathVariable(name = "classifierName", required = false) ClassifierName classifierName,
+			@PathVariable(name = "domainOriginCode", required = false) String domainOriginCode,
+			Model model) {
 
-		Map<ClassifierName, List<Classifier>> classifiersMap = new LinkedHashMap<>();
-		EnumSet<ClassifierName> classifierNames = EnumSet.allOf(ClassifierName.class);
-		classifierNames.remove(ClassifierName.LABEL_TYPE);
-		classifierNames.remove(ClassifierName.DOMAIN); // TODO (origin, parent_code, parent_origin) - yogesh
+		List<String> allClassifierNames = classifierService.getEditableClassifierNames();
+		List<String> allDomainOriginCodes = classifierService.getDomainOriginCodes();
 
-		for (ClassifierName classifierName : classifierNames) {
-			List<Classifier> classifiers = commonDataService.getClassifiers(classifierName);
-			boolean hasLabel = classifierName.hasLabel();
-			if (hasLabel && classifiers != null) {
-				classifierService.applyLabelsTextAgg(classifiers);
-			}
-			classifiersMap.put(classifierName, classifiers);
+		model.addAttribute("allClassifierNames", allClassifierNames);
+		model.addAttribute("allDomainOriginCodes", allDomainOriginCodes);
+
+		if (classifierName == null) {
+			return CLASSIFIERS_PAGE;
 		}
 
-		model.addAttribute("classifiersMap", classifiersMap);
+		List<ClassifierFull> classifiers = classifierService.getClassifiers(classifierName, domainOriginCode);
+
+		model.addAttribute("classifiers", classifiers);
+		model.addAttribute("classifierName", classifierName.name());
+		model.addAttribute("hasLabel", classifierName.hasLabel());
+		model.addAttribute("domainOriginCode", domainOriginCode);
 
 		return CLASSIFIERS_PAGE;
 	}
 
-	@GetMapping(CLASSIFIER_URI + "/{classifierName}/{classifierCode}")
-	@ResponseBody
-	public ClassifierFull getClassifier(@PathVariable ClassifierName classifierName, @PathVariable String classifierCode) {
-
-		logger.debug("Fetching classifier by name {} and code {}", classifierName.name(), classifierCode);
-
-		ClassifierFull classifier = classifierService.getClassifier(classifierName, classifierCode);
-		return classifier;
-	}
-
-	@GetMapping(EMPTY_CLASSIFIER_URI + "/{classifierName}")
-	@ResponseBody
-	public ClassifierFull getEmptyClassifier(@PathVariable ClassifierName classifierName) {
-
-		logger.debug("Fetching empty classifier by name {}", classifierName.name());
-
-		ClassifierFull classifier = classifierService.getEmptyClassifier(classifierName);
-		return classifier;
-	}
-
-	@PostMapping(CREATE_CLASSIFIER_AND_LABELS_URI)
-	@ResponseBody
-	public String createClassifierAndLabels(@RequestBody List<ClassifierLabel> classifierLabels) {
-
-		logger.debug("Creating classifier and labels");
-
-		boolean isSuccessful = classifierService.createClassifier(classifierLabels);
-		if (isSuccessful) {
-			maintenanceService.clearClassifCache();
-			return RESPONSE_OK_VER1;
-		}
-		return "fail";
-	}
-
 	@PostMapping(CREATE_CLASSIFIER_URI)
 	@ResponseBody
-	public String createClassifier(@RequestParam("classifierName") String classifierName, @RequestParam("classifierCode") String classifierCode) {
+	public String createClassifier(
+			@RequestParam("classifierName") String classifierName,
+			@RequestParam("classifierCode") String classifierCode,
+			@RequestParam(name = "domainOriginCode", required = false) String domainOriginCode) {
 
-		logger.debug("Creating classifier with name {} and code {}", classifierName, classifierCode);
-
-		boolean isSuccessful = classifierService.createClassifier(classifierName, classifierCode);
+		boolean isSuccessful;
+		if (StringUtils.isNotBlank(domainOriginCode)) {
+			isSuccessful = classifierService.createDomainClassifier(domainOriginCode, classifierCode);
+		} else {
+			isSuccessful = classifierService.createClassifier(classifierName, classifierCode);
+		}
 		if (isSuccessful) {
-			maintenanceService.clearClassifCache();
 			return RESPONSE_OK_VER1;
 		}
 		return "fail";
@@ -114,10 +81,7 @@ public class ClassifierController extends AbstractPageController {
 	@ResponseBody
 	public String updateClassifier(@RequestBody List<ClassifierLabel> classifierLabels) {
 
-		logger.debug("Updating classifier");
-
 		classifierService.updateClassifier(classifierLabels);
-		maintenanceService.clearClassifCache();
 		return RESPONSE_OK_VER1;
 	}
 }

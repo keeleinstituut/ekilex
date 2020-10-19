@@ -30,8 +30,6 @@ public class Classifier extends AbstractDataObject {
 
 	private String jsonStr;
 
-	private String labelsTextAgg;
-
 	public String getName() {
 		return name;
 	}
@@ -94,14 +92,6 @@ public class Classifier extends AbstractDataObject {
 
 	public void setJsonStr(String jsonStr) {
 		this.jsonStr = jsonStr;
-	}
-
-	public String getLabelsTextAgg() {
-		return labelsTextAgg;
-	}
-
-	public void setLabelsTextAgg(String labelsTextAgg) {
-		this.labelsTextAgg = labelsTextAgg;
 	}
 
 	public String toIdString() {

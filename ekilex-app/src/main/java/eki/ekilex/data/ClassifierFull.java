@@ -10,6 +10,8 @@ public class ClassifierFull extends AbstractDataObject {
 
 	private String name;
 
+	private String origin;
+
 	private String code;
 
 	private boolean hasLabel;
@@ -22,6 +24,14 @@ public class ClassifierFull extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
 	}
 
 	public String getCode() {

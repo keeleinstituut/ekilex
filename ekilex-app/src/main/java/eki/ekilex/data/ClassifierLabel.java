@@ -13,6 +13,8 @@ public class ClassifierLabel extends AbstractDataObject {
 
 	private String type;
 
+	private String origin;
+
 	private String lang;
 
 	private String value;
@@ -45,6 +47,14 @@ public class ClassifierLabel extends AbstractDataObject {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
 	}
 
 	public String getLang() {
