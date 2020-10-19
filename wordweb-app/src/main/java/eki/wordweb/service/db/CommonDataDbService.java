@@ -181,4 +181,13 @@ public class CommonDataDbService implements SystemConstant {
 				.orderBy(MVIEW_WW_DATASET.ORDER_BY)
 				.fetchInto(String.class);
 	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public boolean fiCollationExists() {
+		Integer fiCollationCnt = create
+				.selectCount()
+				.from("pg_collation where collname like 'fi_FI%'")
+				.fetchSingleInto(Integer.class);
+		return fiCollationCnt > 0;
+	}
 }
