@@ -36,7 +36,7 @@ public class CorporaServiceRus extends AbstractCorporaService {
 
 	private final String WORD_KEY = "word";
 
-	@Cacheable(value = CACHE_KEY_CORPORA, key = "#root.methodName")
+	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence) {
 
 		URI corporaUrl = composeCorporaUrl(sentence);

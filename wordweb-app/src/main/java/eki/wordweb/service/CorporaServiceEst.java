@@ -34,7 +34,7 @@ public class CorporaServiceEst extends AbstractCorporaService {
 
 	private final String WORD_KEY_SIMPLE = "baseform";
 
-	@Cacheable(value = CACHE_KEY_CORPORA, key = "{#root.methodName, #searchMode}")
+	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence, String searchMode) {
 
 		URI corporaUrl = composeCorporaUrl(sentence, searchMode);
