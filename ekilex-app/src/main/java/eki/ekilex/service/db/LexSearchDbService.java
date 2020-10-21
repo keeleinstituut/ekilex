@@ -408,10 +408,12 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.selectDistinct(
 						wgrm2.ID,
 						wgr.ID.as("group_id"),
+						wgr.WORD_REL_TYPE_CODE.as("group_word_rel_type_code"),
 						w2.ID.as("word_id"),
 						w2.VALUE.as("word_value"),
 						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
+						w2.ASPECT_CODE.as("word_aspect_code"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
@@ -419,8 +421,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wrtl.VALUE.as("rel_type_label"),
 						wgrm2.ORDER_BY)
 				.from(
-						wgrm1
-								.innerJoin(wgr).on(wgr.ID.eq(wgrm1.WORD_GROUP_ID))
+						wgr
+								.innerJoin(wgrm1).on(wgrm1.WORD_GROUP_ID.eq(wgr.ID))
 								.innerJoin(wgrm2).on(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
 								.innerJoin(w2).on(w2.ID.eq(wgrm2.WORD_ID))
 								.leftOuterJoin(wrtl).on(

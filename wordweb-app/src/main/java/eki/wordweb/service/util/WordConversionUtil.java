@@ -124,6 +124,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		word.setSecondaryRelatedWordTypeGroups(new ArrayList<>());
 
 		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
+		List<Classifier> aspects = classifierUtil.getClassifiers(ClassifierName.ASPECT, displayLang);
 		List<Complexity> combinedLexComplexity = Arrays.asList(lexComplexity, Complexity.ANY);
 		List<RelationStatus> relationStatusOrder = Arrays.asList(RelationStatus.PROCESSED, RelationStatus.UNDEFINED, RelationStatus.DELETED);
 
@@ -172,6 +173,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		List<TypeWordRelation> allWordGroupMembers = wordRelationsTuple.getWordGroupMembers();
 		if (CollectionUtils.isNotEmpty(allWordGroupMembers)) {
+			List<String> aspectCodeOrder = aspects.stream().map(Classifier::getCode).collect(Collectors.toList());
 			Map<Long, List<TypeWordRelation>> wordGroupMap = allWordGroupMembers.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordGroupId));
 			List<Long> wordGroupIds = new ArrayList<>(wordGroupMap.keySet());
 			Collections.sort(wordGroupIds);
@@ -186,12 +188,26 @@ public class WordConversionUtil extends AbstractConversionUtil {
 						setWordTypeFlags(wordGroupMember);
 					}
 					TypeWordRelation firstWordGroupMember = wordGroupMembers.get(0);
+					String groupWordRelTypeCode = firstWordGroupMember.getWordRelTypeCode();
+					Classifier groupWordRelType = firstWordGroupMember.getWordRelType();
+					if (StringUtils.equals(WORD_REL_TYPE_CODE_ASCPECTS, groupWordRelTypeCode)) {
+						groupWordRelType = classifierUtil.reValue(groupWordRelType, "classifier.word_rel_type.aspect");
+						wordGroupMembers.sort((TypeWordRelation rel1, TypeWordRelation rel2) -> {
+							String aspectCode1 = rel1.getAspectCode();
+							String aspectCode2 = rel2.getAspectCode();
+							if (StringUtils.isBlank(aspectCode1) || StringUtils.isBlank(aspectCode2)) {
+								return 0;
+							}
+							int aspectOrder1 = aspectCodeOrder.indexOf(aspectCode1);
+							int aspectOrder2 = aspectCodeOrder.indexOf(aspectCode2);
+							return aspectOrder1 - aspectOrder2;
+						});
+					}
 					WordGroup wordGroup = new WordGroup();
 					wordGroup.setWordGroupId(wordGroupId);
-					wordGroup.setWordRelTypeCode(firstWordGroupMember.getWordRelTypeCode());
+					wordGroup.setWordRelTypeCode(groupWordRelTypeCode);
+					wordGroup.setWordRelType(groupWordRelType);
 					wordGroup.setWordGroupMembers(wordGroupMembers);
-					classifierUtil.applyClassifiers(wordGroup, displayLang);
-					handleWordRelType(wordGroup);
 					word.getWordGroups().add(wordGroup);
 				}
 			}
@@ -229,15 +245,6 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			wordRelationGroup = new WordRelationGroup();
 			wordRelationGroup.setWordRelType(wordRelType);
 			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelations, null);
-		}
-	}
-
-	private void handleWordRelType(WordGroup wordGroup) {
-
-		if (StringUtils.equals(WORD_REL_TYPE_CODE_ASCPECTS, wordGroup.getWordRelTypeCode())) {
-			Classifier wordRelType = wordGroup.getWordRelType();
-			wordRelType = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.aspect");
-			wordGroup.setWordRelType(wordRelType);
 		}
 	}
 

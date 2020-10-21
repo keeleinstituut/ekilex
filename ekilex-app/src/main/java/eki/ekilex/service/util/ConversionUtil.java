@@ -624,15 +624,37 @@ public class ConversionUtil implements GlobalConstant {
 		return definitionLangGroups;
 	}
 
-	public List<WordGroup> composeWordGroups(List<Relation> groupMembers) {
+	public List<WordGroup> composeWordGroups(List<Relation> groupsMembers, List<Classifier> allAspects) {
+
+		List<String> aspectCodeOrder;
+		if (CollectionUtils.isEmpty(allAspects)) {
+			aspectCodeOrder = new ArrayList<>();
+		} else {
+			aspectCodeOrder = allAspects.stream().map(Classifier::getCode).collect(Collectors.toList());
+		}
 
 		List<WordGroup> groups = new ArrayList<>();
-		Map<Long, List<Relation>> memberGroups = groupMembers.stream().collect(groupingBy(Relation::getGroupId));
+		Map<Long, List<Relation>> memberGroups = groupsMembers.stream().collect(groupingBy(Relation::getGroupId));
 		for (Long groupId : memberGroups.keySet()) {
+			List<Relation> groupMembers = memberGroups.get(groupId);
+			Relation firstGroupMember = groupMembers.get(0);
+			String groupWordRelTypeCode = firstGroupMember.getGroupWordRelTypeCode();
+			if (StringUtils.equals(WORD_REL_TYPE_CODE_ASCPECTS, groupWordRelTypeCode)) {
+				groupMembers.sort((Relation rel1, Relation rel2) -> {
+					String aspectCode1 = rel1.getWordAspectCode();
+					String aspectCode2 = rel2.getWordAspectCode();
+					if (StringUtils.isBlank(aspectCode1) || StringUtils.isBlank(aspectCode2)) {
+						return 0;
+					}
+					int aspectOrder1 = aspectCodeOrder.indexOf(aspectCode1);
+					int aspectOrder2 = aspectCodeOrder.indexOf(aspectCode2);
+					return aspectOrder1 - aspectOrder2;
+				});
+			}
 			WordGroup wordGroup = new WordGroup();
 			wordGroup.setId(groupId);
-			wordGroup.setMembers(memberGroups.get(groupId));
-			wordGroup.setGroupTypeLabel(wordGroup.getMembers().get(0).getRelTypeLabel());
+			wordGroup.setMembers(groupMembers);
+			wordGroup.setGroupTypeLabel(firstGroupMember.getRelTypeLabel());
 			groups.add(wordGroup);
 		}
 		return groups;

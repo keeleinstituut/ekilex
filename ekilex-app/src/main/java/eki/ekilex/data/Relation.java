@@ -13,6 +13,8 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private Long groupId;
 
+	private String groupWordRelTypeCode;
+
 	private Long lexemeId;
 
 	private List<String> lexemeValueStateCodes;
@@ -79,6 +81,14 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	public void setGroupId(Long groupId) {
 		this.groupId = groupId;
+	}
+
+	public String getGroupWordRelTypeCode() {
+		return groupWordRelTypeCode;
+	}
+
+	public void setGroupWordRelTypeCode(String groupWordRelTypeCode) {
+		this.groupWordRelTypeCode = groupWordRelTypeCode;
 	}
 
 	public Long getLexemeId() {

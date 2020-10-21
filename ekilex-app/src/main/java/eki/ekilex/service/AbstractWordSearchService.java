@@ -21,7 +21,7 @@ import eki.ekilex.service.db.LexSearchDbService;
 public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
+	protected LexSearchDbService lexSearchDbService;
 
 	@Transactional
 	public WordsResult getWords(
