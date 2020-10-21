@@ -59,6 +59,10 @@ create index word_value_as_word_idx on word(value_as_word);
 create index word_value_as_word_lower_idx on word(lower(value_as_word));
 create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) text_pattern_ops);
 
+update aspect set order_by = 1 where code = 'несов.';
+update aspect set order_by = 2 where code = 'сов. и несов.';
+update aspect set order_by = 3 where code = 'сов.';
+
 ------------------------------------------
 -- tundmatute keelendite likvideerimine --
 ------------------------------------------

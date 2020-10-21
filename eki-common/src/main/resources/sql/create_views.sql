@@ -1450,8 +1450,7 @@ from word w
                          where wgm1.word_group_id = wg.id
                          and   wgm2.word_group_id = wg.id
                          and   wgm1.word_id = w1.id
-                         and   wgm2.word_id = w2.id
-                         and   w1.id != w2.id) wg
+                         and   wgm2.word_id = w2.id) wg
                    group by wg.word_id) wg on wg.word_id = w.id
 where (wr.related_words is not null or wg.word_group_members is not null)
 and   exists (select l.id
