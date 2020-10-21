@@ -108,7 +108,7 @@
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: etymology_new"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <div id="korp" th:text="#{label.korp.search}">Otsin veebilauseid ...</div>
+            <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
           </div>
         </div>
       </div>
@@ -119,6 +119,7 @@
   	var currentPage = /*[[@{/search/unif}]]*/"/search/unif";
   	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
   	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
+  	var corpUrl = /*[[@{/corp/detail}]]*/"/corp/detail";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search-unif');
   </script>

@@ -72,7 +72,7 @@
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <div id="korp" th:text="#{label.korp.search}">Otsin veebilauseid ...</div>
+            <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
           </div>
         </div>
       </div>
@@ -83,6 +83,7 @@
   	var currentPage = /*[[@{/search/lite}]]*/"/search/lite";
   	var searchWordFragUrl = /*[[@{/searchwordfrag/lite}]]*/"/searchwordfrag/lite";
   	var wordDetailsUrl = /*[[@{/worddetails/lite}]]*/"/worddetails/lite";
+  	var corpUrl = /*[[@{/corp/simple}]]*/"/corp/simple";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search-lite');
   </script>

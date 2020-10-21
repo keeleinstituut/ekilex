@@ -65,6 +65,8 @@ public interface WebConstant {
 
 	String COLLECTIONS_URI = "/collections";
 
+	String CORP_URI = "/corp";
+
 	String FILES_URI = "/files";
 
 	String GAMES_LEXICDECIS_URI = GAMES_URI + "/lexicdecis";

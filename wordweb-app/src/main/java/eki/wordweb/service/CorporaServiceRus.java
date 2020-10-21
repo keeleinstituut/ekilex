@@ -3,7 +3,7 @@ package eki.wordweb.service;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.net.URI;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +11,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,27 +34,39 @@ public class CorporaServiceRus extends AbstractCorporaService {
 	@Value("${corpora.service.rus.api.key:}")
 	private String apiKey;
 
-	protected URI composeCorporaUri(String sentence) {
+	private final String WORD_KEY = "word";
+
+	@Cacheable(value = CACHE_KEY_CORPORA, key = "#root.methodName")
+	public List<CorporaSentence> getSentences(String sentence) {
+
+		URI corporaUrl = composeCorporaUrl(sentence);
+		Map<String, Object> response = requestSentences(corporaUrl);
+		return parseResponse(response);
+	}
+
+	private URI composeCorporaUrl(String sentence) {
 
 		if (isBlank(serviceUrl) || isBlank(apiKey)) {
 			return null;
-		} else {
-			return UriComponentsBuilder.fromUriString(serviceUrl)
-					.queryParam("corpname", corpName)
-					.queryParam("username", userName)
-					.queryParam("api_key", apiKey)
-					.queryParam("format", "json")
-					.queryParam("viewmode", "sen")
-					.queryParam("async", "0")
-					.queryParam("pagesize", "15")
-					.queryParam("q", "q" + parseSentenceToQueryString(sentence))
-					.encode(Charset.forName(UTF_8))
-					.build()
-					.toUri();
 		}
+
+		String querySentence = parseSentenceToQueryString(sentence, WORD_KEY);
+		return UriComponentsBuilder.fromUriString(serviceUrl)
+				.queryParam("corpname", corpName)
+				.queryParam("username", userName)
+				.queryParam("api_key", apiKey)
+				.queryParam("format", "json")
+				.queryParam("viewmode", "sen")
+				.queryParam("async", "0")
+				.queryParam("pagesize", "15")
+				.queryParam("q", "q" + querySentence)
+				.encode(StandardCharsets.UTF_8)
+				.build()
+				.toUri();
+
 	}
 
-	protected List<CorporaSentence> parseResponse(Map<String, Object> response) {
+	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
 
 		List<CorporaSentence> sentences = new ArrayList<>();
 		if (response.isEmpty() || response.containsKey("error")) {
