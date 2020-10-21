@@ -1,43 +1,31 @@
 package eki.wordweb.service;
 
-import eki.common.constant.GlobalConstant;
-import eki.wordweb.constant.SystemConstant;
-import eki.wordweb.data.CorporaSentence;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import eki.common.constant.GlobalConstant;
+import eki.wordweb.constant.SystemConstant;
+
 public abstract class AbstractCorporaService implements SystemConstant, GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractCorporaService.class);
 
-	protected abstract List<CorporaSentence> parseResponse(Map<String, Object> response);
+	protected Map<String, Object> requestSentences(URI corporaUrl) {
 
-	protected abstract URI composeCorporaUri(String sentence);
-
-	@Cacheable(value = CACHE_KEY_CORPORA)
-	public List<CorporaSentence> getSentences(String sentence) {
-		Map<String, Object> response = requestSentences(sentence);
-		return parseResponse(response);
-	}
-
-	private Map<String, Object> requestSentences(String sentence) {
-
-		URI corporaUrl = composeCorporaUri(sentence);
 		Map<String, Object> response = Collections.emptyMap();
 		if (isNotEnabled(corporaUrl)) {
 			return response;
@@ -51,17 +39,15 @@ public abstract class AbstractCorporaService implements SystemConstant, GlobalCo
 		return response;
 	}
 
-	protected String parseSentenceToQueryString(String sentence) {
+	protected String parseSentenceToQueryString(String sentence, String wordQueryKey) {
+
 		String[] words = StringUtils.split(sentence, " ");
-		if (words.length > 1) {
-			List<String> items = new ArrayList<>();
-			for (String word : words) {
-				items.add("[word=\"" + word + "\" %c]");
-			}
-			return String.join(" ", items);
-		} else {
-			return "[lempos=\"" + sentence + "-.?\"]";
+		List<String> wordQuerys = new ArrayList<>();
+		for (String word : words) {
+			wordQuerys.add("[" + wordQueryKey + "=\"" + word + "\"]");
 		}
+		String wordQueryString = String.join(" ", wordQuerys);
+		return wordQueryString;
 	}
 
 	private String doGetRequest(URI url) {
