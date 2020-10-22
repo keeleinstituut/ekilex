@@ -16476,6 +16476,10 @@ body.hidden-scroll {
   font-weight: 500;
 }
 
+.text-gray {
+  color: #3f3f3f;
+}
+
 .dropdown-menu {
   overflow: hidden;
 }
@@ -18699,11 +18703,25 @@ eki-link {
   color: #5d606e;
   text-align: right;
   background: #f0f0f0;
+  white-space: nowrap;
   border-radius: 3px;
 }
 
+.num {
+  padding: 0 15px;
+  width: 20%;
+}
+
+@media (max-width: 991.98px) {
+  .num {
+    white-space: nowrap;
+  }
+}
+
 .text {
-  color: #5d606e;
+  width: 80%;
+  padding: 0 15px;
+  color: #3f3f3f;
 }
 
 .highlighted {

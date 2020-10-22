@@ -307,11 +307,24 @@
   color: $gray-400;
   text-align: right;
   background: $body-bg;
+  white-space: nowrap;
+
   @include border-radius(3px);
 }
 
+.num {
+  padding: 0 15px;
+  width: 20%;
+
+  @include media-breakpoint-down(md) {
+    white-space: nowrap;
+  }
+}
+
 .text {
-  color: $gray-400;
+  width: 80%;
+  padding: 0 15px;
+  color: $gray-900;
 }
 
 .highlighted {
