@@ -48,15 +48,15 @@
   }
 
 
-@include media-breakpoint-up(lg) {
-  .col-lg-12 .num {
-    width: 10%;
+  @include media-breakpoint-up(lg) {
+    .col-lg-12 .num {
+      width: 10%;
+    }
+
+    .col-lg-12 .text {
+      width: 90%;
+    }
   }
-  
-  .col-lg-12 .text {
-    width:90%;
-  }
-}
 }
 
 .learn-container-menu {
@@ -317,15 +317,15 @@
   font-weight: $font-weight-bold;
   color: $gray-400;
   text-align: right;
-  background: $body-bg;
   white-space: nowrap;
+  background: $body-bg;
 
   @include border-radius(3px);
 }
 
 .num {
-  padding: 0 15px;
   width: 20%;
+  padding: 0 15px;
 
   @include media-breakpoint-down(md) {
     white-space: nowrap;

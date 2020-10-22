@@ -209,9 +209,13 @@
     position: relative;
     line-height: 1.3;
   }
-  .word-options sup {
+  .word-options sup,
+  .collapse-panel:not(.expanded) .word-options.limit sup{
     position: absolute;
     top: 3px;
+    right: -6px;
+  }
+  .word-options + .word-options sup {
     right: 12px;
   }
 
@@ -226,9 +230,13 @@
     margin-left: 5px;
   }
   .collapse-panel:not(.expanded){
-    .word-options.limit a > span::after{
-      display: none;
+    .word-options.limit{
+
+      a > span::after{
+        display: none;
+      }
     }
+
   }
 }
 
