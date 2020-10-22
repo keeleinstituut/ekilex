@@ -13,6 +13,8 @@ public interface WebConstant {
 
 	String LITE_SEARCH_PAGE = "simple-search";
 
+	String MORPHO_PAGE = "morpho";
+
 	String LEARN_PAGE = "learn";
 
 	String REGULATIONS_PAGE = "regulations";
@@ -50,6 +52,8 @@ public interface WebConstant {
 	String SEARCH_WORD_FRAG_URI = "/searchwordfrag";
 
 	String WORD_DETAILS_URI = "/worddetails";
+
+	String MORPHO_URI = "/morpho";
 
 	String LEARN_URI = "/learn";
 

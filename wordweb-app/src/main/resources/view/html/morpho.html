@@ -1,0 +1,3181 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <th:block th:fragment="morpho-verb">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI eesti keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <th:block th:each="paradigm : ${paradigms}">
+            <div>
+              <p>muuttüüp 31</p>
+              <h2>Käändelised vormid</h2>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table>
+                    <tr>
+                      <th colspan="2" class="text-center">Tegevusnimed</th>
+                    </tr>
+                    <tr>
+                      <th>ma-tegevusnimi</th>
+                      <th></th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">ma</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">ma</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">mas</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">mas</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">mast</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">mast</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">maks</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">maks</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">mata</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">mata</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>da-tegevusnimi</th>
+                      <th></th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">da</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">da</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">des</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">des</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table>
+                    <tr>
+                      <th colspan="3" class="text-center">Kesksõnad</th>
+                    </tr>
+                    <tr>
+                      <th></th>
+                      <th>olevik</th>
+                      <th>minevik</th>
+                    </tr>
+                    <tr>
+                      <th>umbisikuline</th>
+                      <td>
+                        luge
+                        <span class="highlight">v</span>
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">nud</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>isikuline</th>
+                      <td>
+                        loe
+                        <span class="highlight">tav</span>
+                      </td>
+                      <td>
+                        loe
+                        <span class="highlight">tud</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <h2>Pöördelised vormid</h2>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="stretch-middle-td">
+                    <tr>
+                      <th colspan="3" class="text-center">Tingiv kõneviis</th>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Olevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Minevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="stretch-middle-td">
+                    <tr>
+                      <th colspan="3" class="text-center">Käskiv kõneviis</th>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Olevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="stretch-middle-td">
+                    <tr>
+                      <th colspan="3" class="text-center">Kaudne kõneviis</th>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Olevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Minevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="morpho-noun">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI eesti keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <th:block th:each="paradigm : ${paradigms}">
+            <div>
+              <p>muuttüüp 22e</p>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="first-row-sizes" data-fixColumn="true">
+                    <tr>
+                      <th>kääne</th>
+                      <th>ainsus</th>
+                      <th>mitmus</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        nimetav
+                        <br />
+                        <span class="highlight">kes? mis? missugune?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">id</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="table-legend">
+                <div class="table-legend__item">Legend:</div>
+                <div class="table-legend__item">
+                  <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
+                </div>
+                <div class="table-legend__item">
+                  <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="morpho-demo">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI eesti keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills mb-3">
+            <li class="nav-item">
+              <a class="nav-link active" id="kaanetega-tab-btn" data-toggle="pill" href="#kaanetega-tab" role="tab">Käänetega</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="markidega-tab-btn" data-toggle="pill" href="#markidega-tab" role="tab">Märkidega</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane show active" id="kaanetega-tab" role="tabpanel" aria-labelledby="kaanetega-tab">
+              <p>muuttüüp 22e</p>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="first-row-sizes" data-fixColumn="true">
+                    <tr>
+                      <th>kääne</th>
+                      <th>ainsus</th>
+                      <th>mitmus</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        nimetav
+                        <br />
+                        <span class="highlight">kes? mis? missugune?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">id</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        osastav
+                        <br />
+                        <span class="highlight">keda? mida?</span>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                      <td>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">e ~</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                        <div>
+                          <div class="word-section">
+                            kass
+                            <span class="highlight">isid</span>
+                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </div>
+                          <!--/word-section-->
+                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
+                            <div class="rating__row rating__row--highlighted">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                            <div class="rating__row">
+                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                            </div>
+                            <!--/rating--row-->
+                          </div>
+                          <!--/rating-->
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!--/scrollable-table-scroller-->
+              </div>
+              <!--/scrollable-table-->
+              <div class="table-legend">
+                <div class="table-legend__item">Legend:</div>
+                <div class="table-legend__item">
+                  <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
+                </div>
+                <div class="table-legend__item">
+                  <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
+                </div>
+              </div>
+            </div>
+            <!--/tab-pane-->
+            <div class="tab-pane" id="markidega-tab" role="tabpanel" aria-labelledby="markidega-tab">
+              <p>muuttüüp 31</p>
+              <h2>Käändelised vormid</h2>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table>
+                    <tr>
+                      <th colspan="2" class="text-center">Tegevusnimed</th>
+                    </tr>
+                    <tr>
+                      <th>ma-tegevusnimi</th>
+                      <th></th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">ma</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">ma</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">mas</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">mas</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">mast</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">mast</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">maks</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">maks</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">mata</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">mata</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>da-tegevusnimi</th>
+                      <th></th>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">da</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">da</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="highlight">des</span>
+                        -vorm
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">des</span>
+                        <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!--/scrollable-table--scroller-->
+              </div>
+              <!--/scrollable-table-->
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table>
+                    <tr>
+                      <th colspan="3" class="text-center">Kesksõnad</th>
+                    </tr>
+                    <tr>
+                      <th></th>
+                      <th>olevik</th>
+                      <th>minevik</th>
+                    </tr>
+                    <tr>
+                      <th>umbisikuline</th>
+                      <td>
+                        luge
+                        <span class="highlight">v</span>
+                      </td>
+                      <td>
+                        luge
+                        <span class="highlight">nud</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>isikuline</th>
+                      <td>
+                        loe
+                        <span class="highlight">tav</span>
+                      </td>
+                      <td>
+                        loe
+                        <span class="highlight">tud</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!--/scrollable-table--scroller-->
+              </div>
+              <!--/scrollable-table-->
+              <h2>Pöördelised vormid</h2>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="stretch-middle-td">
+                    <tr>
+                      <th colspan="3" class="text-center">Tingiv kõneviis</th>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Olevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Minevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!--/scrollable-table--scroller-->
+              </div>
+              <!--/scrollable-table-->
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="stretch-middle-td">
+                    <tr>
+                      <th colspan="3" class="text-center">Käskiv kõneviis</th>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Olevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!--/scrollable-table--scroller-->
+              </div>
+              <!--/scrollable-table-->
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table class="stretch-middle-td">
+                    <tr>
+                      <th colspan="3" class="text-center">Kaudne kõneviis</th>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Olevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <th colspan="3">Minevik</th>
+                    </tr>
+                    <tr>
+                      <th>isik</th>
+                      <th>jaatav</th>
+                      <th>eitav</th>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 1. isik
+                        <br />
+                        <span class="highlight">ma</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 2. isik
+                        <br />
+                        <span class="highlight">sa</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ainsuse 3. isik
+                        <br />
+                        <span class="highlight">ta</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 1. isik
+                        <br />
+                        <span class="highlight">me</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 2. isik
+                        <br />
+                        <span class="highlight">te</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        mitmuse 3. isik
+                        <br />
+                        <span class="highlight">nad</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        umbisikuline tegumood
+                        <br />
+                        <span class="highlight">umbisik</span>
+                      </td>
+                      <td>
+                        arenda
+                        <span class="highlight">ksin</span>
+                        edasi ~ arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                      <td>
+                        ei arenda
+                        <span class="highlight">ks</span>
+                        edasi
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+                <!--/scrollable-table--scroller-->
+              </div>
+              <!--/scrollable-table-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+</body>
+</html>

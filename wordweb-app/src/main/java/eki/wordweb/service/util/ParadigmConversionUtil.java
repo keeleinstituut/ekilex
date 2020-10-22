@@ -17,6 +17,7 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.ParadigmGroup;
+import eki.wordweb.data.StaticParadigm;
 import eki.wordweb.data.Word;
 
 @Component
@@ -24,6 +25,31 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
+
+	public List<StaticParadigm> composeStaticParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
+
+		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
+		Collections.sort(paradigmIds);
+
+		List<StaticParadigm> staticParadigms = new ArrayList<>();
+
+		for (Long paradigmId : paradigmIds) {
+
+			List<Form> forms = paradigmFormsMap.get(paradigmId);
+			forms.sort(Comparator.comparing(Form::getOrderBy));
+
+			for (Form form : forms) {
+				classifierUtil.applyClassifiers(form, displayLang);
+			}
+
+			Map<String, List<Form>> formMorphCodeMap = forms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
+			StaticParadigm staticParadigm = new StaticParadigm();
+			staticParadigm.setParadigmId(paradigmId);
+			staticParadigm.setFormMorphCodeMap(formMorphCodeMap);
+			staticParadigms.add(staticParadigm);
+		}
+		return staticParadigms;
+	}
 
 	public List<Paradigm> composeParadigms(Word word, Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 

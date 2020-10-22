@@ -28,8 +28,6 @@ function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name=' + itemName + ']').addClass('selected');
 }
 
-
-
 $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 
 	if (feedbackServiceUrl === null) {
@@ -51,13 +49,13 @@ $(document).on("click", "button[name='feedbackSendBtn']", function(event) {
 	var okMessageElement = responseDiv.find('#feedbackSuccessMsg');
 	var errorMessageElement = responseDiv.find('#feedbackFailMsg');
 	var okMessage = feedbackForm.find('[name=ok_message]').text();
-    var acceptPrivacyStatement = feedbackForm.find('.modal-check');
+	var acceptPrivacyStatement = feedbackForm.find('.modal-check');
 	$.ajax({
-		url: feedbackServiceUrl,
-		data: JSON.stringify(feedbackForm.serializeJSON()),
-		method: 'POST',
-		dataType: 'json',
-		contentType: 'application/json'
+		url : feedbackServiceUrl,
+		data : JSON.stringify(feedbackForm.serializeJSON()),
+		method : 'POST',
+		dataType : 'json',
+		contentType : 'application/json'
 	}).done(function(data) {
 		if (data.status === 'ok') {
 			dataDiv.addClass('d-none');
@@ -110,18 +108,18 @@ $(document).on('show.bs.modal', '#feedbackModal', function() {
 });
 
 $(document).on('show.bs.modal', '#inflections-modal', function() {
-  $('.scrollable-table').trigger('scrollableTable:update');
+	$('.scrollable-table').trigger('scrollableTable:update');
 });
 
 $(document).on('show.bs.tab', '#markidega-tab-btn, #kaanetega-tab-btn', function() {
-  $('.scrollable-table').trigger('scrollableTable:update');
+	$('.scrollable-table').trigger('scrollableTable:update');
 });
 
 $.fn.scrollableTable = function() {
 	$(this).each(function() {
 		var main = $(this);
 		var scroller = main.find('.scrollable-table--scroller');
-		var id = 'scrollable-'+Math.random().toString().substr(2);
+		var id = 'scrollable-' + Math.random().toString().substr(2);
 		var overflowIndicatorRight, overflowIndicatorLeft;
 		var overflowable = false;
 		var safeArea = 20;
@@ -133,14 +131,14 @@ $.fn.scrollableTable = function() {
 		main.prepend(overflowIndicatorLeft = $('<div class="scrollable-table--indicatorLeft"></div>'));
 
 		if (fixColumn) {
-			main.prepend(tableCloneParent = $('<div class="tableClone">'+table[0].outerHTML+'</div>'));
+			main.prepend(tableCloneParent = $('<div class="tableClone">' + table[0].outerHTML + '</div>'));
 		}
 
 		$(window).on('resize', function() {
 			calculateDimensions();
 		});
 
-		main.on('scrollableTable:update', function(){
+		main.on('scrollableTable:update', function() {
 			setTimeout(function() {
 				calculateDimensions();
 				scroller[0].scrollTo(0, 0);
@@ -161,16 +159,16 @@ $.fn.scrollableTable = function() {
 			}
 			if (fixColumn) {
 				tableCloneParent.find('table').css({
-					width: table.width()
+					width : table.width()
 				});
 				tableCloneParent.css({
-					width: table.find('tr:last td:first').outerWidth() + 1,
+					width : table.find('tr:last td:first').outerWidth() + 1,
 				});
 				tableCloneParent.find('tr:last td:first').css({
-					width: table.find('tr:last td:first').width()
+					width : table.find('tr:last td:first').width()
 				});
 				overflowIndicatorLeft.css({
-					visibility: 'hidden',
+					visibility : 'hidden',
 				});
 			}
 			scroller.trigger('scroll');
@@ -180,14 +178,14 @@ $.fn.scrollableTable = function() {
 			var mainWidth = main.width();
 			var tableWidth = scroller.find('table').outerWidth();
 			var scrollPos = scroller.scrollLeft();
-			if (overflowable){
+			if (overflowable) {
 				if (mainWidth + scrollPos >= tableWidth - safeArea) {
 					overflowIndicatorRight.hide();
 				} else {
 					overflowIndicatorRight.show();
 				}
 
-				if (scrollPos <= safeArea ) {
+				if (scrollPos <= safeArea) {
 					overflowIndicatorLeft.hide();
 				} else {
 					overflowIndicatorLeft.show();
