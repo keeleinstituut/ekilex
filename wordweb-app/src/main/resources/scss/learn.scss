@@ -46,6 +46,17 @@
   .tab-content {
     overflow-x: hidden;
   }
+
+
+  @include media-breakpoint-up(lg) {
+    .col-lg-12 .num {
+      width: 10%;
+    }
+
+    .col-lg-12 .text {
+      width: 90%;
+    }
+  }
 }
 
 .learn-container-menu {
@@ -63,7 +74,7 @@
   @include media-breakpoint-down(sm) {
     position: sticky;
     top: 65px;
-    z-index: $zindex-sticky;
+    z-index: 10;
     height: 56px;
     background-color: #f0f0f0;
     @include border-radius(0);
@@ -306,12 +317,25 @@
   font-weight: $font-weight-bold;
   color: $gray-400;
   text-align: right;
+  white-space: nowrap;
   background: $body-bg;
+
   @include border-radius(3px);
 }
 
+.num {
+  width: 20%;
+  padding: 0 15px;
+
+  @include media-breakpoint-down(md) {
+    white-space: nowrap;
+  }
+}
+
 .text {
-  color: $gray-400;
+  width: 80%;
+  padding: 0 15px;
+  color: $gray-900;
 }
 
 .highlighted {

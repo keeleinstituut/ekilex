@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var mdBreakpoint = 768
   $(nestedList).on('click', function (e) {
     var target = $(e.target).closest('li')
-    if ($(target).hasClass('has-submenu')) {     
+    if ($(target).hasClass('has-submenu')) {
       if ($(target).hasClass('open')) {
         $(target).removeClass('open')
         $(e.target).attr("aria-expanded", false);
@@ -64,12 +64,35 @@ document.addEventListener('DOMContentLoaded', () => {
     })
   })
 
-  var menuItems = document.querySelectorAll('li.has-submenu');
-  Array.prototype.forEach.call(menuItems, function (el, i) {
-    var activatingA = el.querySelector('a');
-    var btn = '<button><span><span class="sr-only">show submenu for “' + activatingA.text + '”</span></span></button>';
-    activatingA.insertAdjacentHTML('beforeend', btn);
-  });
+  function showPanel() {
+    if (window.location.pathname == '/learn') {
+      var hash = window.location.hash.substring(1)
+      var target = $('#' + hash)
+      var closestTab = $(target).closest('.tab-pane')
+      $('.nav-link' + hash).addClass('active')
+      $('.nav-link').attr('href')
+      var targetLink = $("a[href$='" + hash + "']")
+      $('.nav-link').removeClass('active')
+      targetLink.addClass('active')
+
+      if (!$(targetLink).closest('ul').hasClass('dropdown-menu')) {
+        $(targetLink).closest('ul').parent().addClass('open')
+      }
+      $('.tab-pane').removeClass('show').removeClass('active')
+      $(closestTab).addClass('show active')
+
+      setTimeout(() => {
+        
+        $('html').animate({
+          scrollTop: target.offset().top - 100
+        });
+      }, 300);
+    }
+
+  }
+  
+  window.setTimeout(showPanel, 0);
+
 
   // sub-menu scrolling toggling active class
   var findPos = function (obj) {

@@ -40,6 +40,7 @@
   }
 
   .nav-link {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -48,6 +49,14 @@
     &.active {
       font-weight: $font-weight-bold;
       background-color: $gray-200;
+    }
+
+    @include media-breakpoint-up(md) {
+      i {
+        position: absolute;
+        top: 12px;
+        right: 0;
+      }
     }
   }
 
@@ -89,11 +98,12 @@
     padding: 24px;
 
     @include media-breakpoint-down(md) {
-      padding: 0;
+      padding: 24px 16px 24px 0;
     }
 
     @include media-breakpoint-down(sm) {
       max-height: 350px;
+      padding: 0;
       overflow-y: scroll;
     }
 
@@ -102,27 +112,22 @@
   .has-submenu {
     position: relative;
 
-    button {
-      padding: 0;
-      font-size: 20px;
-      color: inherit;
-      background-color: transparent;
-      border: none;
-      transition-property: .3s ease-in-out;
-
-      span:first-of-type {
-        display: inline-block;
-        content: "";
-        border-top: 5px solid;
-        border-right: 5px solid transparent;
-        border-bottom: 0;
-        border-left: 5px solid transparent;
-      }
+    &::after {
+      position: absolute;
+      top: 20px;
+      right: 0;
+      color: #2c6fb6;
+      content: "";
+      border-top: 5px solid;
+      border-right: 5px solid transparent;
+      border-bottom: 0;
+      border-left: 5px solid transparent;
 
       @include media-breakpoint-down(sm) {
         display: none;
       }
     }
+
 
     .list-unstyled {
       display: none;
@@ -132,7 +137,7 @@
 
   .has-submenu.open {
 
-    button {
+    &::after {
       transform: rotate(90deg);
     }
 

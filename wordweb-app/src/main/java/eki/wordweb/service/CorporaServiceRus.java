@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import eki.wordweb.data.CorporaSentence;
@@ -28,15 +29,21 @@ public class CorporaServiceRus extends AbstractCorporaService {
 	@Value("${corpora.service.rus.corpname:}")
 	private String corpName;
 
+	@Value("${corpora.service.rus.word.key:}")
+	private String wordKey;
+
+	@Value("#{${corpora.service.rus.parameters}}")
+	private MultiValueMap<String, String> queryParametersMap;
+
 	@Value("${corpora.service.rus.username:}")
 	private String userName;
 
 	@Value("${corpora.service.rus.api.key:}")
 	private String apiKey;
 
-	private final String WORD_KEY = "word";
+	private final boolean isPosQuery = false;
 
-	@Cacheable(value = CACHE_KEY_CORPORA, key = "#root.methodName")
+	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence) {
 
 		URI corporaUrl = composeCorporaUrl(sentence);
@@ -50,20 +57,17 @@ public class CorporaServiceRus extends AbstractCorporaService {
 			return null;
 		}
 
-		String querySentence = parseSentenceToQueryString(sentence, WORD_KEY);
+		String querySentence = parseSentenceToQueryString(sentence, wordKey, isPosQuery);
+
 		return UriComponentsBuilder.fromUriString(serviceUrl)
 				.queryParam("corpname", corpName)
 				.queryParam("username", userName)
 				.queryParam("api_key", apiKey)
-				.queryParam("format", "json")
-				.queryParam("viewmode", "sen")
-				.queryParam("async", "0")
-				.queryParam("pagesize", "15")
 				.queryParam("q", "q" + querySentence)
+				.queryParams(queryParametersMap)
 				.encode(StandardCharsets.UTF_8)
 				.build()
 				.toUri();
-
 	}
 
 	private List<CorporaSentence> parseResponse(Map<String, Object> response) {

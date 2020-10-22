@@ -206,32 +206,39 @@
 
 .word-grouper-wrapper{
   .word-options a {
-    line-height: 1.3;
     position: relative;
+    line-height: 1.3;
   }
-  .word-options sup {
+  .word-options sup,
+  .collapse-panel:not(.expanded) .word-options.limit sup{
     position: absolute;
     top: 3px;
+    right: -6px;
+  }
+  .word-options:not(:only-child):not(:last-child) sup {
     right: 12px;
   }
 
-  .word-options:not(:last-child) a > span:after {
+  .word-options:not(:last-child) a > span::after {
     display: inline;
-    content: ",";
-    text-decoration: none;
-    color: $body-color;
     margin-right: .5rem;
+    color: $body-color;
+    text-decoration: none;
+    content: ",";
   }
-  .word-options:not(:last-child) a.is-homonym > span:after{
+  .word-options:not(:last-child) a.is-homonym > span::after{
     margin-left: 5px;
   }
   .collapse-panel:not(.expanded){
-    .word-options.limit a > span:after{
-      display: none;
+    .word-options.limit{
+
+      a > span::after{
+        display: none;
+      }
     }
+
   }
 }
-
 
 
 .dependence-group {

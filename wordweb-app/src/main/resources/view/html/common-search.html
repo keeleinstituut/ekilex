@@ -64,8 +64,6 @@
         <li class="homonym-list-item" th:each="word : ${wordsData.fullMatchWords}">
           <form class="h-100">
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
-            <input type="hidden" name="word-value" th:value="${word.word}" />
-            <input type="hidden" name="word-lang" th:value="${word.lang}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
             <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, searchMode, word.word, word.homonymNr)}}" />
             <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">

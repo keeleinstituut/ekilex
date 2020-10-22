@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import eki.wordweb.data.CorporaSentence;
@@ -28,13 +30,18 @@ public class CorporaServiceEst extends AbstractCorporaService {
 	@Value("${corpora.service.est.corpname.simple:}")
 	private String corpNameSimple;
 
-	private final String POS_PUNCTUATION = "Z";
+	@Value("${corpora.service.est.word.key.detail:}")
+	private String wordKeyDetail;
 
-	private final String WORD_KEY_DETAIL = "lemma";
+	@Value("${corpora.service.est.word.key.simple:}")
+	private String wordKeySimple;
 
-	private final String WORD_KEY_SIMPLE = "baseform";
+	@Value("#{${corpora.service.est.parameters}}")
+	private MultiValueMap<String, String> queryParametersMap;
 
-	@Cacheable(value = CACHE_KEY_CORPORA, key = "{#root.methodName, #searchMode}")
+	private final String[] POS_PUNCTUATIONS = new String[] {"Z", "_Z_"};
+
+	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence, String searchMode) {
 
 		URI corporaUrl = composeCorporaUrl(sentence, searchMode);
@@ -48,30 +55,28 @@ public class CorporaServiceEst extends AbstractCorporaService {
 			return null;
 		}
 
+		boolean isPosQuery = false;
 		String corpName = null;
 		String wordKey = null;
 		if (StringUtils.equals(searchMode, SEARCH_MODE_DETAIL)) {
+			isPosQuery = true;
 			corpName = corpNameDetail;
-			wordKey = WORD_KEY_DETAIL;
+			wordKey = wordKeyDetail;
 		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
+			isPosQuery = false;
 			corpName = corpNameSimple;
-			wordKey = WORD_KEY_SIMPLE;
+			wordKey = wordKeySimple;
 		}
-		String querySentence = parseSentenceToQueryString(sentence, wordKey);
+
+		String querySentence = parseSentenceToQueryString(sentence, wordKey, isPosQuery);
 
 		return UriComponentsBuilder.fromUriString(serviceUrl)
-				.queryParam("command", "query")
 				.queryParam("corpus", corpName)
-				.queryParam("start", 0)
-				.queryParam("end", 24)
-				.queryParam("defaultcontext", "1+sentence")
-				.queryParam("show", "sentence,pos")
-				.queryParam("show_struct", "sentence_sid")
 				.queryParam("cqp", querySentence)
+				.queryParams(queryParametersMap)
 				.encode(StandardCharsets.UTF_8)
 				.build()
 				.toUri();
-
 	}
 
 	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
@@ -106,7 +111,7 @@ public class CorporaServiceEst extends AbstractCorporaService {
 
 		String word = (String) token.get("word");
 		String pos = (String) token.get("pos");
-		boolean isPunctuation = StringUtils.equals(pos, POS_PUNCTUATION);
+		boolean isPunctuation = ArrayUtils.contains(POS_PUNCTUATIONS, pos);
 		word = isPunctuation ? word : " " + word;
 		return word;
 	}
