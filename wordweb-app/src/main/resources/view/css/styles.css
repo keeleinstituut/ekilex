@@ -16519,11 +16519,20 @@ body.hidden-scroll {
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  position: relative;
 }
 
 .dropdown-aside .nav-link.active {
   font-weight: 700;
   background-color: #ccd9e0;
+}
+
+@media (min-width: 768px) {
+  .dropdown-aside .nav-link i {
+    position: absolute;
+    right: 0;
+    top: 12px;
+  }
 }
 
 .dropdown-aside .dropdown-toggle {
@@ -16569,12 +16578,13 @@ body.hidden-scroll {
 
 @media (max-width: 991.98px) {
   .dropdown-aside .dropdown-menu {
-    padding: 0;
+    padding: 24px 16px 24px 0;
   }
 }
 
 @media (max-width: 767.98px) {
   .dropdown-aside .dropdown-menu {
+    padding: 0;
     max-height: 350px;
     overflow-y: scroll;
   }

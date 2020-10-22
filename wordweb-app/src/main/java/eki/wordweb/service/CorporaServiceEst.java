@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -38,7 +39,7 @@ public class CorporaServiceEst extends AbstractCorporaService {
 	@Value("#{${corpora.service.est.parameters}}")
 	private MultiValueMap<String, String> queryParametersMap;
 
-	private final String POS_PUNCTUATION = "Z";
+	private final String[] POS_PUNCTUATIONS = new String[] {"Z", "_Z_"};
 
 	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence, String searchMode) {
@@ -54,16 +55,20 @@ public class CorporaServiceEst extends AbstractCorporaService {
 			return null;
 		}
 
+		boolean isPosQuery = false;
 		String corpName = null;
 		String wordKey = null;
 		if (StringUtils.equals(searchMode, SEARCH_MODE_DETAIL)) {
+			isPosQuery = true;
 			corpName = corpNameDetail;
 			wordKey = wordKeyDetail;
 		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
+			isPosQuery = false;
 			corpName = corpNameSimple;
 			wordKey = wordKeySimple;
 		}
-		String querySentence = parseSentenceToQueryString(sentence, wordKey);
+
+		String querySentence = parseSentenceToQueryString(sentence, wordKey, isPosQuery);
 
 		return UriComponentsBuilder.fromUriString(serviceUrl)
 				.queryParam("corpus", corpName)
@@ -106,7 +111,7 @@ public class CorporaServiceEst extends AbstractCorporaService {
 
 		String word = (String) token.get("word");
 		String pos = (String) token.get("pos");
-		boolean isPunctuation = StringUtils.equals(pos, POS_PUNCTUATION);
+		boolean isPunctuation = ArrayUtils.contains(POS_PUNCTUATIONS, pos);
 		word = isPunctuation ? word : " " + word;
 		return word;
 	}

@@ -44,10 +44,19 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    position: relative;
 
     &.active {
       font-weight: $font-weight-bold;
       background-color: $gray-200;
+    }
+
+    @include media-breakpoint-up(md) {
+      i {
+        position: absolute;
+        right: 0;
+        top: 12px;
+      }
     }
   }
 
@@ -89,10 +98,11 @@
     padding: 24px;
 
     @include media-breakpoint-down(md) {
-      padding: 0;
+      padding: 24px 16px 24px 0;
     }
-
+    
     @include media-breakpoint-down(sm) {
+      padding: 0;
       max-height: 350px;
       overflow-y: scroll;
     }
