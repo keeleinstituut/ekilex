@@ -46,6 +46,17 @@
   .tab-content {
     overflow-x: hidden;
   }
+
+
+@include media-breakpoint-up(lg) {
+  .col-lg-12 .num {
+    width: 10%;
+  }
+  
+  .col-lg-12 .text {
+    width:90%;
+  }
+}
 }
 
 .learn-container-menu {

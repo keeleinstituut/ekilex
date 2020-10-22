@@ -18437,6 +18437,15 @@ eki-link {
   overflow-x: hidden;
 }
 
+@media (min-width: 992px) {
+  .learn-container .col-lg-12 .num {
+    width: 10%;
+  }
+  .learn-container .col-lg-12 .text {
+    width: 90%;
+  }
+}
+
 .learn-container-menu {
   position: -webkit-sticky;
   position: sticky;
