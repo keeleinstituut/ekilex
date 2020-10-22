@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import eki.wordweb.data.CorporaSentence;
@@ -28,11 +29,16 @@ public class CorporaServiceEst extends AbstractCorporaService {
 	@Value("${corpora.service.est.corpname.simple:}")
 	private String corpNameSimple;
 
+	@Value("${corpora.service.est.word.key.detail:}")
+	private String wordKeyDetail;
+
+	@Value("${corpora.service.est.word.key.simple:}")
+	private String wordKeySimple;
+
+	@Value("#{${corpora.service.est.parameters}}")
+	private MultiValueMap<String, String> queryParametersMap;
+
 	private final String POS_PUNCTUATION = "Z";
-
-	private final String WORD_KEY_DETAIL = "lemma";
-
-	private final String WORD_KEY_SIMPLE = "baseform";
 
 	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence, String searchMode) {
@@ -52,26 +58,20 @@ public class CorporaServiceEst extends AbstractCorporaService {
 		String wordKey = null;
 		if (StringUtils.equals(searchMode, SEARCH_MODE_DETAIL)) {
 			corpName = corpNameDetail;
-			wordKey = WORD_KEY_DETAIL;
+			wordKey = wordKeyDetail;
 		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
 			corpName = corpNameSimple;
-			wordKey = WORD_KEY_SIMPLE;
+			wordKey = wordKeySimple;
 		}
 		String querySentence = parseSentenceToQueryString(sentence, wordKey);
 
 		return UriComponentsBuilder.fromUriString(serviceUrl)
-				.queryParam("command", "query")
 				.queryParam("corpus", corpName)
-				.queryParam("start", 0)
-				.queryParam("end", 24)
-				.queryParam("defaultcontext", "1+sentence")
-				.queryParam("show", "sentence,pos")
-				.queryParam("show_struct", "sentence_sid")
 				.queryParam("cqp", querySentence)
+				.queryParams(queryParametersMap)
 				.encode(StandardCharsets.UTF_8)
 				.build()
 				.toUri();
-
 	}
 
 	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
