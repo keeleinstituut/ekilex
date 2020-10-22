@@ -16515,11 +16515,11 @@ body.hidden-scroll {
 }
 
 .dropdown-aside .nav-link {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  position: relative;
 }
 
 .dropdown-aside .nav-link.active {
@@ -16530,8 +16530,8 @@ body.hidden-scroll {
 @media (min-width: 768px) {
   .dropdown-aside .nav-link i {
     position: absolute;
-    right: 0;
     top: 12px;
+    right: 0;
   }
 }
 
@@ -16584,8 +16584,8 @@ body.hidden-scroll {
 
 @media (max-width: 767.98px) {
   .dropdown-aside .dropdown-menu {
-    padding: 0;
     max-height: 350px;
+    padding: 0;
     overflow-y: scroll;
   }
 }
