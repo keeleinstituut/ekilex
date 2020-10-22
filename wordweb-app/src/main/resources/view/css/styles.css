@@ -17552,7 +17552,7 @@ body {
   right: -6px;
 }
 
-.word-grouper-wrapper .word-options + .word-options sup {
+.word-grouper-wrapper .word-options:not(:only-child):not(:last-child) sup {
   right: 12px;
 }
 
