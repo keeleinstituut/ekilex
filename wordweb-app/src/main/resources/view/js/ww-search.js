@@ -1,20 +1,13 @@
 var windowWidthTreshold = 768;
 
-function fetchDetails(wordId, word, lang, wordSelectUrl) {
+function fetchDetails(wordId, wordSelectUrl) {
     var detailsDiv = $('.word-details');
     var wordDetailsUrlWithParams = wordDetailsUrl + "/" + wordId;
+
     $.get(wordDetailsUrlWithParams).done(function (data) {
         detailsDiv.replaceWith(data);
-        if (word.indexOf('/') !== -1) {
-            wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
-        }
-        var historyState = {
-            wordId: wordId,
-            word: word,
-            wordSelectUrl: wordSelectUrl
-        };
-        history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
-        fetchCorpSentences(lang, word);
+        fetchCorpSentences();
+        updateBrowserHistory(wordSelectUrl);
         setHomonymNrVisibility();
         $('.word-details [data-toggle="tooltip"], [data-tooltip="tooltip"]').tooltip();
         $('[data-toggle="popover"]').popover({
@@ -43,15 +36,27 @@ function setHomonymNrVisibility() {
     }
 }
 
-function fetchCorpSentences(lang, word) {
+function fetchCorpSentences() {
     var corpDiv = $("#corp");
-    var corpSentencesUrl = corpUrl + '/' + lang + '/' + encodeURIComponent(word);
+    var corpSentencesUrl = corpUrl + '/' + currentWordLang + '/' + encodeURIComponent(currentWord);
     $.get(corpSentencesUrl).done(function (data) {
         corpDiv.replaceWith(data);
         //Activate collapse button after last bit of data is loaded
         activateCollapseBtn();
     }).fail(function (data) {
     })
+}
+
+function updateBrowserHistory(wordSelectUrl) {
+    if (currentWord.indexOf('/') !== -1) {
+        wordSelectUrl = wordSelectUrl.replace(currentWord, encodeURIComponent(currentWord));
+    }
+    var historyState = {
+        wordId: currentWordId,
+        word: currentWord,
+        wordSelectUrl: wordSelectUrl
+    };
+    history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
 }
 
 $(function () {
@@ -149,11 +154,8 @@ $(window).on("popstate", function (e) {
 $(document).on("click", "a[id^='word-details-link']", function () {
     var wordWrapperForm = $(this).closest("form");
     var wordId = wordWrapperForm.children("[name='word-id']").val();
-    var word = wordWrapperForm.children("[name='word-value']").val();
-    var lang = wordWrapperForm.children("[name='word-lang']").val();
     var wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
-    fetchDetails(wordId, word, lang, wordSelectUrl);
-
+    fetchDetails(wordId, wordSelectUrl);
 });
 
 $(document).on("click", ".homonym-item", function () {

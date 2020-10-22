@@ -41,6 +41,8 @@ public class CorporaServiceRus extends AbstractCorporaService {
 	@Value("${corpora.service.rus.api.key:}")
 	private String apiKey;
 
+	private final boolean isPosQuery = false;
+
 	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence) {
 
@@ -55,7 +57,7 @@ public class CorporaServiceRus extends AbstractCorporaService {
 			return null;
 		}
 
-		String querySentence = parseSentenceToQueryString(sentence, wordKey);
+		String querySentence = parseSentenceToQueryString(sentence, wordKey, isPosQuery);
 
 		return UriComponentsBuilder.fromUriString(serviceUrl)
 				.queryParam("corpname", corpName)

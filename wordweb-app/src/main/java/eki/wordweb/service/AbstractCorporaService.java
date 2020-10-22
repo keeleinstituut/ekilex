@@ -39,15 +39,25 @@ public abstract class AbstractCorporaService implements SystemConstant, GlobalCo
 		return response;
 	}
 
-	protected String parseSentenceToQueryString(String sentence, String wordQueryKey) {
+	protected String parseSentenceToQueryString(String sentence, String wordQueryKey, boolean isPosQuery) {
 
 		String[] words = StringUtils.split(sentence, " ");
 		List<String> wordQuerys = new ArrayList<>();
 		for (String word : words) {
-			wordQuerys.add("[" + wordQueryKey + "=\"" + word + "\"]");
+			String wordQuery = createWordQueryString(word, wordQueryKey, isPosQuery);
+			wordQuerys.add(wordQuery);
 		}
-		String wordQueryString = String.join(" ", wordQuerys);
-		return wordQueryString;
+		String wordsQueryString = String.join(" ", wordQuerys);
+		return wordsQueryString;
+	}
+
+	private String createWordQueryString(String word, String wordQueryKey, boolean isPosQuery) {
+
+		if (isPosQuery) {
+			return "[" + wordQueryKey + "=\"" + word + "-.?\"]";
+		} else {
+			return "[" + wordQueryKey + "=\"" + word + "\"]";
+		}
 	}
 
 	private String doGetRequest(URI url) {
