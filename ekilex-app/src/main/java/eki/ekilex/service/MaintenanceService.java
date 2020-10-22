@@ -34,7 +34,7 @@ public class MaintenanceService implements SystemConstant {
 		clearTagCache();
 	}
 
-	private void clearClassifCache() {
+	public void clearClassifCache() {
 		cacheManager.getCache(CACHE_KEY_CLASSIF).clear();
 	}
 

@@ -44,8 +44,8 @@ function setHomonymNrVisibility() {
 }
 
 function fetchCorpSentences(lang, word) {
-    var corpDiv = $("#korp");
-    var corpSentencesUrl = applicationUrl + 'korp/' + lang + '/' + encodeURIComponent(word);
+    var corpDiv = $("#corp");
+    var corpSentencesUrl = corpUrl + '/' + lang + '/' + encodeURIComponent(word);
     $.get(corpSentencesUrl).done(function (data) {
         corpDiv.replaceWith(data);
         //Activate collapse button after last bit of data is loaded
@@ -103,6 +103,9 @@ function activateCollapseBtn(){
         if($(this).data("dynamic-text")){
             $(this).find('.btn-content').toggleClass('d-none');
             $(this).find('.see-more-content').tooltip('hide');
+        }
+        if($(this).data("toggle-container")){
+            $($(this).data("toggle-container")).toggleClass("expanded");
         }
     });
 }

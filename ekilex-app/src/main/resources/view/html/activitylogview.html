@@ -17,6 +17,7 @@
             </div>
             <div class="col-3">
               <span th:text="#{|activitylog.entity.${logRow.entityName}|(${logRow.entityName})}"></span>
+              <strong th:text="${logRow.wordValue}"></strong>
               <a class="fa fa-info-circle float-right" data-toggle="collapse" th:href="${'#expandActivityLogRow_' + logRow.id}" title="Tehnilised parameetrid"></a>
             </div>
           </div>

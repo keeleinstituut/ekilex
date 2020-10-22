@@ -1,16 +1,16 @@
 package eki.wordweb.service;
 
-import static java.lang.Math.abs;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 import java.net.URI;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -22,33 +22,59 @@ public class CorporaServiceEst extends AbstractCorporaService {
 	@Value("${corpora.service.est.url:}")
 	private String serviceUrl;
 
-	@Value("${corpora.service.est.corpname:}")
-	private String corpNames;
+	@Value("${corpora.service.est.corpname.detail:}")
+	private String corpNameDetail;
 
-	private Random seedGenerator = new Random();
+	@Value("${corpora.service.est.corpname.simple:}")
+	private String corpNameSimple;
 
-	protected URI composeCorporaUri(String sentence) {
+	private final String POS_PUNCTUATION = "Z";
+
+	private final String WORD_KEY_DETAIL = "lemma";
+
+	private final String WORD_KEY_SIMPLE = "baseform";
+
+	@Cacheable(value = CACHE_KEY_CORPORA)
+	public List<CorporaSentence> getSentences(String sentence, String searchMode) {
+
+		URI corporaUrl = composeCorporaUrl(sentence, searchMode);
+		Map<String, Object> response = requestSentences(corporaUrl);
+		return parseResponse(response);
+	}
+
+	private URI composeCorporaUrl(String sentence, String searchMode) {
 
 		if (isBlank(serviceUrl)) {
 			return null;
-		} else {
-			return UriComponentsBuilder.fromUriString(serviceUrl)
-					.queryParam("command", "query")
-					.queryParam("corpus", corpNames)
-					.queryParam("start", 0)
-					.queryParam("end", 25)
-					.queryParam("cqp", parseSentenceToQueryString(sentence))
-					.queryParam("defaultcontext", "1+sentence")
-					.queryParam("show", "pos")
-					.queryParam("sort", "random")
-					.queryParam("random_seed", abs(seedGenerator.nextInt()))
-					.encode(Charset.forName(UTF_8))
-					.build()
-					.toUri();
 		}
+
+		String corpName = null;
+		String wordKey = null;
+		if (StringUtils.equals(searchMode, SEARCH_MODE_DETAIL)) {
+			corpName = corpNameDetail;
+			wordKey = WORD_KEY_DETAIL;
+		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
+			corpName = corpNameSimple;
+			wordKey = WORD_KEY_SIMPLE;
+		}
+		String querySentence = parseSentenceToQueryString(sentence, wordKey);
+
+		return UriComponentsBuilder.fromUriString(serviceUrl)
+				.queryParam("command", "query")
+				.queryParam("corpus", corpName)
+				.queryParam("start", 0)
+				.queryParam("end", 24)
+				.queryParam("defaultcontext", "1+sentence")
+				.queryParam("show", "sentence,pos")
+				.queryParam("show_struct", "sentence_sid")
+				.queryParam("cqp", querySentence)
+				.encode(StandardCharsets.UTF_8)
+				.build()
+				.toUri();
+
 	}
 
-	protected List<CorporaSentence> parseResponse(Map<String, Object> response) {
+	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
 
 		List<CorporaSentence> sentences = new ArrayList<>();
 		if (response.isEmpty() || (response.containsKey("hits") && (int) response.get("hits") == 0) || !response.containsKey("kwic")) {
@@ -77,14 +103,12 @@ public class CorporaServiceEst extends AbstractCorporaService {
 	}
 
 	private String parseWord(Map<String, Object> token) {
+
 		String word = (String) token.get("word");
 		String pos = (String) token.get("pos");
-		word = isPunctuation(pos) ? word : " " + word;
+		boolean isPunctuation = StringUtils.equals(pos, POS_PUNCTUATION);
+		word = isPunctuation ? word : " " + word;
 		return word;
-	}
-
-	private boolean isPunctuation(String word) {
-		return "Z".equals(word);
 	}
 
 }

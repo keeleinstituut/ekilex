@@ -57,14 +57,10 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class LexSearchService extends AbstractWordSearchService {
-
-	@Autowired
-	private LexSearchDbService lexSearchDbService;
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
@@ -91,8 +87,9 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
 		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
+		List<Classifier> allAspects = commonDataDbService.getAspects(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_FULL);
-		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers);
+		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, allAspects);
 		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);

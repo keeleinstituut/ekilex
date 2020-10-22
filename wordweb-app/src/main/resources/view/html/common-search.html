@@ -566,34 +566,29 @@
                                   <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                     <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                       <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
-                                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
+                                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">
                                         <span th:text="${collocMem.form}" class="value"></span>
                                       </a>
-                                      <span th:text="${collocMem.form}" class="value" th:if="${!collocMem.wordExists}"></span>
                                       <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                     </span>
                                   </span>
                                   <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
                                     <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                       <span th:if="${collocMem.conjunct != null}" class="value" th:text="${collocMem.conjunct}"></span>
-                                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
+                                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">
                                         <i>
                                           <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
                                         </i>
                                       </a>
-                                      <i th:if="${!collocMem.wordExists}">
-                                        <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
-                                      </i>
                                     </span>
                                   </span>
                                 </span>
                               </span>
                               <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-placement="top" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
                                 <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
-                                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
+                                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">
                                     <span th:text="${collocMem.form}" class="value"></span>
                                   </a>
-                                  <span th:text="${collocMem.form}" class="value" th:if="${!collocMem.wordExists}"></span>
                                   <span th:unless="${collocMemIter.last}">&nbsp;</span>
                                 </span>
                               </span>
@@ -655,10 +650,9 @@
                               <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                 <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                   <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
-                                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
+                                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, collocMem.word, collocMem.homonymNr)}}">
                                     <span th:text="${collocMem.form}" class="value"></span>
                                   </a>
-                                  <span th:text="${collocMem.form}" class="value" th:if="${!collocMem.wordExists}"></span>
                                   <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="value" th:text="${collocMem.conjunct}"></span>
                                 </span>
                               </span>
@@ -670,9 +664,6 @@
                                       <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
                                     </i>
                                   </a>
-                                  <i th:if="${!collocMem.wordExists}">
-                                    <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="value"></span>
-                                  </i>
                                 </span>
                               </span>
                             </span>
@@ -706,11 +697,11 @@
       </th:block>
     </div>
   </th:block>
-  <section class="level-3-panel " th:fragment="korp">
+  <section class="level-3-panel " th:fragment="corp">
     <div class="corp-panel">
       <div class="heading-wrapper">
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <span th:text="#{label.korp.examples}">Veebilauseid</span>
+          <span th:text="#{label.corp.examples}">Veebilauseid</span>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
                   th:if="${corp_language == 'est'}" th:aria-label="#{corpus.title.est}" th:title="#{corpus.title.est}">
             <i class="fas fa-info-circle"></i>

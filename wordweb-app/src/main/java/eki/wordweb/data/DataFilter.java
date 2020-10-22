@@ -20,12 +20,21 @@ public class DataFilter extends AbstractDataObject {
 
 	private Integer maxDisplayLevel;
 
-	public DataFilter(DatasetType datasetType, List<String> destinLangs, List<String> datasetCodes, Complexity lexComplexity, Integer maxDisplayLevel) {
+	private boolean fiCollationExists;
+
+	public DataFilter(
+			DatasetType datasetType,
+			List<String> destinLangs,
+			List<String> datasetCodes,
+			Complexity lexComplexity,
+			Integer maxDisplayLevel,
+			boolean fiCollationExists) {
 		this.datasetType = datasetType;
 		this.destinLangs = destinLangs;
 		this.datasetCodes = datasetCodes;
 		this.lexComplexity = lexComplexity;
 		this.maxDisplayLevel = maxDisplayLevel;
+		this.fiCollationExists = fiCollationExists;
 	}
 
 	public DatasetType getDatasetType() {
@@ -46,6 +55,10 @@ public class DataFilter extends AbstractDataObject {
 
 	public Integer getMaxDisplayLevel() {
 		return maxDisplayLevel;
+	}
+
+	public boolean isFiCollationExists() {
+		return fiCollationExists;
 	}
 
 }

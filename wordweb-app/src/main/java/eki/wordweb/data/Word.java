@@ -12,8 +12,6 @@ public class Word extends WordTypeData {
 
 	private String wordClass;
 
-	private String morphCode;
-
 	private String displayMorphCode;
 
 	private Classifier displayMorph;
@@ -67,14 +65,6 @@ public class Word extends WordTypeData {
 
 	public void setWordClass(String wordClass) {
 		this.wordClass = wordClass;
-	}
-
-	public String getMorphCode() {
-		return morphCode;
-	}
-
-	public void setMorphCode(String morphCode) {
-		this.morphCode = morphCode;
 	}
 
 	public String getDisplayMorphCode() {

@@ -52,7 +52,6 @@ create type type_colloc_member as (
 				word text,
 				form text,
 				homonym_nr integer,
-				word_exists boolean,
 				conjunct varchar(100),
 				weight numeric(14,4));
 create type type_meaning_word as (
@@ -127,17 +126,12 @@ select ws.sgroup,
        wlc.lang_complexities
 from (
         (select 'word' as sgroup,
-                fw.value word,
-                lower(fw.value) crit,
+                w.value word,
+                lower(w.value) crit,
                 (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
-         from form fw,
-              paradigm p,
-              word w,
+         from word w,
               language wl
-         where fw.mode = 'WORD'
-           and fw.paradigm_id = p.id
-           and p.word_id = w.id
-           and w.lang = wl.code
+         where w.lang = wl.code
            and exists
              (select w.id
               from lexeme as l,
@@ -147,23 +141,16 @@ from (
                 and l.is_public = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
-         group by fw.value)
+         group by w.value)
       union all
         (select 'as_word' as sgroup,
-                fw.value word,
-                lower(faw.value) crit,
+                w.value word,
+                lower(w.value_as_word) crit,
                 (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
-         from form fw,
-              form faw,
-              paradigm p,
-              word w,
+         from word w,
               language wl
-         where fw.mode = 'WORD'
-           and faw.mode = 'AS_WORD'
-           and faw.paradigm_id = p.id
-           and fw.paradigm_id = p.id
-           and p.word_id = w.id
-           and w.lang = wl.code
+         where w.lang = wl.code
+           and w.value_as_word is not null
            and exists
              (select w.id
               from lexeme as l,
@@ -173,24 +160,22 @@ from (
                 and l.is_public = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
-         group by fw.value,
-                  faw.value)
+         group by w.value,
+                  w.value_as_word)
       union all
         (select 'form' as sgroup,
-                fw.value word,
+                w.value word,
                 lower(f.value) crit,
                 (array_agg(wl.order_by order by wl.order_by))[1] lang_order_by
-         from form fw,
-              form f,
+         from form f,
               paradigm p,
               word w,
               language wl
-         where fw.mode = 'WORD'
-           and f.mode = 'FORM'
-           and fw.paradigm_id = p.id
+         where f.mode = 'FORM'
            and f.paradigm_id = p.id
            and p.word_id = w.id
            and w.lang = wl.code
+           and f.value != w.value
            and exists
              (select w.id
               from lexeme as l,
@@ -200,8 +185,7 @@ from (
                 and l.is_public = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
-           and fw.value != f.value
-         group by fw.value,
+         group by w.value,
                   f.value)) ws,
   (select lc.word,
           array_agg(distinct row (
@@ -215,16 +199,11 @@ from (
                     ) lang_complexities
    from (
            (select
-              (select array_agg(distinct f.value)
-               from paradigm p,
-                    form f
-               where p.word_id = l1.word_id
-                 and f.paradigm_id = p.id
-                 and f.mode = 'WORD')[1] as word,
-                   w2.lang,
-                   l1.dataset_code,
-                   l1.complexity lex_complexity,
-                   l2.complexity data_complexity
+                 w2.value as word,
+                 w2.lang,
+                 l1.dataset_code,
+                 l1.complexity lex_complexity,
+                 l2.complexity data_complexity
             from lexeme l1
             inner join dataset l1ds on l1ds.code = l1.dataset_code
             inner join lexeme l2 on l2.meaning_id = l1.meaning_id
@@ -239,16 +218,11 @@ from (
               and l2ds.is_public = true)
          union all
            (select
-              (select array_agg(distinct f.value)
-               from paradigm p,
-                    form f
-               where p.word_id = l.word_id
-                 and f.paradigm_id = p.id
-                 and f.mode = 'WORD')[1] as word,
-                   coalesce(ff.lang, w.lang) lang,
-                   l.dataset_code,
-                   l.complexity lex_complexity,
-                   ff.complexity data_complexity
+                 w.value as word,
+                 coalesce(ff.lang, w.lang) lang,
+                 l.dataset_code,
+                 l.complexity lex_complexity,
+                 ff.complexity data_complexity
             from word w,
                  lexeme l,
                  lexeme_freeform lff,
@@ -268,23 +242,20 @@ from (
                               'NOTE'))
          union all
            (select
-              (select array_agg(distinct f.value)
-               from paradigm p,
-                    form f
-               where p.word_id = l.word_id
-                 and f.paradigm_id = p.id
-                 and f.mode = 'WORD')[1] as word,
-                   ut.lang,
-                   l.dataset_code,
-                   l.complexity lex_complexity,
-                   u.complexity data_complexity
-            from lexeme l,
+                 w.value as word,
+                 ut.lang,
+                 l.dataset_code,
+                 l.complexity lex_complexity,
+                 u.complexity data_complexity
+            from word w,
+                 lexeme l,
                  lexeme_freeform lff,
                  freeform u,
                  freeform ut,
                  dataset ds
             where l.type = 'PRIMARY'
               and l.is_public = true
+              and l.word_id = w.id
               and ds.code = l.dataset_code
               and ds.is_public = true
               and lff.lexeme_id = l.id
@@ -295,21 +266,18 @@ from (
               and ut.type = 'USAGE_TRANSLATION')
          union all
            (select
-              (select array_agg(distinct f.value)
-               from paradigm p,
-                    form f
-               where p.word_id = l.word_id
-                 and f.paradigm_id = p.id
-                 and f.mode = 'WORD')[1] as word,
-                   d.lang,
-                   l.dataset_code,
-                   l.complexity lex_complexity,
-                   d.complexity data_complexity
-            from lexeme l,
+                 w.value as word,
+                 d.lang,
+                 l.dataset_code,
+                 l.complexity lex_complexity,
+                 d.complexity data_complexity
+            from word w,
+                 lexeme l,
                  definition d,
                  dataset ds
             where l.type = 'PRIMARY'
               and l.is_public = true
+              and l.word_id = w.id
               and ds.code = l.dataset_code
               and ds.is_public = true
               and l.meaning_id = d.meaning_id
@@ -332,7 +300,6 @@ select w.word_id,
        w.homonym_nr,
        w.word_class,
        wt.word_type_codes,
-       w.morph_code,
        w.display_morph_code,
        w.aspect_code,
        lc.lang_complexities,
@@ -340,16 +307,12 @@ select w.word_id,
        wd.definitions,
        od_ws.od_word_recommendations,
        w.forms_exist,
-       w.min_ds_order_by
+       w.min_ds_order_by,
+       w.word_type_order_by
 from (select w.id as word_id,
-             array_to_string(array_agg(distinct f.value),',','*') as word,
-             array_to_string(array_agg(distinct f.value_prese),',','*') as word_prese,
-             (select array_agg(distinct f.value)
-	          from paradigm p,
-	               form f
-	          where p.word_id = w.id
-	          and   f.paradigm_id = p.id
-	          and   f.mode = 'AS_WORD')[1] as as_word,
+             w.value as word,
+             w.value_prese as word_prese,
+             w.value_as_word as as_word,
              w.lang,
              (select lc.order_by
               from language lc
@@ -357,66 +320,66 @@ from (select w.id as word_id,
               limit 1) lang_order_by,
              w.homonym_nr,
              w.word_class,
-             w.morph_code,
              w.display_morph_code,
              w.aspect_code,
-	         (select count(f.id) > 0
-	          from paradigm p,
-	               form f
-	          where p.word_id = w.id
-	          and   f.paradigm_id = p.id
-	          and   f.mode = 'FORM') forms_exist,
-	         (select min(ds.order_by)
+             (select count(f.id) > 0
+              from paradigm p,
+                   form f
+              where p.word_id = w.id
+              and   f.paradigm_id = p.id
+              and   f.mode = 'FORM') forms_exist,
+             (select min(ds.order_by)
               from lexeme l,
                    dataset ds
               where l.word_id = w.id
               and   l.type = 'PRIMARY'
               and   l.is_public = true
               and   ds.code = l.dataset_code
-              and   ds.is_public = true) min_ds_order_by
+              and   ds.is_public = true) min_ds_order_by,
+             (select count(wt.id)
+              from word_word_type wt
+              where wt.word_id = w.id
+              and wt.word_type_code = 'pf') word_type_order_by
       from word as w
-        join paradigm as p on p.word_id = w.id
-        join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
       where exists (select l.id
                     from lexeme as l,
                          dataset ds
                     where l.word_id = w.id
-                    and l.type = 'PRIMARY'
-                    and l.is_public = true
-                    and ds.code = l.dataset_code
-                    and ds.is_public = true)
+                    and   l.type = 'PRIMARY'
+                    and   l.is_public = true
+                    and   ds.code = l.dataset_code
+                    and   ds.is_public = true)
       group by w.id) as w
   left outer join (select wt.word_id,
                           array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                    from word_word_type wt
-                   group by wt.word_id) wt on wt.word_id = w.word_id
+                   group by wt.word_id) wt
+               on wt.word_id = w.word_id
   left outer join (select mw.word_id,
                           array_agg(row (
-                          	mw.lexeme_id,
-                          	mw.meaning_id,
-                          	mw.mw_lex_id,
-                          	mw.mw_lex_complexity,
-                          	mw.mw_lex_type,
-                            mw.mw_lex_weight,
-                          	null,
-                            null,
-                            null,
-                          	mw.mw_word_id,
-                          	' ' || mw.mw_word,
-                          	' ' || mw.mw_word_prese,
-                          	mw.mw_homonym_nr,
-                          	mw.mw_lang,
-                          	mw.mw_word_type_codes,
-                          	mw.mw_aspect_code
-                          )::type_meaning_word
-                          order by
-                          mw.hw_lex_level1,
-                          mw.hw_lex_level2,
-                          mw.hw_lex_order_by,
-                          mw.mw_lex_order_by
-                          ) meaning_words
-                   from (select distinct
-                                l1.word_id,
+                                mw.lexeme_id,
+                                mw.meaning_id,
+                                mw.mw_lex_id,
+                                mw.mw_lex_complexity,
+                                mw.mw_lex_type,
+                                mw.mw_lex_weight,
+                                null,
+                                null,
+                                null,
+                                mw.mw_word_id,
+                                ' ' || mw.mw_word,
+                                ' ' || mw.mw_word_prese,
+                                mw.mw_homonym_nr,
+                                mw.mw_lang,
+                                mw.mw_word_type_codes,
+                                mw.mw_aspect_code
+                                )::type_meaning_word
+                                order by
+                                mw.hw_lex_level1,
+                                mw.hw_lex_level2,
+                                mw.hw_lex_order_by,
+                                mw.mw_lex_order_by) meaning_words
+                   from (select distinct l1.word_id,
                                 l1.id lexeme_id,
                                 l1.meaning_id,
                                 l1.level1 hw_lex_level1,
@@ -427,8 +390,8 @@ from (select w.id as word_id,
                                 l2.type mw_lex_type,
                                 l2.weight mw_lex_weight,
                                 w2.id mw_word_id,
-                                ' ' || f2.value mw_word,
-                                ' ' || f2.value_prese mw_word_prese,
+                                ' ' || w2.value mw_word,
+                                ' ' || w2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
@@ -438,122 +401,129 @@ from (select w.id as word_id,
                                 w2.aspect_code mw_aspect_code,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
-                           inner join dataset l1ds on l1ds.code = l1.dataset_code
-                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
-                           inner join dataset l2ds on l2ds.code = l2.dataset_code
-                           inner join word w2 on w2.id = l2.word_id
-                           inner join paradigm p2 on p2.word_id = w2.id
-                           inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
-                         where 
-                         l1.type = 'PRIMARY'
-                         and l1.is_public = true
-                         and l1ds.is_public = true
-                         and l2.is_public = true
-                         and l2ds.is_public = true) mw
-                   group by mw.word_id) mw on mw.word_id = w.word_id
+                           inner join dataset l1ds
+                                   on l1ds.code = l1.dataset_code
+                           inner join lexeme l2
+                                   on l2.meaning_id = l1.meaning_id
+                                  and l2.word_id != l1.word_id
+                           inner join dataset l2ds
+                                   on l2ds.code = l2.dataset_code
+                           inner join word w2
+                                   on w2.id = l2.word_id
+                         where l1.type = 'PRIMARY'
+                         and   l1.is_public = true
+                         and   l1ds.is_public = true
+                         and   l2.is_public = true
+                         and   l2ds.is_public = true) mw
+                   group by mw.word_id) mw
+               on mw.word_id = w.word_id
   inner join (select lc.word_id,
-                          array_agg(distinct row(
-                                    case
-                                      when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
-                                      else 'other'
-                                    end,
-                                    lc.dataset_code,
-                                    lc.lex_complexity,
-                                    trim(trailing '12' from lc.data_complexity))::type_lang_complexity
-                                    ) lang_complexities
-                   from ((select l1.word_id,
-                                 w2.lang,
-                                 l1.dataset_code,
-                                 l1.complexity lex_complexity,
-                                 l2.complexity data_complexity
-                          from lexeme l1
-                            inner join dataset l1ds on l1ds.code = l1.dataset_code
-                            inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
-                            inner join dataset l2ds on l2ds.code = l2.dataset_code
-                            inner join word w2 on w2.id = l2.word_id
-                          where 
-                          l1.type = 'PRIMARY'
-                          and l1.is_public = true
-                          and l1ds.is_public = true
-                          and l2.is_public = true
-                          and l2ds.is_public = true)
-                          union all
-                          (select l.word_id,
-                                  coalesce(ff.lang, w.lang) lang,
-                                  l.dataset_code,
-                                  l.complexity lex_complexity,
-                                  ff.complexity data_complexity
-                          from word w,
-                               lexeme l,
-                               lexeme_freeform lff,
-                               freeform ff,
-                               dataset ds
-                          where l.type = 'PRIMARY'
-                          and l.is_public = true
-                          and ds.code = l.dataset_code
-                          and ds.is_public = true
-                          and l.word_id = w.id
-                          and lff.lexeme_id = l.id
-                          and lff.freeform_id = ff.id
-                          and ff.is_public = true
-                          and ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
-                          union all
-                          (select l.word_id,
-                                  ut.lang,
-                                  l.dataset_code,
-                                  l.complexity lex_complexity,
-                                  u.complexity data_complexity
-                          from lexeme l,
-                               lexeme_freeform lff,
-                               freeform u,
-                               freeform ut,
-                               dataset ds
-                          where 
-                          l.type = 'PRIMARY'
-                          and l.is_public = true
-                          and ds.code = l.dataset_code
-                          and ds.is_public = true
-                          and lff.lexeme_id = l.id
-                          and lff.freeform_id = u.id
-                          and u.type = 'USAGE'
-                          and u.is_public = true
-                          and ut.parent_id = u.id
-                          and ut.type = 'USAGE_TRANSLATION')
-                          union all
-                          (select l.word_id,
-                                  d.lang,
-                                  l.dataset_code,
-                                  l.complexity lex_complexity,
-                                  d.complexity data_complexity
-                          from lexeme l,
-                               definition d,
-                               dataset ds
-                          where 
-                          l.type = 'PRIMARY'
-                          and l.is_public = true
-                          and ds.code = l.dataset_code
-                          and ds.is_public = true
-                          and l.meaning_id = d.meaning_id
-                          and d.is_public = true)) lc
-                   group by lc.word_id) lc on lc.word_id = w.word_id
+                     array_agg(distinct row (
+                            case
+                              when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                              else 'other'
+                            end,
+                            lc.dataset_code,
+                            lc.lex_complexity,
+                            trim(trailing '12' from lc.data_complexity)
+                            )::type_lang_complexity) lang_complexities
+              from ((select l1.word_id,
+                            w2.lang,
+                            l1.dataset_code,
+                            l1.complexity lex_complexity,
+                            l2.complexity data_complexity
+                     from lexeme l1
+                       inner join dataset l1ds
+                               on l1ds.code = l1.dataset_code
+                       inner join lexeme l2
+                               on l2.meaning_id = l1.meaning_id
+                              and l2.dataset_code = l1.dataset_code
+                              and l2.word_id != l1.word_id
+                       inner join dataset l2ds
+                               on l2ds.code = l2.dataset_code
+                       inner join word w2
+                               on w2.id = l2.word_id
+                     where l1.type = 'PRIMARY'
+                     and   l1.is_public = true
+                     and   l1ds.is_public = true
+                     and   l2.is_public = true
+                     and   l2ds.is_public = true)
+                     union all
+                     (select l.word_id,
+                            coalesce(ff.lang, w.lang) lang,
+                            l.dataset_code,
+                            l.complexity lex_complexity,
+                            ff.complexity data_complexity
+                     from word w,
+                          lexeme l,
+                          lexeme_freeform lff,
+                          freeform ff,
+                          dataset ds
+                     where l.type = 'PRIMARY'
+                     and   l.is_public = true
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true
+                     and   l.word_id = w.id
+                     and   lff.lexeme_id = l.id
+                     and   lff.freeform_id = ff.id
+                     and   ff.is_public = true
+                     and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
+                     union all
+                     (select l.word_id,
+                            ut.lang,
+                            l.dataset_code,
+                            l.complexity lex_complexity,
+                            u.complexity data_complexity
+                     from lexeme l,
+                          lexeme_freeform lff,
+                          freeform u,
+                          freeform ut,
+                          dataset ds
+                     where l.type = 'PRIMARY'
+                     and   l.is_public = true
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true
+                     and   lff.lexeme_id = l.id
+                     and   lff.freeform_id = u.id
+                     and   u.type = 'USAGE'
+                     and   u.is_public = true
+                     and   ut.parent_id = u.id
+                     and   ut.type = 'USAGE_TRANSLATION')
+                     union all
+                     (select l.word_id,
+                            d.lang,
+                            l.dataset_code,
+                            l.complexity lex_complexity,
+                            d.complexity data_complexity
+                     from lexeme l,
+                          definition d,
+                          dataset ds
+                     where l.type = 'PRIMARY'
+                     and   l.is_public = true
+                     and   ds.code = l.dataset_code
+                     and   ds.is_public = true
+                     and   l.meaning_id = d.meaning_id
+                     and   d.is_public = true)) lc
+              group by lc.word_id) lc
+          on lc.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row (
-                            wd.lexeme_id,
-                            wd.meaning_id,
-                            wd.definition_id,
-                            ' ' || wd.value,
-                            ' ' || wd.value_prese,
-                            wd.lang,
-                            wd.complexity,
-                            null
-                          )::type_definition 
-                          order by
-                          wd.ds_order_by,
-                          wd.level1,
-                          wd.level2,
-                          wd.lex_order_by,
-                          wd.def_order_by
-                          ) definitions
+                                wd.lexeme_id,
+                                wd.meaning_id,
+                                wd.definition_id,
+                                ' ' || wd.value,
+                                ' ' || wd.value_prese,
+                                wd.lang,
+                                wd.complexity,
+                                null
+                                )::type_definition 
+                                order by 
+                                wd.ds_order_by,
+                                wd.level1,
+                                wd.level2,
+                                wd.lex_order_by,
+                                wd.def_order_by
+                                ) definitions
                    from (select l.word_id,
                                 l.id lexeme_id,
                                 l.meaning_id,
@@ -568,12 +538,14 @@ from (select w.id as word_id,
                                 d.order_by def_order_by,
                                 ds.order_by ds_order_by
                          from lexeme l
-                           inner join dataset ds on ds.code = l.dataset_code
-                           inner join definition d on d.meaning_id = l.meaning_id and d.is_public = true
-                         where 
-                         l.type = 'PRIMARY'
-                         and l.is_public = true
-                         and ds.is_public = true) wd
+                           inner join dataset ds
+                                   on ds.code = l.dataset_code
+                           inner join definition d
+                                   on d.meaning_id = l.meaning_id
+                                  and d.is_public = true
+                         where l.type = 'PRIMARY'
+                         and   l.is_public = true
+                         and   ds.is_public = true) wd
                    group by wd.word_id) wd
                on wd.word_id = w.word_id
   left outer join (select wf.word_id,
@@ -582,50 +554,48 @@ from (select w.id as word_id,
                         freeform ff
                    where wf.freeform_id = ff.id
                    and   ff.type = 'OD_WORD_RECOMMENDATION'
-                   group by wf.word_id) od_ws on od_ws.word_id = w.word_id;
+                   group by wf.word_id) od_ws
+               on od_ws.word_id = w.word_id;
 
 -- word forms - OK
 create view view_ww_form 
 as
 select w.id word_id,
-       fw.value word,
+       w.value word,
        w.lang,
        p.id paradigm_id,
        p.inflection_type,
-       ff.id form_id,
-       ff.mode,
-       ff.morph_group1,
-       ff.morph_group2,
-       ff.morph_group3,
-       ff.display_level,
-       ff.morph_code,
-       ff.morph_exists,
-       ff.value form,
-       ff.components,
-       ff.display_form,
-       ff.vocal_form,
-       ff.audio_file,
-       ff.order_by
+       f.id form_id,
+       f.mode,
+       f.morph_group1,
+       f.morph_group2,
+       f.morph_group3,
+       f.display_level,
+       f.morph_code,
+       f.morph_exists,
+       f.value form,
+       f.components,
+       f.display_form,
+       f.vocal_form,
+       f.audio_file,
+       f.order_by
 from word w,
      paradigm p,
-     form ff,
-     form fw
+     form f
 where p.word_id = w.id
-and   ff.paradigm_id = p.id
-and   fw.paradigm_id = p.id
-and   fw.mode = 'WORD'
-and   ff.display_level > 0
+and   f.paradigm_id = p.id
+and   f.display_level > 0
 and   exists (select l.id
               from lexeme as l,
                    dataset ds
-              where l.word_id = w.id 
-              and l.type = 'PRIMARY'
-              and l.is_public = true
-              and ds.code = l.dataset_code
-              and ds.is_public = true)
+              where l.word_id = w.id
+              and   l.type = 'PRIMARY'
+              and   l.is_public = true
+              and   ds.code = l.dataset_code
+              and   ds.is_public = true)
 order by p.id,
-         ff.order_by,
-         ff.id;
+         f.order_by,
+         f.id;
 
 -- lexeme meanings - OK
 create view view_ww_meaning 
@@ -765,27 +735,33 @@ select l.id lexeme_id,
        usg.usages,
        odlr.od_lexeme_recommendations
 from lexeme l
-  inner join dataset ds on ds.code = l.dataset_code
-  left outer join value_state l_vs on l_vs.code = l.value_state_code
+  inner join dataset ds
+          on ds.code = l.dataset_code
+  left outer join value_state l_vs
+               on l_vs.code = l.value_state_code
   left outer join (select l_reg.lexeme_id,
                           array_agg(l_reg.register_code order by l_reg.order_by) register_codes
                    from lexeme_register l_reg
-                   group by l_reg.lexeme_id) l_reg on l_reg.lexeme_id = l.id
+                   group by l_reg.lexeme_id) l_reg
+               on l_reg.lexeme_id = l.id
   left outer join (select l_pos.lexeme_id,
                           array_agg(l_pos.pos_code order by l_pos.order_by) pos_codes
                    from lexeme_pos l_pos
-                   group by l_pos.lexeme_id) l_pos on l_pos.lexeme_id = l.id
+                   group by l_pos.lexeme_id) l_pos
+               on l_pos.lexeme_id = l.id
   left outer join (select l_der.lexeme_id,
                           array_agg(l_der.deriv_code) deriv_codes
                    from lexeme_deriv l_der
-                   group by l_der.lexeme_id) l_der on l_der.lexeme_id = l.id
+                   group by l_der.lexeme_id) l_der
+               on l_der.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           array_agg(ff.value_text order by ff.order_by) advice_notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'ADVICE_NOTE'
-                   group by lf.lexeme_id) anote on anote.lexeme_id = l.id
+                   group by lf.lexeme_id) anote
+               on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) notes
                    from lexeme_freeform lf,
@@ -793,55 +769,58 @@ from lexeme l
                    where lf.freeform_id = ff.id
                    and   ff.type = 'NOTE'
                    and   ff.is_public = true
-                   group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
+                   group by lf.lexeme_id) pnote
+               on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GRAMMAR'
-                   group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
+                   group by lf.lexeme_id) gramm
+               on gramm.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           array_agg(row (ff.id, ff.type, ' ' || ff.value_text, ff.lang, ff.complexity)::type_freeform order by ff.order_by) governments
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GOVERNMENT'
-                   group by lf.lexeme_id) gov on gov.lexeme_id = l.id
+                   group by lf.lexeme_id) gov
+               on gov.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
                           array_agg(ff.value_prese order by ff.order_by) od_lexeme_recommendations
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'OD_LEXEME_RECOMMENDATION'
-                   group by lf.lexeme_id) odlr on odlr.lexeme_id = l.id
+                   group by lf.lexeme_id) odlr
+               on odlr.lexeme_id = l.id
   left outer join (select mw.lexeme_id,
                           array_agg(row (
-                          	mw.lexeme_id,
-                          	mw.meaning_id,
-                          	mw.mw_lex_id,
-                          	mw.mw_lex_complexity,
-                            mw.mw_lex_type,
-                            mw.mw_lex_weight,
-                          	mw.mw_lex_governments,
-                          	mw.mw_lex_register_codes,
-                          	mw.mw_lex_value_state_code,
-                          	mw.mw_word_id,
-                          	' ' || mw.mw_word,
-                          	' ' || mw.mw_word_prese,
-                          	mw.mw_homonym_nr,
-                          	mw.mw_lang,
-                          	mw.mw_word_type_codes,
-                          	mw.mw_aspect_code
-                          )::type_meaning_word
-                          order by
-                          mw.hw_lex_level1,
-                          mw.hw_lex_level2,
-                          mw.hw_lex_order_by,
-                          mw.mw_lex_order_by
-                          ) meaning_words
-                   from (select distinct
-                                l1.word_id,
+                                mw.lexeme_id,
+                                mw.meaning_id,
+                                mw.mw_lex_id,
+                                mw.mw_lex_complexity,
+                                mw.mw_lex_type,
+                                mw.mw_lex_weight,
+                                mw.mw_lex_governments,
+                                mw.mw_lex_register_codes,
+                                mw.mw_lex_value_state_code,
+                                mw.mw_word_id,
+                                ' ' || mw.mw_word,
+                                ' ' || mw.mw_word_prese,
+                                mw.mw_homonym_nr,
+                                mw.mw_lang,
+                                mw.mw_word_type_codes,
+                                mw.mw_aspect_code
+                                )::type_meaning_word
+                                order by
+                                mw.hw_lex_level1,
+                                mw.hw_lex_level2,
+                                mw.hw_lex_order_by,
+                                mw.mw_lex_order_by
+                                ) meaning_words
+                   from (select distinct l1.word_id,
                                 l1.id lexeme_id,
                                 l1.meaning_id,
                                 l1.level1 hw_lex_level1,
@@ -853,22 +832,22 @@ from lexeme l
                                 l2.weight mw_lex_weight,
                                 --NB! space sym replaced by temp placeholder because nested complex type array masking failure by postgres
                                 (select array_agg(row (ff.id, ff.type, replace(ff.value_text, ' ', '`'), ff.lang, ff.complexity)::type_freeform order by ff.order_by)
-			                     from lexeme_freeform lf,
-			                          freeform ff
-			                     where lf.lexeme_id = l2.id
-			                     and   lf.freeform_id = ff.id
-			                     and   ff.type = 'GOVERNMENT'
-			                     group by lf.lexeme_id) mw_lex_governments,
+                                 from lexeme_freeform lf,
+                                      freeform ff
+                                 where lf.lexeme_id = l2.id
+                                 and   lf.freeform_id = ff.id
+                                 and   ff.type = 'GOVERNMENT'
+                                 group by lf.lexeme_id) mw_lex_governments,
                                 (select array_agg(l_reg.register_code order by l_reg.order_by)
-                   				 from lexeme_register l_reg
-                   				 where l_reg.lexeme_id = l2.id
-                   				 group by l_reg.lexeme_id) mw_lex_register_codes,
-                   				 l2.value_state_code mw_lex_value_state_code,
-                                 w2.id mw_word_id,
-                                 f2.value mw_word,
-                                 f2.value_prese mw_word_prese,
-                                 w2.homonym_nr mw_homonym_nr,
-                                 w2.lang mw_lang,
+                                 from lexeme_register l_reg
+                                 where l_reg.lexeme_id = l2.id
+                                 group by l_reg.lexeme_id) mw_lex_register_codes,
+                                l2.value_state_code mw_lex_value_state_code,
+                                w2.id mw_word_id,
+                                w2.value mw_word,
+                                w2.value_prese mw_word_prese,
+                                w2.homonym_nr mw_homonym_nr,
+                                w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
                                  from word_word_type wt
                                  where wt.word_id = w2.id
@@ -876,33 +855,37 @@ from lexeme l
                                 w2.aspect_code mw_aspect_code,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
-                           inner join dataset l1ds on l1ds.code = l1.dataset_code
-                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id --and l2.word_id != l1.word_id
-                           inner join dataset l2ds on l2ds.code = l2.dataset_code
-                           inner join word w2 on w2.id = l2.word_id
-                           inner join paradigm p2 on p2.word_id = w2.id
-                           inner join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
-                         where 
-                         l1.type = 'PRIMARY'
-                         and l1.is_public = true
-                         and l1ds.is_public = true
-                         and l2.is_public = true
-                         and l2ds.is_public = true) mw
-                   group by mw.lexeme_id) mw on mw.lexeme_id = l.id
+                           inner join dataset l1ds
+                                   on l1ds.code = l1.dataset_code
+                           inner join lexeme l2
+                                   on l2.meaning_id = l1.meaning_id
+                           inner join dataset l2ds
+                                   on l2ds.code = l2.dataset_code
+                           inner join word w2
+                                   on w2.id = l2.word_id
+                         where l1.type = 'PRIMARY'
+                         and   l1.is_public = true
+                         and   l1ds.is_public = true
+                         and   l2.is_public = true
+                         and   l2ds.is_public = true) mw
+                   group by mw.lexeme_id) mw
+               on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
                           array_agg(row (
-                            u.usage_id,
-                          	' ' || u.usage,
-                          	' ' || u.usage_prese,
-                          	u.usage_lang,
-                          	u.complexity,
-                          	u.usage_type_code,
-                          	u.usage_translations,
-                          	u.usage_definitions,
-                          	u.od_usage_definitions,
-                          	u.od_usage_alternatives
-                          )::type_usage
-                          order by u.order_by) usages
+                                u.usage_id,
+                                ' ' || u.usage,
+                                ' ' || u.usage_prese,
+                                u.usage_lang,
+                                u.complexity,
+                                u.usage_type_code,
+                                u.usage_translations,
+                                u.usage_definitions,
+                                u.od_usage_definitions,
+                                u.od_usage_alternatives
+                                )::type_usage 
+                                order by 
+                                u.order_by
+                                ) usages
                    from (select lf.lexeme_id,
                                 u.id usage_id,
                                 u.value_text usage,
@@ -916,171 +899,189 @@ from lexeme l
                                 odud.od_usage_definitions,
                                 odua.od_usage_alternatives
                          from lexeme_freeform lf
-                           inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE' and u.is_public = true
-                           left outer join freeform utp on utp.parent_id = u.id and utp.type = 'USAGE_TYPE'
+                           inner join freeform u
+                                   on lf.freeform_id = u.id
+                                  and u.type = 'USAGE'
+                                  and u.is_public = true
+                           left outer join freeform utp
+                                        on utp.parent_id = u.id
+                                       and utp.type = 'USAGE_TYPE'
                            left outer join (select ut.parent_id usage_id,
                                                    array_agg(ut.value_prese order by ut.order_by) usage_translations
                                             from freeform ut
                                             where ut.type = 'USAGE_TRANSLATION'
                                             -- TODO this hack is based on ralistic data and fulfils necessary prerequisite for data filtering at ww
-                                            and   ut.lang = 'rus' 
-                                            group by ut.parent_id) ut on ut.usage_id = u.id
+                                            and   ut.lang = 'rus'
+                                            group by ut.parent_id) ut
+                                        on ut.usage_id = u.id
                            left outer join (select ud.parent_id usage_id,
                                                    array_agg(ud.value_prese order by ud.order_by) usage_definitions
                                             from freeform ud
                                             where ud.type = 'USAGE_DEFINITION'
-                                            group by ud.parent_id) ud on ud.usage_id = u.id
-						   left outer join (select odud.parent_id usage_id,
-                                       array_agg(odud.value_prese order by odud.order_by) od_usage_definitions
-                                from freeform odud
-                                where odud.type = 'OD_USAGE_DEFINITION'
-                                group by odud.parent_id) odud on odud.usage_id = u.id
-						   left outer join (select odua.parent_id usage_id,
-                                       array_agg(odua.value_prese order by odua.order_by) od_usage_alternatives
-                                from freeform odua
-                                where odua.type = 'OD_USAGE_ALTERNATIVE'
-                                group by odua.parent_id) odua on odua.usage_id = u.id) u
-                   group by u.lexeme_id) usg on usg.lexeme_id = l.id
+                                            group by ud.parent_id) ud
+                                        on ud.usage_id = u.id
+                           left outer join (select odud.parent_id usage_id,
+                                                   array_agg(odud.value_prese order by odud.order_by) od_usage_definitions
+                                            from freeform odud
+                                            where odud.type = 'OD_USAGE_DEFINITION'
+                                            group by odud.parent_id) odud
+                                        on odud.usage_id = u.id
+                           left outer join (select odua.parent_id usage_id,
+                                                   array_agg(odua.value_prese order by odua.order_by) od_usage_alternatives
+                                            from freeform odua
+                                            where odua.type = 'OD_USAGE_ALTERNATIVE'
+                                            group by odua.parent_id) odua
+                                        on odua.usage_id = u.id) u
+                   group by u.lexeme_id) usg
+               on usg.lexeme_id = l.id
   left outer join (select lc.id,
-                         array_agg(distinct row(
-                                   case
-                                     when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
-                                     else 'other'
-                                   end,
-                                   lc.dataset_code,
-                                   lc.lex_complexity,
-                                   trim(trailing '12' from lc.data_complexity))::type_lang_complexity
-                                   ) lang_complexities
-                  from ((select l1.id,
-                                w2.lang,
-                                l1.dataset_code,
-                                l1.complexity lex_complexity,
-                                l2.complexity data_complexity
-                         from lexeme l1
-                           inner join dataset l1ds on l1ds.code = l1.dataset_code
-                           inner join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.dataset_code = l1.dataset_code and l2.word_id != l1.word_id
-                           inner join dataset l2ds on l2ds.code = l2.dataset_code
-                           inner join word w2 on w2.id = l2.word_id
-                         where l1.type = 'PRIMARY'
-                         and   l1.is_public = true
-                         and   l1ds.is_public = true
-                         and   l2.type = 'PRIMARY'
-                         and   l2.is_public = true
-                         and   l2ds.is_public = true)
-                         union all
-                         (select l.id,
-                                 coalesce(ff.lang, w.lang) lang,
-                                 l.dataset_code,
-                                 l.complexity lex_complexity,
-                                 ff.complexity data_complexity
-                         from word w,
-                              lexeme l,
-                              lexeme_freeform lff,
-                              freeform ff,
-                              dataset ds
-                         where l.type = 'PRIMARY'
-                         and   l.is_public = true
-                         and   ds.code = l.dataset_code
-                         and   ds.is_public = true
-                         and   l.word_id = w.id
-                         and   lff.lexeme_id = l.id
-                         and   lff.freeform_id = ff.id
-                         and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
-                         union all
-                         (select l.id,
-                                 ut.lang,
-                                 l.dataset_code,
-                                 l.complexity lex_complexity,
-                                 u.complexity data_complexity
-                         from lexeme l,
-                              lexeme_freeform lff,
-                              freeform u,
-                              freeform ut,
-                              dataset ds
-                         where l.type = 'PRIMARY'
-                         and   l.is_public = true
-                         and   ds.code = l.dataset_code
-                         and   ds.is_public = true
-                         and   lff.lexeme_id = l.id
-                         and   lff.freeform_id = u.id
-                         and   u.type = 'USAGE'
-                         and   u.is_public = true
-                         and   ut.parent_id = u.id
-                         and   ut.type = 'USAGE_TRANSLATION')
-                         union all
-                         (select l.id,
-                                 d.lang,
-                                 l.dataset_code,
-                                 l.complexity lex_complexity,
-                                 d.complexity data_complexity
-                         from lexeme l,
-                              definition d,
-                              dataset ds
-                         where l.type = 'PRIMARY'
-                         and   l.is_public = true
-                         and   l.meaning_id = d.meaning_id
-                         and   d.is_public = true
-                         and   ds.code = l.dataset_code
-                         and   ds.is_public = true)
-                         union all
-                         (select l1.id,
+                          array_agg(distinct row (
+                                 case 
+                                   when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                                   else 'other'
+                                 end,
+                                 lc.dataset_code,
+                                 lc.lex_complexity,
+                                 trim(trailing '12' from lc.data_complexity)
+                                 )::type_lang_complexity
+                                 ) lang_complexities
+                   from ((select l1.id,
                                  w2.lang,
                                  l1.dataset_code,
                                  l1.complexity lex_complexity,
                                  l2.complexity data_complexity
-                         from lex_relation r,
-                              lexeme l1,
-                              lexeme l2,
-                              word w2,
-                              dataset l1ds,
-                              dataset l2ds
-                         where l1.type = 'PRIMARY'
-                         and   l1.is_public = true
-                         and   l1ds.code = l1.dataset_code
-                         and   l1ds.is_public = true
-                         and   r.lexeme1_id = l1.id
-                         and   r.lexeme2_id = l2.id
-                         and   l2.dataset_code = l1.dataset_code
-                         and   l2.type = 'PRIMARY'
-                         and   l2.is_public = true
-                         and   l2ds.code = l2.dataset_code
-                         and   l2ds.is_public = true
-                         and   w2.id = l2.word_id)
-                         union all
-                         (select l1.id,
+                          from lexeme l1
+                            inner join dataset l1ds
+                                    on l1ds.code = l1.dataset_code
+                            inner join lexeme l2
+                                    on l2.meaning_id = l1.meaning_id
+                                   and l2.dataset_code = l1.dataset_code
+                                   and l2.word_id != l1.word_id
+                            inner join dataset l2ds
+                                    on l2ds.code = l2.dataset_code
+                            inner join word w2
+                                    on w2.id = l2.word_id
+                          where l1.type = 'PRIMARY'
+                          and   l1.is_public = true
+                          and   l1ds.is_public = true
+                          and   l2.type = 'PRIMARY'
+                          and   l2.is_public = true
+                          and   l2ds.is_public = true)
+                          union all
+                          (select l.id,
+                                 coalesce(ff.lang, w.lang) lang,
+                                 l.dataset_code,
+                                 l.complexity lex_complexity,
+                                 ff.complexity data_complexity
+                          from word w,
+                               lexeme l,
+                               lexeme_freeform lff,
+                               freeform ff,
+                               dataset ds
+                          where l.type = 'PRIMARY'
+                          and   l.is_public = true
+                          and   ds.code = l.dataset_code
+                          and   ds.is_public = true
+                          and   l.word_id = w.id
+                          and   lff.lexeme_id = l.id
+                          and   lff.freeform_id = ff.id
+                          and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE'))
+                          union all
+                          (select l.id,
+                                 ut.lang,
+                                 l.dataset_code,
+                                 l.complexity lex_complexity,
+                                 u.complexity data_complexity
+                          from lexeme l,
+                               lexeme_freeform lff,
+                               freeform u,
+                               freeform ut,
+                               dataset ds
+                          where l.type = 'PRIMARY'
+                          and   l.is_public = true
+                          and   ds.code = l.dataset_code
+                          and   ds.is_public = true
+                          and   lff.lexeme_id = l.id
+                          and   lff.freeform_id = u.id
+                          and   u.type = 'USAGE'
+                          and   u.is_public = true
+                          and   ut.parent_id = u.id
+                          and   ut.type = 'USAGE_TRANSLATION')
+                          union all
+                          (select l.id,
+                                 d.lang,
+                                 l.dataset_code,
+                                 l.complexity lex_complexity,
+                                 d.complexity data_complexity
+                          from lexeme l,
+                               definition d,
+                               dataset ds
+                          where l.type = 'PRIMARY'
+                          and   l.is_public = true
+                          and   l.meaning_id = d.meaning_id
+                          and   d.is_public = true
+                          and   ds.code = l.dataset_code
+                          and   ds.is_public = true)
+                          union all
+                          (select l1.id,
+                                 w2.lang,
+                                 l1.dataset_code,
+                                 l1.complexity lex_complexity,
+                                 l2.complexity data_complexity
+                          from lex_relation r,
+                               lexeme l1,
+                               lexeme l2,
+                               word w2,
+                               dataset l1ds,
+                               dataset l2ds
+                          where l1.type = 'PRIMARY'
+                          and   l1.is_public = true
+                          and   l1ds.code = l1.dataset_code
+                          and   l1ds.is_public = true
+                          and   r.lexeme1_id = l1.id
+                          and   r.lexeme2_id = l2.id
+                          and   l2.dataset_code = l1.dataset_code
+                          and   l2.type = 'PRIMARY'
+                          and   l2.is_public = true
+                          and   l2ds.code = l2.dataset_code
+                          and   l2ds.is_public = true
+                          and   w2.id = l2.word_id)
+                          union all
+                          (select l1.id,
                                  w1.lang,
                                  l1.dataset_code,
                                  l1.complexity lex_complexity,
                                  l1.complexity data_complexity
-                         from lexeme l1,
-                              word w1,
-                              dataset l1ds
-                         where l1.type = 'PRIMARY'
-                         and   l1.is_public = true
-                         and   l1ds.code = l1.dataset_code
-                         and   l1ds.is_public = true
-                         and   w1.id = l1.word_id
-                         and   not exists (select l2.id
-                                           from lexeme l2,
-                                                dataset l2ds
-                                           where l2.meaning_id = l1.meaning_id
-                                           and   l2.dataset_code = l1.dataset_code
-                                           and   l2.id != l1.id
-                                           and   l2.type = 'PRIMARY'
-                                           and   l2.is_public = true
-                                           and   l2ds.code = l2.dataset_code
-                                           and   l2ds.is_public = true)
-                         and   not exists (select d.id
-                                           from definition d
-                                           where d.meaning_id = l1.meaning_id
-                                           and   d.is_public = true)
-                         and   not exists (select ff.id
-                                           from lexeme_freeform lff,
-                                                freeform ff
-                                           where lff.lexeme_id = l1.id
-                                           and   lff.freeform_id = ff.id
-                                           and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
-            group by lc.id) l_lc on l_lc.id = l.id
+                          from lexeme l1,
+                               word w1,
+                               dataset l1ds
+                          where l1.type = 'PRIMARY'
+                          and   l1.is_public = true
+                          and   l1ds.code = l1.dataset_code
+                          and   l1ds.is_public = true
+                          and   w1.id = l1.word_id
+                          and   not exists (select l2.id
+                                            from lexeme l2,
+                                                 dataset l2ds
+                                            where l2.meaning_id = l1.meaning_id
+                                            and   l2.dataset_code = l1.dataset_code
+                                            and   l2.id != l1.id
+                                            and   l2.type = 'PRIMARY'
+                                            and   l2.is_public = true
+                                            and   l2ds.code = l2.dataset_code
+                                            and   l2ds.is_public = true)
+                          and   not exists (select d.id
+                                            from definition d
+                                            where d.meaning_id = l1.meaning_id
+                                            and   d.is_public = true)
+                          and   not exists (select ff.id
+                                            from lexeme_freeform lff,
+                                                 freeform ff
+                                            where lff.lexeme_id = l1.id
+                                            and   lff.freeform_id = ff.id
+                                            and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
+                   group by lc.id) l_lc
+               on l_lc.id = l.id
 where l.type = 'PRIMARY'
 and   l.is_public = true
 and   ds.is_public = true
@@ -1103,48 +1104,57 @@ select l1.id as lexeme_id,
        c.definition as colloc_definition,
        c.usages as colloc_usages,
        array_agg(row (
-                 lw2.lexeme_id,
-                 lw2.word_id,
-                 ' ' || lw2.word,
-                 ' ' || lc2.member_form,
-                 lw2.homonym_nr,
-                 lw2.word_exists,
-                 lc2.conjunct,
-                 lc2.weight)
-                 ::type_colloc_member
-                 order by
-                 lc2.member_order
-                 ) as colloc_members,
+             lw2.lexeme_id,
+             lw2.word_id,
+             ' ' || lw2.word,
+             ' ' || lc2.member_form,
+             lw2.homonym_nr,
+             lc2.conjunct,
+             lc2.weight
+             )::type_colloc_member
+             order by
+             lc2.member_order
+       ) as colloc_members,
        c.complexity
 from collocation as c
-  inner join lex_colloc as lc1 on lc1.collocation_id = c.id
-  inner join lex_colloc as lc2 on lc2.collocation_id = c.id
-  inner join lexeme as l1 on l1.id = lc1.lexeme_id
-  inner join dataset l1ds on l1ds.code = l1.dataset_code
+  inner join lex_colloc as lc1
+          on lc1.collocation_id = c.id
+  inner join lex_colloc as lc2
+          on lc2.collocation_id = c.id
+  inner join lexeme as l1
+          on l1.id = lc1.lexeme_id
+         and l1.type = 'PRIMARY'
+         and l1.is_public = true
+  inner join dataset l1ds
+          on l1ds.code = l1.dataset_code
+         and l1ds.is_public = true
   inner join (select distinct l2.id lexeme_id,
                      l2.word_id,
-                     f2.value word,
-                     w2.homonym_nr,
-                     (f2.mode = 'WORD') word_exists
+                     w2.value word,
+                     w2.homonym_nr
               from lexeme as l2,
                    word as w2,
-                   paradigm as p2,
-                   form as f2,
                    dataset as l2ds
               where l2.type = 'PRIMARY'
               and   l2.is_public = true
               and   l2ds.code = l2.dataset_code
               and   l2ds.is_public = true
-              and   l2.word_id = w2.id
-              and   p2.word_id = w2.id
-              and   f2.paradigm_id = p2.id
-              and   f2.mode in ('WORD', 'UNKNOWN')) lw2 on lw2.lexeme_id = lc2.lexeme_id
-  inner join lex_colloc_rel_group as rgr1 on lc1.rel_group_id = rgr1.id
-  inner join lex_colloc_pos_group as pgr1 on pgr1.id = rgr1.pos_group_id
-where 
-l1.type = 'PRIMARY'
-and l1.is_public = true
-and l1ds.is_public = true
+              and   l2.word_id = w2.id) lw2
+          on lw2.lexeme_id = lc2.lexeme_id
+  inner join lex_colloc_rel_group as rgr1
+          on lc1.rel_group_id = rgr1.id
+  inner join lex_colloc_pos_group as pgr1
+          on pgr1.id = rgr1.pos_group_id
+where not exists (select lc.id
+                  from lex_colloc lc,
+                       lexeme l,
+                       paradigm p,
+                       form f
+                  where lc.collocation_id = c.id
+                  and   lc.lexeme_id = l.id
+                  and   p.word_id = l.word_id
+                  and   f.paradigm_id = p.id
+                  and   f.mode = 'UNKNOWN')
 group by l1.id,
          c.id,
          pgr1.id,
@@ -1217,16 +1227,11 @@ from
     select
       w.id,
       w.lang,
-      (array_agg(distinct f.value)) [1] word
+      w.value word
     from
-      word w,
-      paradigm p,
-      form f
+      word w
     where
-      p.word_id = w.id
-      and f.paradigm_id = p.id
-      and f.mode = 'WORD'
-      and exists (
+      exists (
         select
           l.id
         from
@@ -1261,14 +1266,12 @@ from
   left outer join (
     select
       l1.word_id,
-      array_agg(distinct f2.value) meaning_words
+      array_agg(w2.value) meaning_words
     from
       lexeme l1,
       meaning m,
       lexeme l2,
-      word w2,
-      paradigm p2,
-      form f2
+      word w2
     where
       l1.meaning_id = m.id
       and l2.meaning_id = m.id
@@ -1279,10 +1282,7 @@ from
       and l2.type = 'PRIMARY'
       and l2.is_public = true
       and l2.word_id = w2.id
-      and p2.word_id = w2.id
       and w2.lang = 'est'
-      and f2.paradigm_id = p2.id
-      and f2.mode = 'WORD'
     group by
       l1.word_id
   ) mw2 on mw2.word_id = rec.word_etym_word_id
@@ -1333,14 +1333,9 @@ from word w
                                         w2.word_prese related_word_prese,
                                         w2.homonym_nr related_word_homonym_nr,
                                         (select max(wh.homonym_nr) > 1
-                                         from word wh,
-                                              paradigm ph,
-                                              form fh
+                                         from word wh
                                          where wh.lang = w2.lang
-                                         and ph.word_id = wh.id
-                                         and fh.paradigm_id = ph.id
-                                         and fh.mode = 'WORD'
-                                         and fh.value = w2.word
+                                         and wh.value = w2.word
                                          and exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
@@ -1363,15 +1358,13 @@ from word w
                                          group by lc.word_id) as lex_complexities
                                  from word_relation r,
                                       (select w.id,
-                                              (array_agg(distinct f.value)) [1] as word,
-                                              (array_agg(distinct f.value_prese)) [1] as word_prese,
+                                              w.value as word,
+                                              w.value_prese as word_prese,
                                               w.homonym_nr,
                                               w.lang,
                                               w.aspect_code,
                                               array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                        from word as w
-                                         join paradigm as p on p.word_id = w.id
-                                         join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
                                          left outer join word_word_type as wt on wt.word_id = w.id
                                        where exists (select l.id
                                                      from lexeme as l,
@@ -1408,14 +1401,9 @@ from word w
                                 w2.word_prese group_member_word_prese,
                                 w2.homonym_nr group_member_homonym_nr,
                                 (select max(wh.homonym_nr) > 1
-                                         from word wh,
-                                              paradigm ph,
-                                              form fh
+                                         from word wh
                                          where wh.lang = w2.lang
-                                         and ph.word_id = wh.id
-                                         and fh.paradigm_id = ph.id
-                                         and fh.mode = 'WORD'
-                                         and fh.value = w2.word
+                                         and wh.value = w2.word
                                          and exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
@@ -1439,15 +1427,13 @@ from word w
                                 wgm2.order_by group_member_order_by
                          from word w1,
                               (select w.id,
-                                      (array_agg(distinct f.value)) [1] as word,
-                                      (array_agg(distinct f.value_prese)) [1] as word_prese,
+                                      w.value as word,
+                                      w.value_prese as word_prese,
                                       w.homonym_nr,
                                       w.lang,
                                       w.aspect_code,
                                       array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                                from word as w
-                                 join paradigm as p on p.word_id = w.id
-                                 join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
                                  left outer join word_word_type as wt on wt.word_id = w.id
                                where exists (select l.id
                                              from lexeme as l,
@@ -1464,8 +1450,7 @@ from word w
                          where wgm1.word_group_id = wg.id
                          and   wgm2.word_group_id = wg.id
                          and   wgm1.word_id = w1.id
-                         and   wgm2.word_id = w2.id
-                         and   w1.id != w2.id) wg
+                         and   wgm2.word_id = w2.id) wg
                    group by wg.word_id) wg on wg.word_id = w.id
 where (wr.related_words is not null or wg.word_group_members is not null)
 and   exists (select l.id
@@ -1504,14 +1489,12 @@ from lex_relation r
               and   lds.code = l.dataset_code
               and   lds.is_public = true) l2 on l2.lexeme_id = r.lexeme2_id
   inner join (select w.id word_id,
-                     (array_agg(distinct f.value))[1] as word,
-                     (array_agg(distinct f.value_prese))[1] as word_prese,
+                     w.value as word,
+                     w.value_prese as word_prese,
                      w.homonym_nr,
                      w.lang,
                      array_agg(wt.word_type_code order by wt.order_by) word_type_codes
               from word as w
-                join paradigm as p on p.word_id = w.id
-                join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
                 left outer join word_word_type as wt on wt.word_id = w.id
               group by w.id) as w2 on w2.word_id = l2.word_id
 where exists (select l1.id
@@ -1543,12 +1526,16 @@ select r.m1_id meaning_id,
          r.lex_register_codes,
          r.lex_government_values,
          r.meaning_rel_type_code
-       )::type_meaning_relation order by r.order_by, r.lex_order_by) related_meanings
+       )::type_meaning_relation 
+       order by 
+       r.order_by,
+       r.lex_order_by
+       ) related_meanings
 from (select mr.meaning1_id m1_id,
              mr.meaning2_id m2_id,
              w.id word_id,
-             (array_agg(distinct f.value))[1] word,
-             (array_agg(distinct f.value_prese))[1] word_prese,
+             w.value word,
+             w.value_prese word_prese,
              w.homonym_nr,
              w.lang word_lang,
              w.aspect_code aspect_code,
@@ -1602,8 +1589,6 @@ from (select mr.meaning1_id m1_id,
            join meaning m on m.id = mr.meaning2_id
            join lexeme l on l.meaning_id = m.id and l.type = 'PRIMARY' and l.is_public = true
            join word w on w.id = l.word_id
-           join paradigm p on p.word_id = w.id
-           join form f on f.paradigm_id = p.id and f.mode = 'WORD'
            join dataset l_ds on l_ds.code = l.dataset_code and l_ds.is_public = true
       where exists(select lex.id
                    from lexeme lex,
@@ -1861,15 +1846,11 @@ select w.word,
 from ((select w.word,
               w.lang,
               true is_word
-       from (select distinct f.value word,
+       from (select distinct
+                    w.value word,
                     w.lang
-             from word w,
-                  paradigm p,
-                  form f
-             where p.word_id = w.id
-             and   f.paradigm_id = p.id
-             and   f.mode = 'WORD'
-             and   exists (select l.id
+             from word w
+             where exists (select l.id
                            from lexeme as l,
                                 dataset as ds
                            where l.word_id = w.id
@@ -1879,13 +1860,13 @@ from ((select w.word,
                            and   l.is_public = true
                            and   ds.code = l.dataset_code
                            and   ds.is_public = true)
-             and   f.value not like '% %'
-             and   length(f.value) > 2) w
+             and   w.value not like '% %'
+             and   length(w.value) > 2) w
        order by random()) 
        union all
        (select nw.word,
-              nw.lang,
-              false is_word
+               nw.lang,
+               false is_word
        from game_nonword nw
        order by random())) w
 order by random();
@@ -1905,17 +1886,12 @@ from
        w.lang,
        'qq2' dataset_code
 from (select distinct l.meaning_id,
-             f.value word,
+             w.value word,
              w.lang
       from word w,
-           paradigm p,
-           form f,
            lexeme l
-      where p.word_id = w.id
-      and   f.paradigm_id = p.id
-      and   f.mode = 'WORD'
-      and   f.value not like '% %'
-      and   length(f.value) > 2
+      where w.value not like '% %'
+      and   length(w.value) > 2
       and   l.word_id = w.id
       and   l.dataset_code = 'qq2') w
 order by random())
@@ -1926,30 +1902,20 @@ union all
        w.lang,
        'ev2' dataset_code
 from (select distinct l.meaning_id,
-             f.value word,
+             w.value word,
              w.lang
       from word w,
-           paradigm p,
-           form f,
            lexeme l
-      where p.word_id = w.id
-      and   f.paradigm_id = p.id
-      and   f.mode = 'WORD'
-      and   f.value not like '% %'
-      and   length(f.value) > 2
+      where w.value not like '% %'
+      and   length(w.value) > 2
       and   l.word_id = w.id
       and   l.dataset_code = 'ev2') w
 where not exists (select w2.id
                   from word w2,
-                       paradigm p2,
-                       form f2,
                        lexeme l2
-                  where p2.word_id = w2.id
-                  and   f2.paradigm_id = p2.id
-                  and   f2.mode = 'WORD'
-                  and   l2.word_id = w2.id
+                  where l2.word_id = w2.id
                   and   l2.dataset_code = 'qq2'
-                  and   w.word = f2.value)
+                  and   w.word = w2.value)
 order by random())
 union all
 (select 
@@ -1958,17 +1924,12 @@ union all
        w.lang,
        'psv' dataset_code
 from (select distinct l.meaning_id,
-             f.value word,
+             w.value word,
              w.lang
       from word w,
-           paradigm p,
-           form f,
            lexeme l
-      where p.word_id = w.id
-      and   f.paradigm_id = p.id
-      and   f.mode = 'WORD'
-      and   f.value not like '% %'
-      and   length(f.value) > 2
+      where w.value not like '% %'
+      and   length(w.value) > 2
       and   l.word_id = w.id
       and   l.dataset_code = 'psv') w
 order by random())) w;

@@ -1,19 +1,28 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.ASPECT;
 import static eki.ekilex.data.db.Tables.ASPECT_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.DEFINITION_TYPE;
 import static eki.ekilex.data.db.Tables.DEFINITION_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.DERIV;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
+import static eki.ekilex.data.db.Tables.DISPLAY_MORPH;
+import static eki.ekilex.data.db.Tables.DISPLAY_MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
+import static eki.ekilex.data.db.Tables.ETYMOLOGY_TYPE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREQUENCY_GROUP;
+import static eki.ekilex.data.db.Tables.GENDER;
 import static eki.ekilex.data.db.Tables.GENDER_LABEL;
+import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE;
+import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -22,26 +31,38 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.LEX_REL_TYPE;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.MORPH;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
+import static eki.ekilex.data.db.Tables.POS;
+import static eki.ekilex.data.db.Tables.POS_GROUP;
+import static eki.ekilex.data.db.Tables.POS_GROUP_LABEL;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
+import static eki.ekilex.data.db.Tables.REGISTER;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.SEMANTIC_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.TAG;
+import static eki.ekilex.data.db.Tables.USAGE_TYPE;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.VALUE_STATE;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_REL_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.WORD_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -132,6 +153,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREQUENCY_GROUP.CODE,
 						FREQUENCY_GROUP.CODE.as("value"))
 				.from(FREQUENCY_GROUP)
+				.orderBy(FREQUENCY_GROUP.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -142,8 +164,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						DSL.field(DSL.value(ClassifierName.POS.name())).as("name"),
 						POS_LABEL.CODE,
 						POS_LABEL.VALUE)
-				.from(POS_LABEL)
-				.where(POS_LABEL.LANG.eq(classifierLabelLang).and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(POS_LABEL, POS)
+				.where(POS_LABEL.LANG.eq(classifierLabelLang).and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)).and(POS_LABEL.CODE.eq(POS.CODE)))
+				.orderBy(POS.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -154,8 +177,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.REGISTER),
 						REGISTER_LABEL.CODE,
 						REGISTER_LABEL.VALUE)
-				.from(REGISTER_LABEL)
-				.where(REGISTER_LABEL.LANG.eq(classifierLabelLang).and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(REGISTER_LABEL, REGISTER)
+				.where(REGISTER_LABEL.LANG.eq(classifierLabelLang).and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)).and(REGISTER_LABEL.CODE.eq(REGISTER.CODE)))
+				.orderBy(REGISTER.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -167,6 +191,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						REGION.CODE,
 						REGION.CODE.as("value"))
 				.from(REGION)
+				.orderBy(REGION.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -177,8 +202,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.DERIV),
 						DERIV_LABEL.CODE,
 						DERIV_LABEL.VALUE)
-				.from(DERIV_LABEL)
-				.where(DERIV_LABEL.LANG.eq(classifierLabelLang).and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(DERIV_LABEL, DERIV)
+				.where(DERIV_LABEL.LANG.eq(classifierLabelLang).and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)).and(DERIV_LABEL.CODE.eq(DERIV.CODE)))
+				.orderBy(DERIV.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -189,8 +215,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.GENDER),
 						GENDER_LABEL.CODE,
 						GENDER_LABEL.VALUE)
-				.from(GENDER_LABEL)
-				.where(GENDER_LABEL.LANG.eq(classifierLabelLang).and(GENDER_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(GENDER_LABEL, GENDER)
+				.where(GENDER_LABEL.LANG.eq(classifierLabelLang).and(GENDER_LABEL.TYPE.eq(classifierLabelTypeCode)).and(GENDER_LABEL.CODE.eq(GENDER.CODE)))
+				.orderBy(GENDER.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -201,8 +228,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.ASPECT),
 						ASPECT_LABEL.CODE,
 						ASPECT_LABEL.VALUE)
-				.from(ASPECT_LABEL)
-				.where(ASPECT_LABEL.LANG.eq(classifierLabelLang).and(ASPECT_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(ASPECT_LABEL, ASPECT)
+				.where(ASPECT_LABEL.LANG.eq(classifierLabelLang).and(ASPECT_LABEL.TYPE.eq(classifierLabelTypeCode)).and(ASPECT_LABEL.CODE.eq(ASPECT.CODE)))
+				.orderBy(ASPECT.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -231,8 +259,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.WORD_TYPE),
 						WORD_TYPE_LABEL.CODE,
 						WORD_TYPE_LABEL.VALUE)
-				.from(WORD_TYPE_LABEL)
-				.where(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(WORD_TYPE_LABEL, WORD_TYPE)
+				.where(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)).and(WORD_TYPE_LABEL.CODE.eq(WORD_TYPE.CODE)))
+				.orderBy(WORD_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -243,8 +272,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.WORD_REL_TYPE),
 						WORD_REL_TYPE_LABEL.CODE,
 						WORD_REL_TYPE_LABEL.VALUE)
-				.from(WORD_REL_TYPE_LABEL)
-				.where(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(WORD_REL_TYPE_LABEL, WORD_REL_TYPE)
+				.where(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)).and(WORD_REL_TYPE_LABEL.CODE.eq(WORD_REL_TYPE.CODE)))
+				.orderBy(WORD_REL_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -255,8 +285,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.LEX_REL_TYPE),
 						LEX_REL_TYPE_LABEL.CODE,
 						LEX_REL_TYPE_LABEL.VALUE)
-				.from(LEX_REL_TYPE_LABEL)
-				.where(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.from(LEX_REL_TYPE_LABEL, LEX_REL_TYPE)
+				.where(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(LEX_REL_TYPE_LABEL.CODE.eq(LEX_REL_TYPE.CODE)))
+				.orderBy(LEX_REL_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -267,8 +298,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.MEANING_REL_TYPE),
 						MEANING_REL_TYPE_LABEL.CODE,
 						MEANING_REL_TYPE_LABEL.VALUE)
-				.from(MEANING_REL_TYPE_LABEL)
-				.where(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.from(MEANING_REL_TYPE_LABEL, MEANING_REL_TYPE)
+				.where(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(MEANING_REL_TYPE_LABEL.CODE.eq(MEANING_REL_TYPE.CODE)))
+				.orderBy(MEANING_REL_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -279,8 +311,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.DEFINITION_TYPE),
 						DEFINITION_TYPE_LABEL.CODE,
 						DEFINITION_TYPE_LABEL.VALUE)
-				.from(DEFINITION_TYPE_LABEL)
-				.where(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang).and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.from(DEFINITION_TYPE_LABEL, DEFINITION_TYPE)
+				.where(DEFINITION_TYPE_LABEL.LANG.eq(classifierLabelLang).and(DEFINITION_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(DEFINITION_TYPE_LABEL.CODE.eq(DEFINITION_TYPE.CODE)))
+				.orderBy(DEFINITION_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -291,8 +324,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.MORPH),
 						MORPH_LABEL.CODE,
 						MORPH_LABEL.VALUE)
-				.from(MORPH_LABEL)
-				.where(MORPH_LABEL.LANG.eq(classifierLabelLang).and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.from(MORPH_LABEL, MORPH)
+				.where(MORPH_LABEL.LANG.eq(classifierLabelLang).and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)).and(MORPH_LABEL.CODE.eq(MORPH.CODE)))
+				.orderBy(MORPH.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -303,8 +337,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.VALUE_STATE),
 						VALUE_STATE_LABEL.CODE,
 						VALUE_STATE_LABEL.VALUE)
-				.from(VALUE_STATE_LABEL)
-				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)))
+				.from(VALUE_STATE_LABEL, VALUE_STATE)
+				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)).and(VALUE_STATE_LABEL.CODE.eq(VALUE_STATE.CODE)))
+				.orderBy(VALUE_STATE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -364,6 +399,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_LABEL.CODE))
 								.and(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang))
 								.and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.orderBy(WORD_WORD_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 
@@ -374,8 +410,73 @@ public class CommonDataDbService extends AbstractDataDbService {
 						getClassifierNameField(ClassifierName.SEMANTIC_TYPE),
 						SEMANTIC_TYPE_LABEL.CODE,
 						SEMANTIC_TYPE_LABEL.VALUE)
-				.from(SEMANTIC_TYPE_LABEL)
-				.where(SEMANTIC_TYPE_LABEL.LANG.eq(classifierLabelLang).and(SEMANTIC_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.from(SEMANTIC_TYPE_LABEL, SEMANTIC_TYPE)
+				.where(SEMANTIC_TYPE_LABEL.LANG.eq(classifierLabelLang).and(SEMANTIC_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(SEMANTIC_TYPE_LABEL.CODE.eq(SEMANTIC_TYPE.CODE)))
+				.orderBy(SEMANTIC_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getDisplayMorphs(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.DISPLAY_MORPH),
+						DISPLAY_MORPH_LABEL.CODE,
+						DISPLAY_MORPH_LABEL.VALUE)
+				.from(DISPLAY_MORPH_LABEL, DISPLAY_MORPH)
+				.where(DISPLAY_MORPH_LABEL.LANG.eq(classifierLabelLang).and(DISPLAY_MORPH_LABEL.TYPE.eq(classifierLabelType)).and(DISPLAY_MORPH_LABEL.CODE.eq(DISPLAY_MORPH.CODE)))
+				.orderBy(DISPLAY_MORPH.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getGovernmentTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.GOVERNMENT_TYPE),
+						GOVERNMENT_TYPE_LABEL.CODE,
+						GOVERNMENT_TYPE_LABEL.VALUE)
+				.from(GOVERNMENT_TYPE_LABEL, GOVERNMENT_TYPE)
+				.where(GOVERNMENT_TYPE_LABEL.LANG.eq(classifierLabelLang).and(GOVERNMENT_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(GOVERNMENT_TYPE_LABEL.CODE.eq(GOVERNMENT_TYPE.CODE)))
+				.orderBy(GOVERNMENT_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	public List<Classifier> getEtymologyTypes() {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.ETYMOLOGY_TYPE),
+						ETYMOLOGY_TYPE.CODE,
+						ETYMOLOGY_TYPE.CODE.as("value"))
+				.from(ETYMOLOGY_TYPE)
+				.orderBy(ETYMOLOGY_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getPosGroups(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.POS_GROUP),
+						POS_GROUP_LABEL.CODE,
+						POS_GROUP_LABEL.VALUE)
+				.from(POS_GROUP_LABEL, POS_GROUP)
+				.where(POS_GROUP_LABEL.LANG.eq(classifierLabelLang).and(POS_GROUP_LABEL.TYPE.eq(classifierLabelType)).and(POS_GROUP_LABEL.CODE.eq(POS_GROUP.CODE)))
+				.orderBy(POS_GROUP.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getUsageTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.USAGE_TYPE),
+						USAGE_TYPE_LABEL.CODE,
+						USAGE_TYPE_LABEL.VALUE)
+				.from(USAGE_TYPE_LABEL, USAGE_TYPE)
+				.where(USAGE_TYPE_LABEL.LANG.eq(classifierLabelLang).and(USAGE_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(USAGE_TYPE_LABEL.CODE.eq(USAGE_TYPE.CODE)))
+				.orderBy(USAGE_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 

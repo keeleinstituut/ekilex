@@ -195,34 +195,35 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.groupBy(lf.LEXEME_ID)
 				.asField();
 
-		return create.select(
-				w.ID.as("word_id"),
-				w.VALUE.as("word_value"),
-				w.VALUE_PRESE.as("word_value_prese"),
-				w.LANG.as("word_lang"),
-				w.HOMONYM_NR.as("word_homonym_nr"),
-				w.GENDER_CODE.as("word_gender_code"),
-				w.ASPECT_CODE.as("word_aspect_code"),
-				w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-				wtf.as("word_type_codes"),
-				wtpf.as("prefixoid"),
-				wtsf.as("suffixoid"),
-				wtz.as("foreign"),
-				l.ID.as("lexeme_id"),
-				l.MEANING_ID,
-				ds.NAME.as("dataset_name"),
-				l.DATASET_CODE,
-				l.LEVEL1,
-				l.LEVEL2,
-				l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-				l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
-				lff.as("lexeme_frequencies"),
-				l.IS_PUBLIC,
-				l.COMPLEXITY,
-				l.WEIGHT,
-				lposf.as("pos"),
-				lderf.as("derivs"),
-				lregf.as("registers"))
+		return create
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
+						w.LANG.as("word_lang"),
+						w.HOMONYM_NR.as("word_homonym_nr"),
+						w.GENDER_CODE.as("word_gender_code"),
+						w.ASPECT_CODE.as("word_aspect_code"),
+						w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						l.ID.as("lexeme_id"),
+						l.MEANING_ID,
+						ds.NAME.as("dataset_name"),
+						l.DATASET_CODE,
+						l.LEVEL1,
+						l.LEVEL2,
+						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
+						lff.as("lexeme_frequencies"),
+						l.IS_PUBLIC,
+						l.COMPLEXITY,
+						l.WEIGHT,
+						lposf.as("pos"),
+						lderf.as("derivs"),
+						lregf.as("registers"))
 				.from(w, l, m, ds)
 				.where(
 						w.ID.eq(wordId)
@@ -263,34 +264,35 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.groupBy(lf.LEXEME_ID)
 				.asField();
 
-		return create.select(
-				w.ID.as("word_id"),
-				w.VALUE.as("word_value"),
-				w.VALUE_PRESE.as("word_value_prese"),
-				w.LANG.as("word_lang"),
-				w.HOMONYM_NR.as("word_homonym_nr"),
-				w.GENDER_CODE.as("word_gender_code"),
-				w.ASPECT_CODE.as("word_aspect_code"),
-				w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-				wtf.as("word_type_codes"),
-				wtpf.as("prefixoid"),
-				wtsf.as("suffixoid"),
-				wtz.as("foreign"),
-				l.ID.as("lexeme_id"),
-				l.MEANING_ID,
-				ds.NAME.as("dataset_name"),
-				l.DATASET_CODE,
-				l.LEVEL1,
-				l.LEVEL2,
-				l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-				l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
-				lff.as("lexeme_frequencies"),
-				l.IS_PUBLIC,
-				l.COMPLEXITY,
-				l.WEIGHT,
-				lposf.as("pos"),
-				lderf.as("derivs"),
-				lregf.as("registers"))
+		return create
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
+						w.LANG.as("word_lang"),
+						w.HOMONYM_NR.as("word_homonym_nr"),
+						w.GENDER_CODE.as("word_gender_code"),
+						w.ASPECT_CODE.as("word_aspect_code"),
+						w.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						l.ID.as("lexeme_id"),
+						l.MEANING_ID,
+						ds.NAME.as("dataset_name"),
+						l.DATASET_CODE,
+						l.LEVEL1,
+						l.LEVEL2,
+						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
+						lff.as("lexeme_frequencies"),
+						l.IS_PUBLIC,
+						l.COMPLEXITY,
+						l.WEIGHT,
+						lposf.as("pos"),
+						lderf.as("derivs"),
+						lregf.as("registers"))
 				.from(w, l, m, ds)
 				.where(
 						l.ID.eq(lexemeId)
@@ -360,22 +362,23 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.where(l.WORD_ID.eq(w.ID).and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.groupBy(w.ID));
 
-		return create.select(
-				w.ID.as("word_id"),
-				w.VALUE.as("word_value"),
-				w.VALUE_PRESE.as("word_value_prese"),
-				fmcf.as("morph_code"),
-				fvff.as("vocal_form"),
-				w.HOMONYM_NR,
-				w.LANG,
-				w.WORD_CLASS,
-				w.GENDER_CODE,
-				w.ASPECT_CODE,
-				wtf.as("word_type_codes"),
-				wtpf.as("prefixoid"),
-				wtsf.as("suffixoid"),
-				wtz.as("foreign"),
-				lxtnf.as("lexemes_tag_names"))
+		return create
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
+						fmcf.as("morph_code"),
+						fvff.as("vocal_form"),
+						w.HOMONYM_NR,
+						w.LANG,
+						w.WORD_CLASS,
+						w.GENDER_CODE,
+						w.ASPECT_CODE,
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						lxtnf.as("lexemes_tag_names"))
 				.from(w)
 				.where(w.ID.eq(wordId)
 						.andExists(DSL
@@ -405,10 +408,12 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.selectDistinct(
 						wgrm2.ID,
 						wgr.ID.as("group_id"),
+						wgr.WORD_REL_TYPE_CODE.as("group_word_rel_type_code"),
 						w2.ID.as("word_id"),
 						w2.VALUE.as("word_value"),
 						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
+						w2.ASPECT_CODE.as("word_aspect_code"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
@@ -416,8 +421,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wrtl.VALUE.as("rel_type_label"),
 						wgrm2.ORDER_BY)
 				.from(
-						wgrm1
-								.innerJoin(wgr).on(wgr.ID.eq(wgrm1.WORD_GROUP_ID))
+						wgr
+								.innerJoin(wgrm1).on(wgrm1.WORD_GROUP_ID.eq(wgr.ID))
 								.innerJoin(wgrm2).on(wgrm2.WORD_GROUP_ID.eq(wgr.ID))
 								.innerJoin(w2).on(w2.ID.eq(wgrm2.WORD_ID))
 								.leftOuterJoin(wrtl).on(

@@ -40,18 +40,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import eki.common.constant.GlobalConstant;
-import eki.ekilex.data.ActivityLog;
+import eki.common.constant.LifecycleLogOwner;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.udt.records.TypeActivityLogDiffRecord;
 
@@ -63,49 +66,78 @@ public class ActivityLogDbService implements GlobalConstant {
 	@Autowired
 	private DSLContext create;
 
-	public List<ActivityLog> getWordActivityLog(Long wordId) {
+	public List<eki.ekilex.data.ActivityLog> getWordActivityLog(Long wordId) {
+
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
+		Field<String> wvf = getWordValueField(al);
 
 		return create.select(
-				ACTIVITY_LOG.ID,
-				ACTIVITY_LOG.EVENT_BY,
-				ACTIVITY_LOG.EVENT_ON,
-				ACTIVITY_LOG.FUNCT_NAME,
-				ACTIVITY_LOG.OWNER_ID,
-				ACTIVITY_LOG.OWNER_NAME,
-				ACTIVITY_LOG.ENTITY_ID,
-				ACTIVITY_LOG.ENTITY_NAME,
-				ACTIVITY_LOG.PREV_DIFFS,
-				ACTIVITY_LOG.CURR_DIFFS)
-				.from(ACTIVITY_LOG, WORD_ACTIVITY_LOG)
+				al.ID,
+				al.EVENT_BY,
+				al.EVENT_ON,
+				al.FUNCT_NAME,
+				al.OWNER_ID,
+				al.OWNER_NAME,
+				al.ENTITY_ID,
+				al.ENTITY_NAME,
+				al.PREV_DIFFS,
+				al.CURR_DIFFS,
+				wvf.as("word_value"))
+				.from(al, wal)
 				.where(
-						WORD_ACTIVITY_LOG.WORD_ID.eq(wordId)
-								.and(WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID)))
-				.orderBy(ACTIVITY_LOG.EVENT_ON.desc())
-				.fetchInto(ActivityLog.class);
+						wal.WORD_ID.eq(wordId)
+								.and(wal.ACTIVITY_LOG_ID.eq(al.ID)))
+				.orderBy(al.EVENT_ON.desc())
+				.fetchInto(eki.ekilex.data.ActivityLog.class);
 	}
 
-	public List<ActivityLog> getMeaningActivityLog(Long meaningId) {
+	public List<eki.ekilex.data.ActivityLog> getMeaningActivityLog(Long meaningId) {
+
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		Field<String> wvf = getWordValueField(al);
 
 		return create.select(
-				ACTIVITY_LOG.ID,
-				ACTIVITY_LOG.EVENT_BY,
-				ACTIVITY_LOG.EVENT_ON,
-				ACTIVITY_LOG.FUNCT_NAME,
-				ACTIVITY_LOG.OWNER_ID,
-				ACTIVITY_LOG.OWNER_NAME,
-				ACTIVITY_LOG.ENTITY_ID,
-				ACTIVITY_LOG.ENTITY_NAME,
-				ACTIVITY_LOG.PREV_DIFFS,
-				ACTIVITY_LOG.CURR_DIFFS)
-				.from(ACTIVITY_LOG, MEANING_ACTIVITY_LOG)
+				al.ID,
+				al.EVENT_BY,
+				al.EVENT_ON,
+				al.FUNCT_NAME,
+				al.OWNER_ID,
+				al.OWNER_NAME,
+				al.ENTITY_ID,
+				al.ENTITY_NAME,
+				al.PREV_DIFFS,
+				al.CURR_DIFFS,
+				wvf.as("word_value"))
+				.from(al, mal)
 				.where(
-						MEANING_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
-								.and(MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID)))
-				.orderBy(ACTIVITY_LOG.EVENT_ON.desc())
-				.fetchInto(ActivityLog.class);
+						mal.MEANING_ID.eq(meaningId)
+								.and(mal.ACTIVITY_LOG_ID.eq(al.ID)))
+				.orderBy(al.EVENT_ON.desc())
+				.fetchInto(eki.ekilex.data.ActivityLog.class);
 	}
 
-	public List<ActivityLog> getSourceActivityLog(Long sourceId) {
+	private Field<String> getWordValueField(ActivityLog al) {
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+		Field<String> wvf = DSL.field(DSL
+				.select(w.VALUE)
+				.from(w, l)
+				.where(
+						l.ID.eq(al.OWNER_ID)
+								.and(al.OWNER_NAME.eq(LifecycleLogOwner.LEXEME.name()))
+								.and(w.ID.eq(l.WORD_ID)))
+				.unionAll(DSL
+						.select(w.VALUE)
+						.from(w)
+						.where(
+								w.ID.eq(al.OWNER_ID)
+										.and(al.OWNER_NAME.eq(LifecycleLogOwner.WORD.name())))));
+		return wvf;
+	}
+
+	public List<eki.ekilex.data.ActivityLog> getSourceActivityLog(Long sourceId) {
 
 		return create.select(
 				ACTIVITY_LOG.ID,
@@ -123,7 +155,7 @@ public class ActivityLogDbService implements GlobalConstant {
 						SOURCE_ACTIVITY_LOG.SOURCE_ID.eq(sourceId)
 								.and(SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID)))
 				.orderBy(ACTIVITY_LOG.EVENT_ON.desc())
-				.fetchInto(ActivityLog.class);
+				.fetchInto(eki.ekilex.data.ActivityLog.class);
 	}
 
 	public Timestamp getLatestLogTimeForWord(Long wordId) {
@@ -150,7 +182,7 @@ public class ActivityLogDbService implements GlobalConstant {
 				.fetchSingleInto(Timestamp.class);
 	}
 
-	public Long create(ActivityLog activityLog) {
+	public Long create(eki.ekilex.data.ActivityLog activityLog) {
 
 		return create.insertInto(
 				ACTIVITY_LOG,

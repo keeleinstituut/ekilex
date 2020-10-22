@@ -26,7 +26,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = -1174860400;
+    private static final long serialVersionUID = -529487379;
 
     /**
      * The reference instance of <code>public.view_ww_form</code>
@@ -162,7 +162,7 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     }
 
     private ViewWwForm(Name alias, Table<ViewWwFormRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    fw.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.inflection_type,\n    ff.id AS form_id,\n    ff.mode,\n    ff.morph_group1,\n    ff.morph_group2,\n    ff.morph_group3,\n    ff.display_level,\n    ff.morph_code,\n    ff.morph_exists,\n    ff.value AS form,\n    ff.components,\n    ff.display_form,\n    ff.vocal_form,\n    ff.audio_file,\n    ff.order_by\n   FROM word w,\n    paradigm p,\n    form ff,\n    form fw\n  WHERE ((p.word_id = w.id) AND (ff.paradigm_id = p.id) AND (fw.paradigm_id = p.id) AND ((fw.mode)::text = 'WORD'::text) AND (ff.display_level > 0) AND (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))))\n  ORDER BY p.id, ff.order_by, ff.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    w.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.inflection_type,\n    f.id AS form_id,\n    f.mode,\n    f.morph_group1,\n    f.morph_group2,\n    f.morph_group3,\n    f.display_level,\n    f.morph_code,\n    f.morph_exists,\n    f.value AS form,\n    f.components,\n    f.display_form,\n    f.vocal_form,\n    f.audio_file,\n    f.order_by\n   FROM word w,\n    paradigm p,\n    form f\n  WHERE ((p.word_id = w.id) AND (f.paradigm_id = p.id) AND (f.display_level > 0) AND (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))))\n  ORDER BY p.id, f.order_by, f.id;"));
     }
 
     public <O extends Record> ViewWwForm(Table<O> child, ForeignKey<O, ViewWwFormRecord> key) {

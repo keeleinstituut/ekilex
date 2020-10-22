@@ -164,11 +164,19 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		where = applyLangCompDatasetFilter(w, dataFilter, where);
 
-		return getWords(w, where);
+		return getWords(w, dataFilter, where);
 	}
 
-	private List<Word> getWords(MviewWwWord w, Condition where) {
+	private List<Word> getWords(MviewWwWord w, DataFilter dataFilter, Condition where) {
 
+		boolean fiCollationExists = dataFilter.isFiCollationExists();
+
+		Field<String> wvobf;
+		if (fiCollationExists) {
+			wvobf = w.WORD.collate("fi_FI");
+		} else {
+			wvobf = w.WORD;
+		}
 		return create
 				.select(
 						w.WORD_ID,
@@ -179,7 +187,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.LANG,
 						w.HOMONYM_NR,
 						w.WORD_TYPE_CODES,
-						w.MORPH_CODE,
 						w.DISPLAY_MORPH_CODE,
 						w.ASPECT_CODE,
 						w.MEANING_WORDS,
@@ -188,7 +195,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.FORMS_EXIST)
 				.from(w)
 				.where(where)
-				.orderBy(w.MIN_DS_ORDER_BY, w.LANG_ORDER_BY, w.HOMONYM_NR)
+				.orderBy(w.MIN_DS_ORDER_BY, w.LANG_ORDER_BY, wvobf, w.WORD_TYPE_ORDER_BY, w.HOMONYM_NR)
 				.fetch(record -> {
 					Word pojo = record.into(Word.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
@@ -324,7 +331,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.WORD_CLASS,
 						w.LANG,
 						w.WORD_TYPE_CODES,
-						w.MORPH_CODE,
 						w.DISPLAY_MORPH_CODE,
 						w.ASPECT_CODE,
 						w.MEANING_WORDS,
@@ -507,4 +513,5 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					return pojo;
 				});
 	}
+
 }

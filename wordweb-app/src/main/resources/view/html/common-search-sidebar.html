@@ -1405,14 +1405,13 @@
                  th:with="isAspect=${wordGroup.wordRelTypeCode == T(eki.common.constant.GlobalConstant).WORD_REL_TYPE_CODE_ASCPECTS}">
               <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ':'}"></span>
               <th:block th:if="${isAspect}">
-                <span th:utext="${viewUtil.getWordValueMarkup(wordData.word)}" data-toggle="tooltip" data-placement="top" th:title="${wordData.word.aspect.value}"></span>
-                <span class="ml-n1">&nbsp;–</span>
                 <th:block th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
                   <span class="word-options mb-1">
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                       <span th:utext="${viewUtil.getWordValueMarkup(relation)}" data-toggle="tooltip" data-placement="top" th:title="${relation.aspect.value}">tee</span>
                       <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
                     </a>
+                    <span th:unless="${relationIter.last}">-</span>
                   </span>
                 </th:block>
               </th:block>
@@ -1466,13 +1465,13 @@
   </th:block>
   <th:block th:fragment="word-rel-group">
     <th:block th:if="${relationTypeGroup.asList}">
-      <div class="d-flex flex-wrap" th:id="${'word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}">
+      <div class="collapse-panel d-flex flex-wrap" th:id="${'word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}">
         <th:block th:each="relation, relationIter : ${relationTypeGroup.relatedWords}"
                   th:with="
                   isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                   isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-          <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse':''}">
-            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
+          <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse': isLimit ? 'limit' : ''}">
+            <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym' : ''}">
               <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
               <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
             </a>
@@ -1484,6 +1483,7 @@
               aria-expanded="false"
               data-toggle="collapse"
               data-dynamic-text="true"
+              th:data-toggle-container="${'#word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index}"
               th:data-target="${'#word-rel-group-collapse-panel-' + wordRelType.code + '-' + relGroupIter.index + ' .collapse'}"
               th:if="${#lists.size(relationTypeGroup.relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
         <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
@@ -1498,7 +1498,7 @@
     <th:block th:if="${relationTypeGroup.asMap}">
       <th:block th:each="relationEntry,relEntryIter : ${relationTypeGroup.relatedWordsByLang}"
                 th:with="relatedWords=${relationEntry.value}">
-        <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="d-flex flex-wrap">
+        <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="collapse-panel d-flex flex-wrap">
           <span class="lang-code lang-code-sm mr-2 align-self-start"
                 th:with="langData=${viewUtil.getLangData(relationEntry.key)}"
                 th:text="${langData.codeIso2}" th:title="${langData.label}">
@@ -1507,7 +1507,7 @@
                     th:with="
                     isCollapsable=${relationIter.count > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT},
                     isLimit=${relationIter.count == T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
-            <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse' : ''}">
+            <span class="word-options mb-1" th:classappend="${isCollapsable ? 'collapse' : isLimit ? 'limit' : ''}">
               <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, relation.word, relation.homonymNr)}}" th:classappend="${relation.homonymsExist ? 'is-homonym':''}">
                 <span th:utext="${viewUtil.getWordValueMarkup(relation)}">tee</span>
                 <sup th:if="${relation.homonymsExist}" th:text="${relation.homonymNr}"></sup>
@@ -1520,6 +1520,7 @@
                 aria-expanded="false"
                 data-toggle="collapse"
                 data-dynamic-text="true"
+                th:data-toggle-container="${'#word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}"
                 th:data-target="${'#word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index + ' .collapse'}"
                 th:if="${#lists.size(relatedWords) > T(eki.wordweb.constant.WebConstant).WORD_RELATIONS_DISPLAY_LIMIT}">
           <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">

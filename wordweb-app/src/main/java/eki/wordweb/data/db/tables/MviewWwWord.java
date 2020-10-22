@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -1020141686;
+    private static final long serialVersionUID = 376642255;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -95,11 +95,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_word.morph_code</code>.
-     */
-    public final TableField<MviewWwWordRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.mview_ww_word.display_morph_code</code>.
      */
     public final TableField<MviewWwWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
@@ -138,6 +133,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.min_ds_order_by</code>.
      */
     public final TableField<MviewWwWordRecord, Long> MIN_DS_ORDER_BY = createField(DSL.name("min_ds_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.word_type_order_by</code>.
+     */
+    public final TableField<MviewWwWordRecord, Integer> WORD_TYPE_ORDER_BY = createField(DSL.name("word_type_order_by"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.mview_ww_word</code> table reference
@@ -213,7 +213,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row18<Long, String, String, String, String, Long, Integer, String, String[], String, String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], Boolean, Long> fieldsRow() {
+    public Row18<Long, String, String, String, String, Long, Integer, String, String[], String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], Boolean, Long, Integer> fieldsRow() {
         return (Row18) super.fieldsRow();
     }
 }
