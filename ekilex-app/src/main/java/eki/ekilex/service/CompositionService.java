@@ -21,13 +21,13 @@ import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.common.service.TextDecorationService;
-import eki.ekilex.data.WordMeaningRelationsDetails;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.WordMeaningRelationsDetails;
 import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
@@ -66,7 +66,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		String wordValue = wordMeaningRelationsDetails.getWordValue();
 		String language = wordMeaningRelationsDetails.getLanguage();
-		String morphCode = wordMeaningRelationsDetails.getMorphCode();
 		Long meaningId = wordMeaningRelationsDetails.getMeaningId();
 		Long relatedMeaningId = wordMeaningRelationsDetails.getRelatedMeaningId();
 		String dataset = wordMeaningRelationsDetails.getDataset();
@@ -86,7 +85,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		if (!importMeaningData) {
 			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-					.createWordAndLexeme(wordValue, wordValue, null, language, morphCode, dataset, PUBLICITY_PUBLIC, meaningId);
+					.createWordAndLexeme(wordValue, wordValue, null, language, dataset, PUBLICITY_PUBLIC, meaningId);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			List<String> tagNames = cudDbService.createLexemeAutomaticTags(lexemeId);
@@ -472,18 +471,17 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		String targetDisplayForm = targetWordStress.getDisplayForm();
 		String targetValuePrese = targetWordStress.getValuePrese();
 		boolean isTargetDisplayFormStressExists = targetWordStress.isStressExists();
-		Long targetFormId = targetWordStress.getFormId();
 
 		if (sourceDisplayForm != null) {
 			if (targetDisplayForm == null) {
-				cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+				cudDbService.updateWordDisplayForm(targetWordId, sourceDisplayForm);
 			} else {
 				if (isSourceDisplayFormStressExists && !isTargetDisplayFormStressExists) {
-					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+					cudDbService.updateWordDisplayForm(targetWordId, sourceDisplayForm);
 				} else if (!isSourceDisplayFormStressExists && isTargetDisplayFormStressExists) {
 					// do nothing
 				} else if (sourceDisplayForm.length() > targetDisplayForm.length()) {
-					cudDbService.updateFormDisplayForm(targetFormId, sourceDisplayForm);
+					cudDbService.updateWordDisplayForm(targetWordId, sourceDisplayForm);
 				}
 			}
 		}
@@ -492,7 +490,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			boolean isTargetWordDecorated = textDecorationService.isDecorated(targetValuePrese);
 			boolean isSourceWordDecorated = textDecorationService.isDecorated(sourceValuePrese);
 			if (!isTargetWordDecorated && isSourceWordDecorated) {
-				cudDbService.updateFormValuePrese(targetFormId, sourceValuePrese);
+				cudDbService.updateWordValuePrese(targetWordId, sourceValuePrese);
 			}
 		}
 	}

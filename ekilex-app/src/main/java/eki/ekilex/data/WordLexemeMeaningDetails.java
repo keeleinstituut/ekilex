@@ -16,8 +16,6 @@ public class WordLexemeMeaningDetails extends AbstractDataObject {
 
 	private String wordValuePrese;
 
-	private String morphCode;
-
 	private String language;
 
 	private String dataset;
@@ -62,14 +60,6 @@ public class WordLexemeMeaningDetails extends AbstractDataObject {
 
 	public void setWordValuePrese(String wordValuePrese) {
 		this.wordValuePrese = wordValuePrese;
-	}
-
-	public String getMorphCode() {
-		return morphCode;
-	}
-
-	public void setMorphCode(String morphCode) {
-		this.morphCode = morphCode;
 	}
 
 	public String getLanguage() {

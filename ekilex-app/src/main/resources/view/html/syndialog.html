@@ -4,7 +4,7 @@
 </head>
 <body>
   <th:block th:fragment="syn_stats_dlg(synRelation)">
-    <div th:id="${'addSynRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_syn_relation_dlg(wordId, relations, language, morphCode)">
+    <div th:id="${'addSynRelationDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_syn_relation_dlg(wordId, language, relations)">
       <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
         <div class="modal-content">
           <div class="modal-body">
@@ -13,7 +13,6 @@
                 <div class="col-12">
                   <div class="form-group row">
                     <input type="hidden" name="language" th:value="${language}"/>
-                    <input type="hidden" name="morphCode" th:value="${morphCode}"/>
                     <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}"/>
                     <div class="col-8">
                       <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">

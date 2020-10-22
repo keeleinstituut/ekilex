@@ -2,11 +2,9 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
@@ -25,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FormMode;
 import eki.common.constant.LexemeType;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Relation;
@@ -34,11 +31,9 @@ import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -61,10 +56,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
-		Paradigm p2 = PARADIGM.as("p2");
-		Paradigm ph = PARADIGM.as("ph");
-		Form f2 = FORM.as("f2");
-		Form fh = FORM.as("fh");
 		Lexeme l2 = LEXEME.as("l");
 		Lexeme lh = LEXEME.as("lh");
 		LexemePos lp = LEXEME_POS.as("lp");
@@ -118,7 +109,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, Object, Object, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
+		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL.select(
 				r.ID,
 				r.WORD_REL_TYPE_CODE.as("rel_type_code"),
 				rtl.VALUE.as("rel_type_label"),
@@ -127,8 +118,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 				relp.as("relation_params"),
 				r.ORDER_BY,
 				w2.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f2.value), ',', '*')").as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct f2.value_prese), ',', '*')").as("word_value_prese"),
+				w2.VALUE.as("word_value"),
+				w2.VALUE_PRESE.as("word_value_prese"),
 				w2.HOMONYM_NR.as("word_homonym_nr"),
 				w2.LANG.as("word_lang"),
 				wtf.as("word_type_codes"),
@@ -140,8 +131,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 				rwlf.as("word_lexemes_max_frequency"))
 				.from(r
 						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
-						.innerJoin(p2).on(p2.WORD_ID.eq(w2.ID))
-						.innerJoin(f2).on(f2.PARADIGM_ID.eq(p2.ID).and(f2.MODE.eq(FormMode.WORD.name())))
 						.leftOuterJoin(oppr).on(
 								oppr.WORD1_ID.eq(r.WORD2_ID)
 										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
@@ -159,17 +148,14 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		Field<Boolean> rwhe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
-				.from(fh, ph, wh)
+				.from(wh)
 				.where(
-						fh.VALUE.eq(rr.field("word_value", String.class))
-								.and(fh.MODE.eq(FormMode.WORD.name()))
-								.and(fh.PARADIGM_ID.eq(ph.ID))
-								.and(ph.WORD_ID.eq(wh.ID))
+						wh.VALUE.eq(rr.field("word_value", String.class))
 								.andExists(DSL
 										.select(lh.ID)
 										.from(lh)
 										.where(lh.WORD_ID.eq(wh.ID).and(lh.DATASET_CODE.eq(datasetCode)))))
-				.groupBy(fh.VALUE)
+				.groupBy(wh.VALUE)
 				.asField();
 
 		return create.select(
@@ -254,39 +240,34 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.getId();
 	}
 
-	public eki.ekilex.data.Word getWordDetails(Long wordId) {
+	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		Lexeme l = LEXEME.as("l");
 
 		Field<String[]> wtf = getWordTypesField(w.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
+		Field<String> fmcf = getFormMorphCodeField(w.ID);
 
 		return create.select(
 				w.ID.as("word_id"),
-				DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word_value"),
-				DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word_value_prese"),
+				w.VALUE.as("word_value"),
+				w.VALUE_PRESE.as("word_value_prese"),
 				w.LANG,
-				DSL.field("array_to_string(array_agg(distinct f.morph_code), ',', '*')", String.class).as("morph_code"),
+				fmcf.as("morph_code"),
 				wtf.as("word_type_codes"),
 				wtpf.as("prefixoid"),
 				wtsf.as("suffixoid"),
 				wtz.as("foreign"))
-				.from(w, p, f)
+				.from(w)
 				.where(w.ID.eq(wordId)
-						.and(p.WORD_ID.eq(w.ID))
-						.and(f.PARADIGM_ID.eq(p.ID))
-						.and(f.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
 						.andExists(DSL
 								.select(l.ID)
 								.from(l)
 								.where(l.WORD_ID.eq(w.ID)
 				)))
-				.groupBy(w.ID)
 				.fetchOneInto(eki.ekilex.data.Word.class);
 	}
 
@@ -297,39 +278,33 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Lexeme lh = LEXEME.as("lh");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
-		Paradigm p2 = PARADIGM.as("p2");
-		Paradigm ph = PARADIGM.as("ph");
-		Form f2 = FORM.as("f2");
-		Form fh = FORM.as("fh");
 
 		Field<String[]> wtf = getWordTypesField(w2.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String> fmcf = getFormMorphCodeField(w2.ID);
 
 		Field<Boolean> whe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
-				.from(fh, ph, wh)
+				.from(wh)
 				.where(
-						fh.VALUE.eq(f2.VALUE)
-								.and(fh.MODE.eq(FormMode.WORD.name()))
-								.and(fh.PARADIGM_ID.eq(ph.ID))
-								.and(ph.WORD_ID.eq(wh.ID))
+						wh.VALUE.eq(w2.VALUE)
 								.andExists(DSL
 										.select(lh.ID)
 										.from(lh)
 										.where(
 												lh.WORD_ID.eq(wh.ID)
 														.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))
-				.groupBy(fh.VALUE)
+				.groupBy(wh.VALUE)
 				.asField();
 
 		return create
 				.select(
 						w2.ID.as("word_id"),
-						f2.VALUE.as("word_value"),
-						f2.VALUE_PRESE.as("word_value_prese"),
-						f2.MORPH_CODE,
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
+						fmcf.as("morph_code"),
 						w2.HOMONYM_NR,
 						whe.as("homonyms_exist"),
 						w2.LANG,
@@ -341,7 +316,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						l2.TYPE.as("lexeme_type"),
 						l2.WEIGHT.as("lexeme_weight"),
 						l2.ORDER_BY)
-				.from(l1, l2, w2, p2, f2)
+				.from(l1, l2, w2)
 				.where(
 						l1.ID.eq(lexemeId)
 								.and(l2.MEANING_ID.eq(l1.MEANING_ID))
@@ -349,11 +324,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
 								.and(l2.WORD_ID.eq(w2.ID))
 								.and(l2.TYPE.in(lexemeTypes))
-								.and(p2.WORD_ID.eq(w2.ID))
-								.and(f2.PARADIGM_ID.eq(p2.ID))
-								.and(f2.MODE.eq(FormMode.WORD.name()))
 								.and(w2.LANG.in(meaningWordLangs)))
-				.groupBy(w2.ID, f2.VALUE, f2.VALUE_PRESE, f2.MORPH_CODE, l2.ID)
+				.groupBy(w2.ID, l2.ID)
 				.orderBy(w2.LANG, l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}

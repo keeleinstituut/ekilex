@@ -20,8 +20,6 @@ public class SessionBean extends AbstractDataObject {
 
 	private String recentNoteLanguage;
 
-	private String recentMorphCode;
-
 	public SearchResultMode getTermSearchResultMode() {
 		return termSearchResultMode;
 	}
@@ -60,13 +58,5 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setRecentNoteLanguage(String recentNoteLanguage) {
 		this.recentNoteLanguage = recentNoteLanguage;
-	}
-
-	public String getRecentMorphCode() {
-		return recentMorphCode;
-	}
-
-	public void setRecentMorphCode(String recentMorphCode) {
-		this.recentMorphCode = recentMorphCode;
 	}
 }

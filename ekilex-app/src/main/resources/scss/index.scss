@@ -109,3 +109,33 @@ footer p {
     }
   }
 }
+
+.multiselect-active {
+  background: #EAF1F8 !important;
+  .px-2.py-0.bg-light.rounded.font-weight-bold.mr-2 {
+    background: #fff !important;
+  }
+}
+
+.date-modified {
+  color: $gray-400;
+  font-size: 12px;
+  line-height: 29px;
+  .fa {
+    margin-right: 8px;
+  }
+}
+
+.orderable-item {
+  display: inline-flex;
+  &:after {
+    content: ' | ';
+    display: inline-block;
+    margin:0 8px;
+  }
+  &:last-child {
+    &:after {
+      display: none;
+    }
+  }
+}

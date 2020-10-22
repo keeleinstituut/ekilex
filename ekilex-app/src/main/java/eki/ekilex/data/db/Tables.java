@@ -60,6 +60,7 @@ import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
+import eki.ekilex.data.db.tables.LifecycleActivityLog;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
@@ -109,7 +110,6 @@ import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
-import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
@@ -421,6 +421,11 @@ public class Tables {
     public static final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
 
     /**
+     * The table <code>public.lifecycle_activity_log</code>.
+     */
+    public static final LifecycleActivityLog LIFECYCLE_ACTIVITY_LOG = LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.lifecycle_log</code>.
      */
     public static final LifecycleLog LIFECYCLE_LOG = LifecycleLog.LIFECYCLE_LOG;
@@ -664,11 +669,6 @@ public class Tables {
      * The table <code>public.view_ww_similarity_judgement_data</code>.
      */
     public static final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
-
-    /**
-     * The table <code>public.view_ww_word</code>.
-     */
-    public static final ViewWwWord VIEW_WW_WORD = ViewWwWord.VIEW_WW_WORD;
 
     /**
      * The table <code>public.view_ww_word_etym_source_link</code>.

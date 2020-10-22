@@ -60,6 +60,7 @@ import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
+import eki.ekilex.data.db.tables.LifecycleActivityLog;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
@@ -109,7 +110,6 @@ import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningFreeformSourceLink;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
-import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymSourceLink;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
@@ -166,7 +166,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1809654036;
+    private static final long serialVersionUID = -1754648067;
 
     /**
      * The reference instance of <code>public</code>
@@ -454,6 +454,11 @@ public class Public extends SchemaImpl {
     public final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
 
     /**
+     * The table <code>public.lifecycle_activity_log</code>.
+     */
+    public final LifecycleActivityLog LIFECYCLE_ACTIVITY_LOG = LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.lifecycle_log</code>.
      */
     public final LifecycleLog LIFECYCLE_LOG = LifecycleLog.LIFECYCLE_LOG;
@@ -699,11 +704,6 @@ public class Public extends SchemaImpl {
     public final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
 
     /**
-     * The table <code>public.view_ww_word</code>.
-     */
-    public final ViewWwWord VIEW_WW_WORD = ViewWwWord.VIEW_WW_WORD;
-
-    /**
      * The table <code>public.view_ww_word_etym_source_link</code>.
      */
     public final ViewWwWordEtymSourceLink VIEW_WW_WORD_ETYM_SOURCE_LINK = ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK;
@@ -888,6 +888,7 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_TAG_ID_SEQ,
+            Sequences.LIFECYCLE_ACTIVITY_LOG_ID_SEQ,
             Sequences.LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
@@ -1000,6 +1001,7 @@ public class Public extends SchemaImpl {
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
             LexemeTag.LEXEME_TAG,
+            LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG,
             LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
             MeaningActivityLog.MEANING_ACTIVITY_LOG,
@@ -1049,7 +1051,6 @@ public class Public extends SchemaImpl {
             ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
             ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA,
-            ViewWwWord.VIEW_WW_WORD,
             ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK,
             ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,

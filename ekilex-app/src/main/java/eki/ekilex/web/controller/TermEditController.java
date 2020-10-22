@@ -182,7 +182,6 @@ public class TermEditController extends AbstractPageController {
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
-			String morphCode = wordDetails.getMorphCode();
 			Long meaningId = wordDetails.getMeaningId();
 			String dataset = wordDetails.getDataset();
 			DatasetPermission userRole = userContext.getUserRole();
@@ -191,7 +190,6 @@ public class TermEditController extends AbstractPageController {
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
 			sessionBean.setRecentLanguage(language);
-			sessionBean.setRecentMorphCode(morphCode);
 
 			boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 			if (!meaningHasWord) {
@@ -200,7 +198,6 @@ public class TermEditController extends AbstractPageController {
 					attributes.addFlashAttribute("dataset", dataset);
 					attributes.addFlashAttribute("wordValue", wordValue);
 					attributes.addFlashAttribute("language", language);
-					attributes.addFlashAttribute("morphCode", morphCode);
 					attributes.addFlashAttribute("meaningId", meaningId);
 					attributes.addFlashAttribute("relationCandidates", relationCandidates);
 					attributes.addFlashAttribute("backUri", backUri);

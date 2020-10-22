@@ -45,7 +45,7 @@ function initializeLexSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, -1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsLexSearch();
+			refreshDetailsLexSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
 		}
 	});
 
@@ -54,7 +54,7 @@ function initializeLexSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsLexSearch();
+			refreshDetailsLexSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
 		}
 	});
 
@@ -94,13 +94,14 @@ function initializeLexSearch() {
 	});
 
 	$(document).on('click', '[id^=duplicateLexemeBtn_]', function() {
-		var lexemeId = $(this).data('lexeme-id');
+		const obj = $(this);
+		var lexemeId = obj.data('lexeme-id');
 		let url = applicationUrl + 'lexduplicate/' + lexemeId;
 		$.post(url).done(function(data) {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
 				openMessageDlg(response.message);
-				refreshDetailsLexSearch();
+				refreshDetailsLexSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 			} else {
 				openAlertDlg(response.message);
 			}
@@ -111,12 +112,13 @@ function initializeLexSearch() {
 	});
 
 	$(document).on('click', '[id^=duplicateEmptyLexemeBtn_]', function() {
-		var lexemeId = $(this).data('lexeme-id');
+		const obj = $(this);
+		var lexemeId = obj.data('lexeme-id');
 		var url = applicationUrl + 'emptylexduplicate/' + lexemeId;
 		$.post(url).done(function(data) {
 			var response = JSON.parse(data);
 			openMessageDlg(response.message);
-			refreshDetailsLexSearch();
+			refreshDetailsLexSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 		}).fail(function(data) {
 			openAlertDlg("Tähenduse lisamine ebaõnnestus");
 			console.log(data);
@@ -162,14 +164,15 @@ function initializeLexSearch() {
 	});
 
 	$(document).on("click", "#activeTagCompleteBtn", function() {
-		let wordId = $(this).data('word-id');
+		const obj = $(this);
+		let wordId = obj.data('word-id');
 		let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
 		$.post(actionUrl).done(function(data) {
 			if (data !== "{}") {
 				openAlertDlg("Andmete muutmine ebaõnnestus.");
 				console.log(data);
 			}
-			refreshDetailsLexSearch();
+			refreshDetailsLexSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 		}).fail(function(data) {
 			openAlertDlg("Andmete muutmine ebaõnnestus.");
 			console.log(data);
@@ -317,6 +320,7 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 		$('.tooltip').remove();
 		closeWaitDlg();
 		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
+		$(window).trigger('update:multiSelect');
 		$wpm.bindObjects();
 	}).fail(function(data) {
 		alert('Lekseemi detailide päring ebaõnnestus');

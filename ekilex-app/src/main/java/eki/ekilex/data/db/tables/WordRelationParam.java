@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
 
-    private static final long serialVersionUID = -1810353603;
+    private static final long serialVersionUID = 118852183;
 
     /**
      * The reference instance of <code>public.word_relation_param</code>
@@ -126,15 +126,6 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
     @Override
     public List<UniqueKey<WordRelationParamRecord>> getKeys() {
         return Arrays.<UniqueKey<WordRelationParamRecord>>asList(Keys.WORD_RELATION_PARAM_PKEY, Keys.WORD_RELATION_PARAM_WORD_RELATION_ID_NAME_KEY);
-    }
-
-    @Override
-    public List<ForeignKey<WordRelationParamRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordRelationParamRecord, ?>>asList(Keys.WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY);
-    }
-
-    public WordRelation wordRelation() {
-        return new WordRelation(this, Keys.WORD_RELATION_PARAM__WORD_RELATION_PARAM_WORD_RELATION_ID_FKEY);
     }
 
     @Override

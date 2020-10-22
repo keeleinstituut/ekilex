@@ -19,10 +19,9 @@
       </div>
       <div class="card-body" th:if="${!meaningWordCandidates.meaningHasWord}">
         <form th:action="@{/create_homonym}" method="post">
-          <input type="hidden" name="dataset" th:value="${wordDetails.dataset}">
-          <input type="hidden" name="language" th:value="${wordDetails.language}">
-          <input type="hidden" name="morphCode" th:value="${wordDetails.morphCode}">
           <input type="hidden" name="wordValue" th:value="${wordDetails.wordValue}">
+          <input type="hidden" name="language" th:value="${wordDetails.language}">
+          <input type="hidden" name="dataset" th:value="${wordDetails.dataset}">
           <input type="hidden" name="meaningId" th:value="${wordDetails.meaningId}">
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <span th:text="${meaningWordCandidates.wordValue}" class="ttl"></span>

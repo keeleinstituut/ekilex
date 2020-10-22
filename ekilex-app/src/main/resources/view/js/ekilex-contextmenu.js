@@ -108,6 +108,7 @@ class ContextMenu {
   showMenu() {
     this.destroyMenu();
     this.getOptions();
+
     let optionsHtml = '';
     this.options.forEach((item) => {
       optionsHtml+= `<button data-task="${item.task}">${item.value}</button>`;
@@ -136,7 +137,6 @@ class ContextMenu {
       top = this.element.offset().top + this.element.outerHeight() + 8;
       
     }
-
 
     this.menu.css({
       top,
@@ -212,6 +212,10 @@ class ContextMenu {
     window.open(url, '_blank');
   }
 
+  onMultidelete() {
+    const values = JSON.parse(this.element.attr('data-multiSelectValues')).map(item => parseInt(item));
+    console.log(values)
+  }
 }
 
 $.fn.contextmenu = function() {

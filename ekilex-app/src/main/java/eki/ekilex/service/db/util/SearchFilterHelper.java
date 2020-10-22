@@ -211,8 +211,8 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyDomainValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) {
 
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.DOMAIN);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.DOMAIN);
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.DOMAIN, SearchOperand.NOT_EQUALS);
 
 		MeaningDomain md = MEANING_DOMAIN.as("md");
 
@@ -239,8 +239,8 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyMeaningSemanticTypeValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
 
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.SEMANTIC_TYPE);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.SEMANTIC_TYPE);
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.SEMANTIC_TYPE, SearchOperand.NOT_EQUALS);
 
 		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
 
@@ -282,8 +282,8 @@ public class SearchFilterHelper implements GlobalConstant {
 	public Condition applyLexemeTagFilters(
 			List<SearchCriterion> searchCriteria, SearchDatasetsRestriction searchDatasetsRestriction, Lexeme l1, Condition where1, Condition where) throws Exception {
 
-		List<SearchCriterion> tagNameEqualsCrit = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.TAG_NAME);
-		List<SearchCriterion> tagNameNotEqualsCrit = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.TAG_NAME);
+		List<SearchCriterion> tagNameEqualsCrit = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.TAG_NAME, SearchOperand.EQUALS);
+		List<SearchCriterion> tagNameNotEqualsCrit = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.TAG_NAME, SearchOperand.NOT_CONTAINS);
 
 		if (CollectionUtils.isEmpty(tagNameEqualsCrit) && CollectionUtils.isEmpty(tagNameNotEqualsCrit)) {
 			return where;
@@ -387,8 +387,8 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyLexemeComplexityFilters(List<SearchCriterion> searchCriteria, Field<String> lexemeComplexityField, Condition condition) {
 
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.COMPLEXITY);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.COMPLEXITY);
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.COMPLEXITY, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.COMPLEXITY, SearchOperand.NOT_EQUALS);
 
 		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
 			for (SearchCriterion criterion : positiveValueCriteria) {
@@ -409,8 +409,8 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyWordTypeValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition condition) {
 
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.WORD_TYPE);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.WORD_TYPE);
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.WORD_TYPE, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.WORD_TYPE, SearchOperand.NOT_EQUALS);
 
 		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
 
@@ -435,32 +435,10 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	public Condition applyLangFilters(List<SearchCriterion> searchCriteria, Field<String> langField, Condition condition) {
-
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.LANGUAGE);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.LANGUAGE);
-
-		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
-			for (SearchCriterion criterion : positiveValueCriteria) {
-				String lang = criterion.getSearchValue().toString();
-				condition = condition.and(langField.eq(lang));
-			}
-		}
-
-		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
-			for (SearchCriterion criterion : negativeValueCriteria) {
-				String lang = criterion.getSearchValue().toString();
-				condition = condition.and(langField.ne(lang));
-			}
-		}
-
-		return condition;
-	}
-
 	public Condition applyLexemePosValueFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
 
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.LEXEME_POS);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.LEXEME_POS);
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LEXEME_POS, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LEXEME_POS, SearchOperand.NOT_EQUALS);
 
 		LexemePos lpos = LEXEME_POS.as("lpos");
 
@@ -513,8 +491,8 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyLexemeRegisterValueFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
 
-		List<SearchCriterion> positiveValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.EQUALS, SearchKey.LEXEME_REGISTER);
-		List<SearchCriterion> negativeValueCriteria = filterCriteriaByOperandAndSearchKeys(searchCriteria, SearchOperand.NOT_EQUALS, SearchKey.LEXEME_REGISTER);
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LEXEME_REGISTER, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.LEXEME_REGISTER, SearchOperand.NOT_EQUALS);
 
 		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 
@@ -887,8 +865,8 @@ public class SearchFilterHelper implements GlobalConstant {
 			condition = condition.and(wordAspectField.isNotNull());
 		}
 
-		List<SearchCriterion> aspectEqualsCrit = filterCriteriaByOperandAndSearchKeys(filteredCriteria, SearchOperand.EQUALS, SearchKey.ASPECT);
-		List<SearchCriterion> aspectNotEqualsCrit = filterCriteriaByOperandAndSearchKeys(filteredCriteria, SearchOperand.NOT_EQUALS, SearchKey.ASPECT);
+		List<SearchCriterion> aspectEqualsCrit = filterCriteriaBySearchKeyAndOperands(filteredCriteria, SearchKey.ASPECT, SearchOperand.EQUALS);
+		List<SearchCriterion> aspectNotEqualsCrit = filterCriteriaBySearchKeyAndOperands(filteredCriteria, SearchKey.ASPECT, SearchOperand.NOT_EQUALS);
 
 		if (CollectionUtils.isNotEmpty(aspectEqualsCrit)) {
 			for (SearchCriterion criterion : aspectEqualsCrit) {
@@ -924,8 +902,11 @@ public class SearchFilterHelper implements GlobalConstant {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
 			condition = condition.and(textTypeSearchFieldCase.equal(searchValueStr));
 		} else if (SearchOperand.NOT_EQUALS.equals(searchOperand)) {
+			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
+			condition = condition.and(textTypeSearchFieldCase.notEqual(searchValueStr));
+		} else if (SearchOperand.NOT_CONTAINS.equals(searchOperand)) {
 			//by value comparison it is exactly the same operation as equals
-			//the not equals operand rather translates into join condition elsewhere
+			//the not contains operand rather translates into join condition elsewhere
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
 			condition = condition.and(textTypeSearchFieldCase.equal(searchValueStr));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
@@ -1160,29 +1141,11 @@ public class SearchFilterHelper implements GlobalConstant {
 		return filteredCriteria;
 	}
 
-	public List<SearchCriterion> filterCriteriaByOperandAndSearchKeys(List<SearchCriterion> searchCriteria, SearchOperand searchOperand, SearchKey... searchKeys) {
+	public List<SearchCriterion> filterCriteriaBySearchKeyAndOperands(List<SearchCriterion> searchCriteria, SearchKey searchKey, SearchOperand... searchOperands) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> searchOperand.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
-				.filter(crit -> ArrayUtils.contains(searchKeys, crit.getSearchKey()))
-				.collect(Collectors.toList());
-		return filteredCriteria;
-	}
-
-	public List<SearchCriterion> filterPositiveValueSearchCriteria(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
-		// any other than NOT_EQUALS
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> !SearchOperand.NOT_EQUALS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
-				.filter(crit -> ArrayUtils.contains(searchKeys, crit.getSearchKey()))
-				.collect(Collectors.toList());
-		return filteredCriteria;
-	}
-
-	public List<SearchCriterion> filterNegativeValueSearchCriteria(List<SearchCriterion> searchCriteria, SearchKey... searchKeys) {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> SearchOperand.NOT_EQUALS.equals(crit.getSearchOperand()) && crit.getSearchValue() != null)
-				.filter(crit -> ArrayUtils.contains(searchKeys, crit.getSearchKey()))
+				.filter(crit -> ArrayUtils.contains(searchOperands, crit.getSearchOperand()) && crit.getSearchValue() != null)
+				.filter(crit -> searchKey.equals(crit.getSearchKey()))
 				.collect(Collectors.toList());
 		return filteredCriteria;
 	}

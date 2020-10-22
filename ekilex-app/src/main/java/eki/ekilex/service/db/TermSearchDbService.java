@@ -1,12 +1,10 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.Collections;
@@ -23,7 +21,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FormMode;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -31,11 +28,9 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.db.tables.Dataset;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFrequency;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
@@ -82,10 +77,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Lexeme lo = LEXEME.as("lo");
 		Word wo = WORD.as("wo");
-		Paradigm po = PARADIGM.as("po");
-		Form fo = FORM.as("fo");
-		Paradigm pm = PARADIGM.as("pm");
-		Form fm = FORM.as("fm");
+		Word wm = WORD.as("wm");
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
 		Language wol = LANGUAGE.as("wol");
@@ -123,11 +115,11 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Table<Record19<Long, Long, String, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[], Long, Long>> mm = DSL
 				.select(
 						m.field("meaning_id", Long.class),
-						pm.WORD_ID.as("order_by_word_id"),
-						fm.VALUE.as("order_by_word"),
+						wm.ID.as("order_by_word_id"),
+						wm.VALUE.as("order_by_word"),
 						wo.ID.as("word_id"),
-						fo.VALUE.as("word_value"),
-						fo.VALUE_PRESE.as("word_value_prese"),
+						wo.VALUE.as("word_value"),
+						wo.VALUE_PRESE.as("word_value_prese"),
 						wo.HOMONYM_NR,
 						wo.LANG,
 						wtf.as("word_type_codes"),
@@ -142,15 +134,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wol.ORDER_BY.as("lang_order_by"),
 						lo.ORDER_BY.as("lex_order_by"))
 				.from(m
-						.innerJoin(pm).on(pm.WORD_ID.eq(m.field("word_id", Long.class)))
-						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name())))
+						.innerJoin(wm).on(wm.ID.eq(m.field("word_id", Long.class)))
 						.innerJoin(lo).on(
 								lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
 										.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(wherelods))
 						.innerJoin(wo).on(wherewo)
-						.innerJoin(po).on(po.WORD_ID.eq(wo.ID))
-						.innerJoin(fo).on(fo.PARADIGM_ID.eq(po.ID).and(fo.MODE.eq(FormMode.WORD.name())))
 						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
 				.asTable("m");
 
@@ -232,8 +221,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Lexeme lm = LEXEME.as("lm");
 		Word wm = WORD.as("wm");
-		Paradigm pm = PARADIGM.as("pm");
-		Form fm = FORM.as("fm");
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
 
@@ -267,8 +254,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.select(
 						wmid.field("meaning_id", Long.class),
 						wmid.field("word_id", Long.class),
-						fm.VALUE.as("word_value"),
-						fm.VALUE_PRESE.as("word_value_prese"),
+						wm.VALUE.as("word_value"),
+						wm.VALUE_PRESE.as("word_value_prese"),
 						wm.HOMONYM_NR,
 						wm.LANG,
 						wtf.as("word_type_codes"),
@@ -281,17 +268,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wds.as("dataset_codes"))
 				.from(wmid
 						.innerJoin(lm).on(lm.WORD_ID.eq(wmid.field("word_id", Long.class)).and(lm.MEANING_ID.eq(wmid.field("meaning_id", Long.class))))
-						.innerJoin(wm).on(wherewm)
-						.innerJoin(pm).on(pm.WORD_ID.eq(wm.ID))
-						.innerJoin(fm).on(fm.PARADIGM_ID.eq(pm.ID).and(fm.MODE.eq(FormMode.WORD.name()))))
+						.innerJoin(wm).on(wherewm))
 				.groupBy(
 						wmid.field("word_id"),
 						wmid.field("meaning_id"),
 						lm.ID,
-						fm.VALUE,
-						fm.VALUE_PRESE,
-						wm.HOMONYM_NR,
-						wm.LANG)
+						wm.ID)
 				.asTable("wm");
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
@@ -397,8 +379,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 		Word w = WORD.as("w");
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 
 		Field<String[]> lfreq = DSL
 				.select(DSL.arrayAgg(DSL.concat(
@@ -438,8 +418,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 						lregf.as("registers"),
 						lrgnf.as("regions"),
 						l.WORD_ID,
-						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word_value"),
-						DSL.field("array_to_string(array_agg(distinct f.value_prese), ',', '*')", String.class).as("word_value_prese"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
 						w.HOMONYM_NR,
 						w.LANG.as("word_lang"),
 						w.GENDER_CODE.as("word_gender_code"),
@@ -448,13 +428,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"))
-				.from(f, p, w, l)
-				.where(
-						l.ID.eq(lexemeId)
-								.and(l.WORD_ID.eq(w.ID))
-								.and(p.WORD_ID.eq(w.ID))
-								.and(f.PARADIGM_ID.eq(p.ID))
-								.and(f.MODE.eq(FormMode.WORD.name())))
+				.from(w, l)
+				.where(l.ID.eq(lexemeId).and(l.WORD_ID.eq(w.ID)))
 				.groupBy(l.ID, w.ID)
 				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
 				.fetchSingleInto(LexemeWordTuple.class);
@@ -465,16 +440,14 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
 		return create
-				.select(FORM.VALUE)
-				.from(FORM, PARADIGM, LEXEME)
+				.select(WORD.VALUE)
+				.from(WORD, LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(dsWhere))
-				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.WORD_ID, FORM.ID)
+				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, WORD.ID)
 				.limit(1)
 				.fetchSingleInto(String.class);
 	}

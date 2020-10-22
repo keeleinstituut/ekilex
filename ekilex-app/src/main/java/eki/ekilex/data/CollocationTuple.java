@@ -36,8 +36,6 @@ public class CollocationTuple extends AbstractDataObject {
 
 	private String collocMemberWord;
 
-	private String collocMemberMode;
-
 	private Float collocMemberWeight;
 
 	public Long getPosGroupId() {
@@ -150,14 +148,6 @@ public class CollocationTuple extends AbstractDataObject {
 
 	public void setCollocMemberWord(String collocMemberWord) {
 		this.collocMemberWord = collocMemberWord;
-	}
-
-	public String getCollocMemberMode() {
-		return collocMemberMode;
-	}
-
-	public void setCollocMemberMode(String collocMemberMode) {
-		this.collocMemberMode = collocMemberMode;
 	}
 
 	public Float getCollocMemberWeight() {

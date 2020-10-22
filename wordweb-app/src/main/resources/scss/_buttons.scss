@@ -96,3 +96,12 @@
     display: none !important;
   }
 }
+
+.btn-bold {
+  font-weight: bold;
+  font-size: 12px;
+  color: $gray-350;
+  .fa {
+    margin-right: 8px;
+  }
+}

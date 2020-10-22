@@ -89,14 +89,16 @@ function initialiseDetailSearch() {
 	});
 
 	$(document).on("change", "select[name$='searchKey']", function() {
-
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');
 		let pageName = detailConditionElement.attr("data-page");
 		let searchKey = $(this).val();
 		let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
 		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
 		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
-		// NOT_EXISTS and NOT_EQUALS is not implemented everywhere
+		// NOT_EXISTS, NOT_EQUALS and NOT_CONTAINS is not implemented everywhere
+		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
+			operandTemplate.find('option[value="NOT_CONTAINS"]').remove();
+		}
 		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
 			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
 		}
@@ -145,6 +147,8 @@ function initialiseDetailSearch() {
 		let isAutofillElement = copyOfValueTemplate.attr('data-live-search') != undefined;
 		let previousElementWasAutofill = searchValueElement.parent().hasClass('bootstrap-select');
 
+		searchValueElement.parents(".value-input-container").attr('class',templateElement.attr('class'));
+
 		if (copyOfValueTemplate.hasClass('date')) {
 			copyOfValueTemplate.children().attr('name', searchValueElement.attr('name'));
 		} else {
@@ -166,7 +170,6 @@ function initialiseDetailSearch() {
 		if (isAutofillElement) {
 			copyOfValueTemplate.selectpicker({width: '100%'})
 		}
-
 	};
 
 	$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
@@ -214,8 +217,12 @@ function initConditionGroup(groupElement) {
 
 function initCondition(conditionElement) {
 	let searchKeySelect = conditionElement.find('select[name$="searchKey"]');
-	searchKeySelect.val(searchKeySelect.find('option').first().val());
+	const searchKey = searchKeySelect.find('option').first().val();
+	searchKeySelect.val(searchKey);
 	searchKeySelect.trigger('change');
+
+	const templClasslist = $('#searchValueTemplates').find('[name="' + searchKey + '"]')[0].classList;
+	$(conditionElement).find('.value-input-container')[0].classList = templClasslist ;
 	displayDetailConditionButtons();
 };
 

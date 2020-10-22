@@ -102,27 +102,22 @@
   .has-submenu {
     position: relative;
 
-    button {
-      padding: 0;
-      font-size: 20px;
-      color: inherit;
-      background-color: transparent;
-      border: none;
-      transition-property: .3s ease-in-out;
-
-      span:first-of-type {
-        display: inline-block;
-        content: "";
-        border-top: 5px solid;
-        border-right: 5px solid transparent;
-        border-bottom: 0;
-        border-left: 5px solid transparent;
-      }
+    &::after {
+      position: absolute;
+      top: 20px;
+      right: 0;
+      color: #2c6fb6;
+      content: "";
+      border-top: 5px solid;
+      border-right: 5px solid transparent;
+      border-bottom: 0;
+      border-left: 5px solid transparent;
 
       @include media-breakpoint-down(sm) {
         display: none;
       }
     }
+
 
     .list-unstyled {
       display: none;
@@ -132,8 +127,8 @@
 
   .has-submenu.open {
 
-    button {
-      transform: rotate(90deg);
+    &::after {
+      transform: rotate(90deg);    
     }
 
     .list-unstyled {
