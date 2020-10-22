@@ -215,7 +215,7 @@
     top: 3px;
     right: -6px;
   }
-  .word-options + .word-options sup {
+  .word-options:not(:only-child):not(:last-child) sup {
     right: 12px;
   }
 
