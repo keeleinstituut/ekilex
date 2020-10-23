@@ -82,7 +82,7 @@
 
     function showPanel() {
         var hash = window.location.hash.substring(1)
-        if (hash == 'undefined') {
+        if (hash == 'undefined' || hash == '') {
           return;
         } else {
           var target = $('#' + hash)
@@ -107,7 +107,6 @@
         }
     }
 
-    window.setTimeout(showPanel(), 0);
 
     // sub-menu scrolling toggling active class
     var findPos = function (obj) {
@@ -170,4 +169,7 @@
         onScroll(e)
       }
     });
+
+    window.setTimeout(function(){showPanel()}, 0);
+
   });

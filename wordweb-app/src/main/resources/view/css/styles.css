@@ -16528,7 +16528,7 @@ body.hidden-scroll {
   background-color: #ccd9e0;
 }
 
-@media (max-width: 991.98px) {
+@media (max-width: 767.98px) {
   .dropdown-aside .nav-link {
     font-size: 16px;
     border-bottom: solid 1px #ccd9e0;
