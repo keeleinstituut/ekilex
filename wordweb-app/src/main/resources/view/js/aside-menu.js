@@ -81,7 +81,6 @@
     })
 
     function showPanel() {
-      if (window.location.pathname == '/learn') {
         var hash = window.location.hash.substring(1)
         if (hash == 'undefined') {
           return;
@@ -106,7 +105,6 @@
             }, 300);
           }
         }
-      }
     }
 
     window.setTimeout(showPanel(), 0);
