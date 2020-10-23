@@ -24,10 +24,12 @@ public class ClassifierDbService extends AbstractDataDbService {
 	public List<String> getClassifierCodes(String classifierName) {
 
 		Field<Object> codeField = DSL.field("code");
+		Field<Object> orderByField = DSL.field("order_by");
 
 		List<String> classifierCodes = create
 				.select(codeField)
 				.from(classifierName)
+				.orderBy(orderByField)
 				.fetchInto(String.class);
 
 		return classifierCodes;
