@@ -41,6 +41,7 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.select(DOMAIN.CODE)
 				.from(DOMAIN)
 				.where(DOMAIN.ORIGIN.eq(domainOriginCode))
+				.orderBy(DOMAIN.ORDER_BY)
 				.fetchInto(String.class);
 
 		return domainCodes;
