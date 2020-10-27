@@ -11,6 +11,8 @@ public class StaticParadigm extends AbstractDataObject {
 
 	private Long paradigmId;
 
+	private String inflectionType;
+
 	private Map<String, List<Form>> formMorphCodeMap;
 
 	public Long getParadigmId() {
@@ -19,6 +21,14 @@ public class StaticParadigm extends AbstractDataObject {
 
 	public void setParadigmId(Long paradigmId) {
 		this.paradigmId = paradigmId;
+	}
+
+	public String getInflectionType() {
+		return inflectionType;
+	}
+
+	public void setInflectionType(String inflectionType) {
+		this.inflectionType = inflectionType;
 	}
 
 	public Map<String, List<Form>> getFormMorphCodeMap() {

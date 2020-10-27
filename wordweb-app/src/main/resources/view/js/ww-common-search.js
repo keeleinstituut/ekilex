@@ -193,7 +193,28 @@ $(document).on("click", "#homonymListToggleButton", function() {
 });
 
 $(document).on("shown.bs.modal", "#morpho-modal", function() {
+	var morphoContentDiv = $("#morpho-content");
+	var morphoUrlWithParams = morphoUrl + "/" + currentWordId + "/" + currentWordClass;
+	$.get(morphoUrlWithParams).done(function(data) {
+		morphoContentDiv.replaceWith(data);
+	});
 	$('#morpho-modal').trigger('focus');
-	
 });
 
+$(document).on("click", "#form-view-mode1-btn", function() {
+	$(".form-display-form-field").each(function(indx, item) {
+		$(item).hide();
+	});
+	$(".form-value-field").each(function(indx, item) {
+		$(item).show();
+	});
+});
+
+$(document).on("click", "#form-view-mode2-btn", function() {
+	$(".form-value-field").each(function(indx, item) {
+		$(item).hide();
+	});
+	$(".form-display-form-field").each(function(indx, item) {
+		$(item).show();
+	});
+});

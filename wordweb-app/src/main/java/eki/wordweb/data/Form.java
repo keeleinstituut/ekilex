@@ -32,7 +32,9 @@ public class Form extends AbstractDataObject {
 
 	private Boolean morphExists;
 
-	private String form;
+	private String value;
+
+	private String valuePrese;
 
 	private String formsWrapup;
 
@@ -136,12 +138,20 @@ public class Form extends AbstractDataObject {
 		this.morphExists = morphExists;
 	}
 
-	public String getForm() {
-		return form;
+	public String getValue() {
+		return value;
 	}
 
-	public void setForm(String form) {
-		this.form = form;
+	public void setValue(String form) {
+		this.value = form;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getFormsWrapup() {

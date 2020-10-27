@@ -160,7 +160,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.select(f.WORD_ID)
 				.from(f)
 				.where(f.WORD_ID.eq(w.WORD_ID)
-						.and(DSL.lower(f.FORM).eq(searchWordLower))));
+						.and(DSL.lower(f.VALUE).eq(searchWordLower))));
 
 		where = applyLangCompDatasetFilter(w, dataFilter, where);
 
@@ -369,7 +369,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						f.DISPLAY_LEVEL,
 						f.MORPH_CODE,
 						f.MORPH_EXISTS,
-						f.FORM,
+						f.VALUE,
+						f.VALUE_PRESE,
 						f.COMPONENTS,
 						f.DISPLAY_FORM,
 						f.VOCAL_FORM,
@@ -389,11 +390,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		return create
 				.select(
 						f.WORD,
-						f.FORM)
+						f.VALUE.as("form"))
 				.from(f)
 				.where(
 						f.WORD_ID.eq(wordId)
-								.and(f.FORM.in(tokens)))
+								.and(f.VALUE.in(tokens)))
 				.fetchInto(WordForm.class);
 	}
 

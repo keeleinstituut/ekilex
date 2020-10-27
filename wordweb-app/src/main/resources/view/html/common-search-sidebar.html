@@ -171,9 +171,9 @@
                   type="button"
                   data-toggle="collapse"
                   data-dynamic-text="true"
-                  th:data-target="${'#morphologyTogglePanel-'+paradigmIter.index+ ' .collapse'}"
+                  th:data-target="${'#morphologyTogglePanel-' + paradigmIter.index + ' .collapse'}"
                   aria-expanded="false"
-                  th:aria-controls="${'#morphologyTogglePanel-'+paradigmIter.index+ ' .collapse'}"
+                  th:aria-controls="${'#morphologyTogglePanel-' + paradigmIter.index + ' .collapse'}"
                   th:if="${paradigm.expandable}">
             <span class="btn-content see-more-content" data-tooltip="tooltip" th:title="#{button.see.more}">
               <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -189,8 +189,7 @@
           <i class="fa fa-expand-alt"></i>Näita käänetega
         </button>
         <div class="modal wordmodal" id="morpho-modal" tabindex="-1" role="dialog" aria-labelledby="Modaali pealkiri" aria-hidden="true">
-          <!-- TODO async content here -->
-          <th:block th:replace="morpho :: morpho-demo"></th:block>
+          <div id="morpho-content"></div>
         </div>
       </div>
     </section>

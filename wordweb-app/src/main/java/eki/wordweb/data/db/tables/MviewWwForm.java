@@ -16,7 +16,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row19;
+import org.jooq.Row20;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -45117067;
+    private static final long serialVersionUID = 339243397;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -112,9 +112,14 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.mview_ww_form.form</code>.
+     * The column <code>public.mview_ww_form.value</code>.
      */
-    public final TableField<MviewWwFormRecord, String> FORM = createField(DSL.name("form"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.value_prese</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.components</code>.
@@ -211,11 +216,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row19 type methods
+    // Row20 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row19<Long, String, String, Long, String, Long, String, String, String, String, Integer, String, Boolean, String, String[], String, String, String, Long> fieldsRow() {
-        return (Row19) super.fieldsRow();
+    public Row20<Long, String, String, Long, String, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, String, Long> fieldsRow() {
+        return (Row20) super.fieldsRow();
     }
 }

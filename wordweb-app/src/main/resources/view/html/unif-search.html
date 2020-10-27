@@ -114,9 +114,10 @@
         </div>
       </div>
       <script th:inline="javascript">
-		    var currentWord = /*[[${wordData.word.word}]]*/'';
-		    var currentWordId = /*[[${wordData.word.wordId}]]*/'';
-		    var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+	    var currentWord = /*[[${wordData.word.word}]]*/'';
+	    var currentWordId = /*[[${wordData.word.wordId}]]*/'';
+	    var currentWordLang = /*[[${wordData.word.lang}]]*/'';
+	    var currentWordClass = /*[[${wordData.word.wordClass}]]*/'';
       </script>
     </div>
   </div>
@@ -125,6 +126,7 @@
   	var currentPage = /*[[@{/search/unif}]]*/"/search/unif";
   	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
   	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
+  	var morphoUrl = /*[[@{/morpho}]]*/"/morpho";
   	var corpUrl = /*[[@{/corp/detail}]]*/"/corp/detail";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search-unif');

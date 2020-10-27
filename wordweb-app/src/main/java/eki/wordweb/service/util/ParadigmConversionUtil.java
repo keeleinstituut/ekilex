@@ -42,9 +42,13 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 				classifierUtil.applyClassifiers(form, displayLang);
 			}
 
+			Form firstForm = forms.get(0);
+			String inflectionType = firstForm.getInflectionType();
+
 			Map<String, List<Form>> formMorphCodeMap = forms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
 			StaticParadigm staticParadigm = new StaticParadigm();
 			staticParadigm.setParadigmId(paradigmId);
+			staticParadigm.setInflectionType(inflectionType);
 			staticParadigm.setFormMorphCodeMap(formMorphCodeMap);
 			staticParadigms.add(staticParadigm);
 		}
@@ -208,13 +212,13 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 			if (morphForms.size() > 1) {
 				morphForms.sort(Comparator.comparing(Form::getDisplayLevel));
 				morphForm = morphForms.get(0);
-				forms = morphForms.stream().map(Form::getForm).collect(Collectors.toList());
+				forms = morphForms.stream().map(Form::getValue).collect(Collectors.toList());
 				formsWrapup = StringUtils.join(forms, ALTERNATIVE_FORMS_SEPARATOR);
 				displayForms = morphForms.stream().map(Form::getDisplayForm).collect(Collectors.toList());
 				displayFormsWrapup = StringUtils.join(displayForms, ALTERNATIVE_FORMS_SEPARATOR);
 			} else {
 				morphForm = morphForms.get(0);
-				formsWrapup = morphForm.getForm();
+				formsWrapup = morphForm.getValue();
 				displayFormsWrapup = morphForm.getDisplayForm();
 			}
 			if (StringUtils.isBlank(displayFormsWrapup)) {

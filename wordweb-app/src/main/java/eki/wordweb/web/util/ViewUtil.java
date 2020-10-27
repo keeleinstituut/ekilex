@@ -1,10 +1,12 @@
 package eki.wordweb.web.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +17,9 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.DecoratedWordType;
 import eki.wordweb.data.DisplayColloc;
+import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguageData;
+import eki.wordweb.data.StaticParadigm;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
@@ -137,6 +141,18 @@ public class ViewUtil implements WebConstant, SystemConstant {
 		}
 		htmlBuf.append("</span>");
 		return htmlBuf.toString();
+	}
+
+	public List<Form> getForms(StaticParadigm paradigm, String morphCode) {
+		if (paradigm == null) {
+			return Collections.emptyList();
+		}
+		Map<String, List<Form>> formMorphCodeMap = paradigm.getFormMorphCodeMap();
+		List<Form> forms = formMorphCodeMap.get(morphCode);
+		if (CollectionUtils.isEmpty(forms)) {
+			return Collections.emptyList();
+		}
+		return forms;
 	}
 
 	public String wrapDecorations(String value) {
