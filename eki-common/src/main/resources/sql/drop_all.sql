@@ -59,7 +59,7 @@ drop table if exists lexeme_deriv;
 drop table if exists lexeme_region;
 drop table if exists layer_state; -- remove later
 drop table if exists lexeme_tag;
-drop table if exists lexeme;
+drop table if exists lexeme CASCADE;
 drop table if exists collocation_freeform;
 drop table if exists collocation;
 drop table if exists definition_freeform;
@@ -143,7 +143,7 @@ drop table if exists value_state;
 drop table if exists language_label;
 drop table if exists language;
 drop table if exists label_type;
-drop table if exists lifecycle_log;
+drop table if exists lifecycle_log CASCADE;
 drop table if exists eki_user_application;
 drop table if exists eki_user;
 drop table if exists tag;
