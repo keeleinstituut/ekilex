@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningSemanticType extends TableImpl<MeaningSemanticTypeRecord> {
 
-    private static final long serialVersionUID = 280203610;
+    private static final long serialVersionUID = 1398653989;
 
     /**
      * The reference instance of <code>public.meaning_semantic_type</code>
@@ -109,7 +109,7 @@ public class MeaningSemanticType extends TableImpl<MeaningSemanticTypeRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_SEMANTIC_TYPE_MEANING_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MEANING_SEMANTIC_TYPE_IDX, Indexes.MEANING_SEMANTIC_TYPE_MEANING_ID_IDX);
     }
 
     @Override

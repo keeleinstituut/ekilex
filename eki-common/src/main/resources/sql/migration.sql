@@ -308,4 +308,11 @@ where exists (select lt.id
               from lexeme_tag lt
               where lt.lexeme_id = l.id
               and   lt.tag_name in ('tundmatu koll, 1 homon', 'tundmatu koll, n homon', 'tundmatu koll, 0 homon'));
-              
+
+-- freeform tabelile looja/muutja andmete lisamine ja olemasolevate andmete migreerimine logidest
+
+alter table freeform
+add column created_by text null,
+add column created_on timestamp null,
+add column modified_by text null,
+add column modified_on timestamp null;

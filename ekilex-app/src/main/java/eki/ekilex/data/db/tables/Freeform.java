@@ -20,7 +20,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row14;
+import org.jooq.Row18;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Freeform extends TableImpl<FreeformRecord> {
 
-    private static final long serialVersionUID = 182453118;
+    private static final long serialVersionUID = -939279530;
 
     /**
      * The reference instance of <code>public.freeform</code>
@@ -120,6 +120,26 @@ public class Freeform extends TableImpl<FreeformRecord> {
      * The column <code>public.freeform.is_public</code>.
      */
     public final TableField<FreeformRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.freeform.created_by</code>.
+     */
+    public final TableField<FreeformRecord, String> CREATED_BY = createField(DSL.name("created_by"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.freeform.created_on</code>.
+     */
+    public final TableField<FreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+
+    /**
+     * The column <code>public.freeform.modified_by</code>.
+     */
+    public final TableField<FreeformRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.freeform.modified_on</code>.
+     */
+    public final TableField<FreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * Create a <code>public.freeform</code> table reference
@@ -219,11 +239,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row18 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Long, Long, String, String, String, Timestamp, BigDecimal, String[], String, String, String, String, Long, Boolean> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public Row18<Long, Long, String, String, String, Timestamp, BigDecimal, String[], String, String, String, String, Long, Boolean, String, Timestamp, String, Timestamp> fieldsRow() {
+        return (Row18) super.fieldsRow();
     }
 }

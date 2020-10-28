@@ -34,7 +34,10 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Field;
@@ -49,6 +52,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -72,51 +76,53 @@ import eki.ekilex.data.db.tables.records.WordRelationRecord;
 @Component
 public class CudDbService extends AbstractDataDbService {
 
-	public void updateFreeformTextValue(Long id, String value, String valuePrese) {
+	public void updateFreeform(FreeForm freeform, String userName) {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(FREEFORM.VALUE_TEXT, freeform.getValueText());
+		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
+		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
+		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, timestamp);
+		if (freeform.isPublic() != null) {
+			fieldAndValueMap.put(FREEFORM.IS_PUBLIC, freeform.isPublic());
+		}
+		if (freeform.getLang() != null) {
+			fieldAndValueMap.put(FREEFORM.LANG, freeform.getLang());
+		}
+		if (freeform.getComplexity() != null) {
+			fieldAndValueMap.put(FREEFORM.COMPLEXITY, freeform.getComplexity().name());
+		}
+
 		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, value)
-				.set(FREEFORM.VALUE_PRESE, valuePrese)
-				.where(FREEFORM.ID.eq(id))
+				.set(fieldAndValueMap)
+				.where(FREEFORM.ID.eq(freeform.getId()))
 				.execute();
 	}
 
-	public void updateFreeformTextValueAndComplexity(Long id, String value, String valuePrese, Complexity complexity) {
-		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, value)
-				.set(FREEFORM.VALUE_PRESE, valuePrese)
-				.set(FREEFORM.COMPLEXITY, complexity.name())
-				.where(FREEFORM.ID.eq(id))
-				.execute();
-	}
+	public void updateChildFreeform(FreeForm freeform, String userName) {
 
-	public void updateFreeform(Long id, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
-		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, value)
-				.set(FREEFORM.VALUE_PRESE, valuePrese)
-				.set(FREEFORM.LANG, lang)
-				.set(FREEFORM.COMPLEXITY, complexity.name())
-				.set(FREEFORM.IS_PUBLIC, isPublic)
-				.where(FREEFORM.ID.eq(id))
-				.execute();
-	}
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-	public void updateFreeform(Long id, String value, String valuePrese, Complexity complexity, boolean isPublic) {
-		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, value)
-				.set(FREEFORM.VALUE_PRESE, valuePrese)
-				.set(FREEFORM.COMPLEXITY, complexity.name())
-				.set(FREEFORM.IS_PUBLIC, isPublic)
-				.where(FREEFORM.ID.eq(id))
-				.execute();
-	}
+		Map<Field<?>, Object> fieldAndValueMap = new HashMap<>();
+		fieldAndValueMap.put(FREEFORM.VALUE_TEXT, freeform.getValueText());
+		fieldAndValueMap.put(FREEFORM.VALUE_PRESE, freeform.getValuePrese());
+		fieldAndValueMap.put(FREEFORM.MODIFIED_BY, userName);
+		fieldAndValueMap.put(FREEFORM.MODIFIED_ON, timestamp);
+		if (freeform.isPublic() != null) {
+			fieldAndValueMap.put(FREEFORM.IS_PUBLIC, freeform.isPublic());
+		}
+		if (freeform.getLang() != null) {
+			fieldAndValueMap.put(FREEFORM.LANG, freeform.getLang());
+		}
+		if (freeform.getComplexity() != null) {
+			fieldAndValueMap.put(FREEFORM.COMPLEXITY, freeform.getComplexity().name());
+		}
 
-	public void updateFreeform(Long id, String value, String valuePrese, String lang, boolean isPublic) {
 		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, value)
-				.set(FREEFORM.VALUE_PRESE, valuePrese)
-				.set(FREEFORM.LANG, lang)
-				.set(FREEFORM.IS_PUBLIC, isPublic)
-				.where(FREEFORM.ID.eq(id))
+				.set(fieldAndValueMap)
+				.where(FREEFORM.PARENT_ID.eq(freeform.getParentId()).and(FREEFORM.TYPE.eq(freeform.getType().name())))
 				.execute();
 	}
 
@@ -419,16 +425,6 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeId;
 	}
 
-	public void updateImageTitle(Long imageFreeformId, String title) {
-		create
-				.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, title)
-				.set(FREEFORM.VALUE_PRESE, title)
-				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
-						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-				.execute();
-	}
-
 	public void updateWordRelationOrderBy(Long relationId, Long orderBy) {
 		create
 				.update(WORD_RELATION)
@@ -587,6 +583,18 @@ public class CudDbService extends AbstractDataDbService {
 		return wordLexemeMeaningId;
 	}
 
+	public Long createWordFreeform(Long wordId, FreeForm freeform, String userName) {
+
+		Long freeformId = createFreeform(freeform, userName);
+
+		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
+		wordFreeform.setWordId(wordId);
+		wordFreeform.setFreeformId(freeformId);
+		wordFreeform.store();
+
+		return freeformId;
+	}
+
 	public Long createWordType(Long wordId, String typeCode) {
 		Long wordWordTypeId = create
 				.select(WORD_WORD_TYPE.ID)
@@ -642,24 +650,6 @@ public class CudDbService extends AbstractDataDbService {
 		wordGroupMember.setWordId(wordId);
 		wordGroupMember.store();
 		return wordGroupMember.getId();
-	}
-
-	public Long createWordNote(Long wordId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.NOTE.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setLang(lang);
-		freeform.setComplexity(complexity.name());
-		freeform.setIsPublic(isPublic);
-		freeform.store();
-
-		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
-		wordFreeform.setWordId(wordId);
-		wordFreeform.setFreeformId(freeform.getId());
-		wordFreeform.store();
-
-		return freeform.getId();
 	}
 
 	public List<Long> createWordLexemesTag(Long wordId, String datasetCode, String tagName) {
@@ -735,21 +725,16 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public Long createDefinitionNote(Long definitionId, String value, String valuePrese, String lang, boolean isPublic) {
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.NOTE.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setLang(lang);
-		freeform.setIsPublic(isPublic);
-		freeform.store();
+	public Long createDefinitionFreeform(Long definitionId, FreeForm freeform, String userName) {
 
-		DefinitionFreeformRecord definitionFreeform = create.newRecord(DEFINITION_FREEFORM);
-		definitionFreeform.setDefinitionId(definitionId);
-		definitionFreeform.setFreeformId(freeform.getId());
-		definitionFreeform.store();
+		Long freeformId = createFreeform(freeform, userName);
 
-		return freeform.getId();
+		DefinitionFreeformRecord definitionFreeformRecord = create.newRecord(DEFINITION_FREEFORM);
+		definitionFreeformRecord.setDefinitionId(definitionId);
+		definitionFreeformRecord.setFreeformId(freeformId);
+		definitionFreeformRecord.store();
+
+		return freeformId;
 	}
 
 	public Long createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
@@ -775,21 +760,16 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningRelation.getId();
 	}
 
-	public Long createMeaningLearnerComment(Long meaningId, String value, String valuePrese, String lang, Complexity complexity) {
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.LEARNER_COMMENT.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setLang(lang);
-		freeform.setComplexity(complexity.name());
-		freeform.store();
+	public Long createMeaningFreeform(Long meaningId, FreeForm freeform, String userName) {
 
-		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
-		meaningFreeform.setMeaningId(meaningId);
-		meaningFreeform.setFreeformId(freeform.getId());
-		meaningFreeform.store();
+		Long freeformId = createFreeform(freeform, userName);
 
-		return freeform.getId();
+		MeaningFreeformRecord meaningFreeformRecord = create.newRecord(MEANING_FREEFORM);
+		meaningFreeformRecord.setMeaningId(meaningId);
+		meaningFreeformRecord.setFreeformId(freeformId);
+		meaningFreeformRecord.store();
+
+		return freeformId;
 	}
 
 	public Long createMeaningDomain(Long meaningId, Classifier domain) {
@@ -809,24 +789,6 @@ public class CudDbService extends AbstractDataDbService {
 					.getId();
 		}
 		return meaningDomainId;
-	}
-
-	public Long createMeaningNote(Long meaningId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.NOTE.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setLang(lang);
-		freeform.setComplexity(complexity.name());
-		freeform.setIsPublic(isPublic);
-		freeform.store();
-
-		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
-		meaningFreeform.setMeaningId(meaningId);
-		meaningFreeform.setFreeformId(freeform.getId());
-		meaningFreeform.store();
-
-		return freeform.getId();
 	}
 
 	public Long createMeaningSemanticType(Long meaningId, String semanticTypeCode) {
@@ -878,86 +840,16 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeId;
 	}
 
-	public Long createUsage(Long lexemeId, String value, String valuePrese, String languageCode, Complexity complexity, boolean isPublic) {
-		Long usageFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG, FREEFORM.COMPLEXITY, FREEFORM.IS_PUBLIC)
-				.values(FreeformType.USAGE.name(), value, valuePrese, languageCode, complexity.name(), isPublic)
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, usageFreeformId).execute();
-		return usageFreeformId;
-	}
+	public Long createLexemeFreeform(Long lexemeId, FreeForm freeform, String userName) {
 
-	public Long createUsageTranslation(Long usageId, String value, String valuePrese, String languageCode) {
-		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG)
-				.values(FreeformType.USAGE_TRANSLATION.name(), usageId, value, valuePrese, languageCode)
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-	}
+		Long freeformId = createFreeform(freeform, userName);
 
-	public Long createUsageDefinition(Long usageId, String value, String valuePrese, String languageCode) {
-		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG)
-				.values(FreeformType.USAGE_DEFINITION.name(), usageId, value, valuePrese, languageCode)
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-	}
+		LexemeFreeformRecord lexemeFreeformRecord = create.newRecord(LEXEME_FREEFORM);
+		lexemeFreeformRecord.setLexemeId(lexemeId);
+		lexemeFreeformRecord.setFreeformId(freeformId);
+		lexemeFreeformRecord.store();
 
-	public Long createLexemeNote(Long lexemeId, String value, String valuePrese, String lang, Complexity complexity, boolean isPublic) {
-
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.NOTE.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setLang(lang);
-		freeform.setComplexity(complexity.name());
-		freeform.setIsPublic(isPublic);
-		freeform.store();
-
-		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
-		lexemeFreeform.setLexemeId(lexemeId);
-		lexemeFreeform.setFreeformId(freeform.getId());
-		lexemeFreeform.store();
-
-		return freeform.getId();
-	}
-
-	public Long createLexemeGovernment(Long lexemeId, String value, Complexity complexity) {
-
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.GOVERNMENT.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(value);
-		freeform.setComplexity(complexity.name());
-		freeform.store();
-
-		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
-		lexemeFreeform.setLexemeId(lexemeId);
-		lexemeFreeform.setFreeformId(freeform.getId());
-		lexemeFreeform.store();
-
-		return freeform.getId();
-	}
-
-	public Long createLexemeGrammar(Long lexemeId, String value, String valuePrese, Complexity complexity) {
-
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.GRAMMAR.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity.name());
-		freeform.store();
-
-		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
-		lexemeFreeform.setLexemeId(lexemeId);
-		lexemeFreeform.setFreeformId(freeform.getId());
-		lexemeFreeform.store();
-
-		return freeform.getId();
+		return freeformId;
 	}
 
 	public Long createLexemePos(Long lexemeId, String posCode) {
@@ -1075,74 +967,40 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeRegionId;
 	}
 
-	public Long createImageTitle(Long imageId, String value) {
-		return create
-				.insertInto(FREEFORM, FREEFORM.PARENT_ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
-				.values(imageId, FreeformType.IMAGE_TITLE.name(), value, value)
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	public Long createOdWordRecommendation(Long wordId, String value, String valuePrese, Complexity complexity) {
-
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.OD_WORD_RECOMMENDATION.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity.name());
-		freeform.store();
-
-		WordFreeformRecord wordFreeform = create.newRecord(WORD_FREEFORM);
-		wordFreeform.setWordId(wordId);
-		wordFreeform.setFreeformId(freeform.getId());
-		wordFreeform.store();
-
-		return freeform.getId();
-	}
-
-	public Long createOdLexemeRecommendation(Long lexemeId, String value, String valuePrese, Complexity complexity) {
-
-		FreeformRecord freeform = create.newRecord(FREEFORM);
-		freeform.setType(FreeformType.OD_LEXEME_RECOMMENDATION.name());
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-		freeform.setComplexity(complexity.name());
-		freeform.store();
-
-		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
-		lexemeFreeform.setLexemeId(lexemeId);
-		lexemeFreeform.setFreeformId(freeform.getId());
-		lexemeFreeform.store();
-
-		return freeform.getId();
-	}
-
-	public Long createOdUsageDefinition(Long usageId, String value, String valuePrese) {
-
-		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
-				.values(FreeformType.OD_USAGE_DEFINITION.name(), usageId, value, valuePrese)
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-	}
-
-	public Long createOdUsageAlternative(Long usageId, String value, String valuePrese) {
-
-		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
-				.values(FreeformType.OD_USAGE_ALTERNATIVE.name(), usageId, value, valuePrese)
-				.returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
-	}
-
 	public void createWordRelationParam(Long wordRelationId, String paramName, BigDecimal paramValue) {
 
 		create.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
 				.values(wordRelationId, paramName, paramValue)
 				.execute();
+	}
+
+	public Long createChildFreeform(FreeForm freeform, String userName) {
+
+		Long freeformId = createFreeform(freeform, userName);
+		return freeformId;
+	}
+
+	private Long createFreeform(FreeForm freeform, String userName) {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		boolean isPublic = freeform.isPublic() == null ? PUBLICITY_PUBLIC : freeform.isPublic();
+		String complexity = freeform.getComplexity() == null ? null : freeform.getComplexity().name();
+
+		FreeformRecord freeformRecord = create.newRecord(FREEFORM);
+		freeformRecord.setParentId(freeform.getParentId());
+		freeformRecord.setType(freeform.getType().name());
+		freeformRecord.setValueText(freeform.getValueText());
+		freeformRecord.setValuePrese(freeform.getValuePrese());
+		freeformRecord.setLang(freeform.getLang());
+		freeformRecord.setComplexity(complexity);
+		freeformRecord.setIsPublic(isPublic);
+		freeformRecord.setCreatedBy(userName);
+		freeformRecord.setCreatedOn(timestamp);
+		freeformRecord.setModifiedBy(userName);
+		freeformRecord.setModifiedOn(timestamp);
+		freeformRecord.store();
+
+		return freeformRecord.getId();
 	}
 
 	public void deleteWord(SimpleWord word) {

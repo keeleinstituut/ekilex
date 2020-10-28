@@ -14,6 +14,8 @@ public class FreeForm extends AbstractDataObject {
 
 	private Long id;
 
+	private Long parentId;
+
 	private FreeformType type;
 
 	private String valueText;
@@ -30,12 +32,22 @@ public class FreeForm extends AbstractDataObject {
 
 	private List<FreeForm> children = new ArrayList<>();
 
+	private Boolean isPublic;
+
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 	public FreeformType getType() {
@@ -86,6 +98,14 @@ public class FreeForm extends AbstractDataObject {
 		this.complexity = complexity;
 	}
 
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
+
 	public List<FreeForm> getChildren() {
 		return children;
 	}
@@ -94,11 +114,11 @@ public class FreeForm extends AbstractDataObject {
 		this.children = children;
 	}
 
-	public Long getOrderBy() {
-		return orderBy;
+	public Boolean isPublic() {
+		return isPublic;
 	}
 
-	public void setOrderBy(Long orderBy) {
-		this.orderBy = orderBy;
+	public void setPublic(Boolean aPublic) {
+		isPublic = aPublic;
 	}
 }

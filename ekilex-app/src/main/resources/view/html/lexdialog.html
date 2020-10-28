@@ -653,7 +653,7 @@
             <div class="value-group" data-id="usage_translation">
               <div class="form-group row">
                 <div class="col-md-4">
-                  <select required class="form-control classifier-select" name="language" data-live-search="true">
+                  <select required class="form-control classifier-select required-field" name="language" data-live-search="true">
                     <option value="" hidden disabled selected>vali keel...</option>
                     <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
                   </select>

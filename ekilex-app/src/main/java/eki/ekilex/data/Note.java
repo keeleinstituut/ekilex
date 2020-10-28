@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.constant.Complexity;
@@ -19,6 +20,10 @@ public class Note extends AbstractPublicEntity {
 	private Complexity complexity;
 
 	private Long orderBy;
+
+	private String modifiedBy;
+
+	private Timestamp modifiedOn;
 
 	private List<SourceLink> sourceLinks;
 
@@ -68,6 +73,22 @@ public class Note extends AbstractPublicEntity {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Timestamp getModifiedOn() {
+		return modifiedOn;
+	}
+
+	public void setModifiedOn(Timestamp modifiedOn) {
+		this.modifiedOn = modifiedOn;
 	}
 
 	public List<SourceLink> getSourceLinks() {

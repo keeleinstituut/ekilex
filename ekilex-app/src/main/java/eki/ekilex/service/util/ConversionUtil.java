@@ -315,6 +315,8 @@ public class ConversionUtil implements GlobalConstant {
 				note.setComplexity(tuple.getComplexity());
 				note.setPublic(tuple.isPublic());
 				note.setOrderBy(tuple.getOrderBy());
+				note.setModifiedBy(tuple.getModifiedBy());
+				note.setModifiedOn(tuple.getModifiedOn());
 				if (note instanceof LexemeNote) {
 					((LexemeNote) note).setLexemeId(parentId);
 				} else if (note instanceof MeaningNote) {
