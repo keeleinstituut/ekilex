@@ -21,10 +21,10 @@
         }
 
         if (!$(target).hasClass('nav-link')) {
+          element.stopImmediatePropagation()
+          element.stopPropagation()
           target = $(target).closest('.nav-link')
-          $('.nav-link.active').removeClass('active')
           $(target).toggleClass('active')
-          $('.has-submenu.open').removeClass('open')
           $(target).parent().toggleClass('open')
           return;
         }    
