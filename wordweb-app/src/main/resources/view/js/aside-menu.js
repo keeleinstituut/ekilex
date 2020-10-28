@@ -8,9 +8,11 @@
     navLinks.forEach(function (el, i) {
 
       el.addEventListener('click', (element) => {
-        element.preventDefault()
+        element.preventDefault()    
         var dropdownTitle
         var target = $(element.target)
+        $('.nav-link.active').not($(target).closest('.nav-link')).removeClass('active')
+        $('.has-submenu.open').not($(target).closest('.nav-link').parents('.has-submenu')).removeClass('open')
 
         if ( $(target).hasClass('active') && $(target).parent().hasClass('has-submenu')){
           element.stopImmediatePropagation()
@@ -114,8 +116,8 @@
         sideMenuHeading.innerHTML = targetLink.eq(0).text()
         $('.nav-link').removeClass('active')
         targetLink.eq(0).addClass('active')
-        if ($(targetLink).parent().hasClass('has-submenu')) {
-          $(targetLink).parent().toggleClass('open')
+        if ($(targetLink).closest('.has-submenu').length) {
+          $(targetLink).closest('.has-submenu').addClass('open')
         }
         $('.tab-pane').removeClass('show').removeClass('active')
         $(closestTab).addClass('show active')
