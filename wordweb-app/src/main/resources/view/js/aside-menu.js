@@ -10,13 +10,30 @@
       el.addEventListener('click', (element) => {
         element.preventDefault()
         var dropdownTitle
+        var target = $(element.target)
 
-        targetHref = $(element.target).closest('.nav-link').attr('href');
+        if ( $(target).hasClass('active') && $(target).parent().hasClass('has-submenu')){
+          element.stopImmediatePropagation()
+          element.stopPropagation()
+          $(target).parent().toggleClass('open')
+          $(target).toggleClass('active')
+          return;
+        }
+
+        if (!$(target).hasClass('nav-link')) {
+          target = $(target).closest('.nav-link')
+          $(target).toggleClass('active')
+          $('.has-submenu.open').removeClass('open')
+          $(target).parent().toggleClass('open')
+          return;
+        }    
+
+        targetHref = $(target).closest('.nav-link').attr('href');
         location.hash = targetHref;
 
         if (!$(el).closest('ul').hasClass('dropdown-menu')) {
           $('.nav-link').removeClass('active')
-          $(element.target).addClass('active')
+          $(target).addClass('active')
           showPanel()
           return
         }
