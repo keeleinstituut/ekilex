@@ -50,6 +50,22 @@ public class Form extends AbstractDataObject {
 
 	private Integer orderBy;
 
+	private Float formFreqValue;
+
+	private Float maxFormFreqValue;
+
+	private Long totalFormFreqRank;
+
+	private Long maxTotalFormFreqRank;
+
+	private Integer scaledTotalFormFreqRank;
+
+	private Integer paradigmFormFreqRank;
+
+	private Integer maxParadigmFormFreqRank;
+
+	private Integer scaledParadigmFormFreqRank;
+
 	public Long getFormId() {
 		return formId;
 	}
@@ -142,8 +158,8 @@ public class Form extends AbstractDataObject {
 		return value;
 	}
 
-	public void setValue(String form) {
-		this.value = form;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public String getValuePrese() {
@@ -208,6 +224,70 @@ public class Form extends AbstractDataObject {
 
 	public void setOrderBy(Integer orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public Float getFormFreqValue() {
+		return formFreqValue;
+	}
+
+	public void setFormFreqValue(Float formFreqValue) {
+		this.formFreqValue = formFreqValue;
+	}
+
+	public Float getMaxFormFreqValue() {
+		return maxFormFreqValue;
+	}
+
+	public void setMaxFormFreqValue(Float maxFormFreqValue) {
+		this.maxFormFreqValue = maxFormFreqValue;
+	}
+
+	public Long getTotalFormFreqRank() {
+		return totalFormFreqRank;
+	}
+
+	public void setTotalFormFreqRank(Long totalFormFreqRank) {
+		this.totalFormFreqRank = totalFormFreqRank;
+	}
+
+	public Long getMaxTotalFormFreqRank() {
+		return maxTotalFormFreqRank;
+	}
+
+	public void setMaxTotalFormFreqRank(Long maxTotalFormFreqRank) {
+		this.maxTotalFormFreqRank = maxTotalFormFreqRank;
+	}
+
+	public Integer getScaledTotalFormFreqRank() {
+		return scaledTotalFormFreqRank;
+	}
+
+	public void setScaledTotalFormFreqRank(Integer scaledTotalFormFreqRank) {
+		this.scaledTotalFormFreqRank = scaledTotalFormFreqRank;
+	}
+
+	public Integer getParadigmFormFreqRank() {
+		return paradigmFormFreqRank;
+	}
+
+	public void setParadigmFormFreqRank(Integer paradigmFormFreqRank) {
+		this.paradigmFormFreqRank = paradigmFormFreqRank;
+	}
+
+	public Integer getMaxParadigmFormFreqRank() {
+		return maxParadigmFormFreqRank;
+	}
+
+	public void setMaxParadigmFormFreqRank(Integer maxParadigmFormFreqRank) {
+		this.maxParadigmFormFreqRank = maxParadigmFormFreqRank;
+	}
+
+	public Integer getScaledParadigmFormFreqRank() {
+		return scaledParadigmFormFreqRank;
+	}
+
+	public void setScaledParadigmFormFreqRank(Integer scaledParadigmFormFreqRank) {
+		this.scaledParadigmFormFreqRank = scaledParadigmFormFreqRank;
 	}
 
 }

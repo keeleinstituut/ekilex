@@ -46,8 +46,8 @@ public class UnifSearchService extends AbstractSearchService {
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
 		List<WordEtymTuple> wordEtymTuples = searchDbService.getWordEtymologyTuples(wordId);
 		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
-		Map<Long, List<Form>> paradigmFormsMap = searchDbService.getWordForms(wordId, maxDisplayLevel);
-		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
+		List<Form> forms = searchDbService.getWordForms(wordId, maxDisplayLevel);
+		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, forms, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
@@ -79,7 +79,7 @@ public class UnifSearchService extends AbstractSearchService {
 		// word common
 		wordConversionUtil.composeCommon(word, lexemes);
 
-		return composeWordData(word, paradigmFormsMap, paradigms, lexLexemes, termLexemes);
+		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes);
 	}
 
 	@Override

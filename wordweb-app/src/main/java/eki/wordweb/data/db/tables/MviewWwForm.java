@@ -8,6 +8,7 @@ import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwFormRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +17,6 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row20;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = 339243397;
+    private static final long serialVersionUID = -797641082;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -147,6 +147,36 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.mview_ww_form.form_freq_value</code>.
+     */
+    public final TableField<MviewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.max_form_freq_value</code>.
+     */
+    public final TableField<MviewWwFormRecord, BigDecimal> MAX_FORM_FREQ_VALUE = createField(DSL.name("max_form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.total_form_freq_rank</code>.
+     */
+    public final TableField<MviewWwFormRecord, Long> TOTAL_FORM_FREQ_RANK = createField(DSL.name("total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.max_total_form_freq_rank</code>.
+     */
+    public final TableField<MviewWwFormRecord, Long> MAX_TOTAL_FORM_FREQ_RANK = createField(DSL.name("max_total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.paradigm_form_freq_rank</code>.
+     */
+    public final TableField<MviewWwFormRecord, Integer> PARADIGM_FORM_FREQ_RANK = createField(DSL.name("paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.max_paradigm_form_freq_rank</code>.
+     */
+    public final TableField<MviewWwFormRecord, Integer> MAX_PARADIGM_FORM_FREQ_RANK = createField(DSL.name("max_paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
      * Create a <code>public.mview_ww_form</code> table reference
      */
     public MviewWwForm() {
@@ -213,14 +243,5 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     @Override
     public MviewWwForm rename(Name name) {
         return new MviewWwForm(name, null);
-    }
-
-    // -------------------------------------------------------------------------
-    // Row20 type methods
-    // -------------------------------------------------------------------------
-
-    @Override
-    public Row20<Long, String, String, Long, String, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, String, Long> fieldsRow() {
-        return (Row20) super.fieldsRow();
     }
 }

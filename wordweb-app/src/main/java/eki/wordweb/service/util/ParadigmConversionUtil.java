@@ -26,42 +26,65 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public List<StaticParadigm> composeStaticParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
+	public void calcFreqScale(List<Form> forms) {
+		if (CollectionUtils.isEmpty(forms)) {
+			return;
+		}
+		for (Form form : forms) {
+			if (form.getFormFreqValue() != null) {
+				float scaledParadigmFormFreqRankRounded = Math.round(((float) form.getParadigmFormFreqRank() * (float) FORM_FREQ_SCALE) / (float) form.getMaxParadigmFormFreqRank());
+				int scaledParadigmFormFreqRankInt = FORM_FREQ_SCALE - new Float(scaledParadigmFormFreqRankRounded).intValue();
+				double scaledTotalFormFreqRankRounded = Math.round(((double) form.getTotalFormFreqRank() * (double) FORM_FREQ_SCALE) / (double) form.getMaxTotalFormFreqRank());
+				int scaledTotalFormFreqRankInt = FORM_FREQ_SCALE - new Double(scaledTotalFormFreqRankRounded).intValue();
+				form.setScaledTotalFormFreqRank(scaledTotalFormFreqRankInt);
+				form.setScaledParadigmFormFreqRank(scaledParadigmFormFreqRankInt);
+			}
+		}
+	}
+
+	public List<StaticParadigm> composeStaticParadigms(List<Form> forms, String displayLang) {
+
+		List<StaticParadigm> paradigms = new ArrayList<>();
+		if (CollectionUtils.isEmpty(forms)) {
+			return paradigms;
+		}
+
+		Map<Long, List<Form>> paradigmFormsMap = forms.stream().collect(Collectors.groupingBy(Form::getParadigmId));
 
 		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
 		Collections.sort(paradigmIds);
 
-		List<StaticParadigm> staticParadigms = new ArrayList<>();
-
 		for (Long paradigmId : paradigmIds) {
 
-			List<Form> forms = paradigmFormsMap.get(paradigmId);
-			forms.sort(Comparator.comparing(Form::getOrderBy));
+			List<Form> paradigmForms = paradigmFormsMap.get(paradigmId);
+			paradigmForms.sort(Comparator.comparing(Form::getOrderBy));
 
-			for (Form form : forms) {
+			for (Form form : paradigmForms) {
 				classifierUtil.applyClassifiers(form, displayLang);
 			}
 
-			Form firstForm = forms.get(0);
+			Form firstForm = paradigmForms.get(0);
 			String inflectionType = firstForm.getInflectionType();
 
-			Map<String, List<Form>> formMorphCodeMap = forms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
-			StaticParadigm staticParadigm = new StaticParadigm();
-			staticParadigm.setParadigmId(paradigmId);
-			staticParadigm.setInflectionType(inflectionType);
-			staticParadigm.setFormMorphCodeMap(formMorphCodeMap);
-			staticParadigms.add(staticParadigm);
+			Map<String, List<Form>> formMorphCodeMap = paradigmForms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
+			StaticParadigm paradigm = new StaticParadigm();
+			paradigm.setParadigmId(paradigmId);
+			paradigm.setInflectionType(inflectionType);
+			paradigm.setFormMorphCodeMap(formMorphCodeMap);
+			paradigms.add(paradigm);
 		}
-		return staticParadigms;
+		return paradigms;
 	}
 
-	public List<Paradigm> composeParadigms(Word word, Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
-
-		final String keyValSep = "-";
-
-		String wordClass = word.getWordClass();
+	public List<Paradigm> composeParadigms(Word word, List<Form> forms, String displayLang) {
 
 		List<Paradigm> paradigms = new ArrayList<>();
+		if (CollectionUtils.isEmpty(forms)) {
+			return paradigms;
+		}
+		final String keyValSep = "-";
+		String wordClass = word.getWordClass();
+		Map<Long, List<Form>> paradigmFormsMap = forms.stream().collect(Collectors.groupingBy(Form::getParadigmId));
 		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
 		Collections.sort(paradigmIds);
 
@@ -76,10 +99,10 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 
 		for (Long paradigmId : paradigmIds) {
 
-			List<Form> forms = paradigmFormsMap.get(paradigmId);
-			forms.sort(Comparator.comparing(Form::getOrderBy));
+			List<Form> paradigmForms = paradigmFormsMap.get(paradigmId);
+			paradigmForms.sort(Comparator.comparing(Form::getOrderBy));
 
-			for (Form form : forms) {
+			for (Form form : paradigmForms) {
 				classifierUtil.applyClassifiers(form, displayLang);
 			}
 
@@ -87,7 +110,7 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 			if (StringUtils.isNotBlank(wordClass)) {
 				paradigmTitleElements.add(wordClass);
 			}
-			firstForm = forms.get(0);
+			firstForm = paradigmForms.get(0);
 			if (StringUtils.isNotBlank(firstForm.getInflectionType())) {
 				paradigmTitleElements.add(firstForm.getInflectionType());
 			}
@@ -95,7 +118,7 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 			if (CollectionUtils.isNotEmpty(paradigmTitleElements)) {
 				paradigmTitle = StringUtils.join(paradigmTitleElements, ", ");
 			}
-			boolean isExpandable = forms.stream().anyMatch(form -> form.getDisplayLevel() > 1);
+			boolean isExpandable = paradigmForms.stream().anyMatch(form -> form.getDisplayLevel() > 1);
 
 			Paradigm paradigm = new Paradigm();
 			paradigm.setParadigmId(paradigmId);
@@ -104,20 +127,20 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 			paradigm.setExpandable(isExpandable);
 			paradigms.add(paradigm);
 
-			Map<String, List<Form>> formGroupsMap = forms.stream()
+			Map<String, List<Form>> formGroupsMap = paradigmForms.stream()
 					.collect(Collectors.groupingBy(form -> form.getMorphGroup1() + keyValSep + form.getMorphGroup2() + keyValSep + form.getMorphGroup3()));
 
-			List<String> morphGroup1Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup1()))
+			List<String> morphGroup1Names = paradigmForms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup1()))
 					.map(Form::getMorphGroup1).distinct().collect(Collectors.toList());
-			List<String> morphGroup2Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup2()))
+			List<String> morphGroup2Names = paradigmForms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup2()))
 					.map(Form::getMorphGroup2).distinct().collect(Collectors.toList());
-			List<String> morphGroup3Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup3()))
+			List<String> morphGroup3Names = paradigmForms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup3()))
 					.map(Form::getMorphGroup3).distinct().collect(Collectors.toList());
 
 			if (CollectionUtils.isEmpty(morphGroup1Names)) {
 				ParadigmGroup paradigmGroup = new ParadigmGroup();
 				paradigm.getGroups().add(paradigmGroup);
-				distributeParadigmGroupForms(null, paradigmGroup, forms);
+				distributeParadigmGroupForms(null, paradigmGroup, paradigmForms);
 			} else {
 				for (String morphGroup1Name : morphGroup1Names) {
 					paradigmGroup1 = newParadigmGroup(morphGroup1Name);

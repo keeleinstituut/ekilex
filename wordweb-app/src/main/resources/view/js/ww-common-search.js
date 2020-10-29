@@ -197,8 +197,11 @@ $(document).on("shown.bs.modal", "#morpho-modal", function() {
 	var morphoUrlWithParams = morphoUrl + "/" + currentWordId + "/" + currentWordClass;
 	$.get(morphoUrlWithParams).done(function(data) {
 		morphoContentDiv.replaceWith(data);
+		$('#morpho-modal').trigger('focus');
+		$('[data-toggle="tooltip"]').tooltip({
+			container : 'body'
+		});
 	});
-	$('#morpho-modal').trigger('focus');
 });
 
 $(document).on("click", "#form-view-mode1-btn", function() {

@@ -1,17 +1,89 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <th:block th:fragment="morpho-form-row(paradigm, morphCode, prefix)">
-    <th:block th:each="form : ${viewUtil.getForms(paradigm, morphCode)}">
+  <th:block th:fragment="morpho-form-value(form)">
+    <span class="form-display-form-field" th:utext="${form.displayForm}" style="display: none;"></span>
+    <span class="form-value-field" th:utext="${form.valuePrese}"></span>
+    <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${form.audioFile != null}"
+            th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
+            onclick="generateAudioAndPlay(this)">
+      <span class="icon icon-speaker"></span>
+    </button>
+  </th:block>
+  <th:block th:fragment="morpho-verb-form-row(paradigm, morphCode, prefix)">
+    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
       <span th:text="${prefix}"></span>
-      <span class="form-display-form-field" th:utext="${form.displayForm}" style="display: none;"></span>
-      <span class="form-value-field" th:utext="${form.valuePrese}"></span>
-      <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${form.audioFile != null}"
-              th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
-              onclick="generateAudioAndPlay(this)">
-        <span class="icon icon-speaker"></span>
-      </button>
+      <th:block th:replace=" :: morpho-form-value(${form})"></th:block>
+      <span th:unless="${formIter.last}">~</span>
     </th:block>
+  </th:block>
+  <th:block th:fragment="morpho-noun-form-row(paradigm, morphCode)">
+    <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
+      <div>
+        <div class="word-section">
+          <th:block th:replace=" :: morpho-form-value(${form})"></th:block>
+          <span th:unless="${formIter.last}">~</span>
+        </div>
+        <div class="rating" th:if="${form.morphExists && form.formFreqValue != null}"
+             data-toggle="tooltip" data-placement="top" th:title="#{|label.morpho.freq.total|(${form.formFreqValue}, ${form.maxFormFreqValue})}">
+          <div class="rating__row rating__row--highlighted">
+            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 1 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 2 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 3 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 4 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 5 ? 'fa' : 'far'}"></i>
+          </div>
+          <div class="rating__row" data-toggle="tooltip">
+            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 1 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 2 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 3 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 4 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 5 ? 'fa' : 'far'}"></i>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </th:block>
+  <th:block th:fragment="morpho-indecl">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI eesti keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills mb-3">
+            <li class="nav-item">
+              <button type="button" class="nav-link active" id="form-view-mode1-btn" data-toggle="pill" role="tab">Märkideta</button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" id="form-view-mode2-btn" data-toggle="pill" role="tab">Märkidega</button>
+            </li>
+          </ul>
+          <th:block th:each="paradigm : ${paradigms}">
+            <div>
+              <h2>Muutumatu tüüp</h2>
+              <div class="scrollable-table">
+                <div class="scrollable-table--scroller">
+                  <table>
+                    <tr>
+                      <td>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ID', '')"></th:block>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </th:block>
+        </div>
+      </div>
+    </div>
   </th:block>
   <th:block th:fragment="morpho-verb">
     <div class="modal-dialog" role="document">
@@ -36,7 +108,7 @@
           </ul>
           <th:block th:each="paradigm : ${paradigms}">
             <div>
-              <p th:text="${paradigm.inflectionType}">muuttüüp 31</p>
+              <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 31</p>
               <h2>Käändelised vormid</h2>
               <div class="scrollable-table">
                 <div class="scrollable-table--scroller">
@@ -53,7 +125,7 @@
                         <span class="highlight">ma</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'Sup', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Sup', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -61,7 +133,7 @@
                         <span class="highlight">mas</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'SupIn', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIn', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -69,7 +141,7 @@
                         <span class="highlight">mast</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'SupEl', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupEl', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -77,7 +149,7 @@
                         <span class="highlight">maks</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'SupTr', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupTr', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -85,7 +157,7 @@
                         <span class="highlight">mata</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'SupAb', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupAb', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -93,7 +165,7 @@
                         <span class="highlight">tama</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'SupIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIps', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -105,7 +177,7 @@
                         <span class="highlight">da</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'Inf', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Inf', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -113,7 +185,7 @@
                         <span class="highlight">des</span>-vorm
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'Ger', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Ger', '')"></th:block>
                       </td>
                     </tr>
                   </table>
@@ -133,19 +205,19 @@
                     <tr>
                       <th>isikuline</th>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'PtsPrPs', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrPs', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'PtsPtPs', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <th>umbisikuline</th>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'PtsPrIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrIps', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'PtsPtIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '')"></th:block>
                       </td>
                     </tr>
                   </table>
@@ -156,7 +228,7 @@
                 <div class="scrollable-table--scroller">
                   <table class="stretch-middle-td">
                     <tr>
-                      <th colspan="3" class="text-center">Tingiv kõneviis</th>
+                      <th colspan="3" class="text-center">Kindel kõneviis</th>
                     </tr>
                     <tr>
                       <th colspan="3">Olevik</th>
@@ -173,10 +245,10 @@
                         <span class="highlight">ma</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrSg1', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrSg1', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -186,10 +258,10 @@
                         <span class="highlight">sa</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrSg2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrSg2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -199,10 +271,10 @@
                         <span class="highlight">ta</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrSg3', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrSg3', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -212,10 +284,10 @@
                         <span class="highlight">me</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPl1', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl1', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -225,10 +297,10 @@
                         <span class="highlight">te</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPl2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -238,10 +310,10 @@
                         <span class="highlight">nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPl3', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl3', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPs_', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -251,10 +323,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrIps', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPrIpsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrIps_', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -272,10 +344,10 @@
                         <span class="highlight">ma</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfSg1', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg1', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -285,10 +357,10 @@
                         <span class="highlight">sa</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfSg2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -298,10 +370,10 @@
                         <span class="highlight">ta</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfSg3', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg3', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -311,10 +383,10 @@
                         <span class="highlight">me</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPl1', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl1', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -324,10 +396,10 @@
                         <span class="highlight">te</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPl2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -337,10 +409,10 @@
                         <span class="highlight">nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPl3', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl3', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -350,10 +422,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfIps', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndIpfIpsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -371,10 +443,10 @@
                         <span class="highlight">ma</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfSg1', 'olen')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olen')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei ole')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -384,10 +456,10 @@
                         <span class="highlight">sa</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfSg2', 'oled')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oled')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei ole')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -397,10 +469,10 @@
                         <span class="highlight">ta</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfSg3', 'on')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'on')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei ole')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -410,10 +482,10 @@
                         <span class="highlight">me</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPl1', 'oleme')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oleme')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei ole')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -423,10 +495,10 @@
                         <span class="highlight">te</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPl2', 'olete')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olete')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei ole')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -436,10 +508,10 @@
                         <span class="highlight">nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPl3', 'on')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'on')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei ole')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei ole')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -449,10 +521,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfIps', 'on')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'on')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfIpsN', 'ei ole')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei ole')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -470,10 +542,10 @@
                         <span class="highlight">ma</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfSg1', 'olin')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olin')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei olnud')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -483,10 +555,10 @@
                         <span class="highlight">sa</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfSg2', 'olid')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olid')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei olnud')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -496,10 +568,10 @@
                         <span class="highlight">ta</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfSg3', 'oli')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'oli')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei olnud')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -509,10 +581,10 @@
                         <span class="highlight">me</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPl1', 'olime')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olime')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei olnud')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -522,10 +594,10 @@
                         <span class="highlight">te</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPl2', 'olite')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olite')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei olnud')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -535,10 +607,10 @@
                         <span class="highlight">nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPl3', 'olid')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olid')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfPsN', 'ei olnud')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olnud')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -548,10 +620,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfIps', 'oli')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'oli')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'IndPfIpsN', 'ei olnud')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei olnud')"></th:block>
                       </td>
                     </tr>
                   </table>
@@ -578,10 +650,10 @@
                         <span class="highlight">ma</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrSg1', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrSg1', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -591,10 +663,10 @@
                         <span class="highlight">sa</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrSg2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrSg2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -604,10 +676,10 @@
                         <span class="highlight">ta</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPs', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -617,10 +689,10 @@
                         <span class="highlight">me</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPl1', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPl1', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -630,10 +702,10 @@
                         <span class="highlight">te</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPl2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPl2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -643,10 +715,10 @@
                         <span class="highlight">nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPl3', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPl3', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -656,10 +728,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrIps', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPrIpsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPrIps', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -677,10 +749,12 @@
                         <span class="highlight">ma</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtSg1', 'oleks(in)')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtSg1', 'oleks(in)')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPsN', 'ei oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -690,10 +764,12 @@
                         <span class="highlight">sa</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtSg2', 'oleks(id)')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtSg2', 'oleks(id)')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPsN', 'ei oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -703,10 +779,12 @@
                         <span class="highlight">ta</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPs', 'oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', 'oleks')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPsN', 'ei oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -716,10 +794,12 @@
                         <span class="highlight">me</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPl1', 'oleks(ime)')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPl1', 'oleks(ime)')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPsN', 'ei oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -729,10 +809,12 @@
                         <span class="highlight">te</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPl2', 'oleks(ite)')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPl2', 'oleks(ite)')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPsN', 'ei oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -742,10 +824,12 @@
                         <span class="highlight">nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPl3', 'oleks(id)')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPl3', 'oleks(id)')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtPsN', 'ei oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei oleks')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -755,10 +839,12 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtIps', 'oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtIps', 'oleks')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KndPtIpsN', 'ei oleks')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei oleks')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KndPtIps', 'ei')"></th:block>
                       </td>
                     </tr>
                   </table>
@@ -798,10 +884,10 @@
                         <span class="highlight">sa</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrSg2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrSg2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrSg2N', 'ära')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrSg2', 'ära')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -811,10 +897,10 @@
                         <span class="highlight">ta</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPs', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPsN', 'ärgu')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', 'ärgu')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -824,10 +910,12 @@
                         <span class="highlight">me</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPl1', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl1', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPl1N', 'ärgem')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl1', 'ärgem')"></th:block>
+                        ~
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndPrPl1', 'ärme')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -837,10 +925,10 @@
                         <span class="highlight">te</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPl2', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl2', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPl2N', 'ärge')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPl2', 'ärge')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -850,10 +938,10 @@
                         <span class="highlight">nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPs', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrPsN', 'ärgu')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrPs', 'ärgu')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -863,10 +951,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrIps', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'ImpPrIpsN', 'ärgu')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ImpPrIps', 'ärgu')"></th:block>
                       </td>
                     </tr>
                   </table>
@@ -893,10 +981,10 @@
                         <span class="highlight">ma ... nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPrPs', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrPs', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPrPsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrPs', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -906,10 +994,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPrIps', '')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrIps', '')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPrIpsN', 'ei')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'KvtPrIps', 'ei')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -927,10 +1015,10 @@
                         <span class="highlight">ma ... nad</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPtPs', 'olevat')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'olevat')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPtPsN', 'ei olevat')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei olevat')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -940,10 +1028,10 @@
                         <span class="highlight">umbisik</span>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPtIps', 'olevat')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'olevat')"></th:block>
                       </td>
                       <td>
-                        <th:block th:replace=" :: morpho-form-row(${paradigm}, 'KvtPtIpsN', 'ei olevat')"></th:block>
+                        <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei olevat')"></th:block>
                       </td>
                     </tr>
                   </table>
@@ -968,9 +1056,17 @@
           </button>
         </div>
         <div class="modal-body">
+          <ul class="nav nav-pills mb-3">
+            <li class="nav-item">
+              <button type="button" class="nav-link active" id="form-view-mode1-btn" data-toggle="pill" role="tab">Märkideta</button>
+            </li>
+            <li class="nav-item">
+              <button type="button" class="nav-link" id="form-view-mode2-btn" data-toggle="pill" role="tab">Märkidega</button>
+            </li>
+          </ul>
           <th:block th:each="paradigm : ${paradigms}">
             <div>
-              <p>muuttüüp 22e</p>
+              <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 22e</p>
               <div class="scrollable-table">
                 <div class="scrollable-table--scroller">
                   <table class="first-row-sizes" data-fixColumn="true">
@@ -983,44 +1079,26 @@
                       <td>
                         nimetav
                         <br />
-                        <span class="highlight">kes? mis? missugune?</span>
+                        <span class="highlight">kes? mis?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgN')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">id</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlN')"></th:block>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        omastav
+                        <br />
+                        <span class="highlight">kelle? mille?</span>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgG')"></th:block>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlG')"></th:block>
                       </td>
                     </tr>
                     <tr>
@@ -1030,562 +1108,182 @@
                         <span class="highlight">keda? mida?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgP')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlP')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        lühike sisseütlev
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kuhu?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAdt')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAdt')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        sisseütlev
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kellesse? millesse?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgIll')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlIll')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        seesütlev
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kelles? milles?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgIn')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlIn')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        seestütlev
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kellest? millest?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgEl')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlEl')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        alaleütlev
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kellele? millele?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAll')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAll')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        alalütlev
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kellel? millel?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAd')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAd')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        alaltütlev
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kellelt? millelt?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAbl')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAbl')"></th:block>
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        osastav
+                        saav
                         <br />
-                        <span class="highlight">keda? mida?</span>
+                        <span class="highlight">kelleks? milleks?</span>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgTr')"></th:block>
                       </td>
                       <td>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">e ~</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div class="word-section">
-                            kass
-                            <span class="highlight">isid</span>
-                            <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                          <div class="rating" data-toggle="tooltip" data-placement="top" title="sagedus kõikides sõnades 3.5/10.46">
-                            <div class="rating__row rating__row--highlighted">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="far fa-star"></i> <i class="far fa-star"></i>
-                            </div>
-                            <div class="rating__row">
-                              <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                        </div>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlTr')"></th:block>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        rajav
+                        <br />
+                        <span class="highlight">kelleni? milleni?</span>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgTer')"></th:block>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlTer')"></th:block>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        olev
+                        <br />
+                        <span class="highlight">kellena? millena?</span>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgEs')"></th:block>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlEs')"></th:block>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        ilmaütlev
+                        <br />
+                        <span class="highlight">kelleta? milleta?</span>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgAb')"></th:block>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlAb')"></th:block>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        kaasaütlev
+                        <br />
+                        <span class="highlight">kellega? millega?</span>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SgKom')"></th:block>
+                      </td>
+                      <td>
+                        <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'PlKom')"></th:block>
                       </td>
                     </tr>
                   </table>
                 </div>
               </div>
-              <div class="table-legend">
-                <div class="table-legend__item">Legend:</div>
-                <div class="table-legend__item">
-                  <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
-                </div>
-                <div class="table-legend__item">
-                  <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
-                </div>
-              </div>
             </div>
           </th:block>
+          <div class="table-legend">
+            <div class="table-legend__item">Legend:</div>
+            <div class="table-legend__item">
+              <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
+            </div>
+            <div class="table-legend__item">
+              <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -348,7 +348,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				});
 	}
 
-	public Map<Long, List<Form>> getWordForms(Long wordId, Integer maxDisplayLevel) {
+	public List<Form> getWordForms(Long wordId, Integer maxDisplayLevel) {
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
@@ -375,11 +375,17 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						f.DISPLAY_FORM,
 						f.VOCAL_FORM,
 						f.AUDIO_FILE,
-						f.ORDER_BY)
+						f.ORDER_BY,
+						f.FORM_FREQ_VALUE,
+						f.MAX_FORM_FREQ_VALUE,
+						f.TOTAL_FORM_FREQ_RANK,
+						f.MAX_TOTAL_FORM_FREQ_RANK,
+						f.PARADIGM_FORM_FREQ_RANK,
+						f.MAX_PARADIGM_FORM_FREQ_RANK)
 				.from(f)
 				.where(where)
 				.orderBy(f.PARADIGM_ID, f.ORDER_BY, f.FORM_ID)
-				.fetchGroups(f.PARADIGM_ID, Form.class);
+				.fetchInto(Form.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_NULL_WORD, key = "{#wordId, #tokens}")

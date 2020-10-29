@@ -211,7 +211,13 @@ dblink(
 	display_form varchar(255),
 	vocal_form varchar(255),
 	audio_file varchar(255),
-	order_by bigint
+	order_by bigint,
+	form_freq_value numeric(12,7),
+	max_form_freq_value numeric(12,7),
+	total_form_freq_rank bigint,
+	max_total_form_freq_rank bigint,
+	paradigm_form_freq_rank integer,
+	max_paradigm_form_freq_rank integer
 );
 
 create materialized view mview_ww_meaning as

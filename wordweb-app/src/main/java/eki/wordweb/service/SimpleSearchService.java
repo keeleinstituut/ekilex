@@ -45,8 +45,8 @@ public class SimpleSearchService extends AbstractSearchService {
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
-		Map<Long, List<Form>> paradigmFormsMap = searchDbService.getWordForms(wordId, maxDisplayLevel);
-		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
+		List<Form> forms = searchDbService.getWordForms(wordId, maxDisplayLevel);
+		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, forms, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
@@ -68,7 +68,7 @@ public class SimpleSearchService extends AbstractSearchService {
 		// word common
 		wordConversionUtil.composeCommon(word, lexemes);
 
-		return composeWordData(word, paradigmFormsMap, paradigms, lexemes, Collections.emptyList());
+		return composeWordData(word, forms, paradigms, lexemes, Collections.emptyList());
 	}
 
 	@Override

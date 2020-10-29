@@ -579,14 +579,43 @@ select w.id word_id,
        f.display_form,
        f.vocal_form,
        f.audio_file,
-       f.order_by
-from word w,
-     paradigm p,
-     form f
-where p.word_id = w.id
-and   f.paradigm_id = p.id
-and   f.display_level > 0
-and   exists (select l.id
+       f.order_by,
+       ff.form_freq_value,
+       (select max(ff.value) from form_frequency ff) max_form_freq_value,
+       ff.total_form_freq_rank,
+       (select max(ff.rank) from form_frequency ff) max_total_form_freq_rank,
+       ff.paradigm_form_freq_rank,
+       (max(ff.paradigm_form_freq_rank) over (partition by ff.paradigm_id)) max_paradigm_form_freq_rank
+from word w
+  inner join paradigm p
+          on p.word_id = w.id
+  inner join form f
+          on f.paradigm_id = p.id
+  left outer join (select f.*,
+                          ff.value form_freq_value,
+                          ff.rank total_form_freq_rank,
+                          (dense_rank() over (partition by p.id order by ff.value desc)) paradigm_form_freq_rank
+                   from word w
+                     inner join paradigm p
+                             on p.word_id = w.id
+                     inner join form f
+                             on f.paradigm_id = p.id
+                            and f.display_level > 0
+                     inner join form_frequency ff
+                             on ff.source_name = 'enc17-formfreq'
+                            and ff.word_value = w.value
+                            and ff.form_value = f.value
+                            and ff.morph_code = f.morph_code
+                   where exists (select l.id
+                                 from lexeme as l,
+                                      dataset ds
+                                 where l.word_id = w.id
+                                 and   l.type = 'PRIMARY'
+                                 and   l.is_public = true
+                                 and   ds.code = l.dataset_code
+                                 and   ds.is_public = true)) ff
+               on ff.id = f.id
+where exists (select l.id
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id
@@ -594,8 +623,8 @@ and   exists (select l.id
               and   l.is_public = true
               and   ds.code = l.dataset_code
               and   ds.is_public = true)
-order by p.id,
-         f.order_by,
+order by w.id,
+         p.id,
          f.id;
 
 -- lexeme meanings - OK

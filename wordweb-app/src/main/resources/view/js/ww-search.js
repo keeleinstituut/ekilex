@@ -1,11 +1,5 @@
 var windowWidthTreshold = 768;
 
-$(function() {
-	$('[data-toggle="tooltip"]').tooltip({
-		container : 'body'
-	});
-});
-
 $(window).on("popstate", function(e) {
 	e.preventDefault();
 	var historyState = e.originalEvent.state;

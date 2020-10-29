@@ -118,4 +118,6 @@ public interface WebConstant {
 	String GENERIC_EKI_MARKUP_PREFIX = "<eki-";
 
 	int DEFINITION_OVERSIZE_LIMIT = 1000;
+
+	int FORM_FREQ_SCALE = 5;
 }

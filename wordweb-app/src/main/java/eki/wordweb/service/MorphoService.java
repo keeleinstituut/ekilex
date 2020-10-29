@@ -1,7 +1,6 @@
 package eki.wordweb.service;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -28,9 +27,9 @@ public class MorphoService implements WebConstant, SystemConstant {
 	public List<StaticParadigm> getStaticParadigms(Long wordId) {
 
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		Map<Long, List<Form>> paradigmFormsMap = searchDbService.getWordForms(wordId, maxDisplayLevel);
-		List<StaticParadigm> staticParadigms = paradigmConversionUtil.composeStaticParadigms(paradigmFormsMap, DISPLAY_LANG);
-
+		List<Form> forms = searchDbService.getWordForms(wordId, maxDisplayLevel);
+		paradigmConversionUtil.calcFreqScale(forms);
+		List<StaticParadigm> staticParadigms = paradigmConversionUtil.composeStaticParadigms(forms, DISPLAY_LANG);
 		return staticParadigms;
 	}
 }

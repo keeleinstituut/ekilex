@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -151,7 +150,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 	protected WordData composeWordData(
 			Word word,
-			Map<Long, List<Form>> paradigmFormsMap,
+			List<Form> forms,
 			List<Paradigm> paradigms,
 			List<Lexeme> lexLexemes,
 			List<Lexeme> termLexemes) {
@@ -162,10 +161,9 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		String firstAvailableVocalForm = null;
 		String firstAvailableAudioFile = null;
 		boolean isUnknownForm = false;
-		if (MapUtils.isNotEmpty(paradigmFormsMap)) {
-			Form firstAvailableWordForm = paradigmFormsMap.values().stream()
-					.filter(forms -> forms.stream().anyMatch(form -> form.getMode().equals(FormMode.WORD)))
-					.map(forms -> forms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst().orElse(null))
+		if (CollectionUtils.isNotEmpty(forms)) {
+			Form firstAvailableWordForm = forms.stream()
+					.filter(form -> form.getMode().equals(FormMode.WORD))
 					.findFirst().orElse(null);
 			if (firstAvailableWordForm != null) {
 				firstAvailableVocalForm = firstAvailableWordForm.getVocalForm();
