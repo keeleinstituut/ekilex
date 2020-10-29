@@ -204,6 +204,7 @@
                         <div class="col hidden-buttons pr-5">
                           <div class="action-buttons-anchor">
                             <span th:utext="${note.valuePrese}"></span>
+                            <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
                             <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"

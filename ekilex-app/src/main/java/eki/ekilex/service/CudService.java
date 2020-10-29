@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.Complexity;
+import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -25,6 +26,7 @@ import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.Relation;
@@ -132,13 +134,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateWordNote(Long wordNoteId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, wordNoteId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long wordId = activityLogService.getOwnerId(wordNoteId, ActivityEntity.WORD_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordNote", wordId, LifecycleLogOwner.WORD);
-		cudDbService.updateFreeformTextValue(wordNoteId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, wordNoteId, ActivityEntity.WORD_NOTE);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(wordNoteId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.WORD, ActivityEntity.WORD_NOTE, freeform);
 	}
 
 	@Transactional
@@ -313,35 +314,34 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateUsageValue(Long usageId, String valuePrese, Complexity complexity, boolean isPublic) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageValue", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeform(usageId, value, valuePrese, complexity, isPublic);
-		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(usageId);
+		freeform.setComplexity(complexity);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.USAGE, freeform);
 	}
 
 	@Transactional
 	public void updateUsageTranslationValue(Long usageTranslationId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageTranslationValue", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeformTextValue(usageTranslationId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(usageTranslationId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.USAGE_TRANSLATION, freeform);
 	}
 
 	@Transactional
 	public void updateUsageDefinitionValue(Long usageDefinitionId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageDefinitionValue", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeformTextValue(usageDefinitionId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(usageDefinitionId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.USAGE_DEFINITION, freeform);
 	}
 
 	@Transactional
@@ -377,24 +377,25 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateLexemeGovernment(Long id, String value, Complexity complexity) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, value);
-		createLifecycleLog(logData);
-		Long lexemeId = activityLogService.getOwnerId(id, ActivityEntity.GOVERNMENT);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeGovernment", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeformTextValueAndComplexity(id, value, value, complexity);
-		activityLogService.createActivityLog(activityLog, id, ActivityEntity.GOVERNMENT);
+	public void updateLexemeGovernment(Long lexemeGovernmentId, String value, Complexity complexity) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(lexemeGovernmentId);
+		freeform.setComplexity(complexity);
+		setFreeformValueTextAndValuePrese(freeform, value);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform);
 	}
 
 	@Transactional
-	public void updateLexemeGrammar(Long id, String valuePrese, Complexity complexity) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(id, ActivityEntity.GRAMMAR);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeGrammar", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeformTextValueAndComplexity(id, value, valuePrese, complexity);
-		activityLogService.createActivityLog(activityLog, id, ActivityEntity.GRAMMAR);
+	public void updateLexemeGrammar(Long lexemeGrammarId, String valuePrese, Complexity complexity) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(lexemeGrammarId);
+		freeform.setComplexity(complexity);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.GRAMMAR, freeform);
 	}
 
 	@Transactional
@@ -456,14 +457,16 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateLexemeNote(Long id, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, id, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(id, ActivityEntity.LEXEME_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNote", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeform(id, value, valuePrese, lang, complexity, isPublic);
-		activityLogService.createActivityLog(activityLog, id, ActivityEntity.LEXEME_NOTE);
+	public void updateLexemeNote(Long lexemeNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(lexemeNoteId);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.LEXEME_NOTE, freeform);
 	}
 
 	@Transactional
@@ -523,13 +526,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateDefinitionNote(Long definitionNoteId, String valuePrese, String lang, boolean isPublic) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionNoteId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningId = activityLogService.getOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionNoteOrdering", meaningId, LifecycleLogOwner.MEANING);
-		cudDbService.updateFreeform(definitionNoteId, value, valuePrese, lang, isPublic);
-		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(definitionNoteId);
+		freeform.setLang(lang);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.DEFINITION_NOTE, freeform);
 	}
 
 	@Transactional
@@ -556,25 +560,26 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateMeaningLearnerComment(Long id, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningId = activityLogService.getOwnerId(id, ActivityEntity.LEARNER_COMMENT);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLearnerComment", meaningId, LifecycleLogOwner.MEANING);
-		cudDbService.updateFreeformTextValue(id, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, id, ActivityEntity.LEARNER_COMMENT);
+	public void updateMeaningLearnerComment(Long learnerCommentId, String valuePrese) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(learnerCommentId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform);
 	}
 
 	@Transactional
-	public void updateMeaningNote(Long id, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, id, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningId = activityLogService.getOwnerId(id, ActivityEntity.MEANING_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNote", meaningId, LifecycleLogOwner.MEANING);
-		cudDbService.updateFreeform(id, value, valuePrese, lang, complexity, isPublic);
-		activityLogService.createActivityLog(activityLog, id, ActivityEntity.MEANING_NOTE);
+	public void updateMeaningNote(Long meaningNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(meaningNoteId);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.MEANING_NOTE, freeform);
 	}
 
 	@Transactional
@@ -589,58 +594,53 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateImageTitle(Long imageId, String valuePrese) throws Exception {
-		String recent = lookupDbService.getImageTitle(imageId);
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningId = activityLogService.getOwnerId(imageId, ActivityEntity.IMAGE_TITLE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateImageTitle", meaningId, LifecycleLogOwner.MEANING);
-		cudDbService.updateImageTitle(imageId, value);
-		activityLogService.createActivityLog(activityLog, imageId, ActivityEntity.IMAGE_TITLE);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setParentId(imageId);
+		freeform.setType(FreeformType.IMAGE_TITLE);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateChildFreeform(LifecycleLogOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
 	}
 
 	@Transactional
 	public void updateOdWordRecommendation(Long freeformId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long wordId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateOdWordRecommendation", wordId, LifecycleLogOwner.WORD);
-		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(freeformId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform);
 	}
 
 	@Transactional
 	public void updateOdLexemeRecommendation(Long freeformId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateOdLexemeRecommendation", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(freeformId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.OD_LEXEME_RECOMMENDATION, freeform);
 	}
 
 	@Transactional
 	public void updateOdUsageDefinition(Long freeformId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, freeformId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateOdUsageDefinition", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_DEFINITION);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(freeformId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.OD_USAGE_DEFINITION, freeform);
 	}
 
 	@Transactional
 	public void updateOdUsageAlternative(Long freeformId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, valuePrese);
-		createLifecycleLog(logData);
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateOdUsageAlternative", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateFreeformTextValue(freeformId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(freeformId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.OD_USAGE_ALTERNATIVE, freeform);
 	}
 
 	@Transactional
@@ -663,6 +663,81 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		updateWordValue(wordId, wordValuePrese);
 		updateLexemeWeight(lexemeId, lexemeWeight);
+	}
+
+	private void updateFreeform(LifecycleLogOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		Long freeformId = freeform.getId();
+		Long ownerId = activityLogService.getOwnerId(freeformId, activityEntity);
+		String valuePrese = freeform.getValuePrese();
+
+		// remove when lifecycle log is no longer needed
+		if (activityEntity.equals(ActivityEntity.LEXEME_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.MEANING_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.WORD_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.OD_WORD_RECOMMENDATION)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.OD_LEXEME_RECOMMENDATION)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.LEARNER_COMMENT)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.GRAMMAR)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.GOVERNMENT)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.USAGE)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.USAGE_TRANSLATION)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.USAGE_DEFINITION)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_DEFINITION)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_ALTERNATIVE)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.DEFINITION_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, freeformId, valuePrese);
+			createLifecycleLog(logData);
+		}
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeform", ownerId, logOwner);
+		cudDbService.updateFreeform(freeform, userName);
+		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
+	}
+
+	private void updateChildFreeform(LifecycleLogOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		Long parentId = freeform.getParentId();
+		Long ownerId = activityLogService.getOwnerId(parentId, activityEntity);
+		String valuePrese = freeform.getValuePrese();
+
+		if (activityEntity.equals(ActivityEntity.IMAGE_FILE)) {
+			String recent = lookupDbService.getImageTitle(parentId);
+			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, parentId, recent, valuePrese);
+			createLifecycleLog(logData);
+		}
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateChildFreeformValue", ownerId, logOwner);
+		cudDbService.updateChildFreeform(freeform, userName);
+		activityLogService.createActivityLog(activityLog, parentId, activityEntity);
 	}
 
 	// --- CREATE ---
@@ -761,12 +836,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createWordNote(Long wordId, String valuePrese) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordNote", wordId, LifecycleLogOwner.WORD);
-		Long wordNoteId = cudDbService.createWordNote(wordId, value, valuePrese, LANGUAGE_CODE_EST, Complexity.DETAIL, false);
-		activityLogService.createActivityLog(activityLog, wordNoteId, ActivityEntity.WORD_NOTE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, wordNoteId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.NOTE);
+		freeform.setLang(LANGUAGE_CODE_EST);
+		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setPublic(false);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createWordFreeform(ActivityEntity.WORD_NOTE, wordId, freeform);
 	}
 
 	@Transactional
@@ -791,35 +869,40 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createUsage(Long lexemeId, String valuePrese, String languageCode, Complexity complexity, boolean isPublic) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsage", lexemeId, LifecycleLogOwner.LEXEME);
-		Long usageId = cudDbService.createUsage(lexemeId, value, valuePrese, languageCode, complexity, isPublic);
-		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, valuePrese);
-		createLifecycleLog(logData);
+	public void createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.USAGE);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform);
 	}
 
 	@Transactional
-	public void createUsageTranslation(Long usageId, String valuePrese, String languageCode) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageTranslation", lexemeId, LifecycleLogOwner.LEXEME);
-		Long usageTranslationId = cudDbService.createUsageTranslation(usageId, value, valuePrese, languageCode);
-		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, valuePrese);
-		createLifecycleLog(logData);
+	public void createUsageTranslation(Long usageId, String valuePrese, String lang) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setParentId(usageId);
+		freeform.setType(FreeformType.USAGE_TRANSLATION);
+		freeform.setLang(lang);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createUsageChildFreeform(ActivityEntity.USAGE_TRANSLATION, freeform);
 	}
 
 	@Transactional
-	public void createUsageDefinition(Long usageId, String valuePrese, String languageCode) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageDefinition", lexemeId, LifecycleLogOwner.LEXEME);
-		Long usageDefinitionId = cudDbService.createUsageDefinition(usageId, value, valuePrese, languageCode);
-		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
-		createLifecycleLog(logData);
+	public void createUsageDefinition(Long usageId, String valuePrese, String lang) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setParentId(usageId);
+		freeform.setType(FreeformType.USAGE_DEFINITION);
+		freeform.setLang(lang);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createUsageChildFreeform(ActivityEntity.USAGE_DEFINITION, freeform);
 	}
 
 	@Transactional
@@ -869,31 +952,37 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createLexemeGovernment(Long lexemeId, String government, Complexity complexity) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeGovernment", lexemeId, LifecycleLogOwner.LEXEME);
-		Long governmentId = cudDbService.createLexemeGovernment(lexemeId, government, complexity);
-		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, government);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.GOVERNMENT);
+		freeform.setComplexity(complexity);
+		setFreeformValueTextAndValuePrese(freeform, government);
+
+		createLexemeFreeform(ActivityEntity.GOVERNMENT, lexemeId, freeform);
 	}
 
 	@Transactional
 	public void createLexemeGrammar(Long lexemeId, String valuePrese, Complexity complexity) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeGrammar", lexemeId, LifecycleLogOwner.LEXEME);
-		Long grammarId = cudDbService.createLexemeGrammar(lexemeId, value, valuePrese, complexity);
-		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.GRAMMAR);
+		freeform.setComplexity(complexity);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createLexemeFreeform(ActivityEntity.GRAMMAR, lexemeId, freeform);
 	}
 
 	@Transactional
 	public void createLexemeNote(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeNote", lexemeId, LifecycleLogOwner.LEXEME);
-		Long lexemeFreeformId = cudDbService.createLexemeNote(lexemeId, value, valuePrese, lang, complexity, isPublic);
-		activityLogService.createActivityLog(activityLog, lexemeFreeformId, ActivityEntity.LEXEME_NOTE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, lexemeFreeformId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.NOTE);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createLexemeFreeform(ActivityEntity.LEXEME_NOTE, lexemeId, freeform);
 	}
 
 	@Transactional
@@ -949,23 +1038,27 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String lang) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningLearnerComment", meaningId, LifecycleLogOwner.MEANING);
-		Complexity complexity = Complexity.SIMPLE;
-		Long meaningFreeformId = cudDbService.createMeaningLearnerComment(meaningId, value, valuePrese, lang, complexity);
-		activityLogService.createActivityLog(activityLog, meaningFreeformId, ActivityEntity.LEARNER_COMMENT);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.LEARNER_COMMENT);
+		freeform.setLang(lang);
+		freeform.setComplexity(Complexity.SIMPLE);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createMeaningFreeform(ActivityEntity.LEARNER_COMMENT, meaningId, freeform);
 	}
 
 	@Transactional
 	public void createMeaningNote(Long meaningId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningNote", meaningId, LifecycleLogOwner.MEANING);
-		Long meaningFreeformId = cudDbService.createMeaningNote(meaningId, value, valuePrese, lang, complexity, isPublic);
-		activityLogService.createActivityLog(activityLog, meaningFreeformId, ActivityEntity.MEANING_NOTE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, meaningFreeformId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.NOTE);
+		freeform.setLang(lang);
+		freeform.setComplexity(complexity);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createMeaningFreeform(ActivityEntity.MEANING_NOTE, meaningId, freeform);
 	}
 
 	@Transactional
@@ -992,68 +1085,71 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionNote", meaningId, LifecycleLogOwner.MEANING);
-		Long definitionNoteId = cudDbService.createDefinitionNote(definitionId, value, valuePrese, lang, isPublic);
-		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionNoteId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.NOTE);
+		freeform.setLang(lang);
+		freeform.setPublic(isPublic);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createDefinitionFreeform(ActivityEntity.DEFINITION_NOTE, definitionId, freeform);
 	}
 
 	@Transactional
-	public void createImageTitle(Long imageId, String valuePrese) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long meaningId = activityLogService.getOwnerId(imageId, ActivityEntity.IMAGE_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createImageTitle", meaningId, LifecycleLogOwner.MEANING);
-		Long imageTitleId = cudDbService.createImageTitle(imageId, value);
-		activityLogService.createActivityLog(activityLog, imageTitleId, ActivityEntity.IMAGE_TITLE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, valuePrese);
-		createLifecycleLog(logData);
+	public void createImageTitle(Long imageFreeformId, String valuePrese) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setParentId(imageFreeformId);
+		freeform.setType(FreeformType.IMAGE_TITLE);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createMeaningFreeformChildFreeform(ActivityEntity.IMAGE_FILE, freeform);
 	}
 
 	@Transactional
 	public void createOdWordRecommendation(Long wordId, String valuePrese) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Complexity complexity = Complexity.DETAIL;
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createOdWordRecommendation", wordId, LifecycleLogOwner.WORD);
-		Long wordFreeformId = cudDbService.createOdWordRecommendation(wordId, value, valuePrese, complexity);
-		activityLogService.createActivityLog(activityLog, wordFreeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, wordFreeformId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.OD_WORD_RECOMMENDATION);
+		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setPublic(true);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform);
 	}
 
 	@Transactional
 	public void createOdLexemeRecommendation(Long lexemeId, String valuePrese) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Complexity complexity = Complexity.DETAIL;
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createOdWordRecommendation", lexemeId, LifecycleLogOwner.LEXEME);
-		Long lexemeFreeformId = cudDbService.createOdLexemeRecommendation(lexemeId, value, valuePrese, complexity);
-		activityLogService.createActivityLog(activityLog, lexemeFreeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, lexemeFreeformId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.OD_LEXEME_RECOMMENDATION);
+		freeform.setComplexity(Complexity.DETAIL);
+		freeform.setPublic(true);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createLexemeFreeform(ActivityEntity.OD_LEXEME_RECOMMENDATION, lexemeId, freeform);
 	}
 
 	@Transactional
 	public void createOdUsageDefinition(Long usageId, String valuePrese) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createOdUsageDefinition", lexemeId, LifecycleLogOwner.LEXEME);
-		Long odUsageDefinitionId = cudDbService.createOdUsageDefinition(usageId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, odUsageDefinitionId, ActivityEntity.OD_USAGE_DEFINITION);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, odUsageDefinitionId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setParentId(usageId);
+		freeform.setType(FreeformType.OD_USAGE_DEFINITION);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createUsageChildFreeform(ActivityEntity.OD_USAGE_DEFINITION, freeform);
 	}
 
 	@Transactional
 	public void createOdUsageAlternative(Long usageId, String valuePrese) throws Exception {
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createOdUsageAlternative", lexemeId, LifecycleLogOwner.LEXEME);
-		Long odUsageAlternativeId = cudDbService.createOdUsageAlternative(usageId, value, valuePrese);
-		activityLogService.createActivityLog(activityLog, odUsageAlternativeId, ActivityEntity.OD_USAGE_ALTERNATIVE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, odUsageAlternativeId, valuePrese);
-		createLifecycleLog(logData);
+
+		FreeForm freeform = new FreeForm();
+		freeform.setParentId(usageId);
+		freeform.setType(FreeformType.OD_USAGE_ALTERNATIVE);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		createUsageChildFreeform(ActivityEntity.OD_USAGE_ALTERNATIVE, freeform);
 	}
 
 	@Transactional
@@ -1098,6 +1194,130 @@ public class CudService extends AbstractService implements GlobalConstant {
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
+	}
+
+	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, LifecycleLogOwner.WORD);
+		Long wordFreeformId = cudDbService.createWordFreeform(wordId, freeform, userName);
+		activityLogService.createActivityLog(activityLog, wordFreeformId, activityEntity);
+		String valuePrese = freeform.getValuePrese();
+
+		// remove when lifecycle log is no longer needed
+		if (activityEntity.equals(ActivityEntity.WORD_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, wordFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.OD_WORD_RECOMMENDATION)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, wordFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		}
+	}
+
+	private void createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, LifecycleLogOwner.LEXEME);
+		Long lexemeFreeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
+		activityLogService.createActivityLog(activityLog, lexemeFreeformId, activityEntity);
+		String valuePrese = freeform.getValuePrese();
+
+		// remove when lifecycle log is no longer needed
+		if (activityEntity.equals(ActivityEntity.OD_LEXEME_RECOMMENDATION)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, lexemeFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.LEXEME_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, lexemeFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.GRAMMAR)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.GOVERNMENT)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.USAGE)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		}
+	}
+
+	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, LifecycleLogOwner.MEANING);
+		Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
+		activityLogService.createActivityLog(activityLog, meaningFreeformId, activityEntity);
+		String valuePrese = freeform.getValuePrese();
+
+		// remove when lifecycle log is no longer needed
+		if (activityEntity.equals(ActivityEntity.LEARNER_COMMENT)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.MEANING_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, meaningFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		}
+	}
+
+	private void createDefinitionFreeform(ActivityEntity activityEntity, Long definitionId, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionFreeform", meaningId, LifecycleLogOwner.MEANING);
+		Long definitionFreeformId = cudDbService.createDefinitionFreeform(definitionId, freeform, userName);
+		activityLogService.createActivityLog(activityLog, definitionFreeformId, activityEntity);
+		String valuePrese = freeform.getValuePrese();
+
+		// remove when lifecycle log is no longer needed
+		if (activityEntity.equals(ActivityEntity.DEFINITION_NOTE)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		}
+	}
+
+	private void createMeaningFreeformChildFreeform(ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		Long meaningFreeformId = freeform.getParentId();
+		Long meaningId = activityLogService.getOwnerId(meaningFreeformId, activityEntity);
+		String valuePrese = freeform.getValuePrese();
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createChildFreeform", meaningId, LifecycleLogOwner.MEANING);
+		Long childFreeformId = cudDbService.createChildFreeform(freeform, userName);
+		activityLogService.createActivityLog(activityLog, childFreeformId, activityEntity);
+
+		// remove when lifecycle log is no longer needed
+		if (activityEntity.equals(ActivityEntity.IMAGE_FILE)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, meaningFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		}
+	}
+
+	private void createUsageChildFreeform(ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+
+		String userName = userContext.getUserName();
+		Long usageId = freeform.getParentId();
+		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
+		String valuePrese = freeform.getValuePrese();
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageChildFreeform", lexemeId, LifecycleLogOwner.LEXEME);
+		Long usageChildFreeformId = cudDbService.createChildFreeform(freeform, userName);
+		activityLogService.createActivityLog(activityLog, usageChildFreeformId, activityEntity);
+
+		// remove when lifecycle log is no longer needed
+		if (activityEntity.equals(ActivityEntity.USAGE_TRANSLATION)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageChildFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.USAGE_DEFINITION)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageChildFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_DEFINITION)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, usageChildFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_ALTERNATIVE)) {
+			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, usageChildFreeformId, valuePrese);
+			createLifecycleLog(logData);
+		}
 	}
 
 	// --- DELETE ---
@@ -1503,5 +1723,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 				relIdx++;
 			}
 		}
+	}
+
+	private void setFreeformValueTextAndValuePrese(FreeForm freeform, String valuePrese) {
+
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
 	}
 }

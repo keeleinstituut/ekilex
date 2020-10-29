@@ -520,6 +520,10 @@ create table freeform
   lang char(3) references language(code) null,
   complexity varchar(100) null,
   is_public boolean default true not null,
+  created_by text null,
+  created_on timestamp null,
+  modified_by text null,
+  modified_on timestamp null,
   order_by bigserial
 );
 alter sequence freeform_id_seq restart with 10000;

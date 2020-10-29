@@ -4,30 +4,39 @@
     const sideMenuHeading = sideMenu.querySelector('.dropdown-toggle')
     var mdBreakpoint = 768
 
-    function linkActive(targetHref) {
-      var targetHref = targetHref
-      $('.has-submenu').removeClass('open')
-      $('a[href="' + targetHref + '"]').addClass('active')
-      showPanel()
-    }
-
     let navLinks = sideMenu.querySelectorAll('.nav-link')
     navLinks.forEach(function (el, i) {
 
       el.addEventListener('click', (element) => {
-        element.preventDefault()
+        element.preventDefault()    
         var dropdownTitle
+        var target = $(element.target)
+        $('.nav-link.active').not($(target).closest('.nav-link')).removeClass('active')
+        $('.has-submenu.open').not($(target).closest('.nav-link').parents('.has-submenu')).removeClass('open')
 
-        targetHref = $(element.target).closest('.nav-link').attr('href');
+        if ( $(target).hasClass('active') && $(target).parent().hasClass('has-submenu')){
+          element.stopImmediatePropagation()
+          element.stopPropagation()
+          $(target).parent().toggleClass('open')
+          $(target).toggleClass('active')
+          return;
+        }
+
+        if (!$(target).hasClass('nav-link')) {
+          element.stopImmediatePropagation()
+          element.stopPropagation()
+          target = $(target).closest('.nav-link')
+          $(target).toggleClass('active')
+          $(target).parent().toggleClass('open')
+          return;
+        }    
+
+        targetHref = $(target).closest('.nav-link').attr('href');
         location.hash = targetHref;
 
-        if ($(el).closest('ul').hasClass('dropdown-menu')) {
-          $('.tab-content').animate({
-            scrollTop: $(window).scrollTop(0)
-          })
-        } else {
+        if (!$(el).closest('ul').hasClass('dropdown-menu')) {
           $('.nav-link').removeClass('active')
-          $(element.target).addClass('active')
+          $(target).addClass('active')
           showPanel()
           return
         }
@@ -35,13 +44,17 @@
         var navLinkIcon = $('.nav-link-icon')
 
         $(navLinkIcon).on('click', function (element) {
+          iconClick(element)
+        })
+
+        function iconClick(element) {
           var target = $(element.target).closest('.nav-link').closest('.has-submenu')
           if ($(target).hasClass('open')) {
             $(target).find('.nav-link').removeClass('active')
             $(target).removeClass('open')
             element.stopImmediatePropagation()
           } else {
-            if ($(element.target).hasClass('nav-link-icon') && $(window).width() < mdBreakpoint) {
+            if ($(window).width() < mdBreakpoint) {
               var targetLink = $(element.target).parent()
               if ($(targetLink).hasClass('active')) {
                 targetLink.removeClass('active')
@@ -57,9 +70,21 @@
               }
             }
           }
-        })
+        }
 
-        window.setTimeout(linkActive(targetHref), 50);
+        function linkActive(element) {
+          if ($(element.target).is('.nav-link-icon')) {
+            element.stopImmediatePropagation()
+            iconClick(element)
+          } else {
+            var targetHref = targetHref
+            $('.has-submenu').removeClass('open')
+            $('a[href="' + targetHref + '"]').addClass('active')
+            showPanel()
+          }
+        }
+
+        window.setTimeout(linkActive(element), 50);
 
         if ($(el).parents().hasClass('has-submenu') && $(window).width() <= mdBreakpoint) {
           return;
@@ -81,30 +106,30 @@
     })
 
     function showPanel() {
-        var hash = window.location.hash.substring(1)
-        if (hash == 'undefined' || hash == '') {
-          return;
-        } else {
-          var target = $('#' + hash)
-          var closestTab = $(target).closest('.tab-pane')
-          var targetLink = $("a[href$='" + hash + "']")
-          sideMenuHeading.innerHTML = targetLink.eq(0).text()
-          $('.nav-link').removeClass('active')
-          targetLink.eq(0).addClass('active')
-          if ($(targetLink).parent().hasClass('has-submenu')) {
-            $(targetLink).parent().toggleClass('open')
-          }
-          $('.tab-pane').removeClass('show').removeClass('active')
-          $(closestTab).addClass('show active')
-
-          if ($(window).width() >= mdBreakpoint) {
-            setTimeout(() => {
-              $('html').animate({
-                scrollTop: target.offset().top - 100
-              });
-            }, 300);
-          }
+      var hash = window.location.hash.substring(1)
+      if (hash == 'undefined' || hash == '') {
+        return;
+      } else {
+        var target = $('#' + hash)
+        var closestTab = $(target).closest('.tab-pane')
+        var targetLink = $("a[href$='" + hash + "']")
+        sideMenuHeading.innerHTML = targetLink.eq(0).text()
+        $('.nav-link').removeClass('active')
+        targetLink.eq(0).addClass('active')
+        if ($(targetLink).closest('.has-submenu').length) {
+          $(targetLink).closest('.has-submenu').addClass('open')
         }
+        $('.tab-pane').removeClass('show').removeClass('active')
+        $(closestTab).addClass('show active')
+
+        if ($(window).width() >= mdBreakpoint) {
+          setTimeout(() => {
+            $('html').animate({
+              scrollTop: target.offset().top - 100
+            });
+          }, 300);
+        }
+      }
     }
 
 
@@ -170,6 +195,8 @@
       }
     });
 
-    window.setTimeout(function(){showPanel()}, 0);
+    window.setTimeout(function () {
+      showPanel()
+    }, 0);
 
   });
