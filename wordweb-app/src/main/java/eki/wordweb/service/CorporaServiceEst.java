@@ -41,6 +41,8 @@ public class CorporaServiceEst extends AbstractCorporaService {
 
 	private final String[] POS_PUNCTUATIONS = new String[] {"Z", "_Z_"};
 
+	private final String QUOTATION_MARK = "\"";
+
 	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> getSentences(String sentence, String searchMode) {
 
@@ -87,33 +89,40 @@ public class CorporaServiceEst extends AbstractCorporaService {
 		}
 		for (Map<String, Object> kwic : (List<Map<String, Object>>) response.get("kwic")) {
 			Map<String, Object> match = (Map<String, Object>) kwic.get("match");
-			int startPos = (int) match.get("start");
-			int endPos = (int) match.get("end");
-			int index = 0;
+			int middlePartStartPos = (int) match.get("start");
+			int middlePartEndPos = (int) match.get("end");
+			int currentWordPos = 0;
+			boolean skipSpaceBeforeWord = false;
 			CorporaSentence sentence = new CorporaSentence();
 			for (Map<String, Object> token : (List<Map<String, Object>>) kwic.get("tokens")) {
-				String word = parseWord(token);
-				if (index < startPos) {
+				String word = parseWord(token, skipSpaceBeforeWord);
+				if (currentWordPos < middlePartStartPos) {
 					sentence.setLeftPart(sentence.getLeftPart() + word);
-				} else if (index >= endPos) {
+				} else if (currentWordPos >= middlePartEndPos) {
 					sentence.setRightPart(sentence.getRightPart() + word);
 				} else {
 					sentence.setMiddlePart(sentence.getMiddlePart() + word);
 				}
-				index++;
+				if (currentWordPos == 0 || skipSpaceBeforeWord) {
+					skipSpaceBeforeWord = StringUtils.equals(QUOTATION_MARK, word);
+				}
+				currentWordPos++;
 			}
 			sentences.add(sentence);
 		}
 		return sentences;
 	}
 
-	private String parseWord(Map<String, Object> token) {
+	private String parseWord(Map<String, Object> token, boolean skipSpaceBeforeWord) {
 
 		String word = (String) token.get("word");
 		String pos = (String) token.get("pos");
 		boolean isPunctuation = ArrayUtils.contains(POS_PUNCTUATIONS, pos);
-		word = isPunctuation ? word : " " + word;
-		return word;
+		if (isPunctuation || skipSpaceBeforeWord) {
+			return word;
+		} else {
+			return " " + word;
+		}
 	}
 
 }
