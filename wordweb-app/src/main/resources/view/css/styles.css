@@ -16595,8 +16595,6 @@ body.hidden-scroll {
 }
 
 .dropdown-aside .has-submenu .nav-link-icon {
-  position: absolute;
-  right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
