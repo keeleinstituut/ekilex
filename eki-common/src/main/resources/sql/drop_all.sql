@@ -72,7 +72,7 @@ drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning_semantic_type;
 drop table if exists meaning_nr;
-drop table if exists meaning;
+drop table if exists meaning CASCADE;
 drop table if exists form_frequency;
 drop table if exists form;
 drop table if exists paradigm;
@@ -87,12 +87,12 @@ drop table if exists word_group;
 drop table if exists word_relation_param;
 drop table if exists word_relation;
 drop table if exists word_word_type;
-drop table if exists word;
+drop table if exists word CASCADE;
 drop table if exists process_log_source_link; -- remove later
 drop table if exists process_log; -- remove later
 drop table if exists source_lifecycle_log;
 drop table if exists source_freeform;
-drop table if exists source;
+drop table if exists source CASCADE;
 drop table if exists freeform;
 drop table if exists eki_user_profile;
 drop table if exists dataset_permission;
