@@ -201,23 +201,49 @@ $(document).on("shown.bs.modal", "#morpho-modal", function() {
 		$('[data-toggle="tooltip"]').tooltip({
 			container : 'body'
 		});
+		$('[data-plugin="tableTogglers"]').tableTogglers();
+		$('.scrollable-table').scrollableTable();
 	});
 });
 
-$(document).on("click", "#form-view-mode1-btn", function() {
-	$(".form-display-form-field").each(function(indx, item) {
-		$(item).hide();
-	});
-	$(".form-value-field").each(function(indx, item) {
-		$(item).show();
-	});
-});
+$.fn.tableTogglers = function() {
+	var main = $(this);
+	var buttons = main.find('button');
+	var parent = main.parents('.modal-content:first');
 
-$(document).on("click", "#form-view-mode2-btn", function() {
-	$(".form-value-field").each(function(indx, item) {
-		$(item).hide();
+	function checkStates() {
+		var activeButtons = buttons.filter('.active');
+
+		if( activeButtons.is('[data-rel="hideColumn"]')) {
+			parent.find('.tableClone').show();
+			parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').show();
+		} else {
+			parent.find('.tableClone').hide();
+			parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').hide();
+		}
+
+		if (activeButtons.is('[data-rel="marks"]')) {
+			parent.find(".form-value-field").each(function(indx, item) {
+				$(item).hide();
+			});
+			parent.find(".form-display-form-field").each(function(indx, item) {
+				$(item).show();
+			});
+		} else {
+			parent.find(".form-display-form-field").each(function(indx, item) {
+				$(item).hide();
+			});
+			parent.find(".form-value-field").each(function(indx, item) {
+				$(item).show();
+			});
+		}
+
+		parent.find('.scrollable-table').trigger('scrollableTable:quickUpdate');
+	}
+	
+	buttons.on('click', function(e){
+		e.preventDefault();
+		$(this).toggleClass('active');
+		checkStates();
 	});
-	$(".form-display-form-field").each(function(indx, item) {
-		$(item).show();
-	});
-});
+}

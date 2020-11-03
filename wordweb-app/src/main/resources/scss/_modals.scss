@@ -175,13 +175,18 @@
   }
   .tableClone {
     position: absolute;
-    top: 0;
+    top: 12px;
     left: 0;
+    bottom: 12px;
     z-index: 10;
     width: 200px;
     overflow: hidden;
     pointer-events: none;
     background: $white;
+    border-right:1px solid #ccd9e0;
+    table {
+      margin: 0;
+    }
   }
   table {
     min-width: 100%;

@@ -39,7 +39,6 @@ function fetchDetails(wordId, wordSelectUrl) {
 		$('[data-toggle="popover"]').popover({
 			placement : 'top'
 		});
-		$('.scrollable-table').scrollableTable();
 		var lightbox = new SimpleLightbox('.gallery-image', {
 			history : false,
 			captionPosition : 'outside',
