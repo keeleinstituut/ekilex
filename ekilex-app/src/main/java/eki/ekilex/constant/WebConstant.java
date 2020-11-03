@@ -237,6 +237,8 @@ public interface WebConstant {
 
 	String UPDATE_CLASSIFIER_URI = "/update_classifier";
 
+	String DELETE_CLASSIFIER_URI = "/delete_classifier";
+
 	String CHANGE_ROLE_URI = "/change_role";
 
 	String SYN_SEARCH_PAGE = "synsearch";

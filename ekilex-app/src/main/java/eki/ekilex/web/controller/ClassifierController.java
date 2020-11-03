@@ -63,13 +63,15 @@ public class ClassifierController extends AbstractPageController {
 	public String createClassifier(
 			@RequestParam("classifierName") String classifierName,
 			@RequestParam("classifierCode") String classifierCode,
-			@RequestParam(name = "domainOriginCode", required = false) String domainOriginCode) {
+			@RequestParam(name = "domainOriginCode", required = false) String domainOriginCode,
+			@RequestParam("existingClassifierCode") String existingClassifierCode,
+			@RequestParam("createBeforeExisting") boolean createBeforeExisting) {
 
 		boolean isSuccessful;
 		if (StringUtils.isNotBlank(domainOriginCode)) {
-			isSuccessful = classifierService.createDomainClassifier(domainOriginCode, classifierCode);
+			isSuccessful = classifierService.createDomainClassifier(domainOriginCode, classifierCode, existingClassifierCode, createBeforeExisting);
 		} else {
-			isSuccessful = classifierService.createClassifier(classifierName, classifierCode);
+			isSuccessful = classifierService.createClassifier(classifierName, classifierCode, existingClassifierCode, createBeforeExisting);
 		}
 		if (isSuccessful) {
 			return RESPONSE_OK_VER1;
@@ -83,5 +85,24 @@ public class ClassifierController extends AbstractPageController {
 
 		classifierService.updateClassifier(classifierLabels);
 		return RESPONSE_OK_VER1;
+	}
+
+	@PostMapping(DELETE_CLASSIFIER_URI)
+	@ResponseBody
+	public String deleteClassifier(
+			@RequestParam("classifierName") String classifierName,
+			@RequestParam("classifierCode") String classifierCode,
+			@RequestParam(name = "domainOriginCode", required = false) String domainOriginCode) {
+
+		boolean isSuccessful;
+		if (StringUtils.isNotBlank(domainOriginCode)) {
+			isSuccessful = classifierService.deleteDomainClassifier(domainOriginCode, classifierCode);
+		} else {
+			isSuccessful = classifierService.deleteClassifier(classifierName, classifierCode);
+		}
+		if (isSuccessful) {
+			return RESPONSE_OK_VER1;
+		}
+		return "fail";
 	}
 }

@@ -144,6 +144,9 @@ $.fn.scrollableTable = function() {
 				scroller[0].scrollTo(0, 0);
 			}, 60);
 		});
+		main.on('scrollableTable:quickUpdate', function() {
+			calculateDimensions();
+		});
 
 		function calculateDimensions() {
 			var mainWidth = main.width();
@@ -192,6 +195,8 @@ $.fn.scrollableTable = function() {
 				}
 			}
 		});
-		calculateDimensions();
+		setTimeout(function(){
+			calculateDimensions();
+		}, 30);
 	});
 }

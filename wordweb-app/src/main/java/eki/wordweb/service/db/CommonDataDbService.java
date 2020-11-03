@@ -186,7 +186,7 @@ public class CommonDataDbService implements SystemConstant {
 	public boolean fiCollationExists() {
 		Integer fiCollationCnt = create
 				.selectCount()
-				.from("pg_collation where collname like 'fi_FI%'")
+				.from("pg_collation where lower(collcollate) = 'fi_fi.utf8'")
 				.fetchSingleInto(Integer.class);
 		return fiCollationCnt > 0;
 	}

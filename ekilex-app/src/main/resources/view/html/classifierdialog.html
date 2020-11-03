@@ -2,12 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-  <div th:id="${'addClassifierCodeDlg_' + classifierName}" class="modal" role="dialog" th:fragment="add_classifier_code_dialog">
+<div id="addClassifierCodeDlg" class="modal" role="dialog" th:fragment="add_classifier_code_dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form name="createClassifierForm" th:action="@{/create_classifier}" method="post">
           <input type="hidden" name="classifierName" th:value="${classifierName}">
           <input type="hidden" name="domainOriginCode" th:value="${domainOriginCode}">
+          <input type="hidden" name="existingClassifierCode">
+          <input type="hidden" name="createBeforeExisting">
           <div class="modal-header">
             <label class="col-md-2 col-form-label">kood</label>
             <input class="modal-title col-md-4 form-control font-weight-bold required-field" name="classifierCode">

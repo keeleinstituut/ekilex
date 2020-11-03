@@ -122,12 +122,12 @@
         $('.tab-pane').removeClass('show').removeClass('active')
         $(closestTab).addClass('show active')
 
-        if ($(window).width() >= mdBreakpoint) {
+        if ($(window).width() <= mdBreakpoint) {
           setTimeout(() => {
-            $('html').animate({
-              scrollTop: target.offset().top - 100
+            $('html, body').animate({
+              scrollTop: target.offset().top - 120
             });
-          }, 300);
+          }, 0);
         }
       }
     }

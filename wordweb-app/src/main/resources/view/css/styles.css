@@ -16595,8 +16595,6 @@ body.hidden-scroll {
 }
 
 .dropdown-aside .has-submenu .nav-link-icon {
-  position: absolute;
-  right: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18212,13 +18210,19 @@ body {
 
 .wordmodal .tableClone {
   position: absolute;
-  top: 0;
+  top: 12px;
   left: 0;
+  bottom: 12px;
   z-index: 10;
   width: 200px;
   overflow: hidden;
   pointer-events: none;
   background: #fff;
+  border-right: 1px solid #ccd9e0;
+}
+
+.wordmodal .tableClone table {
+  margin: 0;
 }
 
 .wordmodal table {

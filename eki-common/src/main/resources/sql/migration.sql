@@ -317,4 +317,93 @@ add column created_on timestamp null,
 add column modified_by text null,
 add column modified_on timestamp null;
 
+create or replace function set_freeform_creation_and_modification_fields(al_funct_name text, al_owner_name text, al_entity_name text)
+returns void
+language plpgsql
+as
+$$
+declare
+  ff_update_count integer;
+begin
+  update freeform ff
+  set created_by = ffal.event_by,
+      created_on = ffal.event_on,
+      modified_by = ffal.event_by,
+      modified_on = ffal.event_on
+  from (select al.entity_id as freeform_id,
+               al.event_by,
+               al.event_on
+        from activity_log al
+        where al.funct_name = al_funct_name
+          and al.owner_name = al_owner_name
+          and al.entity_name = al_entity_name) ffal
+  where ff.id = ffal.freeform_id;
+
+  get diagnostics ff_update_count = row_count;
+  raise notice 'updated % % % freeform creation and modification fields', ff_update_count, al_owner_name, al_entity_name;
+end $$;
+
+create or replace function update_freeform_modification_fields(al_funct_name text, al_owner_name text, al_entity_name text)
+  returns void
+  language plpgsql
+as
+$$
+declare
+  ff_update_count integer;
+begin
+  update freeform ff
+  set modified_by = ffal.event_by,
+      modified_on = ffal.event_on
+  from (select al.entity_id as freeform_id,
+               al.event_by,
+               al.event_on
+        from activity_log al
+        where al.funct_name = al_funct_name
+          and al.owner_name = al_owner_name
+          and al.entity_name = al_entity_name
+        order by event_on) ffal
+  where ff.id = ffal.freeform_id;
+
+  get diagnostics ff_update_count = row_count;
+  raise notice 'updated % % % freeform modification fields', ff_update_count, al_owner_name, al_entity_name;
+end $$;
+
+do $$
+begin
+  perform set_freeform_creation_and_modification_fields('create', 'LEXEME', 'USAGE');
+  perform update_freeform_modification_fields('update', 'LEXEME', 'USAGE');
+
+  perform set_freeform_creation_and_modification_fields('create', 'LEXEME', 'USAGE_TRANSLATION');
+  perform update_freeform_modification_fields('update', 'LEXEME', 'USAGE_TRANSLATION');
+
+  perform set_freeform_creation_and_modification_fields('create', 'LEXEME', 'USAGE_DEFINITION');
+  perform update_freeform_modification_fields('update', 'LEXEME', 'USAGE_DEFINITION');
+
+  perform set_freeform_creation_and_modification_fields('create', 'LEXEME', 'GOVERNMENT');
+  perform update_freeform_modification_fields('update', 'LEXEME', 'GOVERNMENT');
+
+  perform set_freeform_creation_and_modification_fields('create', 'LEXEME', 'GRAMMAR');
+  perform update_freeform_modification_fields('update', 'LEXEME', 'GRAMMAR');
+
+  perform set_freeform_creation_and_modification_fields('create', 'LEXEME', 'LEXEME_NOTE');
+  perform update_freeform_modification_fields('update', 'LEXEME', 'LEXEME_NOTE');
+
+  perform set_freeform_creation_and_modification_fields('create', 'MEANING', 'LEARNER_COMMENT');
+  perform update_freeform_modification_fields('update', 'MEANING', 'LEARNER_COMMENT');
+
+  perform set_freeform_creation_and_modification_fields('create', 'MEANING', 'MEANING_NOTE');
+  perform update_freeform_modification_fields('update', 'MEANING', 'MEANING_NOTE');
+end $$;
+commit;
+
+drop function set_freeform_creation_and_modification_fields(text, text, text);
+drop function update_freeform_modification_fields(text, text, text);
+
+-- 'full' tüüpi klassifikaatorite muutmine 'descrip' tüübiks
+update word_rel_type_label set type = 'descrip' where type = 'full';
+update lex_rel_type_label set type = 'descrip' where type = 'full';
+update government_type_label set type = 'descrip' where type = 'full';
+
+-- taastab tühjad grammatika kuva väljad 
 update freeform ff set value_prese = value_text where ff.type = 'GRAMMAR' and ff.value_prese is null;
+
