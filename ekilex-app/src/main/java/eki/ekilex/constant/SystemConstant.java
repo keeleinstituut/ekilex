@@ -18,8 +18,6 @@ public interface SystemConstant {
 
 	String CLASSIF_LABEL_TYPE_DESCRIP = "descrip";
 
-	String CLASSIF_LABEL_TYPE_FULL = "full";
-
 	String CLASSIF_LABEL_TYPE_WORDWEB = "wordweb";
 
 	String CLASSIF_LABEL_TYPE_ISO2 = "iso2";

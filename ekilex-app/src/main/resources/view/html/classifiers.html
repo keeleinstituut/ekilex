@@ -46,11 +46,6 @@
           <span th:text="#{|classifier.${classifierName}|}"></span>
           <span th:text="${domainOriginCode}" th:if="domainOriginCode != null"></span>
         </h5>
-        <button class="btn btn-primary pull-right"
-                title="Lisa uus"
-                data-toggle="modal"
-                th:data-target="${'#addClassifierCodeDlg_' + classifierName}">Lisa uus kood
-        </button>
       </div>
       <div class="card-body">
         <table class="table table-striped m-0 p-0 table-hover" th:unless="${hasLabel}">
@@ -99,16 +94,45 @@
                        th:value="${label.labelRus}"
                        th:data-label-type="${label.type}">
               <td class="m-1 p-1">
-                <button type="button" class="btn btn-primary btn-compact" title="Muuda"
-                        name="editRowBtn"
-                        th:data-code="${classifier.code}">Muuda
-                </button>
-                <button type="button" class="btn btn-primary btn-compact" title="Salvesta" style="display: none"
-                        name="saveRowBtn"
-                        th:data-classif-code="${classifier.code}"
-                        th:data-classif-name="${classifierName}"
-                        th:data-domain-origin="${domainOriginCode}">Salvesta
-                </button>
+                <div>
+                  <button type="button" class="btn btn-secondary btn-compact" title="Lisa ette"
+                          name="addCodeBtn"
+                          data-toggle="modal"
+                          data-create-before-existing="true"
+                          th:data-target="${'#addClassifierCodeDlg'}"
+                          th:data-classif-code="${classifier.code}">Lisa uus kood ette
+                  </button>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-primary btn-compact mt-2" title="Muuda" name="editClassifBtn">Muuda</button>
+                  <button type="button" class="btn btn-warning btn-compact mt-2"
+                          name="deleteClassifBtn"
+                          data-toggle="deleteClassifier"
+                          th:data-classif-code="${classifier.code}"
+                          th:data-classif-name="${classifierName}"
+                          th:data-domain-origin="${domainOriginCode}">Kustuta
+                  </button>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-secondary btn-compact" title="Lisa järele"
+                          name="addCodeBtn"
+                          data-toggle="modal"
+                          data-create-before-existing="false"
+                          th:data-target="${'#addClassifierCodeDlg'}"
+                          th:data-classif-code="${classifier.code}">Lisa uus kood järele
+                  </button>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-primary btn-compact" title="Salvesta" style="display: none"
+                          name="saveRowBtn"
+                          th:data-classif-code="${classifier.code}"
+                          th:data-classif-name="${classifierName}"
+                          th:data-domain-origin="${domainOriginCode}">Salvesta
+                  </button>
+                </div>
+                <div>
+                  <button type="button" class="btn btn-secondary btn-compact mt-2" title="Katkesta" style="display: none" name="cancelBtn">Katkesta</button>
+                </div>
               </td>
             </tr>
           </th:block>
@@ -120,5 +144,11 @@
   <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">
 	  initializeClassifiers();
+    $('[data-toggle=deleteClassifier]').confirmation({
+      btnOkLabel : 'Jah',
+      btnCancelLabel : 'Ei',
+      title : 'Klassifikaatorit on võimalik kustutada siis, kui see ei ole kasutuses. Kas soovid kustutada?',
+      onConfirm : deleteClassifier
+    });
   </script>
 </body>

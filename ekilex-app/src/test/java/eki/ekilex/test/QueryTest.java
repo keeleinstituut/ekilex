@@ -256,7 +256,7 @@ public class QueryTest {
 
 		final String sqlScriptFilePath = "./fileresources/sql/test_query_words_relations.sql";
 		final String defaultLabelLang = "est";
-		final String defaultLabelType = "full";
+		final String defaultLabelType = "descrip";
 
 		Map<String, String> paramMap = new HashMap<>();
 		paramMap.put("defaultLabelLang", defaultLabelLang);

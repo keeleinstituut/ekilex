@@ -398,3 +398,8 @@ commit;
 
 drop function set_freeform_creation_and_modification_fields(text, text, text);
 drop function update_freeform_modification_fields(text, text, text);
+
+-- 'full' tüüpi klassifikaatorite muutmine 'descrip' tüübiks
+update word_rel_type_label set type = 'descrip' where type = 'full';
+update lex_rel_type_label set type = 'descrip' where type = 'full';
+update government_type_label set type = 'descrip' where type = 'full';

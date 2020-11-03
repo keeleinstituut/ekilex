@@ -20,16 +20,34 @@ function initializeClassifiers() {
 		window.location = url;
 	});
 
-	$(document).on("click", ":button[name='editRowBtn']", function() {
-		let editRowBtn = $(this);
-		let allEditBtns = $(document).find('button[name="editRowBtn"]');
-		let activeRow = editRowBtn.closest('tr');
+	$(document).on('show.bs.modal', "#addClassifierCodeDlg", function(e) {
+		let classifierCode = $(e.relatedTarget).attr('data-classif-code');
+		let createBeforeExisting = $(e.relatedTarget).attr('data-create-before-existing');
+		let form = $(this).find('form');
+		form.find('input[name=existingClassifierCode]').val(classifierCode);
+		form.find('input[name=createBeforeExisting]').val(createBeforeExisting);
+	});
+
+	$(document).on("click", ":button[name='editClassifBtn']", function() {
+		let editClassifBtn = $(this);
+		let allEditBtns = $(document).find('button[name="editClassifBtn"]');
+		let allDeleteBtns = $(document).find('button[name="deleteClassifBtn"]');
+		let allCodeBtns = $(document).find('button[name="addCodeBtn"]');
+		let activeRow = editClassifBtn.closest('tr');
 		let activeRowInputs = activeRow.find('input');
 		let saveRowBtn = activeRow.find('button[name="saveRowBtn"]');
+		let cancelBtn = activeRow.find('button[name="cancelBtn"]');
 
 		activeRowInputs.attr("disabled", false);
 		allEditBtns.hide();
+		allDeleteBtns.hide();
+		allCodeBtns.hide();
 		saveRowBtn.show();
+		cancelBtn.show();
+	});
+
+	$(document).on("click", ":button[name='cancelBtn']", function() {
+		location.reload();
 	});
 
 	$(document).on("click", ":button[name='saveRowBtn']", function() {
@@ -94,6 +112,34 @@ function initializeClassifiers() {
 			console.log(data);
 			openAlertDlg("Salvestamine ebaõnnestus");
 		});
+	});
+}
+
+function deleteClassifier() {
+	let classifierCode = $(this).attr("data-classif-code");
+	let classifierName = $(this).attr("data-classif-name");
+	let domainOriginCode = $(this).attr("data-domain-origin");
+
+	let deleteData = {
+		classifierCode: classifierCode,
+		classifierName: classifierName,
+		domainOriginCode: domainOriginCode
+	}
+
+	$.ajax({
+		url: applicationUrl + 'delete_classifier',
+		data: deleteData,
+		method: 'POST',
+	}).done(function(response) {
+		if (response === "OK") {
+			location.reload();
+		} else {
+			console.log(response);
+			openAlertDlg("Kustutamine ebaõnnestus. Kontrolli, kas klassifikaatorit on kusagil kasutatud.");
+		}
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg("Kustutamine ebaõnnestus");
 	});
 }
 

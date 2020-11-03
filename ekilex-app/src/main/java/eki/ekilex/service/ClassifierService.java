@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jooq.exception.DataAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 
 	private final ClassifierName[] nonEditableClassifNames = new ClassifierName[] {ClassifierName.LABEL_TYPE};
 
-	private final String[] editableLabelTypes = new String[] {CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_FULL, CLASSIF_LABEL_TYPE_WORDWEB};
+	private final String[] editableLabelTypes = new String[] {CLASSIF_LABEL_TYPE_DESCRIP, CLASSIF_LABEL_TYPE_WORDWEB};
 
 	public List<String> getEditableClassifierNames() {
 
@@ -155,27 +156,33 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public boolean createClassifier(String classifierName, String classifierCode) {
+	public boolean createClassifier(String classifierName, String classifierCode, String existingClassifierCode, boolean createBeforeExisting) {
 
 		boolean classifierExists = classifierDbService.classifierExists(classifierName, classifierCode);
 		if (classifierExists) {
 			return false;
 		}
 
-		classifierDbService.createClassifier(classifierName, classifierCode);
+		Long existingClassifierOrderBy = classifierDbService.getClassifierOrderBy(classifierName, existingClassifierCode);
+		Long newClassifierOrderby = createBeforeExisting ? existingClassifierOrderBy : existingClassifierOrderBy + 1;
+		classifierDbService.increaseClassifiersOrderBy(classifierName, newClassifierOrderby);
+		classifierDbService.createClassifier(classifierName, classifierCode, newClassifierOrderby);
 		maintenanceService.clearClassifCache();
 		return true;
 	}
 
 	@Transactional
-	public boolean createDomainClassifier(String domainOriginCode, String classifierCode) {
+	public boolean createDomainClassifier(String domainOriginCode, String classifierCode, String existingClassifierCode, boolean createBeforeExisting) {
 
 		boolean classifierExists = classifierDbService.domainClassifierExists(domainOriginCode, classifierCode);
 		if (classifierExists) {
 			return false;
 		}
 
-		classifierDbService.createDomainClassifier(domainOriginCode, classifierCode);
+		Long existingClassifierOrderBy = classifierDbService.getDomainClassifierOrderBy(domainOriginCode, existingClassifierCode);
+		Long newClassifierOrderby = createBeforeExisting ? existingClassifierOrderBy : existingClassifierOrderBy + 1;
+		classifierDbService.increaseDomainClassifiersOrderBy(newClassifierOrderby);
+		classifierDbService.createDomainClassifier(domainOriginCode, classifierCode, newClassifierOrderby);
 		maintenanceService.clearClassifCache();
 		return true;
 	}
@@ -193,4 +200,27 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		maintenanceService.clearClassifCache();
 	}
 
+	@Transactional
+	public boolean deleteClassifier(String classifierName, String classifierCode) {
+
+		try {
+			classifierDbService.deleteClassifier(classifierName, classifierCode);
+			return true;
+		} catch (DataAccessException e) {
+			// classifier is in use. delete is not possible
+			return false;
+		}
+	}
+
+	@Transactional
+	public boolean deleteDomainClassifier(String domainOriginCode, String classifierCode) {
+
+		try {
+			classifierDbService.deleteDomainClassifier(domainOriginCode, classifierCode);
+			return true;
+		} catch (DataAccessException e) {
+			// classifier is in use. delete is not possible
+			return false;
+		}
+	}
 }
