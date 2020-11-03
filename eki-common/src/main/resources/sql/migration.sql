@@ -316,3 +316,5 @@ add column created_by text null,
 add column created_on timestamp null,
 add column modified_by text null,
 add column modified_on timestamp null;
+
+update freeform ff set value_prese = value_text where ff.type = 'GRAMMAR' and ff.value_prese is null;
