@@ -78,27 +78,53 @@ public class ClassifierDbService extends AbstractDataDbService {
 		return classifierLabels;
 	}
 
-	public void createClassifier(String classifierName, String classifierCode) {
+	public Long getClassifierOrderBy(String classifierName, String classifierCode) {
+
+		Field<Object> codeField = DSL.field("code");
+		Field<Object> orderByField = DSL.field("order_by");
+
+		Long orderBy = create
+				.select(orderByField)
+				.from(classifierName)
+				.where(codeField.eq(classifierCode))
+				.fetchOneInto(Long.class);
+
+		return orderBy;
+	}
+
+	public Long getDomainClassifierOrderBy(String domainOriginCode, String existingClassifierCode) {
+
+		Long orderBy = create
+				.select(DOMAIN.ORDER_BY)
+				.from(DOMAIN)
+				.where(DOMAIN.ORIGIN.eq(domainOriginCode).and(DOMAIN.CODE.eq(existingClassifierCode)))
+				.fetchOneInto(Long.class);
+
+		return orderBy;
+	}
+
+	public void createClassifier(String classifierName, String classifierCode, Long orderBy) {
 
 		Field<Object> codeField = DSL.field("code");
 		Field<Object> datasetsField = DSL.field("datasets");
+		Field<Object> orderByField = DSL.field("order_by");
 		String[] emptyArray = new String[0];
 
 		create
 				.insertInto(DSL.table(classifierName))
-				.columns(codeField, datasetsField)
-				.values(classifierCode, emptyArray)
+				.columns(codeField, datasetsField, orderByField)
+				.values(classifierCode, emptyArray, orderBy)
 				.execute();
 	}
 
-	public void createDomainClassifier(String domainOriginCode, String classifierCode) {
+	public void createDomainClassifier(String domainOriginCode, String classifierCode, Long orderBy) {
 
 		String[] emptyArray = new String[0];
 
 		create
 				.insertInto(DOMAIN)
-				.columns(DOMAIN.ORIGIN, DOMAIN.CODE, DOMAIN.DATASETS)
-				.values(domainOriginCode, classifierCode, emptyArray)
+				.columns(DOMAIN.ORIGIN, DOMAIN.CODE, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
+				.values(domainOriginCode, classifierCode, emptyArray, orderBy)
 				.execute();
 	}
 
@@ -141,6 +167,27 @@ public class ClassifierDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	// TODO rename? - yogesh
+	public void increaseClassifiersOrderBy(String classifierName, Long newClassifierOrderby) {
+
+		Field<Long> orderByField = DSL.field("order_by", Long.class);
+		create
+				.update(DSL.table(classifierName))
+				.set(orderByField, orderByField.plus(1))
+				.where(orderByField.greaterOrEqual(newClassifierOrderby))
+				.execute();
+	}
+
+	// TODO rename? - yogesh
+	public void increaseDomainClassifiersOrderBy(Long newClassifierOrderby) {
+
+		create
+				.update(DOMAIN)
+				.set(DOMAIN.ORDER_BY, DOMAIN.ORDER_BY.plus(1))
+				.where(DOMAIN.ORDER_BY.greaterOrEqual(newClassifierOrderby))
+				.execute();
+	}
+
 	public void deleteClassifierLabel(ClassifierLabel classifierLabel) {
 
 		String classifierName = classifierLabel.getClassifierName().name();
@@ -166,6 +213,28 @@ public class ClassifierDbService extends AbstractDataDbService {
 		create
 				.delete(DSL.table(labelTableName))
 				.where(deleteWhere)
+				.execute();
+	}
+
+	public void deleteClassifier(String classifierName, String classifierCode) {
+
+		Field<Object> codeField = DSL.field("code");
+		create
+				.delete(DSL.table(classifierName))
+				.where(codeField.eq(classifierCode))
+				.execute();
+	}
+
+	public void deleteDomainClassifier(String domainOriginCode, String classifierCode) {
+
+		create
+				.delete(DOMAIN_LABEL)
+				.where(DOMAIN_LABEL.ORIGIN.eq(domainOriginCode).and(DOMAIN_LABEL.CODE.eq(classifierCode)))
+				.execute();
+
+		create
+				.delete(DOMAIN)
+				.where(DOMAIN.ORIGIN.eq(domainOriginCode).and(DOMAIN.CODE.eq(classifierCode)))
 				.execute();
 	}
 
