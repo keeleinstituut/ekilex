@@ -18566,6 +18566,10 @@ eki-link {
   background-color: #a44392;
 }
 
+.image-card-large {
+  height: 400px;
+}
+
 .image-card {
   display: flex;
   flex-direction: column;
