@@ -382,6 +382,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordDisplayMorph(Long wordId, String displayMorphCode) {
+		create.update(WORD)
+				.set(WORD.DISPLAY_MORPH_CODE, displayMorphCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateWordLang(Long wordId, String langCode) {
 		create.update(WORD)
 				.set(WORD.LANG, langCode)

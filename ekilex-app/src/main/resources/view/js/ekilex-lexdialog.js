@@ -56,6 +56,14 @@ $(function() {
 		initSelectDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=addWordDisplayMorphDlg_]", function() {
+		initSelectDlg($(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editWordDisplayMorphDlg_]", function() {
+		initSelectDlg($(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=addWordLangDlg_]", function() {
 		initSelectDlg($(this));
 	});
