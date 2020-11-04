@@ -374,6 +374,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.WORD_CLASS,
 						w.GENDER_CODE,
 						w.ASPECT_CODE,
+						w.DISPLAY_MORPH_CODE,
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
