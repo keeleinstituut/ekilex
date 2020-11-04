@@ -463,7 +463,7 @@
     </th:block>
     <th:block th:unless="${details.word.displayMorphCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.displayMorphCode, wordDisplayMorphs)}" data-toggle="tooltip" title="Vormikood"></span>
+        <span th:text="'[' + ${details.word.displayMorphCode} + ']'" data-toggle="tooltip" title="Vormikood"></span>
         <div class="hover-actions">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal" th:data-target="${'#editWordDisplayMorphDlg_' + wordId}" sec:authorize="#vars.details.word.crudGrant">
