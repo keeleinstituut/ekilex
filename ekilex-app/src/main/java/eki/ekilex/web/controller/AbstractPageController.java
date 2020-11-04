@@ -163,6 +163,11 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 		return commonDataService.getWordRelationTypes();
 	}
 
+	@ModelAttribute("wordDisplayMorphs")
+	public List<Classifier> getWordDisplayMorphs() {
+		return commonDataService.getDisplayMorphs();
+	}
+
 	@ModelAttribute("groupWordRelationTypes")
 	public List<Classifier> getGroupWordRelationTypes() {
 		List<Classifier> allWordRelationTypes = commonDataService.getWordRelationTypes();

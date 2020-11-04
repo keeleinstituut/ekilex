@@ -452,6 +452,36 @@
       </div>
     </th:block>
   </div>
+  <div class="mr-1" th:fragment="word_display_morph">
+    <th:block th:if="${details.word.displayMorphCode == null}">
+      <button type="button" class="btn btn-secondary btn-compact btn-sm"
+              data-toggle="modal"
+              th:data-target="${'#addWordDisplayMorphDlg_' + wordId}"
+              sec:authorize="#vars.details.word.crudGrant">
+        <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Vormikood
+      </button>
+    </th:block>
+    <th:block th:unless="${details.word.displayMorphCode == null}">
+      <div class="hover-actions-container hover-actions-container-outline">
+        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.displayMorphCode, wordDisplayMorphs)}" data-toggle="tooltip" title="Vormikood"></span>
+        <div class="hover-actions">
+          <div class="btn-group">
+            <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal" th:data-target="${'#editWordDisplayMorphDlg_' + wordId}" sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm"
+                    th:data-id="${wordId}"
+                    data-op-code="word_display_morph"
+                    data-toggle="delete-confirm"
+                    data-placement="right"
+                    sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-remove action-icon" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
   <div class="mr-1" th:fragment="word_vocal_form">
     <th:block th:if="${#strings.isEmpty(details.word.vocalForm)}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"

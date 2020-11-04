@@ -157,6 +157,9 @@ public class EditController extends AbstractPageController {
 		case "word_aspect":
 			cudService.updateWordAspect(itemData.getId3(), itemValue);
 			break;
+		case "word_display_morph":
+			cudService.updateWordDisplayMorph(itemData.getId3(), itemValue);
+			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(itemData.getId3(), itemValue);
 			break;
@@ -287,6 +290,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(itemData.getId(), itemValue);
+			break;
+		case "word_display_morph":
+			cudService.updateWordDisplayMorph(itemData.getId(), itemValue);
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(itemData.getId(), itemValue);
@@ -542,6 +548,9 @@ public class EditController extends AbstractPageController {
 			break;
 		case "word_relation":
 			cudService.deleteWordRelation(id);
+			break;
+		case "word_display_morph":
+			cudService.updateWordDisplayMorph(id, null);
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null);

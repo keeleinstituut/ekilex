@@ -107,7 +107,6 @@
                 <span th:text="${lexeme.levels}"></span>
               </span>
             </span>
-            <span class="pl-1 pr-1" th:if="${lexeme.wordDisplayMorphCode != null}" th:text="'[' + ${lexeme.wordDisplayMorphCode} + ']'"></span>
             <div>
               <div th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}"
                    class="orderable d-flex flex-row flex-wrap mr-2"

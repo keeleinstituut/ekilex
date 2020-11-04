@@ -1,10 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-  <th:block th:fragment="morpho-form-value(form)">
+  <th:block th:fragment="morpho-form-value(form, prefix)">
+    <span th:text="${prefix}"></span>
     <span class="form-display-form-field" th:utext="${form.displayForm}" style="display: none;"></span>
     <span class="form-value-field" th:utext="${form.valuePrese}"></span>
-    <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${form.audioFile != null}"
+    <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
             th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
             onclick="generateAudioAndPlay(this)">
       <span class="icon icon-speaker"></span>
@@ -12,8 +13,7 @@
   </th:block>
   <th:block th:fragment="morpho-verb-form-row(paradigm, morphCode, prefix)">
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
-      <span th:text="${prefix}"></span>
-      <th:block th:replace=" :: morpho-form-value(${form})"></th:block>
+      <th:block th:replace=" :: morpho-form-value(${form}, ${prefix})"></th:block>
       <span th:unless="${formIter.last}">~</span>
     </th:block>
   </th:block>
@@ -21,7 +21,7 @@
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
       <div>
         <div class="word-section">
-          <th:block th:replace=" :: morpho-form-value(${form})"></th:block>
+          <th:block th:replace=" :: morpho-form-value(${form}, '')"></th:block>
           <span th:unless="${formIter.last}">~</span>
         </div>
         <div class="rating" th:if="${form.morphExists && form.formFreqValue != null}"
@@ -33,7 +33,7 @@
             <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 4 ? 'fa' : 'far'}"></i>
             <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 5 ? 'fa' : 'far'}"></i>
           </div>
-          <div class="rating__row" data-toggle="tooltip">
+          <div class="rating__row">
             <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 1 ? 'fa' : 'far'}"></i>
             <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 2 ? 'fa' : 'far'}"></i>
             <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 3 ? 'fa' : 'far'}"></i>

@@ -1080,6 +1080,36 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addWordDisplayMorphDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="add_word_display_morph_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id3" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_display_morph">
+            <select required class="form-control" name="value">
+              <option th:each="item : ${wordDisplayMorphs}" th:value="${item.code}" th:text="${item.value}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordDisplayMorphDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_display_morph_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_display_morph">
+            <select required class="form-control" name="value">
+              <option th:each="item : ${wordDisplayMorphs}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == details.word.displayMorphCode}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addWordVocalFormDlg_' + wordId}" class="modal" role="dialog" th:fragment="add_word_vocal_form_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

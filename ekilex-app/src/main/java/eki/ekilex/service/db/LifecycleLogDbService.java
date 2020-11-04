@@ -231,7 +231,13 @@ public class LifecycleLogDbService implements GlobalConstant {
 			logData.setRecent(recent);
 			Long lifecycleLogId = createLifecycleLog(logData);
 			createWordLifecycleLog(entityId, lifecycleLogId);
-		} else if (LifecycleProperty.VOCAL_FORM.equals(property)) {
+		} else if (LifecycleProperty.DISPLAY_MORPH_CODE.equals(property)) {
+			Map<String, Object> entityData = helper.getWordData(create, entityId);
+			String recent = (String) entityData.get("display_morph_code");
+			logData.setRecent(recent);
+			Long lifecycleLogId = createLifecycleLog(logData);
+			createWordLifecycleLog(entityId, lifecycleLogId);
+		}else if (LifecycleProperty.VOCAL_FORM.equals(property)) {
 			Map<String, Object> entityData = helper.getWordData(create, entityId);
 			String recent = (String) entityData.get("vocal_form");
 			logData.setRecent(recent);

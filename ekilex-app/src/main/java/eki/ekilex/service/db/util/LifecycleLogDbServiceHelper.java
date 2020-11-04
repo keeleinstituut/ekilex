@@ -157,6 +157,7 @@ public class LifecycleLogDbServiceHelper extends AbstractDataDbService {
 						w.LANG,
 						w.VALUE,
 						w.VALUE_PRESE,
+						w.DISPLAY_MORPH_CODE,
 						fvff.as("vocal_form"),
 						fmcf.as("morph_code"))
 				.from(w)

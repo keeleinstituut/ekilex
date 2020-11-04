@@ -115,6 +115,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateWordDisplayMorph(Long wordId, String displayMorphCode) throws Exception {
+		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.DISPLAY_MORPH_CODE, wordId, displayMorphCode);
+		createLifecycleLog(logData);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordDisplayMorph", wordId, LifecycleLogOwner.WORD);
+		cudDbService.updateWordDisplayMorph(wordId, displayMorphCode);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
+	}
+
+	@Transactional
 	public void updateWordGender(Long wordId, String genderCode) throws Exception {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.GENDER, wordId, genderCode);
 		createLifecycleLog(logData);

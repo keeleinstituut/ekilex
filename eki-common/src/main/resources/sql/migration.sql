@@ -403,3 +403,7 @@ drop function update_freeform_modification_fields(text, text, text);
 update word_rel_type_label set type = 'descrip' where type = 'full';
 update lex_rel_type_label set type = 'descrip' where type = 'full';
 update government_type_label set type = 'descrip' where type = 'full';
+
+-- taastab tühjad grammatika kuva väljad 
+update freeform ff set value_prese = value_text where ff.type = 'GRAMMAR' and ff.value_prese is null;
+
