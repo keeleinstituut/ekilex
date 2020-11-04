@@ -195,8 +195,8 @@
       }
     });
 
-    window.setTimeout(function () {
-      showPanel()
-    }, 0);
+    $(window).on('load', function() {
+      showPanel();
+    })
 
   });
