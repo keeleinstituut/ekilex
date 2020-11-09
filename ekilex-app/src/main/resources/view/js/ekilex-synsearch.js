@@ -302,7 +302,7 @@ function initAddSynRelationDlg(addDlg) {
 				let button = $(e.target);
 				addDlg.find('[name=opCode]').val('create_syn_word');
 				let weightValue = $("#weightInput").val();
-				addDlg.find('[name=value]').val(weightValue);
+				addDlg.find('[name=value2]').val(weightValue);
 
 				let theForm = button.closest('form');
 				if (checkRequiredFields(theForm)) {

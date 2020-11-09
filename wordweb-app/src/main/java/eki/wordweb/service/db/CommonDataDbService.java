@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record5;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -63,18 +64,19 @@ public class CommonDataDbService implements SystemConstant {
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #lang}")
 	public List<Classifier> getClassifiers(ClassifierName name, String lang) {
 
+		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
 		return create
 				.select(
-						MVIEW_WW_CLASSIFIER.NAME,
-						MVIEW_WW_CLASSIFIER.ORIGIN,
-						MVIEW_WW_CLASSIFIER.CODE,
-						MVIEW_WW_CLASSIFIER.VALUE,
-						MVIEW_WW_CLASSIFIER.LANG)
-				.from(MVIEW_WW_CLASSIFIER)
-				.where(MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
-						.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
-						.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
-				.orderBy(MVIEW_WW_CLASSIFIER.ORDER_BY)
+						cl.NAME,
+						cl.ORIGIN,
+						cl.CODE,
+						cl.VALUE,
+						cl.LANG)
+				.from(cl)
+				.where(cl.NAME.eq(name.name())
+						.and(cl.LANG.eq(lang))
+						.and(cl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.orderBy(cl.ORDER_BY)
 				.fetch().into(Classifier.class);
 	}
 
@@ -89,23 +91,26 @@ public class CommonDataDbService implements SystemConstant {
 		if (CollectionUtils.isEmpty(codes)) {
 			return Collections.emptyList();
 		}
-		Condition where = MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
-				.and(MVIEW_WW_CLASSIFIER.CODE.in(codes))
-				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
-				.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
+		String[] codesArr = new String[codes.size()];
+		codesArr = codes.toArray(codesArr);
+		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
+		Condition where = cl.NAME.eq(name.name())
+				.and(cl.CODE.in(codes))
+				.and(cl.LANG.eq(lang))
+				.and(cl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
 		if (StringUtils.isNotBlank(origin)) {
-			where = where.and(MVIEW_WW_CLASSIFIER.ORIGIN.eq(origin));
+			where = where.and(cl.ORIGIN.eq(origin));
 		}
 		return create
 				.select(
-						MVIEW_WW_CLASSIFIER.NAME,
-						MVIEW_WW_CLASSIFIER.ORIGIN,
-						MVIEW_WW_CLASSIFIER.CODE,
-						MVIEW_WW_CLASSIFIER.VALUE,
-						MVIEW_WW_CLASSIFIER.LANG)
-				.from(MVIEW_WW_CLASSIFIER)
+						cl.NAME,
+						cl.ORIGIN,
+						cl.CODE,
+						cl.VALUE,
+						cl.LANG)
+				.from(cl)
 				.where(where)
-				.orderBy(MVIEW_WW_CLASSIFIER.ORDER_BY)
+				.orderBy(DSL.field("array_position({0}, cl.code)", Integer.class, DSL.val(codesArr)))
 				.fetch().into(Classifier.class);
 	}
 

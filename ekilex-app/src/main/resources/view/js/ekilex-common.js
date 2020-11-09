@@ -501,63 +501,6 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 	});
 };
 
-function initAddSynRelationDlgOld(addDlg) {
-	addDlg.find('.form-control').val(null);
-	addDlg.find('[data-name=dialogContent]').html(null);
-	let idElementName = 'word-id';
-
-	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		e.preventDefault();
-		let button = $(this);
-		let content = button.html();
-		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-		let theForm = $(this).closest('form');
-		let url = theForm.attr('action') + '?' + theForm.serialize();
-		$.get(url).done(function(data) {
-			addDlg.find('[data-name=dialogContent]').replaceWith(data);
-			addDlg.find('button[data-' + idElementName + ']').off('click').on('click', function(e) {
-				e.preventDefault();
-				let button = $(e.target);
-				addDlg.find('[name=id2]').val(button.data(idElementName));
-				addDlg.find('[name=opCode]').val('create_raw_relation');
-				let weightValue = $("#weightInput").val();
-				addDlg.find('[name=value2]').val(weightValue);
-				let theForm = button.closest('form');
-				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
-						addDlg.modal('hide');
-					});
-				}
-			});
-
-			addDlg.find('#addSynRelationWord').on('click', function(e) {
-				e.preventDefault();
-				let button = $(e.target);
-				addDlg.find('[name=opCode]').val('create_syn_word');
-				let weightValue = $("#weightInput").val();
-				addDlg.find('[name=value]').val(weightValue);
-
-				let theForm = button.closest('form');
-				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, 'Keelendi lisamine ebaõnnestus.').always(function() {
-						addDlg.modal('hide');
-					});
-				}
-			});
-
-		}).fail(function(data) {
-			console.log(data);
-			openAlertDlg('Viga!');
-		}).always(function() {
-			button.html(content);
-		});
-	});
-
-	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		addDlg.find('.form-control').first().focus();
-	});
-};
-
 function decorateSourceLinks(detailsDiv) {
 	detailsDiv.find('a[href]').each(function(indx, item) {
 		let theLink = $(item);
