@@ -7,7 +7,7 @@
     margin-bottom: -1pxi;
     &--active {
       .ekiAccordion__title:before {
-        content: '\f0d7';
+        content: "\f0d8";
       }
       > .ekiAccordion__content {
         display: block;
@@ -27,7 +27,7 @@
       pointer-events: none;
     }
     &:before {
-      content: "\f0d8";
+      content: '\f0d7';
       display: block;
       position: absolute;
       top: 0;
