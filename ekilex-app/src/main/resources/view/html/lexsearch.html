@@ -29,14 +29,14 @@
       </div>
       <div class="h-100 d-flex flex-column" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
         <div class="scrollable-area" data-plugin="ekiSortable">
-          <div id="word-details-area" data-rel="details-area"></div>
+          <div id="details-area" data-rel="details-area"></div>
         </div>
       </div>
     </div>
   </div>
   <th:block th:fragment="word_details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="word-details-area" class="h-100" data-rel="details-area" th:data-word="${details.word.wordValue}">
-      <button id="refresh-details" hidden th:data-id="${wordId}" name="word-details-btn" data-behaviour="replace" data-refresh></button>
+    <div th:data-id="${wordId}" id="details-area" class="h-100" data-rel="details-area" th:data-word="${details.word.wordValue}">
+      <button id="refresh-details" hidden th:data-id="${wordId}" name="details-btn" data-behaviour="replace" data-refresh></button>
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2  py-2">
@@ -293,7 +293,7 @@
                                         data-plugin="contextmenu"
                                         data-contextmenu:compare="Ava uues paneelis"
                                         data-behaviour="replace"
-                                        name="word-details-btn">
+                                        name="details-btn">
                                   <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                                 </button>
                                 <button type="button" class="btn badge badge-warning"
@@ -326,7 +326,7 @@
                                       data-plugin="contextmenu"
                                       data-contextmenu:compare="Ava uues paneelis"
                                       data-behaviour="replace"
-                                      name="word-details-btn">
+                                      name="details-btn">
                                 <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                               </button>
                               <button type="button" class="btn badge badge-warning"
@@ -374,7 +374,7 @@
                                     data-plugin="contextmenu"
                                     data-contextmenu:compare="Ava uues paneelis"
                                     data-behaviour="replace"
-                                    name="word-details-btn">
+                                    name="details-btn">
                               <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                             </button>
                             <button type="button" class="btn badge badge-warning"
@@ -413,7 +413,7 @@
                                     data-plugin="contextmenu"
                                     data-contextmenu:compare="Ava uues paneelis"
                                     data-behaviour="replace"
-                                    name="word-details-btn">
+                                    name="details-btn">
                               <span>
                                 <span th:if="${wordEtymRel.questionable}">?</span>
                                 <span th:if="${wordEtymRel.compound}">+</span>
@@ -448,7 +448,7 @@
   <div th:replace="lexdialog :: new_word_dlg"></div>
   <div th:replace="sourcedialog :: add_source_dlg('lex_search')"></div>
   <script th:inline="javascript">
-	  initializeLexSearch();
+	  initializeSearch('lex');
   </script>
 </body>
 </html>

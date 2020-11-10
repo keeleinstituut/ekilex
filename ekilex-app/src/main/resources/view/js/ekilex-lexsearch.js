@@ -1,5 +1,7 @@
-function initializeLexSearch() {
+var viewType = '';
+function initializeSearch(type) {
 
+	viewType = type;
 	$(window).on('update:wordId', () => {
 		const idList = [];
 		$('#resultColumn').find('[data-rel="details-area"]').each((index, element) => {
@@ -26,11 +28,11 @@ function initializeLexSearch() {
 		}
 	});
 
-	$(document).on("click", ":button[name='word-details-btn']", function() {
+	$(document).on("click", ":button[name='details-btn'], #refresh-details", function() {
 		const wordId = $(this).data('id');
 		const behaviour = $(this).data('behaviour') || false;
-		const lastWordId = behaviour === 'replace' ? $(this).parents('#word-details-area:first').attr('data-id') : false;
-		loadWordDetails(wordId, behaviour, lastWordId);
+		const lastWordId = behaviour === 'replace' ? $(this).parents('#details-area:first').attr('data-id') : false;
+		loadDetails(wordId, behaviour, lastWordId);
 	});
 
 	$(document).on("click", ":button[name='lexeme-details-btn']", function() {
@@ -45,7 +47,7 @@ function initializeLexSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, -1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsLexSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
+			refreshDetailsSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
 		}
 	});
 
@@ -54,7 +56,7 @@ function initializeLexSearch() {
 		let orderingData = changeItemOrdering(orderingBtn, 1);
 		postJson(applicationUrl + 'update_ordering', orderingData);
 		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsLexSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
+			refreshDetailsSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
 		}
 	});
 
@@ -101,7 +103,7 @@ function initializeLexSearch() {
 			let response = JSON.parse(data);
 			if (response.status === 'ok') {
 				openMessageDlg(response.message);
-				refreshDetailsLexSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+				refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 			} else {
 				openAlertDlg(response.message);
 			}
@@ -118,7 +120,7 @@ function initializeLexSearch() {
 		$.post(url).done(function(data) {
 			var response = JSON.parse(data);
 			openMessageDlg(response.message);
-			refreshDetailsLexSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+			refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 		}).fail(function(data) {
 			openAlertDlg("Tähenduse lisamine ebaõnnestus");
 			console.log(data);
@@ -140,7 +142,12 @@ function initializeLexSearch() {
 
 	$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg();
+
+
 		let url = applicationUrl + "lex_paging";
+		if (viewType === 'term') {
+			url = applicationUrl + "term_paging";
+		}
 		let button = $(this);
 		let direction = button.data("direction");
 		let form = button.closest('form');
@@ -172,21 +179,21 @@ function initializeLexSearch() {
 				openAlertDlg("Andmete muutmine ebaõnnestus.");
 				console.log(data);
 			}
-			refreshDetailsLexSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+			refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 		}).fail(function(data) {
 			openAlertDlg("Andmete muutmine ebaõnnestus.");
 			console.log(data);
 		});
 	});
 
-	let detailButtons = $('#results').find('[name="word-details-btn"]');
+	let detailButtons = $('#results').find('[name="details-btn"]');
 	if (QueryParams.get('id')) {
 		const scrollableArea = $('#resultColumn .scrollable-area');
 		scrollableArea.empty();
 		const idList = QueryParams.get('id').split(',');
 		idList.forEach((value, index) => {
-			scrollableArea.append(`<div data-id="${value}" id="word-details-area" class="h-100 ui-sortable-placeholder" data-rel="details-area"></div>`);
-			loadWordDetails(value, 'replace', value);
+			scrollableArea.append(`<div data-id="${value}" id="details-area" class="h-100 ui-sortable-placeholder" data-rel="details-area"></div>`);
+			loadDetails(value, 'replace', value);
 		});
 	} else {
 		if (detailButtons.length > 0) {
@@ -204,20 +211,26 @@ function getBreadcrumbsData(detailsDiv, word) {
 	return crumbs;
 }
 
-function loadWordDetails(wordId, task, lastWordId) {
-	$("[id^='word_select_wait_']").hide();
-	$("#word_select_wait_" + wordId).show();
+function loadDetails(wordId, task, lastWordId) {
+	$("[id^='select_wait_']").hide();
+	$("#select_wait_" + wordId).show();
 	if (!task) {
 		$('#results_div .list-group-item').removeClass('active');
 	}
 	$("#word-result-" + wordId).addClass('active');
 	openWaitDlg();
+
+	console.log({viewType});
 	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
+	if (viewType === 'term') {
+		wordDetailsUrl = applicationUrl + 'meaningdetails/' + wordId;
+	}
+	
 	$.get(wordDetailsUrl).done(function(data) {
 
 		closeWaitDlg();
 
-		let detailsDiv = $('#word-details-area');
+		let detailsDiv = $('#details-area');
 		let scrollPos = detailsDiv.scrollTop();
 		
 		if (!task) {
@@ -232,7 +245,7 @@ function loadWordDetails(wordId, task, lastWordId) {
 			});
 			dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
-			detailsDiv = $('#word-details-area');
+			detailsDiv = $('#details-area');
 		} else {
 
 			const dataObject = $(data);
@@ -273,7 +286,7 @@ function loadWordDetails(wordId, task, lastWordId) {
 
 		$(window).trigger('update:wordId');
 
-		$("#word_select_wait_" + wordId).hide();
+		$("#select_wait_" + wordId).hide();
 		$('.tooltip').remove();
 
 		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
@@ -336,8 +349,8 @@ function initLexemeLevelsDlg(editDlg) {
 		editDlg.find('[name="action"]').val($(this).data('action'));
 		let url = editForm.attr('action') + '?' + editForm.serialize();
 		$.post(url).done(function(data) {
-			let id = $('#word-details-area').data('id');
-			let detailsButton = $('[name="word-details-btn"][data-id="' + id + '"]');
+			let id = $('#details-area').data('id');
+			let detailsButton = $('[name="details-btn"][data-id="' + id + '"]');
 			detailsButton.trigger('click');
 			editDlg.find('button.close').trigger('click');
 		}).fail(function(data) {
@@ -375,7 +388,7 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 	});
 };
 
-function refreshDetailsLexSearch(id) {
+function refreshDetailsSearch(id) {
 	if (typeof id === 'object') {
 		var obj = id;
 		if (obj.attr('[data-rel]') === 'details-area') {

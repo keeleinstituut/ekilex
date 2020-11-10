@@ -16,7 +16,7 @@
               data-contextmenu:compare="Ava uues paneelis"
               class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0"
               th:data-id="${word.wordId}"
-              name="word-details-btn">
+              name="details-btn">
               <span class="d-flex align-items-center">
                 <span class="badge badge-light mr-2" th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
                 <span th:utext="${viewUtil.getWordValueMarkup(word)}">vorm 1</span>
@@ -39,7 +39,7 @@
                 </span>
               </span>
               <span class="position-absolute search-result-status">
-                <span th:id="${'word_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+                <span th:id="${'select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
               </span>
             </button>
           </li>

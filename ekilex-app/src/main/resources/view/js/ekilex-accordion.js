@@ -5,7 +5,7 @@ class EkiAccordion {
       elements: '.ekiAccordion__instance',
       toggles: '.ekiAccordion__title',
       active: '.ekiAccordion__instance--active',
-      wrapper: '#word-details-area',
+      wrapper: '#details-area',
       content: '.ekiAccordion__content',
     };
 

@@ -22,7 +22,7 @@
                     type="button"
                     class="btn btn-link p-0"
                     th:data-id="${meaningWord.wordId}"
-                    name="word-details-btn"
+                    name="details-btn"
                     data-plugin="contextmenu"
                     data-contextmenu:compare="Ava uues paneelis"
                     data-behaviour="replace">
@@ -130,7 +130,7 @@
                       type="button"
                       class="btn btn-link p-0"
                       th:data-id="${meaningWord.wordId}"
-                      name="word-details-btn"
+                      name="details-btn"
                       data-behaviour="replace"
                       data-plugin="contextmenu"
                       data-contextmenu:compare="Ava uues paneelis">
@@ -155,7 +155,7 @@
                     </button>
                     <button type="button" class="btn badge badge-warning"
                             th:data-id="${meaningWord.lexemeId}"
-                            data-callback="refreshDetailsLexSearch"
+                            data-callback="refreshDetailsSearch"
                             data-toggle="deleteLexemeAndWordAndMeaning"
                             sec:authorize="#vars.lexeme.crudGrant">
                       <i class="fa fa-remove" aria-hidden="true"></i>
@@ -701,7 +701,7 @@
                       type="button"
                       class="btn btn-link btn-xs"
                       th:data-id="${relation.wordId}"
-                      name="word-details-btn"
+                      name="details-btn"
                       data-behaviour="replace"
                       data-plugin="contextmenu"
                       data-contextmenu:compare="Ava uues paneelis">
@@ -1247,7 +1247,7 @@
                     type="button"
                     class="btn btn-link btn-xs"
                     th:data-id="${relation.wordId}"
-                    name="word-details-btn"
+                    name="details-btn"
                     data-plugin="contextmenu"
                     data-contextmenu:compare="Ava uues paneelis"
                     data-behaviour="replace">
@@ -1301,7 +1301,7 @@
                             type="button"
                             class="btn btn-link"
                             th:data-id="${collocMember.wordId}"
-                            name="word-details-btn"
+                            name="details-btn"
                             data-plugin="contextmenu"
                             data-contextmenu:compare="Ava uues paneelis"
                             data-behaviour="replace">
@@ -1352,7 +1352,7 @@
                       type="button"
                       class="btn btn-link"
                       th:data-id="${collocMember.wordId}"
-                      name="word-details-btn"
+                      name="details-btn"
                       data-plugin="contextmenu"
                       data-contextmenu:compare="Ava uues paneelis"
                       data-behaviour="replace">

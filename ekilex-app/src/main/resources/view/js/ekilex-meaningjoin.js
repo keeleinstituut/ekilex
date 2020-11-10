@@ -6,7 +6,7 @@ function initializeMeaningJoin() {
 		joinBtn.prop('disabled', !idsChk.filter(":checked").length);
 	});
 
-	var detailsDiv = $("#meaning-details-area");
+	var detailsDiv = $("#details-area");
 	decorateSourceLinks(detailsDiv);
 };
 

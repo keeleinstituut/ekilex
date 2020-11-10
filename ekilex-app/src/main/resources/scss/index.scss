@@ -139,3 +139,12 @@ footer p {
     }
   }
 }
+
+.list-group-item.active {
+  .badge-primary {
+    background: white;
+  }
+  .badge-light {
+    opacity: 0.3;
+  }
+}

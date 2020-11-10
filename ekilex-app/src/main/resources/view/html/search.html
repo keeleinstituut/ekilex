@@ -8,7 +8,7 @@
   <th:block th:fragment="search_form(searchPageName, showDatasetSelect)">
     <div class="d-flex flex-row flex-nowrap">
       <div
-        th:if="${searchPageName == 'lex_search' && showDatasetSelect}"
+        th:if="${(searchPageName == 'lex_search' || searchPageName == 'term_search') && showDatasetSelect}"
         data-plugin="paneToggle"
         data-hideable="searchColumn"
         data-extendable="resultColumn"

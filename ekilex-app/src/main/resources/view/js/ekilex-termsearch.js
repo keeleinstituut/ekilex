@@ -1,20 +1,7 @@
+/*redundant*/
 // add on click handlers to details buttons in search result table
 function initializeTermSearch() {
 
-	$(document).on("click", ":button[name='meaning-details-btn']", function() {
-		var meaningId = $(this).data('id');
-		loadMeaningDetails(meaningId);
-	});
-
-	$(document).on('click', '.order-up', function() {
-		let orderingData = changeItemOrdering($(this), -1);
-		postJson(applicationUrl + 'update_ordering', orderingData);
-	});
-
-	$(document).on('click', '.order-down', function() {
-		let orderingData = changeItemOrdering($(this), 1);
-		postJson(applicationUrl + 'update_ordering', orderingData);
-	});
 
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
 		let lang = $(this).attr("data-lang");
@@ -62,7 +49,7 @@ function initializeTermSearch() {
 			closeWaitDlg();
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
-			$('#meaning-details-area').empty();
+			$('#details-area').empty();
 		}).fail(function (data) {
 			console.log(data);
 			closeWaitDlg();
@@ -116,19 +103,19 @@ function initializeTermSearch() {
 
 function loadMeaningDetails(meaningId) {
 	$("[id^='meaning_select_point_']").hide();
-	$("[id^='meaning_select_wait_']").hide();
-	$("#meaning_select_wait_" + meaningId).show();
+	$("[id^='select_wait_']").hide();
+	$("#select_wait_" + meaningId).show();
 	openWaitDlg();
 	var meaningDetailsUrl = applicationUrl + 'meaningdetails/' + meaningId;
 	$.get(meaningDetailsUrl).done(function(data) {
-		var detailsDiv = $('#meaning-details-area');
+		var detailsDiv = $('#details-area');
 		var scrollPos = detailsDiv.scrollTop();
 		detailsDiv.replaceWith(data);
-		detailsDiv = $('#meaning-details-area');
+		detailsDiv = $('#details-area');
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
 		detailsDiv.scrollTop(scrollPos);
-		$("#meaning_select_wait_" + meaningId).hide();
+		$("#select_wait_" + meaningId).hide();
 		$("#meaning_select_point_" + meaningId).show();
 		closeWaitDlg();
 		$('[data-toggle="tooltip"]').tooltip();

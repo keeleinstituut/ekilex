@@ -191,11 +191,11 @@ class ContextMenu {
   }
 
   onCompare() {
-    loadWordDetails(this.elementId, 'compare');
+    loadDetails(this.elementId, 'compare');
   }
 
   onClosepanel() {
-    $(`#word-details-area[data-id="${this.elementId}"]`).animate({
+    $(`#details-area[data-id="${this.elementId}"]`).animate({
       opacity: 0,
     }, 250, function() {
       $(this).remove();

@@ -23,11 +23,11 @@ class panelBreadcrumbs {
     this.main.find('button').on('click', (e) => {
       const wordId = $(e.target).data('id');
       const behaviour = $(e.target).data('behaviour') || false;
-      const lastWordId = behaviour === 'replace' ? $(e.target).parents('#word-details-area:first').attr('data-id') : false;
+      const lastWordId = behaviour === 'replace' ? $(e.target).parents('#details-area:first').attr('data-id') : false;
       const index = $(e.target).attr('data-index');
       
-      $(e.target).parents('#word-details-area:first').attr('data-breadcrumbs', JSON.stringify(breadCrumbs.slice(0, index)));
-      loadWordDetails(wordId, behaviour, lastWordId);
+      $(e.target).parents('#details-area:first').attr('data-breadcrumbs', JSON.stringify(breadCrumbs.slice(0, index)));
+      loadDetails(wordId, behaviour, lastWordId);
     });
 
   }

@@ -11,8 +11,15 @@
     <hr />
     <div id="results" class="w-100">
       <th:block th:each="resultRow,resultRowIter : ${termSearchResult.results}">
-        <div class="d-flex flex-row flex-nowrap" th:classappend="${resultRowIter.last} ? '' : 'border-bottom'">
-          <button type="button" name="meaning-details-btn" th:data-id="${resultRow.meaningId}" class="btn btn-block ml-n1" style="text-decoration:none; color:inherit;">
+        <div
+          th:id="${'word-result-' + resultRow.meaningId}"
+          class="d-flex flex-row flex-nowrap list-group-item"
+          th:classappend="${resultRowIter.last} ? '' : 'border-bottom'" >
+          <button
+          type="button"
+          data-plugin="contextmenu"
+          data-contextmenu:compare="Ava uues paneelis"
+          name="details-btn" th:data-id="${resultRow.meaningId}" class="btn btn-block ml-n1" style="text-decoration:none; color:inherit;">
             <span th:text="${resultRow.meaningId}" class="text-monospace float-right"></span>
             <th:block th:if="${resultRow.meaningWordsExist}">
               <th:block th:each="meaningWord : ${resultRow.meaningWords}">
@@ -45,7 +52,7 @@
           </button>
           <div class="result-right" style="padding: 5px">
             <span th:id="${'meaning_select_point_' + resultRow.meaningId}" class="fa fa-play" style="display: none"></span>
-            <span th:id="${'meaning_select_wait_' + resultRow.meaningId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+            <span th:id="${'select_wait_' + resultRow.meaningId}" class="fa fa-refresh fa-spin" style="display: none"></span>
           </div>
         </div>
       </th:block>
