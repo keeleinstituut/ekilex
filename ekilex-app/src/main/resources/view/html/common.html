@@ -123,30 +123,34 @@
             <button class="btn btn-primary dropdown-toggle user-menu-btn text-right mr-n3" type="button" data-toggle="dropdown">
               <span class="d-flex flex-wrap">
                 <span class="w-100 text-truncate" th:text="${#authentication.name}">Eesnimi</span>
-                <th:block th:if="${userRoleData.roleSelected}">
-                  <th:block th:with="selectedRole = ${userRoleData.userRole}">
-                    <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}">
-                      <span th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></span>
-                    </small>
-                  </th:block>
+                <th:block th:if="${userRoleData.roleSelected}" th:with="selectedRole = ${userRoleData.userRole}">
+                  <small class="w-100 text-truncate user-menu-active-role" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}">
+                    <span th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}"></span>
+                  </small>
+                </th:block>
+                <th:block th:unless="${userRoleData.roleSelected}">
+                  <small class="w-100 text-truncate user-menu-active-role">Aktiivne roll valimata</small>
                 </th:block>
               </span>
             </button>
             <div class="dropdown-menu dropdown-menu-right user-menu-content">
-              <th:block th:if="${userRoleData.roleSelected}">
-                <th:block th:with="selectedRole = ${userRoleData.userRole}">
-                  <div>
-                    <div class="dropdown-header pb-0">Aktiivne roll</div>
-                    <div class="px-3 d-flex flex-row">
-                      <span class="pr-3" th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}" th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
-                      </span>
-                      <a th:href="@{/home}" class="text-nowrap">
-                        <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
-                      </a>
-                    </div>
-                  </div>
-                </th:block>
-              </th:block>
+              <div>
+                <div class="dropdown-header pb-0">Aktiivne roll</div>
+                <div class="px-3 d-flex flex-row">
+                  <th:block th:if="${userRoleData.roleSelected}" th:with="selectedRole = ${userRoleData.userRole}">
+                    <span class="pr-3"
+                          th:with="permissionName=#{|authorityoperation.${selectedRole.authOperation}|}"
+                          th:text="#{home.selectedrole(${selectedRole.datasetName}, ${permissionName})}">
+                    </span>
+                  </th:block>
+                  <th:block th:unless="${userRoleData.roleSelected}">
+                    <span class="pr-3 text-danger">Aktiivne roll valimata</span>
+                  </th:block>
+                  <a th:href="@{/home}" class="text-nowrap">
+                    <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
+                  </a>
+                </div>
+              </div>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" th:href="@{/userprofile}">
                 Kasutaja profiili haldus <i class="fa fa-user" aria-hidden="true"></i>
