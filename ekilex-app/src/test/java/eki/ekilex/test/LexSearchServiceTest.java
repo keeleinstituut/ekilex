@@ -341,7 +341,7 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		// case #1
 		definitionGroup.getSearchCriteria().clear();
-		searchKey = SearchKey.VALUE;
+		searchKey = SearchKey.VALUE_AND_EXISTS;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("ESIK");
 
@@ -380,7 +380,7 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		// case #1
 		usageGroup.getSearchCriteria().clear();
-		searchKey = SearchKey.VALUE;
+		searchKey = SearchKey.VALUE_AND_EXISTS;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("haned");
 
