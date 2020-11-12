@@ -3,15 +3,17 @@
 <body>
   <!-- contains morpho templates: morpho-muutumatu_est, morpho-verb_est, morpho-noomen_est, morpho-verb_rus -->
   <th:block th:fragment="morpho-form-value(form, prefix)">
-    <span th:text="${prefix}"></span>
-    <span class="form-display-form-field" th:utext="${form.displayForm}" style="display: none;"></span>
-    <span class="form-value-field" th:utext="${form.valuePrese}"></span>
-    <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker"
-            th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
-            th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
-            onclick="generateAudioAndPlay(this)">
-      <span class="icon icon-speaker"></span>
-    </button>
+    <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
+      <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
+      <span class="form-display-form-field" th:utext="${form.displayForm}" style="display: none;"></span>
+      <span class="form-value-field" th:utext="${form.valuePrese}"></span>
+      <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker"
+              th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
+              th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
+              onclick="generateAudioAndPlay(this)">
+        <span class="icon icon-speaker"></span>
+      </button>
+    </th:block>
   </th:block>
   <th:block th:fragment="morpho-verb-form-row(paradigm, morphCode, prefix)">
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
