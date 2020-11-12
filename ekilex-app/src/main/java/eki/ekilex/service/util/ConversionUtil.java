@@ -143,7 +143,8 @@ public class ConversionUtil implements GlobalConstant {
 			}
 			Form form = new Form();
 			form.setId(tuple.getFormId());
-			form.setValue(tuple.getForm());
+			form.setValue(tuple.getFormValue());
+			form.setValuePrese(tuple.getFormValuePrese());
 			form.setMode(tuple.getMode());
 			form.setComponents(tuple.getComponents());
 			form.setDisplayForm(tuple.getDisplayForm());

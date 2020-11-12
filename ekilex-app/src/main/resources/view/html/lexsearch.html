@@ -250,7 +250,7 @@
                                     <span th:text="${form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}" style="font-size: 80%; color: #999"></span>
                                   </td>
                                   <td class="pr-1">
-                                    <span th:text="${form.value}" th:title="${form.formFrequencies}"></span>
+                                    <span th:utext="${form.valuePrese}" th:title="${form.formFrequencies}"></span>
                                   </td>
                                   <td class="pr-1">
                                     <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>

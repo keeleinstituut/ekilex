@@ -16,6 +16,8 @@ public class Form extends AbstractDataObject {
 
 	private String value;
 
+	private String valuePrese;
+
 	private FormMode mode;
 
 	private String[] components;
@@ -49,6 +51,14 @@ public class Form extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public FormMode getMode() {
