@@ -281,7 +281,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				if (isNotExistsSearch) {
 					where = where.andNotExists(DSL.select(d1.ID).from(l1, m1, d1).where(where2));
 				} else {
-					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where2, true);
+					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, d1.VALUE, where2, true);
 					where1 = searchFilterHelper.applyDefinitionSourceRefFilter(searchCriteria, d1.ID, where1);
 					where1 = searchFilterHelper.applyDefinitionSourceNameFilter(searchCriteria, d1.ID, where1);
 
@@ -323,7 +323,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				if (isNotExistsSearch) {
 					where = where.andNotExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where2));
 				} else {
-					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where2, true);
+					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, u1.VALUE_TEXT, where2, true);
 					where1 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, u1.ID, where1);
 					where1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, where1);
 

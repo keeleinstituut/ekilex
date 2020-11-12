@@ -151,7 +151,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				if (isNotExistsSearch) {
 					wherem = wherem.andNotExists(DSL.select(d1.ID).from(d1).where(whered2));
 				} else {
-					whered1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, whered2, true);
+					whered1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, d1.VALUE, whered2, true);
 					whered1 = searchFilterHelper.applyDefinitionSourceNameFilter(searchCriteria, d1.ID, whered1);
 					whered1 = searchFilterHelper.applyDefinitionSourceRefFilter(searchCriteria, d1.ID, whered1);
 
@@ -189,7 +189,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				if (isNotExistsSearch) {
 					wherel = wherel.andNotExists(DSL.select(l1ff.ID).from(l1ff, u1).where(whereff2));
 				} else {
-					whereff1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, whereff2, true);
+					whereff1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, u1.VALUE_TEXT, whereff2, true);
 					whereff1 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, u1.ID, whereff1);
 					whereff1 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, u1.ID, whereff1);
 
