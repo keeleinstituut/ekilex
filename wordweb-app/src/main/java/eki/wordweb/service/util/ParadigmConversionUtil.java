@@ -57,23 +57,33 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 		for (Long paradigmId : paradigmIds) {
 
 			List<Form> paradigmForms = paradigmFormsMap.get(paradigmId);
-			paradigmForms.sort(Comparator.comparing(Form::getOrderBy));
-
-			for (Form form : paradigmForms) {
-				classifierUtil.applyClassifiers(form, displayLang);
-			}
-
-			Form firstForm = paradigmForms.get(0);
-			String inflectionType = firstForm.getInflectionType();
-
-			Map<String, List<Form>> formMorphCodeMap = paradigmForms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
-			StaticParadigm paradigm = new StaticParadigm();
-			paradigm.setParadigmId(paradigmId);
-			paradigm.setInflectionType(inflectionType);
-			paradigm.setFormMorphCodeMap(formMorphCodeMap);
+			StaticParadigm paradigm = composeStaticParadigm(paradigmId, paradigmForms, displayLang);
 			paradigms.add(paradigm);
 		}
 		return paradigms;
+	}
+
+	public StaticParadigm composeStaticParadigm(Long paradigmId, List<Form> paradigmForms, String displayLang) {
+
+		if (CollectionUtils.isEmpty(paradigmForms)) {
+			return null;
+		}
+
+		paradigmForms.sort(Comparator.comparing(Form::getOrderBy));
+
+		for (Form form : paradigmForms) {
+			classifierUtil.applyClassifiers(form, displayLang);
+		}
+
+		Form firstForm = paradigmForms.get(0);
+		String inflectionType = firstForm.getInflectionType();
+
+		Map<String, List<Form>> formMorphCodeMap = paradigmForms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
+		StaticParadigm paradigm = new StaticParadigm();
+		paradigm.setParadigmId(paradigmId);
+		paradigm.setInflectionType(inflectionType);
+		paradigm.setFormMorphCodeMap(formMorphCodeMap);
+		return paradigm;
 	}
 
 	public List<Paradigm> composeParadigms(Word word, List<Form> forms, String displayLang) {
