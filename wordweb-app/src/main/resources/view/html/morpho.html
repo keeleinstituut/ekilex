@@ -3,7 +3,7 @@
 <body>
   <!-- contains morpho templates: morpho-muutumatu_est, morpho-verb_est, morpho-noomen_est, morpho-verb_rus -->
   <th:block th:fragment="morpho-form-value(form, prefix)">
-    <span th:text="${prefix}"></span>
+    <span th:unless="${form.displayForm == '-'}" th:text="${prefix}"></span>
     <span class="form-display-form-field" th:utext="${form.displayForm}" style="display: none;"></span>
     <span class="form-value-field" th:utext="${form.valuePrese}"></span>
     <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker"
