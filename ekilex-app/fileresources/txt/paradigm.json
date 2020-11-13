@@ -3,7 +3,8 @@
     {
       "id":162356,
       "wordId":154512,
-      "example":null,
+      "wordClass":"noomen",
+      "comment":"bala bala bala",
       "inflectionTypeNr":"2",
       "inflectionType":"2e",
       "secondary":false,
