@@ -682,7 +682,7 @@ create table paradigm
 (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
-  example text null,
+  comment text null,
   inflection_type_nr varchar(100),
   inflection_type varchar(100),
   is_secondary boolean default false

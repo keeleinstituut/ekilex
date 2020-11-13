@@ -196,6 +196,7 @@ dblink(
 	word text,
 	lang char(3),
 	paradigm_id bigint,
+	paradigm_comment text,
 	inflection_type varchar(100),
 	form_id bigint,
 	mode varchar(100),

@@ -242,6 +242,9 @@
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
                         <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
+                          <div th:if="${paradigm.comment != null}">
+                            <span th:utext="${paradigm.comment}"></span>
+                          </div>
                           <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="p-1">
                             <div th:unless="${#lists.isEmpty(paradigm.forms)}">
                               <table>

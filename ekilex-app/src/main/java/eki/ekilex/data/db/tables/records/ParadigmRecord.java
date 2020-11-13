@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implements Record6<Long, Long, String, String, String, Boolean> {
 
-    private static final long serialVersionUID = -1802703611;
+    private static final long serialVersionUID = -121792091;
 
     /**
      * Setter for <code>public.paradigm.id</code>.
@@ -50,16 +50,16 @@ public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implemen
     }
 
     /**
-     * Setter for <code>public.paradigm.example</code>.
+     * Setter for <code>public.paradigm.comment</code>.
      */
-    public void setExample(String value) {
+    public void setComment(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.paradigm.example</code>.
+     * Getter for <code>public.paradigm.comment</code>.
      */
-    public String getExample() {
+    public String getComment() {
         return (String) get(2);
     }
 
@@ -140,7 +140,7 @@ public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implemen
 
     @Override
     public Field<String> field3() {
-        return Paradigm.PARADIGM.EXAMPLE;
+        return Paradigm.PARADIGM.COMMENT;
     }
 
     @Override
@@ -170,7 +170,7 @@ public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implemen
 
     @Override
     public String component3() {
-        return getExample();
+        return getComment();
     }
 
     @Override
@@ -200,7 +200,7 @@ public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implemen
 
     @Override
     public String value3() {
-        return getExample();
+        return getComment();
     }
 
     @Override
@@ -232,7 +232,7 @@ public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implemen
 
     @Override
     public ParadigmRecord value3(String value) {
-        setExample(value);
+        setComment(value);
         return this;
     }
 
@@ -279,12 +279,12 @@ public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implemen
     /**
      * Create a detached, initialised ParadigmRecord
      */
-    public ParadigmRecord(Long id, Long wordId, String example, String inflectionTypeNr, String inflectionType, Boolean isSecondary) {
+    public ParadigmRecord(Long id, Long wordId, String comment, String inflectionTypeNr, String inflectionType, Boolean isSecondary) {
         super(Paradigm.PARADIGM);
 
         set(0, id);
         set(1, wordId);
-        set(2, example);
+        set(2, comment);
         set(3, inflectionTypeNr);
         set(4, inflectionType);
         set(5, isSecondary);

@@ -309,25 +309,25 @@ public class ActivityLogService implements SystemConstant {
 		String prevData;
 
 		if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
-			Long lexemeId = new Long(ownerId);
+			Long lexemeId = Long.valueOf(ownerId);
 			prevData = getLexemeDetailsJson(lexemeId);
 			prevWlmIds = activityLogDbService.getWordMeaningIds(lexemeId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
 		} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
-			Long wordId = new Long(ownerId);
+			Long wordId = Long.valueOf(ownerId);
 			prevData = getWordDetailsJson(wordId);
 			prevWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
 		} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
-			Long meaningId = new Long(ownerId);
+			Long meaningId = Long.valueOf(ownerId);
 			prevData = getMeaningDetailsJson(meaningId);
 			prevWlmIds = activityLogDbService.getLexemeWordIds(meaningId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
 		} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
-			Long sourceId = new Long(ownerId);
+			Long sourceId = Long.valueOf(ownerId);
 			prevData = getSourceJson(sourceId);
 			activityLogData.setPrevData(prevData);
 		}
@@ -336,7 +336,7 @@ public class ActivityLogService implements SystemConstant {
 
 	public void createActivityLog(String functName, Long ownerId, LifecycleLogOwner ownerName) throws Exception {
 
-		Long entityId = new Long(ownerId);
+		Long entityId = Long.valueOf(ownerId);
 		ActivityEntity entityName = ActivityEntity.valueOf(ownerName.name());
 		ActivityLogData activityLogData;
 		if (StringUtils.startsWith(functName, "delete")) {
@@ -381,28 +381,28 @@ public class ActivityLogService implements SystemConstant {
 		String currData = null;
 
 		if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
-			Long lexemeId = new Long(ownerId);
+			Long lexemeId = Long.valueOf(ownerId);
 			currData = getLexemeDetailsJson(lexemeId);
 			currWlmIds = activityLogDbService.getWordMeaningIds(lexemeId);
 			activityLogData.setCurrData(currData);
 			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
 		} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
-			Long wordId = new Long(ownerId);
+			Long wordId = Long.valueOf(ownerId);
 			currData = getWordDetailsJson(wordId);
 			currWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setCurrData(currData);
 			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
 		} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
-			Long meaningId = new Long(ownerId);
+			Long meaningId = Long.valueOf(ownerId);
 			currData = getMeaningDetailsJson(meaningId);
 			currWlmIds = activityLogDbService.getLexemeWordIds(meaningId);
 			activityLogData.setCurrData(currData);
 			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
 		} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
-			Long sourceId = new Long(ownerId);
+			Long sourceId = Long.valueOf(ownerId);
 			currData = getSourceJson(sourceId);
 			activityLogData.setCurrData(currData);
 			handleSourceActivityLog(activityLogData);

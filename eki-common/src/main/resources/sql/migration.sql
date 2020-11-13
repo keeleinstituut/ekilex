@@ -417,3 +417,6 @@ update freeform
 set value_prese = trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g')),
     value_text = trim(regexp_replace(regexp_replace(replace(value_text, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
 where value_prese != trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'));
+
+-- paradigm comment
+alter table paradigm rename column example to comment;
