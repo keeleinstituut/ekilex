@@ -134,6 +134,7 @@ public class ConversionUtil implements GlobalConstant {
 				forms = new ArrayList<>();
 				paradigm = new Paradigm();
 				paradigm.setParadigmId(paradigmId);
+				paradigm.setComment(tuple.getParadigmComment());
 				paradigm.setInflectionTypeNr(tuple.getInflectionTypeNr());
 				paradigm.setForms(forms);
 				paradigmsMap.put(paradigmId, paradigm);
@@ -143,7 +144,8 @@ public class ConversionUtil implements GlobalConstant {
 			}
 			Form form = new Form();
 			form.setId(tuple.getFormId());
-			form.setValue(tuple.getForm());
+			form.setValue(tuple.getFormValue());
+			form.setValuePrese(tuple.getFormValuePrese());
 			form.setMode(tuple.getMode());
 			form.setComponents(tuple.getComponents());
 			form.setDisplayForm(tuple.getDisplayForm());

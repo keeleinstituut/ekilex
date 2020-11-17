@@ -192,12 +192,12 @@ $(document).on("click", "#homonymListToggleButton", function() {
 	$(".homonym-list").toggleClass("expand");
 });
 
-$(document).on("shown.bs.modal", "#morpho-modal", function() {
-	var morphoContentDiv = $("#morpho-content");
-	var morphoUrlWithParams = morphoUrl + "/" + currentWordId + "/" + currentWordClass;
+$(document).on("shown.bs.modal", "[id^='morpho-modal-']", function() {
+	var paradigmId = $(this).attr("data-paradigm-id");
+	var morphoContentDiv = $(this).find(".morpho-content");
+	var morphoUrlWithParams = morphoUrl + "/" + paradigmId + "/" + currentWordClass + "/" + currentWordLang;
 	$.get(morphoUrlWithParams).done(function(data) {
 		morphoContentDiv.replaceWith(data);
-		$('#morpho-modal').trigger('focus');
 		$('[data-toggle="tooltip"]').tooltip({
 			container : 'body'
 		});
@@ -214,7 +214,7 @@ $.fn.tableTogglers = function() {
 	function checkStates() {
 		var activeButtons = buttons.filter('.active');
 
-		if( activeButtons.is('[data-rel="hideColumn"]')) {
+		if (activeButtons.is('[data-rel="hideColumn"]')) {
 			parent.find('.tableClone').show();
 			parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').show();
 		} else {
@@ -240,8 +240,8 @@ $.fn.tableTogglers = function() {
 
 		parent.find('.scrollable-table').trigger('scrollableTable:quickUpdate');
 	}
-	
-	buttons.on('click', function(e){
+
+	buttons.on('click', function(e) {
 		e.preventDefault();
 		$(this).toggleClass('active');
 		checkStates();

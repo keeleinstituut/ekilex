@@ -64,6 +64,7 @@ import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
+import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.service.util.JooqBugCompensator;
 
@@ -156,46 +157,39 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
 		String searchWordLower = StringUtils.lowerCase(searchWord);
-		Condition where = DSL.exists(DSL
-				.select(f.WORD_ID)
-				.from(f)
-				.where(f.WORD_ID.eq(w.WORD_ID)
-						.and(DSL.lower(f.VALUE).eq(searchWordLower))));
 
-		where = applyLangCompDatasetFilter(w, dataFilter, where);
+		Table<MviewWwWordRecord> ww = DSL
+				.selectFrom(w)
+				.where(DSL.lower(w.WORD).eq(searchWordLower)
+						.andNotExists(DSL
+								.select(f.FORM_ID)
+								.from(f)
+								.where(
+										f.WORD_ID.eq(w.WORD_ID)
+										.and(f.MODE.eq(FormMode.WORD.name())))))
+				.unionAll(DSL
+						.selectFrom(w)
+						.whereExists(DSL
+								.select(f.WORD_ID)
+								.from(f)
+								.where(f.WORD_ID.eq(w.WORD_ID)
+										.and(DSL.lower(f.VALUE).eq(searchWordLower)))))
+				.asTable("w");
 
-		return getWords(w, dataFilter, where);
-	}
-
-	private List<Word> getWords(MviewWwWord w, DataFilter dataFilter, Condition where) {
+		Condition where = applyLangCompDatasetFilter(w, dataFilter, DSL.noCondition());
 
 		boolean fiCollationExists = dataFilter.isFiCollationExists();
 
 		Field<String> wvobf;
 		if (fiCollationExists) {
-			wvobf = w.WORD.collate("fi_FI");
+			wvobf = ww.field("word", String.class).collate("fi_FI");
 		} else {
-			wvobf = w.WORD;
+			wvobf = ww.field("word", String.class);
 		}
 		return create
-				.select(
-						w.WORD_ID,
-						w.WORD,
-						w.WORD_PRESE,
-						w.AS_WORD,
-						w.WORD_CLASS,
-						w.LANG,
-						w.HOMONYM_NR,
-						w.WORD_TYPE_CODES,
-						w.DISPLAY_MORPH_CODE,
-						w.ASPECT_CODE,
-						w.MEANING_WORDS,
-						w.DEFINITIONS,
-						w.OD_WORD_RECOMMENDATIONS,
-						w.FORMS_EXIST)
-				.from(w)
+				.selectFrom(ww)
 				.where(where)
-				.orderBy(w.MIN_DS_ORDER_BY, w.LANG_ORDER_BY, wvobf, w.WORD_TYPE_ORDER_BY, w.HOMONYM_NR)
+				.orderBy(ww.field("min_ds_order_by"), ww.field("lang_order_by"), wvobf, ww.field("word_type_order_by"), ww.field("homonym_nr"))
 				.fetch(record -> {
 					Word pojo = record.into(Word.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
@@ -203,6 +197,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					return pojo;
 				});
 	}
+
 
 	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
 
@@ -348,6 +343,22 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				});
 	}
 
+	public List<Form> getParadigmForms(Long paradigmId, Integer maxDisplayLevel) {
+
+		MviewWwForm f = MVIEW_WW_FORM.as("f");
+
+		Condition where = f.PARADIGM_ID.eq(paradigmId).and(f.MODE.in(FormMode.WORD.name(), FormMode.FORM.name()));
+		if (maxDisplayLevel != null) {
+			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
+		}
+
+		return create
+				.selectFrom(f)
+				.where(where)
+				.orderBy(f.ORDER_BY, f.FORM_ID)
+				.fetchInto(Form.class);
+	}
+
 	public List<Form> getWordForms(Long wordId, Integer maxDisplayLevel) {
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
@@ -358,31 +369,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		}
 
 		return create
-				.select(
-						f.PARADIGM_ID,
-						f.INFLECTION_TYPE,
-						f.FORM_ID,
-						f.MODE,
-						f.MORPH_GROUP1,
-						f.MORPH_GROUP2,
-						f.MORPH_GROUP3,
-						f.DISPLAY_LEVEL,
-						f.MORPH_CODE,
-						f.MORPH_EXISTS,
-						f.VALUE,
-						f.VALUE_PRESE,
-						f.COMPONENTS,
-						f.DISPLAY_FORM,
-						f.VOCAL_FORM,
-						f.AUDIO_FILE,
-						f.ORDER_BY,
-						f.FORM_FREQ_VALUE,
-						f.MAX_FORM_FREQ_VALUE,
-						f.TOTAL_FORM_FREQ_RANK,
-						f.MAX_TOTAL_FORM_FREQ_RANK,
-						f.PARADIGM_FORM_FREQ_RANK,
-						f.MAX_PARADIGM_FORM_FREQ_RANK)
-				.from(f)
+				.selectFrom(f)
 				.where(where)
 				.orderBy(f.PARADIGM_ID, f.ORDER_BY, f.FORM_ID)
 				.fetchInto(Form.class);

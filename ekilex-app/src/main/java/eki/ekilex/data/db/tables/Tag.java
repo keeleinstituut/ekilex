@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tag extends TableImpl<TagRecord> {
 
-    private static final long serialVersionUID = -923386589;
+    private static final long serialVersionUID = 266289331;
 
     /**
      * The reference instance of <code>public.tag</code>
@@ -58,14 +58,14 @@ public class Tag extends TableImpl<TagRecord> {
     public final TableField<TagRecord, Boolean> SET_AUTOMATICALLY = createField(DSL.name("set_automatically"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
-     * The column <code>public.tag.order_by</code>.
-     */
-    public final TableField<TagRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('tag_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
-
-    /**
      * The column <code>public.tag.remove_to_complete</code>.
      */
     public final TableField<TagRecord, Boolean> REMOVE_TO_COMPLETE = createField(DSL.name("remove_to_complete"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.tag.order_by</code>.
+     */
+    public final TableField<TagRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('tag_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.tag</code> table reference
@@ -151,7 +151,7 @@ public class Tag extends TableImpl<TagRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<String, Boolean, Long, Boolean> fieldsRow() {
+    public Row4<String, Boolean, Boolean, Long> fieldsRow() {
         return (Row4) super.fieldsRow();
     }
 }

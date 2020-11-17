@@ -186,7 +186,6 @@ public class Indexes {
     public static final Index MEANING_REL_MAPPING_CODE2_IDX = Indexes0.MEANING_REL_MAPPING_CODE2_IDX;
     public static final Index MEANING_RELATION_MEANING1_ID_IDX = Indexes0.MEANING_RELATION_MEANING1_ID_IDX;
     public static final Index MEANING_RELATION_MEANING2_ID_IDX = Indexes0.MEANING_RELATION_MEANING2_ID_IDX;
-    public static final Index MEANING_SEMANTIC_TYPE_IDX = Indexes0.MEANING_SEMANTIC_TYPE_IDX;
     public static final Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Indexes0.MEANING_SEMANTIC_TYPE_MEANING_ID_IDX;
     public static final Index PARADIGM_WORD_ID_IDX = Indexes0.PARADIGM_WORD_ID_IDX;
     public static final Index SOURCE_TYPE_IDX = Indexes0.SOURCE_TYPE_IDX;
@@ -340,7 +339,6 @@ public class Indexes {
         public static Index MEANING_REL_MAPPING_CODE2_IDX = Internal.createIndex("meaning_rel_mapping_code2_idx", MeaningRelMapping.MEANING_REL_MAPPING, new OrderField[] { MeaningRelMapping.MEANING_REL_MAPPING.CODE2 }, false);
         public static Index MEANING_RELATION_MEANING1_ID_IDX = Internal.createIndex("meaning_relation_meaning1_id_idx", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING1_ID }, false);
         public static Index MEANING_RELATION_MEANING2_ID_IDX = Internal.createIndex("meaning_relation_meaning2_id_idx", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING2_ID }, false);
-        public static Index MEANING_SEMANTIC_TYPE_IDX = Internal.createIndex("meaning_semantic_type_idx", MeaningSemanticType.MEANING_SEMANTIC_TYPE, new OrderField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE }, false);
         public static Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Internal.createIndex("meaning_semantic_type_meaning_id_idx", MeaningSemanticType.MEANING_SEMANTIC_TYPE, new OrderField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.MEANING_ID }, false);
         public static Index PARADIGM_WORD_ID_IDX = Internal.createIndex("paradigm_word_id_idx", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.WORD_ID }, false);
         public static Index SOURCE_TYPE_IDX = Internal.createIndex("source_type_idx", Source.SOURCE, new OrderField[] { Source.SOURCE.TYPE }, false);

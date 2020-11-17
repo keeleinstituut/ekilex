@@ -33,47 +33,38 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 		for (Form form : forms) {
 			if (form.getFormFreqValue() != null) {
 				float scaledParadigmFormFreqRankRounded = Math.round(((float) form.getParadigmFormFreqRank() * (float) FORM_FREQ_SCALE) / (float) form.getMaxParadigmFormFreqRank());
-				int scaledParadigmFormFreqRankInt = FORM_FREQ_SCALE - new Float(scaledParadigmFormFreqRankRounded).intValue();
+				int scaledParadigmFormFreqRankInt = FORM_FREQ_SCALE - Float.valueOf(scaledParadigmFormFreqRankRounded).intValue();
 				double scaledTotalFormFreqRankRounded = Math.round(((double) form.getTotalFormFreqRank() * (double) FORM_FREQ_SCALE) / (double) form.getMaxTotalFormFreqRank());
-				int scaledTotalFormFreqRankInt = FORM_FREQ_SCALE - new Double(scaledTotalFormFreqRankRounded).intValue();
+				int scaledTotalFormFreqRankInt = FORM_FREQ_SCALE - Double.valueOf(scaledTotalFormFreqRankRounded).intValue();
 				form.setScaledTotalFormFreqRank(scaledTotalFormFreqRankInt);
 				form.setScaledParadigmFormFreqRank(scaledParadigmFormFreqRankInt);
 			}
 		}
 	}
 
-	public List<StaticParadigm> composeStaticParadigms(List<Form> forms, String displayLang) {
+	public StaticParadigm composeStaticParadigm(Long paradigmId, List<Form> paradigmForms, String displayLang) {
 
-		List<StaticParadigm> paradigms = new ArrayList<>();
-		if (CollectionUtils.isEmpty(forms)) {
-			return paradigms;
+		if (CollectionUtils.isEmpty(paradigmForms)) {
+			return null;
 		}
 
-		Map<Long, List<Form>> paradigmFormsMap = forms.stream().collect(Collectors.groupingBy(Form::getParadigmId));
+		paradigmForms.sort(Comparator.comparing(Form::getOrderBy));
 
-		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
-		Collections.sort(paradigmIds);
-
-		for (Long paradigmId : paradigmIds) {
-
-			List<Form> paradigmForms = paradigmFormsMap.get(paradigmId);
-			paradigmForms.sort(Comparator.comparing(Form::getOrderBy));
-
-			for (Form form : paradigmForms) {
-				classifierUtil.applyClassifiers(form, displayLang);
-			}
-
-			Form firstForm = paradigmForms.get(0);
-			String inflectionType = firstForm.getInflectionType();
-
-			Map<String, List<Form>> formMorphCodeMap = paradigmForms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
-			StaticParadigm paradigm = new StaticParadigm();
-			paradigm.setParadigmId(paradigmId);
-			paradigm.setInflectionType(inflectionType);
-			paradigm.setFormMorphCodeMap(formMorphCodeMap);
-			paradigms.add(paradigm);
+		for (Form form : paradigmForms) {
+			classifierUtil.applyClassifiers(form, displayLang);
 		}
-		return paradigms;
+
+		Form firstForm = paradigmForms.get(0);
+		String paradigmComment = firstForm.getParadigmComment();
+		String inflectionType = firstForm.getInflectionType();
+
+		Map<String, List<Form>> formMorphCodeMap = paradigmForms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
+		StaticParadigm paradigm = new StaticParadigm();
+		paradigm.setParadigmId(paradigmId);
+		paradigm.setComment(paradigmComment);
+		paradigm.setInflectionType(inflectionType);
+		paradigm.setFormMorphCodeMap(formMorphCodeMap);
+		return paradigm;
 	}
 
 	public List<Paradigm> composeParadigms(Word word, List<Form> forms, String displayLang) {
@@ -111,6 +102,7 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 				paradigmTitleElements.add(wordClass);
 			}
 			firstForm = paradigmForms.get(0);
+			String paradigmComment = firstForm.getParadigmComment();
 			if (StringUtils.isNotBlank(firstForm.getInflectionType())) {
 				paradigmTitleElements.add(firstForm.getInflectionType());
 			}
@@ -122,6 +114,7 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 
 			Paradigm paradigm = new Paradigm();
 			paradigm.setParadigmId(paradigmId);
+			paradigm.setComment(paradigmComment);
 			paradigm.setTitle(paradigmTitle);
 			paradigm.setGroups(new ArrayList<>());
 			paradigm.setExpandable(isExpandable);

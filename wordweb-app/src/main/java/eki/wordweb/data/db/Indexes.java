@@ -51,6 +51,7 @@ public class Indexes {
     public static final Index MVIEW_WW_FORM_DISPLAY_LEVEL_IDX = Indexes0.MVIEW_WW_FORM_DISPLAY_LEVEL_IDX;
     public static final Index MVIEW_WW_FORM_LANG_IDX = Indexes0.MVIEW_WW_FORM_LANG_IDX;
     public static final Index MVIEW_WW_FORM_MODE_IDX = Indexes0.MVIEW_WW_FORM_MODE_IDX;
+    public static final Index MVIEW_WW_FORM_PARADIGM_ID_IDX = Indexes0.MVIEW_WW_FORM_PARADIGM_ID_IDX;
     public static final Index MVIEW_WW_FORM_VALUE_IDX = Indexes0.MVIEW_WW_FORM_VALUE_IDX;
     public static final Index MVIEW_WW_FORM_WORD_ID_IDX = Indexes0.MVIEW_WW_FORM_WORD_ID_IDX;
     public static final Index MVIEW_WW_FORM_WORD_IDX = Indexes0.MVIEW_WW_FORM_WORD_IDX;
@@ -103,6 +104,7 @@ public class Indexes {
         public static Index MVIEW_WW_FORM_DISPLAY_LEVEL_IDX = Internal.createIndex("mview_ww_form_display_level_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.DISPLAY_LEVEL }, false);
         public static Index MVIEW_WW_FORM_LANG_IDX = Internal.createIndex("mview_ww_form_lang_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.LANG }, false);
         public static Index MVIEW_WW_FORM_MODE_IDX = Internal.createIndex("mview_ww_form_mode_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.MODE }, false);
+        public static Index MVIEW_WW_FORM_PARADIGM_ID_IDX = Internal.createIndex("mview_ww_form_paradigm_id_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.PARADIGM_ID }, false);
         public static Index MVIEW_WW_FORM_VALUE_IDX = Internal.createIndex("mview_ww_form_value_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.VALUE }, false);
         public static Index MVIEW_WW_FORM_WORD_ID_IDX = Internal.createIndex("mview_ww_form_word_id_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.WORD_ID }, false);
         public static Index MVIEW_WW_FORM_WORD_IDX = Internal.createIndex("mview_ww_form_word_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.WORD }, false);

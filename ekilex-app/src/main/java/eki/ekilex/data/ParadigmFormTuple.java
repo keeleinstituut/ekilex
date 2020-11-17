@@ -11,11 +11,15 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	private Long paradigmId;
 
+	private String paradigmComment;
+
 	private String inflectionTypeNr;
 
 	private Long formId;
 
-	private String form;
+	private String formValue;
+
+	private String formValuePrese;
 
 	private FormMode mode;
 
@@ -39,6 +43,14 @@ public class ParadigmFormTuple extends AbstractDataObject {
 		this.paradigmId = paradigmId;
 	}
 
+	public String getParadigmComment() {
+		return paradigmComment;
+	}
+
+	public void setParadigmComment(String paradigmComment) {
+		this.paradigmComment = paradigmComment;
+	}
+
 	public String getInflectionTypeNr() {
 		return inflectionTypeNr;
 	}
@@ -55,12 +67,20 @@ public class ParadigmFormTuple extends AbstractDataObject {
 		this.formId = formId;
 	}
 
-	public String getForm() {
-		return form;
+	public String getFormValue() {
+		return formValue;
 	}
 
-	public void setForm(String form) {
-		this.form = form;
+	public void setFormValue(String formValue) {
+		this.formValue = formValue;
+	}
+
+	public String getFormValuePrese() {
+		return formValuePrese;
+	}
+
+	public void setFormValuePrese(String formValuePrese) {
+		this.formValuePrese = formValuePrese;
 	}
 
 	public FormMode getMode() {

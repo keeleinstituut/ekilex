@@ -7,11 +7,12 @@ package eki.ekilex.data.db.tables;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwFormRecord;
 
+import java.math.BigDecimal;
+
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row19;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -26,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = -529487379;
+    private static final long serialVersionUID = 1777565197;
 
     /**
      * The reference instance of <code>public.view_ww_form</code>
@@ -107,9 +108,14 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     public final TableField<ViewWwFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.view_ww_form.form</code>.
+     * The column <code>public.view_ww_form.value</code>.
      */
-    public final TableField<ViewWwFormRecord, String> FORM = createField(DSL.name("form"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_form.value_prese</code>.
+     */
+    public final TableField<ViewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.components</code>.
@@ -137,6 +143,36 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     public final TableField<ViewWwFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.view_ww_form.form_freq_value</code>.
+     */
+    public final TableField<ViewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+
+    /**
+     * The column <code>public.view_ww_form.max_form_freq_value</code>.
+     */
+    public final TableField<ViewWwFormRecord, BigDecimal> MAX_FORM_FREQ_VALUE = createField(DSL.name("max_form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC, this, "");
+
+    /**
+     * The column <code>public.view_ww_form.total_form_freq_rank</code>.
+     */
+    public final TableField<ViewWwFormRecord, Long> TOTAL_FORM_FREQ_RANK = createField(DSL.name("total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_form.max_total_form_freq_rank</code>.
+     */
+    public final TableField<ViewWwFormRecord, Long> MAX_TOTAL_FORM_FREQ_RANK = createField(DSL.name("max_total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_form.paradigm_form_freq_rank</code>.
+     */
+    public final TableField<ViewWwFormRecord, Long> PARADIGM_FORM_FREQ_RANK = createField(DSL.name("paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_form.max_paradigm_form_freq_rank</code>.
+     */
+    public final TableField<ViewWwFormRecord, Long> MAX_PARADIGM_FORM_FREQ_RANK = createField(DSL.name("max_paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
      * Create a <code>public.view_ww_form</code> table reference
      */
     public ViewWwForm() {
@@ -162,7 +198,7 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     }
 
     private ViewWwForm(Name alias, Table<ViewWwFormRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    w.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.inflection_type,\n    f.id AS form_id,\n    f.mode,\n    f.morph_group1,\n    f.morph_group2,\n    f.morph_group3,\n    f.display_level,\n    f.morph_code,\n    f.morph_exists,\n    f.value AS form,\n    f.components,\n    f.display_form,\n    f.vocal_form,\n    f.audio_file,\n    f.order_by\n   FROM word w,\n    paradigm p,\n    form f\n  WHERE ((p.word_id = w.id) AND (f.paradigm_id = p.id) AND (f.display_level > 0) AND (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))))\n  ORDER BY p.id, f.order_by, f.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    w.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.inflection_type,\n    f.id AS form_id,\n    f.mode,\n    f.morph_group1,\n    f.morph_group2,\n    f.morph_group3,\n    f.display_level,\n    f.morph_code,\n    f.morph_exists,\n    f.value,\n    f.value_prese,\n    f.components,\n    f.display_form,\n    f.vocal_form,\n    f.audio_file,\n    f.order_by,\n    ff.form_freq_value,\n    ( SELECT max(ff_1.value) AS max\n           FROM form_frequency ff_1) AS max_form_freq_value,\n    ff.total_form_freq_rank,\n    ( SELECT max(ff_1.rank) AS max\n           FROM form_frequency ff_1) AS max_total_form_freq_rank,\n    ff.paradigm_form_freq_rank,\n    max(ff.paradigm_form_freq_rank) OVER (PARTITION BY ff.paradigm_id) AS max_paradigm_form_freq_rank\n   FROM (((word w\n     JOIN paradigm p ON ((p.word_id = w.id)))\n     JOIN form f ON ((f.paradigm_id = p.id)))\n     LEFT JOIN ( SELECT f_1.id,\n            f_1.paradigm_id,\n            f_1.mode,\n            f_1.morph_group1,\n            f_1.morph_group2,\n            f_1.morph_group3,\n            f_1.display_level,\n            f_1.morph_code,\n            f_1.morph_exists,\n            f_1.value,\n            f_1.value_prese,\n            f_1.components,\n            f_1.display_form,\n            f_1.vocal_form,\n            f_1.audio_file,\n            f_1.order_by,\n            ff_1.value AS form_freq_value,\n            ff_1.rank AS total_form_freq_rank,\n            dense_rank() OVER (PARTITION BY p_1.id ORDER BY ff_1.value DESC) AS paradigm_form_freq_rank\n           FROM (((word w_1\n             JOIN paradigm p_1 ON ((p_1.word_id = w_1.id)))\n             JOIN form f_1 ON (((f_1.paradigm_id = p_1.id) AND (f_1.display_level > 0))))\n             JOIN form_frequency ff_1 ON (((ff_1.source_name = 'enc17-formfreq'::text) AND (ff_1.word_value = w_1.value) AND (ff_1.form_value = f_1.value) AND ((ff_1.morph_code)::text = (f_1.morph_code)::text))))\n          WHERE (EXISTS ( SELECT l.id\n                   FROM lexeme l,\n                    dataset ds\n                  WHERE ((l.word_id = w_1.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))))) ff ON ((ff.id = f.id)))\n  WHERE (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))))\n  ORDER BY w.id, p.id, f.id;"));
     }
 
     public <O extends Record> ViewWwForm(Table<O> child, ForeignKey<O, ViewWwFormRecord> key) {
@@ -198,14 +234,5 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     @Override
     public ViewWwForm rename(Name name) {
         return new ViewWwForm(name, null);
-    }
-
-    // -------------------------------------------------------------------------
-    // Row19 type methods
-    // -------------------------------------------------------------------------
-
-    @Override
-    public Row19<Long, String, String, Long, String, Long, String, String, String, String, Integer, String, Boolean, String, String[], String, String, String, Long> fieldsRow() {
-        return (Row19) super.fieldsRow();
     }
 }

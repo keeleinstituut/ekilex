@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -797641082;
+    private static final long serialVersionUID = 1211434828;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -65,6 +65,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.paradigm_id</code>.
      */
     public final TableField<MviewWwFormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.paradigm_comment</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> PARADIGM_COMMENT = createField(DSL.name("paradigm_comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.inflection_type</code>.
@@ -216,7 +221,7 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_FORM_DISPLAY_LEVEL_IDX, Indexes.MVIEW_WW_FORM_LANG_IDX, Indexes.MVIEW_WW_FORM_MODE_IDX, Indexes.MVIEW_WW_FORM_VALUE_IDX, Indexes.MVIEW_WW_FORM_WORD_ID_IDX, Indexes.MVIEW_WW_FORM_WORD_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_FORM_DISPLAY_LEVEL_IDX, Indexes.MVIEW_WW_FORM_LANG_IDX, Indexes.MVIEW_WW_FORM_MODE_IDX, Indexes.MVIEW_WW_FORM_PARADIGM_ID_IDX, Indexes.MVIEW_WW_FORM_VALUE_IDX, Indexes.MVIEW_WW_FORM_WORD_ID_IDX, Indexes.MVIEW_WW_FORM_WORD_IDX);
     }
 
     @Override

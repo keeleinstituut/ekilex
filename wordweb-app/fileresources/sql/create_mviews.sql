@@ -196,6 +196,7 @@ dblink(
 	word text,
 	lang char(3),
 	paradigm_id bigint,
+	paradigm_comment text,
 	inflection_type varchar(100),
 	form_id bigint,
 	mode varchar(100),
@@ -422,6 +423,7 @@ create index mview_ww_word_lang_idx on mview_ww_word (lang);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
 create index mview_ww_form_word_idx on mview_ww_form (word);
 create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));
+create index mview_ww_form_paradigm_id_idx on mview_ww_form (paradigm_id);
 create index mview_ww_form_value_idx on mview_ww_form (value);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(value));
 create index mview_ww_form_mode_idx on mview_ww_form (mode);

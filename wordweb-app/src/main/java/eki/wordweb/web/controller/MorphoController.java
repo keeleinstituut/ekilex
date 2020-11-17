@@ -1,10 +1,5 @@
 package eki.wordweb.web.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -22,31 +17,22 @@ import eki.wordweb.service.MorphoService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class MorphoController implements WebConstant, SystemConstant, GlobalConstant, InitializingBean {
+public class MorphoController implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
 	private MorphoService morphoService;
 
-	private Map<String, String> wordClassToViewMap;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		wordClassToViewMap = new HashMap<>();
-		wordClassToViewMap.put("noomen", "morpho-noun");
-		wordClassToViewMap.put("verb", "morpho-verb");
-		wordClassToViewMap.put("muutumatu", "morpho-indecl");
-	}
-
-	@GetMapping(MORPHO_URI + "/{wordId}/{wordClass}")
+	@GetMapping(MORPHO_URI + "/{paradigmId}/{wordClass}/{lang}")
 	public String getMorpho(
-			@PathVariable("wordId") Long wordId,
+			@PathVariable("paradigmId") Long paradigmId,
 			@PathVariable("wordClass") String wordClass,
+			@PathVariable("lang") String lang,
 			Model model) {
 
-		List<StaticParadigm> staticParadigms = morphoService.getStaticParadigms(wordId);
-		model.addAttribute("paradigms", staticParadigms);
-		String viewFragment = wordClassToViewMap.get(wordClass);
+		StaticParadigm staticParadigm = morphoService.getStaticParadigm(paradigmId);
+		model.addAttribute("paradigm", staticParadigm);
 
+		String viewFragment = "morpho-" + wordClass + '_' + lang;
 		return MORPHO_PAGE + " :: " + viewFragment;
 	}
 

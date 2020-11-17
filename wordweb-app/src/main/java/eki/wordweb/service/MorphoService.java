@@ -24,12 +24,12 @@ public class MorphoService implements WebConstant, SystemConstant {
 	protected ParadigmConversionUtil paradigmConversionUtil;
 
 	@Transactional
-	public List<StaticParadigm> getStaticParadigms(Long wordId) {
+	public StaticParadigm getStaticParadigm(Long paradigmId) {
 
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		List<Form> forms = searchDbService.getWordForms(wordId, maxDisplayLevel);
+		List<Form> forms = searchDbService.getParadigmForms(paradigmId, maxDisplayLevel);
 		paradigmConversionUtil.calcFreqScale(forms);
-		List<StaticParadigm> staticParadigms = paradigmConversionUtil.composeStaticParadigms(forms, DISPLAY_LANG);
-		return staticParadigms;
+		StaticParadigm staticParadigm = paradigmConversionUtil.composeStaticParadigm(paradigmId, forms, DISPLAY_LANG);
+		return staticParadigm;
 	}
 }

@@ -15,6 +15,8 @@ public class ApiEndpointDescription extends AbstractDataObject {
 	@JsonIgnore
 	private int order;
 
+	private String requestMethod;
+
 	private List<String> uriPatterns;
 
 	@JsonInclude(Include.NON_EMPTY)
@@ -32,6 +34,14 @@ public class ApiEndpointDescription extends AbstractDataObject {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public String getRequestMethod() {
+		return requestMethod;
+	}
+
+	public void setRequestMethod(String requestMethod) {
+		this.requestMethod = requestMethod;
 	}
 
 	public List<String> getUriPatterns() {

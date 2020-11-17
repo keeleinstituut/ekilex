@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Paradigm extends TableImpl<ParadigmRecord> {
 
-    private static final long serialVersionUID = -1789340658;
+    private static final long serialVersionUID = 1169478223;
 
     /**
      * The reference instance of <code>public.paradigm</code>
@@ -60,9 +60,9 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
     public final TableField<ParadigmRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.paradigm.example</code>.
+     * The column <code>public.paradigm.comment</code>.
      */
-    public final TableField<ParadigmRecord, String> EXAMPLE = createField(DSL.name("example"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ParadigmRecord, String> COMMENT = createField(DSL.name("comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.paradigm.inflection_type_nr</code>.

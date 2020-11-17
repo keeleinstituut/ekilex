@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,7 +25,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 
 	@Order(301)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(principal, #crudRoleDataset, #sourceLink)")
-	@GetMapping(value = API_SERVICES_URI + SOURCE_LINK_URI + CREATE_URI)
+	@PostMapping(value = API_SERVICES_URI + SOURCE_LINK_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceLink(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -49,7 +50,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 
 	@Order(302)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceLinkCrudGranted(principal, #crudRoleDataset, #sourceLinkOwner, #sourceLinkId)")
-	@GetMapping(value = API_SERVICES_URI + SOURCE_LINK_URI + DELETE_URI)
+	@DeleteMapping(value = API_SERVICES_URI + SOURCE_LINK_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteFreeformSourceLink(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
