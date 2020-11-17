@@ -171,7 +171,7 @@
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option th:each="complexity : ${enabledComplexities}"
                             th:value="${complexity}"
-                            th:selected="${criteria.searchValue == complexity}"
+                            th:selected="${criteria.searchValue == complexity.name()}"
                             th:text="#{'enum.complexity.' + ${complexity}}"></option>
                   </select>
                 </div>
