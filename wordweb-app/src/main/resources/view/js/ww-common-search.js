@@ -193,16 +193,21 @@ $(document).on("click", "#homonymListToggleButton", function() {
 });
 
 $(document).on("shown.bs.modal", "[id^='morpho-modal-']", function() {
-	var paradigmId = $(this).attr("data-paradigm-id");
-	var morphoContentDiv = $(this).find(".morpho-content");
+	var main = $(this);
+	var paradigmId = main.attr("data-paradigm-id");
+	if (main.find('.modal-dialog').length) {
+		main.find('.modal-dialog').remove();
+		main.append('<div class="morpho-content"></div>');
+	}
+	var morphoContentDiv = main.find(".morpho-content");
 	var morphoUrlWithParams = morphoUrl + "/" + paradigmId + "/" + currentWordClass + "/" + currentWordLang;
 	$.get(morphoUrlWithParams).done(function(data) {
 		morphoContentDiv.replaceWith(data);
 		$('[data-toggle="tooltip"]').tooltip({
 			container : 'body'
 		});
-		$('[data-plugin="tableTogglers"]').tableTogglers();
-		$('.scrollable-table').scrollableTable();
+		main.find('[data-plugin="tableTogglers"]').tableTogglers();
+		main.find('.scrollable-table').scrollableTable();
 	});
 });
 
@@ -211,6 +216,7 @@ $.fn.tableTogglers = function() {
 	var buttons = main.find('button');
 	var parent = main.parents('.modal-content:first');
 
+	console.log(buttons);
 	function checkStates() {
 		var activeButtons = buttons.filter('.active');
 
