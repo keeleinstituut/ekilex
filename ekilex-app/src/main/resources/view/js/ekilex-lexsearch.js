@@ -15,6 +15,14 @@ function initializeSearch(type) {
 		}
 	});
 
+	$(document).on('change', '[name="resultLang"]', function() {
+		$(this).closest('form').submit();
+	});
+
+	$(document).on('change', '[name="resultMode"]', function() {
+		$(this).closest('form').submit();
+	});
+	
 	$(document).on("click", "#share-details-link", function() {
 		let searchParams = new URLSearchParams(window.location.search);
 		let idParam = searchParams.get("id");
