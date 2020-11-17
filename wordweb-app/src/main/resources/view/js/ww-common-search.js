@@ -216,16 +216,17 @@ $.fn.tableTogglers = function() {
 	var buttons = main.find('button');
 	var parent = main.parents('.modal-content:first');
 
-	console.log(buttons);
 	function checkStates() {
 		var activeButtons = buttons.filter('.active');
 
-		if (activeButtons.is('[data-rel="hideColumn"]')) {
-			parent.find('.tableClone').show();
-			parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').show();
-		} else {
-			parent.find('.tableClone').hide();
-			parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').hide();
+		if( buttons.filter('[data-rel="hideColumn"]').length){
+			if (activeButtons.is('[data-rel="hideColumn"]')) {
+				parent.find('.tableClone').show();
+				parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').show();
+			} else {
+				parent.find('.tableClone').hide();
+				parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').hide();
+			}
 		}
 
 		if (activeButtons.is('[data-rel="marks"]')) {
