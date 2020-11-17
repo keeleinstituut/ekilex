@@ -6,13 +6,12 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form name="createClassifierForm" th:action="@{/create_classifier}" method="post">
-          <input type="hidden" name="classifierName" th:value="${classifierName}">
-          <input type="hidden" name="domainOriginCode" th:value="${domainOriginCode}">
-          <input type="hidden" name="existingClassifierCode">
-          <input type="hidden" name="createBeforeExisting">
+          <input type="hidden" name="name" th:value="${classifierName}">
+          <input type="hidden" name="origin" th:value="${domainOriginCode}">
+          <input type="hidden" name="order">
           <div class="modal-header">
             <label class="col-md-2 col-form-label">kood</label>
-            <input class="modal-title col-md-4 form-control font-weight-bold required-field" name="classifierCode">
+            <input class="modal-title col-md-4 form-control font-weight-bold required-field" name="code">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
