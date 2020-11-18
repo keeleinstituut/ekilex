@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.postgresql.jdbc.PgArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -27,6 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.constant.GlobalConstant;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
+import eki.ekilex.app.EkilexApplication;
 import eki.ekilex.data.api.Form;
 import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmWrapper;
@@ -35,6 +37,7 @@ import eki.ekilex.web.util.ValueUtil;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
+@ContextConfiguration(classes = EkilexApplication.class)
 @Transactional
 public class ArbitraryTest implements GlobalConstant {
 
