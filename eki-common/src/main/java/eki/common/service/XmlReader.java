@@ -1,4 +1,4 @@
-package eki.ekilex.service;
+package eki.common.service;
 
 import java.io.File;
 import java.io.FileInputStream;

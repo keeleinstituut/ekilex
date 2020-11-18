@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
+import eki.common.data.util.AbstractRowMapper;
 import eki.ekilex.data.transform.LexemeLifecycleLog;
 
 public class LexemeLifecycleLogRowMapper extends AbstractRowMapper implements RowMapper<LexemeLifecycleLog> {

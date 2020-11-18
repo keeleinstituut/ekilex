@@ -1,7 +1,6 @@
-package eki.ekilex.data.transport;
+package eki.common.data.transport;
 
 import java.io.Serializable;
-import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,9 +10,15 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
-public class IntegerArrayType implements UserType {
+public class EnumType implements UserType {
 
-	protected static final int[] SQL_TYPES = {Types.ARRAY};
+	protected static final int[] SQL_TYPES = {Types.VARCHAR};
+
+	private Class<? extends Enum> enumType;
+
+	public EnumType(Class<? extends Enum> enumType) {
+		this.enumType = enumType;
+	}
 
 	@Override
 	public int[] sqlTypes() {
@@ -22,7 +27,7 @@ public class IntegerArrayType implements UserType {
 
 	@Override
 	public Class<?> returnedClass() {
-		return Integer[].class;
+		return enumType;
 	}
 
 	@Override
@@ -37,12 +42,12 @@ public class IntegerArrayType implements UserType {
 
 	@Override
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-		Array rsArray = rs.getArray(names[0]);
-		if (rsArray == null) {
+		if (rs.wasNull()) {
 			return null;
 		}
-		Integer[] array = (Integer[]) rsArray.getArray();
-		return array;
+		String stringValue = rs.getString(names[0]);
+		stringValue = stringValue.trim().toUpperCase();
+		return Enum.valueOf(enumType, stringValue);
 	}
 
 	@Override
@@ -50,9 +55,7 @@ public class IntegerArrayType implements UserType {
 		if (value == null) {
 			st.setNull(index, SQL_TYPES[0]);
 		} else {
-			Integer[] castObject = (Integer[]) value;
-			Array array = session.connection().createArrayOf("int", castObject);
-			st.setArray(index, array);
+			st.setString(index, value.toString());
 		}
 	}
 

@@ -23,6 +23,30 @@
 		</developer>
 	</developers>
 
+	<profiles>
+		<profile>
+			<id>webapp</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.app.EkilexApplication</spring.boot.mainclass>
+			</properties>
+		</profile>
+		<profile>
+			<id>dsimp</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.DatasetImporter</spring.boot.mainclass>
+			</properties>
+		</profile>
+		<profile>
+			<id>dsexp</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.DatasetExporter</spring.boot.mainclass>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<finalName>ekilex-app</finalName>
 		<plugins>
@@ -38,9 +62,16 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<executable>true</executable>
-				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<mainClass>${spring.boot.mainclass}</mainClass>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<!-- used for reading values from properties file, so we can give them to jooq-codegen plugin -->
 			<plugin>
@@ -151,13 +182,16 @@
 			<artifactId>zjsonpatch</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.atlassian.commonmark</groupId>
 			<artifactId>commonmark</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -180,5 +214,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<skip.jooq.generation>true</skip.jooq.generation>
+		<start-class>${spring.boot.mainclass}</start-class>
 	</properties>
 </project>

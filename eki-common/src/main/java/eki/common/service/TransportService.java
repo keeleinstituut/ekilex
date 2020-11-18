@@ -1,4 +1,4 @@
-package eki.ekilex.service;
+package eki.common.service;
 
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -20,11 +20,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import eki.common.data.OrderedMap;
-import eki.ekilex.data.transport.ForeignKey;
-import eki.ekilex.data.transport.TableColumn;
-import eki.ekilex.data.util.ForeignKeyRowMapper;
-import eki.ekilex.data.util.TableColumnRowMapper;
-import eki.ekilex.runner.AbstractLoaderCommons;
+import eki.common.data.transport.ForeignKey;
+import eki.common.data.transport.TableColumn;
+import eki.common.data.util.ForeignKeyRowMapper;
+import eki.common.data.util.TableColumnRowMapper;
 
 @Component
 public class TransportService extends AbstractLoaderCommons implements InitializingBean {

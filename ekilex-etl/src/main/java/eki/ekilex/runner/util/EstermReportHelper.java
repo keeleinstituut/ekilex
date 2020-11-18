@@ -16,15 +16,15 @@ import org.dom4j.tree.DefaultText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LoaderConstant;
 import eki.common.data.Count;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.TermLoaderConstant;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.service.ReportComposer;
 
 // everything here is on standby until actually requested by Esterm team
 @Component
-public class EstermReportHelper implements TermLoaderConstant, SystemConstant {
+public class EstermReportHelper implements TermLoaderConstant, LoaderConstant {
 
 	@Autowired
 	protected BasicDbService basicDbService;

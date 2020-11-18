@@ -7,10 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eki.common.service.TransportService;
 import eki.ekilex.runner.DatasetImportValidator;
 import eki.ekilex.runner.DatasetImporterRunner;
-import eki.ekilex.service.TransportService;
 
+@Deprecated
 public class DatasetImporter extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(DatasetImporter.class);

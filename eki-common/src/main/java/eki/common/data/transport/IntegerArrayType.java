@@ -1,4 +1,4 @@
-package eki.ekilex.data.transport;
+package eki.common.data.transport;
 
 import java.io.Serializable;
 import java.sql.Array;
@@ -11,7 +11,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
-public class StringArrayType implements UserType {
+public class IntegerArrayType implements UserType {
 
 	protected static final int[] SQL_TYPES = {Types.ARRAY};
 
@@ -22,7 +22,7 @@ public class StringArrayType implements UserType {
 
 	@Override
 	public Class<?> returnedClass() {
-		return String[].class;
+		return Integer[].class;
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class StringArrayType implements UserType {
 
 	@Override
 	public int hashCode(Object x) throws HibernateException {
-		return x.hashCode();
+		return 0;
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class StringArrayType implements UserType {
 		if (rsArray == null) {
 			return null;
 		}
-		String[] array = (String[]) rsArray.getArray();
+		Integer[] array = (Integer[]) rsArray.getArray();
 		return array;
 	}
 
@@ -50,8 +50,8 @@ public class StringArrayType implements UserType {
 		if (value == null) {
 			st.setNull(index, SQL_TYPES[0]);
 		} else {
-			String[] castObject = (String[]) value;
-			Array array = session.connection().createArrayOf("text", castObject);
+			Integer[] castObject = (Integer[]) value;
+			Array array = session.connection().createArrayOf("int", castObject);
 			st.setArray(index, array);
 		}
 	}

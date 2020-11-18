@@ -18,9 +18,9 @@ import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
+import eki.common.data.util.AbstractRowMapper;
 import eki.ekilex.data.transform.WordId;
 import eki.ekilex.data.transform.WordLexemeMeaning;
-import eki.ekilex.data.util.AbstractRowMapper;
 import eki.ekilex.service.MergeService;
 import eki.ekilex.service.ReportComposer;
 

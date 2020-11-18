@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import eki.common.data.util.AbstractRowMapper;
 import eki.ekilex.data.transform.LexemeFrequency;
 
 public class LexemeFrequencyRowMapper extends AbstractRowMapper implements RowMapper<LexemeFrequency> {

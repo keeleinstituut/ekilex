@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
 import eki.common.constant.Complexity;
+import eki.common.data.util.AbstractRowMapper;
 import eki.ekilex.data.transform.Lexeme;
 
 public class LexemeRowMapper extends AbstractRowMapper implements RowMapper<Lexeme> {

@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eki.common.data.Count;
+import eki.common.service.XmlReader;
 import eki.ekilex.data.transform.Mnr;
-import eki.ekilex.service.XmlReader;
 
 //TODO temporary for testing, remove later
 public class MeaningMappingAnalyser extends AbstractLoader {

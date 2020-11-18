@@ -1,10 +1,10 @@
-package eki.ekilex.runner;
+package eki.ekilex.cli.runner;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,29 +26,31 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.DatasetType;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
-import eki.common.constant.LifecycleProperty;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.data.transport.ForeignKey;
 import eki.common.data.transport.TableColumn;
 import eki.common.exception.DataLoadingException;
+import eki.common.service.AbstractLoaderCommons;
 import eki.common.service.TransportService;
 import eki.common.util.CodeGenerator;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.service.ActivityLogService;
 
-@Deprecated
 @Component
-public class DatasetImporterRunner extends AbstractLifecycleLogger implements InitializingBean {
+public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 	private static Logger logger = LoggerFactory.getLogger(DatasetImporterRunner.class);
 
@@ -58,8 +60,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 	private static final String IMPORT_QUEUE = "temp_ds_import_queue";
 
-	private static final String SQL_SELECT_MAPPED_PK =
-			"select "
+	private static final String SQL_SELECT_MAPPED_PK = "select "
 			+ "target_pk "
 			+ "from " + IMPORT_PK_MAP + " "
 			+ "where "
@@ -71,27 +72,22 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 	private static final String[] TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA = new String[] {
 			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION
-			};
+	};
 
 	private static final String COMBINED_ENTRY_NAME = "everything";
 
 	@Autowired
 	private TransportService transportService;
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-	}
-
-	@Override
-	protected String getLogEventBy() {
-		return "Ekilex faililaadur";
-	}
+	@Autowired
+	private ActivityLogService activityLogService;
 
 	@Transactional(rollbackOn = Exception.class)
 	public void execute(boolean isCreate, boolean isAppend, String importFilePath) throws Exception {
 
 		String importCode = CodeGenerator.generateUniqueId();
 		Context context = new Context(isCreate, isAppend, importCode);
+		createSecurityContext();
 
 		logger.info("Starting import \"{}\" from \"{}\"", importCode, importFilePath);
 
@@ -130,6 +126,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		zipFile.close();
 
 		resolveQueue(context);
+		createActivityLogs(context);
 
 		logger.info("In total created {} records", context.getCreatedRecordCount().getValue());
 		logger.info("Recursively resolved {} records", context.getRecursivelyResolvedRecordCount().getValue());
@@ -139,6 +136,18 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		logger.info("Ignored tables: {}", context.getIgnoredTableNames());
 
 		logger.info("Done with import");
+	}
+
+	private void createSecurityContext() {
+
+		EkiUser user = new EkiUser();
+		user.setName("Sõnakogude laadur");
+		user.setAdmin(true);
+		user.setEnabled(Boolean.TRUE);
+
+		GrantedAuthority authority = new SimpleGrantedAuthority("import");
+		AnonymousAuthenticationToken authentication = new AnonymousAuthenticationToken("dsimp", user, Arrays.asList(authority));
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 	}
 
 	private void extractRoot(Context context, Object rootData) throws Exception {
@@ -230,7 +239,7 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 					basicDbService.createWithoutId(tableName, truncDataMap);
 				} else {
 					targetId = basicDbService.create(tableName, truncDataMap);
-					createLifecycleLog(context, tableName, targetId, truncDataMap, hierarchy);
+					collectLoggingId(context, targetId, tableName);
 				}
 				context.getCreatedRecordCount().increment();
 			} else {
@@ -249,10 +258,10 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 						truncDataMap = compensateFieldsAndData(context, tableName, truncDataMap);
 						targetId = basicDbService.create(tableName, truncDataMap);
 					}
-					createLifecycleLog(context, tableName, targetId, truncDataMap, hierarchy);
+					collectLoggingId(context, targetId, tableName);
 					context.getCreatedRecordCount().increment();
 				} else {
-					targetId = new Long(sourceId);
+					targetId = Long.valueOf(sourceId);
 				}
 				List<Object> pkMapping = getPkMapping(importCode, tableName, sourceId);
 				if (CollectionUtils.isEmpty(pkMapping)) {
@@ -268,6 +277,16 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 			if (!queueExists) {
 				createQueue(importCode, tableName, dataMap);
 			}
+		}
+	}
+
+	private void collectLoggingId(Context context, Long recordId, String tableName) {
+		if (StringUtils.equalsIgnoreCase(tableName, WORD)) {
+			context.getLoggingWordIds().add(recordId);
+		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME)) {
+			context.getLoggingLexemeIds().add(recordId);
+		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING)) {
+			context.getLoggingMeaningIds().add(recordId);
 		}
 	}
 
@@ -365,6 +384,28 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		}
 
 		resolveQueue(context);
+	}
+
+	private void createActivityLogs(Context context) throws Exception {
+
+		final String functName = "importDataset";
+		List<Long> loggingWordIds = context.getLoggingWordIds();
+		List<Long> loggingLexemeIds = context.getLoggingLexemeIds();
+		List<Long> loggingMeaningIds = context.getLoggingMeaningIds();
+
+		logger.info("Creating activity logs for {} words, {} lexemes, {} meanings ...", loggingWordIds.size(), loggingLexemeIds.size(), loggingMeaningIds.size());
+
+		createActivityLogs(functName, loggingLexemeIds, LifecycleLogOwner.LEXEME);
+		createActivityLogs(functName, loggingWordIds, LifecycleLogOwner.WORD);
+		createActivityLogs(functName, loggingMeaningIds, LifecycleLogOwner.MEANING);
+
+		logger.info("Activity logs created");
+	}
+
+	private void createActivityLogs(String functName, List<Long> ownerIds, LifecycleLogOwner ownerName) throws Exception {
+		for (Long ownerId : ownerIds) {
+			activityLogService.createActivityLog(functName, ownerId, ownerName);
+		}
 	}
 
 	// not to be used on composite pk-s!
@@ -666,276 +707,6 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 		context.getUnresolvedRecordCount().increment(rowCount);
 	}
 
-	private void createLifecycleLog(Context context, String tableName, Long id, Map<String, Object> dataMap, List<Step> hierarchy) throws Exception {
-
-		List<String> hierarchyTableNames = new ArrayList<>(hierarchy.stream().map(step -> step.getTableName()).collect(Collectors.toList()));
-
-		LifecycleLogOwner logOwner = null;
-		Long ownerId = null;
-		Long entityId = null;
-		LifecycleEntity entity = null;
-		LifecycleProperty property = null;
-		LifecycleEventType eventType = LifecycleEventType.CREATE;
-		String entry = null;
-		Step parentStep = null;
-
-		if (StringUtils.equalsIgnoreCase(tableName, FREEFORM)) {
-			List<Step> reverseHierarchy = new ArrayList<>(hierarchy);
-			Collections.reverse(reverseHierarchy);
-			String freeformType = dataMap.get("type").toString();
-			try {
-				entity = LifecycleEntity.valueOf(freeformType);
-			} catch (Exception e) {
-				entity = LifecycleEntity.ATTRIBUTE_FREEFORM;
-			}
-			if (hierarchyTableNames.contains(WORD_FREEFORM.toLowerCase())) {
-				parentStep = reverseHierarchy.stream().filter(step -> StringUtils.equalsIgnoreCase(step.getTableName(), WORD_FREEFORM)).findFirst().orElse(null);
-				//logOwner = LifecycleLogOwner.WORD;
-				//ownerId = getFieldValueAsLong(parentStep.getTableName(), "word_id", parentStep.getDataMap());
-				//...
-				//TODO finish when the entities are available
-			} else if (hierarchyTableNames.contains(LEXEME_FREEFORM.toLowerCase())) {
-				parentStep = reverseHierarchy.stream().filter(step -> StringUtils.equalsIgnoreCase(step.getTableName(), LEXEME_FREEFORM)).findFirst().orElse(null);
-				logOwner = LifecycleLogOwner.LEXEME;
-				ownerId = getFieldValueAsLong(parentStep.getTableName(), "lexeme_id", parentStep.getDataMap());
-				entityId = id;
-				property = LifecycleProperty.VALUE;
-				entry = getFieldValueAsString(tableName, "value_text", dataMap);
-			} else if (hierarchyTableNames.contains(MEANING_FREEFORM.toLowerCase())) {
-				parentStep = reverseHierarchy.stream().filter(step -> StringUtils.equalsIgnoreCase(step.getTableName(), MEANING_FREEFORM)).findFirst().orElse(null);
-				logOwner = LifecycleLogOwner.MEANING;
-				ownerId = getFieldValueAsLong(parentStep.getTableName(), "meaning_id", parentStep.getDataMap());
-				entityId = id;
-				property = LifecycleProperty.VALUE;
-				entry = getFieldValueAsString(tableName, "value_text", dataMap);
-			} else if (hierarchyTableNames.contains(DEFINITION_FREEFORM.toLowerCase())) {
-				//currently ignoring
-			}
-		} else if (StringUtils.equalsIgnoreCase(tableName, FREEFORM_SOURCE_LINK)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD)) {
-			logOwner = LifecycleLogOwner.WORD;
-			ownerId = id;
-			entity = LifecycleEntity.WORD;
-			entityId = id;
-			property = LifecycleProperty.ID;
-			entry = id.toString();
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_WORD_TYPE)) {
-			logOwner = LifecycleLogOwner.WORD;
-			ownerId = getFieldValueAsLong(tableName, "word_id", dataMap);
-			entity = LifecycleEntity.WORD;
-			entityId = ownerId;
-			property = LifecycleProperty.WORD_TYPE;
-			entry = getFieldValueAsString(tableName, "word_type_code", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_ETYMOLOGY)) {
-			logOwner = LifecycleLogOwner.WORD;
-			ownerId = getFieldValueAsLong(tableName, "word_id", dataMap);
-			entity = LifecycleEntity.WORD_ETYMOLOGY;
-			entityId = id;
-			property = LifecycleProperty.ID;
-			entry = id.toString();
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_ETYMOLOGY_RELATION)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_ETYMOLOGY_SOURCE_LINK)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_RELATION)) {
-			logOwner = LifecycleLogOwner.WORD;
-			ownerId = getFieldValueAsLong(tableName, "word1_id", dataMap);
-			entity = LifecycleEntity.WORD_RELATION;
-			entityId = id;
-			property = LifecycleProperty.VALUE;
-			entry = getFieldValueAsString(tableName, "word_rel_type_code", dataMap)
-					+ " "
-					+ getFieldValueAsString(tableName, "word2_id", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_GROUP_MEMBER)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_GROUP)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, WORD_FREEFORM)) {
-			//skipping until freeform itself
-		} else if (StringUtils.equalsIgnoreCase(tableName, PARADIGM)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, FORM)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING)) {
-			logOwner = LifecycleLogOwner.MEANING;
-			ownerId = id;
-			entity = LifecycleEntity.MEANING;
-			entityId = id;
-			property = LifecycleProperty.ID;
-			entry = id.toString();
-		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING_FREEFORM)) {
-			//skipping until freeform itself
-		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING_DOMAIN)) {
-			logOwner = LifecycleLogOwner.MEANING;
-			ownerId = getFieldValueAsLong(tableName, "meaning_id", dataMap);
-			entity = LifecycleEntity.MEANING;
-			entityId = ownerId;
-			property = LifecycleProperty.DOMAIN;
-			entry = getFieldValueAsString(tableName, "domain_origin", dataMap)
-					+ " "
-					+ getFieldValueAsString(tableName, "domain_code", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, MEANING_RELATION)) {
-			logOwner = LifecycleLogOwner.MEANING;
-			ownerId = getFieldValueAsLong(tableName, "meaning1_id", dataMap);
-			entity = LifecycleEntity.MEANING_RELATION;
-			entityId = id;
-			property = LifecycleProperty.VALUE;
-			entry = getFieldValueAsString(tableName, "meaning_rel_type_code", dataMap)
-					+ " "
-					+ getFieldValueAsString(tableName, "meaning2_id", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME)) {
-			logOwner = LifecycleLogOwner.LEXEME;
-			ownerId = id;
-			entity = LifecycleEntity.LEXEME;
-			entityId = id;
-			property = LifecycleProperty.DATASET;
-			entry = getFieldValueAsString(tableName, "dataset_code", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_FREEFORM)) {
-			//skipping until freeform itself
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_POS)) {
-			logOwner = LifecycleLogOwner.LEXEME;
-			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
-			entity = LifecycleEntity.LEXEME;
-			entityId = ownerId;
-			property = LifecycleProperty.POS;
-			entry = getFieldValueAsString(tableName, "pos_code", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_DERIV)) {
-			logOwner = LifecycleLogOwner.LEXEME;
-			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
-			entity = LifecycleEntity.LEXEME;
-			entityId = ownerId;
-			property = LifecycleProperty.DERIV;
-			entry = getFieldValueAsString(tableName, "deriv_code", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_REGISTER)) {
-			logOwner = LifecycleLogOwner.LEXEME;
-			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
-			entity = LifecycleEntity.LEXEME;
-			entityId = ownerId;
-			property = LifecycleProperty.REGISTER;
-			entry = getFieldValueAsString(tableName, "register_code", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_REGION)) {
-			logOwner = LifecycleLogOwner.LEXEME;
-			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
-			entity = LifecycleEntity.LEXEME;
-			entityId = ownerId;
-			property = LifecycleProperty.REGION;
-			entry = getFieldValueAsString(tableName, "region_code", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_FREQUENCY)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_RELATION)) {
-			logOwner = LifecycleLogOwner.LEXEME;
-			ownerId = getFieldValueAsLong(tableName, "lexeme1_id", dataMap);
-			entity = LifecycleEntity.LEXEME_RELATION;
-			entityId = id;
-			property = LifecycleProperty.VALUE;
-			entry = getFieldValueAsString(tableName, "lex_rel_type_code", dataMap)
-					+ " "
-					+ getFieldValueAsString(tableName, "lexeme2_id", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEXEME_SOURCE_LINK)) {
-			logOwner = LifecycleLogOwner.LEXEME;
-			ownerId = getFieldValueAsLong(tableName, "lexeme_id", dataMap);
-			entity = LifecycleEntity.LEXEME;
-			entityId = id;
-			property = LifecycleProperty.SOURCE_LINK;
-			entry = getFieldValueAsString(tableName, "value", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, LEX_COLLOC)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, COLLOCATION)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION)) {
-			logOwner = LifecycleLogOwner.MEANING;
-			ownerId = getFieldValueAsLong(tableName, "meaning_id", dataMap);
-			entity = LifecycleEntity.DEFINITION;
-			entityId = id;
-			property = LifecycleProperty.VALUE;
-			entry = getFieldValueAsString(tableName, "value", dataMap);
-		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_FREEFORM)) {
-			//skipping until freeform itself
-		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_SOURCE_LINK)) {
-			//currently ignoring
-		} else if (StringUtils.equalsIgnoreCase(tableName, DEFINITION_DATASET)) {
-			//currently ignoring
-		}
-
-		if (logOwner != null) {
-			createLifecycleLog(logOwner, ownerId, entityId, entity, property, eventType, entry);
-		}
-	}
-
-	private Long getFieldValueAsLong(String tableName, String fieldName, Map<String, Object> dataMap) throws Exception {
-		if (!dataMap.containsKey(fieldName)) {
-			throw new DataLoadingException(tableName + " is missing word_id");
-		}
-		return Long.valueOf(dataMap.get(fieldName).toString());
-	}
-
-	private String getFieldValueAsString(String tableName, String fieldName, Map<String, Object> dataMap) throws Exception {
-		if (!dataMap.containsKey(fieldName)) {
-			throw new DataLoadingException(tableName + " is missing required field " + fieldName);
-		}
-		return dataMap.get(fieldName).toString();
-	}
-
-	/*
-	private Map<String, Object> parseObject(JsonParser jsonParser) throws Exception {
-
-		Map<String, Object> record = new HashMap<>();
-		String fieldName;
-		Object fieldValue;
-		JsonToken jsonToken = jsonParser.nextToken();
-		while (!JsonToken.END_OBJECT.equals(jsonToken)) {
-			fieldName = jsonParser.getCurrentName();
-			fieldValue = null;
-			if (JsonToken.FIELD_NAME.equals(jsonToken)) {
-				jsonToken = jsonParser.nextToken();
-				continue;
-			}
-			fieldValue = parseField(jsonParser);
-			record.put(fieldName, fieldValue);
-			jsonToken = jsonParser.nextToken();
-		}
-		return record;
-	}
-
-	private List<Object> parseArray(JsonParser jsonParser) throws Exception {
-
-		List<Object> records = new ArrayList<>();
-		Object fieldValue;
-		JsonToken jsonToken = jsonParser.nextToken();
-		while (!JsonToken.END_ARRAY.equals(jsonToken)) {
-			fieldValue = parseField(jsonParser);
-			if (fieldValue != null) {
-				records.add(fieldValue);
-			}
-			jsonToken = jsonParser.nextToken();
-		}
-		return records;
-	}
-
-	private Object parseField(JsonParser jsonParser) throws Exception {
-
-		Object fieldValue = null;
-		JsonToken jsonToken = jsonParser.getCurrentToken();
-		if (JsonToken.START_OBJECT.equals(jsonToken)) {
-			fieldValue = parseObject(jsonParser);
-		} else if (JsonToken.VALUE_STRING.equals(jsonToken)) {
-			fieldValue = jsonParser.getValueAsString();
-		} else if (JsonToken.VALUE_NULL.equals(jsonToken)) {
-			fieldValue = null;
-		} else if (JsonToken.VALUE_TRUE.equals(jsonToken)) {
-			fieldValue = jsonParser.getValueAsBoolean();
-		} else if (JsonToken.VALUE_NUMBER_INT.equals(jsonToken)) {
-			fieldValue = jsonParser.getValueAsLong();
-		} else if (JsonToken.VALUE_NUMBER_FLOAT.equals(jsonToken)) {
-			fieldValue = jsonParser.getValueAsDouble();
-		} else if (JsonToken.START_ARRAY.equals(jsonToken)) {
-			fieldValue = parseArray(jsonParser);
-		}
-		return fieldValue;
-	}
-	*/
-
 	class FkReassignResult extends AbstractDataObject {
 
 		private static final long serialVersionUID = 1L;
@@ -991,6 +762,12 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 		private String importCode;
 
+		private List<Long> loggingWordIds;
+
+		private List<Long> loggingLexemeIds;
+
+		private List<Long> loggingMeaningIds;
+
 		private Count createdRecordCount;
 
 		private Count recursivelyResolvedRecordCount;
@@ -1009,6 +786,9 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 			this.create = create;
 			this.append = append;
 			this.importCode = importCode;
+			this.loggingWordIds = new ArrayList<Long>();
+			this.loggingLexemeIds = new ArrayList<Long>();
+			this.loggingMeaningIds = new ArrayList<Long>();
 			this.createdRecordCount = new Count();
 			this.recursivelyResolvedRecordCount = new Count();
 			this.unresolvedRecordCount = new Count();
@@ -1028,6 +808,18 @@ public class DatasetImporterRunner extends AbstractLifecycleLogger implements In
 
 		public String getImportCode() {
 			return importCode;
+		}
+
+		public List<Long> getLoggingWordIds() {
+			return loggingWordIds;
+		}
+
+		public List<Long> getLoggingLexemeIds() {
+			return loggingLexemeIds;
+		}
+
+		public List<Long> getLoggingMeaningIds() {
+			return loggingMeaningIds;
 		}
 
 		public Count getCreatedRecordCount() {

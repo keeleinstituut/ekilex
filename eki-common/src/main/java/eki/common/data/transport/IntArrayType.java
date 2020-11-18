@@ -1,67 +1,66 @@
-package eki.ekilex.data.transport;
+package eki.common.data.transport;
 
 import java.io.Serializable;
+import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
-public class EnumType implements UserType {
+public class IntArrayType implements UserType {
 
-	protected static final int[] SQL_TYPES = {Types.VARCHAR};
-
-	private Class<? extends Enum> enumType;
-
-	public EnumType(Class<? extends Enum> enumType) {
-		this.enumType = enumType;
-	}
+	protected static final int SQL_TYPE = Types.ARRAY;
 
 	@Override
 	public int[] sqlTypes() {
-		return SQL_TYPES;
+		return new int[] {SQL_TYPE};
 	}
 
 	@Override
 	public Class<?> returnedClass() {
-		return enumType;
+		return int[].class;
 	}
 
 	@Override
 	public boolean equals(Object x, Object y) throws HibernateException {
-		return false;
+		return x == null ? y == null : x.equals(y);
 	}
 
 	@Override
-	public int hashCode(Object x) throws HibernateException {
-		return 0;
+	public int hashCode(Object value) throws HibernateException {
+		return (value == null) ? 0 : value.hashCode();
 	}
 
 	@Override
 	public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-		if (rs.wasNull()) {
+		Array rsArray = rs.getArray(names[0]);
+		if (rsArray == null) {
 			return null;
 		}
-		String stringValue = rs.getString(names[0]);
-		stringValue = stringValue.trim().toUpperCase();
-		return Enum.valueOf(enumType, stringValue);
+		Integer[] array = (Integer[]) rsArray.getArray();
+		return ArrayUtils.toPrimitive(array);
 	}
 
 	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		if (value == null) {
-			st.setNull(index, SQL_TYPES[0]);
+			st.setNull(index, SQL_TYPE);
 		} else {
-			st.setString(index, value.toString());
+			int[] castObject = (int[]) value;
+			Integer[] integers = ArrayUtils.toObject(castObject);
+			Array array = session.connection().createArrayOf("integer", integers);
+			st.setArray(index, array);
 		}
 	}
 
 	@Override
 	public Object deepCopy(Object value) throws HibernateException {
-		return value;
+		return (value == null) ? null : ((int[]) value).clone();
 	}
 
 	@Override

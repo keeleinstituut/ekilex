@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import eki.common.constant.LoaderConstant;
 import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.runner.BolanToDomainCsvRunner;
 
-public class BolanToDomainCsv implements SystemConstant {
+public class BolanToDomainCsv implements LoaderConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(BolanToDomainCsv.class);
 

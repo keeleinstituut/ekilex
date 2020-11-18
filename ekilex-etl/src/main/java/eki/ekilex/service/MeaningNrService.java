@@ -20,13 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.LoaderConstant;
 import eki.common.exception.DataLoadingException;
 import eki.common.service.db.BasicDbService;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.Mnr;
 
 @Component
-public class MeaningNrService implements SystemConstant, GlobalConstant {
+public class MeaningNrService implements LoaderConstant, GlobalConstant {
 
 	private final static String MAIN_DATASET = "ss1";
 
