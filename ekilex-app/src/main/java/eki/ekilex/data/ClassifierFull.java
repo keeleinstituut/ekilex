@@ -18,6 +18,8 @@ public class ClassifierFull extends AbstractDataObject {
 
 	private List<ClassifierLabel> labels;
 
+	private Integer order;
+
 	public String getName() {
 		return name;
 	}
@@ -56,5 +58,13 @@ public class ClassifierFull extends AbstractDataObject {
 
 	public void setLabels(List<ClassifierLabel> labels) {
 		this.labels = labels;
+	}
+
+	public Integer getOrder() {
+		return order;
+	}
+
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 }

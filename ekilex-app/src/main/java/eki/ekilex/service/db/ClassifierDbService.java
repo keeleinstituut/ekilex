@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record2;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,52 +23,55 @@ public class ClassifierDbService extends AbstractDataDbService {
 	@Autowired
 	private DSLContext create;
 
+	private static final Field<Object> CODE_FIELD = DSL.field("code");
+
+	private static final Field<Object> TYPE_FIELD = DSL.field("type");
+
+	private static final Field<Object> LANG_FIELD = DSL.field("lang");
+
+	private static final Field<Object> VALUE_FIELD = DSL.field("value");
+
+	private static final Field<Object> ROW_NUM_FIELD = DSL.field("row_num");
+
+	private static final Field<Object> ORIGIN_FIELD = DSL.field("origin");
+
+	private static final Field<Object> DATASETS_FIELD = DSL.field("datasets");
+
+	private static final Field<Long> ORDER_BY_FIELD = DSL.field("order_by", Long.class);
+
 	public List<String> getClassifierCodes(String classifierName) {
 
-		Field<Object> codeField = DSL.field("code");
-		Field<Object> orderByField = DSL.field("order_by");
-
-		List<String> classifierCodes = create
-				.select(codeField)
+		return create
+				.select(CODE_FIELD)
 				.from(classifierName)
-				.orderBy(orderByField)
+				.orderBy(ORDER_BY_FIELD)
 				.fetchInto(String.class);
-
-		return classifierCodes;
 	}
 
-	public List<String> getDomainCodes(String domainOriginCode) {
+	public List<String> getDomainCodes(String domainOrigin) {
 
-		List<String> domainCodes = create
+		return create
 				.select(DOMAIN.CODE)
 				.from(DOMAIN)
-				.where(DOMAIN.ORIGIN.eq(domainOriginCode))
+				.where(DOMAIN.ORIGIN.eq(domainOrigin))
 				.orderBy(DOMAIN.ORDER_BY)
 				.fetchInto(String.class);
-
-		return domainCodes;
 	}
 
 	public List<ClassifierLabel> getClassifierLabels(String classifierName, String classifierCode) {
 
 		String labelTableName = getLabelTableName(classifierName);
-		Field<Object> codeField = DSL.field("code");
-		Field<Object> typeField = DSL.field("type");
-		Field<Object> langField = DSL.field("lang");
-		Field<Object> valueField = DSL.field("value");
 
-		List<ClassifierLabel> classifierLabels = create
-				.select(codeField, typeField, langField, valueField)
+		return create
+				.select(CODE_FIELD, TYPE_FIELD, LANG_FIELD, VALUE_FIELD)
 				.from(labelTableName)
-				.where(codeField.eq(classifierCode))
+				.where(CODE_FIELD.eq(classifierCode))
 				.fetchInto(ClassifierLabel.class);
-
-		return classifierLabels;
 	}
 
 	public List<ClassifierLabel> getDomainLabels(String domainOrigin, String domainCode, String labelTypeCode) {
 
-		List<ClassifierLabel> classifierLabels = create
+		return create
 				.select(DOMAIN_LABEL.CODE, DOMAIN_LABEL.TYPE, DOMAIN_LABEL.LANG, DOMAIN_LABEL.VALUE)
 				.from(DOMAIN_LABEL)
 				.where(
@@ -74,57 +79,116 @@ public class ClassifierDbService extends AbstractDataDbService {
 								.and(DOMAIN_LABEL.ORIGIN.eq(domainOrigin))
 								.and(DOMAIN_LABEL.TYPE.eq(labelTypeCode)))
 				.fetchInto(ClassifierLabel.class);
-
-		return classifierLabels;
 	}
 
 	public Long getClassifierOrderBy(String classifierName, String classifierCode) {
 
-		Field<Object> codeField = DSL.field("code");
-		Field<Object> orderByField = DSL.field("order_by");
-
-		Long orderBy = create
-				.select(orderByField)
+		return create
+				.select(ORDER_BY_FIELD)
 				.from(classifierName)
-				.where(codeField.eq(classifierCode))
+				.where(CODE_FIELD.eq(classifierCode))
 				.fetchOneInto(Long.class);
-
-		return orderBy;
 	}
 
-	public Long getDomainClassifierOrderBy(String domainOriginCode, String existingClassifierCode) {
+	public Long getDomainOrderBy(String domainOrigin, String domainCode) {
 
-		Long orderBy = create
+		return create
 				.select(DOMAIN.ORDER_BY)
 				.from(DOMAIN)
-				.where(DOMAIN.ORIGIN.eq(domainOriginCode).and(DOMAIN.CODE.eq(existingClassifierCode)))
+				.where(DOMAIN.ORIGIN.eq(domainOrigin).and(DOMAIN.CODE.eq(domainCode)))
 				.fetchOneInto(Long.class);
+	}
+
+	public Long getClassifierOrderByOrMaxOrderBy(String classifierName, Integer order) {
+
+		Table<Record2<Long, Integer>> rn = DSL
+				.select(ORDER_BY_FIELD, DSL.rowNumber().over(DSL.orderBy(ORDER_BY_FIELD)).as(ROW_NUM_FIELD))
+				.from(classifierName)
+				.asTable("rn");
+
+		Long orderBy = create
+				.select(ORDER_BY_FIELD)
+				.from(rn)
+				.where(ROW_NUM_FIELD.eq(order))
+				.fetchOneInto(Long.class);
+
+		if (orderBy == null) {
+			orderBy = create
+					.select(DSL.max(ORDER_BY_FIELD))
+					.from(classifierName)
+					.fetchOneInto(Long.class);
+		}
 
 		return orderBy;
 	}
 
-	public void createClassifier(String classifierName, String classifierCode, Long orderBy) {
+	public Long getDomainOrderByOrMaxOrderBy(String domainOrigin, Integer domainOrder) {
 
-		Field<Object> codeField = DSL.field("code");
-		Field<Object> datasetsField = DSL.field("datasets");
-		Field<Object> orderByField = DSL.field("order_by");
-		String[] emptyArray = new String[0];
+		Table<Record2<Long, Integer>> rn = DSL
+				.select(ORDER_BY_FIELD, DSL.rowNumber().over(DSL.orderBy(ORDER_BY_FIELD)).as(ROW_NUM_FIELD))
+				.from(DOMAIN)
+				.where(DOMAIN.ORIGIN.eq(domainOrigin))
+				.asTable("rn");
 
-		create
-				.insertInto(DSL.table(classifierName))
-				.columns(codeField, datasetsField, orderByField)
-				.values(classifierCode, emptyArray, orderBy)
-				.execute();
+		Long orderBy = create
+				.select(ORDER_BY_FIELD)
+				.from(rn)
+				.where(ROW_NUM_FIELD.eq(domainOrder))
+				.fetchOneInto(Long.class);
+
+		if (orderBy == null) {
+			orderBy = create
+					.select(DSL.max(ORDER_BY_FIELD))
+					.from(DOMAIN)
+					.where(DOMAIN.ORIGIN.eq(domainOrigin))
+					.fetchOneInto(Long.class);
+		}
+
+		return orderBy;
 	}
 
-	public void createDomainClassifier(String domainOriginCode, String classifierCode, Long orderBy) {
+	public List<Long> getClassifierOrderByIntervalList(String classifierName, Long orderByMin, Long orderByMax) {
+
+		return create
+				.select(ORDER_BY_FIELD)
+				.from(classifierName)
+				.where(
+						ORDER_BY_FIELD.greaterOrEqual(orderByMin)
+								.and(ORDER_BY_FIELD.lessOrEqual(orderByMax)))
+				.orderBy(ORDER_BY_FIELD)
+				.fetchInto(Long.class);
+	}
+
+	public List<Long> getDomainOrderByIntervalList(String domainOrigin, Long orderByMin, Long orderByMax) {
+
+		return create
+				.select(ORDER_BY_FIELD)
+				.from(DOMAIN)
+				.where(
+						DOMAIN.ORIGIN.eq(domainOrigin)
+								.and(ORDER_BY_FIELD.greaterOrEqual(orderByMin))
+								.and(ORDER_BY_FIELD.lessOrEqual(orderByMax)))
+				.orderBy(ORDER_BY_FIELD)
+				.fetchInto(Long.class);
+	}
+
+	public void createClassifier(String classifierName, String classifierCode) {
 
 		String[] emptyArray = new String[0];
+		create
+					.insertInto(DSL.table(classifierName))
+					.columns(CODE_FIELD, DATASETS_FIELD)
+					.values(classifierCode, emptyArray)
+					.execute();
+	}
 
+	public void createDomain(String domainOrigin, String domainCode) {
+
+		String[] emptyArray = new String[0];
 		create
 				.insertInto(DOMAIN)
-				.columns(DOMAIN.ORIGIN, DOMAIN.CODE, DOMAIN.DATASETS, DOMAIN.ORDER_BY)
-				.values(domainOriginCode, classifierCode, emptyArray, orderBy)
+				.columns(DOMAIN.ORIGIN, DOMAIN.CODE, DOMAIN.DATASETS)
+				.values(domainOrigin, domainCode, emptyArray)
 				.execute();
 	}
 
@@ -138,53 +202,86 @@ public class ClassifierDbService extends AbstractDataDbService {
 		String origin = classifierLabel.getOrigin();
 
 		String labelTableName = getLabelTableName(classifierName);
-		Field<Object> codeField = DSL.field("code");
-		Field<Object> typeField = DSL.field("type");
-		Field<Object> langField = DSL.field("lang");
-		Field<Object> valueField = DSL.field("value");
 
 		if (StringUtils.isNotBlank(origin)) {
-			Field<Object> originField = DSL.field("origin");
-
 			create
 					.insertInto(DSL.table(labelTableName))
-					.columns(codeField, typeField, langField, valueField, originField)
+					.columns(CODE_FIELD, TYPE_FIELD, LANG_FIELD, VALUE_FIELD, ORIGIN_FIELD)
 					.values(code, type, lang, value, origin)
-					.onConflict(codeField, originField, langField, typeField)
+					.onConflict(CODE_FIELD, ORIGIN_FIELD, LANG_FIELD, TYPE_FIELD)
 					.doUpdate()
-					.set(valueField, value)
+					.set(VALUE_FIELD, value)
 					.execute();
 			return;
 		}
 
 		create
 				.insertInto(DSL.table(labelTableName))
-				.columns(codeField, typeField, langField, valueField)
+				.columns(CODE_FIELD, TYPE_FIELD, LANG_FIELD, VALUE_FIELD)
 				.values(code, type, lang, value)
-				.onConflict(codeField, langField, typeField)
+				.onConflict(CODE_FIELD, LANG_FIELD, TYPE_FIELD)
 				.doUpdate()
-				.set(valueField, value)
+				.set(VALUE_FIELD, value)
 				.execute();
 	}
 
-	// TODO rename? - yogesh
-	public void increaseClassifiersOrderBy(String classifierName, Long newClassifierOrderby) {
+	public void updateClassifierOrderBy(String classifierName, String classifierCode, Long orderBy) {
 
-		Field<Long> orderByField = DSL.field("order_by", Long.class);
 		create
 				.update(DSL.table(classifierName))
-				.set(orderByField, orderByField.plus(1))
-				.where(orderByField.greaterOrEqual(newClassifierOrderby))
+				.set(ORDER_BY_FIELD, orderBy)
+				.where(CODE_FIELD.eq(classifierCode))
 				.execute();
 	}
 
-	// TODO rename? - yogesh
-	public void increaseDomainClassifiersOrderBy(Long newClassifierOrderby) {
+	public void updateDomainOrderBy(String domainOrigin, String domainCode, Long orderBy) {
 
 		create
 				.update(DOMAIN)
-				.set(DOMAIN.ORDER_BY, DOMAIN.ORDER_BY.plus(1))
-				.where(DOMAIN.ORDER_BY.greaterOrEqual(newClassifierOrderby))
+				.set(ORDER_BY_FIELD, orderBy)
+				.where(
+						DOMAIN.ORIGIN.eq(domainOrigin)
+								.and(DOMAIN.CODE.eq(domainCode)))
+				.execute();
+	}
+
+	public void increaseClassifierOrderBys(String classifierName, List<Long> orderByList) {
+
+		create
+				.update(DSL.table(classifierName))
+				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.plus(1))
+				.where(ORDER_BY_FIELD.in(orderByList))
+				.execute();
+	}
+
+	public void increaseDomainOrderBys(String domainOrigin, List<Long> orderByList) {
+
+		create
+				.update(DOMAIN)
+				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.plus(1))
+				.where(
+						DOMAIN.ORIGIN.eq(domainOrigin)
+								.and(ORDER_BY_FIELD.in(orderByList)))
+				.execute();
+	}
+
+	public void reduceClassifierOrderBys(String classifierName, List<Long> orderByList) {
+
+		create
+				.update(DSL.table(classifierName))
+				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.minus(1))
+				.where(ORDER_BY_FIELD.in(orderByList))
+				.execute();
+	}
+
+	public void reduceDomainOrderBys(String domainOrigin, List<Long> orderByList) {
+
+		create
+				.update(DOMAIN)
+				.set(ORDER_BY_FIELD, ORDER_BY_FIELD.minus(1))
+				.where(
+						DOMAIN.ORIGIN.eq(domainOrigin)
+								.and(ORDER_BY_FIELD.in(orderByList)))
 				.execute();
 	}
 
@@ -197,17 +294,13 @@ public class ClassifierDbService extends AbstractDataDbService {
 		String origin = classifierLabel.getOrigin();
 
 		String labelTableName = getLabelTableName(classifierName);
-		Field<Object> codeField = DSL.field("code");
-		Field<Object> typeField = DSL.field("type");
-		Field<Object> langField = DSL.field("lang");
 
-		Condition deleteWhere = codeField.eq(code)
-				.and(typeField.eq(type))
-				.and(langField.eq(lang));
+		Condition deleteWhere = CODE_FIELD.eq(code)
+				.and(TYPE_FIELD.eq(type))
+				.and(LANG_FIELD.eq(lang));
 
 		if (StringUtils.isNotBlank(origin)) {
-			Field<Object> originField = DSL.field("origin");
-			deleteWhere = deleteWhere.and(originField.eq(origin));
+			deleteWhere = deleteWhere.and(ORIGIN_FIELD.eq(origin));
 		}
 
 		create
@@ -218,43 +311,41 @@ public class ClassifierDbService extends AbstractDataDbService {
 
 	public void deleteClassifier(String classifierName, String classifierCode) {
 
-		Field<Object> codeField = DSL.field("code");
 		create
 				.delete(DSL.table(classifierName))
-				.where(codeField.eq(classifierCode))
+				.where(CODE_FIELD.eq(classifierCode))
 				.execute();
 	}
 
-	public void deleteDomainClassifier(String domainOriginCode, String classifierCode) {
+	public void deleteDomain(String domainOrigin, String classifierCode) {
 
 		create
 				.delete(DOMAIN_LABEL)
-				.where(DOMAIN_LABEL.ORIGIN.eq(domainOriginCode).and(DOMAIN_LABEL.CODE.eq(classifierCode)))
+				.where(DOMAIN_LABEL.ORIGIN.eq(domainOrigin).and(DOMAIN_LABEL.CODE.eq(classifierCode)))
 				.execute();
 
 		create
 				.delete(DOMAIN)
-				.where(DOMAIN.ORIGIN.eq(domainOriginCode).and(DOMAIN.CODE.eq(classifierCode)))
+				.where(DOMAIN.ORIGIN.eq(domainOrigin).and(DOMAIN.CODE.eq(classifierCode)))
 				.execute();
 	}
 
 	public boolean classifierExists(String classifierName, String classifierCode) {
 
-		Field<Object> codeField = DSL.field("code");
 		return create
 				.fetchExists(DSL
-						.select(codeField)
+						.select(CODE_FIELD)
 						.from(classifierName)
-						.where(codeField.eq(classifierCode)));
+						.where(CODE_FIELD.eq(classifierCode)));
 	}
 
-	public boolean domainClassifierExists(String domainOriginCode, String classifierCode) {
+	public boolean domainExists(String domainOrigin, String classifierCode) {
 
 		return create
 				.fetchExists(DSL
 						.select(DOMAIN.CODE)
 						.from(DOMAIN)
-						.where(DOMAIN.ORIGIN.eq(domainOriginCode).and(DOMAIN.CODE.eq(classifierCode))));
+						.where(DOMAIN.ORIGIN.eq(domainOrigin).and(DOMAIN.CODE.eq(classifierCode))));
 	}
 
 	private String getLabelTableName(String classifierName) {

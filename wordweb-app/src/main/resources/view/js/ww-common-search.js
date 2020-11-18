@@ -193,16 +193,21 @@ $(document).on("click", "#homonymListToggleButton", function() {
 });
 
 $(document).on("shown.bs.modal", "[id^='morpho-modal-']", function() {
-	var paradigmId = $(this).attr("data-paradigm-id");
-	var morphoContentDiv = $(this).find(".morpho-content");
+	var main = $(this);
+	var paradigmId = main.attr("data-paradigm-id");
+	if (main.find('.modal-dialog').length) {
+		main.find('.modal-dialog').remove();
+		main.append('<div class="morpho-content"></div>');
+	}
+	var morphoContentDiv = main.find(".morpho-content");
 	var morphoUrlWithParams = morphoUrl + "/" + paradigmId + "/" + currentWordClass + "/" + currentWordLang;
 	$.get(morphoUrlWithParams).done(function(data) {
 		morphoContentDiv.replaceWith(data);
 		$('[data-toggle="tooltip"]').tooltip({
 			container : 'body'
 		});
-		$('[data-plugin="tableTogglers"]').tableTogglers();
-		$('.scrollable-table').scrollableTable();
+		main.find('[data-plugin="tableTogglers"]').tableTogglers();
+		main.find('.scrollable-table').scrollableTable();
 	});
 });
 
@@ -214,12 +219,14 @@ $.fn.tableTogglers = function() {
 	function checkStates() {
 		var activeButtons = buttons.filter('.active');
 
-		if (activeButtons.is('[data-rel="hideColumn"]')) {
-			parent.find('.tableClone').show();
-			parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').show();
-		} else {
-			parent.find('.tableClone').hide();
-			parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').hide();
+		if( buttons.filter('[data-rel="hideColumn"]').length){
+			if (activeButtons.is('[data-rel="hideColumn"]')) {
+				parent.find('.tableClone').show();
+				parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').show();
+			} else {
+				parent.find('.tableClone').hide();
+				parent.find('[data-fixcolumn]').find('tr').find('td:first, th:first').hide();
+			}
 		}
 
 		if (activeButtons.is('[data-rel="marks"]')) {

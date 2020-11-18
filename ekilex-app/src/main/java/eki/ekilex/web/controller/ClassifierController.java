@@ -2,7 +2,6 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -11,14 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ClassifierName;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierFull;
-import eki.ekilex.data.ClassifierLabel;
 import eki.ekilex.service.ClassifierService;
 
 @ConditionalOnWebApplication
@@ -60,19 +57,9 @@ public class ClassifierController extends AbstractPageController {
 
 	@PostMapping(CREATE_CLASSIFIER_URI)
 	@ResponseBody
-	public String createClassifier(
-			@RequestParam("classifierName") String classifierName,
-			@RequestParam("classifierCode") String classifierCode,
-			@RequestParam(name = "domainOriginCode", required = false) String domainOriginCode,
-			@RequestParam("existingClassifierCode") String existingClassifierCode,
-			@RequestParam("createBeforeExisting") boolean createBeforeExisting) {
+	public String createClassifier(@RequestBody ClassifierFull classifier) {
 
-		boolean isSuccessful;
-		if (StringUtils.isNotBlank(domainOriginCode)) {
-			isSuccessful = classifierService.createDomainClassifier(domainOriginCode, classifierCode, existingClassifierCode, createBeforeExisting);
-		} else {
-			isSuccessful = classifierService.createClassifier(classifierName, classifierCode, existingClassifierCode, createBeforeExisting);
-		}
+		boolean isSuccessful = classifierService.createClassifier(classifier);
 		if (isSuccessful) {
 			return RESPONSE_OK_VER1;
 		}
@@ -81,25 +68,17 @@ public class ClassifierController extends AbstractPageController {
 
 	@PostMapping(UPDATE_CLASSIFIER_URI)
 	@ResponseBody
-	public String updateClassifier(@RequestBody List<ClassifierLabel> classifierLabels) {
+	public String updateClassifier(@RequestBody ClassifierFull classifier) {
 
-		classifierService.updateClassifier(classifierLabels);
+		classifierService.updateClassifier(classifier);
 		return RESPONSE_OK_VER1;
 	}
 
 	@PostMapping(DELETE_CLASSIFIER_URI)
 	@ResponseBody
-	public String deleteClassifier(
-			@RequestParam("classifierName") String classifierName,
-			@RequestParam("classifierCode") String classifierCode,
-			@RequestParam(name = "domainOriginCode", required = false) String domainOriginCode) {
+	public String deleteClassifier(@RequestBody ClassifierFull classifier) {
 
-		boolean isSuccessful;
-		if (StringUtils.isNotBlank(domainOriginCode)) {
-			isSuccessful = classifierService.deleteDomainClassifier(domainOriginCode, classifierCode);
-		} else {
-			isSuccessful = classifierService.deleteClassifier(classifierName, classifierCode);
-		}
+		boolean isSuccessful = classifierService.deleteClassifier(classifier);
 		if (isSuccessful) {
 			return RESPONSE_OK_VER1;
 		}
