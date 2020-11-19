@@ -28,7 +28,7 @@
           <th:block th:replace=" :: morpho-form-value(${form}, '')"></th:block>
           <span th:unless="${formIter.last}">~</span>
         </div>
-        <div class="rating" th:if="${form.morphExists && form.formFreqValue != null}"
+        <div class="rating invisible" aria-hidden="true" th:if="${form.morphExists && form.formFreqValue != null}"
              data-toggle="tooltip" data-placement="top" th:title="#{|label.morpho.freq.total|(${form.formFreqValue}, ${form.maxFormFreqValue})}">
           <div class="rating__row rating__row--highlighted">
             <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 1 ? 'fa' : 'far'}"></i>
@@ -1281,7 +1281,7 @@
               </div>
             </div>
           </div>
-          <div class="table-legend">
+          <div class="table-legend invisible" aria-hidden="true">
             <div class="table-legend__item">Legend:</div>
             <div class="table-legend__item">
               <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
