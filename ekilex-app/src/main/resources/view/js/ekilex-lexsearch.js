@@ -68,8 +68,28 @@ function initializeSearch(type) {
 		}
 	});
 
+	$(document).on('click', '#duplicateMeaningBtn', function() {
+		let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
+		$.post(url).done(function(data) {
+			let response = JSON.parse(data);
+			if (response.status === 'ok') {
+				openMessageDlg(response.message);
+				let duplicateMeaningId = response.duplicateMeaningId;
+				setTimeout(function() {
+					window.location = applicationUrl + 'meaningback/' + duplicateMeaningId;
+				}, 1500);
+			} else {
+				openAlertDlg(response.message);
+			}
+		}).fail(function(data) {
+			openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+			console.log(data);
+		});
+	});
+	
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
-		let lang = $(this).attr("data-lang");
+		const btn = $(this);
+		let lang = btn.attr("data-lang");
 		let itemData = {
 			opCode: "user_lang_selection",
 			code: lang
@@ -77,7 +97,12 @@ function initializeSearch(type) {
 		let successCallbackName = $(this).attr("data-callback");
 		let	successCallbackFunc = () => eval(successCallbackName);
 		postJson(applicationUrl + 'update_item', itemData).done(function() {
-			successCallbackFunc();
+
+			if (viewType === 'term') {
+				refreshDetailsSearch(btn.parents('[data-rel="details-area"]').attr('data-id'));
+			} else {
+				successCallbackFunc();
+			}
 		});
 	});
 

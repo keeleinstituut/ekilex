@@ -28,7 +28,7 @@
                     <span class="mr-1">
                       <span th:if="${meaningWord.public}" class="badge badge-pill badge-primary">&nbsp;</span>
                       <span th:unless="${meaningWord.public}" class="badge badge-pill badge-light">&nbsp;</span>
-                      <span th:if="${meaningWord.mostPreferred}" class="badge badge-pill badge-success">&nbsp;</span>
+                      <span th:if="${meaningWord.mostPreferred}" class="badge badge-pill badge-secondary">&nbsp;</span>
                       <span th:if="${meaningWord.leastPreferred}" class="badge badge-pill badge-danger">&nbsp;</span>
                       <span th:unless="${meaningWord.mostPreferred or meaningWord.leastPreferred}" class="badge badge-pill badge-light">&nbsp;</span>
                     </span>
@@ -74,7 +74,7 @@
   <div class="row" th:fragment="tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Ilmiku sildid</span>
-      <button type="button" class="btn badge badge-success float-right mr-4"
+      <button type="button" class="btn badge badge-secondary float-right mr-4"
               title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addLexemeTagDlg_' + lexeme.lexemeId}"
@@ -304,7 +304,7 @@
   <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}" th:fragment="meaning_domain">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Valdkonnad</span>
-      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+      <button type="button" class="btn badge badge-secondary float-right mr-4" title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addMeaningDomainDlg_' + meaningId}"
               sec:authorize="#vars.meaning.crudGrant">
@@ -352,7 +352,7 @@
   <div class="row" th:if="${not #lists.isEmpty(meaning.semanticTypes)}" th:fragment="meaning_semantic_type">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Semantiline tüüp</span>
-      <button type="button" class="btn badge badge-success float-right mr-4" title="Lisa uus"
+      <button type="button" class="btn badge badge-secondary float-right mr-4" title="Lisa uus"
               data-toggle="modal"
               th:data-target="${'#addMeaningSemanticTypeDlg_' + meaningId}"
               sec:authorize="#vars.meaning.crudGrant">

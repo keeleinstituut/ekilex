@@ -89,4 +89,74 @@
 	cursor: move;
 	margin-right: 13px;
 	width: 16px;
+	white-space: nowrap;
+}
+
+.term-panel {
+	.lbl {
+		font-weight: normal;
+		color: $gray-400;
+		padding-left: 14px;
+		font-size: 12px;
+	}
+	.date-modified {
+		font-size: 12px;
+	}
+	.dragHandle {
+		font-size: 1.4rem;
+	}
+	.block-title {
+		background: $gray-100;
+		display: flex;
+		padding:5px 16px;
+		[class*='fa-caret'] {
+			font-size: 17px;
+		}
+	}
+	.block-subtitle {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		border-top: 1px solid $gray-200;
+		border-bottom: 1px solid #ECF0F2;
+		margin:0 -8px 10px -8px;
+		padding:0 20px 4px 20px;
+		.fa-info-circle {
+			padding-top: 6px;
+		}
+	}
+
+	.orderable .card:first-child .block-subtitle {
+		border-top: none;
+	}
+
+	.badge-secondary {
+		color: #3f3f3f;
+		background-color: #ecf0f2;
+		border-color: #ccd9e0;
+		&:hover {
+			background-color: #d5dee2;
+			border-color: #acc1cd;
+		}
+	}
+	.btn-lang {
+		appearance: none;
+		border: none;
+		background:none;
+		padding: 0;
+		color: $gray-300;
+	}
+	.lang-block {
+		border: 1px solid $gray-200;
+		margin-bottom: -1px;
+	}
+	.fa-info-circle {
+		font-size: 20px;
+		color: $gray-300;
+	}
+	.title-bar {
+		margin: 0 -8px 8px -8px;
+		padding-left: 8px;
+		padding-right: 8px;
+	}
 }
