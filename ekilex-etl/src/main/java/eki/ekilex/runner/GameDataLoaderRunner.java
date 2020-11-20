@@ -16,12 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LoaderConstant;
 import eki.common.constant.TableName;
 import eki.common.service.db.BasicDbService;
-import eki.ekilex.constant.SystemConstant;
 
 @Component
-public class GameDataLoaderRunner implements TableName, SystemConstant {
+public class GameDataLoaderRunner implements TableName, LoaderConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(GameDataLoaderRunner.class);
 

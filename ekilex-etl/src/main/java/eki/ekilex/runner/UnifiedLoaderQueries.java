@@ -5,6 +5,8 @@ import java.io.InputStream;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import eki.common.service.AbstractLoaderCommons;
+
 @Component
 public class UnifiedLoaderQueries extends AbstractLoaderCommons implements InitializingBean {
 

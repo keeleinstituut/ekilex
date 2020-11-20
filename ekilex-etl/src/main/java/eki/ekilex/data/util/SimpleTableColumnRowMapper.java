@@ -5,7 +5,8 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import eki.ekilex.data.transport.SimpleTableColumn;
+import eki.common.data.transport.SimpleTableColumn;
+import eki.common.data.util.AbstractRowMapper;
 
 public class SimpleTableColumnRowMapper extends AbstractRowMapper implements RowMapper<SimpleTableColumn> {
 

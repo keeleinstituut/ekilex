@@ -26,17 +26,17 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.LoaderConstant;
 import eki.common.data.AbstractDataObject;
 import eki.common.exception.DataLoadingException;
 import eki.common.service.db.BasicDbService;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.ParadigmFormTuple;
 import eki.ekilex.data.transform.WordParadigms;
 
 @Component
-public class MabService implements SystemConstant, GlobalConstant, InitializingBean {
+public class MabService implements LoaderConstant, GlobalConstant, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(MabService.class);
 

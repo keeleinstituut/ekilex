@@ -1,4 +1,4 @@
-package eki.ekilex.data.transport;
+package eki.common.data.transport;
 
 import java.io.Serializable;
 import java.sql.Array;

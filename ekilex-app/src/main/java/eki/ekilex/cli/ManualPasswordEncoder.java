@@ -1,4 +1,4 @@
-package eki.ekilex.manual;
+package eki.ekilex.cli;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

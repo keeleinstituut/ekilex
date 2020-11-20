@@ -1,4 +1,4 @@
-package eki.ekilex.runner;
+package eki.ekilex.cli.runner;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -43,7 +43,6 @@ import eki.common.data.transport.TableColumn;
 import eki.common.service.AbstractLoaderCommons;
 import eki.common.service.TransportService;
 
-@Deprecated
 @Component
 public class DatasetExporterRunner extends AbstractLoaderCommons implements TableName, GlobalConstant, InitializingBean {
 

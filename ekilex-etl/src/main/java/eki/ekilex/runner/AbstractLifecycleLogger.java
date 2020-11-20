@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
+import eki.common.service.AbstractLoaderCommons;
 import eki.ekilex.runner.AbstractLoaderRunner.ArticleLogData;
 
 @Deprecated
@@ -19,6 +21,16 @@ public abstract class AbstractLifecycleLogger extends AbstractLoaderCommons {
 	private final static String CHIEF_EDITING = "(artikli peatoimetamine)";
 
 	abstract String getLogEventBy();
+
+	protected LifecycleEntity translate(FreeformType freeformType) {
+		LifecycleEntity lifecycleEntity;
+		try {
+			lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
+		} catch (Exception e) {
+			lifecycleEntity = LifecycleEntity.ATTRIBUTE_FREEFORM;
+		}
+		return lifecycleEntity;
+	}
 
 	protected void createLifecycleLog(LifecycleLogOwner logOwner, Long ownerId, Long entityId, LifecycleEntity entity,
 			LifecycleProperty property, LifecycleEventType eventType, String entry) throws Exception {

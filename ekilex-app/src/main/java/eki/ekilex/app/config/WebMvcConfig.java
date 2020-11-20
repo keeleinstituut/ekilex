@@ -1,4 +1,4 @@
-package eki.ekilex.config;
+package eki.ekilex.app.config;
 
 import java.util.Locale;
 

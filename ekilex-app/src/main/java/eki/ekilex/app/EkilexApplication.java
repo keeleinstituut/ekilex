@@ -1,4 +1,4 @@
-package eki.ekilex;
+package eki.ekilex.app;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -16,7 +16,15 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication(scanBasePackages = {"eki.common", "eki.ekilex"})
+@SpringBootApplication(scanBasePackages = {
+		"eki.common",
+		"eki.ekilex.app.config",
+		"eki.ekilex.api",
+		"eki.ekilex.web",
+		"eki.ekilex.service",
+		"eki.ekilex.worker",
+		"eki.ekilex.security",
+		"eki.ekilex.data"})
 @EnableCaching
 @EnableTransactionManagement
 @EnableScheduling

@@ -1,4 +1,4 @@
-package eki.ekilex.data.transport;
+package eki.common.data.transport;
 
 import eki.common.data.AbstractDataObject;
 

@@ -10,16 +10,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
+import eki.ekilex.app.EkilexApplication;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.UserService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
+@ContextConfiguration(classes = EkilexApplication.class)
 @Transactional
 public class UserServiceTest {
 

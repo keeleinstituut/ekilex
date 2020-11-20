@@ -9,11 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import eki.common.constant.LoaderConstant;
 import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.runner.XsdToClassifierCsvRunner;
 
-public class XsdToClassifierCsv implements SystemConstant {
+public class XsdToClassifierCsv implements LoaderConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(XsdToClassifierCsv.class);
 

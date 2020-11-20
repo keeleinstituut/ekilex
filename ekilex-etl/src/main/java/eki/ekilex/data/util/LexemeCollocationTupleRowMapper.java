@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
+import eki.common.data.util.AbstractRowMapper;
 import eki.ekilex.data.transform.LexemeCollocationTuple;
 
 public class LexemeCollocationTupleRowMapper extends AbstractRowMapper implements RowMapper<LexemeCollocationTuple> {

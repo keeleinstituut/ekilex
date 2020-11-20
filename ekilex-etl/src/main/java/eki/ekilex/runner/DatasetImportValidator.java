@@ -31,8 +31,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
-import eki.ekilex.data.transport.TableColumn;
-import eki.ekilex.service.TransportService;
+import eki.common.data.transport.TableColumn;
+import eki.common.service.AbstractLoaderCommons;
+import eki.common.service.TransportService;
 
 @Component
 public class DatasetImportValidator extends AbstractLoaderCommons {

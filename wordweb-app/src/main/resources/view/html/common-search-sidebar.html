@@ -189,7 +189,7 @@
                 </span>
               </button>
             </div>
-            <div>
+            <div th:if="${not #strings.isEmpty(wordData.word.wordClass)}">
               <button type="button" class="btn btn-bold pl-0 pr-0" data-toggle="modal" th:data-target="${'#morpho-modal-' + paradigmIter.index}">
                 <i class="fa fa-expand-alt"></i>
                 <span th:text="#{button.morpho.show}">Näita tabelina</span>

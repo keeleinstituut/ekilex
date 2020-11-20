@@ -62,11 +62,13 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 	public List<ClassifierFull> getClassifiers(ClassifierName classifierName, String domainOrigin) {
 
 		List<ClassifierFull> classifiers = new ArrayList<>();
+		int order = 1;
 
 		if (ClassifierName.DOMAIN.equals(classifierName) && StringUtils.isNotBlank(domainOrigin)) {
 			List<String> domainCodes = classifierDbService.getDomainCodes(domainOrigin);
 			for (String domainCode : domainCodes) {
 				ClassifierFull classifier = getDomainClassifier(domainOrigin, domainCode);
+				classifier.setOrder(order++);
 				classifiers.add(classifier);
 			}
 			return classifiers;
@@ -75,6 +77,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		List<String> classifierCodes = classifierDbService.getClassifierCodes(classifierName.name());
 		for (String classifierCode : classifierCodes) {
 			ClassifierFull classifier = getClassifier(classifierName, classifierCode);
+			classifier.setOrder(order++);
 			classifiers.add(classifier);
 		}
 		return classifiers;
@@ -156,40 +159,69 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public boolean createClassifier(String classifierName, String classifierCode, String existingClassifierCode, boolean createBeforeExisting) {
+	public boolean createClassifier(ClassifierFull classifier) {
+
+		String classifierName = classifier.getName();
+		String domainOrigin = classifier.getOrigin();
+		boolean isDomainClassifier = isDomainClassifier(classifierName, domainOrigin);
+
+		boolean classifierCreated;
+		if (isDomainClassifier) {
+			classifierCreated = createDomainClassifier(classifier);
+		} else {
+			classifierCreated = createRegularClassifier(classifier);
+		}
+		return classifierCreated;
+	}
+
+	private boolean createRegularClassifier(ClassifierFull classifier) {
+
+		String classifierCode = classifier.getCode();
+		String classifierName = classifier.getName();
 
 		boolean classifierExists = classifierDbService.classifierExists(classifierName, classifierCode);
 		if (classifierExists) {
 			return false;
 		}
 
-		Long existingClassifierOrderBy = classifierDbService.getClassifierOrderBy(classifierName, existingClassifierCode);
-		Long newClassifierOrderby = createBeforeExisting ? existingClassifierOrderBy : existingClassifierOrderBy + 1;
-		classifierDbService.increaseClassifiersOrderBy(classifierName, newClassifierOrderby);
-		classifierDbService.createClassifier(classifierName, classifierCode, newClassifierOrderby);
+		classifierDbService.createClassifier(classifierName, classifierCode);
+		updateClassifierOrderBys(classifier);
+
 		maintenanceService.clearClassifCache();
 		return true;
 	}
 
-	@Transactional
-	public boolean createDomainClassifier(String domainOriginCode, String classifierCode, String existingClassifierCode, boolean createBeforeExisting) {
+	public boolean createDomainClassifier(ClassifierFull classifier) {
 
-		boolean classifierExists = classifierDbService.domainClassifierExists(domainOriginCode, classifierCode);
+		String domainOrigin = classifier.getOrigin();
+		String domainCode = classifier.getCode();
+
+		boolean classifierExists = classifierDbService.domainExists(domainOrigin, domainCode);
 		if (classifierExists) {
 			return false;
 		}
 
-		Long existingClassifierOrderBy = classifierDbService.getDomainClassifierOrderBy(domainOriginCode, existingClassifierCode);
-		Long newClassifierOrderby = createBeforeExisting ? existingClassifierOrderBy : existingClassifierOrderBy + 1;
-		classifierDbService.increaseDomainClassifiersOrderBy(newClassifierOrderby);
-		classifierDbService.createDomainClassifier(domainOriginCode, classifierCode, newClassifierOrderby);
+		classifierDbService.createDomain(domainOrigin, domainCode);
+		updateDomainClassifierOrderBys(classifier);
+
 		maintenanceService.clearClassifCache();
 		return true;
+
 	}
 
 	@Transactional
-	public void updateClassifier(List<ClassifierLabel> classifierLabels) {
+	public void updateClassifier(ClassifierFull classifier) {
 
+		String classifierName = classifier.getName();
+		String domainOrigin = classifier.getOrigin();
+		boolean isDomainClassifier = isDomainClassifier(classifierName, domainOrigin);
+		if (isDomainClassifier) {
+			updateDomainClassifierOrderBys(classifier);
+		} else {
+			updateClassifierOrderBys(classifier);
+		}
+
+		List<ClassifierLabel> classifierLabels = classifier.getLabels();
 		for (ClassifierLabel classifierLabel : classifierLabels) {
 			if (StringUtils.isNotBlank(classifierLabel.getValue())) {
 				classifierDbService.createOrUpdateClassifierLabel(classifierLabel);
@@ -200,11 +232,72 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		maintenanceService.clearClassifCache();
 	}
 
+	private void updateClassifierOrderBys(ClassifierFull classifier) {
+
+		String classifierName = classifier.getName();
+		String classifierCode = classifier.getCode();
+		Integer classifierOrder = classifier.getOrder();
+		Long oldOrderBy = classifierDbService.getClassifierOrderBy(classifierName, classifierCode);
+		Long newOrderBy = classifierDbService.getClassifierOrderByOrMaxOrderBy(classifierName, classifierOrder);
+
+		if (!oldOrderBy.equals(newOrderBy)) {
+			boolean isIncrease = newOrderBy > oldOrderBy;
+			List<Long> orderByList;
+
+			if (isIncrease) {
+				orderByList = classifierDbService.getClassifierOrderByIntervalList(classifierName, oldOrderBy, newOrderBy);
+				orderByList.remove(0);
+				classifierDbService.reduceClassifierOrderBys(classifierName, orderByList);
+			} else {
+				orderByList = classifierDbService.getClassifierOrderByIntervalList(classifierName, newOrderBy, oldOrderBy);
+				orderByList.remove(orderByList.size() - 1);
+				classifierDbService.increaseClassifierOrderBys(classifierName, orderByList);
+			}
+
+			classifierDbService.updateClassifierOrderBy(classifierName, classifierCode, newOrderBy);
+		}
+	}
+
+	private void updateDomainClassifierOrderBys(ClassifierFull classifier) {
+
+		String domainOrigin = classifier.getOrigin();
+		String domainCode = classifier.getCode();
+		Integer domainOrder = classifier.getOrder();
+		Long oldOrderBy = classifierDbService.getDomainOrderBy(domainOrigin, domainCode);
+		Long newOrderBy = classifierDbService.getDomainOrderByOrMaxOrderBy(domainOrigin, domainOrder);
+
+		if (!oldOrderBy.equals(newOrderBy)) {
+			boolean isIncrease = newOrderBy > oldOrderBy;
+			List<Long> orderByList;
+
+			if (isIncrease) {
+				orderByList = classifierDbService.getDomainOrderByIntervalList(domainOrigin, oldOrderBy, newOrderBy);
+				orderByList.remove(0);
+				classifierDbService.reduceDomainOrderBys(domainOrigin, orderByList);
+			} else {
+				orderByList = classifierDbService.getDomainOrderByIntervalList(domainOrigin, newOrderBy, oldOrderBy);
+				orderByList.remove(orderByList.size() - 1);
+				classifierDbService.increaseDomainOrderBys(domainOrigin, orderByList);
+			}
+
+			classifierDbService.updateDomainOrderBy(domainOrigin, domainCode, newOrderBy);
+		}
+	}
+
 	@Transactional
-	public boolean deleteClassifier(String classifierName, String classifierCode) {
+	public boolean deleteClassifier(ClassifierFull classifier) {
+
+		String classifierName = classifier.getName();
+		String classifierCode = classifier.getCode();
+		String domainOrigin = classifier.getOrigin();
+		boolean isDomainClassifier = isDomainClassifier(classifierName, domainOrigin);
 
 		try {
-			classifierDbService.deleteClassifier(classifierName, classifierCode);
+			if (isDomainClassifier) {
+				classifierDbService.deleteDomain(domainOrigin, classifierCode);
+			} else {
+				classifierDbService.deleteClassifier(classifierName, classifierCode);
+			}
 			return true;
 		} catch (DataAccessException e) {
 			// classifier is in use. delete is not possible
@@ -212,15 +305,8 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 		}
 	}
 
-	@Transactional
-	public boolean deleteDomainClassifier(String domainOriginCode, String classifierCode) {
+	private boolean isDomainClassifier(String classifierName, String domainOrigin) {
 
-		try {
-			classifierDbService.deleteDomainClassifier(domainOriginCode, classifierCode);
-			return true;
-		} catch (DataAccessException e) {
-			// classifier is in use. delete is not possible
-			return false;
-		}
+		return ClassifierName.DOMAIN.name().equals(classifierName) && StringUtils.isNotBlank(domainOrigin);
 	}
 }

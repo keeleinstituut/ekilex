@@ -1,4 +1,4 @@
-package eki.ekilex.config;
+package eki.ekilex.app.config;
 
 import org.jooq.DSLContext;
 import org.jooq.conf.Settings;

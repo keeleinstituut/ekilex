@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,18 @@ public final class ConsolePromptUtil {
 	private static Logger logger = LoggerFactory.getLogger(ConsolePromptUtil.class);
 
 	private static final String[] POSITIVE_REPLIES = {"y", "yes", "true", "ok", "go", "please", "j", "jah"};
+
+	public static String getKeyValue(String key, String... args) {
+		if (ArrayUtils.isEmpty(args)) {
+			return null;
+		}
+		for (String arg : args) {
+			if (StringUtils.startsWith(arg, key + "=")) {
+				return StringUtils.substringAfter(arg, "=");
+			}
+		}
+		return null;
+	}
 
 	public static boolean isPositiveReply(String value) {
 		for (String positiveReplyAlternative : POSITIVE_REPLIES) {
@@ -103,7 +116,7 @@ public final class ConsolePromptUtil {
 		}
 		if (StringUtils.isNotBlank(booleanValueStr)) {
 			boolean booleanValue = isPositiveReply(booleanValueStr);
-			return booleanValue;	
+			return booleanValue;
 		} else {
 			promptMessage = "What? Please try again";
 			return promptBooleanValue(promptMessage);

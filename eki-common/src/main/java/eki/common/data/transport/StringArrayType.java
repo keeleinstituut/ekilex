@@ -1,4 +1,4 @@
-package eki.ekilex.data.transport;
+package eki.common.data.transport;
 
 import java.io.Serializable;
 import java.sql.Array;
@@ -7,33 +7,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 
-public class IntArrayType implements UserType {
+public class StringArrayType implements UserType {
 
-	protected static final int SQL_TYPE = Types.ARRAY;
+	protected static final int[] SQL_TYPES = {Types.ARRAY};
 
 	@Override
 	public int[] sqlTypes() {
-		return new int[] {SQL_TYPE};
+		return SQL_TYPES;
 	}
 
 	@Override
 	public Class<?> returnedClass() {
-		return int[].class;
+		return String[].class;
 	}
 
 	@Override
 	public boolean equals(Object x, Object y) throws HibernateException {
-		return x == null ? y == null : x.equals(y);
+		return false;
 	}
 
 	@Override
-	public int hashCode(Object value) throws HibernateException {
-		return (value == null) ? 0 : value.hashCode();
+	public int hashCode(Object x) throws HibernateException {
+		return x.hashCode();
 	}
 
 	@Override
@@ -42,25 +41,24 @@ public class IntArrayType implements UserType {
 		if (rsArray == null) {
 			return null;
 		}
-		Integer[] array = (Integer[]) rsArray.getArray();
-		return ArrayUtils.toPrimitive(array);
+		String[] array = (String[]) rsArray.getArray();
+		return array;
 	}
 
 	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
 		if (value == null) {
-			st.setNull(index, SQL_TYPE);
+			st.setNull(index, SQL_TYPES[0]);
 		} else {
-			int[] castObject = (int[]) value;
-			Integer[] integers = ArrayUtils.toObject(castObject);
-			Array array = session.connection().createArrayOf("integer", integers);
+			String[] castObject = (String[]) value;
+			Array array = session.connection().createArrayOf("text", castObject);
 			st.setArray(index, array);
 		}
 	}
 
 	@Override
 	public Object deepCopy(Object value) throws HibernateException {
-		return (value == null) ? null : ((int[]) value).clone();
+		return value;
 	}
 
 	@Override

@@ -4,10 +4,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eki.common.constant.GlobalConstant;
-import eki.ekilex.constant.SystemConstant;
+import eki.common.constant.LoaderConstant;
 import eki.ekilex.service.LoaderConfService;
 
-public abstract class AbstractLoader implements SystemConstant, GlobalConstant {
+public abstract class AbstractLoader implements LoaderConstant, GlobalConstant {
 
 	abstract void execute(String[] args);
 

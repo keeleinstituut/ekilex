@@ -1,6 +1,6 @@
-package eki.ekilex.constant;
+package eki.common.constant;
 
-public interface SystemConstant {
+public interface LoaderConstant {
 
 	char CSV_SEPARATOR = '\u0009';//tab
 

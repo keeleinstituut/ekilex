@@ -1,11 +1,11 @@
-package eki.ekilex.data.util;
+package eki.common.data.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import eki.ekilex.data.transport.TableColumn;
+import eki.common.data.transport.TableColumn;
 
 public class TableColumnRowMapper extends AbstractRowMapper implements RowMapper<TableColumn> {
 

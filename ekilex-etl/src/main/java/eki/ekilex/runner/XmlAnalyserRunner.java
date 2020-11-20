@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.service.AbstractLoaderCommons;
+
 @Component
 public class XmlAnalyserRunner extends AbstractLoaderCommons {
 

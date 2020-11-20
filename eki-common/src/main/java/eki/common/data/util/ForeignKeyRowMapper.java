@@ -1,11 +1,11 @@
-package eki.ekilex.data.util;
+package eki.common.data.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
 
-import eki.ekilex.data.transport.ForeignKey;
+import eki.common.data.transport.ForeignKey;
 
 public class ForeignKeyRowMapper extends AbstractRowMapper implements RowMapper<ForeignKey> {
 

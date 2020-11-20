@@ -60,6 +60,7 @@
         <table class="table table-striped m-0 p-0 table-hover" th:if="${hasLabel}">
           <th:block th:each="classifier,classifierIter : ${classifiers}">
             <tr th:if="${classifierIter.first}">
+              <th class="m-1 p-1" style="width: 5%">järjekord</th>
               <th class="m-1 p-1">kood</th>
               <th class="m-1 p-1">keel</th>
               <th class="m-1 p-1"
@@ -69,6 +70,11 @@
               <th class="m-1 p-1"></th>
             </tr>
             <tr th:name="${classifier.code}">
+              <td class="m-1 p-1">
+                <input type="text" class="form-control" disabled
+                       name="classifierOrder"
+                       th:value="${classifier.order}">
+              </td>
               <td class="m-1 p-1">
                 <span th:text="${classifier.code}"></span>
               </td>
@@ -98,9 +104,8 @@
                   <button type="button" class="btn btn-secondary btn-compact" title="Lisa ette"
                           name="addCodeBtn"
                           data-toggle="modal"
-                          data-create-before-existing="true"
                           th:data-target="${'#addClassifierCodeDlg'}"
-                          th:data-classif-code="${classifier.code}">Lisa uus kood ette
+                          th:data-classif-order="${classifier.order}">Lisa uus kood ette
                   </button>
                 </div>
                 <div>
@@ -117,9 +122,8 @@
                   <button type="button" class="btn btn-secondary btn-compact" title="Lisa järele"
                           name="addCodeBtn"
                           data-toggle="modal"
-                          data-create-before-existing="false"
                           th:data-target="${'#addClassifierCodeDlg'}"
-                          th:data-classif-code="${classifier.code}">Lisa uus kood järele
+                          th:data-classif-order="${classifier.order + 1}">Lisa uus kood järele
                   </button>
                 </div>
                 <div>

@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import eki.common.service.AbstractLoaderCommons;
+
 @Component
 public class AudioFileUpdaterRunner extends AbstractLoaderCommons implements InitializingBean {
 

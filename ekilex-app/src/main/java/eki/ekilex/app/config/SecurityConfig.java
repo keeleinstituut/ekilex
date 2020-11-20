@@ -1,4 +1,4 @@
-package eki.ekilex.config;
+package eki.ekilex.app.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;

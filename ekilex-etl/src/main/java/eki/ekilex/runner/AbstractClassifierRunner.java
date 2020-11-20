@@ -1,5 +1,8 @@
 package eki.ekilex.runner;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -22,16 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.LoaderConstant;
 import eki.common.constant.TableName;
-import eki.ekilex.constant.SystemConstant;
+import eki.common.service.XmlReader;
 import eki.ekilex.data.transform.Classifier;
 import eki.ekilex.data.transform.ClassifierMapping;
-import eki.ekilex.service.XmlReader;
 
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.apache.commons.lang3.StringUtils.defaultString;
-
-public abstract class AbstractClassifierRunner implements InitializingBean, SystemConstant, GlobalConstant, TableName {
+public abstract class AbstractClassifierRunner implements InitializingBean, LoaderConstant, GlobalConstant, TableName {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractClassifierRunner.class);
 

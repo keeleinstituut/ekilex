@@ -21,11 +21,9 @@ function initializeClassifiers() {
 	});
 
 	$(document).on('show.bs.modal', "#addClassifierCodeDlg", function(e) {
-		let classifierCode = $(e.relatedTarget).attr('data-classif-code');
-		let createBeforeExisting = $(e.relatedTarget).attr('data-create-before-existing');
+		let classifierOrder = $(e.relatedTarget).data('classif-order');
 		let form = $(this).find('form');
-		form.find('input[name=existingClassifierCode]').val(classifierCode);
-		form.find('input[name=createBeforeExisting]').val(createBeforeExisting);
+		form.find('input[name=order]').val(classifierOrder);
 	});
 
 	$(document).on("click", ":button[name='editClassifBtn']", function() {
@@ -52,11 +50,12 @@ function initializeClassifiers() {
 
 	$(document).on("click", ":button[name='saveRowBtn']", function() {
 		let saveRowBtn = $(this);
-		let classifierCode = saveRowBtn.attr('data-classif-code')
-		let classifierName = saveRowBtn.attr('data-classif-name')
-		let domainOriginCode = saveRowBtn.attr('data-domain-origin')
+		let classifierCode = saveRowBtn.attr('data-classif-code');
+		let classifierName = saveRowBtn.attr('data-classif-name');
+		let domainOriginCode = saveRowBtn.attr('data-domain-origin');
 		let activeRow = saveRowBtn.closest('tr');
-		let labelValueInputs = activeRow.find('input[name="labelValue"]')
+		let labelValueInputs = activeRow.find('input[name="labelValue"]');
+		let order = activeRow.find('input[name="classifierOrder"]').val()
 		let classifLabels = [];
 
 		labelValueInputs.each(function(index, input) {
@@ -75,9 +74,17 @@ function initializeClassifiers() {
 			classifLabels.push(classifLabel);
 		});
 
+		let classifierFull = {
+			name: classifierName,
+			origin: domainOriginCode,
+			code: classifierCode,
+			order: order,
+			labels: classifLabels
+		}
+
 		$.ajax({
 			url: applicationUrl + 'update_classifier',
-			data: JSON.stringify(classifLabels),
+			data: JSON.stringify(classifierFull),
 			method: 'POST',
 			contentType: 'application/json'
 		}).done(function() {
@@ -99,8 +106,9 @@ function initializeClassifiers() {
 
 		$.ajax({
 			url: form.attr('action'),
-			data: form.serialize(),
+			data: JSON.stringify(form.serializeJSON()),
 			method: 'POST',
+			contentType: 'application/json'
 		}).done(function(response) {
 			if (response === "OK") {
 				location.reload();
@@ -120,16 +128,17 @@ function deleteClassifier() {
 	let classifierName = $(this).attr("data-classif-name");
 	let domainOriginCode = $(this).attr("data-domain-origin");
 
-	let deleteData = {
-		classifierCode: classifierCode,
-		classifierName: classifierName,
-		domainOriginCode: domainOriginCode
+	let classifierFull = {
+		code: classifierCode,
+		name: classifierName,
+		origin: domainOriginCode
 	}
 
 	$.ajax({
 		url: applicationUrl + 'delete_classifier',
-		data: deleteData,
+		data: JSON.stringify(classifierFull),
 		method: 'POST',
+		contentType: 'application/json'
 	}).done(function(response) {
 		if (response === "OK") {
 			location.reload();
