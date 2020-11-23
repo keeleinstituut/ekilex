@@ -26,6 +26,14 @@ public interface ApiConstant {
 
 	String PARADIGM_URI = "/paradigm";
 
+	String FREQ_CORP_URI = "/freq_corp";
+
+	String FORM_FREQ_URI = "/form_freq";
+
+	String MORPH_FREQ_URI = "/morph_freq";
+
+	String WORD_FREQ_URI = "/word_freq";
+
 	String DETAILS_URI = "/details";
 
 	String SEARCH_URI = "/search";

@@ -420,3 +420,94 @@ where value_prese != trim(regexp_replace(regexp_replace(replace(value_prese, '&n
 
 -- paradigm comment
 alter table paradigm rename column example to comment;
+
+---------------
+-- sagedused --
+---------------
+
+create table freq_corp
+(
+  id bigserial primary key,
+  name text not null,
+  corp_date date,
+  unique(name)
+);
+alter sequence freq_corp_id_seq restart with 10000;
+
+create table form_freq
+(
+  id bigserial primary key,
+  freq_corp_id bigint references freq_corp(id) on delete cascade not null,
+  form_id bigint references form(id) on delete cascade not null,
+  value numeric(12, 7) not null,
+  rank bigint not null,
+  unique(freq_corp_id, form_id)
+);
+alter sequence form_freq_id_seq restart with 10000;
+
+create table morph_freq
+(
+  id bigserial primary key,
+  freq_corp_id bigint references freq_corp(id) on delete cascade not null,
+  morph_code varchar(100) references morph(code) not null,
+  value numeric(12, 7) not null,
+  rank bigint not null,
+  unique(freq_corp_id, morph_code)
+);
+alter sequence morph_freq_id_seq restart with 10000;
+
+create table word_freq
+(
+  id bigserial primary key,
+  freq_corp_id bigint references freq_corp(id) on delete cascade not null,
+  word_id bigint references word(id) on delete cascade not null,
+  value numeric(12, 7) not null,
+  rank bigint not null,
+  unique(freq_corp_id, word_id)
+);
+alter sequence word_freq_id_seq restart with 10000;
+
+create index form_freq_corp_id_idx on form_freq(freq_corp_id);
+create index form_freq_form_id_idx on form_freq(form_id);
+create index morph_freq_corp_id_idx on morph_freq(freq_corp_id);
+create index morph_freq_morph_code_idx on morph_freq(morph_code);
+create index word_freq_corp_id_idx on word_freq(freq_corp_id);
+create index word_freq_word_id_idx on word_freq(word_id);
+
+-- olemasolevate vormi sageduste migra
+insert into freq_corp
+(
+  name,
+  corp_date
+)
+values
+(
+  'enc17-formfreq',
+  '2017-01-01'
+);
+
+insert into form_freq
+(
+  freq_corp_id,
+  form_id,
+  value,
+  rank
+)
+(select (select id
+         from freq_corp
+         where name = 'enc17-formfreq'),
+       f.id,
+       ff.value,
+       ff.rank
+from word w
+  inner join paradigm p on p.word_id = w.id
+  inner join form f on f.paradigm_id = p.id and f.display_level > 0
+  inner join form_frequency ff on ff.source_name = 'enc17-formfreq' and ff.word_value = w.value and ff.form_value = f.value and ff.morph_code = f.morph_code
+where exists (select l.id
+              from lexeme as l,
+                   dataset ds
+              where l.word_id = w.id
+              and   l.type = 'PRIMARY'
+              and   l.is_public = true
+              and   ds.code = l.dataset_code
+              and   ds.is_public = true));

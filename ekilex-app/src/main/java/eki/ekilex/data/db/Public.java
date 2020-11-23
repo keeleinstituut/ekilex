@@ -30,9 +30,11 @@ import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.FrequencyGroup;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
@@ -74,6 +76,7 @@ import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Morph;
+import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
@@ -121,6 +124,7 @@ import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -167,7 +171,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 338743055;
+    private static final long serialVersionUID = 1719758755;
 
     /**
      * The reference instance of <code>public</code>
@@ -305,6 +309,11 @@ public class Public extends SchemaImpl {
     public final Form FORM = Form.FORM;
 
     /**
+     * The table <code>public.form_freq</code>.
+     */
+    public final FormFreq FORM_FREQ = FormFreq.FORM_FREQ;
+
+    /**
      * The table <code>public.form_frequency</code>.
      */
     public final FormFrequency FORM_FREQUENCY = FormFrequency.FORM_FREQUENCY;
@@ -318,6 +327,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.freeform_source_link</code>.
      */
     public final FreeformSourceLink FREEFORM_SOURCE_LINK = FreeformSourceLink.FREEFORM_SOURCE_LINK;
+
+    /**
+     * The table <code>public.freq_corp</code>.
+     */
+    public final FreqCorp FREQ_CORP = FreqCorp.FREQ_CORP;
 
     /**
      * The table <code>public.frequency_group</code>.
@@ -523,6 +537,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.morph</code>.
      */
     public final Morph MORPH = Morph.MORPH;
+
+    /**
+     * The table <code>public.morph_freq</code>.
+     */
+    public final MorphFreq MORPH_FREQ = MorphFreq.MORPH_FREQ;
 
     /**
      * The table <code>public.morph_label</code>.
@@ -760,6 +779,11 @@ public class Public extends SchemaImpl {
     public final WordFreeform WORD_FREEFORM = WordFreeform.WORD_FREEFORM;
 
     /**
+     * The table <code>public.word_freq</code>.
+     */
+    public final WordFreq WORD_FREQ = WordFreq.WORD_FREQ;
+
+    /**
      * The table <code>public.word_group</code>.
      */
     public final WordGroup WORD_GROUP = WordGroup.WORD_GROUP;
@@ -856,6 +880,7 @@ public class Public extends SchemaImpl {
             Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
             Sequences.FEEDBACK_LOG_COMMENT_ID_SEQ,
             Sequences.FEEDBACK_LOG_ID_SEQ,
+            Sequences.FORM_FREQ_ID_SEQ,
             Sequences.FORM_FREQUENCY_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_ORDER_BY_SEQ,
@@ -863,6 +888,7 @@ public class Public extends SchemaImpl {
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.FREQ_CORP_ID_SEQ,
             Sequences.FREQUENCY_GROUP_ORDER_BY_SEQ,
             Sequences.GAME_NONWORD_ID_SEQ,
             Sequences.GENDER_ORDER_BY_SEQ,
@@ -908,6 +934,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
             Sequences.MEANING_SEMANTIC_TYPE_ID_SEQ,
             Sequences.MEANING_SEMANTIC_TYPE_ORDER_BY_SEQ,
+            Sequences.MORPH_FREQ_ID_SEQ,
             Sequences.MORPH_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
             Sequences.POS_GROUP_ORDER_BY_SEQ,
@@ -933,6 +960,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_ETYMOLOGY_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.WORD_FREEFORM_ID_SEQ,
             Sequences.WORD_FREEFORM_ORDER_BY_SEQ,
+            Sequences.WORD_FREQ_ID_SEQ,
             Sequences.WORD_GROUP_ID_SEQ,
             Sequences.WORD_GROUP_MEMBER_ID_SEQ,
             Sequences.WORD_GROUP_MEMBER_ORDER_BY_SEQ,
@@ -977,9 +1005,11 @@ public class Public extends SchemaImpl {
             FeedbackLog.FEEDBACK_LOG,
             FeedbackLogComment.FEEDBACK_LOG_COMMENT,
             Form.FORM,
+            FormFreq.FORM_FREQ,
             FormFrequency.FORM_FREQUENCY,
             Freeform.FREEFORM,
             FreeformSourceLink.FREEFORM_SOURCE_LINK,
+            FreqCorp.FREQ_CORP,
             FrequencyGroup.FREQUENCY_GROUP,
             GameNonword.GAME_NONWORD,
             Gender.GENDER,
@@ -1021,6 +1051,7 @@ public class Public extends SchemaImpl {
             MeaningRelation.MEANING_RELATION,
             MeaningSemanticType.MEANING_SEMANTIC_TYPE,
             Morph.MORPH,
+            MorphFreq.MORPH_FREQ,
             MorphLabel.MORPH_LABEL,
             Paradigm.PARADIGM,
             Pos.POS,
@@ -1068,6 +1099,7 @@ public class Public extends SchemaImpl {
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,
             WordFreeform.WORD_FREEFORM,
+            WordFreq.WORD_FREQ,
             WordGroup.WORD_GROUP,
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,

@@ -26,7 +26,7 @@ public class MorphologyService {
 	private MorphologyDbService morphologyDbService;
 
 	@Transactional
-	public void replace(ParadigmWrapper paradigmWrapper) throws Exception {
+	public void replace(ParadigmWrapper paradigmWrapper) {
 
 		if (paradigmWrapper == null) {
 			return;

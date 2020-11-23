@@ -120,6 +120,11 @@ public class Sequences {
     public static final Sequence<Long> FEEDBACK_LOG_ID_SEQ = Internal.createSequence("feedback_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.form_freq_id_seq</code>
+     */
+    public static final Sequence<Long> FORM_FREQ_ID_SEQ = Internal.createSequence("form_freq_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.form_frequency_id_seq</code>
      */
     public static final Sequence<Long> FORM_FREQUENCY_ID_SEQ = Internal.createSequence("form_frequency_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -153,6 +158,11 @@ public class Sequences {
      * The sequence <code>public.freeform_source_link_order_by_seq</code>
      */
     public static final Sequence<Long> FREEFORM_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("freeform_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.freq_corp_id_seq</code>
+     */
+    public static final Sequence<Long> FREQ_CORP_ID_SEQ = Internal.createSequence("freq_corp_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.frequency_group_order_by_seq</code>
@@ -380,6 +390,11 @@ public class Sequences {
     public static final Sequence<Long> MEANING_SEMANTIC_TYPE_ORDER_BY_SEQ = Internal.createSequence("meaning_semantic_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.morph_freq_id_seq</code>
+     */
+    public static final Sequence<Long> MORPH_FREQ_ID_SEQ = Internal.createSequence("morph_freq_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.morph_order_by_seq</code>
      */
     public static final Sequence<Long> MORPH_ORDER_BY_SEQ = Internal.createSequence("morph_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -503,6 +518,11 @@ public class Sequences {
      * The sequence <code>public.word_freeform_order_by_seq</code>
      */
     public static final Sequence<Long> WORD_FREEFORM_ORDER_BY_SEQ = Internal.createSequence("word_freeform_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_freq_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_FREQ_ID_SEQ = Internal.createSequence("word_freq_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_group_id_seq</code>

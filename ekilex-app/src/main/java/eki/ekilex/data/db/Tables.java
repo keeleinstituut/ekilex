@@ -30,9 +30,11 @@ import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.FrequencyGroup;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
@@ -74,6 +76,7 @@ import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Morph;
+import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
@@ -121,6 +124,7 @@ import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -272,6 +276,11 @@ public class Tables {
     public static final Form FORM = Form.FORM;
 
     /**
+     * The table <code>public.form_freq</code>.
+     */
+    public static final FormFreq FORM_FREQ = FormFreq.FORM_FREQ;
+
+    /**
      * The table <code>public.form_frequency</code>.
      */
     public static final FormFrequency FORM_FREQUENCY = FormFrequency.FORM_FREQUENCY;
@@ -285,6 +294,11 @@ public class Tables {
      * The table <code>public.freeform_source_link</code>.
      */
     public static final FreeformSourceLink FREEFORM_SOURCE_LINK = FreeformSourceLink.FREEFORM_SOURCE_LINK;
+
+    /**
+     * The table <code>public.freq_corp</code>.
+     */
+    public static final FreqCorp FREQ_CORP = FreqCorp.FREQ_CORP;
 
     /**
      * The table <code>public.frequency_group</code>.
@@ -490,6 +504,11 @@ public class Tables {
      * The table <code>public.morph</code>.
      */
     public static final Morph MORPH = Morph.MORPH;
+
+    /**
+     * The table <code>public.morph_freq</code>.
+     */
+    public static final MorphFreq MORPH_FREQ = MorphFreq.MORPH_FREQ;
 
     /**
      * The table <code>public.morph_label</code>.
@@ -725,6 +744,11 @@ public class Tables {
      * The table <code>public.word_freeform</code>.
      */
     public static final WordFreeform WORD_FREEFORM = WordFreeform.WORD_FREEFORM;
+
+    /**
+     * The table <code>public.word_freq</code>.
+     */
+    public static final WordFreq WORD_FREQ = WordFreq.WORD_FREQ;
 
     /**
      * The table <code>public.word_group</code>.

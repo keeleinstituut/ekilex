@@ -711,6 +711,7 @@ create table form
 );
 alter sequence form_id_seq restart with 10000;
 
+-- TODO remove
 create table form_frequency
 (
   id bigserial primary key,
@@ -879,6 +880,7 @@ create table lexeme_tag
 );
 alter sequence lexeme_tag_id_seq restart with 10000;
 
+-- TODO remove?
 create table lexeme_frequency
 (
   id bigserial primary key,
@@ -1047,6 +1049,48 @@ create table word_etymology_source_link
   order_by bigserial
 );
 alter sequence word_etymology_source_link_id_seq restart with 10000;
+
+create table freq_corp
+(
+  id bigserial primary key,
+  name text not null,
+  corp_date date,
+  unique(name)
+);
+alter sequence freq_corp_id_seq restart with 10000;
+
+create table form_freq
+(
+  id bigserial primary key,
+  freq_corp_id bigint references freq_corp(id) on delete cascade not null,
+  form_id bigint references form(id) on delete cascade not null,
+  value numeric(12, 7) not null,
+  rank bigint not null,
+  unique(freq_corp_id, form_id)
+);
+alter sequence form_freq_id_seq restart with 10000;
+
+create table morph_freq
+(
+  id bigserial primary key,
+  freq_corp_id bigint references freq_corp(id) on delete cascade not null,
+  morph_code varchar(100) references morph(code) not null,
+  value numeric(12, 7) not null,
+  rank bigint not null,
+  unique(freq_corp_id, morph_code)
+);
+alter sequence morph_freq_id_seq restart with 10000;
+
+create table word_freq
+(
+  id bigserial primary key,
+  freq_corp_id bigint references freq_corp(id) on delete cascade not null,
+  word_id bigint references word(id) on delete cascade not null,
+  value numeric(12, 7) not null,
+  rank bigint not null,
+  unique(freq_corp_id, word_id)
+);
+alter sequence word_freq_id_seq restart with 10000;
 
 create table activity_log
 (
@@ -1288,6 +1332,12 @@ create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
 create index lexeme_region_lexeme_id_idx on lexeme_region(lexeme_id);
 create index meaning_domain_meaning_id_idx on meaning_domain(meaning_id);
 create index meaning_semantic_type_meaning_id_idx on meaning_semantic_type(meaning_id);
+create index form_freq_corp_id_idx on form_freq(freq_corp_id);
+create index form_freq_form_id_idx on form_freq(form_id);
+create index morph_freq_corp_id_idx on morph_freq(freq_corp_id);
+create index morph_freq_morph_code_idx on morph_freq(morph_code);
+create index word_freq_corp_id_idx on word_freq(freq_corp_id);
+create index word_freq_word_id_idx on word_freq(word_id);
 create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
 create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);
 create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meaning_id);
