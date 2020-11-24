@@ -695,6 +695,37 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
+	public Condition applyLexemeGovernmentFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.LEXEME_GOVERNMENT))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		Freeform ff = FREEFORM.as("ff");
+		Condition lexFreeformCondition = lff.LEXEME_ID.eq(lexemeIdField)
+				.and(lff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(FreeformType.GOVERNMENT.name()));
+
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.LEXEME_GOVERNMENT, filteredCriteria);
+		if (isNotExistsSearch) {
+			condition = condition.and(DSL.notExists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
+			return condition;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			if (criterion.getSearchValue() != null) {
+				lexFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, lexFreeformCondition, true);
+			}
+		}
+		condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
+		return condition;
+	}
+
 	public Condition applyPublicityFilters(List<SearchCriterion> searchCriteria, Field<Boolean> lexemeIsPublicField, Condition condition) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()

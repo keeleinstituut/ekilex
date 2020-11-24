@@ -113,7 +113,7 @@ function initialiseDetailSearch() {
 
 	$(document).on("change", "select[name$='searchOperand']", function() {
 
-		const textTypeSearchKeys = ["SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "OD_RECOMMENDATION"];
+		const textTypeSearchKeys = ["SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "OD_RECOMMENDATION"];
 		const selectTypeSearchKeys = ["DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE"];
 		const nonValueSearchOperands = ["NOT_EXISTS", "EXISTS", "SINGLE", "MULTIPLE"];
 

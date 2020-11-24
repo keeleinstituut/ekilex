@@ -105,7 +105,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria,
 						SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY, SearchKey.LEXEME_FREQUENCY, SearchKey.LEXEME_GRAMMAR,
-						SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
+						SearchKey.LEXEME_GOVERNMENT, SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
 				if (containsSearchKeys) {
 					Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
 					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
@@ -114,6 +114,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, l1.IS_PUBLIC, where1);
 					where1 = searchFilterHelper.applyLexemeFrequencyFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeGrammarFilters(searchCriteria, l1.ID, where1);
+					where1 = searchFilterHelper.applyLexemeGovernmentFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where1);
