@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.MORPH_FREQ;
 import static eki.ekilex.data.db.Tables.WORD_FREQ;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.api.FormFreq;
 import eki.ekilex.data.api.FreqCorp;
+import eki.ekilex.data.api.FreqCorpId;
 import eki.ekilex.data.api.MorphFreq;
 import eki.ekilex.data.api.WordFreq;
 
@@ -21,6 +23,10 @@ public class CorpFrequencyDbService {
 
 	@Autowired
 	private DSLContext create;
+
+	public List<FreqCorpId> getFreqCorps() {
+		return create.selectFrom(FREQ_CORP).orderBy(FREQ_CORP.CORP_DATE).fetchInto(FreqCorpId.class);
+	}
 
 	public Long createCorpFreq(FreqCorp freqCorp) {
 		return create

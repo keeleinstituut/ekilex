@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.api.FormFreq;
 import eki.ekilex.data.api.FreqCorp;
+import eki.ekilex.data.api.FreqCorpId;
 import eki.ekilex.data.api.MorphFreq;
 import eki.ekilex.data.api.WordFreq;
 import eki.ekilex.service.db.CorpFrequencyDbService;
@@ -18,6 +19,11 @@ public class CorpFrequencyService {
 
 	@Autowired
 	private CorpFrequencyDbService corpFrequencyDbService;
+
+	@Transactional
+	public List<FreqCorpId> getFreqCorps() {
+		return corpFrequencyDbService.getFreqCorps();
+	}
 
 	@Transactional
 	public Long createFreqCorp(FreqCorp freqCorp) {
