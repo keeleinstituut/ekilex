@@ -3,8 +3,9 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FORM_FREQUENCY;
+import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
@@ -23,12 +24,15 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.WORD_FREQ;
+import static eki.ekilex.data.db.Tables.MORPH_FREQ;
 
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Param;
 import org.jooq.Record16;
 import org.jooq.Record8;
 import org.jooq.Table;
@@ -50,6 +54,9 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Dataset;
+import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FormFreq;
+import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -57,10 +64,14 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MorphFreq;
+import eki.ekilex.data.db.tables.MorphLabel;
+import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -121,50 +132,83 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.select(word.ID.as("word_id"))
 				.from(word)
 				.where(where)
-				.groupBy(word.ID)
+				//.groupBy(word.ID)
 				.asTable("w");
 
 		return create.fetchCount(w);
 	}
 
-	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<ParadigmFormTuple> getParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
-		Field<String[]> ffreq = DSL
-				.select(DSL.arrayAgg(DSL.concat(
-						FORM_FREQUENCY.SOURCE_NAME, DSL.val(" - "),
-						FORM_FREQUENCY.RANK, DSL.val(" - "),
-						FORM_FREQUENCY.VALUE)))
-				.from(FORM_FREQUENCY)
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
+		MorphLabel ml = MORPH_LABEL.as("ml");
+		FreqCorp fc = FREQ_CORP.as("fc");
+		FreqCorp fca = FREQ_CORP.as("fca");
+		MorphFreq mf = MORPH_FREQ.as("mf");
+		MorphFreq mfa = MORPH_FREQ.as("mfa");
+		FormFreq ff = FORM_FREQ.as("ff");
+		FormFreq ffa = FORM_FREQ.as("ffa");
+
+		final Param<String> freqFieldSep = DSL.val(" - ");
+
+		Field<String> mff = DSL
+				.select(DSL.concat(fc.NAME, freqFieldSep, mf.RANK, freqFieldSep, mf.VALUE))
+				.from(fc, mf)
 				.where(
-						FORM_FREQUENCY.WORD_VALUE.eq(wordValue)
-								.and(FORM_FREQUENCY.FORM_VALUE.eq(FORM.VALUE))
-								.and(FORM_FREQUENCY.MORPH_CODE.eq(FORM.MORPH_CODE)))
+						mf.MORPH_CODE.eq(f.MORPH_CODE)
+								.and(mf.FREQ_CORP_ID.eq(fc.ID))
+								.and(fc.ID.eq(DSL
+										.select(fca.ID)
+										.from(fca, mfa)
+										.where(
+												mfa.MORPH_CODE.eq(mf.MORPH_CODE)
+														.and(mfa.FREQ_CORP_ID.eq(fca.ID)))
+										.orderBy(fca.CORP_DATE.desc())
+										.limit(1))))
 				.asField();
+
+		Field<String> fff = DSL
+				.select(DSL.concat(fc.NAME, freqFieldSep, ff.RANK, freqFieldSep, ff.VALUE))
+				.from(fc, ff)
+				.where(
+						ff.FORM_ID.eq(f.ID)
+								.and(ff.FREQ_CORP_ID.eq(fc.ID))
+								.and(fc.ID.eq(DSL
+										.select(fca.ID)
+										.from(fca, ffa)
+										.where(
+												ffa.FORM_ID.eq(ff.FORM_ID)
+														.and(ffa.FREQ_CORP_ID.eq(fca.ID)))
+										.orderBy(fca.CORP_DATE.desc())
+										.limit(1))))
+				.asField();		
 
 		return create
 				.select(
-						PARADIGM.ID.as("paradigm_id"),
-						PARADIGM.COMMENT.as("paradigm_comment"),
-						PARADIGM.INFLECTION_TYPE_NR,
-						FORM.ID.as("form_id"),
-						FORM.VALUE.as("form_value"),
-						FORM.VALUE_PRESE.as("form_value_prese"),
-						FORM.MODE,
-						FORM.COMPONENTS,
-						FORM.DISPLAY_FORM,
-						FORM.VOCAL_FORM,
-						FORM.MORPH_CODE,
-						MORPH_LABEL.VALUE.as("morph_value"),
-						ffreq.as("form_frequencies"),
-						FORM.ORDER_BY.as("form_order_by"))
-				.from(PARADIGM, FORM, MORPH_LABEL)
+						p.ID.as("paradigm_id"),
+						p.COMMENT.as("paradigm_comment"),
+						p.INFLECTION_TYPE_NR,
+						f.ID.as("form_id"),
+						f.VALUE.as("form_value"),
+						f.VALUE_PRESE.as("form_value_prese"),
+						f.MODE,
+						f.COMPONENTS,
+						f.DISPLAY_FORM,
+						f.VOCAL_FORM,
+						f.MORPH_CODE,
+						ml.VALUE.as("morph_value"),
+						mff.as("morph_frequency"),
+						fff.as("form_frequency"),
+						f.ORDER_BY.as("form_order_by"))
+				.from(p, f, ml)
 				.where(
-						PARADIGM.WORD_ID.eq(wordId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(MORPH_LABEL.CODE.eq(FORM.MORPH_CODE))
-								.and(MORPH_LABEL.LANG.eq(classifierLabelLang))
-								.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(PARADIGM.ID, FORM.ORDER_BY)
+						p.WORD_ID.eq(wordId)
+								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(ml.CODE.eq(f.MORPH_CODE))
+								.and(ml.LANG.eq(classifierLabelLang))
+								.and(ml.TYPE.eq(classifierLabelTypeCode)))
+				.orderBy(p.ID, f.ORDER_BY)
 				.fetchInto(ParadigmFormTuple.class);
 	}
 
@@ -349,8 +393,29 @@ public class LexSearchDbService extends AbstractDataDbService {
 	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");
+		FreqCorp fc = FREQ_CORP.as("fc");
+		FreqCorp fca = FREQ_CORP.as("fca");
+		WordFreq wf = WORD_FREQ.as("wf");
+		WordFreq wfa = WORD_FREQ.as("wfa");
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
+
+		final Param<String> freqFieldSep = DSL.val(" - ");
+		Field<String> wff = DSL
+				.select(DSL.concat(fc.NAME, freqFieldSep, wf.RANK, freqFieldSep, wf.VALUE))
+				.from(fc, wf)
+				.where(
+						wf.WORD_ID.eq(w.ID)
+								.and(wf.FREQ_CORP_ID.eq(fc.ID))
+								.and(fc.ID.eq(DSL
+										.select(fca.ID)
+										.from(fca, wfa)
+										.where(
+												wfa.WORD_ID.eq(wf.WORD_ID)
+														.and(wfa.FREQ_CORP_ID.eq(fca.ID)))
+										.orderBy(fca.CORP_DATE.desc())
+										.limit(1))))
+				.asField();
 
 		Field<String[]> wtf = getWordTypesField(w.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
@@ -377,6 +442,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.GENDER_CODE,
 						w.ASPECT_CODE,
 						w.DISPLAY_MORPH_CODE,
+						wff.as("word_frequency"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
@@ -626,7 +692,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w1.ASPECT_CODE)
 				.from(w1)
 				.where(where)
-				.groupBy(w1.ID)
+				//.groupBy(w1.ID)
 				.asTable("w");
 
 		Field<String[]> wtf = getWordTypesField(w.field("word_id", Long.class));

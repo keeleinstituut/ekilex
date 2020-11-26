@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import eki.common.constant.FormMode;
@@ -30,7 +28,9 @@ public class Form extends AbstractDataObject {
 
 	private String morphValue;
 
-	private List<String> formFrequencies;
+	private String morphFrequency;
+
+	private String formFrequency;
 
 	private boolean isDisplayMorphCode;
 
@@ -109,12 +109,20 @@ public class Form extends AbstractDataObject {
 		this.morphValue = morphValue;
 	}
 
-	public List<String> getFormFrequencies() {
-		return formFrequencies;
+	public String getMorphFrequency() {
+		return morphFrequency;
 	}
 
-	public void setFormFrequencies(List<String> formFrequencies) {
-		this.formFrequencies = formFrequencies;
+	public void setMorphFrequency(String morphFrequency) {
+		this.morphFrequency = morphFrequency;
+	}
+
+	public String getFormFrequency() {
+		return formFrequency;
+	}
+
+	public void setFormFrequency(String formFrequency) {
+		this.formFrequency = formFrequency;
 	}
 
 	public boolean isDisplayMorphCode() {

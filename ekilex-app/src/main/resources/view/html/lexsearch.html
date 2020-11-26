@@ -46,7 +46,7 @@
                 <span class="fa fa-ellipsis-v"></span>
               </div>
               <div class="hover-actions-container hover-actions-container-outline">
-                <h1 th:id="${'word-value-' + wordId}" th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mb-0">Aktiivne sõna</h1>
+                <h1 th:id="${'word-value-' + wordId}" th:utext="${viewUtil.getWordValueMarkup(details.word)}" th:title="${details.word.wordFrequency}" class="mb-0">Aktiivne sõna</h1>
                 <div class="hover-actions hover-actions-bottom-right">
                   <button type="button" class="btn btn-compact btn-secondary"
                           title="Muuda"
@@ -250,10 +250,10 @@
                               <table>
                                 <tr th:each="form : ${paradigm.forms}">
                                   <td style="width: 200px" class="text-right pr-1">
-                                    <span th:text="${form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}" style="font-size: 80%; color: #999"></span>
+                                    <span th:if="${form.displayMorphCode}" th:text="${form.morphCode + ' - ' + form.morphValue}" th:title="${form.morphFrequency}" style="font-size: 80%; color: #999"></span>
                                   </td>
                                   <td class="pr-1">
-                                    <span th:utext="${form.valuePrese}" th:title="${form.formFrequencies}"></span>
+                                    <span th:utext="${form.valuePrese}" th:title="${form.formFrequency}"></span>
                                   </td>
                                   <td class="pr-1">
                                     <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>

@@ -3,11 +3,12 @@ package eki.ekilex.service.db.util;
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
@@ -16,11 +17,12 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,12 +53,13 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
+import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FreqCorp;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -69,6 +72,7 @@ import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
@@ -387,16 +391,110 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		WordWordType wwt = WORD_WORD_TYPE.as("wwt");
 		final String countFieldName = "cnt";
+		Table<Record1<Integer>> cntTbl = DSL
+				.select(DSL.count(wwt.ID).as(countFieldName))
+				.from(wwt)
+				.where(wwt.WORD_ID.eq(wordIdField))
+				.asTable("wwtcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			Table<Record1<Integer>> cntTbl = DSL
-					.select(DSL.count(wwt.ID).as(countFieldName))
-					.from(wwt)
-					.where(wwt.WORD_ID.eq(wordIdField))
-					.asTable("wwtcnt");
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
 			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
+		return where;
+	}
+
+	public Condition applyWordFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.FREQUENCY, SearchKey.RANK);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		FreqCorp fc = FREQ_CORP.as("fc");
+		WordFreq wf = WORD_FREQ.as("wf");
+		WordFreq wff = WORD_FREQ.as("wff");
+
+		Condition where1 = wf.WORD_ID.eq(wordIdField)
+				.and(wf.FREQ_CORP_ID.eq(DSL
+						.select(fc.ID)
+						.from(fc, wff)
+						.where(
+								wff.WORD_ID.eq(wf.WORD_ID)
+								.and(wff.FREQ_CORP_ID.eq(fc.ID)))
+						.orderBy(fc.CORP_DATE.desc())
+						.limit(1)));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchKey searchKey = criterion.getSearchKey();
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			String searchValue = criterion.getSearchValue().toString();
+			if (SearchKey.FREQUENCY.equals(searchKey)) {
+				BigDecimal searchValueDec = new BigDecimal(searchValue);
+				if (SearchOperand.GREATER_THAN.equals(searchOperand)) {
+					where1 = where1.and(wf.VALUE.ge(searchValueDec));
+				} else if (SearchOperand.LESS_THAN.equals(searchOperand)) {
+					where1 = where1.and(wf.VALUE.le(searchValueDec));
+				}
+			} else if (SearchKey.RANK.equals(searchKey)) {
+				Long searchValueLong = Long.valueOf(searchValue);
+				if (SearchOperand.GREATER_THAN.equals(searchOperand)) {
+					where1 = where1.and(wf.RANK.ge(searchValueLong));
+				} else if (SearchOperand.LESS_THAN.equals(searchOperand)) {
+					where1 = where1.and(wf.RANK.le(searchValueLong));
+				}
+			}
+		}
+
+		where = where.andExists(DSL.select(wf.ID).from(wf).where(where1));
+		return where;
+	}
+
+	public Condition applyFormFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> formIdField, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKeys(searchCriteria, SearchKey.FREQUENCY, SearchKey.RANK);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		FreqCorp fc = FREQ_CORP.as("fc");
+		FormFreq ff = FORM_FREQ.as("ff");
+		FormFreq fff = FORM_FREQ.as("fff");
+
+		Condition where1 = ff.FORM_ID.eq(formIdField)
+				.and(ff.FREQ_CORP_ID.eq(DSL
+						.select(fc.ID)
+						.from(fc, fff)
+						.where(
+								fff.FORM_ID.eq(ff.FORM_ID)
+								.and(fff.FREQ_CORP_ID.eq(fc.ID)))
+						.orderBy(fc.CORP_DATE.desc())
+						.limit(1)));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchKey searchKey = criterion.getSearchKey();
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			String searchValue = criterion.getSearchValue().toString();
+			if (SearchKey.FREQUENCY.equals(searchKey)) {
+				BigDecimal searchValueDec = new BigDecimal(searchValue);
+				if (SearchOperand.GREATER_THAN.equals(searchOperand)) {
+					where1 = where1.and(ff.VALUE.ge(searchValueDec));
+				} else if (SearchOperand.LESS_THAN.equals(searchOperand)) {
+					where1 = where1.and(ff.VALUE.le(searchValueDec));
+				}
+			} else if (SearchKey.RANK.equals(searchKey)) {
+				Long searchValueLong = Long.valueOf(searchValue);
+				if (SearchOperand.GREATER_THAN.equals(searchOperand)) {
+					where1 = where1.and(ff.RANK.ge(searchValueLong));
+				} else if (SearchOperand.LESS_THAN.equals(searchOperand)) {
+					where1 = where1.and(ff.RANK.le(searchValueLong));
+				}
+			}
+		}
+
+		where = where.andExists(DSL.select(ff.ID).from(ff).where(where1));
 		return where;
 	}
 
@@ -438,13 +536,13 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		LexemePos lpos = LEXEME_POS.as("lpos");
 		final String countFieldName = "cnt";
+		Table<Record1<Integer>> cntTbl = DSL
+				.select(DSL.count(lpos.ID).as(countFieldName))
+				.from(lpos)
+				.where(lpos.LEXEME_ID.eq(lexemeIdField))
+				.asTable("lposcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			Table<Record1<Integer>> cntTbl = DSL
-					.select(DSL.count(lpos.ID).as(countFieldName))
-					.from(lpos)
-					.where(lpos.LEXEME_ID.eq(lexemeIdField))
-					.asTable("lposcnt");
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
 			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
@@ -489,13 +587,13 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		LexemeRegister lreg = LEXEME_REGISTER.as("lreg");
 		final String countFieldName = "cnt";
+		Table<Record1<Integer>> cntTbl = DSL
+				.select(DSL.count(lreg.ID).as(countFieldName))
+				.from(lreg)
+				.where(lreg.LEXEME_ID.eq(lexemeIdField))
+				.asTable("lregcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			Table<Record1<Integer>> cntTbl = DSL
-					.select(DSL.count(lreg.ID).as(countFieldName))
-					.from(lreg)
-					.where(lreg.LEXEME_ID.eq(lexemeIdField))
-					.asTable("lregcnt");
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
 			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
@@ -512,13 +610,13 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		MeaningSemanticType mst = MEANING_SEMANTIC_TYPE.as("mst");
 		final String countFieldName = "cnt";
+		Table<Record1<Integer>> cntTbl = DSL
+				.select(DSL.count(mst.ID).as(countFieldName))
+				.from(mst)
+				.where(mst.MEANING_ID.eq(meaningIdField))
+				.asTable("mstcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			Table<Record1<Integer>> cntTbl = DSL
-					.select(DSL.count(mst.ID).as(countFieldName))
-					.from(mst)
-					.where(mst.MEANING_ID.eq(meaningIdField))
-					.asTable("mstcnt");
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
 			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
@@ -562,13 +660,13 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		MeaningDomain md = MEANING_DOMAIN.as("md");
 		final String countFieldName = "cnt";
+		Table<Record1<Integer>> cntTbl = DSL
+				.select(DSL.count(md.ID).as(countFieldName))
+				.from(md)
+				.where(md.MEANING_ID.eq(meaningIdField))
+				.asTable("mdcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			Table<Record1<Integer>> cntTbl = DSL
-					.select(DSL.count(md.ID).as(countFieldName))
-					.from(md)
-					.where(md.MEANING_ID.eq(meaningIdField))
-					.asTable("mdcnt");
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
 			where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
@@ -618,50 +716,6 @@ public class SearchFilterHelper implements GlobalConstant {
 			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
 		}
 		return whereItemCount;
-	}
-
-	public Condition applyLexemeFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.LEXEME_FREQUENCY)
-						&& (crit.getSearchOperand().equals(SearchOperand.GREATER_THAN) || crit.getSearchOperand().equals(SearchOperand.LESS_THAN))
-						&& crit.getSearchValue() != null)
-				.collect(toList());
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return condition;
-		}
-
-		LexemeFrequency lfr = LEXEME_FREQUENCY.as("lfr");
-		for (SearchCriterion criterion : filteredCriteria) {
-			SearchOperand searchOperand = criterion.getSearchOperand();
-			String rankValueStr = criterion.getSearchValue().toString();
-			rankValueStr = RegExUtils.replaceAll(rankValueStr, "[^0-9.]", "");
-			if (StringUtils.isEmpty(rankValueStr)) {
-				continue;
-			}
-
-			BigInteger rankValue = new BigInteger(rankValueStr);
-			boolean isGreaterThan = SearchOperand.GREATER_THAN.equals(searchOperand);
-
-			Table<Record1<BigInteger>> lr = DSL
-					.select(DSL.field("(array_agg(lfr.rank order by lfr.created_on desc))[1]", BigInteger.class).as("lex_rank"))
-					.from(lfr)
-					.where(lfr.LEXEME_ID.eq(lexemeIdField))
-					.groupBy(lfr.LEXEME_ID).asTable("lr");
-
-			Field<BigInteger> lexRankField = lr.field("lex_rank", BigInteger.class);
-
-			Condition compareCondition;
-			if (isGreaterThan) {
-				compareCondition = lexRankField.greaterThan(rankValue);
-			} else {
-				compareCondition = lexRankField.lessThan(rankValue);
-			}
-
-			condition = condition.and(DSL.exists(DSL.select(lexRankField).from(lr).where(compareCondition)));
-		}
-		return condition;
 	}
 
 	public Condition applyLexemeGrammarFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {

@@ -152,7 +152,8 @@ public class ConversionUtil implements GlobalConstant {
 			form.setVocalForm(tuple.getVocalForm());
 			form.setMorphCode(tuple.getMorphCode());
 			form.setMorphValue(tuple.getMorphValue());
-			form.setFormFrequencies(tuple.getFormFrequencies());
+			form.setMorphFrequency(tuple.getMorphFrequency());
+			form.setFormFrequency(tuple.getFormFrequency());
 			forms.add(form);
 		}
 		flagFormMorphCodes(paradigms);

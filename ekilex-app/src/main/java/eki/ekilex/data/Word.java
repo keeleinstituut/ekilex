@@ -28,6 +28,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String displayMorphCode;
 
+	private String wordFrequency;
+
 	private String[] wordTypeCodes;
 
 	private List<Classifier> wordTypes;
@@ -146,6 +148,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setDisplayMorphCode(String displayMorphCode) {
 		this.displayMorphCode = displayMorphCode;
+	}
+
+	public String getWordFrequency() {
+		return wordFrequency;
+	}
+
+	public void setWordFrequency(String wordFrequency) {
+		this.wordFrequency = wordFrequency;
 	}
 
 	@Override

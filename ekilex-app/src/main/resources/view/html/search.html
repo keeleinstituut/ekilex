@@ -175,6 +175,16 @@
                             th:text="#{'enum.complexity.' + ${complexity}}"></option>
                   </select>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'FREQUENCY'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'RANK'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
@@ -320,11 +330,6 @@
                             th:text="${register.value}">register</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_FREQUENCY'}">
-                  <input type="text" class="form-control"
-                         th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
-                </div>
                 <div class="col-auto">
                   <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
@@ -369,6 +374,12 @@
             </div>
           </div>
           <div id="searchValueTemplates" hidden>
+            <div name="FREQUENCY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
+            <div name="RANK" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
             <div name="VALUE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
@@ -510,9 +521,6 @@
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
               </select>
-            </div>
-            <div name="LEXEME_FREQUENCY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
             </div>
           </div>
         </div>

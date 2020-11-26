@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleLogOwner;
@@ -104,7 +105,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				}
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria,
-						SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY, SearchKey.LEXEME_FREQUENCY, SearchKey.LEXEME_GRAMMAR,
+						SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR,
 						SearchKey.LEXEME_GOVERNMENT, SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
 				if (containsSearchKeys) {
 					Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
@@ -112,7 +113,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeSourceNameFilter(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyPublicityFilters(searchCriteria, l1.IS_PUBLIC, where1);
-					where1 = searchFilterHelper.applyLexemeFrequencyFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeGrammarFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeGovernmentFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, where1);
@@ -154,6 +154,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyWordAspectFilters(searchCriteria, w1.ASPECT_CODE, where);
 				where = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordFrequencyFilters(searchCriteria, w1.ID, where);
 				where = applyWordActivityLogFilters(searchCriteria, w1.ID, where);
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
@@ -218,19 +219,15 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
-				Lexeme l1 = Lexeme.LEXEME.as("l1");
 				Paradigm p1 = Paradigm.PARADIGM.as("p1");
 				Form f1 = Form.FORM.as("f1");
-				Condition where2 = l1.WORD_ID.eq(w1.ID)
-						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-						.and(p1.WORD_ID.eq(w1.ID))
-						.and(f1.PARADIGM_ID.eq(p1.ID));
-				where2 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
-				Condition where1;
+				Condition where1 = p1.WORD_ID.eq(w1.ID).and(f1.PARADIGM_ID.eq(p1.ID)).and(f1.MODE.eq(FormMode.FORM.name()));
 
-				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where2, true);
-				where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
+				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
+				where1 = searchFilterHelper.applyFormFrequencyFilters(searchCriteria, f1.ID, where1);
+				where = where.andExists(DSL.select(f1.ID).from(p1, f1).where(where1));
 
+				//TODO form lang? really?
 				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
 				if (containsSearchKeys) {
 					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
@@ -239,12 +236,12 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 							searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
 
 					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, w1.LANG, where2, false);
-						where = where.andExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
+						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, w1.LANG, where1, false);
+						where = where.andExists(DSL.select(f1.ID).from(p1, f1).where(where1));
 					}
 					if (CollectionUtils.isNotEmpty(negativeContainsValueCriteria)) {
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, negativeContainsValueCriteria, w1.LANG, where2, false);
-						where = where.andNotExists(DSL.select(l1.ID).from(l1, p1, f1).where(where1));
+						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, negativeContainsValueCriteria, w1.LANG, where1, false);
+						where = where.andNotExists(DSL.select(f1.ID).from(p1, f1).where(where1));
 					}
 				}
 
