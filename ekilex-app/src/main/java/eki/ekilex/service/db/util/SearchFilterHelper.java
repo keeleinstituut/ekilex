@@ -14,6 +14,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -66,6 +67,7 @@ import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Source;
@@ -698,6 +700,42 @@ public class SearchFilterHelper implements GlobalConstant {
 			condition = condition.and(DSL.notExists(DSL.select(mst.ID).from(mst).where(where1)));
 		}
 
+		return condition;
+	}
+
+	public Condition applyMeaningAttributeFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.ATTRIBUTE))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		String[] meaningAttributes = new String[] {
+				FreeformType.GENUS.name(), FreeformType.FAMILY.name(), FreeformType.DESCRIBER.name(), FreeformType.DESCRIBING_YEAR.name(),
+				FreeformType.SOURCE_FILE.name()};
+
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		Freeform ff = FREEFORM.as("ff");
+
+		Condition meaningFreeformCondition = mff.MEANING_ID.eq(meaningIdField)
+				.and(mff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.in(meaningAttributes));
+
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.ATTRIBUTE, filteredCriteria);
+		if (isNotExistsSearch) {
+			condition = condition.and(DSL.notExists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
+			return condition;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			if (criterion.getSearchValue() != null) {
+				meaningFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, meaningFreeformCondition, true);
+			}
+		}
+		condition = condition.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
 		return condition;
 	}
 
