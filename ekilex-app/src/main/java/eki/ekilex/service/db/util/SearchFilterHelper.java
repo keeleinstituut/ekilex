@@ -414,17 +414,12 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		FreqCorp fc = FREQ_CORP.as("fc");
 		WordFreq wf = WORD_FREQ.as("wf");
-		WordFreq wff = WORD_FREQ.as("wff");
 
 		Condition where1 = wf.WORD_ID.eq(wordIdField)
-				.and(wf.FREQ_CORP_ID.eq(DSL
+				.and(wf.FREQ_CORP_ID.in(DSL
 						.select(fc.ID)
-						.from(fc, wff)
-						.where(
-								wff.WORD_ID.eq(wf.WORD_ID)
-								.and(wff.FREQ_CORP_ID.eq(fc.ID)))
-						.orderBy(fc.CORP_DATE.desc())
-						.limit(1)));
+						.from(fc)
+						.where(fc.IS_PUBLIC.isTrue())));
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchKey searchKey = criterion.getSearchKey();
@@ -461,17 +456,12 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		FreqCorp fc = FREQ_CORP.as("fc");
 		FormFreq ff = FORM_FREQ.as("ff");
-		FormFreq fff = FORM_FREQ.as("fff");
 
 		Condition where1 = ff.FORM_ID.eq(formIdField)
-				.and(ff.FREQ_CORP_ID.eq(DSL
+				.and(ff.FREQ_CORP_ID.in(DSL
 						.select(fc.ID)
-						.from(fc, fff)
-						.where(
-								fff.FORM_ID.eq(ff.FORM_ID)
-								.and(fff.FREQ_CORP_ID.eq(fc.ID)))
-						.orderBy(fc.CORP_DATE.desc())
-						.limit(1)));
+						.from(fc)
+						.where(fc.IS_PUBLIC.isTrue())));
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchKey searchKey = criterion.getSearchKey();

@@ -123,6 +123,8 @@ public class Indexes {
     public static final Index FORM_VALUE_MODE_IDX = Indexes0.FORM_VALUE_MODE_IDX;
     public static final Index FORM_FREQ_CORP_ID_IDX = Indexes0.FORM_FREQ_CORP_ID_IDX;
     public static final Index FORM_FREQ_FORM_ID_IDX = Indexes0.FORM_FREQ_FORM_ID_IDX;
+    public static final Index FORM_FREQ_RANK_IDX = Indexes0.FORM_FREQ_RANK_IDX;
+    public static final Index FORM_FREQ_VALUE_IDX = Indexes0.FORM_FREQ_VALUE_IDX;
     public static final Index FORM_FREQUENCY_FORM_VALUE_IDX = Indexes0.FORM_FREQUENCY_FORM_VALUE_IDX;
     public static final Index FORM_FREQUENCY_MORPH_CODE_IDX = Indexes0.FORM_FREQUENCY_MORPH_CODE_IDX;
     public static final Index FORM_FREQUENCY_SOURCE_NAME_IDX = Indexes0.FORM_FREQUENCY_SOURCE_NAME_IDX;
@@ -194,6 +196,8 @@ public class Indexes {
     public static final Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Indexes0.MEANING_SEMANTIC_TYPE_MEANING_ID_IDX;
     public static final Index MORPH_FREQ_CORP_ID_IDX = Indexes0.MORPH_FREQ_CORP_ID_IDX;
     public static final Index MORPH_FREQ_MORPH_CODE_IDX = Indexes0.MORPH_FREQ_MORPH_CODE_IDX;
+    public static final Index MORPH_FREQ_RANK_IDX = Indexes0.MORPH_FREQ_RANK_IDX;
+    public static final Index MORPH_FREQ_VALUE_IDX = Indexes0.MORPH_FREQ_VALUE_IDX;
     public static final Index PARADIGM_WORD_ID_IDX = Indexes0.PARADIGM_WORD_ID_IDX;
     public static final Index SOURCE_TYPE_IDX = Indexes0.SOURCE_TYPE_IDX;
     public static final Index SOURCE_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.SOURCE_ACTIVITY_LOG_LOG_ID_IDX;
@@ -223,6 +227,8 @@ public class Indexes {
     public static final Index WORD_FREEFORM_FREEFORM_ID_IDX = Indexes0.WORD_FREEFORM_FREEFORM_ID_IDX;
     public static final Index WORD_FREEFORM_WORD_ID_IDX = Indexes0.WORD_FREEFORM_WORD_ID_IDX;
     public static final Index WORD_FREQ_CORP_ID_IDX = Indexes0.WORD_FREQ_CORP_ID_IDX;
+    public static final Index WORD_FREQ_RANK_IDX = Indexes0.WORD_FREQ_RANK_IDX;
+    public static final Index WORD_FREQ_VALUE_IDX = Indexes0.WORD_FREQ_VALUE_IDX;
     public static final Index WORD_FREQ_WORD_ID_IDX = Indexes0.WORD_FREQ_WORD_ID_IDX;
     public static final Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Indexes0.WORD_GROUP_MEMBER_GROUP_ID_IDX;
     public static final Index WORD_GROUP_MEMBER_WORD_ID_IDX = Indexes0.WORD_GROUP_MEMBER_WORD_ID_IDX;
@@ -282,6 +288,8 @@ public class Indexes {
         public static Index FORM_VALUE_MODE_IDX = Internal.createIndex("form_value_mode_idx", Form.FORM, new OrderField[] { Form.FORM.VALUE, Form.FORM.MODE }, false);
         public static Index FORM_FREQ_CORP_ID_IDX = Internal.createIndex("form_freq_corp_id_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.FREQ_CORP_ID }, false);
         public static Index FORM_FREQ_FORM_ID_IDX = Internal.createIndex("form_freq_form_id_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.FORM_ID }, false);
+        public static Index FORM_FREQ_RANK_IDX = Internal.createIndex("form_freq_rank_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.RANK }, false);
+        public static Index FORM_FREQ_VALUE_IDX = Internal.createIndex("form_freq_value_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.VALUE }, false);
         public static Index FORM_FREQUENCY_FORM_VALUE_IDX = Internal.createIndex("form_frequency_form_value_idx", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.FORM_VALUE }, false);
         public static Index FORM_FREQUENCY_MORPH_CODE_IDX = Internal.createIndex("form_frequency_morph_code_idx", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.MORPH_CODE }, false);
         public static Index FORM_FREQUENCY_SOURCE_NAME_IDX = Internal.createIndex("form_frequency_source_name_idx", FormFrequency.FORM_FREQUENCY, new OrderField[] { FormFrequency.FORM_FREQUENCY.SOURCE_NAME }, false);
@@ -353,6 +361,8 @@ public class Indexes {
         public static Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Internal.createIndex("meaning_semantic_type_meaning_id_idx", MeaningSemanticType.MEANING_SEMANTIC_TYPE, new OrderField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.MEANING_ID }, false);
         public static Index MORPH_FREQ_CORP_ID_IDX = Internal.createIndex("morph_freq_corp_id_idx", MorphFreq.MORPH_FREQ, new OrderField[] { MorphFreq.MORPH_FREQ.FREQ_CORP_ID }, false);
         public static Index MORPH_FREQ_MORPH_CODE_IDX = Internal.createIndex("morph_freq_morph_code_idx", MorphFreq.MORPH_FREQ, new OrderField[] { MorphFreq.MORPH_FREQ.MORPH_CODE }, false);
+        public static Index MORPH_FREQ_RANK_IDX = Internal.createIndex("morph_freq_rank_idx", MorphFreq.MORPH_FREQ, new OrderField[] { MorphFreq.MORPH_FREQ.RANK }, false);
+        public static Index MORPH_FREQ_VALUE_IDX = Internal.createIndex("morph_freq_value_idx", MorphFreq.MORPH_FREQ, new OrderField[] { MorphFreq.MORPH_FREQ.VALUE }, false);
         public static Index PARADIGM_WORD_ID_IDX = Internal.createIndex("paradigm_word_id_idx", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.WORD_ID }, false);
         public static Index SOURCE_TYPE_IDX = Internal.createIndex("source_type_idx", Source.SOURCE, new OrderField[] { Source.SOURCE.TYPE }, false);
         public static Index SOURCE_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("source_activity_log_log_id_idx", SourceActivityLog.SOURCE_ACTIVITY_LOG, new OrderField[] { SourceActivityLog.SOURCE_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
@@ -382,6 +392,8 @@ public class Indexes {
         public static Index WORD_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("word_freeform_freeform_id_idx", WordFreeform.WORD_FREEFORM, new OrderField[] { WordFreeform.WORD_FREEFORM.FREEFORM_ID }, false);
         public static Index WORD_FREEFORM_WORD_ID_IDX = Internal.createIndex("word_freeform_word_id_idx", WordFreeform.WORD_FREEFORM, new OrderField[] { WordFreeform.WORD_FREEFORM.WORD_ID }, false);
         public static Index WORD_FREQ_CORP_ID_IDX = Internal.createIndex("word_freq_corp_id_idx", WordFreq.WORD_FREQ, new OrderField[] { WordFreq.WORD_FREQ.FREQ_CORP_ID }, false);
+        public static Index WORD_FREQ_RANK_IDX = Internal.createIndex("word_freq_rank_idx", WordFreq.WORD_FREQ, new OrderField[] { WordFreq.WORD_FREQ.RANK }, false);
+        public static Index WORD_FREQ_VALUE_IDX = Internal.createIndex("word_freq_value_idx", WordFreq.WORD_FREQ, new OrderField[] { WordFreq.WORD_FREQ.VALUE }, false);
         public static Index WORD_FREQ_WORD_ID_IDX = Internal.createIndex("word_freq_word_id_idx", WordFreq.WORD_FREQ, new OrderField[] { WordFreq.WORD_FREQ.WORD_ID }, false);
         public static Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Internal.createIndex("word_group_member_group_id_idx", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.WORD_GROUP_ID }, false);
         public static Index WORD_GROUP_MEMBER_WORD_ID_IDX = Internal.createIndex("word_group_member_word_id_idx", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.WORD_ID }, false);

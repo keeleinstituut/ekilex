@@ -429,7 +429,8 @@ create table freq_corp
 (
   id bigserial primary key,
   name text not null,
-  corp_date date,
+  corp_date date not null,
+  is_public boolean not null,
   unique(name)
 );
 alter sequence freq_corp_id_seq restart with 10000;
@@ -469,16 +470,16 @@ alter sequence word_freq_id_seq restart with 10000;
 
 create index form_freq_corp_id_idx on form_freq(freq_corp_id);
 create index form_freq_form_id_idx on form_freq(form_id);
-create index form_freq_value_id_idx on form_freq(value);
-create index form_freq_rank_id_idx on form_freq(rank);
+create index form_freq_value_idx on form_freq(value);
+create index form_freq_rank_idx on form_freq(rank);
 create index morph_freq_corp_id_idx on morph_freq(freq_corp_id);
 create index morph_freq_morph_code_idx on morph_freq(morph_code);
-create index morph_freq_value_id_idx on morph_freq(value);
-create index morph_freq_rank_id_idx on morph_freq(rank);
+create index morph_freq_value_idx on morph_freq(value);
+create index morph_freq_rank_idx on morph_freq(rank);
 create index word_freq_corp_id_idx on word_freq(freq_corp_id);
 create index word_freq_word_id_idx on word_freq(word_id);
-create index word_freq_value_id_idx on word_freq(value);
-create index word_freq_rank_id_idx on word_freq(rank);
+create index word_freq_value_idx on word_freq(value);
+create index word_freq_rank_idx on word_freq(rank);
 
 -- olemasolevate vormi sageduste migra
 insert into freq_corp
@@ -489,7 +490,8 @@ insert into freq_corp
 values
 (
   'enc17-formfreq',
-  '2017-01-01'
+  '2017-01-01',
+  true
 );
 
 insert into form_freq
