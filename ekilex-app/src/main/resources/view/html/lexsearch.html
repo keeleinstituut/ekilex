@@ -80,11 +80,11 @@
                   <i class="fa fa-calendar"></i><span th:text="${#dates.format(details.lastChangedOn, 'dd.MM.yyyy')}"></span>
                 </div><!--/date-modified-->
               </div><!--/ml-2-->
-              <div sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
-                <a th:href="@{'/wordactivitylog:' + ${wordId}}" data-toggle="modal"
+              <div class="ml-auto d-flex align-items-center flex-row">
+                <a th:href="@{'/wordactivitylog:' + ${wordId}}" data-toggle="modal" sec:authorize="#vars.details.word.readGrant" 
                    data-target="#wordActivityLogDlg"
                    class="btn btn-secondary btn-compact ml-2">Logi</a>
-                <div data-plugin="paneToggle"
+                <div data-plugin="paneToggle" 
                      data-hideable="toolsColumn"
                      data-extendable="contentColumn"
                      class="searchResultsToggle"><i class="fa fa-columns" aria-hidden="true"></i>
