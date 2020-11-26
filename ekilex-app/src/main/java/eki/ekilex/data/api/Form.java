@@ -1,7 +1,5 @@
 package eki.ekilex.data.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
@@ -9,10 +7,8 @@ public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@JsonIgnore
 	private Long id;
 
-	@JsonIgnore
 	private Long paradigmId;
 
 	private FormMode mode;
