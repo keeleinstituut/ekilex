@@ -198,9 +198,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyValueFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition, boolean isOnLowerValue) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, searchKey);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return condition;

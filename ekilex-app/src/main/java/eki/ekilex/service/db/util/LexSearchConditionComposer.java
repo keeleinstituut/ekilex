@@ -227,23 +227,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where1 = searchFilterHelper.applyFormFrequencyFilters(searchCriteria, f1.ID, where1);
 				where = where.andExists(DSL.select(f1.ID).from(p1, f1).where(where1));
 
-				//TODO form lang? really?
-				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
-				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
-							searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
-					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
-							searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
-
-					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, w1.LANG, where1, false);
-						where = where.andExists(DSL.select(f1.ID).from(p1, f1).where(where1));
-					}
-					if (CollectionUtils.isNotEmpty(negativeContainsValueCriteria)) {
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, negativeContainsValueCriteria, w1.LANG, where1, false);
-						where = where.andNotExists(DSL.select(f1.ID).from(p1, f1).where(where1));
-					}
-				}
+				where = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where, false);
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
