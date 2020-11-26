@@ -383,7 +383,7 @@ function initLexemeLevelsDlg(editDlg) {
 		let url = editForm.attr('action') + '?' + editForm.serialize();
 		$.post(url).done(function(data) {
 			let id = $('#details-area').data('id');
-			let detailsButton = $('[name="details-btn"][data-id="' + id + '"]');
+			let detailsButton = $('[name="word-details-btn"][data-id="' + id + '"]');
 			detailsButton.trigger('click');
 			editDlg.find('button.close').trigger('click');
 		}).fail(function(data) {
@@ -430,6 +430,7 @@ function refreshDetailsSearch(id) {
 			id = obj.parents('[data-rel="details-area"]').attr('data-id');
 		}
 	}
+	console.log(id);
 	var refreshButton = $(`[data-rel="details-area"][data-id="${id}"]:first`).find('#refresh-details');
 	refreshButton.trigger('click');
 };
