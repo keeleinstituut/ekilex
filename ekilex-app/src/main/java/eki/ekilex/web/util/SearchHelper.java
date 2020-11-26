@@ -58,6 +58,12 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
 	}
 
+	public String composeSearchUriAndAppendId(List<String> datasets, String simpleSearchFilter, Long entityId) {
+		String searchUri = composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
+		searchUri += "?id=" + entityId;
+		return searchUri;
+	}
+
 	public String composeSearchUri(
 			String searchMode, 
 			List<String> selectedDatasets,

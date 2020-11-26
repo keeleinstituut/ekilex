@@ -38,6 +38,7 @@ import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
@@ -85,8 +86,8 @@ public class LookupService extends AbstractWordSearchService {
 	private PermCalculator permCalculator;
 
 	@Transactional
-	public String getLexemeWordValue(Long lexemeId) {
-		return lookupDbService.getLexemeWordValue(lexemeId);
+	public SimpleWord getLexemeSimpleWord(Long lexemeId) {
+		return lookupDbService.getLexemeSimpleWord(lexemeId);
 	}
 
 	@Transactional

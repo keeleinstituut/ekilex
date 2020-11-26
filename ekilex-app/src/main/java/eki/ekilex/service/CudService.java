@@ -752,7 +752,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	// --- CREATE ---
 
 	@Transactional
-	public void createWord(WordLexemeMeaningDetails wordDetails) throws Exception {
+	public Long createWord(WordLexemeMeaningDetails wordDetails) throws Exception {
 
 		String value = wordDetails.getWordValue();
 		String language = wordDetails.getLanguage();
@@ -779,6 +779,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		activityLogService.createActivityLog("createWord", wordId, LifecycleLogOwner.WORD);
 		activityLogService.createActivityLog("createWord", lexemeId, LifecycleLogOwner.LEXEME);
+
+		return wordId;
 	}
 
 	@Transactional
