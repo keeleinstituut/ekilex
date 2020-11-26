@@ -34,6 +34,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.MeaningWordCandidates;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.Word;
@@ -153,9 +154,11 @@ public class LexEditController extends AbstractPageController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
-		String lexemeWordValue = lookupService.getLexemeWordValue(targetLexemeId);
+		SimpleWord lexemeSimpleWord = lookupService.getLexemeSimpleWord(targetLexemeId);
+		String lexemeWordValue = lexemeSimpleWord.getWordValue();
+		Long lexemeWordId = lexemeSimpleWord.getWordId();
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String searchUri = searchHelper.composeSearchUri(datasets, lexemeWordValue);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
@@ -163,11 +166,13 @@ public class LexEditController extends AbstractPageController {
 	@GetMapping(LEX_SEPARATE_URI + "/{lexemeId}")
 	public String separate(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		String lexemeWordValue = lookupService.getLexemeWordValue(lexemeId);
+		SimpleWord lexemeSimpleWord = lookupService.getLexemeSimpleWord(lexemeId);
+		String lexemeWordValue = lexemeSimpleWord.getWordValue();
+		Long lexemeWordId = lexemeSimpleWord.getWordId();
 		compositionService.separateLexemeMeaning(lexemeId);
 
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String searchUri = searchHelper.composeSearchUri(datasets, lexemeWordValue);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
@@ -261,12 +266,13 @@ public class LexEditController extends AbstractPageController {
 			String language = wordDetails.getLanguage();
 			String dataset = wordDetails.getDataset();
 			List<String> allDatasets = commonDataService.getDatasetCodes();
+			Long wordId;
 
 			sessionBean.setRecentLanguage(language);
 
 			int wordCount = lexSearchService.countWords(wordValue, allDatasets);
 			if (wordCount == 0) {
-				cudService.createWord(wordDetails);
+				wordId = cudService.createWord(wordDetails);
 			} else {
 				attributes.addFlashAttribute("wordDetails", wordDetails);
 				return "redirect:" + WORD_SELECT_URI;
@@ -278,7 +284,7 @@ public class LexEditController extends AbstractPageController {
 				selectedDatasets.add(dataset);
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
-			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
@@ -294,14 +300,14 @@ public class LexEditController extends AbstractPageController {
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String dataset = wordDetails.getDataset();
-			cudService.createWord(wordDetails);
+			Long wordId = cudService.createWord(wordDetails);
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				Long userId = userContext.getUserId();
 				selectedDatasets.add(dataset);
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
-			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
@@ -355,7 +361,7 @@ public class LexEditController extends AbstractPageController {
 			selectedDatasets.add(dataset);
 			userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 		}
-		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 

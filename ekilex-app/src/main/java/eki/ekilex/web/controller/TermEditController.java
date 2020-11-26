@@ -137,7 +137,7 @@ public class TermEditController extends AbstractPageController {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, datasets);
-		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, wordValue, targetMeaningId);
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}

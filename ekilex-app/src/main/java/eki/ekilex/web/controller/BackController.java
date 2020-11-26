@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
@@ -37,17 +38,19 @@ public class BackController extends AbstractPageController {
 		List<String> datasets = getUserPreferredDatasetCodes();
 		Word word = lexSearchService.getWord(wordId);
 		String wordValue = word.getWordValue();
-		String searchUri = searchHelper.composeSearchUri(datasets, wordValue);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, wordValue, wordId);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(LEX_BACK_URI + "/{lexemeId}")
-	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public String lexemeBack(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
-		String lexemeWordValue = lookupService.getLexemeWordValue(lexemeId);
-		String searchUri = searchHelper.composeSearchUri(datasets, lexemeWordValue);
+		SimpleWord lexemeSimpleWord = lookupService.getLexemeSimpleWord(lexemeId);
+		String lexemeWordValue = lexemeSimpleWord.getWordValue();
+		Long lexemeWordId = lexemeSimpleWord.getWordId();
+		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
@@ -57,7 +60,7 @@ public class BackController extends AbstractPageController {
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
-		String searchUri = searchHelper.composeSearchUri(datasets, firstWordValue);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, firstWordValue, meaningId);
 
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}

@@ -28,6 +28,7 @@ import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
@@ -49,6 +50,19 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.fetchOneInto(SimpleWord.class);
 	}
 
+	public SimpleWord getLexemeSimpleWord(Long lexemeId) {
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+		return create
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE.as("word_value"),
+						w.LANG)
+				.from(l, w)
+				.where(l.ID.eq(lexemeId).and(l.WORD_ID.eq(w.ID)))
+				.fetchOneInto(SimpleWord.class);
+	}
+
 	public List<String> getWordsValues(List<Long> wordIds) {
 		return create
 				.select(WORD.VALUE)
@@ -63,15 +77,6 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.from(LEXEME, WORD)
 				.where(LEXEME.ID.in(lexemeIds).and(LEXEME.WORD_ID.eq(WORD.ID)))
 				.fetchInto(String.class);
-	}
-
-	public String getLexemeWordValue(Long lexemeId) {
-		return create
-				.select(WORD.VALUE)
-				.from(LEXEME, WORD)
-				.where(LEXEME.ID.eq(lexemeId).and(LEXEME.WORD_ID.eq(WORD.ID)))
-				.fetchOptionalInto(String.class)
-				.orElse(null);
 	}
 
 	protected Field<String[]> getWordTypesField(Field<Long> wordIdField) {
