@@ -382,8 +382,9 @@ function initLexemeLevelsDlg(editDlg) {
 		editDlg.find('[name="action"]').val($(this).data('action'));
 		let url = editForm.attr('action') + '?' + editForm.serialize();
 		$.post(url).done(function(data) {
-			let id = $('#details-area').data('id');
-			let detailsButton = $('[name="word-details-btn"][data-id="' + id + '"]');
+			let id = editDlg.parents('[data-rel="details-area"]:first').data('id');
+			console.log(id);
+			let detailsButton = editDlg.parents('[data-rel="details-area"]:first').find('[name="details-btn"][data-id="' + id + '"]:first');
 			detailsButton.trigger('click');
 			editDlg.find('button.close').trigger('click');
 		}).fail(function(data) {
