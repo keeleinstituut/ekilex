@@ -51,8 +51,6 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private List<String> wordLexemesPoses;
 
-	private Float wordLexemesMaxFrequency;
-
 	private List<String> datasetCodes;
 
 	private String relTypeCode;
@@ -245,14 +243,6 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	public void setWordLexemesPoses(List<String> wordLexemesPoses) {
 		this.wordLexemesPoses = wordLexemesPoses;
-	}
-
-	public Float getWordLexemesMaxFrequency() {
-		return wordLexemesMaxFrequency;
-	}
-
-	public void setWordLexemesMaxFrequency(Float wordLexemesMaxFrequency) {
-		this.wordLexemesMaxFrequency = wordLexemesMaxFrequency;
 	}
 
 	public List<String> getDatasetCodes() {

@@ -179,13 +179,12 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeFrequencies) || lexeme.lexemeFrequencyGroupCode != null}" th:fragment="lexeme_frequency_group">
+  <div class="row" th:if="${lexeme.lexemeFrequencyGroupCode != null}" th:fragment="lexeme_frequency_group">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Sagedusrühm</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${lexeme.lexemeFrequencies}"></span>
-      <span th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons">
+      <span class="hidden-buttons">
         <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
         <button type="button" class="btn badge badge-primary"
                 title="Muuda"

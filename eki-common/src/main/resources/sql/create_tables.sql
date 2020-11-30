@@ -711,20 +711,6 @@ create table form
 );
 alter sequence form_id_seq restart with 10000;
 
--- TODO remove
-create table form_frequency
-(
-  id bigserial primary key,
-  source_name text not null,
-  created_on timestamp not null default statement_timestamp(),
-  word_value text not null,
-  morph_code varchar(100) references morph(code) not null,
-  form_value text not null,
-  rank bigint not null,
-  value numeric(12, 7) not null
-);
-alter sequence form_frequency_id_seq restart with 10000;
-
 -- tähendus
 create table meaning
 (
@@ -879,19 +865,6 @@ create table lexeme_tag
   unique(lexeme_id, tag_name)
 );
 alter sequence lexeme_tag_id_seq restart with 10000;
-
--- TODO remove?
-create table lexeme_frequency
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  source_name text not null,
-  created_on timestamp not null default statement_timestamp(),
-  rank bigint not null,
-  value numeric(12, 7) not null,
-  unique (lexeme_id, source_name)
-);
-alter sequence lexeme_frequency_id_seq restart with 10000;
 
 create table lexeme_register
 (
@@ -1226,10 +1199,6 @@ create index form_morph_code_idx on form(morph_code);
 create index form_mode_idx on form(mode);
 create index form_value_mode_idx on form(value, mode);
 create index form_paradigm_id_idx on form(paradigm_id);
-create index form_frequency_source_name_idx on form_frequency(source_name);
-create index form_frequency_word_value_idx on form_frequency(word_value);
-create index form_frequency_morph_code_idx on form_frequency(morph_code);
-create index form_frequency_form_value_idx on form_frequency(form_value);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
@@ -1323,8 +1292,6 @@ create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);
 create index lex_colloc_rel_group_id_idx on lex_colloc(rel_group_id);
 create index lex_colloc_collocation_id_idx on lex_colloc(collocation_id);
 create index collocation_value_idx on collocation(value);
-create index lexeme_frequency_lexeme_id_idx on lexeme_frequency(lexeme_id);
-create index lexeme_frequency_source_name_idx on lexeme_frequency(source_name);
 create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);
 create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
 create index lexeme_pos_pos_code_idx on lexeme_pos(pos_code);

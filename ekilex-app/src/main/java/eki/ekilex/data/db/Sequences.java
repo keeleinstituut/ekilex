@@ -125,11 +125,6 @@ public class Sequences {
     public static final Sequence<Long> FORM_FREQ_ID_SEQ = Internal.createSequence("form_freq_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.form_frequency_id_seq</code>
-     */
-    public static final Sequence<Long> FORM_FREQUENCY_ID_SEQ = Internal.createSequence("form_frequency_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.form_id_seq</code>
      */
     public static final Sequence<Long> FORM_ID_SEQ = Internal.createSequence("form_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -253,11 +248,6 @@ public class Sequences {
      * The sequence <code>public.lexeme_freeform_order_by_seq</code>
      */
     public static final Sequence<Long> LEXEME_FREEFORM_ORDER_BY_SEQ = Internal.createSequence("lexeme_freeform_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.lexeme_frequency_id_seq</code>
-     */
-    public static final Sequence<Long> LEXEME_FREQUENCY_ID_SEQ = Internal.createSequence("lexeme_frequency_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.lexeme_id_seq</code>

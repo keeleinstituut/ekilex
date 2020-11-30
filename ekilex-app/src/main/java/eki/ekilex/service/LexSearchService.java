@@ -272,7 +272,6 @@ public class LexSearchService extends AbstractWordSearchService {
 							|| CollectionUtils.isNotEmpty(lexeme.getDerivs())
 							|| CollectionUtils.isNotEmpty(lexeme.getRegisters())
 							|| CollectionUtils.isNotEmpty(lexeme.getGrammars())
-							|| CollectionUtils.isNotEmpty(lexeme.getLexemeFrequencies())
 							|| CollectionUtils.isNotEmpty(meaning.getDomains())
 							|| CollectionUtils.isNotEmpty(meaning.getSemanticTypes());
 			lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);

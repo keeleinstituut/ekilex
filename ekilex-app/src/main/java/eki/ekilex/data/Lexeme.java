@@ -26,8 +26,6 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private String lexemeFrequencyGroupCode;
 
-	private List<String> lexemeFrequencies;
-
 	private String lexemeValueStateCode;
 
 	private List<String> tags;
@@ -136,14 +134,6 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
 		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
-	}
-
-	public List<String> getLexemeFrequencies() {
-		return lexemeFrequencies;
-	}
-
-	public void setLexemeFrequencies(List<String> lexemeFrequencies) {
-		this.lexemeFrequencies = lexemeFrequencies;
 	}
 
 	public String getLexemeValueStateCode() {

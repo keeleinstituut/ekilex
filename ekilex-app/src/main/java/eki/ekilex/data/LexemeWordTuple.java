@@ -21,8 +21,6 @@ public class LexemeWordTuple extends AbstractDataObject {
 
 	private String lexemeFrequencyGroupCode;
 
-	private List<String> lexemeFrequencies;
-
 	private String lexemeValueStateCode;
 
 	private boolean isPublic;
@@ -107,14 +105,6 @@ public class LexemeWordTuple extends AbstractDataObject {
 
 	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
 		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
-	}
-
-	public List<String> getLexemeFrequencies() {
-		return lexemeFrequencies;
-	}
-
-	public void setLexemeFrequencies(List<String> lexemeFrequencies) {
-		this.lexemeFrequencies = lexemeFrequencies;
 	}
 
 	public String getLexemeValueStateCode() {

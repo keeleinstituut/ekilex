@@ -58,10 +58,6 @@
                 <span th:unless="${lexemePosIter.last}">, </span>
               </th:block>
             </div>
-            <div th:if="${synRelation.wordLexemesMaxFrequency != null}">
-              <span>Sagedus korpuses: </span>
-              <span th:text="${synRelation.wordLexemesMaxFrequency}"></span>
-            </div>
             <div>
               <br>
               <ul th:if="${not #lists.isEmpty(synRelation.relationParams)}" class="list-unstyled">

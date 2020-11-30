@@ -51,8 +51,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private String lexemeFrequencyGroupCode;
 
-	private List<String> lexemeFrequencies;
-
 	private List<String> tags;
 
 	private boolean isPublic;
@@ -280,14 +278,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
 		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
-	}
-
-	public List<String> getLexemeFrequencies() {
-		return lexemeFrequencies;
-	}
-
-	public void setLexemeFrequencies(List<String> lexemeFrequencies) {
-		this.lexemeFrequencies = lexemeFrequencies;
 	}
 
 	@Override

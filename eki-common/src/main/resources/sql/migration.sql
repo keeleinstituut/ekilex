@@ -531,3 +531,6 @@ where exists (select l.id
               and   l.is_public = true
               and   ds.code = l.dataset_code
               and   ds.is_public = true));
+
+drop table lexeme_frequency;
+drop table form_frequency;

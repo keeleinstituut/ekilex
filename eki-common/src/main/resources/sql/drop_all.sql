@@ -58,7 +58,7 @@ drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
-drop table if exists lexeme_frequency;
+drop table if exists lexeme_frequency;--TODO remove later
 drop table if exists lexeme_lifecycle_log;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
@@ -78,7 +78,7 @@ drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning_semantic_type;
 drop table if exists meaning_nr;
-drop table if exists form_frequency;
+drop table if exists form_frequency;--TODO remove later
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;

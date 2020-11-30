@@ -398,7 +398,6 @@ public class ConversionUtil implements GlobalConstant {
 		lexeme.setLevel1(lexemeWordTuple.getLevel1());
 		lexeme.setLevel2(lexemeWordTuple.getLevel2());
 		lexeme.setLexemeFrequencyGroupCode(lexemeWordTuple.getLexemeFrequencyGroupCode());
-		lexeme.setLexemeFrequencies(lexemeWordTuple.getLexemeFrequencies());
 		lexeme.setLexemeValueStateCode(lexemeWordTuple.getLexemeValueStateCode());
 		lexeme.setPublic(lexemeWordTuple.isPublic());
 		lexeme.setComplexity(lexemeWordTuple.getComplexity());

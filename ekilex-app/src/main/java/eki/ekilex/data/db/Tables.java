@@ -31,7 +31,6 @@ import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFreq;
-import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.FreqCorp;
@@ -55,7 +54,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegion;
@@ -281,11 +279,6 @@ public class Tables {
     public static final FormFreq FORM_FREQ = FormFreq.FORM_FREQ;
 
     /**
-     * The table <code>public.form_frequency</code>.
-     */
-    public static final FormFrequency FORM_FREQUENCY = FormFrequency.FORM_FREQUENCY;
-
-    /**
      * The table <code>public.freeform</code>.
      */
     public static final Freeform FREEFORM = Freeform.FREEFORM;
@@ -399,11 +392,6 @@ public class Tables {
      * The table <code>public.lexeme_freeform</code>.
      */
     public static final LexemeFreeform LEXEME_FREEFORM = LexemeFreeform.LEXEME_FREEFORM;
-
-    /**
-     * The table <code>public.lexeme_frequency</code>.
-     */
-    public static final LexemeFrequency LEXEME_FREQUENCY = LexemeFrequency.LEXEME_FREQUENCY;
 
     /**
      * The table <code>public.lexeme_lifecycle_log</code>.

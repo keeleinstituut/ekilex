@@ -31,7 +31,6 @@ import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFreq;
-import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.FreqCorp;
@@ -55,7 +54,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegion;
@@ -171,7 +169,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1719758755;
+    private static final long serialVersionUID = 914727963;
 
     /**
      * The reference instance of <code>public</code>
@@ -314,11 +312,6 @@ public class Public extends SchemaImpl {
     public final FormFreq FORM_FREQ = FormFreq.FORM_FREQ;
 
     /**
-     * The table <code>public.form_frequency</code>.
-     */
-    public final FormFrequency FORM_FREQUENCY = FormFrequency.FORM_FREQUENCY;
-
-    /**
      * The table <code>public.freeform</code>.
      */
     public final Freeform FREEFORM = Freeform.FREEFORM;
@@ -432,11 +425,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.lexeme_freeform</code>.
      */
     public final LexemeFreeform LEXEME_FREEFORM = LexemeFreeform.LEXEME_FREEFORM;
-
-    /**
-     * The table <code>public.lexeme_frequency</code>.
-     */
-    public final LexemeFrequency LEXEME_FREQUENCY = LexemeFrequency.LEXEME_FREQUENCY;
 
     /**
      * The table <code>public.lexeme_lifecycle_log</code>.
@@ -881,7 +869,6 @@ public class Public extends SchemaImpl {
             Sequences.FEEDBACK_LOG_COMMENT_ID_SEQ,
             Sequences.FEEDBACK_LOG_ID_SEQ,
             Sequences.FORM_FREQ_ID_SEQ,
-            Sequences.FORM_FREQUENCY_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_ID_SEQ,
@@ -907,7 +894,6 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_DERIV_ORDER_BY_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ORDER_BY_SEQ,
-            Sequences.LEXEME_FREQUENCY_ID_SEQ,
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_LIFECYCLE_LOG_ID_SEQ,
             Sequences.LEXEME_ORDER_BY_SEQ,
@@ -1006,7 +992,6 @@ public class Public extends SchemaImpl {
             FeedbackLogComment.FEEDBACK_LOG_COMMENT,
             Form.FORM,
             FormFreq.FORM_FREQ,
-            FormFrequency.FORM_FREQUENCY,
             Freeform.FREEFORM,
             FreeformSourceLink.FREEFORM_SOURCE_LINK,
             FreqCorp.FREQ_CORP,
@@ -1030,7 +1015,6 @@ public class Public extends SchemaImpl {
             LexemeActivityLog.LEXEME_ACTIVITY_LOG,
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
-            LexemeFrequency.LEXEME_FREQUENCY,
             LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG,
             LexemePos.LEXEME_POS,
             LexemeRegion.LEXEME_REGION,
