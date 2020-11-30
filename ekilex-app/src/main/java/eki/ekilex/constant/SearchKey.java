@@ -34,7 +34,8 @@ public enum SearchKey {
 	COMPLEXITY(OperandSets.CLASSIFIER_OPERANDS, SearchValueType.TEXTUAL),
 	FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	RANK(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
-	ATTRIBUTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL)
+	ATTRIBUTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	CONCEPT_ID(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.NUMERIC)
 	;
 
 	private SearchOperand[] operands;

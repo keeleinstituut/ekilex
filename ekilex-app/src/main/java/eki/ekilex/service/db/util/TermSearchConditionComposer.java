@@ -134,6 +134,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherem = searchFilterHelper.applyDomainValueFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyDomainExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
+				wherem = searchFilterHelper.applyConceptIdFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningAttributeFilters(searchCriteria, m1.ID, wherem);
 				wherem = applyMeaningActivityLogFilters(searchCriteria, m1.ID, wherem);
 
@@ -260,19 +261,6 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				} else {
 					wherem = wherem.andExists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID)));
 				}
-
-			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
-
-				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
-				Freeform c1 = FREEFORM.as("c1");
-
-				Condition where1 = m1ff.MEANING_ID.eq(m1.ID)
-						.and(m1ff.FREEFORM_ID.eq(c1.ID))
-						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
-
-				where1 = searchFilterHelper.applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1, false);
-
-				wherem = wherem.andExists(DSL.select(c1.ID).from(m1ff, c1).where(where1));
 
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 
