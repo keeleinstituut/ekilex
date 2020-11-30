@@ -34,9 +34,11 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 			if (form.getFormFreqValue() != null) {
 				double formFreqRankScaledRoundedDec = Math.round(((double) form.getFormFreqRank() * (double) FORM_FREQ_SCALE) / (double) form.getFormFreqRankMax());
 				int formFreqRankScaled = FORM_FREQ_SCALE - Double.valueOf(formFreqRankScaledRoundedDec).intValue();
+				form.setFormFreqRankScaled(formFreqRankScaled);
+			}
+			if (form.getMorphFreqValue() != null) {
 				double morphFreqRankScaledRoundedDec = Math.round(((double) form.getMorphFreqRank() * (double) FORM_FREQ_SCALE) / (double) form.getMorphFreqRankMax());
 				int morphFreqRankScaled = FORM_FREQ_SCALE - Double.valueOf(morphFreqRankScaledRoundedDec).intValue();
-				form.setFormFreqRankScaled(formFreqRankScaled);
 				form.setMorphFreqRankScaled(morphFreqRankScaled);
 			}
 		}
