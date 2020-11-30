@@ -21,10 +21,11 @@ public enum SearchEntity {
 	DEFINITION(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.RELATION_TYPE, SearchKey.SEMANTIC_TYPE}),
-	CONCEPT(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.ATTRIBUTE, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
+	CONCEPT(new SearchKey[] {
+			SearchKey.DOMAIN, SearchKey.ID, SearchKey.CONCEPT_ID, SearchKey.ATTRIBUTE,
+			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
-	CONCEPT_ID(new SearchKey[] {SearchKey.ID}),
 	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID}),
 	SOURCE(new SearchKey[] {SearchKey.VALUE, SearchKey.DATASET_USAGE, SearchKey.CREATED_BY, SearchKey.CREATED_ON, SearchKey.UPDATED_BY, SearchKey.UPDATED_ON})
 	;
@@ -44,7 +45,7 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getTermEntities() {
-		return asList(TERM, CONCEPT, TAG, DEFINITION, USAGE, NOTE, CONCEPT_ID, CLUELESS);
+		return asList(TERM, CONCEPT, TAG, DEFINITION, USAGE, NOTE, CLUELESS);
 	}
 
 	public static List<SearchEntity> getSourceEntities() {

@@ -400,43 +400,6 @@ public class LexSearchServiceTest implements SystemConstant {
 		assertEquals("Incorrect match", "hall", word.getWordValue());
 	}
 
-	@Test
-	public void testSearchByConceptId() throws Exception {
-
-		SearchDatasetsRestriction searchDatasetsRestriction = createDefaultSearchDatasetsRestriction();
-
-		SearchFilter searchFilter = new SearchFilter();
-		SearchCriterionGroup conceptIdGroup = new SearchCriterionGroup();
-		conceptIdGroup.setEntity(SearchEntity.CONCEPT_ID);
-		conceptIdGroup.setSearchCriteria(new ArrayList<>());
-		searchFilter.setCriteriaGroups(asList(conceptIdGroup));
-
-		SearchCriterion searchCriterion;
-		SearchKey searchKey;
-		SearchOperand searchOperand;
-		Object searchValue;
-		List<Word> words;
-		Word word;
-
-		// case #1
-		conceptIdGroup.getSearchCriteria().clear();
-		searchKey = SearchKey.ID;
-		searchOperand = SearchOperand.EQUALS;
-		searchValue = new String("123456");
-
-		searchCriterion = new SearchCriterion();
-		searchCriterion.setSearchKey(searchKey);
-		searchCriterion.setSearchOperand(searchOperand);
-		searchCriterion.setSearchValue(searchValue);
-		conceptIdGroup.getSearchCriteria().add(searchCriterion);
-
-		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
-
-		assertEquals("Incorrect count of matches", 1, words.size());
-		word = words.get(0);
-		assertEquals("Incorrect match", "tumehall", word.getWordValue());
-	}
-
 	private SearchDatasetsRestriction createDefaultSearchDatasetsRestriction() {
 		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
 		searchDatasetsRestriction.setFilteringDatasetCodes(new ArrayList<>());

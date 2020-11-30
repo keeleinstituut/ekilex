@@ -82,6 +82,10 @@
                     <i class="fa fa-book mr-1 text-muted"></i>
                     <span th:text="#{lexdata.title}">EKI ühendsõnastik 2020</span>
                   </h5>
+                  <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center update-alert flex-nowrap" role="alert" th:if="${wordData.word.lang == 'rus'}">
+                    <i class="fa fa-exclamation-triangle small mr-2 mt-1" aria-hidden="true"></i>
+                    <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
+                  </div>
                   <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
                     <div th:replace="common-search :: lexeme-data"></div>
                   </section>

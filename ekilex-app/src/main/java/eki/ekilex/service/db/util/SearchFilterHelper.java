@@ -691,6 +691,29 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
+	public Condition applyConceptIdFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.CONCEPT_ID);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		Freeform ff = FREEFORM.as("ff");
+
+		Condition meaningFreeformCondition = mff.MEANING_ID.eq(meaningIdField)
+				.and(mff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			meaningFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, meaningFreeformCondition, true);
+		}
+
+		condition = condition.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
+		return condition;
+	}
+
 	public Condition applyMeaningAttributeFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
