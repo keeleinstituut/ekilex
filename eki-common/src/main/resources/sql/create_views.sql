@@ -288,7 +288,6 @@ order by ws.sgroup,
          ws.word,
          ws.crit;
 
--- words - OK
 create view view_ww_word 
 as
 select w.word_id,
@@ -306,6 +305,8 @@ select w.word_id,
        mw.meaning_words,
        wd.definitions,
        od_ws.od_word_recommendations,
+       wf.freq_value,
+       wf.freq_rank,
        w.forms_exist,
        w.min_ds_order_by,
        w.word_type_order_by
@@ -555,9 +556,22 @@ from (select w.id as word_id,
                    where wf.freeform_id = ff.id
                    and   ff.type = 'OD_WORD_RECOMMENDATION'
                    group by wf.word_id) od_ws
-               on od_ws.word_id = w.word_id;
+               on od_ws.word_id = w.word_id
+  left outer join (select wf.word_id,
+                          wf.value freq_value,
+                          wf.rank freq_rank,
+                          fc.corp_date
+                   from word_freq wf,
+                        freq_corp fc
+                   where wf.freq_corp_id = fc.id
+                   and fc.is_public = true) wf
+               on wf.word_id = w.word_id and wf.corp_date = (select max(fcc.corp_date)
+                                                             from word_freq wff,
+                                                                  freq_corp fcc
+                                                             where wff.freq_corp_id = fcc.id
+                                                             and fcc.is_public = true
+                                                             and wff.word_id = w.word_id);
 
--- word forms - OK
 create view view_ww_form 
 as
 select w.id word_id,
@@ -582,40 +596,44 @@ select w.id word_id,
        f.audio_file,
        f.order_by,
        ff.form_freq_value,
-       (select max(ff.value) from form_frequency ff) max_form_freq_value,
-       ff.total_form_freq_rank,
-       (select max(ff.rank) from form_frequency ff) max_total_form_freq_rank,
-       ff.paradigm_form_freq_rank,
-       (max(ff.paradigm_form_freq_rank) over (partition by ff.paradigm_id)) max_paradigm_form_freq_rank
+       ff.form_freq_rank,
+       ff.form_freq_rank_max,
+       mf.morph_freq_value,
+       mf.morph_freq_rank,
+       mf.morph_freq_rank_max
 from word w
   inner join paradigm p
           on p.word_id = w.id
   inner join form f
           on f.paradigm_id = p.id
-  left outer join (select f.*,
+  left outer join (select ff.form_id,
                           ff.value form_freq_value,
-                          ff.rank total_form_freq_rank,
-                          (dense_rank() over (partition by p.id order by ff.value desc)) paradigm_form_freq_rank
-                   from word w
-                     inner join paradigm p
-                             on p.word_id = w.id
-                     inner join form f
-                             on f.paradigm_id = p.id
-                            and f.display_level > 0
-                     inner join form_frequency ff
-                             on ff.source_name = 'enc17-formfreq'
-                            and ff.word_value = w.value
-                            and ff.form_value = f.value
-                            and ff.morph_code = f.morph_code
-                   where exists (select l.id
-                                 from lexeme as l,
-                                      dataset ds
-                                 where l.word_id = w.id
-                                 and   l.type = 'PRIMARY'
-                                 and   l.is_public = true
-                                 and   ds.code = l.dataset_code
-                                 and   ds.is_public = true)) ff
-               on ff.id = f.id
+                          ff.rank form_freq_rank,
+                          fc.corp_date,
+                          (select max(fff.rank) from form_freq fff where fff.freq_corp_id = fc.id) form_freq_rank_max
+                   from form_freq ff,
+                        freq_corp fc
+                   where ff.freq_corp_id = fc.id
+                   and fc.is_public = true) ff on ff.form_id = f.id and ff.corp_date = (select max(fcc.corp_date)
+                                                                                        from form_freq fff,
+                                                                                             freq_corp fcc
+                                                                                        where fff.freq_corp_id = fcc.id
+                                                                                        and fcc.is_public = true
+                                                                                        and fff.form_id = f.id)
+  left outer join (select mf.morph_code,
+                          mf.value morph_freq_value,
+                          mf.rank morph_freq_rank,
+                          fc.corp_date,
+                          (select max(mff.rank) from morph_freq mff where mff.freq_corp_id = fc.id) morph_freq_rank_max
+                   from morph_freq mf,
+                        freq_corp fc
+                   where mf.freq_corp_id = fc.id
+                   and fc.is_public = true) mf on mf.morph_code = f.morph_code and mf.corp_date = (select max(fcc.corp_date)
+                                                                                                   from morph_freq mff,
+                                                                                                        freq_corp fcc
+                                                                                                   where mff.freq_corp_id = fcc.id
+                                                                                                   and fcc.is_public = true
+                                                                                                   and mff.morph_code = f.morph_code)
 where exists (select l.id
               from lexeme as l,
                    dataset ds
@@ -628,7 +646,6 @@ order by w.id,
          p.id,
          f.id;
 
--- lexeme meanings - OK
 create view view_ww_meaning 
 as
 select m.id meaning_id,
@@ -737,7 +754,6 @@ from (select m.id
                    group by mf.meaning_id) m_pnt on m_pnt.meaning_id = m.id
 order by m.id;
 
--- lexeme details - OK
 create view view_ww_lexeme 
 as
 select l.id lexeme_id,
@@ -1118,7 +1134,6 @@ and   l.is_public = true
 and   ds.is_public = true
 order by l.id;
 
--- collocations - ?
 create view view_ww_collocation 
 as
 select l1.id as lexeme_id,
@@ -1198,7 +1213,6 @@ order by l1.level1,
          lc1.group_order,
          c.id;
 
--- etymology - OK
 create view view_ww_word_etymology
 as
 with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, related_word_id, related_word_ids) as
@@ -1331,7 +1345,6 @@ order by
   rec.word_id,
   we.order_by;
 
--- word relations - OK
 create view view_ww_word_relation 
 as
 select w.id word_id,
@@ -1494,7 +1507,6 @@ and   exists (select l.id
               and ds.is_public = true);
 
 
--- lexeme relations - OK
 create view view_ww_lexeme_relation 
 as
 select r.lexeme1_id lexeme_id,
@@ -1539,7 +1551,6 @@ where exists (select l1.id
 group by r.lexeme1_id;
 
 
--- meaning relations - OK
 create view view_ww_meaning_relation
 as
 select r.m1_id meaning_id,
@@ -1633,7 +1644,6 @@ from (select mr.meaning1_id m1_id,
 group by r.m1_id;
 
 
--- source links
 create view view_ww_word_etym_source_link 
 as
 select we.word_id,
@@ -1868,7 +1878,6 @@ group by dsl.meaning_id
 order by dsl.meaning_id;
 
 
--- lexical decision game data - OK
 create view view_ww_lexical_decision_data 
 as
 select w.word,
@@ -1902,7 +1911,7 @@ from ((select w.word,
        order by random())) w
 order by random();
 
--- similarity judgement game data - NOT!
+-- outdated, do not use!
 create view view_ww_similarity_judgement_data
 as
 select
@@ -1965,7 +1974,6 @@ from (select distinct l.meaning_id,
       and   l.dataset_code = 'psv') w
 order by random())) w;
 
--- datasets, classifiers
 create view view_ww_dataset
   as
     (select

@@ -11,6 +11,7 @@ import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row18;
+import org.jooq.Row20;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 376642255;
+    private static final long serialVersionUID = -606449642;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -125,6 +126,16 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     public final TableField<MviewWwWordRecord, String[]> OD_WORD_RECOMMENDATIONS = createField(DSL.name("od_word_recommendations"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
+     * The column <code>public.mview_ww_word.freq_value</code>.
+     */
+    public final TableField<MviewWwWordRecord, BigDecimal> FREQ_VALUE = createField(DSL.name("freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.freq_rank</code>.
+     */
+    public final TableField<MviewWwWordRecord, Long> FREQ_RANK = createField(DSL.name("freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
      * The column <code>public.mview_ww_word.forms_exist</code>.
      */
     public final TableField<MviewWwWordRecord, Boolean> FORMS_EXIST = createField(DSL.name("forms_exist"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
@@ -209,11 +220,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row18 type methods
+    // Row20 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row18<Long, String, String, String, String, Long, Integer, String, String[], String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], Boolean, Long, Integer> fieldsRow() {
-        return (Row18) super.fieldsRow();
+    public Row20<Long, String, String, String, String, Long, Integer, String, String[], String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], BigDecimal, Long, Boolean, Long, Integer> fieldsRow() {
+        return (Row20) super.fieldsRow();
     }
 }

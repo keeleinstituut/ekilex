@@ -17,7 +17,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -844758697;
+    private static final long serialVersionUID = -1437244387;
 
     /**
      * Setter for <code>public.mview_ww_form.word_id</code>.
@@ -328,73 +328,73 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> {
     }
 
     /**
-     * Setter for <code>public.mview_ww_form.max_form_freq_value</code>.
+     * Setter for <code>public.mview_ww_form.form_freq_rank</code>.
      */
-    public void setMaxFormFreqValue(BigDecimal value) {
+    public void setFormFreqRank(Long value) {
         set(22, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_form.max_form_freq_value</code>.
+     * Getter for <code>public.mview_ww_form.form_freq_rank</code>.
      */
-    public BigDecimal getMaxFormFreqValue() {
-        return (BigDecimal) get(22);
+    public Long getFormFreqRank() {
+        return (Long) get(22);
     }
 
     /**
-     * Setter for <code>public.mview_ww_form.total_form_freq_rank</code>.
+     * Setter for <code>public.mview_ww_form.form_freq_rank_max</code>.
      */
-    public void setTotalFormFreqRank(Long value) {
+    public void setFormFreqRankMax(Long value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_form.total_form_freq_rank</code>.
+     * Getter for <code>public.mview_ww_form.form_freq_rank_max</code>.
      */
-    public Long getTotalFormFreqRank() {
+    public Long getFormFreqRankMax() {
         return (Long) get(23);
     }
 
     /**
-     * Setter for <code>public.mview_ww_form.max_total_form_freq_rank</code>.
+     * Setter for <code>public.mview_ww_form.morph_freq_value</code>.
      */
-    public void setMaxTotalFormFreqRank(Long value) {
+    public void setMorphFreqValue(BigDecimal value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_form.max_total_form_freq_rank</code>.
+     * Getter for <code>public.mview_ww_form.morph_freq_value</code>.
      */
-    public Long getMaxTotalFormFreqRank() {
-        return (Long) get(24);
+    public BigDecimal getMorphFreqValue() {
+        return (BigDecimal) get(24);
     }
 
     /**
-     * Setter for <code>public.mview_ww_form.paradigm_form_freq_rank</code>.
+     * Setter for <code>public.mview_ww_form.morph_freq_rank</code>.
      */
-    public void setParadigmFormFreqRank(Integer value) {
+    public void setMorphFreqRank(Long value) {
         set(25, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_form.paradigm_form_freq_rank</code>.
+     * Getter for <code>public.mview_ww_form.morph_freq_rank</code>.
      */
-    public Integer getParadigmFormFreqRank() {
-        return (Integer) get(25);
+    public Long getMorphFreqRank() {
+        return (Long) get(25);
     }
 
     /**
-     * Setter for <code>public.mview_ww_form.max_paradigm_form_freq_rank</code>.
+     * Setter for <code>public.mview_ww_form.morph_freq_rank_max</code>.
      */
-    public void setMaxParadigmFormFreqRank(Integer value) {
+    public void setMorphFreqRankMax(Long value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_form.max_paradigm_form_freq_rank</code>.
+     * Getter for <code>public.mview_ww_form.morph_freq_rank_max</code>.
      */
-    public Integer getMaxParadigmFormFreqRank() {
-        return (Integer) get(26);
+    public Long getMorphFreqRankMax() {
+        return (Long) get(26);
     }
 
     // -------------------------------------------------------------------------
@@ -411,7 +411,7 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> {
     /**
      * Create a detached, initialised MviewWwFormRecord
      */
-    public MviewWwFormRecord(Long wordId, String word, String lang, Long paradigmId, String paradigmComment, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String value, String valuePrese, String[] components, String displayForm, String vocalForm, String audioFile, Long orderBy, BigDecimal formFreqValue, BigDecimal maxFormFreqValue, Long totalFormFreqRank, Long maxTotalFormFreqRank, Integer paradigmFormFreqRank, Integer maxParadigmFormFreqRank) {
+    public MviewWwFormRecord(Long wordId, String word, String lang, Long paradigmId, String paradigmComment, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String value, String valuePrese, String[] components, String displayForm, String vocalForm, String audioFile, Long orderBy, BigDecimal formFreqValue, Long formFreqRank, Long formFreqRankMax, BigDecimal morphFreqValue, Long morphFreqRank, Long morphFreqRankMax) {
         super(MviewWwForm.MVIEW_WW_FORM);
 
         set(0, wordId);
@@ -436,10 +436,10 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> {
         set(19, audioFile);
         set(20, orderBy);
         set(21, formFreqValue);
-        set(22, maxFormFreqValue);
-        set(23, totalFormFreqRank);
-        set(24, maxTotalFormFreqRank);
-        set(25, paradigmFormFreqRank);
-        set(26, maxParadigmFormFreqRank);
+        set(22, formFreqRank);
+        set(23, formFreqRankMax);
+        set(24, morphFreqValue);
+        set(25, morphFreqRank);
+        set(26, morphFreqRankMax);
     }
 }

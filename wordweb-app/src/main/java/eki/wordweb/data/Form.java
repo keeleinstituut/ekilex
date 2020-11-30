@@ -54,19 +54,19 @@ public class Form extends AbstractDataObject {
 
 	private Float formFreqValue;
 
-	private Float maxFormFreqValue;
+	private Long formFreqRank;
 
-	private Long totalFormFreqRank;
+	private Long formFreqRankMax;
 
-	private Long maxTotalFormFreqRank;
+	private int formFreqRankScaled;
 
-	private Integer scaledTotalFormFreqRank;
+	private Float morphFreqValue;
 
-	private Integer paradigmFormFreqRank;
+	private Long morphFreqRank;
 
-	private Integer maxParadigmFormFreqRank;
+	private Long morphFreqRankMax;
 
-	private Integer scaledParadigmFormFreqRank;
+	private int morphFreqRankScaled;
 
 	public Long getFormId() {
 		return formId;
@@ -244,60 +244,60 @@ public class Form extends AbstractDataObject {
 		this.formFreqValue = formFreqValue;
 	}
 
-	public Float getMaxFormFreqValue() {
-		return maxFormFreqValue;
+	public Long getFormFreqRank() {
+		return formFreqRank;
 	}
 
-	public void setMaxFormFreqValue(Float maxFormFreqValue) {
-		this.maxFormFreqValue = maxFormFreqValue;
+	public void setFormFreqRank(Long formFreqRank) {
+		this.formFreqRank = formFreqRank;
 	}
 
-	public Long getTotalFormFreqRank() {
-		return totalFormFreqRank;
+	public Long getFormFreqRankMax() {
+		return formFreqRankMax;
 	}
 
-	public void setTotalFormFreqRank(Long totalFormFreqRank) {
-		this.totalFormFreqRank = totalFormFreqRank;
+	public void setFormFreqRankMax(Long formFreqRankMax) {
+		this.formFreqRankMax = formFreqRankMax;
 	}
 
-	public Long getMaxTotalFormFreqRank() {
-		return maxTotalFormFreqRank;
+	public int getFormFreqRankScaled() {
+		return formFreqRankScaled;
 	}
 
-	public void setMaxTotalFormFreqRank(Long maxTotalFormFreqRank) {
-		this.maxTotalFormFreqRank = maxTotalFormFreqRank;
+	public void setFormFreqRankScaled(int formFreqRankScaled) {
+		this.formFreqRankScaled = formFreqRankScaled;
 	}
 
-	public Integer getScaledTotalFormFreqRank() {
-		return scaledTotalFormFreqRank;
+	public Float getMorphFreqValue() {
+		return morphFreqValue;
 	}
 
-	public void setScaledTotalFormFreqRank(Integer scaledTotalFormFreqRank) {
-		this.scaledTotalFormFreqRank = scaledTotalFormFreqRank;
+	public void setMorphFreqValue(Float morphFreqValue) {
+		this.morphFreqValue = morphFreqValue;
 	}
 
-	public Integer getParadigmFormFreqRank() {
-		return paradigmFormFreqRank;
+	public Long getMorphFreqRank() {
+		return morphFreqRank;
 	}
 
-	public void setParadigmFormFreqRank(Integer paradigmFormFreqRank) {
-		this.paradigmFormFreqRank = paradigmFormFreqRank;
+	public void setMorphFreqRank(Long morphFreqRank) {
+		this.morphFreqRank = morphFreqRank;
 	}
 
-	public Integer getMaxParadigmFormFreqRank() {
-		return maxParadigmFormFreqRank;
+	public Long getMorphFreqRankMax() {
+		return morphFreqRankMax;
 	}
 
-	public void setMaxParadigmFormFreqRank(Integer maxParadigmFormFreqRank) {
-		this.maxParadigmFormFreqRank = maxParadigmFormFreqRank;
+	public void setMorphFreqRankMax(Long morphFreqRankMax) {
+		this.morphFreqRankMax = morphFreqRankMax;
 	}
 
-	public Integer getScaledParadigmFormFreqRank() {
-		return scaledParadigmFormFreqRank;
+	public int getMorphFreqRankScaled() {
+		return morphFreqRankScaled;
 	}
 
-	public void setScaledParadigmFormFreqRank(Integer scaledParadigmFormFreqRank) {
-		this.scaledParadigmFormFreqRank = scaledParadigmFormFreqRank;
+	public void setMorphFreqRankScaled(int morphFreqRankScaled) {
+		this.morphFreqRankScaled = morphFreqRankScaled;
 	}
 
 }

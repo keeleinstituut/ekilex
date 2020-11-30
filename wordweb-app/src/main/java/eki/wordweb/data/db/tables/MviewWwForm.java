@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = 1211434828;
+    private static final long serialVersionUID = -2040170351;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -157,29 +157,29 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
-     * The column <code>public.mview_ww_form.max_form_freq_value</code>.
+     * The column <code>public.mview_ww_form.form_freq_rank</code>.
      */
-    public final TableField<MviewWwFormRecord, BigDecimal> MAX_FORM_FREQ_VALUE = createField(DSL.name("max_form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+    public final TableField<MviewWwFormRecord, Long> FORM_FREQ_RANK = createField(DSL.name("form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_form.total_form_freq_rank</code>.
+     * The column <code>public.mview_ww_form.form_freq_rank_max</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> TOTAL_FORM_FREQ_RANK = createField(DSL.name("total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> FORM_FREQ_RANK_MAX = createField(DSL.name("form_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_form.max_total_form_freq_rank</code>.
+     * The column <code>public.mview_ww_form.morph_freq_value</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> MAX_TOTAL_FORM_FREQ_RANK = createField(DSL.name("max_total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, BigDecimal> MORPH_FREQ_VALUE = createField(DSL.name("morph_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
-     * The column <code>public.mview_ww_form.paradigm_form_freq_rank</code>.
+     * The column <code>public.mview_ww_form.morph_freq_rank</code>.
      */
-    public final TableField<MviewWwFormRecord, Integer> PARADIGM_FORM_FREQ_RANK = createField(DSL.name("paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwFormRecord, Long> MORPH_FREQ_RANK = createField(DSL.name("morph_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_form.max_paradigm_form_freq_rank</code>.
+     * The column <code>public.mview_ww_form.morph_freq_rank_max</code>.
      */
-    public final TableField<MviewWwFormRecord, Integer> MAX_PARADIGM_FORM_FREQ_RANK = createField(DSL.name("max_paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwFormRecord, Long> MORPH_FREQ_RANK_MAX = createField(DSL.name("morph_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.mview_ww_form</code> table reference

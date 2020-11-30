@@ -485,7 +485,8 @@ create index word_freq_rank_idx on word_freq(rank);
 insert into freq_corp
 (
   name,
-  corp_date
+  corp_date,
+  is_public
 )
 values
 (

@@ -32,12 +32,12 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 		}
 		for (Form form : forms) {
 			if (form.getFormFreqValue() != null) {
-				float scaledParadigmFormFreqRankRounded = Math.round(((float) form.getParadigmFormFreqRank() * (float) FORM_FREQ_SCALE) / (float) form.getMaxParadigmFormFreqRank());
-				int scaledParadigmFormFreqRankInt = FORM_FREQ_SCALE - Float.valueOf(scaledParadigmFormFreqRankRounded).intValue();
-				double scaledTotalFormFreqRankRounded = Math.round(((double) form.getTotalFormFreqRank() * (double) FORM_FREQ_SCALE) / (double) form.getMaxTotalFormFreqRank());
-				int scaledTotalFormFreqRankInt = FORM_FREQ_SCALE - Double.valueOf(scaledTotalFormFreqRankRounded).intValue();
-				form.setScaledTotalFormFreqRank(scaledTotalFormFreqRankInt);
-				form.setScaledParadigmFormFreqRank(scaledParadigmFormFreqRankInt);
+				double formFreqRankScaledRoundedDec = Math.round(((double) form.getFormFreqRank() * (double) FORM_FREQ_SCALE) / (double) form.getFormFreqRankMax());
+				int formFreqRankScaled = FORM_FREQ_SCALE - Double.valueOf(formFreqRankScaledRoundedDec).intValue();
+				double morphFreqRankScaledRoundedDec = Math.round(((double) form.getMorphFreqRank() * (double) FORM_FREQ_SCALE) / (double) form.getMorphFreqRankMax());
+				int morphFreqRankScaled = FORM_FREQ_SCALE - Double.valueOf(morphFreqRankScaledRoundedDec).intValue();
+				form.setFormFreqRankScaled(formFreqRankScaled);
+				form.setMorphFreqRankScaled(morphFreqRankScaled);
 			}
 		}
 	}
