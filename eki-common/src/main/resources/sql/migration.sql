@@ -418,6 +418,17 @@ set value_prese = trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp
     value_text = trim(regexp_replace(regexp_replace(replace(value_text, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
 where value_prese != trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'));
 
+update word
+set value_prese = trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g')),
+    value = trim(regexp_replace(regexp_replace(replace(value, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
+where value_prese != trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'));
+
+update form
+set value_prese = trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g')),
+    value = trim(regexp_replace(regexp_replace(replace(value, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
+where value_prese != trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
+  and mode = 'WORD';
+
 -- paradigm comment
 alter table paradigm rename column example to comment;
 
