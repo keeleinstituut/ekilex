@@ -7,12 +7,12 @@ import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MORPH_FREQ;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -20,12 +20,11 @@ import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD_FREQ;
-import static eki.ekilex.data.db.Tables.MORPH_FREQ;
 
 import java.util.List;
 
@@ -61,7 +60,6 @@ import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MorphFreq;
@@ -218,7 +216,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Meaning m = MEANING.as("m");
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
-		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 
 		Field<String[]> wtf = getWordTypesField(w.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
@@ -230,16 +227,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
-
-		Field<String[]> lff = DSL
-				.select(DSL.arrayAgg(DSL.concat(
-						lf.SOURCE_NAME, DSL.val(" - "),
-						lf.RANK, DSL.val(" - "),
-						lf.VALUE)))
-				.from(lf)
-				.where(lf.LEXEME_ID.eq(l.ID))
-				.groupBy(lf.LEXEME_ID)
-				.asField();
 
 		return create
 				.select(
@@ -263,7 +250,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 						l.LEVEL2,
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
-						lff.as("lexeme_frequencies"),
 						l.IS_PUBLIC,
 						l.COMPLEXITY,
 						l.WEIGHT,
@@ -289,7 +275,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Meaning m = MEANING.as("m");
 		Lexeme l = LEXEME.as("l");
 		Dataset ds = DATASET.as("ds");
-		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 
 		Field<String[]> wtf = getWordTypesField(w.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
@@ -299,16 +284,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
-
-		Field<String[]> lff = DSL
-				.select(DSL.arrayAgg(DSL.concat(
-						lf.SOURCE_NAME, DSL.val(" - "),
-						lf.RANK, DSL.val(" - "),
-						lf.VALUE)))
-				.from(lf)
-				.where(lf.LEXEME_ID.eq(l.ID))
-				.groupBy(lf.LEXEME_ID)
-				.asField();
 
 		return create
 				.select(
@@ -332,7 +307,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 						l.LEVEL2,
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
-						lff.as("lexeme_frequencies"),
 						l.IS_PUBLIC,
 						l.COMPLEXITY,
 						l.WEIGHT,

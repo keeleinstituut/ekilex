@@ -227,23 +227,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where1 = searchFilterHelper.applyFormFrequencyFilters(searchCriteria, f1.ID, where1);
 				where = where.andExists(DSL.select(f1.ID).from(p1, f1).where(where1));
 
-				//TODO form lang? really?
-				boolean containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LANGUAGE);
-				if (containsSearchKeys) {
-					List<SearchCriterion> equalsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
-							searchCriteria, SearchKey.LANGUAGE, SearchOperand.EQUALS, SearchOperand.NOT_EQUALS);
-					List<SearchCriterion> negativeContainsValueCriteria = searchFilterHelper.filterCriteriaBySearchKeyAndOperands(
-							searchCriteria, SearchKey.LANGUAGE, SearchOperand.NOT_CONTAINS);
-
-					if (CollectionUtils.isNotEmpty(equalsValueCriteria)) {
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, equalsValueCriteria, w1.LANG, where1, false);
-						where = where.andExists(DSL.select(f1.ID).from(p1, f1).where(where1));
-					}
-					if (CollectionUtils.isNotEmpty(negativeContainsValueCriteria)) {
-						where1 = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, negativeContainsValueCriteria, w1.LANG, where1, false);
-						where = where.andNotExists(DSL.select(f1.ID).from(p1, f1).where(where1));
-					}
-				}
+				where = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where, false);
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
@@ -412,26 +396,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				} else {
 					where = where.andExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
 				}
-
-			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
-
-				// this type of search is not actually available
-
-				Lexeme l1 = LEXEME.as("l1");
-				Meaning m1 = MEANING.as("m1");
-				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
-				Freeform c1 = FREEFORM.as("c1");
-				Condition where1 = l1.WORD_ID.eq(w1.ID)
-						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-						.and(l1.MEANING_ID.eq(m1.ID))
-						.and(m1ff.MEANING_ID.eq(m1.ID))
-						.and(m1ff.FREEFORM_ID.eq(c1.ID))
-						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
-
-				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
-				where1 = searchFilterHelper.applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1, false);
-
-				where = where.andExists(DSL.select(c1.ID).from(l1, m1, m1ff, c1).where(where1));
 
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 

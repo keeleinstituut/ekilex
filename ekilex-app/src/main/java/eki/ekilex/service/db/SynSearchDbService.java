@@ -3,7 +3,6 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
@@ -16,7 +15,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record19;
+import org.jooq.Record18;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,6 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -59,7 +57,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Lexeme l2 = LEXEME.as("l");
 		Lexeme lh = LEXEME.as("lh");
 		LexemePos lp = LEXEME_POS.as("lp");
-		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 		Definition d = DEFINITION.as("d");
 
 		Field<TypeWordRelParamRecord[]> relp = DSL
@@ -91,25 +88,12 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.and(lp.LEXEME_ID.eq(l2.ID)))
 				.asField();
 
-		Field<Float> rwlf = DSL
-				.select(DSL.max(DSL.field("value")))
-				.from(DSL
-						.select(DSL.field("distinct on (lf.lexeme_id) lf.value", Float.class))
-						.from(lf, l2)
-						.where(
-								l2.WORD_ID.eq(r.WORD2_ID)
-										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(l2.DATASET_CODE.eq(datasetCode))
-										.and(lf.LEXEME_ID.eq(l2.ID)))
-						.orderBy(lf.LEXEME_ID, lf.CREATED_ON.desc()))
-				.asField();
-
 		Field<String[]> wtf = getWordTypesField(w2.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record19<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[], Float>> rr = DSL
+		Table<Record18<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[]>> rr = DSL
 				.select(
 						r.ID,
 						r.WORD_REL_TYPE_CODE.as("rel_type_code"),
@@ -128,8 +112,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
 						rwd.as("word_definitions"),
-						rwlp.as("word_lexemes_poses"),
-						rwlf.as("word_lexemes_max_frequency"))
+						rwlp.as("word_lexemes_poses"))
 				.from(r
 						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
 						.leftOuterJoin(oppr).on(

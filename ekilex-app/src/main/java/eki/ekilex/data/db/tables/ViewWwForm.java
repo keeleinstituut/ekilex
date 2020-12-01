@@ -27,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = 1263592289;
+    private static final long serialVersionUID = -906666183;
 
     /**
      * The reference instance of <code>public.view_ww_form</code>
@@ -153,29 +153,29 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     public final TableField<ViewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
-     * The column <code>public.view_ww_form.max_form_freq_value</code>.
+     * The column <code>public.view_ww_form.form_freq_rank</code>.
      */
-    public final TableField<ViewWwFormRecord, BigDecimal> MAX_FORM_FREQ_VALUE = createField(DSL.name("max_form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC, this, "");
+    public final TableField<ViewWwFormRecord, Long> FORM_FREQ_RANK = createField(DSL.name("form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.view_ww_form.total_form_freq_rank</code>.
+     * The column <code>public.view_ww_form.form_freq_rank_max</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> TOTAL_FORM_FREQ_RANK = createField(DSL.name("total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> FORM_FREQ_RANK_MAX = createField(DSL.name("form_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.view_ww_form.max_total_form_freq_rank</code>.
+     * The column <code>public.view_ww_form.morph_freq_value</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> MAX_TOTAL_FORM_FREQ_RANK = createField(DSL.name("max_total_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, BigDecimal> MORPH_FREQ_VALUE = createField(DSL.name("morph_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
-     * The column <code>public.view_ww_form.paradigm_form_freq_rank</code>.
+     * The column <code>public.view_ww_form.morph_freq_rank</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> PARADIGM_FORM_FREQ_RANK = createField(DSL.name("paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> MORPH_FREQ_RANK = createField(DSL.name("morph_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.view_ww_form.max_paradigm_form_freq_rank</code>.
+     * The column <code>public.view_ww_form.morph_freq_rank_max</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> MAX_PARADIGM_FORM_FREQ_RANK = createField(DSL.name("max_paradigm_form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> MORPH_FREQ_RANK_MAX = createField(DSL.name("morph_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.view_ww_form</code> table reference
@@ -203,7 +203,7 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     }
 
     private ViewWwForm(Name alias, Table<ViewWwFormRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    w.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.comment AS paradigm_comment,\n    p.inflection_type,\n    f.id AS form_id,\n    f.mode,\n    f.morph_group1,\n    f.morph_group2,\n    f.morph_group3,\n    f.display_level,\n    f.morph_code,\n    f.morph_exists,\n    f.value,\n    f.value_prese,\n    f.components,\n    f.display_form,\n    f.vocal_form,\n    f.audio_file,\n    f.order_by,\n    ff.form_freq_value,\n    ( SELECT max(ff_1.value) AS max\n           FROM form_frequency ff_1) AS max_form_freq_value,\n    ff.total_form_freq_rank,\n    ( SELECT max(ff_1.rank) AS max\n           FROM form_frequency ff_1) AS max_total_form_freq_rank,\n    ff.paradigm_form_freq_rank,\n    max(ff.paradigm_form_freq_rank) OVER (PARTITION BY ff.paradigm_id) AS max_paradigm_form_freq_rank\n   FROM (((word w\n     JOIN paradigm p ON ((p.word_id = w.id)))\n     JOIN form f ON ((f.paradigm_id = p.id)))\n     LEFT JOIN ( SELECT f_1.id,\n            f_1.paradigm_id,\n            f_1.mode,\n            f_1.morph_group1,\n            f_1.morph_group2,\n            f_1.morph_group3,\n            f_1.display_level,\n            f_1.morph_code,\n            f_1.morph_exists,\n            f_1.value,\n            f_1.value_prese,\n            f_1.components,\n            f_1.display_form,\n            f_1.vocal_form,\n            f_1.audio_file,\n            f_1.order_by,\n            ff_1.value AS form_freq_value,\n            ff_1.rank AS total_form_freq_rank,\n            dense_rank() OVER (PARTITION BY p_1.id ORDER BY ff_1.value DESC) AS paradigm_form_freq_rank\n           FROM (((word w_1\n             JOIN paradigm p_1 ON ((p_1.word_id = w_1.id)))\n             JOIN form f_1 ON (((f_1.paradigm_id = p_1.id) AND (f_1.display_level > 0))))\n             JOIN form_frequency ff_1 ON (((ff_1.source_name = 'enc17-formfreq'::text) AND (ff_1.word_value = w_1.value) AND (ff_1.form_value = f_1.value) AND ((ff_1.morph_code)::text = (f_1.morph_code)::text))))\n          WHERE (EXISTS ( SELECT l.id\n                   FROM lexeme l,\n                    dataset ds\n                  WHERE ((l.word_id = w_1.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))))) ff ON ((ff.id = f.id)))\n  WHERE (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))))\n  ORDER BY w.id, p.id, f.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    w.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.comment AS paradigm_comment,\n    p.inflection_type,\n    f.id AS form_id,\n    f.mode,\n    f.morph_group1,\n    f.morph_group2,\n    f.morph_group3,\n    f.display_level,\n    f.morph_code,\n    f.morph_exists,\n    f.value,\n    f.value_prese,\n    f.components,\n    f.display_form,\n    f.vocal_form,\n    f.audio_file,\n    f.order_by,\n    ff.form_freq_value,\n    ff.form_freq_rank,\n    ff.form_freq_rank_max,\n    mf.morph_freq_value,\n    mf.morph_freq_rank,\n    mf.morph_freq_rank_max\n   FROM ((((word w\n     JOIN paradigm p ON ((p.word_id = w.id)))\n     JOIN form f ON ((f.paradigm_id = p.id)))\n     LEFT JOIN ( SELECT ff_1.form_id,\n            ff_1.value AS form_freq_value,\n            ff_1.rank AS form_freq_rank,\n            fc.corp_date,\n            ( SELECT max(fff.rank) AS max\n                   FROM form_freq fff\n                  WHERE (fff.freq_corp_id = fc.id)) AS form_freq_rank_max\n           FROM form_freq ff_1,\n            freq_corp fc\n          WHERE ((ff_1.freq_corp_id = fc.id) AND (fc.is_public = true))) ff ON (((ff.form_id = f.id) AND (ff.corp_date = ( SELECT max(fcc.corp_date) AS max\n           FROM form_freq fff,\n            freq_corp fcc\n          WHERE ((fff.freq_corp_id = fcc.id) AND (fcc.is_public = true) AND (fff.form_id = f.id)))))))\n     LEFT JOIN ( SELECT mf_1.morph_code,\n            mf_1.value AS morph_freq_value,\n            mf_1.rank AS morph_freq_rank,\n            fc.corp_date,\n            ( SELECT max(mff.rank) AS max\n                   FROM morph_freq mff\n                  WHERE (mff.freq_corp_id = fc.id)) AS morph_freq_rank_max\n           FROM morph_freq mf_1,\n            freq_corp fc\n          WHERE ((mf_1.freq_corp_id = fc.id) AND (fc.is_public = true))) mf ON ((((mf.morph_code)::text = (f.morph_code)::text) AND (mf.corp_date = ( SELECT max(fcc.corp_date) AS max\n           FROM morph_freq mff,\n            freq_corp fcc\n          WHERE ((mff.freq_corp_id = fcc.id) AND (fcc.is_public = true) AND ((mff.morph_code)::text = (f.morph_code)::text)))))))\n  WHERE (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND ((l.type)::text = 'PRIMARY'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))))\n  ORDER BY w.id, p.id, f.id;"));
     }
 
     public <O extends Record> ViewWwForm(Table<O> child, ForeignKey<O, ViewWwFormRecord> key) {

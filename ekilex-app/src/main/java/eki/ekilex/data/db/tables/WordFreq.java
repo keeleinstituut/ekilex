@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordFreq extends TableImpl<WordFreqRecord> {
 
-    private static final long serialVersionUID = -1815596073;
+    private static final long serialVersionUID = 982881434;
 
     /**
      * The reference instance of <code>public.word_freq</code>
@@ -115,7 +115,7 @@ public class WordFreq extends TableImpl<WordFreqRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_FREQ_CORP_ID_IDX, Indexes.WORD_FREQ_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.WORD_FREQ_CORP_ID_IDX, Indexes.WORD_FREQ_RANK_IDX, Indexes.WORD_FREQ_VALUE_IDX, Indexes.WORD_FREQ_WORD_ID_IDX);
     }
 
     @Override

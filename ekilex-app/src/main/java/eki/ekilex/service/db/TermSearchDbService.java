@@ -3,7 +3,6 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.WORD;
 
@@ -30,7 +29,6 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
@@ -377,18 +375,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 	public LexemeWordTuple getLexemeWordTuple(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Lexeme l = LEXEME.as("l");
-		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 		Word w = WORD.as("w");
-
-		Field<String[]> lfreq = DSL
-				.select(DSL.arrayAgg(DSL.concat(
-						lf.SOURCE_NAME, DSL.val(" - "),
-						lf.RANK, DSL.val(" - "),
-						lf.VALUE)))
-				.from(lf)
-				.where(lf.LEXEME_ID.eq(l.ID))
-				.groupBy(lf.LEXEME_ID)
-				.asField();
 
 		Field<String[]> wtf = getWordTypesField(w.ID);
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
@@ -408,7 +395,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 						l.LEVEL1,
 						l.LEVEL2,
 						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
-						lfreq.as("lexeme_frequencies"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.IS_PUBLIC,
 						l.COMPLEXITY,

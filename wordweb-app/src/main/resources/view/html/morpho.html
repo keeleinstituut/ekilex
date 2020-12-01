@@ -28,21 +28,21 @@
           <th:block th:replace=" :: morpho-form-value(${form}, '')"></th:block>
           <span th:unless="${formIter.last}">~</span>
         </div>
-        <div class="rating invisible" aria-hidden="true" th:if="${form.morphExists && form.formFreqValue != null}"
-             data-toggle="tooltip" data-placement="top" th:title="#{|label.morpho.freq.total|(${form.formFreqValue}, ${form.maxFormFreqValue})}">
+        <div class="rating" th:if="${form.morphExists && form.formFreqValue != null}"
+             data-toggle="tooltip" data-placement="top" th:title="#{|label.form.freq|(${form.formFreqValue}, ${form.morphFreqValue})}">
           <div class="rating__row rating__row--highlighted">
-            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 1 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 2 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 3 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 4 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledTotalFormFreqRank >= 5 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 1 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 2 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 3 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 4 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.formFreqRankScaled >= 5 ? 'fa' : 'far'}"></i>
           </div>
           <div class="rating__row">
-            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 1 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 2 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 3 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 4 ? 'fa' : 'far'}"></i>
-            <i class="fa-star" th:classappend="${form.scaledParadigmFormFreqRank >= 5 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 1 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 2 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 3 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 4 ? 'fa' : 'far'}"></i>
+            <i class="fa-star" th:classappend="${form.morphFreqRankScaled >= 5 ? 'fa' : 'far'}"></i>
           </div>
         </div>
       </div>
@@ -67,7 +67,6 @@
             </li>
           </ul>
           <div>
-            <h2>Muutumatu tüüp</h2>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table>

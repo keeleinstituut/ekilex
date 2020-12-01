@@ -16,6 +16,8 @@ public class FreqCorp extends AbstractDataObject {
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private Date corpDate;
 
+	private boolean isPublic;
+
 	public String getName() {
 		return name;
 	}
@@ -30,6 +32,14 @@ public class FreqCorp extends AbstractDataObject {
 
 	public void setCorpDate(Date corpDate) {
 		this.corpDate = corpDate;
+	}
+
+	public boolean isPublic() {
+		return isPublic;
+	}
+
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 }

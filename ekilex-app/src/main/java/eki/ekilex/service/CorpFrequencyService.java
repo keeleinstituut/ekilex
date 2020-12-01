@@ -31,6 +31,11 @@ public class CorpFrequencyService {
 	}
 
 	@Transactional
+	public void updateFreqCorp(FreqCorpId freqCorp) {
+		corpFrequencyDbService.updateFreqCorp(freqCorp);
+	}
+
+	@Transactional
 	public void createFormFreqs(List<FormFreq> formFreqs) {
 		for (FormFreq formFreq : formFreqs) {
 			corpFrequencyDbService.createFormFreqs(formFreq);

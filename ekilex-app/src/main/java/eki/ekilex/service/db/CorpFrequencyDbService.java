@@ -30,11 +30,21 @@ public class CorpFrequencyDbService {
 
 	public Long createCorpFreq(FreqCorp freqCorp) {
 		return create
-				.insertInto(FREQ_CORP, FREQ_CORP.NAME, FREQ_CORP.CORP_DATE)
-				.values(freqCorp.getName(), freqCorp.getCorpDate())
+				.insertInto(FREQ_CORP, FREQ_CORP.NAME, FREQ_CORP.CORP_DATE, FREQ_CORP.IS_PUBLIC)
+				.values(freqCorp.getName(), freqCorp.getCorpDate(), freqCorp.isPublic())
 				.returning(FREQ_CORP.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public void updateFreqCorp(FreqCorpId freqCorp) {
+		create
+				.update(FREQ_CORP)
+				.set(FREQ_CORP.NAME, freqCorp.getName())
+				.set(FREQ_CORP.CORP_DATE, freqCorp.getCorpDate())
+				.set(FREQ_CORP.IS_PUBLIC, freqCorp.isPublic())
+				.where(FREQ_CORP.ID.eq(freqCorp.getId()))
+				.execute();
 	}
 
 	public void createFormFreqs(FormFreq formFreq) {
@@ -57,4 +67,5 @@ public class CorpFrequencyDbService {
 				.values(wordFreq.getFreqCorpId(), wordFreq.getWordId(), BigDecimal.valueOf(wordFreq.getValue()), wordFreq.getRank())
 				.execute();
 	}
+
 }

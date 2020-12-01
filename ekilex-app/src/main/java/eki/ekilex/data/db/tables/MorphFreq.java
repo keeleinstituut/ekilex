@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphFreq extends TableImpl<MorphFreqRecord> {
 
-    private static final long serialVersionUID = -944202043;
+    private static final long serialVersionUID = 681719716;
 
     /**
      * The reference instance of <code>public.morph_freq</code>
@@ -115,7 +115,7 @@ public class MorphFreq extends TableImpl<MorphFreqRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MORPH_FREQ_CORP_ID_IDX, Indexes.MORPH_FREQ_MORPH_CODE_IDX);
+        return Arrays.<Index>asList(Indexes.MORPH_FREQ_CORP_ID_IDX, Indexes.MORPH_FREQ_MORPH_CODE_IDX, Indexes.MORPH_FREQ_RANK_IDX, Indexes.MORPH_FREQ_VALUE_IDX);
     }
 
     @Override

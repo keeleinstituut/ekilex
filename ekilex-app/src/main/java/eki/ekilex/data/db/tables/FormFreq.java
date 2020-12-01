@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormFreq extends TableImpl<FormFreqRecord> {
 
-    private static final long serialVersionUID = 1591447343;
+    private static final long serialVersionUID = -412675956;
 
     /**
      * The reference instance of <code>public.form_freq</code>
@@ -115,7 +115,7 @@ public class FormFreq extends TableImpl<FormFreqRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FORM_FREQ_CORP_ID_IDX, Indexes.FORM_FREQ_FORM_ID_IDX);
+        return Arrays.<Index>asList(Indexes.FORM_FREQ_CORP_ID_IDX, Indexes.FORM_FREQ_FORM_ID_IDX, Indexes.FORM_FREQ_RANK_IDX, Indexes.FORM_FREQ_VALUE_IDX);
     }
 
     @Override

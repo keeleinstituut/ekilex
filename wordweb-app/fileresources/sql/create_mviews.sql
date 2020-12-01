@@ -182,6 +182,8 @@ dblink(
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
 	od_word_recommendations text array,
+	freq_value numeric(12,7),
+	freq_rank bigint,
 	forms_exist boolean,
 	min_ds_order_by bigint,
 	word_type_order_by integer
@@ -214,11 +216,11 @@ dblink(
 	audio_file varchar(255),
 	order_by bigint,
 	form_freq_value numeric(12,7),
-	max_form_freq_value numeric(12,7),
-	total_form_freq_rank bigint,
-	max_total_form_freq_rank bigint,
-	paradigm_form_freq_rank integer,
-	max_paradigm_form_freq_rank integer
+    form_freq_rank bigint,
+    form_freq_rank_max bigint,
+    morph_freq_value numeric(12,7),
+    morph_freq_rank bigint,
+    morph_freq_rank_max bigint
 );
 
 create materialized view mview_ww_meaning as

@@ -198,9 +198,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyValueFilters(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition, boolean isOnLowerValue) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
-				.collect(toList());
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, searchKey);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return condition;
@@ -416,17 +414,12 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		FreqCorp fc = FREQ_CORP.as("fc");
 		WordFreq wf = WORD_FREQ.as("wf");
-		WordFreq wff = WORD_FREQ.as("wff");
 
 		Condition where1 = wf.WORD_ID.eq(wordIdField)
-				.and(wf.FREQ_CORP_ID.eq(DSL
+				.and(wf.FREQ_CORP_ID.in(DSL
 						.select(fc.ID)
-						.from(fc, wff)
-						.where(
-								wff.WORD_ID.eq(wf.WORD_ID)
-								.and(wff.FREQ_CORP_ID.eq(fc.ID)))
-						.orderBy(fc.CORP_DATE.desc())
-						.limit(1)));
+						.from(fc)
+						.where(fc.IS_PUBLIC.isTrue())));
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchKey searchKey = criterion.getSearchKey();
@@ -463,17 +456,12 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		FreqCorp fc = FREQ_CORP.as("fc");
 		FormFreq ff = FORM_FREQ.as("ff");
-		FormFreq fff = FORM_FREQ.as("fff");
 
 		Condition where1 = ff.FORM_ID.eq(formIdField)
-				.and(ff.FREQ_CORP_ID.eq(DSL
+				.and(ff.FREQ_CORP_ID.in(DSL
 						.select(fc.ID)
-						.from(fc, fff)
-						.where(
-								fff.FORM_ID.eq(ff.FORM_ID)
-								.and(fff.FREQ_CORP_ID.eq(fc.ID)))
-						.orderBy(fc.CORP_DATE.desc())
-						.limit(1)));
+						.from(fc)
+						.where(fc.IS_PUBLIC.isTrue())));
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchKey searchKey = criterion.getSearchKey();
@@ -700,6 +688,29 @@ public class SearchFilterHelper implements GlobalConstant {
 			condition = condition.and(DSL.notExists(DSL.select(mst.ID).from(mst).where(where1)));
 		}
 
+		return condition;
+	}
+
+	public Condition applyConceptIdFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.CONCEPT_ID);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		Freeform ff = FREEFORM.as("ff");
+
+		Condition meaningFreeformCondition = mff.MEANING_ID.eq(meaningIdField)
+				.and(mff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			meaningFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, meaningFreeformCondition, true);
+		}
+
+		condition = condition.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
 		return condition;
 	}
 

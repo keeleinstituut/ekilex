@@ -49,6 +49,19 @@ public class ApiCorpFrequencyController extends AbstractApiController {
 
 	@Order(503)
 	@PreAuthorize("principal.admin")
+	@PostMapping(API_SERVICES_URI + FREQ_CORP_URI + UPDATE_URI)
+	@ResponseBody
+	public ApiResponse updateFreqCorp(@RequestBody FreqCorpId freqCorp) {
+		try {
+			corpFrequencyService.updateFreqCorp(freqCorp);
+			return getOpSuccessResponse();
+		} catch (Exception e) {
+			return getOpFailResponse(e);
+		}
+	}
+
+	@Order(504)
+	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + FORM_FREQ_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createFormFreq(@RequestBody List<FormFreq> formFreqs) {
@@ -60,7 +73,7 @@ public class ApiCorpFrequencyController extends AbstractApiController {
 		}
 	}
 
-	@Order(504)
+	@Order(505)
 	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + MORPH_FREQ_URI + CREATE_URI)
 	@ResponseBody
@@ -73,7 +86,7 @@ public class ApiCorpFrequencyController extends AbstractApiController {
 		}
 	}
 
-	@Order(505)
+	@Order(506)
 	@PreAuthorize("principal.admin")
 	@PostMapping(API_SERVICES_URI + WORD_FREQ_URI + CREATE_URI)
 	@ResponseBody

@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreqCorp extends TableImpl<FreqCorpRecord> {
 
-    private static final long serialVersionUID = -114949357;
+    private static final long serialVersionUID = -382028584;
 
     /**
      * The reference instance of <code>public.freq_corp</code>
@@ -61,7 +61,12 @@ public class FreqCorp extends TableImpl<FreqCorpRecord> {
     /**
      * The column <code>public.freq_corp.corp_date</code>.
      */
-    public final TableField<FreqCorpRecord, Date> CORP_DATE = createField(DSL.name("corp_date"), org.jooq.impl.SQLDataType.DATE, this, "");
+    public final TableField<FreqCorpRecord, Date> CORP_DATE = createField(DSL.name("corp_date"), org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
+
+    /**
+     * The column <code>public.freq_corp.is_public</code>.
+     */
+    public final TableField<FreqCorpRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * Create a <code>public.freq_corp</code> table reference
@@ -143,11 +148,11 @@ public class FreqCorp extends TableImpl<FreqCorpRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, String, Date> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, String, Date, Boolean> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }
