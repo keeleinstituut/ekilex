@@ -22,7 +22,8 @@
 		<module>ekilex-etl</module>
 		<module>ekilex-rus-morph</module>
 		<module>wordweb-app</module>
-	</modules>
+        <module>stat-app</module>
+    </modules>
 
 	<developers>
 		<developer>

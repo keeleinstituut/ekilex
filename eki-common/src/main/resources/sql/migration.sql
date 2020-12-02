@@ -407,7 +407,7 @@ update government_type_label set type = 'descrip' where type = 'full';
 -- taastab tühjad grammatika kuva väljad 
 update freeform ff set value_prese = value_text where ff.type = 'GRAMMAR' and ff.value_prese is null;
 
--- muudab &nbsp; tühikuks ning kõrvaldab erinevad reavahetused, tabulaatori, topelttühikud definitsioonidest ja kõigist vabavormidest
+-- muudab &nbsp; tühikuks ning kõrvaldab erinevad reavahetused, tabulaatori ning topelttühikud
 update definition
 set value_prese = trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g')),
     value = trim(regexp_replace(regexp_replace(replace(value, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
@@ -427,6 +427,16 @@ update form
 set value_prese = trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g')),
     value = trim(regexp_replace(regexp_replace(replace(value, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
 where value_prese != trim(regexp_replace(regexp_replace(replace(value_prese, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
+  and mode = 'WORD';
+
+update form
+set display_form = trim(regexp_replace(regexp_replace(replace(display_form, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
+where display_form != trim(regexp_replace(regexp_replace(replace(display_form, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
+  and mode = 'WORD';
+
+update form
+set vocal_form = trim(regexp_replace(regexp_replace(replace(vocal_form, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
+where vocal_form != trim(regexp_replace(regexp_replace(replace(vocal_form, '&nbsp;', ' '), '\r|\n|\t', ' ', 'g'), '\s+', ' ', 'g'))
   and mode = 'WORD';
 
 -- paradigm comment
