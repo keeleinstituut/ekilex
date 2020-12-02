@@ -684,6 +684,7 @@ function initClassifierAutocomplete() {
 function refreshDetails() {
 	$('#refresh-details').trigger('click');
 }
+
 function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 	$.ajax({
 		url: validateJoinUrl,

@@ -45,14 +45,14 @@
     </div>
   </div>
   <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-auto" th:with="isSearchResult = ${termSearchResult != null}">
-    <div class="mt-4 float-left" th:if="${noResults}">
-      <div th:text="#{term.not.found}">Not found.</div>
-    </div>
     <div class="mt-4 float-left" th:if="${invalidSearch}">
       <div th:text="#{term.search.invalid}"></div>
     </div>
     <div class="row no-gutters pt-2 h-100">
-      <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;" id="searchColumn">
+      <div class="mt-4 float-left" th:if="${noResults == true}">
+        <div th:text="#{term.not.found}">Not found.</div>
+      </div>
+      <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;" id="searchColumn" th:if="${isSearchResult}">
         <div id="results_div" class="card shadow" th:if="${termSearchResult.resultExist}">
           <div th:replace="termcomp :: search_result"></div>
         </div>

@@ -23,19 +23,6 @@ function initializeSearch(type) {
 		$(this).closest('form').submit();
 	});
 	
-	$(document).on("click", "#share-details-link", function() {
-		let searchParams = new URLSearchParams(window.location.search);
-		let idParam = searchParams.get("id");
-		if (idParam) {
-			let shareLink = fullLexSearchUrl + '?id=' + idParam;
-			let tempCopyField = $("<input>");
-			$("body").append(tempCopyField);
-			tempCopyField.val(shareLink).select();
-			document.execCommand('copy');
-			tempCopyField.remove();			
-		}
-	});
-
 	$(document).on("click", ":button[name='details-btn'], #refresh-details", function() {
 		const wordId = $(this).data('id');
 		const behaviour = $(this).data('behaviour') || false;

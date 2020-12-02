@@ -46,6 +46,20 @@ function initialiseSearchForm() {
 			validateAndSubmitSimpleSearch();
 		}
 	});
+
+	$(document).on("click", "#share-details-link", function() {
+		let searchParams = new URLSearchParams(window.location.search);
+		let idParam = searchParams.get("id");
+		let detailsUri = $(this).data('details-uri');
+		if (idParam) {
+			let shareLink = applicationBaseUrl + '/' + detailsUri + '?id=' + idParam;
+			let tempCopyField = $("<input>");
+			$("body").append(tempCopyField);
+			tempCopyField.val(shareLink).select();
+			document.execCommand('copy');
+			tempCopyField.remove();			
+		}
+	});
 };
 
 function validateAndSubmitSimpleSearch() {
