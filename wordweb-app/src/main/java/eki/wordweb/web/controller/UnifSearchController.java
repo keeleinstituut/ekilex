@@ -109,6 +109,7 @@ public class UnifSearchController extends AbstractController {
 
 		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
 		statDataCollector.addSearchStat(destinLangs, SEARCH_MODE_DETAIL, wordsData.isResultsExist(), isIeUser);
+		statDataCollector.postSearchStat(searchValidation, wordsData, SEARCH_MODE_DETAIL);
 
 		return UNIF_SEARCH_PAGE;
 	}

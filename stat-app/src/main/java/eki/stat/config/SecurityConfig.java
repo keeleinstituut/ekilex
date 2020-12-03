@@ -13,7 +13,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 
 		// TODO api key auth?
-		http.authorizeRequests().antMatchers("/", "/api/**").permitAll();
+		http.authorizeRequests().antMatchers("/", "/api/**").permitAll().and().csrf().disable();
 	}
 
 }

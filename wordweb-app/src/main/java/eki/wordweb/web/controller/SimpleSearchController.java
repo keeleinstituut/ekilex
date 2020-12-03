@@ -104,6 +104,7 @@ public class SimpleSearchController extends AbstractController {
 
 		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
 		statDataCollector.addSearchStat(destinLangs, SEARCH_MODE_SIMPLE, wordsData.isResultsExist(), isIeUser);
+		statDataCollector.postSearchStat(searchValidation, wordsData, SEARCH_MODE_SIMPLE);
 
 		return LITE_SEARCH_PAGE;
 	}

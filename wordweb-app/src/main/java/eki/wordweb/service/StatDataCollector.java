@@ -2,6 +2,7 @@ package eki.wordweb.service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +10,19 @@ import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import eki.common.data.Count;
+import eki.common.data.SearchStat;
+import eki.wordweb.data.SearchValidation;
+import eki.wordweb.data.WordsData;
 
 @Component
 public class StatDataCollector {
@@ -23,6 +34,15 @@ public class StatDataCollector {
 	private Map<String, Count> searchCountMap;
 
 	private Map<String, Count> exceptionCountMap;
+
+	@Value("${stat.service.enabled:}")
+	private boolean serviceEnabled;
+
+	@Value("${stat.service.url:}")
+	private String serviceUrl;
+
+	@Value("${stat.service.key:}")
+	private String serviceKey;
 
 	public StatDataCollector() {
 		DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
@@ -94,6 +114,47 @@ public class StatDataCollector {
 
 	public Map<String, Count> getExceptionCountMap() {
 		return exceptionCountMap;
+	}
+
+	@Async
+	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, String searchMode) {
+
+		if (!serviceEnabled) {
+			return;
+		}
+
+		String searchWord = searchValidation.getSearchWord();
+		Integer homonymNr = searchValidation.getHomonymNr();
+		List<String> destinLangs = searchValidation.getDestinLangs();
+		String searchUri = searchValidation.getSearchUri();
+		int resultCount = wordsData.getResultCount();
+		boolean resultsExist = wordsData.isResultsExist();
+		boolean isSingleResult = wordsData.isSingleResult();
+
+		SearchStat searchStat = new SearchStat();
+		searchStat.setSearchWord(searchWord);
+		searchStat.setHomonymNr(homonymNr);
+		searchStat.setSearchMode(searchMode);
+		searchStat.setDestinLangs(destinLangs);
+		searchStat.setSearchUri(searchUri);
+		searchStat.setResultCount(resultCount);
+		searchStat.setResultsExist(resultsExist);
+		searchStat.setSingleResult(isSingleResult);
+
+		// TODO send key?
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpEntity<SearchStat> searchStatEntity = new HttpEntity<>(searchStat, headers);
+		try {
+			restTemplate.postForObject(serviceUrl, searchStatEntity, String.class);
+		} catch (RestClientException e) {
+			// TODO log fail exception?
+			// System.out.println(e);
+		}
 	}
 
 }
