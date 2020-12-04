@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +31,8 @@ import eki.wordweb.data.WordsData;
 public class StatDataCollector implements GlobalConstant {
 
 	// TODO send exceptions to service and remove old logic - yogesh
+
+	private static Logger logger = LoggerFactory.getLogger(StatDataCollector.class);
 
 	private static final String TOTAL_SEARCH_COUNT_KEY = "*";
 
@@ -145,6 +149,7 @@ public class StatDataCollector implements GlobalConstant {
 		searchStat.setResultCount(resultCount);
 		searchStat.setResultsExist(resultsExist);
 		searchStat.setSingleResult(isSingleResult);
+		// TODO time
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -157,8 +162,7 @@ public class StatDataCollector implements GlobalConstant {
 		try {
 			restTemplate.postForObject(serviceUrl, searchStatEntity, String.class);
 		} catch (RestClientException e) {
-			// TODO log fail exception?
-			// System.out.println(e);
+			logger.error("posting search stat data failed: {}", e.getMessage());
 		}
 	}
 
