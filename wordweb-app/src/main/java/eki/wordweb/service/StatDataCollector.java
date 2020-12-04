@@ -19,13 +19,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import eki.common.constant.GlobalConstant;
 import eki.common.data.Count;
 import eki.common.data.SearchStat;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.WordsData;
 
 @Component
-public class StatDataCollector {
+public class StatDataCollector implements GlobalConstant {
+
+	// TODO send exceptions to service and remove old logic - yogesh
 
 	private static final String TOTAL_SEARCH_COUNT_KEY = "*";
 
@@ -35,13 +38,13 @@ public class StatDataCollector {
 
 	private Map<String, Count> exceptionCountMap;
 
-	@Value("${stat.service.enabled:}")
+	@Value("${stat.service.enabled:false}")
 	private boolean serviceEnabled;
 
-	@Value("${stat.service.url:}")
+	@Value("${stat.service.url}")
 	private String serviceUrl;
 
-	@Value("${stat.service.key:}")
+	@Value("${stat.service.key}")
 	private String serviceKey;
 
 	public StatDataCollector() {
@@ -126,6 +129,7 @@ public class StatDataCollector {
 		String searchWord = searchValidation.getSearchWord();
 		Integer homonymNr = searchValidation.getHomonymNr();
 		List<String> destinLangs = searchValidation.getDestinLangs();
+		List<String> datasetCodes = searchValidation.getDatasetCodes();
 		String searchUri = searchValidation.getSearchUri();
 		int resultCount = wordsData.getResultCount();
 		boolean resultsExist = wordsData.isResultsExist();
@@ -136,15 +140,16 @@ public class StatDataCollector {
 		searchStat.setHomonymNr(homonymNr);
 		searchStat.setSearchMode(searchMode);
 		searchStat.setDestinLangs(destinLangs);
+		searchStat.setDatasetCodes(datasetCodes);
 		searchStat.setSearchUri(searchUri);
 		searchStat.setResultCount(resultCount);
 		searchStat.setResultsExist(resultsExist);
 		searchStat.setSingleResult(isSingleResult);
 
-		// TODO send key?
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		headers.set(STAT_API_KEY_HEADER_NAME, serviceKey);
 
 		RestTemplate restTemplate = new RestTemplate();
 
