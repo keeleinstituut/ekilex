@@ -102,9 +102,8 @@ public class SimpleSearchController extends AbstractController {
 		WordsData wordsData = simpleSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
-		statDataCollector.addSearchStat(destinLangs, SEARCH_MODE_SIMPLE, wordsData.isResultsExist(), isIeUser);
-		statDataCollector.postSearchStat(searchValidation, wordsData, SEARCH_MODE_SIMPLE);
+		String userAgent = request.getHeader("User-Agent");
+		statDataCollector.postSearchStat(searchValidation, wordsData, SEARCH_MODE_SIMPLE, userAgent);
 
 		return LITE_SEARCH_PAGE;
 	}

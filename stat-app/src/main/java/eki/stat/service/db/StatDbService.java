@@ -30,6 +30,7 @@ public class StatDbService {
 		wwSearchRecord.setResultCount(searchStat.getResultCount());
 		wwSearchRecord.setResultsExist(searchStat.isResultsExist());
 		wwSearchRecord.setSingleResult(searchStat.isSingleResult());
+		wwSearchRecord.setUserAgent(searchStat.getUserAgent());
 		wwSearchRecord.store();
 	}
 }

@@ -124,7 +124,7 @@ public class StatDataCollector implements GlobalConstant {
 	}
 
 	@Async
-	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, String searchMode) {
+	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, String searchMode, String userAgent) {
 
 		if (!serviceEnabled) {
 			return;
@@ -149,7 +149,7 @@ public class StatDataCollector implements GlobalConstant {
 		searchStat.setResultCount(resultCount);
 		searchStat.setResultsExist(resultsExist);
 		searchStat.setSingleResult(isSingleResult);
-		// TODO time
+		searchStat.setUserAgent(userAgent);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);

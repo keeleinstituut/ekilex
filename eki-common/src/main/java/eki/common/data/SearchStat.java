@@ -24,6 +24,8 @@ public class SearchStat extends AbstractDataObject {
 
 	private boolean singleResult;
 
+	private String userAgent;
+
 	public String getSearchWord() {
 		return searchWord;
 	}
@@ -94,5 +96,13 @@ public class SearchStat extends AbstractDataObject {
 
 	public void setSingleResult(boolean singleResult) {
 		this.singleResult = singleResult;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
 	}
 }

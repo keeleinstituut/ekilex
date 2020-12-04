@@ -10,6 +10,7 @@ create table ww_search
   result_count integer,
   results_exist boolean,
   single_result boolean,
+  user_agent text,
   event_on timestamp not null default statement_timestamp()
 );
 alter sequence ww_search_id_seq restart with 10000;
