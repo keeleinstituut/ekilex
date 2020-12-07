@@ -282,7 +282,6 @@ function loadDetails(wordId, task, lastWordId) {
 	$("#word-result-" + wordId).addClass('active');
 	openWaitDlg();
 
-	console.log({viewType});
 	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
 	if (viewType === 'term') {
 		wordDetailsUrl = applicationUrl + 'meaningdetails/' + wordId;
@@ -412,7 +411,6 @@ function initLexemeLevelsDlg(editDlg) {
 		let url = editForm.attr('action') + '?' + editForm.serialize();
 		$.post(url).done(function(data) {
 			let id = editDlg.parents('[data-rel="details-area"]:first').data('id');
-			console.log(id);
 			let detailsButton = editDlg.parents('[data-rel="details-area"]:first').find('[name="details-btn"][data-id="' + id + '"]:first');
 			detailsButton.trigger('click');
 			editDlg.find('button.close').trigger('click');
