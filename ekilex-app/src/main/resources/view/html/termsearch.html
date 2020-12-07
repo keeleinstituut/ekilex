@@ -80,7 +80,7 @@
       <div th:replace="termdialog :: add_meaning_note_dlg"></div>
       <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
       <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
-      <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="meaning-details-btn" data-behaviour="replace"></button>
+      <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn" data-behaviour="replace"></button>
       
       <div class="navigate-panel term-panel card shadow h-100">
         <div class="card border-0 mb-2">
@@ -582,7 +582,7 @@
                     </td>
                     <td class="pr-3">
                       <th:block th:each="relation, relIter : ${relations}">
-                        <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="meaning-details-btn">
+                        <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="details-btn" data-behaviour="replace">
                           <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                           <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                           <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
@@ -862,7 +862,7 @@
                             <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
                           </td>
                           <td class="pr-3 invisible-buttons">
-                            <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="meaning-details-btn">
+                            <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="details-btn" data-behaviour="replace">
                               <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                             </button>
                             <button type="button" class="btn badge badge-warning"
