@@ -1755,5 +1755,652 @@
       </div>
     </div>
   </th:block>
+  <!-- experimental from here on -->
+  <th:block th:fragment="morpho-noun_rus">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI vene keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
+            </li>
+          </ul>
+          <div>
+            <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 31</p>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table>
+                  <tr>
+                    <th colspan="2" class="text-center">Инфинитив / Tegevusnimi</th>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'INFN', '')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table class="first-row-sizes" data-fixColumn="true">
+                  <tr>
+                    <th>падеж / kääne</th>
+                    <th>eдинственное число / ainsus</th>
+                    <th>множественное число / mitmus</th>
+                  </tr>
+                  <tr>
+                    <td>
+                      именительный / nominatiiv
+                      <br />
+                      <span class="highlight">кто? что? / kes? mis?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,nomn')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,nomn')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      родительный  / genitiiv
+                      <br />
+                      <span class="highlight">кого? чего?  / kelle? mille?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,gent')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,gent')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      дательный /  daativ
+                      <br />
+                      <span class="highlight">кому? чему? / kellele? millele?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,datv')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,datv')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      винительный /  akusatiiv
+                      <br />
+                      <span class="highlight">кого? что? / keda? mida?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,accs')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      творительный / instrumentaal
+                      <br />
+                      <span class="highlight">кем? чем?  / kellega? millega?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,ablt')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,ablt')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      предложный / prepositiiv
+                      <br />
+                      <span class="highlight">о ком? о чем? / kellest? millest?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,loct')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,loct')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="table-legend">
+            <div class="table-legend__item">Legend:</div>
+            <div class="table-legend__item">
+              <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
+            </div>
+            <div class="table-legend__item">
+              <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="morpho-rus-adj-basetable(paradigm, tableTitle)">
+    <div class="scrollable-table">
+      <div class="scrollable-table--scroller">
+        <table class="stretch-middle-td">
+          <tr>
+            <th colspan="3" class="text-center" th:text="${tableTitle}">Võrre</th>
+          </tr>
+          <tr>
+            <th colspan="3">
+              eдинственное число / ainsus
+            </th>
+          </tr>
+         <tr>
+            <th colspan="3">
+              мужской род / meessugu
+            </th>
+          </tr>
+         <tr>
+            <th colspan="2">
+             падеж / kääne
+            </th>
+            <th></th>
+          </tr>
+          <tr>
+            <td colspan="2">
+              именительный / nominatiiv
+              <br />
+              <span class="highlight">какой? / missugune?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,nomn')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              родительный / genitiiv
+              <br />
+              <span class="highlight">какого? / missuguse?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,gent')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              дательный / daativ
+              <br />
+              <span class="highlight">какому? / missugusele?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,datv')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="2">
+              винительный / akusatiiv
+              <br />
+              <span class="highlight">какого? / missugust?</span>
+            </td>
+            <td>
+              одуш. / elus
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,anim')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              неодуш. / eluta
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,inan')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              творительный / instrumentaal
+              <br />
+              <span class="highlight">каким? / missugusega?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,ablt')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              предложный / prepositiiv
+              <br />
+              <span class="highlight">о каком? / missugusest?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,loct')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="3">
+              женский род / naissugu
+            </th>
+          </tr>
+          <tr>
+            <td colspan="2">
+              именительный / nominatiiv
+              <br />
+              <span class="highlight">какая? / missugune?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,nomn')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              родительный / genitiiv
+              <br />
+              <span class="highlight">какой? / missuguse?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,gent')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              дательный / daativ
+              <br />
+              <span class="highlight">какой? / missugusele?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,datv')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="2">
+              винительный / akusatiiv
+              <br />
+              <span class="highlight">какую? / missugust?</span>
+            </td>
+            <td>
+              одуш. / elus
+            </td>
+            <td rowspan="2">
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,accs')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              неодуш. / eluta
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              творительный / instrumentaal
+              <br />
+              <span class="highlight">какой? / missugusega?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,ablt')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              предложный / prepositiiv
+              <br />
+              <span class="highlight">о какой? / missugusest?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,loct')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="3">
+              средний род / kesksugu
+            </th>
+          </tr>
+          <tr>
+            <td colspan="2">
+              именительный / nominatiiv
+              <br />
+              <span class="highlight">какое? / missugune?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,nomn')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              родительный / genitiiv
+              <br />
+              <span class="highlight">какого? / missuguse?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,gent')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              дательный / daativ
+              <br />
+              <span class="highlight">какому? / missugusele?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,datv')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="2">
+              винительный / akusatiiv
+              <br />
+              <span class="highlight">какого? / missugust?</span>
+            </td>
+            <td>
+              одуш. / elus
+            </td>
+            <td rowspan="2">
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,accs')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              неодуш. / eluta
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              творительный / instrumentaal
+              <br />
+              <span class="highlight">каким? / missugusega?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,ablt')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              предложный / prepositiiv
+              <br />
+              <span class="highlight">о каком? / missugusest?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,loct')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="3">
+              множественное число / mitmus
+            </th>
+          </tr>
+          <tr>
+            <td colspan="2">
+              именительный / nominatiiv
+              <br />
+              <span class="highlight">какие? / missugused?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,nomn')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              родительный / genitiiv
+              <br />
+              <span class="highlight">каких? / missuguste?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,gent')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              дательный / daativ
+              <br />
+              <span class="highlight">каким? / missugustele?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,datv')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td rowspan="2">
+              винительный / akusatiiv
+              <br />
+              <span class="highlight">каких? / missuguseid?</span>
+            </td>
+            <td>
+              одуш. / elus
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,anim')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              неодуш. / eluta
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,inan')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              творительный / instrumentaal
+              <br />
+              <span class="highlight">какими? / missugustega?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,ablt')"></th:block>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              предложный / prepositiiv
+              <br />
+              <span class="highlight">о каких? / missugustest?</span>
+            </td>
+            <td>
+              <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,loct')"></th:block>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="morpho-adjective1_rus">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI vene keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
+            </li>
+          </ul>
+          <div>
+            <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 31</p>
+            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm}, 'Положительная степень / Algvõrre')"></th:block>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table class="stretch-middle-td">
+                  <tr>
+                    <th colspan="2" class="text-center">Краткое прилагательное / Omadussõna lühike vorm</th>
+                  </tr>
+                  <tr>
+                    <th colspan="2">
+                      eдинственное число / ainsus
+                    </th>
+                  </tr>
+                  <tr>
+                    <td>
+                      мужской род / meessugu
+                      <br />
+                      <span class="highlight">каков? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,masc,sing')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      женский род  / naissugu
+                      <br />
+                      <span class="highlight">какова? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,femn,sing')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      средний род / kesksugu
+                      <br />
+                      <span class="highlight">каково? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,neut,sing')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      множественное число /  mitmus
+                      <br />
+                      <span class="highlight">каковы? / missugused?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,plur')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table class="stretch-middle-td">
+                  <tr>
+                    <th colspan="2" class="text-center">Cтепени сравнения / Võrdlusastmed</th>
+                  </tr>
+                  <tr>
+                    <td>
+                      Сравнительная степень / Keskvõrre
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,masc,sing')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Превосходная степень / Ülivõrre
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SUPR,masc,sing,nomn')"></th:block>
+                    </td>
+                  </tr>
+                 </table>
+              </div>
+            </div>
+          </div>
+          <div class="table-legend">
+            <div class="table-legend__item">Legend:</div>
+            <div class="table-legend__item">
+              <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
+            </div>
+            <div class="table-legend__item">
+              <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="morpho-adjective2_rus">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI vene keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
+            </li>
+          </ul>
+          <div>
+            <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 22e</p>
+            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm}, 'Превосходная степень / Ülivõrre')"></th:block>
+          </div>
+          <div class="table-legend">
+            <div class="table-legend__item">Legend:</div>
+            <div class="table-legend__item">
+              <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
+            </div>
+            <div class="table-legend__item">
+              <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="morpho-indeclinable_rus">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI vene keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
+            <li class="nav-item">
+              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
+            </li>
+          </ul>
+          <div>
+            <h2>Неизменяемое / Muutumatu tüüp</h2>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table>
+                  <tr>
+                    <td>
+                      неизменяемая форма / muutumatu vorm
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ID', '')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
+
 </body>
 </html>
