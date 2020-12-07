@@ -22,4 +22,4 @@ create table ww_exception
   exception_message text,
   event_on timestamp not null default statement_timestamp()
 );
-alter sequence ww_search_id_seq restart with 10000;
+alter sequence ww_exception_id_seq restart with 10000;
