@@ -1,3 +1,12 @@
+$.fn.deleteConfirm = function() {
+	$(this).confirmation({
+		btnOkLabel : 'Jah',
+		btnCancelLabel : 'Ei',
+		title : 'Kinnita kustutamine',
+		onConfirm : executeDelete
+	});
+};
+
 function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
 	return $.ajax({
 		url: url,
@@ -232,6 +241,7 @@ function configureSelectDlg(selectControl, selectDlg) {
 	let numberOfOptins = selectControl.find('option').length;
 	selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
 	selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+		console.log(e.relatedTarget);
 		let dlgTop = $(e.relatedTarget).offset().top - $(window).scrollTop();
 		let dlgLeft = $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
 		let modalContent = selectDlg.find('.modal-content');

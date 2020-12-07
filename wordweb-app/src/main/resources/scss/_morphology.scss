@@ -4,3 +4,9 @@
     overflow: hidden;
   }
 }
+.morph-word {
+  padding-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

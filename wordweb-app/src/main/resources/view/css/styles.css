@@ -18072,6 +18072,15 @@ body {
   border-radius: 20px;
 }
 
+.wordmodal .text-center {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.wordmodal .uppercase {
+  text-transform: uppercase;
+}
+
 .wordmodal .highlight {
   color: #3f3f3f;
 }
@@ -18095,6 +18104,8 @@ body {
 .wordmodal .scrollable-table {
   position: relative;
   overflow-x: hidden;
+  margin-left: -10px;
+  margin-right: -10px;
 }
 
 .wordmodal .scrollable-table--scroller {
@@ -18145,17 +18156,44 @@ body {
   color: #3f3f3f;
 }
 
-.wordmodal .modal-body .nav-pills .nav-link {
-  margin-right: -1px;
-  color: #007025;
-  background: none;
-  border: #007025 1px solid;
-  border-radius: 5px 0 0 5px;
+.wordmodal .modal-body .nav-pills {
+  border-bottom: #CCD9E0 1px solid;
+  margin-left: -25px !important;
+  margin-right: -25px !important;
+  padding: 0 25px 16px 25px;
 }
 
-.wordmodal .modal-body .nav-pills .nav-link.active {
+.wordmodal .modal-body .nav-pills .nav-link {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  color: #3f3f3f !important;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link .fa {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  line-height: 18px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 4px;
   color: #fff;
-  background: #007025;
+  margin-right: 12px;
+  border: #005aa9 1px solid;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link .fa:before {
+  visibility: hidden;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link.active .fa {
+  background: #005aa9;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link.active .fa:before {
+  visibility: visible;
 }
 
 .wordmodal .modal-body .btn {
@@ -18218,11 +18256,14 @@ body {
   overflow: hidden;
   pointer-events: none;
   background: #fff;
-  border-right: 1px solid #ccd9e0;
 }
 
 .wordmodal .tableClone table {
   margin: 0;
+}
+
+.wordmodal .tableClone td:nth-child(2), .wordmodal .tableClone th:nth-child(2) {
+  visibility: hidden;
 }
 
 .wordmodal table {
@@ -18232,7 +18273,6 @@ body {
   color: #3f3f3f;
   white-space: nowrap;
   table-layout: fixed;
-  border: 1px solid #ccd9e0;
 }
 
 .wordmodal table.first-row-sizes td:nth-child(1) {
@@ -18269,13 +18309,23 @@ body {
   font-weight: 700;
   line-height: 120%;
   color: #3f3f3f;
-  background: #ecf0f2;
+}
+
+.wordmodal table th[colspan="3"] {
+  border: none;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: normal;
+}
+
+.wordmodal table th[colspan="3"].text-center {
+  font-weight: bold;
 }
 
 .wordmodal table th,
 .wordmodal table td {
   padding: 10px 12px;
-  border: 1px solid #ccd9e0;
+  border-bottom: 1px solid #ecf0f2;
 }
 
 .wordmodal table td {
@@ -18303,7 +18353,7 @@ body {
 }
 
 .wordmodal .rating__row--highlighted {
-  color: #5aabe0;
+  color: #00892e;
 }
 
 .wordmodal .table-legend {
@@ -18316,7 +18366,7 @@ body {
 }
 
 .wordmodal .table-legend .fa.highlight {
-  color: #5aabe0;
+  color: #00892e;
 }
 
 .wordmodal .table-legend__item {
@@ -18838,6 +18888,13 @@ eki-link {
 .morphology-section.collapse {
   max-height: 155px;
   overflow: hidden;
+}
+
+.morph-word {
+  padding-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .homonym-image {

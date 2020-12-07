@@ -673,7 +673,7 @@
                   <div class="block-subtitle">
                     <div class="d-flex align-items-center flex-wrap">
                       <div class="hidden-buttons">
-                        <span th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}" class="ttl word-value"></span>
+                        <span th:data-id="${lexeme.wordId}" th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}" class="ttl word-value"></span>
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
@@ -684,7 +684,7 @@
                       </div>
                       <span th:if="${lexeme.word.displayMorphCode != null}" th:text="${lexeme.word.displayMorphCode}" class="pl-1"></span>
 
-                      <button class="btn"><span class="fa fa-info-circle"></span></button>
+                      <button class="btn" data-plugin="identificator"><span class="fa fa-info-circle"></span></button>
                       <button type="button" class="btn badge badge-secondary float-right mt-1"
                               title="Lisa andmeid"
                               data-toggle="modal"
@@ -692,6 +692,12 @@
                               sec:authorize="#vars.lexeme.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
+                      <button
+                        class="btn"
+                        data-plugin="status"
+                        sec:authorize="#vars.lexeme.crudGrant"
+                      ><span class="fa"></span></button>
+                      <span class="valuestatus" data-plugin="valueStatus"></span>
                     </div>
                     <div class="ml-auto">
                       <span th:text="${lexeme.datasetName}"></span>

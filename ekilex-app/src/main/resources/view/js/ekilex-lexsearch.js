@@ -1,4 +1,46 @@
 var viewType = '';
+
+$.fn.identificator = function(){
+	var main = $(this);
+	var parent = main.parents('.card-body:first');
+	var labels = '';
+	parent.find('[data-id="identificators"]').find('span').each(function(){
+		if (labels !== '') {
+			labels+= ', ';
+		}
+		labels+= $(this).text();
+	});
+	main.attr('title', labels);
+	main.tooltip();
+}
+
+$.fn.status = function() {
+	var main = $(this);
+	var parent = main.parents('.card-body:first');
+	var source = parent.find('[data-id="status"]');
+	var label = source.children('span').text();
+	var target = source.attr('data-target');
+	if (label === 'avalik') {
+		main.find('span').addClass('fa-lock');
+	} else {
+		main.find('span').addClass('fa-unlock');
+	}
+	main.on('click', function(e){
+		e.preventDefault();
+		$(target).modal('show', main);
+	});
+	main.attr('title', label).tooltip();
+}
+
+$.fn.valueStatus = function() {
+	var main = $(this);
+	var parent = main.parents('.card-body:first');
+	var source = parent.find('[data-id="valuestatus"]');
+	main.html(source.html());
+	main.find('.col-w13rem').remove();
+	main.find('[data-toggle="delete-confirm"]').deleteConfirm();
+}
+
 function initializeSearch(type) {
 
 	viewType = type;
@@ -431,8 +473,11 @@ function refreshDetailsSearch(id) {
 			id = obj.parents('[data-rel="details-area"]').attr('data-id');
 		}
 	}
-	console.log(id);
-	var refreshButton = $(`[data-rel="details-area"][data-id="${id}"]:first`).find('#refresh-details');
+	var refreshButton = $(`[data-id="${id}"]:first`);
+	if (!refreshButton.is('[data-rel="details-area"]') ){
+		refreshButton = refreshButton.parents('[data-rel="details-area"]');
+	}
+	refreshButton = refreshButton.find('#refresh-details');
 	refreshButton.trigger('click');
 };
 
