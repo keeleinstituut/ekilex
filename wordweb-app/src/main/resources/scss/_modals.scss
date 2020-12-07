@@ -49,6 +49,9 @@
 
 .wordmodal {
 
+  .subtitle {
+    padding-top: 20px;
+  }
   .text-center {
     font-size: 18px;
     font-weight: bold;
@@ -57,7 +60,7 @@
     text-transform: uppercase;
   }
   .highlight {
-    color: $gray-900;
+    color: $green-400;
   }
   .modal-dialog {
     max-width: 900px;
@@ -235,7 +238,7 @@
       td:nth-child(1) {
         font-size: 16px;
         .highlight {
-          font-size: 14px;
+          font-size: 12px;
         }
       }
     }
@@ -278,7 +281,13 @@
     td {
       padding-top: 5px;
       padding-bottom: 5px;
-      color: $gray-350;
+      color: $gray-900;
+      &:first-child {
+        .highlight {
+          color: $gray-350;
+          font-size: 12px;
+        }
+      }
     }
   }
 

@@ -18072,6 +18072,10 @@ body {
   border-radius: 20px;
 }
 
+.wordmodal .subtitle {
+  padding-top: 20px;
+}
+
 .wordmodal .text-center {
   font-size: 18px;
   font-weight: bold;
@@ -18082,7 +18086,7 @@ body {
 }
 
 .wordmodal .highlight {
-  color: #3f3f3f;
+  color: #00892e;
 }
 
 .wordmodal .modal-dialog {
@@ -18280,7 +18284,7 @@ body {
 }
 
 .wordmodal table.first-row-sizes td:nth-child(1) .highlight {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .wordmodal table.stretch-middle-td {
@@ -18331,7 +18335,12 @@ body {
 .wordmodal table td {
   padding-top: 5px;
   padding-bottom: 5px;
+  color: #3f3f3f;
+}
+
+.wordmodal table td:first-child .highlight {
   color: #687887;
+  font-size: 12px;
 }
 
 .wordmodal .word-section {
