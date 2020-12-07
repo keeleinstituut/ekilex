@@ -21,9 +21,9 @@ $.fn.status = function() {
 	var label = source.children('span').text();
 	var target = source.attr('data-target');
 	if (label === 'avalik') {
-		main.find('span').addClass('fa-lock');
-	} else {
 		main.find('span').addClass('fa-unlock');
+	} else {
+		main.find('span').addClass('fa-lock');
 	}
 	main.on('click', function(e){
 		e.preventDefault();
