@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
 import eki.stat.service.StatService;
 
@@ -17,11 +18,19 @@ public class ApiStatCollectController {
 	@Autowired
 	private StatService statService;
 
-	@PostMapping("/api/stat")
+	@PostMapping("/api/stat/search")
 	@ResponseBody
 	public String createSearchStat(@RequestBody SearchStat searchStat) {
 
 		statService.createSearchStat(searchStat);
+		return "ok";
+	}
+
+	@PostMapping("/api/stat/exception")
+	@ResponseBody
+	public String createExceptionStat(@RequestBody ExceptionStat exceptionStat) {
+
+		statService.createExceptionStat(exceptionStat);
 		return "ok";
 	}
 

@@ -104,7 +104,8 @@ public class UnifSearchController extends AbstractController {
 		sessionBean.setDestinLangs(destinLangs);
 		sessionBean.setDatasetCodes(datasetCodes);
 
-		WordsData wordsData = unifSearchService.getWords(searchValidation);
+		// WordsData wordsData = unifSearchService.getWords(searchValidation);
+		WordsData wordsData = unifSearchService.getWords(null);
 		populateSearchModel(searchWord, wordsData, model);
 
 		String userAgent = request.getHeader("User-Agent");

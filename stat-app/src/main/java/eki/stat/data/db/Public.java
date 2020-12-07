@@ -4,6 +4,7 @@
 package eki.stat.data.db;
 
 
+import eki.stat.data.db.tables.WwException;
 import eki.stat.data.db.tables.WwSearch;
 
 import java.util.Arrays;
@@ -21,12 +22,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -145506437;
+    private static final long serialVersionUID = -1254241765;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.ww_exception</code>.
+     */
+    public final WwException WW_EXCEPTION = WwException.WW_EXCEPTION;
 
     /**
      * The table <code>public.ww_search</code>.
@@ -49,12 +55,14 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Sequence<?>> getSequences() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.WW_EXCEPTION_ID_SEQ,
             Sequences.WW_SEARCH_ID_SEQ);
     }
 
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.<Table<?>>asList(
+            WwException.WW_EXCEPTION,
             WwSearch.WW_SEARCH);
     }
 }

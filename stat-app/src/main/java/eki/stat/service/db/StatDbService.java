@@ -1,12 +1,15 @@
 package eki.stat.service.db;
 
+import static eki.stat.data.db.Tables.WW_EXCEPTION;
 import static eki.stat.data.db.Tables.WW_SEARCH;
 
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
+import eki.stat.data.db.tables.records.WwExceptionRecord;
 import eki.stat.data.db.tables.records.WwSearchRecord;
 
 @Component
@@ -32,5 +35,13 @@ public class StatDbService {
 		wwSearchRecord.setSingleResult(searchStat.isSingleResult());
 		wwSearchRecord.setUserAgent(searchStat.getUserAgent());
 		wwSearchRecord.store();
+	}
+
+	public void createExceptionStat(ExceptionStat exceptionStat) {
+
+		WwExceptionRecord wwExceptionRecord = create.newRecord(WW_EXCEPTION);
+		wwExceptionRecord.setExceptionName(exceptionStat.getExceptionName());
+		wwExceptionRecord.setExceptionMessage(exceptionStat.getExceptionMessage());
+		wwExceptionRecord.store();
 	}
 }

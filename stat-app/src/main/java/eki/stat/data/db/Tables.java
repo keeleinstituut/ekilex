@@ -4,6 +4,7 @@
 package eki.stat.data.db;
 
 
+import eki.stat.data.db.tables.WwException;
 import eki.stat.data.db.tables.WwSearch;
 
 
@@ -12,6 +13,11 @@ import eki.stat.data.db.tables.WwSearch;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.ww_exception</code>.
+     */
+    public static final WwException WW_EXCEPTION = WwException.WW_EXCEPTION;
 
     /**
      * The table <code>public.ww_search</code>.

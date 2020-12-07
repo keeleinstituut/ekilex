@@ -4,7 +4,9 @@
 package eki.stat.data.db;
 
 
+import eki.stat.data.db.tables.WwException;
 import eki.stat.data.db.tables.WwSearch;
+import eki.stat.data.db.tables.records.WwExceptionRecord;
 import eki.stat.data.db.tables.records.WwSearchRecord;
 
 import org.jooq.Identity;
@@ -24,12 +26,14 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<WwExceptionRecord, Long> IDENTITY_WW_EXCEPTION = Identities0.IDENTITY_WW_EXCEPTION;
     public static final Identity<WwSearchRecord, Long> IDENTITY_WW_SEARCH = Identities0.IDENTITY_WW_SEARCH;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<WwExceptionRecord> WW_EXCEPTION_PKEY = UniqueKeys0.WW_EXCEPTION_PKEY;
     public static final UniqueKey<WwSearchRecord> WW_SEARCH_PKEY = UniqueKeys0.WW_SEARCH_PKEY;
 
     // -------------------------------------------------------------------------
@@ -42,10 +46,12 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 {
+        public static Identity<WwExceptionRecord, Long> IDENTITY_WW_EXCEPTION = Internal.createIdentity(WwException.WW_EXCEPTION, WwException.WW_EXCEPTION.ID);
         public static Identity<WwSearchRecord, Long> IDENTITY_WW_SEARCH = Internal.createIdentity(WwSearch.WW_SEARCH, WwSearch.WW_SEARCH.ID);
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<WwExceptionRecord> WW_EXCEPTION_PKEY = Internal.createUniqueKey(WwException.WW_EXCEPTION, "ww_exception_pkey", new TableField[] { WwException.WW_EXCEPTION.ID }, true);
         public static final UniqueKey<WwSearchRecord> WW_SEARCH_PKEY = Internal.createUniqueKey(WwSearch.WW_SEARCH, "ww_search_pkey", new TableField[] { WwSearch.WW_SEARCH.ID }, true);
     }
 }

@@ -14,3 +14,12 @@ create table ww_search
   event_on timestamp not null default statement_timestamp()
 );
 alter sequence ww_search_id_seq restart with 10000;
+
+create table ww_exception
+(
+  id bigserial primary key,
+  exception_name text,
+  exception_message text,
+  event_on timestamp not null default statement_timestamp()
+);
+alter sequence ww_search_id_seq restart with 10000;
