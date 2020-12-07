@@ -308,7 +308,7 @@ function loadDetails(wordId, task, lastWordId) {
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
 		} else {
-
+			
 			const dataObject = $(data);
 			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordId}`);
 			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordId}`);
@@ -321,8 +321,13 @@ function loadDetails(wordId, task, lastWordId) {
 					id: parseInt(wordId),
 					word: dataObject.attr('data-word'),
 				});
+
+				var scrollPosition = parseInt(dataObject.attr('data-id')) === wordId ? detailsDiv[0].scrollTop : 0;
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
-				detailsDiv.replaceWith(dataObject[0].outerHTML);
+				var newDiv;
+				detailsDiv.replaceWith(newDiv = $(dataObject[0].outerHTML));
+				newDiv.scrollTop(scrollPosition);
+
 			} else {
 				const lastDetailsArea = $('#resultColumn:first').find('[data-rel="details-area"]:last');
 
@@ -343,7 +348,7 @@ function loadDetails(wordId, task, lastWordId) {
 		
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
-		detailsDiv.scrollTop(scrollPos);
+		//detailsDiv.scrollTop(scrollPos);
 
 		$(window).trigger('update:wordId');
 
