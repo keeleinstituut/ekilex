@@ -460,7 +460,7 @@ function refreshDetailsSearch(id) {
 			id = obj.parents('[data-rel="details-area"]').attr('data-id');
 		}
 	}
-	var refreshButton = $(`[data-id="${id}"]:first`);
+	var refreshButton = $(`#resultColumn [data-id="${id}"]:first`);
 	if (!refreshButton.is('[data-rel="details-area"]') ){
 		refreshButton = refreshButton.parents('[data-rel="details-area"]');
 	}
