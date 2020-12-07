@@ -23,7 +23,7 @@
         <th:block th:replace="::simple_search"></th:block>
       </div>
       <div class="d-flex flex-row align-items-center" th:with="detailsUri=${searchPageName == 'lex_search' ? 'lexsearch' : searchPageName == 'term_search' ? 'termsearch' : ''}">
-        <button type="button" id="share-details-link" th:data-details-uri="${detailsUri}" class="btn btn-light ml-2">Kopeeri</button>
+        <button type="button" id="share-details-link" th:data-details-uri="${detailsUri}" class="btn btn-light ml-2">Otselink</button>
       </div>
     </div>
     <script th:inline="javascript">
