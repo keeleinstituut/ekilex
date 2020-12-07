@@ -100,8 +100,8 @@
                           data-toggle="modal"
                           data-target="#newWordDlg"
                           th:data-meaning-id="${meaningId}"
-                          sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected"><span class="fa fa-plus"></span></button>
-                  <a class="btn btn-secondary  mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
+                          sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Lisa termin</button>
+                  <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
                     title="Tähenduste ühendamine"
                     sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
                   <button id="duplicateMeaningBtn"
