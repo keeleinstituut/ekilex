@@ -107,8 +107,8 @@ public class UnifSearchController extends AbstractController {
 		WordsData wordsData = unifSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
-		statDataCollector.addSearchStat(destinLangs, SEARCH_MODE_DETAIL, wordsData.isResultsExist(), isIeUser);
+		String userAgent = request.getHeader("User-Agent");
+		statDataCollector.postSearchStat(searchValidation, wordsData, SEARCH_MODE_DETAIL, userAgent);
 
 		return UNIF_SEARCH_PAGE;
 	}

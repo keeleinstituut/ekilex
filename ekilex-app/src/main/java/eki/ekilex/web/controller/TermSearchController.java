@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -45,13 +43,10 @@ public class TermSearchController extends AbstractSearchController {
 	@Autowired
 	private TermSearchService termSearchService;
 
-	@RequestMapping(value = TERM_SEARCH_URI, method = RequestMethod.GET)
+	@GetMapping(value = TERM_SEARCH_URI)
 	public String initSearch(Model model) {
 
 		initSearchForms(TERM_SEARCH_PAGE, model);
-
-		TermSearchResult termSearchResult = new TermSearchResult();
-		model.addAttribute("termSearchResult", termSearchResult);
 
 		return TERM_SEARCH_PAGE;
 	}
@@ -98,8 +93,7 @@ public class TermSearchController extends AbstractSearchController {
 		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
 
 		if (!searchUriData.isValid()) {
-			model.addAttribute("termSearchResult", new TermSearchResult());
-			model.addAttribute("invalidSearch", true);
+			model.addAttribute("invalidSearch", Boolean.TRUE);
 			return TERM_SEARCH_PAGE;
 		}
 
@@ -137,8 +131,7 @@ public class TermSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping(MEANING_DETAILS_URI + "/{meaningId}")
-	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model)
-			throws Exception {
+	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
 
 		logger.debug("meaning details for {}", meaningId);
 

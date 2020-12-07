@@ -34,7 +34,7 @@ public class ExceptionHandlerController implements WebConstant {
 			return modelAndView;
 		}
 
-		statDataCollector.addExceptionStat(exception);
+		statDataCollector.postExceptionStat(exception);
 
 		if (AnnotationUtils.findAnnotation(exception.getClass(), ResponseStatus.class) != null) {
 			throw exception;

@@ -57,4 +57,8 @@ public interface GlobalConstant {
 	String LANGUAGE_CODE_RUS = "rus";
 
 	String LANGUAGE_CODE_ENG = "eng";
+
+	String STAT_API_KEY_HEADER_NAME = "stat-api-key";
+
+	String EMPTY_API_KEY = "empty-api-key";
 }

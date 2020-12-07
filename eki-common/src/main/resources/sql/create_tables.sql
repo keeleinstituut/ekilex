@@ -1028,6 +1028,7 @@ create table freq_corp
   id bigserial primary key,
   name text not null,
   corp_date date,
+  is_public boolean not null,
   unique(name)
 );
 alter sequence freq_corp_id_seq restart with 10000;
