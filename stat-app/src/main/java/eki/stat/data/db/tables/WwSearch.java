@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WwSearch extends TableImpl<WwSearchRecord> {
 
-    private static final long serialVersionUID = 1033602345;
+    private static final long serialVersionUID = 1028399612;
 
     /**
      * The reference instance of <code>public.ww_search</code>
@@ -99,14 +99,29 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     public final TableField<WwSearchRecord, Boolean> SINGLE_RESULT = createField(DSL.name("single_result"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.ww_search.event_on</code>.
-     */
-    public final TableField<WwSearchRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
      * The column <code>public.ww_search.user_agent</code>.
      */
     public final TableField<WwSearchRecord, String> USER_AGENT = createField(DSL.name("user_agent"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.ww_search.referrer_domain</code>.
+     */
+    public final TableField<WwSearchRecord, String> REFERRER_DOMAIN = createField(DSL.name("referrer_domain"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.ww_search.session_id</code>.
+     */
+    public final TableField<WwSearchRecord, String> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.ww_search.request_origin</code>.
+     */
+    public final TableField<WwSearchRecord, String> REQUEST_ORIGIN = createField(DSL.name("request_origin"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.ww_search.event_on</code>.
+     */
+    public final TableField<WwSearchRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>public.ww_search</code> table reference
@@ -188,11 +203,11 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, Timestamp, String> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row15<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, Timestamp> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

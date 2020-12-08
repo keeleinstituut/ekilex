@@ -1,8 +1,13 @@
 package eki.wordweb.service;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.BooleanUtils;
+import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +20,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.RequestOrigin;
 import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
 import eki.wordweb.data.SearchValidation;
@@ -56,12 +62,11 @@ public class StatDataCollector implements GlobalConstant {
 	}
 
 	@Async
-	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, String searchMode, String userAgent) {
+	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, HttpServletRequest request, Boolean isPostRequest, String searchMode) throws Exception {
 
 		if (!serviceEnabled) {
 			return;
 		}
-
 		String searchWord = searchValidation.getSearchWord();
 		Integer homonymNr = searchValidation.getHomonymNr();
 		List<String> destinLangs = searchValidation.getDestinLangs();
@@ -70,6 +75,24 @@ public class StatDataCollector implements GlobalConstant {
 		int resultCount = wordsData.getResultCount();
 		boolean resultsExist = wordsData.isResultsExist();
 		boolean isSingleResult = wordsData.isSingleResult();
+
+		boolean isSearch = BooleanUtils.toBoolean(isPostRequest);
+		String sessionId = request.getSession().getId();
+		String userAgent = request.getHeader("User-Agent");
+		String referrerDomain = null;
+		if (request.getHeader("referer") != null) {
+			referrerDomain = new URI(request.getHeader("referer")).getHost();
+		}
+		String serverDomain = request.getServerName();
+
+		RequestOrigin requestOrigin;
+		if (isSearch) {
+			requestOrigin = RequestOrigin.SEARCH;
+		} else if (StringUtils.equals(serverDomain, referrerDomain)) {
+			requestOrigin = RequestOrigin.INSIDE_NAVIGATION;
+		} else {
+			requestOrigin = RequestOrigin.OUTSIDE_NAVIGATION;
+		}
 
 		SearchStat searchStat = new SearchStat();
 		searchStat.setSearchWord(searchWord);
@@ -82,6 +105,9 @@ public class StatDataCollector implements GlobalConstant {
 		searchStat.setResultsExist(resultsExist);
 		searchStat.setSingleResult(isSingleResult);
 		searchStat.setUserAgent(userAgent);
+		searchStat.setReferrerDomain(referrerDomain);
+		searchStat.setSessionId(sessionId);
+		searchStat.setRequestOrigin(requestOrigin);
 
 		HttpHeaders headers = createHeaders();
 		RestTemplate restTemplate = new RestTemplate();

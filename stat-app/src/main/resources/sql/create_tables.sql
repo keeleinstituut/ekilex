@@ -11,6 +11,9 @@ create table ww_search
   results_exist boolean,
   single_result boolean,
   user_agent text,
+  referrer_domain text,
+  session_id text,
+  request_origin text,
   event_on timestamp not null default statement_timestamp()
 );
 alter sequence ww_search_id_seq restart with 10000;

@@ -16,7 +16,7 @@ import eki.stat.data.db.tables.records.WwSearchRecord;
 public class StatDbService {
 
 	@Autowired
-	protected DSLContext create;
+	private DSLContext create;
 
 	public void createSearchStat(SearchStat searchStat) {
 
@@ -34,6 +34,9 @@ public class StatDbService {
 		wwSearchRecord.setResultsExist(searchStat.isResultsExist());
 		wwSearchRecord.setSingleResult(searchStat.isSingleResult());
 		wwSearchRecord.setUserAgent(searchStat.getUserAgent());
+		wwSearchRecord.setReferrerDomain(searchStat.getReferrerDomain());
+		wwSearchRecord.setSessionId(searchStat.getSessionId());
+		wwSearchRecord.setRequestOrigin(searchStat.getRequestOrigin().name());
 		wwSearchRecord.store();
 	}
 
