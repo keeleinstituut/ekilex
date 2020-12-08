@@ -349,7 +349,7 @@
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                      <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value + (noteIter.last ? '' : '; ')}"></p></div>
+                      <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value}"></p></div>
                     </div>
                   </th:block>
                   <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">
