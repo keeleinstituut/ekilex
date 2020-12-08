@@ -65,7 +65,7 @@ public class SimpleSearchController extends AbstractController {
 		if (StringUtils.isBlank(searchWord)) {
 			return "redirect:" + SEARCH_URI + LITE_URI;
 		}
-		redirectAttributes.addFlashAttribute("isPostRequest", Boolean.TRUE);
+		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		String searchUri = webUtil.composeSimpleSearchUri(destinLangStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;
@@ -82,8 +82,7 @@ public class SimpleSearchController extends AbstractController {
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
 
-		boolean isPostRequest = BooleanUtils.toBoolean((Boolean) model.asMap().get("isPostRequest"));
-
+		boolean isSearchForm = isSearchForm(model);
 		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
 		SessionBean sessionBean;
 		if (sessionBeanNotPresent) {
@@ -100,7 +99,7 @@ public class SimpleSearchController extends AbstractController {
 			//to get rid of the sessionid in the url
 			return "redirect:" + searchValidation.getSearchUri();
 		} else if (!searchValidation.isValid()) {
-			redirectAttributes.addFlashAttribute("isPostRequest", isPostRequest);
+			setSearchFormAttribute(redirectAttributes, isSearchForm);
 			return "redirect:" + searchValidation.getSearchUri();
 		}
 
@@ -110,7 +109,7 @@ public class SimpleSearchController extends AbstractController {
 		WordsData wordsData = simpleSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		statDataCollector.postSearchStat(searchValidation, wordsData, request, isPostRequest, SEARCH_MODE_SIMPLE);
+		statDataCollector.postSearchStat(searchValidation, wordsData, request, isSearchForm, SEARCH_MODE_SIMPLE);
 
 		return LITE_SEARCH_PAGE;
 	}

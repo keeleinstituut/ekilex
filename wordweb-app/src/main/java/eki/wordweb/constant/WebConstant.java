@@ -89,6 +89,8 @@ public interface WebConstant {
 
 	String SESSION_BEAN = "sessionBean";
 
+	String SEARCH_FORM = "searchForm";
+
 	String APP_DATA_MODEL_KEY = "appData";
 
 	String VIEW_UTIL_MODEL_KEY = "viewUtil";
