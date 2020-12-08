@@ -347,6 +347,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Meaning m3 = MEANING.as("m3");
 				Definition d3 = DEFINITION.as("d3");
 
+				Condition dsFiltWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, null);
+
 				// notes owner #1
 				MeaningFreeform mff3 = MEANING_FREEFORM.as("mff3");
 				Table<Record2<Long, Long>> mff2 = DSL
@@ -355,7 +357,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 						.where(
 								mff3.MEANING_ID.eq(m3.ID)
 										.and(l3.MEANING_ID.eq(m3.ID))
-										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(dsFiltWhere))
 						.asTable("mff2");
 
 				// notes owner #2
@@ -367,7 +370,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 								dff3.DEFINITION_ID.eq(d3.ID)
 										.and(d3.MEANING_ID.eq(m3.ID))
 										.and(l3.MEANING_ID.eq(m3.ID))
-										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(dsFiltWhere))
 						.asTable("dff2");
 
 				// notes owner #3
@@ -375,7 +379,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Table<Record2<Long, Long>> lff2 = DSL
 						.select(l3.WORD_ID, lff3.FREEFORM_ID)
 						.from(l3, lff3)
-						.where(lff3.LEXEME_ID.eq(l3.ID).and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.where(
+								lff3.LEXEME_ID.eq(l3.ID)
+										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY))
+										.and(dsFiltWhere))
 						.asTable("lff2");
 
 				// notes owner #4
