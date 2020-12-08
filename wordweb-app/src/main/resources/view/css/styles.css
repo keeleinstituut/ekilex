@@ -16443,6 +16443,10 @@ body.hidden-scroll {
   }
 }
 
+.is-homonym sup {
+  left: -5px;
+}
+
 .lang-code {
   display: inline-block;
   flex: 0 0 auto;
@@ -17539,6 +17543,7 @@ body {
   position: absolute;
   top: 3px;
   right: -6px;
+  left: auto;
 }
 
 .word-grouper-wrapper .word-options:not(:only-child):not(:last-child) sup {
