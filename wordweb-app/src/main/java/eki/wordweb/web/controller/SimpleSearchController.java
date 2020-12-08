@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.constant.WebConstant;
@@ -56,12 +58,14 @@ public class SimpleSearchController extends AbstractController {
 	public String searchWords(
 			@RequestParam(name = "destinLangsStr") String destinLangStr,
 			@RequestParam(name = "searchWord") String searchWord,
-			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr) {
+			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
+			RedirectAttributes redirectAttributes) {
 
 		searchWord = StringUtils.trim(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
 			return "redirect:" + SEARCH_URI + LITE_URI;
 		}
+		redirectAttributes.addFlashAttribute("isPostRequest", Boolean.TRUE);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		String searchUri = webUtil.composeSimpleSearchUri(destinLangStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;
@@ -75,7 +79,10 @@ public class SimpleSearchController extends AbstractController {
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			HttpServletRequest request,
-			Model model) {
+			RedirectAttributes redirectAttributes,
+			Model model) throws Exception {
+
+		boolean isPostRequest = BooleanUtils.toBoolean((Boolean) model.asMap().get("isPostRequest"));
 
 		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
 		SessionBean sessionBean;
@@ -93,6 +100,7 @@ public class SimpleSearchController extends AbstractController {
 			//to get rid of the sessionid in the url
 			return "redirect:" + searchValidation.getSearchUri();
 		} else if (!searchValidation.isValid()) {
+			redirectAttributes.addFlashAttribute("isPostRequest", isPostRequest);
 			return "redirect:" + searchValidation.getSearchUri();
 		}
 
@@ -102,8 +110,7 @@ public class SimpleSearchController extends AbstractController {
 		WordsData wordsData = simpleSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		String userAgent = request.getHeader("User-Agent");
-		statDataCollector.postSearchStat(searchValidation, wordsData, SEARCH_MODE_SIMPLE, userAgent);
+		statDataCollector.postSearchStat(searchValidation, wordsData, request, isPostRequest, SEARCH_MODE_SIMPLE);
 
 		return LITE_SEARCH_PAGE;
 	}

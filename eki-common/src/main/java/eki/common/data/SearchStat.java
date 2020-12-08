@@ -2,6 +2,8 @@ package eki.common.data;
 
 import java.util.List;
 
+import eki.common.constant.RequestOrigin;
+
 public class SearchStat extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -25,6 +27,12 @@ public class SearchStat extends AbstractDataObject {
 	private boolean singleResult;
 
 	private String userAgent;
+
+	private String referrerDomain;
+
+	private String sessionId;
+
+	private RequestOrigin requestOrigin;
 
 	public String getSearchWord() {
 		return searchWord;
@@ -104,5 +112,29 @@ public class SearchStat extends AbstractDataObject {
 
 	public void setUserAgent(String userAgent) {
 		this.userAgent = userAgent;
+	}
+
+	public String getReferrerDomain() {
+		return referrerDomain;
+	}
+
+	public void setReferrerDomain(String referrerDomain) {
+		this.referrerDomain = referrerDomain;
+	}
+
+	public String getSessionId() {
+		return sessionId;
+	}
+
+	public void setSessionId(String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public RequestOrigin getRequestOrigin() {
+		return requestOrigin;
+	}
+
+	public void setRequestOrigin(RequestOrigin requestOrigin) {
+		this.requestOrigin = requestOrigin;
 	}
 }
