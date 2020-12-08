@@ -13,16 +13,17 @@
         <span th:text="#{label.no.data}">Andmed puuduvad</span>
       </div>
       <div class="col-12 morphology-panel" th:unless="${wordData.unknownForm}">
-        <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
-          <span th:text="#{label.word.forms}">Sõnavormid</span>
-          <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}">
-            <i class="fas fa-info-circle"></i>
-          </button>
-        </h5>
+        <div class="recommend-btn">ÕS Soovitab</div>
         <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-          <div th:if="${paradigm.comment != null}">
+          <div th:if="${paradigm.comment != null}" class="paradigm-comment">
             <span th:utext="${paradigm.comment}"></span>
           </div>
+          <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
+            <span th:text="#{label.word.forms}">Sõnavormid</span>
+            <button type="button" class="btn btn-icon btn-sm" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" th:title="#{forms.dataset.title}">
+              <i class="fas fa-info-circle"></i>
+            </button>
+          </h5>
           <div class="morphology-paradigm">
             <div th:id="${'morphologyTogglePanel-'+paradigmIter.index}" class="morphology-section d-flex mb-2">
               <div class="w-50 mt-2 group-1" th:each="paradigmGroup1 : ${paradigm.groups}">
@@ -186,7 +187,7 @@
                 </span>
               </button>
             </div>
-            <div th:if="${not #strings.isEmpty(wordData.word.wordClass)}">
+            <div th:if="${not #strings.isEmpty(wordData.word.wordClass)}" class="modal-button">
               <button type="button" class="btn btn-bold pl-0 pr-0" data-toggle="modal" th:data-target="${'#morpho-modal-' + paradigmIter.index}">
                 <i class="fa fa-expand-alt"></i>
                 <span th:text="#{button.morpho.show}">Näita tabelina</span>
@@ -402,7 +403,7 @@
             <i class="fas fa-info-circle"></i>
           </button>
           <th:block th:if="${wordData.word.wordEtymologyTree != null}">
-            <span class="tag" style='font-variant: small-caps'
+            <span class="tag" style='font-variant: small-caps;'
                   th:if="${wordData.word.wordEtymologyTree.etymologyType != null}"
                   th:text="${wordData.word.wordEtymologyTree.etymologyType.value}">
             </span>

@@ -18079,6 +18079,12 @@ body {
 
 .wordmodal .subtitle {
   padding-top: 20px;
+  padding-bottom: 0;
+}
+
+.wordmodal tr:nth-child(2) > .subtitle {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .wordmodal .text-center {
@@ -18088,6 +18094,11 @@ body {
 
 .wordmodal .uppercase {
   text-transform: uppercase;
+  margin-bottom: -10px;
+}
+
+.wordmodal .uppercase + h2 {
+  margin-top: 20px;
 }
 
 .wordmodal .highlight {
@@ -18243,8 +18254,13 @@ body {
 .wordmodal h2 {
   margin: 26px 0 12px;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: normal;
   color: #3f3f3f;
+  text-transform: uppercase;
+}
+
+.wordmodal h2 + .scrollable-table {
+  margin-top: -20px;
 }
 
 .wordmodal p {
@@ -18253,6 +18269,11 @@ body {
 
 .wordmodal p + h2 {
   margin-top: 0;
+}
+
+.wordmodal .paradigm-text {
+  margin: 0 0 20px;
+  line-height: 19px;
 }
 
 .wordmodal .tableClone {
@@ -18275,6 +18296,11 @@ body {
   visibility: hidden;
 }
 
+.wordmodal .word-sufix {
+  min-width: 35px;
+  display: inline-block;
+}
+
 .wordmodal table {
   min-width: 100%;
   margin: 12px 0;
@@ -18292,6 +18318,20 @@ body {
   font-size: 12px;
 }
 
+.wordmodal table.inflected td:nth-child(1) .highlight {
+  font-size: 16px;
+}
+
+.wordmodal table table {
+  margin: 0;
+}
+
+.wordmodal table table td {
+  padding: 0;
+  border: none;
+  width: 50%;
+}
+
 .wordmodal table.stretch-middle-td {
   table-layout: unset;
 }
@@ -18303,14 +18343,6 @@ body {
 
 .wordmodal table.stretch-middle-td td:nth-child(1) .highlight {
   font-size: 14px;
-}
-
-.wordmodal table.stretch-middle-td td:nth-child(2) {
-  width: 50%;
-}
-
-.wordmodal table.stretch-middle-td td:nth-child(3) {
-  width: 25%;
 }
 
 .wordmodal table th {
@@ -18909,6 +18941,55 @@ eki-link {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.recommend-btn {
+  position: relative;
+  z-index: 0;
+  display: inline-block;
+  height: 44px;
+  padding: 0 22px;
+  margin: 0 0 13px 20px;
+  font-size: 20px;
+  line-height: 44px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.recommend-btn::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  content: " ";
+  background: #0073e6;
+  transform: skewX(-10deg);
+}
+
+.paradigm-comment {
+  padding: 0 15px 13px;
+  margin: 13px 0;
+  line-height: 24px;
+  border-bottom: 1px solid #ccd9e0;
+}
+
+.morphology-paradigm {
+  padding: 0 10px;
+}
+
+.morphology-paradigm hr {
+  margin: 0 -10px;
+}
+
+.morphology-paradigm + .paradigm-comment {
+  margin-top: 30px;
+}
+
+.modal-button {
+  margin-top: -20px;
 }
 
 .homonym-image {
