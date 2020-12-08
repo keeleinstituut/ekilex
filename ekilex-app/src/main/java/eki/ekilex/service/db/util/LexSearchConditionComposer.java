@@ -347,42 +347,41 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Meaning m3 = MEANING.as("m3");
 				Definition d3 = DEFINITION.as("d3");
 
-				Condition dsFiltWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, null);
-
 				// notes owner #1
 				MeaningFreeform mff3 = MEANING_FREEFORM.as("mff3");
+				Condition mffWhere =
+						mff3.MEANING_ID.eq(m3.ID)
+								.and(l3.MEANING_ID.eq(m3.ID))
+								.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY));
+				mffWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, mffWhere);
 				Table<Record2<Long, Long>> mff2 = DSL
 						.select(l3.WORD_ID, mff3.FREEFORM_ID)
 						.from(l3, mff3, m3)
-						.where(
-								mff3.MEANING_ID.eq(m3.ID)
-										.and(l3.MEANING_ID.eq(m3.ID))
-										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(dsFiltWhere))
+						.where(mffWhere)
 						.asTable("mff2");
 
 				// notes owner #2
 				DefinitionFreeform dff3 = DEFINITION_FREEFORM.as("dff3");
+				Condition dffWhere =
+						dff3.DEFINITION_ID.eq(d3.ID)
+								.and(d3.MEANING_ID.eq(m3.ID))
+								.and(l3.MEANING_ID.eq(m3.ID))
+								.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY));
+				dffWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, dffWhere);
 				Table<Record2<Long, Long>> dff2 = DSL
 						.select(l3.WORD_ID, dff3.FREEFORM_ID)
 						.from(l3, dff3, m3, d3)
-						.where(
-								dff3.DEFINITION_ID.eq(d3.ID)
-										.and(d3.MEANING_ID.eq(m3.ID))
-										.and(l3.MEANING_ID.eq(m3.ID))
-										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(dsFiltWhere))
+						.where(dffWhere)
 						.asTable("dff2");
 
 				// notes owner #3
 				LexemeFreeform lff3 = LEXEME_FREEFORM.as("lff3");
+				Condition lffWhere = lff3.LEXEME_ID.eq(l3.ID).and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY));
+				lffWhere = searchFilterHelper.applyDatasetRestrictions(l3, searchDatasetsRestriction, lffWhere);
 				Table<Record2<Long, Long>> lff2 = DSL
 						.select(l3.WORD_ID, lff3.FREEFORM_ID)
 						.from(l3, lff3)
-						.where(
-								lff3.LEXEME_ID.eq(l3.ID)
-										.and(l3.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(dsFiltWhere))
+						.where(lffWhere)
 						.asTable("lff2");
 
 				// notes owner #4
