@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.constant.WebConstant;
@@ -58,12 +59,14 @@ public class UnifSearchController extends AbstractController {
 			@RequestParam(name = "destinLangsStr") String destinLangStr,
 			@RequestParam(name = "datasetCodesStr") String datasetCodesStr,
 			@RequestParam(name = "searchWord") String searchWord,
-			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr) {
+			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
+			RedirectAttributes redirectAttributes) {
 
 		searchWord = StringUtils.trim(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
 			return "redirect:" + SEARCH_URI + UNIF_URI;
 		}
+		redirectAttributes.addFlashAttribute("isPostRequest", Boolean.TRUE);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		String searchUri = webUtil.composeDetailSearchUri(destinLangStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;
@@ -78,7 +81,10 @@ public class UnifSearchController extends AbstractController {
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			HttpServletRequest request,
-			Model model) {
+			RedirectAttributes redirectAttributes,
+			Model model) throws Exception {
+
+		Boolean isPostRequest = (Boolean) model.asMap().get("isPostRequest");
 
 		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
 		SessionBean sessionBean;
@@ -96,6 +102,7 @@ public class UnifSearchController extends AbstractController {
 			//to get rid of the sessionid in the url
 			return "redirect:" + searchValidation.getSearchUri();
 		} else if (!searchValidation.isValid()) {
+			redirectAttributes.addFlashAttribute("isPostRequest", isPostRequest);
 			return "redirect:" + searchValidation.getSearchUri();
 		}
 
@@ -107,9 +114,7 @@ public class UnifSearchController extends AbstractController {
 		WordsData wordsData = unifSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
-		statDataCollector.addSearchStat(destinLangs, SEARCH_MODE_DETAIL, wordsData.isResultsExist(), isIeUser);
-		statDataCollector.postSearchStat(searchValidation, wordsData, SEARCH_MODE_DETAIL);
+		statDataCollector.postSearchStat(searchValidation, wordsData, request, isPostRequest, SEARCH_MODE_DETAIL);
 
 		return UNIF_SEARCH_PAGE;
 	}

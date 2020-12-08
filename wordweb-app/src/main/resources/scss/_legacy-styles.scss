@@ -214,6 +214,7 @@
     position: absolute;
     top: 3px;
     right: -6px;
+    left: auto;
   }
   .word-options:not(:only-child):not(:last-child) sup {
     right: 12px;
@@ -239,7 +240,6 @@
 
   }
 }
-
 
 .dependence-group {
   @include media-breakpoint-up(md) {

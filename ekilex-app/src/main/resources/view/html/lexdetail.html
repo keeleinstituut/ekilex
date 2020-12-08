@@ -220,13 +220,15 @@
         <div>
           <hr/>
           <span class="lbl" th:unless="${lexeme.lexemeOrMeaningClassifiersExist}">Ilmiku omadused</span>
-          <button type="button" class="btn badge badge-success position-right"
-                  title="Lisa andmeid"
-                  data-toggle="modal"
-                  th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}"
-                  sec:authorize="#vars.lexeme.crudGrant">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-          </button>
+          <div class="text-right">
+            <button type="button" class="btn badge badge-success"
+                    title="Lisa andmeid"
+                    data-toggle="modal"
+                    th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}"
+                    sec:authorize="#vars.lexeme.crudGrant">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
           <th:block th:replace="lexcomp :: data_ids"></th:block>
           <th:block th:replace="lexcomp :: tags"></th:block>
           <th:block th:replace="lexcomp :: lexeme_complexity"></th:block>

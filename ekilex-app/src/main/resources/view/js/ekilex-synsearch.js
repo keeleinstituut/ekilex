@@ -307,6 +307,7 @@ function initAddSynRelationDlg(addDlg) {
 				let theForm = button.closest('form');
 				if (checkRequiredFields(theForm)) {
 					submitForm(theForm, 'Keelendi lisamine ebaõnnestus.').always(function() {
+						refreshSynDetails();
 						addDlg.modal('hide');
 					});
 				}

@@ -8,7 +8,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication(scanBasePackages = {"eki.common", "eki.stat.config", "eki.stat.api"})
+@SpringBootApplication(scanBasePackages = {
+		"eki.common",
+		"eki.stat.config",
+		"eki.stat.api",
+		"eki.stat.service"})
 @EnableCaching
 @EnableTransactionManagement
 public class StatApplication {

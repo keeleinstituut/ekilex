@@ -1,4 +1,46 @@
 var viewType = '';
+
+$.fn.identificator = function(){
+	var main = $(this);
+	var parent = main.parents('.card-body:first');
+	var labels = '';
+	parent.find('[data-id="identificators"]').find('span').each(function(){
+		if (labels !== '') {
+			labels+= ', ';
+		}
+		labels+= $(this).text();
+	});
+	main.attr('title', labels);
+	main.tooltip();
+}
+
+$.fn.status = function() {
+	var main = $(this);
+	var parent = main.parents('.card-body:first');
+	var source = parent.find('[data-id="status"]');
+	var label = source.children('span').text();
+	var target = source.attr('data-target');
+	if (label === 'avalik') {
+		main.find('span').addClass('fa-unlock');
+	} else {
+		main.find('span').addClass('fa-lock');
+	}
+	main.on('click', function(e){
+		e.preventDefault();
+		$(target).modal('show', main);
+	});
+	main.attr('title', label).tooltip();
+}
+
+$.fn.valueStatus = function() {
+	var main = $(this);
+	var parent = main.parents('.card-body:first');
+	var source = parent.find('[data-id="valuestatus"]');
+	main.html(source.html());
+	main.find('.col-w13rem').remove();
+	main.find('[data-toggle="delete-confirm"]').deleteConfirm();
+}
+
 function initializeSearch(type) {
 
 	viewType = type;
@@ -240,7 +282,6 @@ function loadDetails(wordId, task, lastWordId) {
 	$("#word-result-" + wordId).addClass('active');
 	openWaitDlg();
 
-	console.log({viewType});
 	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
 	if (viewType === 'term') {
 		wordDetailsUrl = applicationUrl + 'meaningdetails/' + wordId;
@@ -267,7 +308,7 @@ function loadDetails(wordId, task, lastWordId) {
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
 		} else {
-
+			
 			const dataObject = $(data);
 			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordId}`);
 			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordId}`);
@@ -280,8 +321,13 @@ function loadDetails(wordId, task, lastWordId) {
 					id: parseInt(wordId),
 					word: dataObject.attr('data-word'),
 				});
+
+				var scrollPosition = parseInt(dataObject.attr('data-id')) === wordId ? detailsDiv[0].scrollTop : 0;
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
-				detailsDiv.replaceWith(dataObject[0].outerHTML);
+				var newDiv;
+				detailsDiv.replaceWith(newDiv = $(dataObject[0].outerHTML));
+				newDiv.scrollTop(scrollPosition);
+
 			} else {
 				const lastDetailsArea = $('#resultColumn:first').find('[data-rel="details-area"]:last');
 
@@ -302,7 +348,7 @@ function loadDetails(wordId, task, lastWordId) {
 		
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
-		detailsDiv.scrollTop(scrollPos);
+		//detailsDiv.scrollTop(scrollPos);
 
 		$(window).trigger('update:wordId');
 
@@ -370,7 +416,6 @@ function initLexemeLevelsDlg(editDlg) {
 		let url = editForm.attr('action') + '?' + editForm.serialize();
 		$.post(url).done(function(data) {
 			let id = editDlg.parents('[data-rel="details-area"]:first').data('id');
-			console.log(id);
 			let detailsButton = editDlg.parents('[data-rel="details-area"]:first').find('[name="details-btn"][data-id="' + id + '"]:first');
 			detailsButton.trigger('click');
 			editDlg.find('button.close').trigger('click');
@@ -418,8 +463,11 @@ function refreshDetailsSearch(id) {
 			id = obj.parents('[data-rel="details-area"]').attr('data-id');
 		}
 	}
-	console.log(id);
-	var refreshButton = $(`[data-rel="details-area"][data-id="${id}"]:first`).find('#refresh-details');
+	var refreshButton = $(`#resultColumn [data-id="${id}"]:first`);
+	if (!refreshButton.is('[data-rel="details-area"]') ){
+		refreshButton = refreshButton.parents('[data-rel="details-area"]');
+	}
+	refreshButton = refreshButton.find('#refresh-details');
 	refreshButton.trigger('click');
 };
 

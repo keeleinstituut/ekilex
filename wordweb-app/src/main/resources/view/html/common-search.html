@@ -293,7 +293,7 @@
               </div>
             </div>
             <div class="additional-meta mb-2" th:if="${lexeme.showSection2}">
-              <div class="d-flex related-lexemes" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
+              <div class="d-flex related-lexemes flex-column" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                 <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                   <span th:text="${relationType.value}"></span>
                   <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
@@ -313,10 +313,8 @@
                       <th:block th:if="${isLex && !#lists.isEmpty(relation.lexRegisters)}">
                         <th:block th:each="register, rIter : ${relation.lexRegisters}">
                           <span class="rections register">
-                            <span th:if="${rIter.first}" class="mr-n1">(</span>
-                            <span th:text="${register.value}"></span>
+                            <span th:text="${register.value}" class="text-uppercase text-small"></span>
                             <span th:unless="${rIter.last}" class="ml-n1">,</span>
-                            <span th:if="${rIter.last}" class="ml-n1">)</span>
                           </span>
                         </th:block>
                       </th:block>
@@ -347,11 +345,11 @@
                 </div>
                 <div class="col-12">
                   <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
-                    <div th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
+                    <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                      <span th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
+                      <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value}"></p></div>
                     </div>
                   </th:block>
                   <th:block th:if="${not #maps.isEmpty(lexeme.meaningNotesByLang)}">

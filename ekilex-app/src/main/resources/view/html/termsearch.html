@@ -80,7 +80,7 @@
       <div th:replace="termdialog :: add_meaning_note_dlg"></div>
       <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
       <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
-      <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="meaning-details-btn" data-behaviour="replace"></button>
+      <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn" data-behaviour="replace"></button>
       
       <div class="navigate-panel term-panel card shadow h-100">
         <div class="card border-0 mb-2">
@@ -92,30 +92,23 @@
                   <span class="fa fa-ellipsis-v"></span>
                   <span class="fa fa-ellipsis-v"></span>
                 </div>
-                <div class="hover-actions-container hover-actions-container-outline">
+                <div>
                   <h1 id="word-value-179411" class="mb-0"><span th:text="${meaningId}"></span></h1>
-                  <div class="hover-actions hover-actions-bottom-right">
-                    <button type="button" class="btn btn-secondary" title="Muuda" data-toggle="modal"
-                      data-target="#editWordValueDlg_179411">
-                      <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
-                    </button>
-                  </div>
                 </div>
                 <div class="ml-2">
-                  <button class="btn"><span class="fa fa-info-circle"></span></button>
                   <button class="btn btn-secondary mr-1"
                           data-toggle="modal"
                           data-target="#newWordDlg"
                           th:data-meaning-id="${meaningId}"
-                          sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected"><span class="fa fa-plus"></span></button>
-                  <a class="btn btn-secondary  mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
+                          sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Lisa termin</button>
+                  <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
                     title="Tähenduste ühendamine"
                     sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
                   <button id="duplicateMeaningBtn"
                           title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
                           class="btn btn-secondary mr-1"
                           th:data-meaning-id="${meaningId}"
-                          sec:authorize="#vars.meaning.crudGrant">Duplikaat</button>
+                          sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
                   <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
                     data-original-title="Viimati muudetud">
                     <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
@@ -589,7 +582,7 @@
                     </td>
                     <td class="pr-3">
                       <th:block th:each="relation, relIter : ${relations}">
-                        <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="meaning-details-btn">
+                        <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="details-btn" data-behaviour="replace">
                           <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                           <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                           <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
@@ -673,7 +666,7 @@
                   <div class="block-subtitle">
                     <div class="d-flex align-items-center flex-wrap">
                       <div class="hidden-buttons">
-                        <span th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}" class="ttl word-value"></span>
+                        <span th:data-id="${lexeme.wordId}" th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}" class="ttl word-value"></span>
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
@@ -684,7 +677,7 @@
                       </div>
                       <span th:if="${lexeme.word.displayMorphCode != null}" th:text="${lexeme.word.displayMorphCode}" class="pl-1"></span>
 
-                      <button class="btn"><span class="fa fa-info-circle"></span></button>
+                      <button class="btn" data-plugin="identificator"><span class="fa fa-info-circle"></span></button>
                       <button type="button" class="btn badge badge-secondary float-right mt-1"
                               title="Lisa andmeid"
                               data-toggle="modal"
@@ -692,6 +685,12 @@
                               sec:authorize="#vars.lexeme.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
+                      <button
+                        class="btn"
+                        data-plugin="status"
+                        sec:authorize="#vars.lexeme.crudGrant"
+                      ><span class="fa"></span></button>
+                      <span class="valuestatus" data-plugin="valueStatus"></span>
                     </div>
                     <div class="ml-auto">
                       <span th:text="${lexeme.datasetName}"></span>
@@ -863,7 +862,7 @@
                             <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
                           </td>
                           <td class="pr-3 invisible-buttons">
-                            <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="meaning-details-btn">
+                            <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="details-btn" data-behaviour="replace">
                               <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                             </button>
                             <button type="button" class="btn badge badge-warning"

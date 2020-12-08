@@ -48,8 +48,29 @@
 }
 
 .wordmodal {
+
+  .subtitle {
+    padding-top: 20px;
+    padding-bottom: 0;
+  }
+  tr:nth-child(2) > .subtitle {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .text-center {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .uppercase {
+    text-transform: uppercase;
+    margin-bottom: -10px;
+    & + h2 {
+      margin-top: 20px;
+    }
+  }
   .highlight {
-    color: $gray-900;
+    color: $green-400;
   }
   .modal-dialog {
     max-width: 900px;
@@ -66,7 +87,8 @@
   .scrollable-table {
     position: relative;
     overflow-x: hidden;
-
+    margin-left: -10px;
+    margin-right: -10px;
     &--scroller {
       overflow: auto;
     }
@@ -112,15 +134,38 @@
     color: $gray-900;
 
     .nav-pills {
+      border-bottom: #CCD9E0 1px solid;
+      margin-left:-25px !important;
+      margin-right: -25px !important;
+      padding: 0 25px 16px 25px;
       .nav-link {
-        margin-right: -1px;
-        color: $green-700;
+        border: none;
+        padding: 0;
+        margin: 0;
         background: none;
-        border: $green-700 1px solid;
-        border-radius: 5px 0 0 5px;
+        color: $gray-900 !important;
+        .fa {
+          width: 20px;
+          height: 20px;
+          display: inline-block;
+          line-height: 18px;
+          font-size: 12px;
+          text-align: center;
+          border-radius: 4px;
+          color: #fff;
+          margin-right:12px;
+          border: $blue-400 1px solid;
+          &:before {
+            visibility: hidden;
+          }
+        }
         &.active {
-          color: $white;
-          background: $green-700;
+          .fa {
+            background: $blue-400;
+            &:before {
+              visibility: visible;
+            }
+          }
         }
       }
     }
@@ -164,8 +209,12 @@
   h2 {
     margin: 26px 0 12px;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: normal;
     color: $gray-900;
+    text-transform:  uppercase;
+    & + .scrollable-table {
+      margin-top: -20px;
+    }
   }
   p {
     margin: .5rem 0;
@@ -173,6 +222,12 @@
   p + h2 {
     margin-top: 0;
   }
+
+  .paradigm-text {
+    margin: 0 0 20px;
+    line-height: 19px;
+  }
+
   .tableClone {
     position: absolute;
     top: 12px;
@@ -183,10 +238,18 @@
     overflow: hidden;
     pointer-events: none;
     background: $white;
-    border-right:1px solid #ccd9e0;
     table {
       margin: 0;
     }
+    td,th {
+      &:nth-child(2){
+        visibility: hidden;
+      }
+    }
+  }
+  .word-sufix {
+    min-width: 35px;
+    display: inline-block;
   }
   table {
     min-width: 100%;
@@ -195,13 +258,27 @@
     color: $gray-900;
     white-space: nowrap;
     table-layout: fixed;
-    border: 1px solid $gray-200;
     &.first-row-sizes {
       td:nth-child(1) {
         font-size: 16px;
         .highlight {
-          font-size: 14px;
+          font-size: 12px;
         }
+      }
+    }
+    &.inflected {
+      td:nth-child(1) {
+        .highlight {
+          font-size: 16px;
+        }
+      }
+    }
+    table {
+      margin: 0;
+      td {
+        padding: 0;
+        border: none;
+        width: 50%;
       }
     }
     &.stretch-middle-td {
@@ -213,29 +290,37 @@
           font-size: 14px;
         }
       }
-      td:nth-child(2) {
-        width: 50%;
-      }
-      td:nth-child(3) {
-        width: 25%;
-      }
     }
     th {
       font-size: 16px;
       font-weight: 700;
       line-height: 120%;
       color: $gray-900;
-      background: $gray-100;
+      &[colspan="3"] {
+        border: none;
+        font-size: 18px;
+        line-height: 22px;
+        font-weight: normal;;
+        &.text-center {
+          font-weight: bold;
+        }
+      }
     }
     th,
     td {
       padding: 10px 12px;
-      border: 1px solid $gray-200;
+      border-bottom: 1px solid $gray-100;
     }
     td {
       padding-top: 5px;
       padding-bottom: 5px;
-      color: $gray-350;
+      color: $gray-900;
+      &:first-child {
+        .highlight {
+          color: $gray-350;
+          font-size: 12px;
+        }
+      }
     }
   }
 
@@ -253,7 +338,7 @@
     &__row {
       color: $gray-200;
       &--highlighted {
-        color: $blue-200;
+        color: $green-400;
       }
     }
   }
@@ -264,7 +349,7 @@
       margin-right: 4px;
       color: $gray-200;
       &.highlight {
-        color: $blue-200;
+        color: $green-400;
       }
     }
     &__item {

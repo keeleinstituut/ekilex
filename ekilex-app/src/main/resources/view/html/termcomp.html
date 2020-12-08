@@ -61,11 +61,11 @@
       </div>
     </div>
   </div>
-  <div class="hidden-buttons row" th:fragment="data_ids">
+  <div class="hidden-buttons row" th:fragment="data_ids" style="display: none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Identifikaatorid</span>
     </div>
-    <div class="col pl-0">
+    <div class="col pl-0" data-id="identificators">
       <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
       <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
       <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
@@ -106,11 +106,11 @@
       <span th:text="#{'enum.complexity.' + ${lexeme.complexity}}"></span>
     </div>
   </div>
-  <div class="hidden-buttons row" th:fragment="lexeme_publicity">
+  <div class="hidden-buttons row" th:fragment="lexeme_publicity" style="display: none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Avalikkus</span>
     </div>
-    <div class="col pl-0">
+    <div class="col pl-0" data-id="status" th:data-target="${'#editLexemePublicityDlg_' + lexeme.lexemeId}">
       <span th:if="${lexeme.public}">avalik</span>
       <span th:unless="${lexeme.public}">mitteavalik</span>
       <button type="button" class="btn badge badge-primary" title="Muuda"
@@ -121,7 +121,7 @@
       </button>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state">
+  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display:none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Väärtusolek</span>
     </div>

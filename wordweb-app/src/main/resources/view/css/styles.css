@@ -16443,6 +16443,10 @@ body.hidden-scroll {
   }
 }
 
+.is-homonym sup {
+  left: -5px;
+}
+
 .lang-code {
   display: inline-block;
   flex: 0 0 auto;
@@ -17539,6 +17543,7 @@ body {
   position: absolute;
   top: 3px;
   right: -6px;
+  left: auto;
 }
 
 .word-grouper-wrapper .word-options:not(:only-child):not(:last-child) sup {
@@ -18072,8 +18077,32 @@ body {
   border-radius: 20px;
 }
 
+.wordmodal .subtitle {
+  padding-top: 20px;
+  padding-bottom: 0;
+}
+
+.wordmodal tr:nth-child(2) > .subtitle {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.wordmodal .text-center {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.wordmodal .uppercase {
+  text-transform: uppercase;
+  margin-bottom: -10px;
+}
+
+.wordmodal .uppercase + h2 {
+  margin-top: 20px;
+}
+
 .wordmodal .highlight {
-  color: #3f3f3f;
+  color: #00892e;
 }
 
 .wordmodal .modal-dialog {
@@ -18095,6 +18124,8 @@ body {
 .wordmodal .scrollable-table {
   position: relative;
   overflow-x: hidden;
+  margin-left: -10px;
+  margin-right: -10px;
 }
 
 .wordmodal .scrollable-table--scroller {
@@ -18145,17 +18176,44 @@ body {
   color: #3f3f3f;
 }
 
-.wordmodal .modal-body .nav-pills .nav-link {
-  margin-right: -1px;
-  color: #007025;
-  background: none;
-  border: #007025 1px solid;
-  border-radius: 5px 0 0 5px;
+.wordmodal .modal-body .nav-pills {
+  border-bottom: #CCD9E0 1px solid;
+  margin-left: -25px !important;
+  margin-right: -25px !important;
+  padding: 0 25px 16px 25px;
 }
 
-.wordmodal .modal-body .nav-pills .nav-link.active {
+.wordmodal .modal-body .nav-pills .nav-link {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  color: #3f3f3f !important;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link .fa {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  line-height: 18px;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 4px;
   color: #fff;
-  background: #007025;
+  margin-right: 12px;
+  border: #005aa9 1px solid;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link .fa:before {
+  visibility: hidden;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link.active .fa {
+  background: #005aa9;
+}
+
+.wordmodal .modal-body .nav-pills .nav-link.active .fa:before {
+  visibility: visible;
 }
 
 .wordmodal .modal-body .btn {
@@ -18196,8 +18254,13 @@ body {
 .wordmodal h2 {
   margin: 26px 0 12px;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: normal;
   color: #3f3f3f;
+  text-transform: uppercase;
+}
+
+.wordmodal h2 + .scrollable-table {
+  margin-top: -20px;
 }
 
 .wordmodal p {
@@ -18206,6 +18269,11 @@ body {
 
 .wordmodal p + h2 {
   margin-top: 0;
+}
+
+.wordmodal .paradigm-text {
+  margin: 0 0 20px;
+  line-height: 19px;
 }
 
 .wordmodal .tableClone {
@@ -18218,11 +18286,19 @@ body {
   overflow: hidden;
   pointer-events: none;
   background: #fff;
-  border-right: 1px solid #ccd9e0;
 }
 
 .wordmodal .tableClone table {
   margin: 0;
+}
+
+.wordmodal .tableClone td:nth-child(2), .wordmodal .tableClone th:nth-child(2) {
+  visibility: hidden;
+}
+
+.wordmodal .word-sufix {
+  min-width: 35px;
+  display: inline-block;
 }
 
 .wordmodal table {
@@ -18232,7 +18308,6 @@ body {
   color: #3f3f3f;
   white-space: nowrap;
   table-layout: fixed;
-  border: 1px solid #ccd9e0;
 }
 
 .wordmodal table.first-row-sizes td:nth-child(1) {
@@ -18240,7 +18315,21 @@ body {
 }
 
 .wordmodal table.first-row-sizes td:nth-child(1) .highlight {
-  font-size: 14px;
+  font-size: 12px;
+}
+
+.wordmodal table.inflected td:nth-child(1) .highlight {
+  font-size: 16px;
+}
+
+.wordmodal table table {
+  margin: 0;
+}
+
+.wordmodal table table td {
+  padding: 0;
+  border: none;
+  width: 50%;
 }
 
 .wordmodal table.stretch-middle-td {
@@ -18256,32 +18345,39 @@ body {
   font-size: 14px;
 }
 
-.wordmodal table.stretch-middle-td td:nth-child(2) {
-  width: 50%;
-}
-
-.wordmodal table.stretch-middle-td td:nth-child(3) {
-  width: 25%;
-}
-
 .wordmodal table th {
   font-size: 16px;
   font-weight: 700;
   line-height: 120%;
   color: #3f3f3f;
-  background: #ecf0f2;
+}
+
+.wordmodal table th[colspan="3"] {
+  border: none;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: normal;
+}
+
+.wordmodal table th[colspan="3"].text-center {
+  font-weight: bold;
 }
 
 .wordmodal table th,
 .wordmodal table td {
   padding: 10px 12px;
-  border: 1px solid #ccd9e0;
+  border-bottom: 1px solid #ecf0f2;
 }
 
 .wordmodal table td {
   padding-top: 5px;
   padding-bottom: 5px;
+  color: #3f3f3f;
+}
+
+.wordmodal table td:first-child .highlight {
   color: #687887;
+  font-size: 12px;
 }
 
 .wordmodal .word-section {
@@ -18303,7 +18399,7 @@ body {
 }
 
 .wordmodal .rating__row--highlighted {
-  color: #5aabe0;
+  color: #00892e;
 }
 
 .wordmodal .table-legend {
@@ -18316,7 +18412,7 @@ body {
 }
 
 .wordmodal .table-legend .fa.highlight {
-  color: #5aabe0;
+  color: #00892e;
 }
 
 .wordmodal .table-legend__item {
@@ -18838,6 +18934,62 @@ eki-link {
 .morphology-section.collapse {
   max-height: 155px;
   overflow: hidden;
+}
+
+.morph-word {
+  padding-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recommend-btn {
+  position: relative;
+  z-index: 0;
+  display: inline-block;
+  height: 44px;
+  padding: 0 22px;
+  margin: 0 0 13px 20px;
+  font-size: 20px;
+  line-height: 44px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.recommend-btn::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  content: " ";
+  background: #0073e6;
+  transform: skewX(-10deg);
+}
+
+.paradigm-comment {
+  padding: 0 15px 13px;
+  margin: 13px 0;
+  line-height: 24px;
+  border-bottom: 1px solid #ccd9e0;
+}
+
+.morphology-paradigm {
+  padding: 0 10px;
+}
+
+.morphology-paradigm hr {
+  margin: 0 -10px;
+}
+
+.morphology-paradigm + .paradigm-comment {
+  margin-top: 30px;
+}
+
+.modal-button {
+  margin-top: -20px;
 }
 
 .homonym-image {
