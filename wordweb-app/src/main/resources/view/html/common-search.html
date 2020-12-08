@@ -293,7 +293,7 @@
               </div>
             </div>
             <div class="additional-meta mb-2" th:if="${lexeme.showSection2}">
-              <div class="d-flex related-lexemes" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
+              <div class="d-flex related-lexemes flex-column" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                 <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                   <span th:text="${relationType.value}"></span>
                   <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
