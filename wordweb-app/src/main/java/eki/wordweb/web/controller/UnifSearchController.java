@@ -66,7 +66,7 @@ public class UnifSearchController extends AbstractController {
 		if (StringUtils.isBlank(searchWord)) {
 			return "redirect:" + SEARCH_URI + UNIF_URI;
 		}
-		redirectAttributes.addFlashAttribute("isPostRequest", Boolean.TRUE);
+		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		String searchUri = webUtil.composeDetailSearchUri(destinLangStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;
@@ -84,8 +84,7 @@ public class UnifSearchController extends AbstractController {
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
 
-		Boolean isPostRequest = (Boolean) model.asMap().get("isPostRequest");
-
+		boolean isSearchForm = isSearchForm(model);
 		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
 		SessionBean sessionBean;
 		if (sessionBeanNotPresent) {
@@ -102,7 +101,7 @@ public class UnifSearchController extends AbstractController {
 			//to get rid of the sessionid in the url
 			return "redirect:" + searchValidation.getSearchUri();
 		} else if (!searchValidation.isValid()) {
-			redirectAttributes.addFlashAttribute("isPostRequest", isPostRequest);
+			setSearchFormAttribute(redirectAttributes, isSearchForm);
 			return "redirect:" + searchValidation.getSearchUri();
 		}
 
@@ -114,7 +113,7 @@ public class UnifSearchController extends AbstractController {
 		WordsData wordsData = unifSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		statDataCollector.postSearchStat(searchValidation, wordsData, request, isPostRequest, SEARCH_MODE_DETAIL);
+		statDataCollector.postSearchStat(searchValidation, wordsData, request, isSearchForm, SEARCH_MODE_DETAIL);
 
 		return UNIF_SEARCH_PAGE;
 	}

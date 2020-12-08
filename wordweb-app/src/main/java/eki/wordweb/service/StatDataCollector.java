@@ -62,7 +62,7 @@ public class StatDataCollector implements GlobalConstant {
 	}
 
 	@Async
-	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, HttpServletRequest request, Boolean isPostRequest, String searchMode) throws Exception {
+	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, HttpServletRequest request, boolean isSearchForm, String searchMode) throws Exception {
 
 		if (!serviceEnabled) {
 			return;
@@ -76,7 +76,6 @@ public class StatDataCollector implements GlobalConstant {
 		boolean resultsExist = wordsData.isResultsExist();
 		boolean isSingleResult = wordsData.isSingleResult();
 
-		boolean isSearch = BooleanUtils.toBoolean(isPostRequest);
 		String sessionId = request.getSession().getId();
 		String userAgent = request.getHeader("User-Agent");
 		String referrerDomain = null;
@@ -86,7 +85,7 @@ public class StatDataCollector implements GlobalConstant {
 		String serverDomain = request.getServerName();
 
 		RequestOrigin requestOrigin;
-		if (isSearch) {
+		if (isSearchForm) {
 			requestOrigin = RequestOrigin.SEARCH;
 		} else if (StringUtils.equals(serverDomain, referrerDomain)) {
 			requestOrigin = RequestOrigin.INSIDE_NAVIGATION;

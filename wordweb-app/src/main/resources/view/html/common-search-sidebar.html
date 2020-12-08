@@ -38,17 +38,6 @@
                       </button>
                     </div>
                   </th:block>
-                  <div class="extra-forms collapse">
-                    <th:block th:each="form : ${paradigmGroup1.forms1}">
-                      <div class="d-flex align-items-center" th:if="${form.displayLevel > 1}">
-                        <div class="morph-word" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
-                        <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
-                                th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-                          <span class="icon icon-speaker"></span>
-                        </button>
-                      </div>
-                    </th:block>
-                  </div>
                 </th:block>
                 <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms2)}">
                   <th:block th:each="form : ${paradigmGroup1.forms2}">
@@ -60,17 +49,6 @@
                       </button>
                     </div>
                   </th:block>
-                  <div class="extra-forms collapse">
-                    <th:block th:each="form : ${paradigmGroup1.forms2}">
-                      <div class="d-flex align-items-center my-2" th:if="${form.displayLevel > 1}">
-                        <div class="morph-word" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
-                        <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
-                                th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-                          <span class="icon icon-speaker"></span>
-                        </button>
-                      </div>
-                    </th:block>
-                  </div>
                 </th:block>
                 <th:block th:if="${paradigmGroup1.groupsExist || paradigmGroup1.formsExist}">
                   <div class="d-block my-2 group-2" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
@@ -85,17 +63,6 @@
                           </button>
                         </div>
                       </th:block>
-                      <div class="extra-forms collapse">
-                        <th:block th:each="form : ${paradigmGroup2.forms1}">
-                          <div class="d-flex align-items-center" th:if="${form.displayLevel > 1}">
-                            <div class="morph-word" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
-                            <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
-                                    th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                        </th:block>
-                      </div>
                     </th:block>
                     <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms2)}">
                       <th:block th:each="form : ${paradigmGroup2.forms2}">
@@ -107,17 +74,6 @@
                           </button>
                         </div>
                       </th:block>
-                      <div class="extra-forms collapse">
-                        <th:block th:each="form : ${paradigmGroup2.forms2}">
-                          <div class="d-flex align-items-center my-2" th:if="${form.displayLevel > 1}">
-                            <div class="morph-word" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
-                            <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
-                                    th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                        </th:block>
-                      </div>
                     </th:block>
                     <th:block th:if="${paradigmGroup2.groupsExist || paradigmGroup2.formsExist}">
                       <div class="my-2" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
@@ -132,17 +88,6 @@
                               </button>
                             </div>
                           </th:block>
-                          <div class="extra-forms collapse">
-                            <th:block th:each="form : ${paradigmGroup3.forms1}">
-                              <div class="d-flex align-items-center" th:if="${form.displayLevel > 1}">
-                                <div class="morph-word" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
-                                <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
-                                        th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-                                  <span class="icon icon-speaker"></span>
-                                </button>
-                              </div>
-                            </th:block>
-                          </div>
                         </th:block>
                         <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms2)}">
                           <th:block th:each="form : ${paradigmGroup3.forms2}">
@@ -154,38 +99,12 @@
                               </button>
                             </div>
                           </th:block>
-                          <div class="extra-forms collapse">
-                            <th:block th:each="form : ${paradigmGroup3.forms2}">
-                              <div class="d-flex align-items-center" th:if="${form.displayLevel > 1}">
-                                <div class="morph-word" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
-                                <button type="button" th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.audioFile != null}"
-                                        th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
-                                  <span class="icon icon-speaker"></span>
-                                </button>
-                              </div>
-                            </th:block>
-                          </div>
                         </th:block>
                       </div>
                     </th:block>
                   </div>
                 </th:block>
               </div>
-            </div>
-            <div>
-              <button class="btn btn-link-muted btn-collapse btn-sm ml-n2"
-                      type="button"
-                      data-toggle="collapse"
-                      data-dynamic-text="true"
-                      th:data-target="${'#morphologyTogglePanel-' + paradigmIter.index + ' .collapse'}"
-                      aria-expanded="false"
-                      th:aria-controls="${'#morphologyTogglePanel-' + paradigmIter.index + ' .collapse'}"
-                      th:if="${paradigm.expandable}">
-                <span class="btn-content see-less-content d-none">
-                  <i class="fa fa-angle-up" aria-hidden="true"></i>
-                  <span class="btn-txt" th:text="#{button.see.less}"></span>
-                </span>
-              </button>
             </div>
             <div th:if="${not #strings.isEmpty(wordData.word.wordClass)}" class="modal-button">
               <button type="button" class="btn btn-bold pl-0 pr-0" data-toggle="modal" th:data-target="${'#morpho-modal-' + paradigmIter.index}">

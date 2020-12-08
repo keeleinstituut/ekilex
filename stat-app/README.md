@@ -1,9 +1,21 @@
 # Stat app
 
-Luua 'login role' ja andmebaas 
+Stat app is API module for collecting and sharing statistics data.
 
-* Andmebaas: ekistat
-* Kasutaja: ekistat
-* Skeem: public (vaikimisi)
-* Kodeering (encoding): UTF8
-* Tähestik (collation): et_EE.UTF-8
+Create 'login role' and database 
+
+* Database: ekistat
+* Username: ekistat
+* Schema: public (default)
+* Encoding: UTF8
+* Collation: et_EE.UTF-8
+
+Configure environment specific application.properties files:
+* stat-app/src/main/resources/application.properties
+* wordweb-app/src/main/resources/application.properties
+* ekilex-app/src/main/resources/application.properties
+
+Use sql script to create database tables:
+* stat-app/src/main/resources/sql/create_tables.sql
+
+Use correct environment specific profile when running application.

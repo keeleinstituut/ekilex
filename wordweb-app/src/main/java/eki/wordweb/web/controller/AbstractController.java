@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
@@ -92,6 +94,15 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 	protected SessionBean getSessionBean(Model model) {
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 		return sessionBean;
+	}
+
+	protected boolean isSearchForm(Model model) {
+		Boolean isSearchForm = (Boolean) model.asMap().get(SEARCH_FORM);
+		return BooleanUtils.toBoolean(isSearchForm);
+	}
+
+	protected void setSearchFormAttribute(RedirectAttributes redirectAttributes, boolean isSearchForm) {
+		redirectAttributes.addFlashAttribute(SEARCH_FORM, isSearchForm);
 	}
 
 	protected Integer nullSafe(String value) {
