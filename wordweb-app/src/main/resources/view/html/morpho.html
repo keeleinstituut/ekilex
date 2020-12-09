@@ -1193,36 +1193,16 @@
           </button>
         </div>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks"><span class="fa fa-check"></span>märkidega</button>
-            </li>
-          </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}" class="uppercase">muuttüüp 31</p>
-            <div class="scrollable-table">
-              <div class="scrollable-table--scroller">
-                <table>
-                  <tr>
-                    <th colspan="2" class="text-center">Инфинитив / Tegevusnimi</th>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'INFN', '')"></th:block>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
                   <tr>
-                    <th colspan="2" class="text-center">Изъявительное наклонение / Kindel kõneviis</th>
+                    <th colspan="2"><b>Изъявительное наклонение / Kindel kõneviis</b></th>
                   </tr>
                   <tr>
-                    <th colspan="2">настоящее время / olevik</th>
+                    <th colspan="2" class="subtitle">настоящее время / olevik</th>
                   </tr>
                   <tr>
                     <th>лицо / isik</th>
@@ -1230,9 +1210,7 @@
                   </tr>
                   <tr>
                     <td>
-                      1. лицо ед. ч. / ainsuse 1. isik
-                      <br />
-                      <span class="highlight">я / ma</span>
+                      <span class="word-sufix">я / ma</span> <span class="highlight"> 1. лицо ед. ч. </span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,1per,pres,indc', '')"></th:block>
@@ -1240,9 +1218,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо ед. ч. / ainsuse 2. isik
-                      <br />
-                      <span class="highlight">ты / sa</span>
+                      <span class="word-sufix">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,2per,pres,indc', '')"></th:block>
@@ -1250,9 +1226,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. мужской род / ainsuse 3. isik meessugu
-                      <br />
-                      <span class="highlight">он / ta</span>
+                      <span class="word-sufix">он / ta</span> <span class="highlight"> 3. лицо ед. ч. мужской род</span>
                     </td>
                     <td rowspan="3">
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,3per,pres,indc', '')"></th:block>
@@ -1260,23 +1234,17 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. женский род / ainsuse 3. isik naissugu
-                      <br />
-                      <span class="highlight">она / ta</span>
+                      <span class="word-sufix">она / ta</span> <span class="highlight"> 3. лицо ед. ч. женский род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. средний род / ainsuse 3. isik kesksugu
-                      <br />
-                      <span class="highlight">оно / ta</span>
+                      <span class="word-sufix">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      1. лицо мн. ч. / mitmuse 1. isik
-                      <br />
-                      <span class="highlight">мы / meie</span>
+                      <span class="word-sufix">мы / meie</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,1per,pres,indc', '')"></th:block>
@@ -1284,9 +1252,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо мн. ч. / mitmuse 2. isik
-                      <br />
-                      <span class="highlight">вы / teie</span>
+                      <span class="word-sufix">вы / teie</span> <span class="highlight">2. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,2per,pres,indc', '')"></th:block>
@@ -1294,9 +1260,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо мн. ч. / mitmuse 3. isik
-                      <br />
-                      <span class="highlight">они / nad</span>
+                      <span class="word-sufix">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,3per,pres,indc', '')"></th:block>
@@ -1311,9 +1275,7 @@
                   </tr>
                   <tr>
                     <td>
-                      1. лицо ед. ч. мужской род / ainsuse 1. isik meessugu
-                      <br />
-                      <span class="highlight">я / ma</span>
+                      <span class="word-sufix">я / ma</span> <span class="highlight"> 1. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,1per,past,indc', '')"></th:block>
@@ -1321,9 +1283,7 @@
                   </tr>
                   <tr>
                     <td>
-                      1. лицо ед. ч. женский род / ainsuse 1. isik naissugu
-                      <br />
-                      <span class="highlight">я / ma</span>
+                      <span class="word-sufix">я / ma</span> <span class="highlight">1. лицо ед. ч. женский род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,1per,past,indc', '')"></th:block>
@@ -1331,9 +1291,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо ед. ч. мужской род / ainsuse 2. isik meessugu
-                      <br />
-                      <span class="highlight">ты / sa</span>
+                      <span class="word-sufix">ты / sa</span> <span class="highlight">2. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,2per,past,indc', '')"></th:block>
@@ -1341,9 +1299,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо ед. ч. женский род / ainsuse 2. isik naissugu
-                      <br />
-                      <span class="highlight">ты / sa</span>
+                      <span class="word-sufix">ты / sa</span> <span class="highlight"> 2. лицо ед. ч. женский род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,2per,past,indc', '')"></th:block>
@@ -1351,9 +1307,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. мужской род / ainsuse 3. isik meessugu
-                      <br />
-                      <span class="highlight">он / ta</span>
+                      <span class="word-sufix">он / ta</span> <span class="highlight">3. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,3per,past,indc', '')"></th:block>
@@ -1361,9 +1315,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. женский род / ainsuse 3. isik naissugu
-                      <br />
-                      <span class="highlight">она / ta</span>
+                      <span class="word-sufix">она / ta</span> <span class="highlight">3. лицо ед. ч. женский род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,3per,past,indc', '')"></th:block>
@@ -1371,9 +1323,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. средний род / ainsuse 3. isik kesksugu
-                      <br />
-                      <span class="highlight">оно / ta</span>
+                      <span class="word-sufix">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'neut,sing,3per,past,indc', '')"></th:block>
@@ -1381,9 +1331,7 @@
                   </tr>
                   <tr>
                     <td>
-                      1. лицо мн. ч. / mitmuse 1. isik
-                      <br />
-                      <span class="highlight">мы / meie</span>
+                      <span class="word-sufix">мы / meie</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td rowspan="3">
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,past,indc', '')"></th:block>
@@ -1391,16 +1339,12 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо мн. ч. / mitmuse 2. isik
-                      <br />
-                      <span class="highlight">вы / teie</span>
+                      <span class="word-sufix">вы / teie</span> <span class="highlight">2. лицо мн. ч.</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      3. лицо мн. ч. / mitmuse 3. isik
-                      <br />
-                      <span class="highlight">они / nad</span>
+                      <span class="word-sufix">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                   </tr>
                   <tr>
@@ -1412,9 +1356,7 @@
                   </tr>
                   <tr>
                     <td>
-                      1. лицо ед. ч. / ainsuse 1. isik
-                      <br />
-                      <span class="highlight">я / ma</span>
+                      <span class="word-sufix">я / ma</span> <span class="highlight">1. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,1per,futr,indc', '')"></th:block>
@@ -1422,9 +1364,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо ед. ч. / ainsuse 2. isik
-                      <br />
-                      <span class="highlight">ты / sa</span>
+                      <span class="word-sufix">ты / sa</span> <span class="highlight"> 2. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,2per,futr,indc', '')"></th:block>
@@ -1432,9 +1372,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. мужской род / ainsuse 3. isik meessugu
-                      <br />
-                      <span class="highlight">он / ta</span>
+                      <span class="word-sufix">он / ta</span> <span class="highlight"> 3. лицо ед. ч. мужской род</span>
                     </td>
                     <td rowspan="3">
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,3per,futr,indc', '')"></th:block>
@@ -1442,23 +1380,17 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. женский род / ainsuse 3. isik naissugu
-                      <br />
-                      <span class="highlight">она / ta</span>
+                      <span class="word-sufix">она / ta</span> <span class="highlight">3. лицо ед. ч. женский род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      3. лицо ед. ч. средний род / ainsuse 3. isik kesksugu
-                      <br />
-                      <span class="highlight">оно / ta</span>
+                      <span class="word-sufix">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      1. лицо мн. ч. / mitmuse 1. isik
-                      <br />
-                      <span class="highlight">мы / meie</span>
+                      <span class="word-sufix">мы / meie</span> <span class="highlight"> 1. лицо мн. ч. </span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,1per,futr,indc', '')"></th:block>
@@ -1466,9 +1398,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо мн. ч. / mitmuse 2. isik
-                      <br />
-                      <span class="highlight">вы / teie</span>
+                      <span class="word-sufix">вы / teie</span> <span class="highlight"> 2. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,2per,futr,indc', '')"></th:block>
@@ -1476,9 +1406,7 @@
                   </tr>
                   <tr>
                     <td>
-                      3. лицо мн. ч. / mitmuse 3. isik
-                      <br />
-                      <span class="highlight">они / nad</span>
+                      <span class="word-sufix">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,3per,futr,indc', '')"></th:block>
@@ -1491,17 +1419,14 @@
               <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
                   <tr>
-                    <th colspan="2" class="text-center">Повелительное наклонение / Käskiv kõneviis</th>
+                    <th colspan="2">Повелительное наклонение / Käskiv kõneviis</th>
                   </tr>
                   <tr>
-                    <th>лицо / isik</th>
-                    <th></th>
+                    <th colspan="2">лицо / isik</th>
                   </tr>
                   <tr>
                     <td>
-                      1. лицо ед. ч. / ainsuse 1. isik
-                      <br />
-                      <span class="highlight">я / ma</span>
+                      <span class="word-sufix">я / ma</span> <span class="highlight"> 1. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,incl', '')"></th:block>
@@ -1509,9 +1434,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо ед. ч. / ainsuse 2. isik
-                      <br />
-                      <span class="highlight">ты / sa</span>
+                      <span class="word-sufix">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,excl', '')"></th:block>
@@ -1519,9 +1442,7 @@
                   </tr>
                   <tr>
                     <td>
-                      1. лицо мн. ч. / mitmuse 1. isik
-                      <br />
-                      <span class="highlight">мы / me</span>
+                      <span class="word-sufix">мы / me</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,incl', '')"></th:block>
@@ -1529,9 +1450,7 @@
                   </tr>
                   <tr>
                     <td>
-                      2. лицо мн. ч. / mitmuse 2. isik
-                      <br />
-                      <span class="highlight">вы / te</span>
+                      <span class="word-sufix">вы / te</span> <span class="highlight"> 2. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,excl', '')"></th:block>
@@ -1542,9 +1461,23 @@
             </div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
+                <table>
+                  <tr>
+                    <th>Инфинитив / Tegevusnimi</th>
+                  </tr>
+                  <tr>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'INFN', '')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
                   <tr>
-                    <th colspan="2" class="text-center">Причастия / Kesksõnad</th>
+                    <th colspan="2">Причастия / Kesksõnad</th>
                   </tr>
                   <tr>
                     <td>
@@ -1613,11 +1546,11 @@
               <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
                   <tr>
-                    <th colspan="2" class="text-center">Деепричастия / des-vorm</th>
+                    <th colspan="2">Деепричастия / des-vorm</th>
                   </tr>
                   <tr>
                     <td>
-                      настоящее / olevik
+                      деепричастие настоящего времени / oleviku des-vorm
                       <br />
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
@@ -1627,7 +1560,7 @@
                   </tr>
                   <tr>
                     <td>
-                      прошедшее / minevik
+                      деепричастие прошедшего времени / mineviku des-vorm
                       <br />
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
@@ -1643,7 +1576,6 @@
       </div>
     </div>
   </th:block>
-  <!-- experimental from here on -->
   <th:block th:fragment="morpho-noun_rus">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1657,39 +1589,19 @@
           </button>
         </div>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
-            </li>
-          </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 31</p>
-            <div class="scrollable-table">
-              <div class="scrollable-table--scroller">
-                <table>
-                  <tr>
-                    <th colspan="2" class="text-center">Инфинитив / Tegevusnimi</th>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'INFN', '')"></th:block>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="first-row-sizes" data-fixColumn="true">
-                  <tr>
-                    <th>падеж / kääne</th>
-                    <th>eдинственное число / ainsus</th>
-                    <th>множественное число / mitmus</th>
+                  <tr class="unindent">
+                    <th>падеж <br /> kääne</th>
+                    <th>eдинственное число <br /> ainsus</th>
+                    <th>множественное число <br /> mitmus</th>
                   </tr>
                   <tr>
                     <td>
-                      именительный / nominatiiv
+                      Именительный
                       <br />
                       <span class="highlight">кто? что? / kes? mis?</span>
                     </td>
@@ -1702,9 +1614,9 @@
                   </tr>
                   <tr>
                     <td>
-                      родительный  / genitiiv
+                      Родительный
                       <br />
-                      <span class="highlight">кого? чего?  / kelle? mille?</span>
+                      <span class="highlight">кого? чего? / kelle? mille?</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,gent')"></th:block>
@@ -1715,7 +1627,7 @@
                   </tr>
                   <tr>
                     <td>
-                      дательный /  daativ
+                      Дательный
                       <br />
                       <span class="highlight">кому? чему? / kellele? millele?</span>
                     </td>
@@ -1728,7 +1640,7 @@
                   </tr>
                   <tr>
                     <td>
-                      винительный /  akusatiiv
+                      Винительный
                       <br />
                       <span class="highlight">кого? что? / keda? mida?</span>
                     </td>
@@ -1741,7 +1653,7 @@
                   </tr>
                   <tr>
                     <td>
-                      творительный / instrumentaal
+                      Творительный
                       <br />
                       <span class="highlight">кем? чем?  / kellega? millega?</span>
                     </td>
@@ -1754,7 +1666,7 @@
                   </tr>
                   <tr>
                     <td>
-                      предложный / prepositiiv
+                      Предложный
                       <br />
                       <span class="highlight">о ком? о чем? / kellest? millest?</span>
                     </td>
@@ -1769,45 +1681,35 @@
               </div>
             </div>
           </div>
-          <div class="table-legend">
-            <div class="table-legend__item">Legend:</div>
-            <div class="table-legend__item">
-              <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
-            </div>
-            <div class="table-legend__item">
-              <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
-            </div>
-          </div>
         </div>
       </div>
     </div>
   </th:block>
-  <th:block th:fragment="morpho-rus-adj-basetable(paradigm, tableTitle)">
+  <th:block th:fragment="morpho-rus-adj-basetable(paradigm)">
     <div class="scrollable-table">
       <div class="scrollable-table--scroller">
-        <table class="stretch-middle-td">
-          <tr>
-            <th colspan="3" th:text="${tableTitle}">Võrre</th>
-          </tr>
-          <tr>
-            <th colspan="3">
-              eдинственное число / ainsus
+        <table class="first-row-sizes" data-fixColumn="true">
+          <tr class="unindent">
+            <th>
+              <span>падеж / kääne</span>
             </th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
           </tr>
-         <tr>
-            <th colspan="3">
+          <tr >
+            <th>
+              <span>eдинственное число / ainsus</span>
+            </th>
+            <th colspan="2">&nbsp;</th>
+          </tr>
+          <tr>
+            <td colspan="3">
               мужской род / meessugu
-            </th>
-          </tr>
-         <tr>
-            <th colspan="2">
-             падеж / kääne
-            </th>
-            <th></th>
+            </td>
           </tr>
           <tr>
             <td colspan="2">
-              именительный / nominatiiv
+              Именительный
               <br />
               <span class="highlight">какой? / missugune?</span>
             </td>
@@ -1817,7 +1719,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              родительный / genitiiv
+              Родительный
               <br />
               <span class="highlight">какого? / missuguse?</span>
             </td>
@@ -1827,7 +1729,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              дательный / daativ
+              Дательный
               <br />
               <span class="highlight">какому? / missugusele?</span>
             </td>
@@ -1837,7 +1739,7 @@
           </tr>
           <tr>
             <td rowspan="2">
-              винительный / akusatiiv
+              Винительный
               <br />
               <span class="highlight">какого? / missugust?</span>
             </td>
@@ -1858,7 +1760,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              творительный / instrumentaal
+              Творительный
               <br />
               <span class="highlight">каким? / missugusega?</span>
             </td>
@@ -1868,7 +1770,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              предложный / prepositiiv
+              Предложный
               <br />
               <span class="highlight">о каком? / missugusest?</span>
             </td>
@@ -1883,7 +1785,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              именительный / nominatiiv
+              Именительный
               <br />
               <span class="highlight">какая? / missugune?</span>
             </td>
@@ -1893,7 +1795,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              родительный / genitiiv
+              Родительный
               <br />
               <span class="highlight">какой? / missuguse?</span>
             </td>
@@ -1903,7 +1805,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              дательный / daativ
+              Дательный
               <br />
               <span class="highlight">какой? / missugusele?</span>
             </td>
@@ -1913,7 +1815,7 @@
           </tr>
           <tr>
             <td rowspan="2">
-              винительный / akusatiiv
+              Винительный
               <br />
               <span class="highlight">какую? / missugust?</span>
             </td>
@@ -1931,7 +1833,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              творительный / instrumentaal
+              Творительный
               <br />
               <span class="highlight">какой? / missugusega?</span>
             </td>
@@ -1941,7 +1843,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              предложный / prepositiiv
+              Предложный
               <br />
               <span class="highlight">о какой? / missugusest?</span>
             </td>
@@ -1956,7 +1858,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              именительный / nominatiiv
+              Именительный
               <br />
               <span class="highlight">какое? / missugune?</span>
             </td>
@@ -1966,7 +1868,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              родительный / genitiiv
+              Родительный
               <br />
               <span class="highlight">какого? / missuguse?</span>
             </td>
@@ -1976,7 +1878,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              дательный / daativ
+              Дательный
               <br />
               <span class="highlight">какому? / missugusele?</span>
             </td>
@@ -1986,7 +1888,7 @@
           </tr>
           <tr>
             <td rowspan="2">
-              винительный / akusatiiv
+              Винительный
               <br />
               <span class="highlight">какого? / missugust?</span>
             </td>
@@ -2004,7 +1906,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              творительный / instrumentaal
+              Творительный
               <br />
               <span class="highlight">каким? / missugusega?</span>
             </td>
@@ -2014,7 +1916,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              предложный / prepositiiv
+              Предложный
               <br />
               <span class="highlight">о каком? / missugusest?</span>
             </td>
@@ -2024,12 +1926,12 @@
           </tr>
           <tr>
             <th colspan="3">
-              множественное число / mitmus
+              <b>множественное число / mitmus</b>
             </th>
           </tr>
           <tr>
             <td colspan="2">
-              именительный / nominatiiv
+              Именительный
               <br />
               <span class="highlight">какие? / missugused?</span>
             </td>
@@ -2039,7 +1941,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              родительный / genitiiv
+              Родительный
               <br />
               <span class="highlight">каких? / missuguste?</span>
             </td>
@@ -2049,7 +1951,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              дательный / daativ
+              Дательный
               <br />
               <span class="highlight">каким? / missugustele?</span>
             </td>
@@ -2059,7 +1961,7 @@
           </tr>
           <tr>
             <td rowspan="2">
-              винительный / akusatiiv
+              Винительный
               <br />
               <span class="highlight">каких? / missuguseid?</span>
             </td>
@@ -2080,7 +1982,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              творительный / instrumentaal
+              Творительный
               <br />
               <span class="highlight">какими? / missugustega?</span>
             </td>
@@ -2090,7 +1992,7 @@
           </tr>
           <tr>
             <td colspan="2">
-              предложный / prepositiiv
+              Предложный
               <br />
               <span class="highlight">о каких? / missugustest?</span>
             </td>
@@ -2115,20 +2017,15 @@
           </button>
         </div>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
-            </li>
-          </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 31</p>
-            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm}, 'Положительная степень / Algvõrre')"></th:block>
+            <h2>Положительная степень / Algvõrre</h2>
+            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                <table class="stretch-middle-td">
+                 <table class="first-row-sizes" data-fixColumn="true">
                   <tr>
-                    <th colspan="2" class="text-center">Краткое прилагательное / Omadussõna lühike vorm</th>
+                    <th colspan="2">Краткое прилагательное / Omadussõna lühike vorm</th>
                   </tr>
                   <tr>
                     <th colspan="2">
@@ -2167,7 +2064,7 @@
                   </tr>
                   <tr>
                     <td>
-                      множественное число /  mitmus
+                      <b>множественное число /  mitmus</b>
                       <br />
                       <span class="highlight">каковы? / missugused?</span>
                     </td>
@@ -2180,9 +2077,9 @@
             </div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                <table class="stretch-middle-td">
+                 <table class="first-row-sizes" data-fixColumn="true">
                   <tr>
-                    <th colspan="2" class="text-center">Cтепени сравнения / Võrdlusastmed</th>
+                    <th colspan="2">Cтепени сравнения / Võrdlusastmed</th>
                   </tr>
                   <tr>
                     <td>
@@ -2204,15 +2101,6 @@
               </div>
             </div>
           </div>
-          <div class="table-legend">
-            <div class="table-legend__item">Legend:</div>
-            <div class="table-legend__item">
-              <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
-            </div>
-            <div class="table-legend__item">
-              <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -2230,24 +2118,10 @@
           </button>
         </div>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
-            </li>
-          </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}">muuttüüp 22e</p>
-            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm}, 'Превосходная степень / Ülivõrre')"></th:block>
-          </div>
-          <div class="table-legend">
-            <div class="table-legend__item">Legend:</div>
-            <div class="table-legend__item">
-              <i class="fa fa-star highlight"></i> Sõnavormi kasutussagedus selles sõnas
-            </div>
-            <div class="table-legend__item">
-              <i class="fa fa-star"></i> Sõnavormi üldine kasutussagedus kõikide sõnade lõikes
-            </div>
+            <h2>Превосходная степень / Ülivõrre</h2>
+            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
         </div>
       </div>
@@ -2266,19 +2140,13 @@
           </button>
         </div>
         <div class="modal-body">
-          <ul class="nav nav-pills mb-3" data-plugin="tableTogglers">
-            <li class="nav-item">
-              <button type="button" class="nav-link" role="tab" data-rel="marks">Märkidega</button>
-            </li>
-          </ul>
           <div>
-            <h2>Неизменяемое / Muutumatu tüüp</h2>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table>
                   <tr>
                     <td>
-                      неизменяемая форма / muutumatu vorm
+                      неизменяемое слово / muutumatu vorm
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ID', '')"></th:block>
