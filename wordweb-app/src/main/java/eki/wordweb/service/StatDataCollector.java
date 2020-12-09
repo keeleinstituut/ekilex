@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +30,13 @@ public class StatDataCollector implements GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(StatDataCollector.class);
 
-	@Value("${stat.service.enabled:false}")
+	@Value("${ekistat.service.enabled:false}")
 	private boolean serviceEnabled;
 
-	@Value("${stat.service.url}")
+	@Value("${ekistat.service.url}")
 	private String serviceUrl;
 
-	@Value("${stat.service.key}")
+	@Value("${ekistat.service.key}")
 	private String serviceKey;
 
 	@Async

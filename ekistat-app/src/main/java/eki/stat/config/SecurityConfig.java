@@ -14,10 +14,10 @@ import eki.stat.security.ApiKeyAuthFilter;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Value("${stat.service.wordweb.api.key}")
+	@Value("${ekistat.service.wordweb.api.key}")
 	private String wwApiKey;
 
-	@Value("${stat.service.ekilex.api.key}")
+	@Value("${ekistat.service.ekilex.api.key}")
 	private String ekilexApiKey;
 
 	@Override
