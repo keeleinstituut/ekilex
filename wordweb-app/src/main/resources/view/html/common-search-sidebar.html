@@ -27,7 +27,6 @@
             </div>
             <div th:id="${'morphologyTogglePanel-'+paradigmIter.index}" class="morphology-section d-flex mb-2">
               <div class="w-50 mt-2 group-1" th:each="paradigmGroup1 : ${paradigm.groups}">
-                <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}" class="secondary-morph"></h5>
                 <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
                   <th:block th:each="form : ${paradigmGroup1.forms1}">
                     <div th:if="${form.displayLevel <= 1}" class="d-flex align-items-center">
