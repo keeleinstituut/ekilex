@@ -1,0 +1,26 @@
+Märkused ver 1.20.0 tarne kohta:
+
+1.	ekilex/eki-common/src/main/resources/sql/delivery.sql sisaldab vajalikke andmebaasi migratsioone.
+
+	Suuremad muudatused:
+
+	- Keelendi väärtuse kolimine morfoloogiast välja
+	- Tundmatute kollokaatide automaatne ümbertõstmine teadaolevate ühemõtteliste homonüümide juurde või sildistamine muudel juhtudel
+	- Kõigile freeform derivaatidele lisandus looja, loomise kuupäev, muutja ja muutmise kuupäev
+	- Loodud uus sageduskorpuste andmestruktuur koos osalise migratsiooniga vanadest andmetest ning vanade struktuuride täieliku kustutamisega.
+	  Sagedusandmete esitamise loogika on siiski alles pooleli ning seetõttu ei tohiks ükski sageduskorpus olla avalik (freq_corp.is_public=false)
+
+2.	Paigast läinud vene homonüümide numeratsiooni taastamiseks käivitada homonüüminumbrite järjestamise andmebaasi protseduur (vt paigaldusjuhendi lisa)
+
+3.	Tee värske sõnaveebi laadimine.
+
+	Kustuta ekilexis kõik sõnaveebiga seotud vaated ja andmetüübid:
+	ekilex/eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
+
+	Taasloo sõnaveebi materjaliseeritud vaated:
+	ekilex/wordweb-app/fileresources/sql/create_mviews.sql
+
+4.	Lisandus täiesti uus rakenduste kasutusstatistika kogumise moodul. Selle arendus on alles alguses, kuid Sõnaveebi otsingute statistikat saab juba hakata koguma.
+	Paigaldus on sarnane Ekilexi ja Sõnaveebi paigaldusele. Soovitav on rakendus ja andmebaas paigaldada Ekilexist ning Sõnaveebist füüsiliselt erinevasse serverisse.
+	Paigaldusjuhendist leiad täpsemad juhised.
+	
