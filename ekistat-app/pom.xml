@@ -9,14 +9,14 @@
     </parent>
 
     <groupId>eki.stat</groupId>
-    <artifactId>stat-app</artifactId>
+    <artifactId>ekistat-app</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Stat App</name>
+    <name>Ekistat App</name>
 
     <build>
-        <finalName>stat-app</finalName>
+        <finalName>ekistat-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -24,17 +24,6 @@
                 <configuration>
                     <executable>true</executable>
                 </configuration>
-<!--                TODO ? -->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>repackage</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <mainClass>${spring.boot.mainclass}</mainClass>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
             </plugin>
             <!-- used for reading values from properties file, so we can give them to jooq-codegen plugin -->
             <plugin>
@@ -101,8 +90,6 @@
         </plugins>
     </build>
 
-    <!--    TODO profiles? -->
-
     <dependencies>
         <dependency>
             <groupId>eki.common</groupId>
@@ -124,10 +111,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>

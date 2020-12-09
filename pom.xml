@@ -22,8 +22,8 @@
 		<module>ekilex-etl</module>
 		<module>ekilex-rus-morph</module>
 		<module>wordweb-app</module>
-        <module>stat-app</module>
-    </modules>
+        <module>ekistat-app</module>
+	</modules>
 
 	<developers>
 		<developer>
@@ -123,18 +123,6 @@
 			<dependency>
 				<groupId>eki.common</groupId>
 				<artifactId>eki-common</artifactId>
-				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
-				<version>1.20-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>eki.ekilex</groupId>
-				<artifactId>ekilex-app</artifactId>
-				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
-				<version>1.20-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>eki.ekilex</groupId>
-				<artifactId>ekilex-etl</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
 				<version>1.20-SNAPSHOT</version>
 			</dependency>
