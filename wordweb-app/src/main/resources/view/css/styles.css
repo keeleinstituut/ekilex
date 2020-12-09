@@ -18970,18 +18970,11 @@ eki-link {
 }
 
 .paradigm-comment {
-  padding: 0 15px 13px;
   margin: 13px 0;
-  line-height: 24px;
-  border-bottom: 1px solid #ccd9e0;
-}
-
-.morphology-paradigm {
-  padding: 0 10px;
 }
 
 .morphology-paradigm hr {
-  margin: 0 -10px;
+  margin: 10px -10px 0;
 }
 
 .morphology-paradigm + .paradigm-comment {
