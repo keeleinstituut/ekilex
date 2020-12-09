@@ -21,7 +21,7 @@ Rakenduslikud moodulid
 * ekilex/ekilex-app
 * ekilex/wordweb-app
 * ekilex/stat-app
-* ekilex/ekilex-etl
+* ekilex/ekilex-etl (aegunud)
 * ekilex/eve-app (aegunud)
 
 Tugimoodulid
