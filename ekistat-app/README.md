@@ -11,11 +11,11 @@ Create 'login role' and database
 * Collation: et_EE.UTF-8
 
 Configure environment specific application.properties files:
-* stat-app/src/main/resources/application.properties
+* ekistat-app/src/main/resources/application.properties
 * wordweb-app/src/main/resources/application.properties
 * ekilex-app/src/main/resources/application.properties
 
 Use sql script to create database tables:
-* stat-app/src/main/resources/sql/create_tables.sql
+* ekistat-app/src/main/resources/sql/create_tables.sql
 
 Use correct environment specific profile when running application.
