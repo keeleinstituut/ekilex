@@ -39,9 +39,9 @@ public class StatDataCollector implements GlobalConstant {
 	@Value("${ekistat.service.key}")
 	private String serviceKey;
 
-	private final String EXCEPTION_URI = "/exception";
+	private static final String EXCEPTION_URI = "/exception";
 
-	private final String SEARCH_URI = "/search";
+	private static final String SEARCH_URI = "/search";
 
 	@Async
 	public void postExceptionStat(Throwable exception) {
