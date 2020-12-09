@@ -13,7 +13,7 @@
         <span th:text="#{label.no.data}">Andmed puuduvad</span>
       </div>
       <div class="col-12 morphology-panel" th:unless="${wordData.unknownForm}">
-        <div class="recommend-btn">ÕS Soovitab</div>
+
         <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
           <div th:if="${paradigm.comment != null}" class="paradigm-comment">
             <span th:utext="${paradigm.comment}"></span>
