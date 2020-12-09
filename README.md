@@ -59,4 +59,7 @@ Andmebaasi tabelite proksi-klasside genereerimine (kasutatakse ainult arenduses,
 
 `ekilex>mvn compile -Dskip.jooq.generation=false`
 
-Detailsemalt kõigest: ekilex/doc/ekilex-paigaldusjuhend.pdf
+Detailsemalt kõigest:
+* [paigaldusjuhend](doc/ekilex-paigaldusjuhend.pdf)
+* [ekilex wiki](https://github.com/tripledev/ekilex/wiki)
+
