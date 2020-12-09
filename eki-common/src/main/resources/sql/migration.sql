@@ -511,9 +511,9 @@ insert into freq_corp
 )
 values
 (
-  'enc17-formfreq',
+  'enc17',
   '2017-01-01',
-  true
+  false
 );
 
 insert into form_freq
@@ -525,7 +525,7 @@ insert into form_freq
 )
 (select (select id
          from freq_corp
-         where name = 'enc17-formfreq'),
+         where name = 'enc17'),
        f.id,
        ff.value,
        ff.rank
@@ -544,3 +544,7 @@ where exists (select l.id
 
 drop table lexeme_frequency;
 drop table form_frequency;
+
+alter table lexeme drop column frequency_group_code;
+alter table lexeme drop column corpus_frequency;
+drop table frequency_group;

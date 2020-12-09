@@ -1,4 +1,4 @@
-eki.common:eki-common:jar:1.18-SNAPSHOT
+eki.common:eki-common:jar:1.20-SNAPSHOT
 +- org.apache.commons:commons-lang3:jar:3.10:compile
 +- org.apache.commons:commons-text:jar:1.8:compile
 +- org.apache.commons:commons-collections4:jar:4.4:compile

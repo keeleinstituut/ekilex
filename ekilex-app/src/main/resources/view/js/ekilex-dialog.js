@@ -74,10 +74,6 @@ $(function() {
 		alignAndFocus(e, $(this));
 	});
 
-	$(document).on("show.bs.modal", "[id^=editLexemeFrequencyGroupDlg_]", function() {
-		initSelectDlg($(this));
-	});
-
 	$(document).on("show.bs.modal", "[id^=editLexemePosDlg_]", function() {
 		initSelectDlg($(this));
 	});

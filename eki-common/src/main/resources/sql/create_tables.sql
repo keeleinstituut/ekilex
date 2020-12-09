@@ -205,14 +205,6 @@ create table aspect_label
   unique(code, lang, type)
 );
 
--- sagedusrühm
-create table frequency_group
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null,
-  order_by bigserial
-);
-
 -- sugu
 create table gender
 (
@@ -843,8 +835,6 @@ create table lexeme
   meaning_id bigint references meaning(id) not null,
   dataset_code varchar(10) references dataset(code) not null,
   type varchar(50) not null,
-  frequency_group_code varchar(100) references frequency_group(code) null,
-  corpus_frequency numeric,--TODO will be moved to lexeme_frequency table later
   level1 integer default 0,
   level2 integer default 0,
   value_state_code varchar(100) references value_state(code) null,

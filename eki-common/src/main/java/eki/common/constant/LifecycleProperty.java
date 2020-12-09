@@ -5,7 +5,6 @@ public enum LifecycleProperty {
 	ID,
 	VALUE,
 	LEVEL,
-	FREQUENCY_GROUP,
 	COMPLEXITY,
 	POS,
 	DERIV,

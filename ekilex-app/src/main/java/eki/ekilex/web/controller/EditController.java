@@ -90,9 +90,6 @@ public class EditController extends AbstractPageController {
 		case "usage_definition":
 			cudService.createUsageDefinition(itemData.getId(), itemValue, itemData.getLanguage());
 			break;
-		case "lexeme_frequency_group":
-			cudService.updateLexemeFrequencyGroup(itemData.getId(), itemValue);
-			break;
 		case "lexeme_pos":
 			cudService.createLexemePos(itemData.getId(), itemValue);
 			break;
@@ -249,9 +246,6 @@ public class EditController extends AbstractPageController {
 			break;
 		case "definition_note":
 			cudService.updateDefinitionNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
-			break;
-		case "lexeme_frequency_group":
-			cudService.updateLexemeFrequencyGroup(itemData.getId(), itemValue);
 			break;
 		case "lexeme_complexity":
 			cudService.updateLexemeComplexity(itemData.getId(), itemValue);
@@ -484,9 +478,6 @@ public class EditController extends AbstractPageController {
 			break;
 		case "lexeme_note":
 			cudService.deleteLexemeNote(id);
-			break;
-		case "lexeme_frequency_group":
-			cudService.updateLexemeFrequencyGroup(id, null);
 			break;
 		case "lexeme_pos":
 			cudService.deleteLexemePos(id, valueToDelete);

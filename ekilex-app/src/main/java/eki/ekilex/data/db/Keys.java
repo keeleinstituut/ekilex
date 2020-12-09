@@ -34,7 +34,6 @@ import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.FreqCorp;
-import eki.ekilex.data.db.tables.FrequencyGroup;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
@@ -146,7 +145,6 @@ import eki.ekilex.data.db.tables.records.FormRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.FreqCorpRecord;
-import eki.ekilex.data.db.tables.records.FrequencyGroupRecord;
 import eki.ekilex.data.db.tables.records.GameNonwordRecord;
 import eki.ekilex.data.db.tables.records.GenderLabelRecord;
 import eki.ekilex.data.db.tables.records.GenderRecord;
@@ -271,7 +269,6 @@ public class Keys {
     public static final Identity<FreeformRecord, Long> IDENTITY_FREEFORM = Identities0.IDENTITY_FREEFORM;
     public static final Identity<FreeformSourceLinkRecord, Long> IDENTITY_FREEFORM_SOURCE_LINK = Identities0.IDENTITY_FREEFORM_SOURCE_LINK;
     public static final Identity<FreqCorpRecord, Long> IDENTITY_FREQ_CORP = Identities0.IDENTITY_FREQ_CORP;
-    public static final Identity<FrequencyGroupRecord, Long> IDENTITY_FREQUENCY_GROUP = Identities0.IDENTITY_FREQUENCY_GROUP;
     public static final Identity<GameNonwordRecord, Long> IDENTITY_GAME_NONWORD = Identities0.IDENTITY_GAME_NONWORD;
     public static final Identity<GenderRecord, Long> IDENTITY_GENDER = Identities0.IDENTITY_GENDER;
     public static final Identity<GovernmentTypeRecord, Long> IDENTITY_GOVERNMENT_TYPE = Identities0.IDENTITY_GOVERNMENT_TYPE;
@@ -376,7 +373,6 @@ public class Keys {
     public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = UniqueKeys0.FREEFORM_SOURCE_LINK_PKEY;
     public static final UniqueKey<FreqCorpRecord> FREQ_CORP_PKEY = UniqueKeys0.FREQ_CORP_PKEY;
     public static final UniqueKey<FreqCorpRecord> FREQ_CORP_NAME_KEY = UniqueKeys0.FREQ_CORP_NAME_KEY;
-    public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = UniqueKeys0.FREQUENCY_GROUP_PKEY;
     public static final UniqueKey<GameNonwordRecord> GAME_NONWORD_PKEY = UniqueKeys0.GAME_NONWORD_PKEY;
     public static final UniqueKey<GameNonwordRecord> GAME_NONWORD_WORD_LANG_KEY = UniqueKeys0.GAME_NONWORD_WORD_LANG_KEY;
     public static final UniqueKey<GenderRecord> GENDER_PKEY = UniqueKeys0.GENDER_PKEY;
@@ -563,7 +559,6 @@ public class Keys {
     public static final ForeignKey<LexemeRecord, WordRecord> LEXEME__LEXEME_WORD_ID_FKEY = ForeignKeys0.LEXEME__LEXEME_WORD_ID_FKEY;
     public static final ForeignKey<LexemeRecord, MeaningRecord> LEXEME__LEXEME_MEANING_ID_FKEY = ForeignKeys0.LEXEME__LEXEME_MEANING_ID_FKEY;
     public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_DATASET_CODE_FKEY;
-    public static final ForeignKey<LexemeRecord, FrequencyGroupRecord> LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY;
     public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY;
     public static final ForeignKey<LexemeActivityLogRecord, LexemeRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeActivityLogRecord, ActivityLogRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = ForeignKeys0.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY;
@@ -701,7 +696,6 @@ public class Keys {
         public static Identity<FreeformRecord, Long> IDENTITY_FREEFORM = Internal.createIdentity(Freeform.FREEFORM, Freeform.FREEFORM.ID);
         public static Identity<FreeformSourceLinkRecord, Long> IDENTITY_FREEFORM_SOURCE_LINK = Internal.createIdentity(FreeformSourceLink.FREEFORM_SOURCE_LINK, FreeformSourceLink.FREEFORM_SOURCE_LINK.ID);
         public static Identity<FreqCorpRecord, Long> IDENTITY_FREQ_CORP = Internal.createIdentity(FreqCorp.FREQ_CORP, FreqCorp.FREQ_CORP.ID);
-        public static Identity<FrequencyGroupRecord, Long> IDENTITY_FREQUENCY_GROUP = Internal.createIdentity(FrequencyGroup.FREQUENCY_GROUP, FrequencyGroup.FREQUENCY_GROUP.ORDER_BY);
         public static Identity<GameNonwordRecord, Long> IDENTITY_GAME_NONWORD = Internal.createIdentity(GameNonword.GAME_NONWORD, GameNonword.GAME_NONWORD.ID);
         public static Identity<GenderRecord, Long> IDENTITY_GENDER = Internal.createIdentity(Gender.GENDER, Gender.GENDER.ORDER_BY);
         public static Identity<GovernmentTypeRecord, Long> IDENTITY_GOVERNMENT_TYPE = Internal.createIdentity(GovernmentType.GOVERNMENT_TYPE, GovernmentType.GOVERNMENT_TYPE.ORDER_BY);
@@ -804,7 +798,6 @@ public class Keys {
         public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = Internal.createUniqueKey(FreeformSourceLink.FREEFORM_SOURCE_LINK, "freeform_source_link_pkey", new TableField[] { FreeformSourceLink.FREEFORM_SOURCE_LINK.ID }, true);
         public static final UniqueKey<FreqCorpRecord> FREQ_CORP_PKEY = Internal.createUniqueKey(FreqCorp.FREQ_CORP, "freq_corp_pkey", new TableField[] { FreqCorp.FREQ_CORP.ID }, true);
         public static final UniqueKey<FreqCorpRecord> FREQ_CORP_NAME_KEY = Internal.createUniqueKey(FreqCorp.FREQ_CORP, "freq_corp_name_key", new TableField[] { FreqCorp.FREQ_CORP.NAME }, true);
-        public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = Internal.createUniqueKey(FrequencyGroup.FREQUENCY_GROUP, "frequency_group_pkey", new TableField[] { FrequencyGroup.FREQUENCY_GROUP.CODE }, true);
         public static final UniqueKey<GameNonwordRecord> GAME_NONWORD_PKEY = Internal.createUniqueKey(GameNonword.GAME_NONWORD, "game_nonword_pkey", new TableField[] { GameNonword.GAME_NONWORD.ID }, true);
         public static final UniqueKey<GameNonwordRecord> GAME_NONWORD_WORD_LANG_KEY = Internal.createUniqueKey(GameNonword.GAME_NONWORD, "game_nonword_word_lang_key", new TableField[] { GameNonword.GAME_NONWORD.WORD, GameNonword.GAME_NONWORD.LANG }, true);
         public static final UniqueKey<GenderRecord> GENDER_PKEY = Internal.createUniqueKey(Gender.GENDER, "gender_pkey", new TableField[] { Gender.GENDER.CODE }, true);
@@ -989,7 +982,6 @@ public class Keys {
         public static final ForeignKey<LexemeRecord, WordRecord> LEXEME__LEXEME_WORD_ID_FKEY = Internal.createForeignKey(Keys.WORD_PKEY, Lexeme.LEXEME, "lexeme_word_id_fkey", new TableField[] { Lexeme.LEXEME.WORD_ID }, true);
         public static final ForeignKey<LexemeRecord, MeaningRecord> LEXEME__LEXEME_MEANING_ID_FKEY = Internal.createForeignKey(Keys.MEANING_PKEY, Lexeme.LEXEME, "lexeme_meaning_id_fkey", new TableField[] { Lexeme.LEXEME.MEANING_ID }, true);
         public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = Internal.createForeignKey(Keys.DATASET_PKEY, Lexeme.LEXEME, "lexeme_dataset_code_fkey", new TableField[] { Lexeme.LEXEME.DATASET_CODE }, true);
-        public static final ForeignKey<LexemeRecord, FrequencyGroupRecord> LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY = Internal.createForeignKey(Keys.FREQUENCY_GROUP_PKEY, Lexeme.LEXEME, "lexeme_frequency_group_code_fkey", new TableField[] { Lexeme.LEXEME.FREQUENCY_GROUP_CODE }, true);
         public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = Internal.createForeignKey(Keys.VALUE_STATE_PKEY, Lexeme.LEXEME, "lexeme_value_state_code_fkey", new TableField[] { Lexeme.LEXEME.VALUE_STATE_CODE }, true);
         public static final ForeignKey<LexemeActivityLogRecord, LexemeRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_lexeme_id_fkey", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.LEXEME_ID }, true);
         public static final ForeignKey<LexemeActivityLogRecord, ActivityLogRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = Internal.createForeignKey(Keys.ACTIVITY_LOG_PKEY, LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_activity_log_id_fkey", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);

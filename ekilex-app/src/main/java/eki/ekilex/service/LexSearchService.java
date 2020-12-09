@@ -267,7 +267,6 @@ public class LexSearchService extends AbstractWordSearchService {
 
 			boolean lexemeOrMeaningClassifiersExist =
 					StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
-							|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
 							|| CollectionUtils.isNotEmpty(lexeme.getPos())
 							|| CollectionUtils.isNotEmpty(lexeme.getDerivs())
 							|| CollectionUtils.isNotEmpty(lexeme.getRegisters())

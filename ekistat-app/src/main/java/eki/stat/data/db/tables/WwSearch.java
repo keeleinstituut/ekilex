@@ -4,7 +4,6 @@
 package eki.stat.data.db.tables;
 
 
-import eki.stat.data.db.Indexes;
 import eki.stat.data.db.Keys;
 import eki.stat.data.db.Public;
 import eki.stat.data.db.tables.records.WwSearchRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row15;
@@ -35,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WwSearch extends TableImpl<WwSearchRecord> {
 
-    private static final long serialVersionUID = -674489107;
+    private static final long serialVersionUID = 1028399612;
 
     /**
      * The reference instance of <code>public.ww_search</code>
@@ -161,11 +159,6 @@ public class WwSearch extends TableImpl<WwSearchRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WW_SEARCH_SEARCH_WORD_IDX);
     }
 
     @Override

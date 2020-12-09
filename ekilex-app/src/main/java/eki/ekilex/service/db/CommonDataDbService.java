@@ -18,7 +18,6 @@ import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.ETYMOLOGY_TYPE;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.FREQUENCY_GROUP;
 import static eki.ekilex.data.db.Tables.GENDER;
 import static eki.ekilex.data.db.Tables.GENDER_LABEL;
 import static eki.ekilex.data.db.Tables.GOVERNMENT_TYPE;
@@ -143,18 +142,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(LANGUAGE.leftJoin(LANGUAGE_LABEL).on(LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)))
 				.where(LANGUAGE_LABEL.LANG.eq(classifierLabelLang).and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.orderBy(LANGUAGE.ORDER_BY).fetchInto(Classifier.class);
-	}
-
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
-	public List<Classifier> getFrequencyGroups() {
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.FREQUENCY_GROUP),
-						FREQUENCY_GROUP.CODE,
-						FREQUENCY_GROUP.CODE.as("value"))
-				.from(FREQUENCY_GROUP)
-				.orderBy(FREQUENCY_GROUP.ORDER_BY)
-				.fetchInto(Classifier.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")

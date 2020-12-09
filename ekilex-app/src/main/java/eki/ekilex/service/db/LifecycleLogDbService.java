@@ -289,13 +289,7 @@ public class LifecycleLogDbService implements GlobalConstant {
 		Long entityId = logData.getEntityId();
 		LifecycleProperty property = logData.getProperty();
 
-		if (LifecycleProperty.FREQUENCY_GROUP.equals(property)) {
-			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-			String recent = (String) entityData.get("frequency_group_code");
-			logData.setRecent(recent);
-			Long lifecycleLogId = createLifecycleLog(logData);
-			createLexemeLifecycleLog(entityId, lifecycleLogId);
-		} else if (LifecycleProperty.COMPLEXITY.equals(property)) {
+		if (LifecycleProperty.COMPLEXITY.equals(property)) {
 			Map<String, Object> entityData = helper.getLexemeData(create, entityId);
 			String recent = (String) entityData.get("complexity");
 			logData.setRecent(recent);

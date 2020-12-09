@@ -232,13 +232,6 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateLexemeFrequencyGroup(Long lexemeId, String frequencyGroupCode) {
-		create.update(LEXEME)
-				.set(LEXEME.FREQUENCY_GROUP_CODE, frequencyGroupCode)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
 	public void updateLexemeProcessState(Long lexemeId, boolean isPublic) {
 		create.update(LEXEME)
 				.set(LEXEME.IS_PUBLIC, isPublic)

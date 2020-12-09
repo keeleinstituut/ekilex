@@ -34,7 +34,6 @@ import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.FreqCorp;
-import eki.ekilex.data.db.tables.FrequencyGroup;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
@@ -169,7 +168,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 914727963;
+    private static final long serialVersionUID = -1014045054;
 
     /**
      * The reference instance of <code>public</code>
@@ -325,11 +324,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.freq_corp</code>.
      */
     public final FreqCorp FREQ_CORP = FreqCorp.FREQ_CORP;
-
-    /**
-     * The table <code>public.frequency_group</code>.
-     */
-    public final FrequencyGroup FREQUENCY_GROUP = FrequencyGroup.FREQUENCY_GROUP;
 
     /**
      * The table <code>public.game_nonword</code>.
@@ -876,7 +870,6 @@ public class Public extends SchemaImpl {
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.FREQ_CORP_ID_SEQ,
-            Sequences.FREQUENCY_GROUP_ORDER_BY_SEQ,
             Sequences.GAME_NONWORD_ID_SEQ,
             Sequences.GENDER_ORDER_BY_SEQ,
             Sequences.GOVERNMENT_TYPE_ORDER_BY_SEQ,
@@ -995,7 +988,6 @@ public class Public extends SchemaImpl {
             Freeform.FREEFORM,
             FreeformSourceLink.FREEFORM_SOURCE_LINK,
             FreqCorp.FREQ_CORP,
-            FrequencyGroup.FREQUENCY_GROUP,
             GameNonword.GAME_NONWORD,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,

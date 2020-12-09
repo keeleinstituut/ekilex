@@ -130,7 +130,7 @@ drop table if exists register_label;
 drop table if exists register;
 drop table if exists semantic_type_label;
 drop table if exists semantic_type;
-drop table if exists frequency_group;
+drop table if exists frequency_group;--TODO remove later
 drop table if exists domain_label;
 drop table if exists domain;
 drop table if exists definition_type_label;

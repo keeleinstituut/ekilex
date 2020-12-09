@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row14;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 529393630;
+    private static final long serialVersionUID = 477958894;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -69,16 +69,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.dataset_code</code>.
      */
     public final TableField<LexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexeme.frequency_group_code</code>.
-     */
-    public final TableField<LexemeRecord, String> FREQUENCY_GROUP_CODE = createField(DSL.name("frequency_group_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.lexeme.corpus_frequency</code>.
-     */
-    public final TableField<LexemeRecord, BigDecimal> CORPUS_FREQUENCY = createField(DSL.name("corpus_frequency"), org.jooq.impl.SQLDataType.NUMERIC, this, "");
 
     /**
      * The column <code>public.lexeme.level1</code>.
@@ -180,7 +170,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     @Override
     public List<ForeignKey<LexemeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
     }
 
     public Word word() {
@@ -193,10 +183,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     public Dataset dataset() {
         return new Dataset(this, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY);
-    }
-
-    public FrequencyGroup frequencyGroup() {
-        return new FrequencyGroup(this, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY);
     }
 
     public ValueState valueState() {
@@ -230,11 +216,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row14 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row14<Long, Long, Long, String, String, BigDecimal, Integer, Integer, String, String, Long, String, BigDecimal, Boolean> fieldsRow() {
-        return (Row14) super.fieldsRow();
+    public Row12<Long, Long, Long, String, Integer, Integer, String, String, Long, String, BigDecimal, Boolean> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

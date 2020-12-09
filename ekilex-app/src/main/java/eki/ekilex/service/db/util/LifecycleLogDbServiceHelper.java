@@ -170,7 +170,6 @@ public class LifecycleLogDbServiceHelper extends AbstractDataDbService {
 
 		Map<String, Object> result = create
 				.select(
-						LEXEME.FREQUENCY_GROUP_CODE,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
 						LEXEME.VALUE_STATE_CODE,

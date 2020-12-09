@@ -34,7 +34,6 @@ import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.FreqCorp;
-import eki.ekilex.data.db.tables.FrequencyGroup;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
@@ -292,11 +291,6 @@ public class Tables {
      * The table <code>public.freq_corp</code>.
      */
     public static final FreqCorp FREQ_CORP = FreqCorp.FREQ_CORP;
-
-    /**
-     * The table <code>public.frequency_group</code>.
-     */
-    public static final FrequencyGroup FREQUENCY_GROUP = FrequencyGroup.FREQUENCY_GROUP;
 
     /**
      * The table <code>public.game_nonword</code>.

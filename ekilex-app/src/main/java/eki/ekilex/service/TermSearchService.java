@@ -191,7 +191,6 @@ public class TermSearchService extends AbstractSearchService {
 			permCalculator.applyCrud(userRole, word);
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
-					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
 					|| CollectionUtils.isNotEmpty(wordTypes)
 					|| CollectionUtils.isNotEmpty(lexeme.getPos())
 					|| CollectionUtils.isNotEmpty(lexeme.getDerivs())

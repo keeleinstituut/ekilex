@@ -408,15 +408,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateLexemeFrequencyGroup(Long lexemeId, String freqGroupCode) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.FREQUENCY_GROUP, lexemeId, freqGroupCode);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeFrequencyGroup", lexemeId, LifecycleLogOwner.LEXEME);
-		cudDbService.updateLexemeFrequencyGroup(lexemeId, freqGroupCode);
-		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
-	}
-
-	@Transactional
 	public void updateLexemeComplexity(Long lexemeId, String complexity) throws Exception {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.COMPLEXITY, lexemeId, complexity);
 		createLifecycleLog(logData);

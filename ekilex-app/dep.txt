@@ -1,5 +1,5 @@
-eki.ekilex:ekilex-app:jar:1.18-SNAPSHOT
-+- eki.common:eki-common:jar:1.18-SNAPSHOT:compile
+eki.ekilex:ekilex-app:jar:1.20-SNAPSHOT
++- eki.common:eki-common:jar:1.20-SNAPSHOT:compile
 |  +- org.apache.commons:commons-lang3:jar:3.10:compile
 |  +- org.apache.commons:commons-text:jar:1.8:compile
 |  +- org.apache.commons:commons-collections4:jar:4.4:compile
@@ -92,8 +92,10 @@ eki.ekilex:ekilex-app:jar:1.18-SNAPSHOT
 +- org.springframework.boot:spring-boot-starter-mail:jar:2.3.0.RELEASE:compile
 |  \- com.sun.mail:jakarta.mail:jar:1.6.5:compile
 |     \- com.sun.activation:jakarta.activation:jar:1.2.2:compile
++- com.flipkart.zjsonpatch:zjsonpatch:jar:0.4.11:compile
++- org.jsoup:jsoup:jar:1.13.1:compile
 +- com.atlassian.commonmark:commonmark:jar:0.10.0:compile
-+- org.postgresql:postgresql:jar:42.2.12:runtime
++- org.postgresql:postgresql:jar:42.2.12:compile
 +- org.springframework.boot:spring-boot-starter-test:jar:2.3.0.RELEASE:test
 |  +- org.springframework.boot:spring-boot-test:jar:2.3.0.RELEASE:test
 |  +- org.springframework.boot:spring-boot-test-autoconfigure:jar:2.3.0.RELEASE:test

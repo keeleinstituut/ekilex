@@ -650,8 +650,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		LexemeRecord clonedLexeme = lexeme.copy();
 		clonedLexeme.setMeaningId(meaningId);
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
-		clonedLexeme.changed(LEXEME.FREQUENCY_GROUP_CODE, false);
-		clonedLexeme.changed(LEXEME.CORPUS_FREQUENCY, false);
 		clonedLexeme.setIsPublic(PUBLICITY_PUBLIC);
 		clonedLexeme.store();
 		return clonedLexeme.getId();

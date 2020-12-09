@@ -160,11 +160,6 @@ public class Sequences {
     public static final Sequence<Long> FREQ_CORP_ID_SEQ = Internal.createSequence("freq_corp_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.frequency_group_order_by_seq</code>
-     */
-    public static final Sequence<Long> FREQUENCY_GROUP_ORDER_BY_SEQ = Internal.createSequence("frequency_group_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.game_nonword_id_seq</code>
      */
     public static final Sequence<Long> GAME_NONWORD_ID_SEQ = Internal.createSequence("game_nonword_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

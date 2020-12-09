@@ -394,7 +394,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 						l.DATASET_CODE,
 						l.LEVEL1,
 						l.LEVEL2,
-						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.IS_PUBLIC,
 						l.COMPLEXITY,

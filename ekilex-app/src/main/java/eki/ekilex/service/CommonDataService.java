@@ -75,11 +75,6 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<Classifier> getFrequencyGroups() {
-		return commonDataDbService.getFrequencyGroups();
-	}
-
-	@Transactional
 	public List<Classifier> getMorphs() {
 		return commonDataDbService.getMorphs(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
@@ -181,9 +176,6 @@ public class CommonDataService implements SystemConstant {
 		}
 		if (ClassifierName.LANGUAGE.equals(classifierName)) {
 			return getLanguages();
-		}
-		if (ClassifierName.FREQUENCY_GROUP.equals(classifierName)) {
-			return getFrequencyGroups();
 		}
 		if (ClassifierName.MORPH.equals(classifierName)) {
 			return getMorphs();

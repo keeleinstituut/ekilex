@@ -179,32 +179,6 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${lexeme.lexemeFrequencyGroupCode != null}" th:fragment="lexeme_frequency_group">
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl">Sagedusrühm</span>
-    </div>
-    <div class="col pl-0">
-      <span class="hidden-buttons">
-        <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
-        <button type="button" class="btn badge badge-primary"
-                title="Muuda"
-                data-toggle="modal"
-                th:data-target="${'#editLexemeFrequencyGroupDlg_' + lexeme.lexemeId}"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-caret-down" aria-hidden="true"></i>
-        </button>
-        <button type="button" class="btn badge badge-warning"
-                data-op-code="lexeme_frequency_group"
-                th:data-id="${lexeme.lexemeId}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                data-toggle="delete-confirm"
-                data-placement="right"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-remove" aria-hidden="true"></i>
-        </button>
-      </span>
-    </div>
-  </div>
   <div class="hidden-buttons row" th:fragment="lexeme_weight">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Ilmiku kaal</span>
