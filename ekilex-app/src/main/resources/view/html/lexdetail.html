@@ -114,7 +114,7 @@
                 <span th:if="${lexeme.wordLang == meaningWordLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
                 <span th:unless="${lexeme.wordLang == meaningWordLangGroup.lang}" th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
                 <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
-                    class="orderable-item"
+                     class="orderable-item"
                      th:data-id="${meaningWord.lexemeId}"
                      th:data-orderby="${meaningWord.orderBy}">
                   <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
@@ -168,6 +168,31 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <!-- testing meaning words as meaning relations -->
+            <div th:if="${not #lists.isEmpty(lexeme.meaning.viewSynRelations)}" class="mb-2">
+              <div class="w-100 p-1">
+                <hr/>
+              </div>
+              <span th:each="relations, relsIter : ${lexeme.meaning.viewSynRelations}" th:with="relSample = ${relations.get(0)}">
+                <th:block th:each="relation, relIter : ${relations}">
+                  <button
+                    type="button"
+                    class="btn btn-link p-0"
+                    th:data-id="${relation.wordId}"
+                    name="details-btn"
+                    data-behaviour="replace"
+                    data-plugin="contextmenu"
+                    data-contextmenu:compare="Ava uues paneelis">
+                    <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
+                    <span th:text="${relation.wordHomonymNr}"></span>
+                    <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                    <small th:text="${viewUtil.getFormattedLexemeWeight(relSample.weight)}" class="text-secondary"></small>
+                  </button>
+                  <span th:unless="${relIter.last}">,</span>
+                </th:block>
+                <span th:unless="${relsIter.last}">|</span>
+              </span>
             </div>
           </div>
           <div>
@@ -677,7 +702,7 @@
             </table>
           </div>
         </div>
-        <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.viewRelations)}">
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.viewOtherRelations)}">
           <hr/>
           <div class="col pr-0 col-w13rem">
             <span class="lbl">Tähenduse seosed</span>
@@ -691,12 +716,12 @@
           </div>
           <div class="col pl-0">
             <table class="table table-striped">
-              <tr th:each="relations : ${lexeme.meaning.viewRelations}" class="hidden-buttons">
+              <tr th:each="relations : ${lexeme.meaning.viewOtherRelations}" th:with="relSample = ${relations.get(0)}" class="hidden-buttons">
                 <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
-                  <span class="text-monospace" th:text="${relations.get(0).meaningId}"></span>
+                  <span class="text-monospace" th:text="${relSample.meaningId}"></span>
                 </td>
                 <td class="pr-3">
-                  <th:block th:each="relation, iter : ${relations}">
+                  <th:block th:each="relation, relIter : ${relations}">
                     <button
                       type="button"
                       class="btn btn-link btn-xs"
@@ -722,28 +747,31 @@
                         <span th:unless="${vsIter.last}">,</span>
                         <span th:if="${vsIter.last}">]</span>
                       </th:block>
-                      <th:block th:each="registerCode, rIter : ${relation.lexemeRegisterCodes}">
-                        <span th:if="${rIter.first}">[</span>
+                      <th:block th:each="registerCode, regIter : ${relation.lexemeRegisterCodes}">
+                        <span th:if="${regIter.first}">[</span>
                         <span th:text="${registerCode}"></span>
-                        <span th:unless="${rIter.last}">,</span>
-                        <span th:if="${rIter.last}">]</span>
+                        <span th:unless="${regIter.last}">,</span>
+                        <span th:if="${regIter.last}">]</span>
                       </th:block>
-                      <th:block th:each="government, gIter : ${relation.lexemeGovernmentValues}">
-                        <span th:if="${gIter.first}">[</span>
+                      <th:block th:each="government, govIter : ${relation.lexemeGovernmentValues}">
+                        <span th:if="${govIter.first}">[</span>
                         <span th:utext="${government}"></span>
-                        <span th:unless="${gIter.last}">,</span>
-                        <span th:if="${gIter.last}">]</span>
+                        <span th:unless="${govIter.last}">,</span>
+                        <span th:if="${govIter.last}">]</span>
                       </th:block>
                     </button>
-                    <span th:unless="${iter.last}">,</span>
+                    <span th:unless="${relIter.last}">,</span>
                   </th:block>
                 </td>
                 <td>
-                  <span th:text="${relations.get(0).relTypeLabel}"></span>
+                  <span th:text="${relSample.relTypeLabel}"></span>
+                  <small th:text="${relSample.weight}" class="text-secondary"></small>
+                </td>
+                <td>
                   <button type="button" class="btn badge badge-warning"
                           data-placement="right"
                           data-op-code="meaning_relation"
-                          th:data-id="${relations.get(0).id}"
+                          th:data-id="${relSample.id}"
                           th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                           data-toggle="delete-confirm"
                           sec:authorize="#vars.lexeme.meaning.crudGrant">

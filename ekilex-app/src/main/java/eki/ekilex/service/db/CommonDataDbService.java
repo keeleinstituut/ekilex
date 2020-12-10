@@ -764,7 +764,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
 						ldsf.as("dataset_codes"),
-						mrtf.as("rel_type_label")
+						mr.MEANING_REL_TYPE_CODE.as("rel_type_code"),
+						mrtf.as("rel_type_label"),
+						mr.WEIGHT,
+						mr.ORDER_BY
 						)
 				.from(
 						mr

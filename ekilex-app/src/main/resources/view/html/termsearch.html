@@ -562,7 +562,7 @@
                 </table>
               </div>
             </div>
-            <div class="row" th:if="${not #lists.isEmpty(meaning.viewRelations)}">
+            <div class="row" th:if="${not #lists.isEmpty(meaning.viewOtherRelations)}">
               <hr/>
               <div class="col pr-0 col-w13rem">
                 <span class="lbl">Tähenduse seosed</span>
@@ -575,10 +575,10 @@
                 </button>
               </div>
               <div class="col pl-0">
-                <table class="table table-striped" th:if="${not #lists.isEmpty(meaning.viewRelations)}">
-                  <tr th:each="relations : ${meaning.viewRelations}" class="hidden-buttons">
+                <table class="table table-striped" th:if="${not #lists.isEmpty(meaning.viewOtherRelations)}">
+                  <tr th:each="relations : ${meaning.viewOtherRelations}" th:with="relSample = ${relations.get(0)}" class="hidden-buttons">
                     <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
-                      <span class="text-monospace" th:text="${relations.get(0).meaningId}"></span>
+                      <span class="text-monospace" th:text="${relSample.meaningId}"></span>
                     </td>
                     <td class="pr-3">
                       <th:block th:each="relation, relIter : ${relations}">
@@ -617,11 +617,14 @@
                       </th:block>
                     </td>
                     <td>
-                      <span th:text="${relations.get(0).relTypeLabel}"></span>
+                      <span th:text="${relSample.relTypeLabel}"></span>
+                      <small th:text="${relSample.weight}" class="text-secondary"></small>
+                    </td>
+                    <td>
                       <button type="button" class="btn badge badge-warning"
                               data-placement="right"
-                              th:data-id="${relations.get(0).id}"
                               data-op-code="meaning_relation"
+                              th:data-id="${relSample.id}"
                               data-toggle="delete-confirm"
                               sec:authorize="#vars.meaning.crudGrant">
                         <i class="fa fa-remove" aria-hidden="true"></i>

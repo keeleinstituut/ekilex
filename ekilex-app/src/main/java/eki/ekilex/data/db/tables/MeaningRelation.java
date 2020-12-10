@@ -9,6 +9,7 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
 
-    private static final long serialVersionUID = 575283205;
+    private static final long serialVersionUID = -2129047518;
 
     /**
      * The reference instance of <code>public.meaning_relation</code>
@@ -73,6 +74,11 @@ public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
      * The column <code>public.meaning_relation.order_by</code>.
      */
     public final TableField<MeaningRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_relation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>public.meaning_relation.weight</code>.
+     */
+    public final TableField<MeaningRelationRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), org.jooq.impl.SQLDataType.NUMERIC(5, 4), this, "");
 
     /**
      * Create a <code>public.meaning_relation</code> table reference
@@ -176,11 +182,11 @@ public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, Long, String, Long> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Long, Long, String, Long, BigDecimal> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }

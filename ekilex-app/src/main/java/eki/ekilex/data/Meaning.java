@@ -31,7 +31,9 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<Relation> relations;
 
-	private List<List<Relation>> viewRelations;
+	private List<List<Relation>> viewSynRelations;
+
+	private List<List<Relation>> viewOtherRelations;
 
 	private boolean activeTagComplete;
 
@@ -133,12 +135,20 @@ public class Meaning extends AbstractCrudEntity {
 		this.relations = relations;
 	}
 
-	public List<List<Relation>> getViewRelations() {
-		return viewRelations;
+	public List<List<Relation>> getViewSynRelations() {
+		return viewSynRelations;
 	}
 
-	public void setViewRelations(List<List<Relation>> viewRelations) {
-		this.viewRelations = viewRelations;
+	public void setViewSynRelations(List<List<Relation>> viewSynRelations) {
+		this.viewSynRelations = viewSynRelations;
+	}
+
+	public List<List<Relation>> getViewOtherRelations() {
+		return viewOtherRelations;
+	}
+
+	public void setViewOtherRelations(List<List<Relation>> viewRelations) {
+		this.viewOtherRelations = viewRelations;
 	}
 
 	public boolean isActiveTagComplete() {

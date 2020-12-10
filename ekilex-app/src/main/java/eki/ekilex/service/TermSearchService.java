@@ -158,8 +158,9 @@ public class TermSearchService extends AbstractSearchService {
 		permCalculator.filterVisibility(userRole, meaningNotes);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
-		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
+		List<Relation> allMeaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Relation> otherMeaningRelations = conversionUtil.extractOtherMeaningRelations(allMeaningRelations);
+		List<List<Relation>> viewOtherMeaningRelations = conversionUtil.composeViewMeaningRelations(otherMeaningRelations, userProfile, null, languagesOrder);
 		Timestamp latestLogEventTime = activityLogDbService.getLatestLogTimeForMeaning(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
@@ -223,8 +224,8 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setImages(images);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
-		meaning.setRelations(meaningRelations);
-		meaning.setViewRelations(viewRelations);
+		meaning.setRelations(allMeaningRelations);
+		meaning.setViewOtherRelations(viewOtherMeaningRelations);
 		meaning.setActiveTagComplete(isActiveTagComplete);
 		meaning.setLastChangedOn(latestLogEventTime);
 

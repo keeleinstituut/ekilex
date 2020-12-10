@@ -842,10 +842,25 @@ public class ConversionUtil implements GlobalConstant {
 		return collocations;
 	}
 
+	public List<Relation> extractSynMeaningRelations(List<Relation> allRelations) {
+		List<Relation> synMeaningRelations = allRelations.stream()
+				.filter(relation -> StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getRelTypeCode()))
+				.sorted(Comparator.comparing(Relation::getOrderBy))
+				.collect(Collectors.toList());
+		return synMeaningRelations;
+	}
+
+	public List<Relation> extractOtherMeaningRelations(List<Relation> allRelations) {
+		List<Relation> otherMeaningRelations = allRelations.stream()
+				.filter(relation -> !StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getRelTypeCode()))
+				.collect(Collectors.toList());
+		return otherMeaningRelations;
+	}
+
 	public List<List<Relation>> composeViewMeaningRelations(List<Relation> relations, EkiUserProfile userProfile, String sourceLang, List<ClassifierSelect> languagesOrder) {
 
 		Map<Long, List<Relation>> groupedRelationsMap = relations.stream().collect(groupingBy(Relation::getId));
-		ArrayList<List<Relation>> groupedRelationsList = new ArrayList<>(groupedRelationsMap.values());
+		List<List<Relation>> groupedRelationsList = new ArrayList<>(groupedRelationsMap.values());
 		if (userProfile == null) {
 			return groupedRelationsList;
 		}

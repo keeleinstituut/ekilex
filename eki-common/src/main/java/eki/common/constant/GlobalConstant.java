@@ -44,6 +44,8 @@ public interface GlobalConstant {
 
 	String[] PRIMARY_WORD_REL_TYPE_CODES = new String[] {WORD_REL_TYPE_CODE_COMP, WORD_REL_TYPE_CODE_RAW};
 
+	String MEANING_REL_TYPE_CODE_SIMILAR = "sarnane";
+
 	char DISPLAY_FORM_STRESS_SYMBOL = '"';
 
 	String[] DISPLAY_FORM_IGNORE_SYMBOLS = new String[] {"[", "]", "*"};
