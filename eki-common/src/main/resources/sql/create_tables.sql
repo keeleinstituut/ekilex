@@ -727,6 +727,7 @@ create table meaning_relation
   meaning1_id bigint references meaning(id) on delete cascade not null,
   meaning2_id bigint references meaning(id) on delete cascade not null,
   meaning_rel_type_code varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  weight numeric(5,4),
   order_by bigserial,
   unique(meaning1_id, meaning2_id, meaning_rel_type_code)
 );
