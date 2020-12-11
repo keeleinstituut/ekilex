@@ -24,7 +24,7 @@ import eki.ekilex.service.MorphologyService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class MorphologyController extends AbstractPageController {
+public class MorphologyController extends AbstractPrivatePageController {
 
 	@Autowired
 	private MorphologyService morphologyService;

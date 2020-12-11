@@ -39,7 +39,7 @@ import eki.ekilex.service.UserService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class DatasetController extends AbstractAuthActionController {
+public class DatasetController extends AbstractPrivatePageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(DatasetController.class);
 

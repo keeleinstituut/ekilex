@@ -51,7 +51,7 @@ import eki.ekilex.web.util.SearchHelper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexEditController extends AbstractPageController {
+public class LexEditController extends AbstractPrivatePageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexEditController.class);
 

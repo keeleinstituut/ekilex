@@ -18,23 +18,24 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class HomeController extends AbstractPageController {
+public class HomeController extends AbstractPublicPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
 	@Autowired
-	private UserService userService;
+	protected CommonDataService commonDataService;
 
 	@Autowired
 	private StatDataService statDataService;
@@ -95,6 +96,7 @@ public class HomeController extends AbstractPageController {
 
 	private void populateUserApplicationData(EkiUser user, Model model) {
 
+		List<Dataset> allDatasets = commonDataService.getDatasets();
 		List<EkiUserApplication> userApplications = userService.getUserApplications(user.getId());
 		boolean applicationNotSubmitted = (user.getEnabled() == null) && CollectionUtils.isEmpty(userApplications);
 		boolean applicationReviewPending = (user.getEnabled() == null) && CollectionUtils.isNotEmpty(userApplications);
@@ -106,6 +108,7 @@ public class HomeController extends AbstractPageController {
 		model.addAttribute("applicationReviewPending", applicationReviewPending);
 		model.addAttribute("applicationDenied", applicationDenied);
 		model.addAttribute("userApplications", userApplications);
+		model.addAttribute("allDatasets", allDatasets);
 	}
 
 	private void populateStatData(Model model) {
