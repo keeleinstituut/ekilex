@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+  <div id="wwSearchStat" th:fragment="wwsearchstat">
+    <div class="card mt-4 mb-4 shadow w-50">
+      <table class="table table-striped mb-0">
+        <tr>
+          <th>Järjekord</th>
+          <th>Otsingusõna</th>
+          <th>Päringute arv</th>
+        </tr>
+        <tr th:each="statEntry,statEntryIter : ${searchStatMap}">
+          <td><span th:text="${statEntryIter.count}"></span></td>
+          <td><span th:text="${statEntry.key}"></span></td>
+          <td><span th:text="${statEntry.value}"></span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

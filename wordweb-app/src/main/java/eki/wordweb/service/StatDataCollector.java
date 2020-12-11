@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.RequestOrigin;
+import eki.common.constant.StatType;
 import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
 import eki.wordweb.data.SearchValidation;
@@ -39,10 +40,6 @@ public class StatDataCollector implements GlobalConstant {
 	@Value("${ekistat.service.key}")
 	private String serviceKey;
 
-	private static final String EXCEPTION_URI = "/exception";
-
-	private static final String SEARCH_URI = "/search";
-
 	@Async
 	public void postExceptionStat(Throwable exception) {
 
@@ -58,7 +55,7 @@ public class StatDataCollector implements GlobalConstant {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<ExceptionStat> exceptionStatEntity = new HttpEntity<>(exceptionStat, headers);
 		try {
-			restTemplate.postForObject(serviceUrl + EXCEPTION_URI, exceptionStatEntity, String.class);
+			restTemplate.postForObject(serviceUrl + "/" + StatType.WW_EXCEPTION.name(), exceptionStatEntity, String.class);
 		} catch (RestClientException e) {
 			logger.error("posting exception stat data failed: {}", e.getMessage());
 		}
@@ -115,7 +112,7 @@ public class StatDataCollector implements GlobalConstant {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpEntity<SearchStat> searchStatEntity = new HttpEntity<>(searchStat, headers);
 		try {
-			restTemplate.postForObject(serviceUrl + SEARCH_URI, searchStatEntity, String.class);
+			restTemplate.postForObject(serviceUrl + "/" + StatType.WW_SEARCH.name(), searchStatEntity, String.class);
 		} catch (RestClientException e) {
 			logger.error("posting search stat data failed: {}", e.getMessage());
 		}

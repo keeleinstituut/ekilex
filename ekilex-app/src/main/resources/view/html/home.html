@@ -43,6 +43,9 @@
         <p>
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
+        <p>
+          <a th:href="@{/stat}">Statistika</a>
+        </p>
         <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
         <hr/>
         <p>

@@ -1,5 +1,7 @@
 package eki.stat.service;
 
+import java.util.Map;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,17 @@ public class StatService {
 	private StatDbService statDbService;
 
 	@Transactional
-	public void createSearchStat(SearchStat searchStat) {
-		statDbService.createSearchStat(searchStat);
+	public Map<String, Integer> getWwSearchStat(String searchMode, String datasetCode, String lang, String resultsFrom, String resultsUntil) throws Exception {
+		return statDbService.getWwSearchStat(searchMode, datasetCode, lang, resultsFrom, resultsUntil);
 	}
 
 	@Transactional
-	public void createExceptionStat(ExceptionStat exceptionStat) {
-		statDbService.createExceptionStat(exceptionStat);
+	public void createWwSearchStat(SearchStat searchStat) {
+		statDbService.createWwSearchStat(searchStat);
+	}
+
+	@Transactional
+	public void createWwExceptionStat(ExceptionStat exceptionStat) {
+		statDbService.createWwExceptionStat(exceptionStat);
 	}
 }

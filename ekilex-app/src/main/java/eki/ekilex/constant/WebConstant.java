@@ -239,6 +239,14 @@ public interface WebConstant {
 
 	String DELETE_CLASSIFIER_URI = "/delete_classifier";
 
+	String STAT_URI = "/stat";
+
+	String STAT_PAGE = "stat";
+
+	String STAT_COMPONENTS_PAGE = "statcomp";
+
+	String WW_STAT_URI = "/ww_stat";
+
 	String CHANGE_ROLE_URI = "/change_role";
 
 	String SYN_SEARCH_PAGE = "synsearch";
