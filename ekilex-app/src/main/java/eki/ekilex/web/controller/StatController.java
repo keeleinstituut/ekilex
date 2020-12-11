@@ -16,7 +16,7 @@ import eki.ekilex.service.StatDataService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class StatController extends AbstractPageController {
+public class StatController extends AbstractPrivatePageController {
 
 	@Autowired
 	private StatDataService statDataService;
