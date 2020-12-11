@@ -29,7 +29,7 @@ import eki.ekilex.service.PermissionService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
-@PreAuthorize("principal.enabled == true")
+@PreAuthorize("principal.enabled == true && isAuthenticated()")
 public abstract class AbstractPrivatePageController extends AbstractAuthActionController {
 
 	@Autowired
