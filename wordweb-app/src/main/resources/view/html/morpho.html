@@ -113,121 +113,7 @@
           </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}" class="uppercase">muuttüüp 31</p>
-            <h2>Käändelised vormid</h2>
-            <div class="scrollable-table">
-              <div class="scrollable-table--scroller">
-                <table class="inflected">
-                  <tr>
-                    <th colspan="2"><b>Tegevusnimed</b></th>
-                  </tr>
-                  <tr>
-                    <th>ma-tegevusnimi</th>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <td>
-                      ma<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Sup', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      mas<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIn', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      mast<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupEl', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      maks<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupTr', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      mata<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupAb', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      tama<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIps', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>da-tegevusnimi</th>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <td>
-                      da<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Inf', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      des<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Ger', '')"></th:block>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div class="scrollable-table">
-              <div class="scrollable-table--scroller">
-                <table>
-                  <tr>
-                    <th colspan="3"><b>Kesksõnad</b></th>
-                  </tr>
-                  <tr>
-                    <th></th>
-                    <th>olevik</th>
-                    <th>minevik</th>
-                  </tr>
-                  <tr>
-                    <td>isikuline</td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrPs', '')"></th:block>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>umbisikuline</td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrIps', '')"></th:block>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '')"></th:block>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
+            <p><span class="uppercase">Muuttüüp</span> <span th:text="${paradigm.inflectionType}">31i</span></p>
             <h2>Pöördelised vormid</h2>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -950,6 +836,120 @@
                 </table>
               </div>
             </div>
+            <h2>Käändelised vormid</h2>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table class="inflected">
+                  <tr>
+                    <th colspan="2"><b>Tegevusnimed</b></th>
+                  </tr>
+                  <tr>
+                    <th>ma-tegevusnimi</th>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <td>
+                      ma<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Sup', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      mas<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIn', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      mast<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupEl', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      maks<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupTr', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      mata<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupAb', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      tama<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIps', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>da-tegevusnimi</th>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <td>
+                      da<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Inf', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      des<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Ger', '')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table>
+                  <tr>
+                    <th colspan="3"><b>Kesksõnad</b></th>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th>olevik</th>
+                    <th>minevik</th>
+                  </tr>
+                  <tr>
+                    <td>isikuline</td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrPs', '')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>umbisikuline</td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrIps', '')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -975,7 +975,7 @@
           </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}" class="uppercase">muuttüüp 22e</p>
+            <p><span class="uppercase">Muuttüüp</span> <span th:text="${paradigm.inflectionType}">22e</span></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="first-row-sizes" data-fixColumn="true">
