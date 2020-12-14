@@ -49,6 +49,10 @@ public class EkiApiAuthenticationManager implements AuthenticationManager, ApiCo
 			logger.info("User not activated: \"{}\"", providedApiKey);
 			throw new BadCredentialsException("User not activated");
 		}
+		if (!userService.isEnabledUser(user)) {
+			logger.info("User not enabled: \"{}\"", providedApiKey);
+			throw new BadCredentialsException("User not enabled");
+		}
 		Collection<? extends GrantedAuthority> authorities = CollectionUtils.emptyCollection();
 		PreAuthenticatedAuthenticationToken authenticationToken = new PreAuthenticatedAuthenticationToken(user, authorities);
 		authenticationToken.setAuthenticated(true);

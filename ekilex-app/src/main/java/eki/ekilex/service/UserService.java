@@ -105,6 +105,12 @@ public class UserService implements WebConstant {
 		if (user == null) {
 			return;
 		}
+		if (user.getEnabled() == null) {
+			return;
+		}
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return;
+		}
 		if (accessType == ACCESS_TYPE_API) {
 			user.setName(user.getName() + " (API)");
 		}
@@ -265,6 +271,10 @@ public class UserService implements WebConstant {
 
 	public boolean isActiveUser(EkiUser user) {
 		return user != null && StringUtils.isBlank(user.getActivationKey());
+	}
+
+	public boolean isEnabledUser(EkiUser user) {
+		return user != null && Boolean.TRUE.equals(user.getEnabled());
 	}
 
 	public boolean isValidPassword(String password, String password2) {
