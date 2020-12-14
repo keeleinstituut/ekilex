@@ -859,8 +859,9 @@ public class ConversionUtil implements GlobalConstant {
 
 	public List<List<Relation>> composeViewMeaningRelations(List<Relation> relations, EkiUserProfile userProfile, String sourceLang, List<ClassifierSelect> languagesOrder) {
 
+		List<Long> relationIds = relations.stream().map(Relation::getId).distinct().collect(Collectors.toList());
 		Map<Long, List<Relation>> groupedRelationsMap = relations.stream().collect(groupingBy(Relation::getId));
-		List<List<Relation>> groupedRelationsList = new ArrayList<>(groupedRelationsMap.values());
+		List<List<Relation>> groupedRelationsList = relationIds.stream().map(relationId -> groupedRelationsMap.get(relationId)).collect(Collectors.toList());
 		if (userProfile == null) {
 			return groupedRelationsList;
 		}
