@@ -2,9 +2,13 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import eki.common.constant.DatasetType;
 import eki.common.data.AbstractDataObject;
 
+@JsonInclude(Include.NON_NULL)
 public class Dataset extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

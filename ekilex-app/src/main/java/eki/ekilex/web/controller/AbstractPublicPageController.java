@@ -29,7 +29,7 @@ public abstract class AbstractPublicPageController implements WebConstant {
 
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
-		return commonDataService.getDatasets();
+		return commonDataService.getVisibleDatasets();
 	}
 
 	@ModelAttribute("userDatasetPermissions")

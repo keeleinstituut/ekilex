@@ -265,7 +265,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
 			String dataset = wordDetails.getDataset();
-			List<String> allDatasets = commonDataService.getDatasetCodes();
+			List<String> allDatasets = commonDataService.getVisibleDatasetCodes();
 			Long wordId;
 
 			sessionBean.setRecentLanguage(language);

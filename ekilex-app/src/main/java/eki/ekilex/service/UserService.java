@@ -310,7 +310,7 @@ public class UserService implements WebConstant {
 	@Transactional
 	public List<EkiUserApplication> getUserApplications(Long userId) {
 		List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
-		List<Dataset> allDatasets = commonDataDbService.getDatasets();
+		List<Dataset> allDatasets = commonDataDbService.getVisibleDatasets();
 		for (EkiUserApplication userApplication : userApplications) {
 			List<String> userApplicationDatasetCodes = userApplication.getDatasetCodes();
 			if (CollectionUtils.isNotEmpty(userApplicationDatasetCodes)) {

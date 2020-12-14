@@ -59,7 +59,7 @@ public abstract class AbstractPrivatePageController extends AbstractAuthActionCo
 
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
-		return commonDataService.getDatasets();
+		return commonDataService.getVisibleDatasets();
 	}
 
 	@ModelAttribute("userVisibleDatasets")
