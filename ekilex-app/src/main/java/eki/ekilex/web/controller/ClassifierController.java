@@ -21,7 +21,7 @@ import eki.ekilex.service.ClassifierService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class ClassifierController extends AbstractPageController {
+public class ClassifierController extends AbstractPrivatePageController {
 
 	@Autowired
 	private ClassifierService classifierService;

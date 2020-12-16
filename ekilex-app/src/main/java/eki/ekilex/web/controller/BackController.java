@@ -21,7 +21,7 @@ import eki.ekilex.web.util.SearchHelper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class BackController extends AbstractPageController {
+public class BackController extends AbstractPrivatePageController {
 
 	@Autowired
 	private TermSearchService termSearchService;

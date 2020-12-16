@@ -72,6 +72,7 @@
               <button type="button" class="nav-link" role="tab" data-rel="marks"><span class="fa fa-check"></span>märkidega</button>
             </li>
           </ul>
+          <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
           <div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -112,121 +113,7 @@
           </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}" class="uppercase">muuttüüp 31</p>
-            <h2>Käändelised vormid</h2>
-            <div class="scrollable-table">
-              <div class="scrollable-table--scroller">
-                <table class="inflected">
-                  <tr>
-                    <th colspan="2"><b>Tegevusnimed</b></th>
-                  </tr>
-                  <tr>
-                    <th>ma-tegevusnimi</th>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <td>
-                      ma<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Sup', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      mas<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIn', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      mast<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupEl', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      maks<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupTr', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      mata<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupAb', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      tama<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIps', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>da-tegevusnimi</th>
-                    <th></th>
-                  </tr>
-                  <tr>
-                    <td>
-                      da<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Inf', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      des<span class="highlight">-vorm</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Ger', '')"></th:block>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div class="scrollable-table">
-              <div class="scrollable-table--scroller">
-                <table>
-                  <tr>
-                    <th colspan="3"><b>Kesksõnad</b></th>
-                  </tr>
-                  <tr>
-                    <th></th>
-                    <th>olevik</th>
-                    <th>minevik</th>
-                  </tr>
-                  <tr>
-                    <td>isikuline</td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrPs', '')"></th:block>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>umbisikuline</td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrIps', '')"></th:block>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '')"></th:block>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
+            <p><span class="uppercase">Muuttüüp</span> <span th:text="${paradigm.inflectionType}">31i</span></p>
             <h2>Pöördelised vormid</h2>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -803,10 +690,10 @@
                       <span class="word-sufix">ma</span> <span class="highlight">ainsuse 1. isik</span>
                     </td>
                     <td>
-                      --
+                      -
                     </td>
                     <td>
-                      --
+                      -
                     </td>
                   </tr>
                   <tr>
@@ -949,6 +836,120 @@
                 </table>
               </div>
             </div>
+            <h2>Käändelised vormid</h2>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table class="inflected">
+                  <tr>
+                    <th colspan="2"><b>Tegevusnimed</b></th>
+                  </tr>
+                  <tr>
+                    <th>ma-tegevusnimi</th>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <td>
+                      ma<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Sup', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      mas<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIn', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      mast<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupEl', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      maks<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupTr', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      mata<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupAb', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      tama<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SupIps', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>da-tegevusnimi</th>
+                    <th></th>
+                  </tr>
+                  <tr>
+                    <td>
+                      da<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Inf', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      des<span class="highlight">-vorm</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'Ger', '')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table>
+                  <tr>
+                    <th colspan="3"><b>Kesksõnad</b></th>
+                  </tr>
+                  <tr>
+                    <th></th>
+                    <th>olevik</th>
+                    <th>minevik</th>
+                  </tr>
+                  <tr>
+                    <td>isikuline</td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrPs', '')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>umbisikuline</td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPrIps', '')"></th:block>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', '')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -974,7 +975,7 @@
           </ul>
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <p th:text="${'muuttüüp ' + paradigm.inflectionType}" class="uppercase">muuttüüp 22e</p>
+            <p><span class="uppercase">Muuttüüp</span> <span th:text="${paradigm.inflectionType}">22e</span></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
                 <table class="first-row-sizes" data-fixColumn="true">
@@ -1202,7 +1203,7 @@
                     <th colspan="2"><b>Изъявительное наклонение / Kindel kõneviis</b></th>
                   </tr>
                   <tr>
-                    <th colspan="2" class="subtitle">настоящее время / olevik</th>
+                    <th colspan="2">настоящее время / olevik</th>
                   </tr>
                   <tr>
                     <th>лицо / isik</th>
@@ -1210,7 +1211,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">я / ma</span> <span class="highlight"> 1. лицо ед. ч. </span>
+                      <span class="word-sufix-rus">я / ma</span> <span class="highlight"> 1. лицо ед. ч. </span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,1per,pres,indc', '')"></th:block>
@@ -1218,7 +1219,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
+                      <span class="word-sufix-rus">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,2per,pres,indc', '')"></th:block>
@@ -1226,7 +1227,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">он / ta</span> <span class="highlight"> 3. лицо ед. ч. мужской род</span>
+                      <span class="word-sufix-rus">он / ta</span> <span class="highlight"> 3. лицо ед. ч. мужской род</span>
                     </td>
                     <td rowspan="3">
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,3per,pres,indc', '')"></th:block>
@@ -1234,17 +1235,17 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">она / ta</span> <span class="highlight"> 3. лицо ед. ч. женский род</span>
+                      <span class="word-sufix-rus">она / ta</span> <span class="highlight"> 3. лицо ед. ч. женский род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
+                      <span class="word-sufix-rus">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">мы / meie</span> <span class="highlight">1. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">мы / meie</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,1per,pres,indc', '')"></th:block>
@@ -1252,7 +1253,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">вы / teie</span> <span class="highlight">2. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">вы / teie</span> <span class="highlight">2. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,2per,pres,indc', '')"></th:block>
@@ -1260,7 +1261,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,3per,pres,indc', '')"></th:block>
@@ -1275,7 +1276,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">я / ma</span> <span class="highlight"> 1. лицо ед. ч. мужской род</span>
+                      <span class="word-sufix-rus">я / ma</span> <span class="highlight"> 1. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,1per,past,indc', '')"></th:block>
@@ -1283,7 +1284,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">я / ma</span> <span class="highlight">1. лицо ед. ч. женский род</span>
+                      <span class="word-sufix-rus">я / ma</span> <span class="highlight">1. лицо ед. ч. женский род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,1per,past,indc', '')"></th:block>
@@ -1291,7 +1292,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">ты / sa</span> <span class="highlight">2. лицо ед. ч. мужской род</span>
+                      <span class="word-sufix-rus">ты / sa</span> <span class="highlight">2. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,2per,past,indc', '')"></th:block>
@@ -1299,7 +1300,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">ты / sa</span> <span class="highlight"> 2. лицо ед. ч. женский род</span>
+                      <span class="word-sufix-rus">ты / sa</span> <span class="highlight"> 2. лицо ед. ч. женский род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,2per,past,indc', '')"></th:block>
@@ -1307,7 +1308,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">он / ta</span> <span class="highlight">3. лицо ед. ч. мужской род</span>
+                      <span class="word-sufix-rus">он / ta</span> <span class="highlight">3. лицо ед. ч. мужской род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'masc,sing,3per,past,indc', '')"></th:block>
@@ -1315,7 +1316,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">она / ta</span> <span class="highlight">3. лицо ед. ч. женский род</span>
+                      <span class="word-sufix-rus">она / ta</span> <span class="highlight">3. лицо ед. ч. женский род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'femn,sing,3per,past,indc', '')"></th:block>
@@ -1323,7 +1324,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
+                      <span class="word-sufix-rus">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'neut,sing,3per,past,indc', '')"></th:block>
@@ -1331,7 +1332,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">мы / meie</span> <span class="highlight">1. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">мы / meie</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td rowspan="3">
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,past,indc', '')"></th:block>
@@ -1339,12 +1340,12 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">вы / teie</span> <span class="highlight">2. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">вы / teie</span> <span class="highlight">2. лицо мн. ч.</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                   </tr>
                   <tr>
@@ -1356,7 +1357,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">я / ma</span> <span class="highlight">1. лицо ед. ч.</span>
+                      <span class="word-sufix-rus">я / ma</span> <span class="highlight">1. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,1per,futr,indc', '')"></th:block>
@@ -1364,7 +1365,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">ты / sa</span> <span class="highlight"> 2. лицо ед. ч.</span>
+                      <span class="word-sufix-rus">ты / sa</span> <span class="highlight"> 2. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,2per,futr,indc', '')"></th:block>
@@ -1372,7 +1373,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">он / ta</span> <span class="highlight"> 3. лицо ед. ч. мужской род</span>
+                      <span class="word-sufix-rus">он / ta</span> <span class="highlight"> 3. лицо ед. ч. мужской род</span>
                     </td>
                     <td rowspan="3">
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,3per,futr,indc', '')"></th:block>
@@ -1380,17 +1381,17 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">она / ta</span> <span class="highlight">3. лицо ед. ч. женский род</span>
+                      <span class="word-sufix-rus">она / ta</span> <span class="highlight">3. лицо ед. ч. женский род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
+                      <span class="word-sufix-rus">оно / ta</span> <span class="highlight">3. лицо ед. ч. средний род</span>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">мы / meie</span> <span class="highlight"> 1. лицо мн. ч. </span>
+                      <span class="word-sufix-rus">мы / meie</span> <span class="highlight"> 1. лицо мн. ч. </span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,1per,futr,indc', '')"></th:block>
@@ -1398,7 +1399,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">вы / teie</span> <span class="highlight"> 2. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">вы / teie</span> <span class="highlight"> 2. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,2per,futr,indc', '')"></th:block>
@@ -1406,7 +1407,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">они / nad</span> <span class="highlight">3. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,3per,futr,indc', '')"></th:block>
@@ -1426,7 +1427,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">я / ma</span> <span class="highlight"> 1. лицо ед. ч.</span>
+                      <span class="word-sufix-rus">я / ma</span> <span class="highlight"> 1. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,incl', '')"></th:block>
@@ -1434,7 +1435,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
+                      <span class="word-sufix-rus">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,excl', '')"></th:block>
@@ -1442,7 +1443,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">мы / me</span> <span class="highlight">1. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">мы / me</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,incl', '')"></th:block>
@@ -1450,7 +1451,7 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix">вы / te</span> <span class="highlight"> 2. лицо мн. ч.</span>
+                      <span class="word-sufix-rus">вы / te</span> <span class="highlight"> 2. лицо мн. ч.</span>
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,excl', '')"></th:block>
@@ -1698,14 +1699,14 @@
           </tr>
           <tr >
             <th>
-              <span>eдинственное число / ainsus</span>
+              <b>eдинственное число / ainsus</b>
             </th>
             <th colspan="2">&nbsp;</th>
           </tr>
           <tr>
-            <td colspan="3">
+            <th colspan="3">
               мужской род / meessugu
-            </td>
+            </th>
           </tr>
           <tr>
             <td colspan="2">
@@ -1743,15 +1744,15 @@
               <br />
               <span class="highlight">какого? / missugust?</span>
             </td>
-            <td>
-              одуш. / elus
+            <td class="text-right">
+              <span class="highlight">одуш. / elus</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,anim')"></th:block>
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="text-right">
               неодуш. / eluta
             </td>
             <td>
@@ -1819,7 +1820,7 @@
               <br />
               <span class="highlight">какую? / missugust?</span>
             </td>
-            <td>
+            <td class="text-right">
               одуш. / elus
             </td>
             <td rowspan="2">
@@ -1827,7 +1828,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="text-right">
               неодуш. / eluta
             </td>
           </tr>
@@ -1892,7 +1893,7 @@
               <br />
               <span class="highlight">какого? / missugust?</span>
             </td>
-            <td>
+            <td class="text-right">
               одуш. / elus
             </td>
             <td rowspan="2">
@@ -1900,7 +1901,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="text-right">
               неодуш. / eluta
             </td>
           </tr>
@@ -1965,7 +1966,7 @@
               <br />
               <span class="highlight">каких? / missuguseid?</span>
             </td>
-            <td>
+            <td class="text-right">
               одуш. / elus
             </td>
             <td>
@@ -1973,7 +1974,7 @@
             </td>
           </tr>
           <tr>
-            <td>
+            <td class="text-right">
               неодуш. / eluta
             </td>
             <td>
@@ -2019,7 +2020,7 @@
         <div class="modal-body">
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <h2>Положительная степень / Algvõrre</h2>
+            <b>Положительная степень / Algvõrre</b>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -2120,7 +2121,7 @@
         <div class="modal-body">
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <h2>Превосходная степень / Ülivõrre</h2>
+            <b>Превосходная степень / Ülivõrre</b>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
         </div>
@@ -2141,9 +2142,10 @@
         </div>
         <div class="modal-body">
           <div>
+            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                <table>
+                <table class="pb-5">
                   <tr>
                     <td>
                       неизменяемое слово / muutumatu vorm

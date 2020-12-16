@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,13 +26,14 @@ import eki.ekilex.service.FeedbackService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class WordwebFeedbackController extends AbstractAuthActionController {
+public class WordwebFeedbackController extends AbstractPublicPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(WordwebFeedbackController.class);
 
 	@Autowired
 	private FeedbackService feedbackService;
 
+	@PreAuthorize("principal.admin == true")
 	@GetMapping(WW_FEEDBACK_URI)
 	public String openPage(Model model) {
 		List<Feedback> feedbackLog = feedbackService.getFeedbackLog();
@@ -55,6 +57,7 @@ public class WordwebFeedbackController extends AbstractAuthActionController {
 		return "{\"status\": \"" + statusMessage + "\"}";
 	}
 
+	@PreAuthorize("principal.admin == true")
 	@PostMapping(WW_FEEDBACK_URI + "/addcomment")
 	public String addFeedbackComment(
 			@RequestBody Map<String, String> requestBody,
@@ -71,6 +74,7 @@ public class WordwebFeedbackController extends AbstractAuthActionController {
 		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "eki_comments";
 	}
 
+	@PreAuthorize("principal.admin == true")
 	@GetMapping(WW_FEEDBACK_URI + "/deletefeedback")
 	public String deleteDatasetPerm(@RequestParam("feedbackId") Long feedbackId, Model model) {
 

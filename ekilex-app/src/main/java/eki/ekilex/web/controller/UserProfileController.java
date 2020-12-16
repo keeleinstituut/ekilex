@@ -20,7 +20,7 @@ import eki.ekilex.service.UserService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class UserProfileController extends AbstractPageController {
+public class UserProfileController extends AbstractPrivatePageController {
 
 	@Autowired
 	private UserService userService;

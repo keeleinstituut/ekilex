@@ -51,7 +51,7 @@ import eki.ekilex.web.util.SearchHelper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexEditController extends AbstractPageController {
+public class LexEditController extends AbstractPrivatePageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexEditController.class);
 
@@ -265,7 +265,7 @@ public class LexEditController extends AbstractPageController {
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
 			String dataset = wordDetails.getDataset();
-			List<String> allDatasets = commonDataService.getDatasetCodes();
+			List<String> allDatasets = commonDataService.getVisibleDatasetCodes();
 			Long wordId;
 
 			sessionBean.setRecentLanguage(language);

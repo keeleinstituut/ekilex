@@ -122,8 +122,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
+	public List<Dataset> getAllDatasets() {
+		return create.selectFrom(DATASET).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
+	}
+
 	@Cacheable(value = CACHE_KEY_DATASET)
-	public List<Dataset> getDatasets() {
+	public List<Dataset> getVisibleDatasets() {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
 	}
 
@@ -764,7 +768,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
 						ldsf.as("dataset_codes"),
-						mrtf.as("rel_type_label")
+						mr.MEANING_REL_TYPE_CODE.as("rel_type_code"),
+						mrtf.as("rel_type_label"),
+						mr.WEIGHT,
+						mr.ORDER_BY
 						)
 				.from(
 						mr

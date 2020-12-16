@@ -49,7 +49,7 @@ import eki.ekilex.web.util.SearchHelper;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class TermEditController extends AbstractPageController {
+public class TermEditController extends AbstractPrivatePageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermEditController.class);
 

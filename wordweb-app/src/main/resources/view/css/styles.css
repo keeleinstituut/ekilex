@@ -18301,6 +18301,11 @@ body {
   display: inline-block;
 }
 
+.wordmodal .word-sufix-rus {
+  min-width: 75px;
+  display: inline-block;
+}
+
 .wordmodal table {
   min-width: 100%;
   margin: 12px 0;

@@ -19,11 +19,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import eki.common.util.CodeGenerator;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.EmailService;
-import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
-public class RegisterController extends AbstractAuthActionController {
+public class RegisterController extends AbstractPublicPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
@@ -31,9 +30,6 @@ public class RegisterController extends AbstractAuthActionController {
 
 	@Value("${terms.version}")
 	private String termsVer;
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private EmailService emailService;
@@ -129,8 +125,11 @@ public class RegisterController extends AbstractAuthActionController {
 	}
 
 	@PostMapping(PASSWORD_RECOVERY_URI + "/{botProtectionCode}")
-	public String recoverPassword(@PathVariable(value = "botProtectionCode", required = false) String botProtectionCode, @RequestParam("email") String email,
-			Model model, HttpServletRequest request) {
+	public String recoverPassword(
+			@PathVariable(value = "botProtectionCode", required = false) String botProtectionCode,
+			@RequestParam("email") String email,
+			Model model,
+			HttpServletRequest request) {
 
 		boolean isBotProtectionTriggered = checkBotProtection(request, botProtectionCode, email);
 		if (isBotProtectionTriggered) {
@@ -174,8 +173,12 @@ public class RegisterController extends AbstractAuthActionController {
 	}
 
 	@PostMapping(PASSWORD_SET_PAGE_URI)
-	public String setPassword(@RequestParam("salasona") String password, @RequestParam("salasona2") String password2,
-			@RequestParam("recoveryKey") String recoveryKey, Model model, RedirectAttributes attributes) {
+	public String setPassword(
+			@RequestParam("salasona") String password,
+			@RequestParam("salasona2") String password2,
+			@RequestParam("recoveryKey") String recoveryKey,
+			Model model,
+			RedirectAttributes attributes) {
 
 		if (!userService.isValidPassword(password, password2)) {
 			model.addAttribute("error", "Parool ei sobi, kas liiga lühike või väljade väärtused on erinevad.");

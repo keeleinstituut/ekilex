@@ -31,13 +31,18 @@ public class CommonDataService implements SystemConstant {
 	protected ConversionUtil conversionUtil;
 
 	@Transactional
-	public List<Dataset> getDatasets() {
-		return commonDataDbService.getDatasets();
+	public List<Dataset> getAllDatasets() {
+		return commonDataDbService.getAllDatasets();
 	}
 
 	@Transactional
-	public List<String> getDatasetCodes() {
-		List<String> datasetCodes = getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+	public List<Dataset> getVisibleDatasets() {
+		return commonDataDbService.getVisibleDatasets();
+	}
+
+	@Transactional
+	public List<String> getVisibleDatasetCodes() {
+		List<String> datasetCodes = getVisibleDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
 		return datasetCodes;
 	}
 

@@ -241,7 +241,7 @@ public class ApiSearchController extends AbstractApiController {
 	@Order(109)
 	@GetMapping(API_SERVICES_URI + DATASETS_URI)
 	public List<Dataset> getDatasets() {
-		return commonDataService.getDatasets();
+		return commonDataService.getAllDatasets();
 	}
 
 	private List<ClassifierSelect> convert(List<Classifier> allLanguages) {
@@ -261,7 +261,7 @@ public class ApiSearchController extends AbstractApiController {
 			String[] datasetsArr = StringUtils.split(datasetsStr, ',');
 			datasets = Arrays.asList(datasetsArr);
 		} else {
-			datasets = commonDataService.getDatasetCodes();
+			datasets = commonDataService.getVisibleDatasetCodes();
 		}
 		return datasets;
 	}

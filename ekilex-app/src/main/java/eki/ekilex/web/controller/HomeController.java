@@ -24,17 +24,13 @@ import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserProfileService;
-import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class HomeController extends AbstractPageController {
+public class HomeController extends AbstractPublicPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private StatDataService statDataService;

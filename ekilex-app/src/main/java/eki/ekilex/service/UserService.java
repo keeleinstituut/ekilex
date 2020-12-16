@@ -105,6 +105,12 @@ public class UserService implements WebConstant {
 		if (user == null) {
 			return;
 		}
+		if (user.getEnabled() == null) {
+			return;
+		}
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return;
+		}
 		if (accessType == ACCESS_TYPE_API) {
 			user.setName(user.getName() + " (API)");
 		}
@@ -267,6 +273,10 @@ public class UserService implements WebConstant {
 		return user != null && StringUtils.isBlank(user.getActivationKey());
 	}
 
+	public boolean isEnabledUser(EkiUser user) {
+		return user != null && Boolean.TRUE.equals(user.getEnabled());
+	}
+
 	public boolean isValidPassword(String password, String password2) {
 		return StringUtils.length(password) >= MIN_PASSWORD_LENGTH && StringUtils.equals(password, password2);
 	}
@@ -300,7 +310,7 @@ public class UserService implements WebConstant {
 	@Transactional
 	public List<EkiUserApplication> getUserApplications(Long userId) {
 		List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
-		List<Dataset> allDatasets = commonDataDbService.getDatasets();
+		List<Dataset> allDatasets = commonDataDbService.getVisibleDatasets();
 		for (EkiUserApplication userApplication : userApplications) {
 			List<String> userApplicationDatasetCodes = userApplication.getDatasetCodes();
 			if (CollectionUtils.isNotEmpty(userApplicationDatasetCodes)) {

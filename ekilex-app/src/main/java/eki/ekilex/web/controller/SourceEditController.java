@@ -35,7 +35,7 @@ import eki.ekilex.web.util.ValueUtil;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SourceEditController extends AbstractPageController {
+public class SourceEditController extends AbstractPrivatePageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
 

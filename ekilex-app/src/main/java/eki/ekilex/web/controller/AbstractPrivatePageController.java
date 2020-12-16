@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
@@ -28,7 +29,8 @@ import eki.ekilex.service.PermissionService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
-public abstract class AbstractPageController extends AbstractAuthActionController {
+@PreAuthorize("principal.enabled == true && isAuthenticated()")
+public abstract class AbstractPrivatePageController extends AbstractAuthActionController {
 
 	@Autowired
 	protected CommonDataService commonDataService;
@@ -57,7 +59,7 @@ public abstract class AbstractPageController extends AbstractAuthActionControlle
 
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
-		return commonDataService.getDatasets();
+		return commonDataService.getVisibleDatasets();
 	}
 
 	@ModelAttribute("userVisibleDatasets")

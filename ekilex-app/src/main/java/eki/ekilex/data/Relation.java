@@ -63,6 +63,8 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private List<TypeWordRelParam> relationParams;
 
+	private Float weight;
+
 	private Long orderBy;
 
 	public Long getId() {
@@ -291,6 +293,14 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	public void setRelationParams(List<TypeWordRelParam> relationParams) {
 		this.relationParams = relationParams;
+	}
+
+	public Float getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Float weight) {
+		this.weight = weight;
 	}
 
 	public Long getOrderBy() {

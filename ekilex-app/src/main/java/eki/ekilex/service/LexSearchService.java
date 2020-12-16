@@ -240,8 +240,11 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
-			List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<List<Relation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
+			List<Relation> allMeaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<Relation> synMeaningRelations = conversionUtil.extractSynMeaningRelations(allMeaningRelations);
+			List<List<Relation>> viewSynMeaningRelations = conversionUtil.composeViewMeaningRelations(synMeaningRelations, userProfile, wordLang, languagesOrder);
+			List<Relation> otherMeaningRelations = conversionUtil.extractOtherMeaningRelations(allMeaningRelations);
+			List<List<Relation>> viewOtherMeaningRelations = conversionUtil.composeViewMeaningRelations(otherMeaningRelations, userProfile, wordLang, languagesOrder);
 			List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 
 			lexeme.setGovernments(governments);
@@ -261,8 +264,9 @@ public class LexSearchService extends AbstractWordSearchService {
 			meaning.setImages(meaningImages);
 			meaning.setNoteLangGroups(meaningNoteLangGroups);
 			meaning.setSemanticTypes(meaningSemanticTypes);
-			meaning.setRelations(meaningRelations);
-			meaning.setViewRelations(viewMeaningRelations);
+			meaning.setRelations(allMeaningRelations);
+			meaning.setViewSynRelations(viewSynMeaningRelations);
+			meaning.setViewOtherRelations(viewOtherMeaningRelations);
 			meaning.setDefinitionLangGroups(definitionLangGroups);
 
 			boolean lexemeOrMeaningClassifiersExist =

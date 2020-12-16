@@ -33,7 +33,7 @@ import eki.ekilex.service.UserService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class PermissionsController extends AbstractPageController {
+public class PermissionsController extends AbstractPrivatePageController {
 
 	private static final OrderingField DEFAULT_ORDER_BY = OrderingField.NAME;
 
