@@ -42,7 +42,6 @@ $.fn.valueStatus = function() {
 }
 
 function initializeSearch(type) {
-
 	viewType = type;
 	$(window).on('update:wordId', () => {
 		const idList = [];
@@ -474,3 +473,19 @@ function refreshDetailsSearch(id) {
 function doNewSearchLexDetail() {
 	$('#simple_search_filter').find('button[type=submit]').trigger('click');
 };
+
+
+$.fn.relativeFormItem = function() {
+	const main = $(this);
+	const id = main.attr('data-relativeFormItem:id');
+
+	main.on('change', function() {
+		const relative = $(`#${id}`);
+		const value = main.val();
+		relative.val(value);
+		if (relative.attr('type') === 'radio') {
+			relative.prop('checked', true);
+		}
+		relative.trigger('change');
+	});
+}

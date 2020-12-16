@@ -45,8 +45,43 @@
   }
 }
 
+#resultColumn {
+  width: 100%;
+}
+
 #resultColumn .searchResultsToggle{
   margin:0 0 0 8px;
   height: 24px;
   width: 30px;
+}
+
+#searchColumn{
+  .dropdown-toggle {
+    background: $white;
+    border: 1px solid $gray-200;
+    font-size: 12px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .btn-tabs {
+    .btn {
+      border: none;
+      background: none;
+      padding: 0 4px;
+      font-size:12px;
+      line-height: 120%;
+      box-shadow: none;
+      border-bottom:#fff 2px solid;
+      border-radius: 0;
+      height:32px;
+      line-height: 30px;
+      &.active {
+        font-weight: 700;
+        border-color: $gray-900;
+      }
+      &+.btn {
+        margin-left: 16px;
+      }
+    }
+  }
 }
