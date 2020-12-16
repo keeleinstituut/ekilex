@@ -699,11 +699,7 @@
         <h5 class="font-weight-bold mb-0 d-flex align-items-center text-dark">
           <span th:text="#{label.corp.examples}">Veebilauseid</span>
           <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
-                  th:if="${corp_language == 'est'}" th:aria-label="#{corpus.title.est}" th:title="#{corpus.title.est}">
-            <i class="fas fa-info-circle"></i>
-          </button>
-          <button type="button" class="btn btn-icon btn-sm" data-toggle="tooltip" data-placement="top"
-                  th:if="${corp_language == 'rus'}" th:aria-label="#{corpus.title.rus}" th:title="#{corpus.title.rus}">
+                  th:aria-label="#{|corpus.title.${searchMode}.${corpLang}|}" th:title="#{|corpus.title.${searchMode}.${corpLang}|}">
             <i class="fas fa-info-circle"></i>
           </button>
         </h5>
