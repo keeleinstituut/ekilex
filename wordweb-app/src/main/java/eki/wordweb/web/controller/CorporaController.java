@@ -45,7 +45,7 @@ public class CorporaController implements WebConstant, SystemConstant {
 
 		model.addAttribute("sentences", textCorpus);
 		model.addAttribute("sentence", word);
-		model.addAttribute("corp_language", language);
+		model.addAttribute("corpLang", language);
 
 		return "common-search :: corp";
 	}
