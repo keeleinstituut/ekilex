@@ -46,7 +46,7 @@
           type="button"
           data-plugin="contextmenu"
           data-contextmenu:compare="Ava uues paneelis"
-          name="details-btn" th:data-id="${resultRow.meaningId}" class="btn btn-block ml-n1" style="text-decoration:none; color:inherit;">
+          name="details-btn" th:data-id="${resultRow.meaningId}" class="btn btn-block ml-n1" style="color: inherit; text-decoration: none;">
             <span th:text="${resultRow.meaningId}" class="text-monospace float-right"></span>
             <th:block th:if="${resultRow.meaningWordsExist}">
               <th:block th:each="meaningWord : ${resultRow.meaningWords}">
@@ -77,9 +77,9 @@
               </div>
             </th:block>
           </button>
-          <div class="result-right" style="padding: 5px">
-            <span th:id="${'meaning_select_point_' + resultRow.meaningId}" class="fa fa-play" style="display: none"></span>
-            <span th:id="${'select_wait_' + resultRow.meaningId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+          <div class="result-right" style="padding: 5px;">
+            <span th:id="${'meaning_select_point_' + resultRow.meaningId}" class="fa fa-play" style="display: none;"></span>
+            <span th:id="${'select_wait_' + resultRow.meaningId}" class="fa fa-refresh fa-spin" style="display: none;"></span>
           </div>
         </div>
       </th:block>
@@ -148,7 +148,7 @@
       </button>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display:none;">
+  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display: none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Väärtusolek</span>
     </div>

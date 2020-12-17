@@ -79,7 +79,6 @@
       <div th:replace="lexdialog :: add_lexeme_relation_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_publicity_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_value_state_dlg"></div>
-      <div th:replace="lexdialog :: edit_lexeme_frequency_group_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_levels_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_complexity_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_weight_dlg"></div>
@@ -260,7 +259,6 @@
           <th:block th:replace="lexcomp :: lexeme_publicity"></th:block>
           <th:block th:replace="lexcomp :: lexeme_value_state"></th:block>
           <th:block th:replace="lexcomp :: lexeme_grammar"></th:block>
-          <th:block th:replace="lexcomp :: lexeme_frequency_group"></th:block>
           <th:block th:replace="lexcomp :: lexeme_weight"></th:block>
           <th:block th:replace="lexcomp :: lexeme_pos"></th:block>
           <th:block th:replace="lexcomp :: lexeme_derivative"></th:block>
@@ -292,13 +290,13 @@
                 </button>
               </div>
               <div th:if="${definitionLangGroup.selected}" class="orderable" data-op-code="definition">
-                <div class="ml-4" style="position: relative" th:each="definition, itemIter: ${definitionLangGroup.definitions}"
+                <div class="ml-4" style="position: relative;" th:each="definition, itemIter: ${definitionLangGroup.definitions}"
                      th:data-id="${definition.id}"
                      th:data-orderby="${definition.orderBy}">
                   <div th:replace="lexdialog :: edit_definition_dlg"></div>
                   <div th:replace="lexdialog :: add_definition_source_link_dlg"></div>
                   <div th:replace="lexdialog :: add_definition_note_dlg"></div>
-                  <div style="display: list-item; position: absolute"></div>
+                  <div style="position: absolute; display: list-item;"></div>
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
                   </div>
@@ -376,7 +374,7 @@
                       <div th:replace="lexdialog :: edit_definition_note_dlg"></div>
                       <div th:replace="lexdialog :: add_definition_note_source_link_dlg"></div>
                       <div class="small invisible-buttons action-buttons-anchor mw-90 ml-4">
-                        <div style="display: list-item; position: absolute"></div>
+                        <div style="position: absolute; display: list-item;"></div>
                         <span th:utext="${note.valuePrese}"></span>
                         <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}"></span>
                         <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
@@ -1137,11 +1135,11 @@
                 </button>
               </div>
               <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="lexeme_note">
-                <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
+                <div class="ml-4" style="position: relative;" th:each="note, itemIter: ${noteLangGroup.notes}"
                      th:data-id="${note.id}"
                      th:data-orderby="${note.orderBy}">
                   <div th:replace="lexdialog :: edit_lexeme_note_dlg"></div>
-                  <div style="display: list-item; position: absolute"></div>
+                  <div style="position: absolute; display: list-item;"></div>
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
                   </div>
@@ -1199,11 +1197,11 @@
                 </button>
               </div>
               <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="meaning_note">
-                <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
+                <div class="ml-4" style="position: relative;" th:each="note, itemIter: ${noteLangGroup.notes}"
                      th:data-id="${note.id}"
                      th:data-orderby="${note.orderBy}">
                   <div th:replace="lexdialog :: edit_meaning_note_dlg"></div>
-                  <div style="display: list-item; position: absolute"></div>
+                  <div style="position: absolute; display: list-item;"></div>
                   <div class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.meaning.crudGrant"></th:block>
                   </div>
