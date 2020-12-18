@@ -10,7 +10,7 @@ public interface GlobalConstant {
 
 	boolean PUBLICITY_PRIVATE = false;
 
-	String VALUE_STATE_MOST_PREFERRED = "eelistermin";
+	String VALUE_STATE_MOST_PREFERRED = "eelistatud";
 
 	String VALUE_STATE_LEAST_PREFERRED = "väldi";
 

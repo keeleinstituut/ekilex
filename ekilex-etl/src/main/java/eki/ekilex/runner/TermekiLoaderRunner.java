@@ -122,8 +122,8 @@ public class TermekiLoaderRunner extends AbstractLoaderRunner {
 
 		lexemeValueStateCodes = new HashMap<>();
 		lexemeValueStateCodes.put("variant", "variant");
-		lexemeValueStateCodes.put("synonym", "rööptermin");
-		lexemeValueStateCodes.put("preferredTerm-admn-sts", "eelistermin");
+		lexemeValueStateCodes.put("synonym", "mööndav");
+		lexemeValueStateCodes.put("preferredTerm-admn-sts", "eelistatud");
 		lexemeValueStateCodes.put("deprecatedTerm-admn-sts", "väldi");
 
 		relationTypeCodes = new HashMap<>();
