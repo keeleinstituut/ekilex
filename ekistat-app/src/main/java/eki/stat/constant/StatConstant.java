@@ -1,4 +1,4 @@
-package eki.stat;
+package eki.stat.constant;
 
 public interface StatConstant {
 

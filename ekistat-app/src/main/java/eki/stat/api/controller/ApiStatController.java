@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.constant.StatType;
 import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
-import eki.stat.StatConstant;
+import eki.stat.constant.StatConstant;
 import eki.stat.service.StatService;
 
 @ConditionalOnWebApplication
