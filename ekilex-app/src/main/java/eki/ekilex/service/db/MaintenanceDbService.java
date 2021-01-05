@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.ekilex.data.db.Routines;
 
 @Component
 public class MaintenanceDbService implements GlobalConstant {
@@ -32,6 +33,11 @@ public class MaintenanceDbService implements GlobalConstant {
 
 	@Autowired
 	private DSLContext create;
+
+	public void mergeHomonymsToSss(String[] includedLangs) {
+
+		Routines.mergeHomonymsToSss(create.configuration(), includedLangs);
+	}
 
 	public int deleteFloatingFreeforms() {
 

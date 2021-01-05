@@ -11,11 +11,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.service.db.MaintenanceDbService;
 
 @Component
-public class MaintenanceService implements SystemConstant {
+public class MaintenanceService implements SystemConstant, GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(MaintenanceService.class);
 
@@ -65,10 +66,20 @@ public class MaintenanceService implements SystemConstant {
 	public void tagCacheEvict() {
 	}
 
+	@Scheduled(cron = MERGE_HOMONYMS_TIME_3_AM)
+	@Transactional
+	public void mergeHomonyms() {
+
+		logger.info("Starting homonyms merge procedure...");
+		String[] includedLangs = new String[] {LANGUAGE_CODE_EST, LANGUAGE_CODE_LAT};
+		maintenanceDbService.mergeHomonymsToSss(includedLangs);
+	}
+
 	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)
 	@Transactional
 	public void deleteFloatingData() {
 
+		logger.info("Deleting floating data...");
 		int deletedFreeformCount = maintenanceDbService.deleteFloatingFreeforms();
 		if (deletedFreeformCount > 0) {
 			logger.debug("Maintenance service deleted {} floating freeforms", deletedFreeformCount);

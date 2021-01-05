@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.routines.MergeHomonymsToSss;
 import eki.ekilex.data.db.routines.Unaccent1;
 import eki.ekilex.data.db.routines.Unaccent2;
 import eki.ekilex.data.db.routines.UnaccentInit;
@@ -18,6 +19,16 @@ import org.jooq.Field;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
+
+    /**
+     * Call <code>public.merge_homonyms_to_sss</code>
+     */
+    public static void mergeHomonymsToSss(Configuration configuration, String[] includedLangs) {
+        MergeHomonymsToSss p = new MergeHomonymsToSss();
+        p.setIncludedLangs(includedLangs);
+
+        p.execute(configuration);
+    }
 
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
