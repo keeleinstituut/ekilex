@@ -16,6 +16,7 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record18;
+import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import eki.common.constant.LexemeType;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Dataset;
@@ -37,6 +39,7 @@ import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
+import eki.ekilex.data.db.udt.records.TypeWordRelMeaningRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -46,7 +49,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
 
-	public List<Relation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		WordRelation oppr = WORD_RELATION.as("oppr");
@@ -54,7 +57,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
-		Lexeme l2 = LEXEME.as("l");
+		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
 		LexemePos lp = LEXEME_POS.as("lp");
 		Definition d = DEFINITION.as("d");
@@ -66,17 +69,23 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(rp.WORD_RELATION_ID)
 				.asField();
 
-		Field<String[]> rwd = DSL
-				.select(DSL.arrayAgg(d.VALUE).orderBy(l2.ORDER_BY, d.ORDER_BY))
-				.from(l2, d)
+		Table<Record2<Long, String[]>> relmt = DSL
+				.select(l2.MEANING_ID, DSL.arrayAgg(d.VALUE).orderBy(l2.ORDER_BY, d.ORDER_BY).as("definitions"))
+				.from(
+						l2.leftOuterJoin(d).on(
+								l2.MEANING_ID.eq(d.MEANING_ID)
+										.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%")))))
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
 								.and(l2.DATASET_CODE.eq(datasetCode))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l2.MEANING_ID.eq(d.MEANING_ID))
-								.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
-				.groupBy(l2.WORD_ID)
-				.asField();
+								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.groupBy(l2.WORD_ID, l2.MEANING_ID)
+				.asTable("relmt");
+
+		Field<TypeWordRelMeaningRecord[]> relm = DSL
+				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.from(relmt)
+				.asField("relm");
 
 		Field<String[]> rwlp = DSL
 				.select(DSL.arrayAggDistinct(lp.POS_CODE))
@@ -93,7 +102,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record18<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, String[], String[]>> rr = DSL
+		Table<Record18<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, TypeWordRelMeaningRecord[], String[]>> rr = DSL
 				.select(
 						r.ID,
 						r.WORD_REL_TYPE_CODE.as("rel_type_code"),
@@ -111,7 +120,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
-						rwd.as("word_definitions"),
+						relm.as("word_meanings"),
 						rwlp.as("word_lexemes_poses"))
 				.from(r
 						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
@@ -161,12 +170,12 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("prefixoid"),
 						rr.field("suffixoid"),
 						rr.field("foreign"),
-						rr.field("word_definitions"),
+						rr.field("word_meanings"),
 						rr.field("word_lexemes_poses"),
 						rr.field("word_lexemes_max_frequency"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
-				.fetchInto(Relation.class);
+				.fetchInto(SynRelation.class);
 	}
 
 	public List<WordLexeme> getWordPrimarySynonymLexemes(

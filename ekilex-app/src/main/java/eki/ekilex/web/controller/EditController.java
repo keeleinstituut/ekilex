@@ -273,6 +273,9 @@ public class EditController extends AbstractPrivatePageController {
 		case "lexeme_weight":
 			cudService.updateLexemeWeight(itemData.getId(), itemValue);
 			break;
+		case "meaning_relation_weight":
+			cudService.updateMeaningRelationWeight(itemData.getId(), itemValue);
+			break;
 		case "word_gender":
 			cudService.updateWordGender(itemData.getId(), itemValue);
 			break;

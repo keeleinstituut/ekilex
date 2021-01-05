@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.app.EkilexApplication;
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.data.Relation;
+import eki.ekilex.data.SynRelation;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @RunWith(SpringRunner.class)
@@ -42,7 +42,7 @@ public class SynSearchServiceTest extends AbstractTest implements SystemConstant
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<Relation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<SynRelation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "sss", Collections.singletonList("est"), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		assertThat(relations.size()).isEqualTo(2);
 	}
 }

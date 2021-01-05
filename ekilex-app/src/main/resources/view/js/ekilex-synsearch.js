@@ -117,10 +117,10 @@ function initializeSynSearch() {
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
 					if (draggableDiv.hasClass("draggable-synonym")) {
-						let wordId = draggableDiv.data('word-id');
-						let existingWord = $(this).find("input.meaning-word-id[value='" + wordId + "']");
+						let meaningId = draggableDiv.data('meaning-id');
+						let existingMeaning = $(this).find("input.relation-meaning-id[value='" + meaningId + "']");
 
-						if (!existingWord.length) {
+						if (!existingMeaning.length) {
 							return true;
 						}
 					}
@@ -131,13 +131,11 @@ function initializeSynSearch() {
 				},
 				drop: function(event, ui) {
 
-					let relationId = ui.draggable.parent().data('id');
+					let targetMeaningId = $(this).data('meaning-id');
+					let wordRelationId = ui.draggable.parent().data('id');
+					let sourceMeaningId = ui.draggable.data('meaning-id');
 
-					let meaningId = $(this).data('meaning-id');
-					let lexemeId = $(this).data('lexeme-id');
-					let wordId = ui.draggable.data('word-id');
-
-					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+					let actionUrl = applicationUrl + 'syn_create_meaning_relation/' + targetMeaningId + '/' + sourceMeaningId + '/' + wordRelationId;
 
 					openWaitDlg();
 					let callbackFunc = () => refreshSynDetails();
@@ -423,8 +421,8 @@ function isDisabledItem(activeDiv, navigateItem) {
 
 	if (panelIndex == "2") {
 		let wordId = activeDiv.data('marked-word-id');
-
-		return navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+		// TODO not working - yogesh
+		return navigateItem.find('input.relation-meaning-id[value="' + wordId + '"]').length != 0;
 	}
 	return false;
 }
@@ -591,6 +589,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 
 		unActivateItem(currentSelectedItem, false);
 		let wordId = currentSelectedItem.children(':first').attr('data-word-id');
+		let meaningId = currentSelectedItem.children(':first').attr('data-meaning-id');
 
 		let activatedList = $('div[data-panel-index="' + 2 + '"]');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
@@ -598,7 +597,7 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 
 		let selectedLexemeItem = findSelectedNavigateItem(activatedList);
 
-		let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+		let lexemeExists = selectedLexemeItem.find('input.relation-meaning-id[value="' + meaningId + '"]').length != 0;
 
 		selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 		selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
@@ -606,13 +605,15 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 	} else if (currentActivePanelIndex == "2") {
 		if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
 			let wordId = currentActiveList.data('marked-word-id');
-			let relationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
+			// TODO keyboard mode not working
+			// up-down movement should be between meanings not words
+			let wordRelationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
+			let sourceMeaningId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
 
 			if (wordId != undefined) {
-				let lexemeId = currentSelectedItem.data('lexeme-id');
-				let meaningId = currentSelectedItem.data('meaning-id');
+				let targetMeaningId = currentSelectedItem.data('meaning-id');
 
-				let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+				let actionUrl = applicationUrl + 'syn_create_meaning_relation/' + targetMeaningId + '/' + sourceMeaningId + '/' + wordRelationId;
 				let callbackFunc = () => refreshSynDetails();
 				doPostRelationChange(actionUrl, callbackFunc);
 

@@ -92,6 +92,7 @@ import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
+import eki.ekilex.data.db.tables.TempPNames;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -149,6 +150,7 @@ import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
+import eki.ekilex.data.db.udt.TypeWordRelMeaning;
 import eki.ekilex.data.db.udt.TypeWordRelParam;
 import eki.ekilex.data.db.udt.TypeWordRelation;
 
@@ -168,7 +170,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1014045054;
+    private static final long serialVersionUID = 1394851057;
 
     /**
      * The reference instance of <code>public</code>
@@ -616,6 +618,11 @@ public class Public extends SchemaImpl {
     public final TempDsImportQueue TEMP_DS_IMPORT_QUEUE = TempDsImportQueue.TEMP_DS_IMPORT_QUEUE;
 
     /**
+     * The table <code>public.temp_p_names</code>.
+     */
+    public final TempPNames TEMP_P_NAMES = TempPNames.TEMP_P_NAMES;
+
+    /**
      * The table <code>public.usage_type</code>.
      */
     public final UsageType USAGE_TYPE = UsageType.USAGE_TYPE;
@@ -1046,6 +1053,7 @@ public class Public extends SchemaImpl {
             Tag.TAG,
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
+            TempPNames.TEMP_P_NAMES,
             UsageType.USAGE_TYPE,
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,
@@ -1108,6 +1116,7 @@ public class Public extends SchemaImpl {
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
+            TypeWordRelMeaning.TYPE_WORD_REL_MEANING,
             TypeWordRelParam.TYPE_WORD_REL_PARAM,
             TypeWordRelation.TYPE_WORD_RELATION);
     }

@@ -44,7 +44,6 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LexemeType;
@@ -259,22 +258,6 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 				.fetchOptionalInto(Integer.class)
 				.orElse(0);
-	}
-
-	public Complexity getWordSecondaryLexemesCalculatedComplexity(Long wordId) {
-
-		Lexeme lp = LEXEME.as("lp");
-		Field<String> complDetail = field(DSL.val(Complexity.DETAIL.name()));
-		Field<String> complAny = field(DSL.val(Complexity.ANY.name()));
-
-		return create
-				.select(DSL.when(complDetail.eq(DSL.all(DSL.arrayAgg(lp.COMPLEXITY))), complDetail).otherwise(complAny))
-				.from(lp)
-				.where(
-						lp.WORD_ID.eq(wordId)
-								.and(lp.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(lp.IS_PUBLIC.isTrue()))
-				.fetchOneInto(Complexity.class);
 	}
 
 	public String getLexemeDatasetCode(Long lexemeId) {

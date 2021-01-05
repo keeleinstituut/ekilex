@@ -26,7 +26,9 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Tag;
@@ -34,6 +36,7 @@ import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.SynSearchService;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -169,18 +172,21 @@ public class SynSearchController extends AbstractSearchController {
 	public String details(
 			@PathVariable("wordId") Long wordId,
 			@RequestParam(required = false) Long markedSynWordId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
 		logger.debug("Requesting details by word {}", wordId);
 
 		UserContextData userContextData = getUserContextData();
+		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
-		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		List<String> synCandidateLangCodes = userContextData.getSynCandidateLangCodes();
 		List<String> synMeaningWordLangCodes = userContextData.getSynMeaningWordLangCodes();
 		Tag activeTag = userContextData.getActiveTag();
+		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
-		WordDetails details = synSearchService.getWordSynDetails(wordId, userRoleDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userRole);
+		WordDetails details = synSearchService.getWordSynDetails(wordId, languagesOrder, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userRole, userProfile);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
@@ -201,14 +207,12 @@ public class SynSearchController extends AbstractSearchController {
 		return RESPONSE_OK_VER2;
 	}
 
-	@PostMapping(SYN_CREATE_LEXEME + "/{meaningId}/{wordId}/{lexemeId}/{relationId}")
+	@PostMapping(SYN_CREATE_MEANING_RELATION + "/{targetMeaningId}/{sourceMeaningId}/{wordRelationId}")
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
-	public String createSynLexeme(@PathVariable Long meaningId, @PathVariable Long wordId, @PathVariable Long lexemeId, @PathVariable Long relationId, Model model) throws Exception {
+	public String createSynMeaningRelation(@PathVariable Long targetMeaningId, @PathVariable Long sourceMeaningId, @PathVariable Long wordRelationId) throws Exception {
 
-		logger.debug("Adding lexeme to syn candidate word Id {}, meaning Id {} , existing lexeme Id {}, relation Id {}", wordId, meaningId, lexemeId, relationId);
-		String datasetCode = getDatasetCodeFromRole();
-		synSearchService.createSecondarySynLexeme(meaningId, wordId, datasetCode, lexemeId, relationId);
+		synSearchService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId);
 		return RESPONSE_OK_VER2;
 	}
 

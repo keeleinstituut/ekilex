@@ -654,6 +654,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateMeaningRelationWeight(Long meaningRelationId, String relationWeightStr) throws Exception {
+		Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationWeight", meaningId, LifecycleLogOwner.MEANING);
+		BigDecimal relationWeight = new BigDecimal(relationWeightStr);
+		cudDbService.updateMeaningRelationWeight(meaningRelationId, relationWeight);
+		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
+	}
+
+	@Transactional
 	public void updateWordDataAndLexemeWeight(WordLexemeMeaningDetails wordDataAndLexemeWeight) throws Exception {
 
 		Long wordId = wordDataAndLexemeWeight.getWordId();

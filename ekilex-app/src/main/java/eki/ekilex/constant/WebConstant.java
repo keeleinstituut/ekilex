@@ -261,7 +261,7 @@ public interface WebConstant {
 
 	String SYN_CHANGE_RELATION_STATUS = "/syn_relation_status";
 
-	String SYN_CREATE_LEXEME = "/syn_create_lexeme";
+	String SYN_CREATE_MEANING_RELATION = "/syn_create_meaning_relation";
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
 

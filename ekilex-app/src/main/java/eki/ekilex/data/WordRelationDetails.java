@@ -8,7 +8,7 @@ public class WordRelationDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Relation> wordRelations;
+	private List<SynRelation> wordSynRelations;
 
 	private List<WordGroup> primaryWordRelationGroups;
 
@@ -18,12 +18,12 @@ public class WordRelationDetails extends AbstractDataObject {
 
 	private boolean groupRelationExists;
 
-	public List<Relation> getWordRelations() {
-		return wordRelations;
+	public List<SynRelation> getWordSynRelations() {
+		return wordSynRelations;
 	}
 
-	public void setWordRelations(List<Relation> wordRelations) {
-		this.wordRelations = wordRelations;
+	public void setWordSynRelations(List<SynRelation> wordSynRelations) {
+		this.wordSynRelations = wordSynRelations;
 	}
 
 	public List<WordGroup> getPrimaryWordRelationGroups() {

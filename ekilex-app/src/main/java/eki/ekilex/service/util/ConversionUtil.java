@@ -666,7 +666,6 @@ public class ConversionUtil implements GlobalConstant {
 	public WordRelationDetails composeWordRelationDetails(List<Relation> wordRelations, List<WordGroup> wordGroups, String wordLang, List<Classifier> allWordRelationTypes) {
 
 		WordRelationDetails wordRelationDetails = new WordRelationDetails();
-		wordRelationDetails.setWordRelations(wordRelations);
 		wordRelationDetails.setWordGroups(wordGroups);
 		wordRelationDetails.setPrimaryWordRelationGroups(new ArrayList<>());
 		wordRelationDetails.setSecondaryWordRelationGroups(new ArrayList<>());

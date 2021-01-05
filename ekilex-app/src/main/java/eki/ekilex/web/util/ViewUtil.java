@@ -77,28 +77,6 @@ public class ViewUtil implements InitializingBean {
 		return lexemeWeightFormat.format(lexemeWeight);
 	}
 
-	public String getDefinitionTooltipHtml(List<String> definitions) {
-
-		StringBuilder htmlBuf = new StringBuilder();
-		if (CollectionUtils.isEmpty(definitions)) {
-			htmlBuf.append("definitsioon puudub");
-		} else {
-			boolean countDefinitions = definitions.size() > 1;
-			int definitionsCount = 1;
-			htmlBuf.append("<p style='text-align:left'>");
-			for (String definition : definitions) {
-				if (countDefinitions) {
-					htmlBuf.append(definitionsCount++);
-					htmlBuf.append(". ");
-				}
-				htmlBuf.append(StringUtils.abbreviate(definition, DEFINITION_MAX_CHARS));
-				htmlBuf.append("<br>");
-			}
-			htmlBuf.append("</p>");
-		}
-		return htmlBuf.toString();
-	}
-
 	public String composeFunction(String functionName, Object... args) {
 		String functionSignature = functionName + "(" + StringUtils.join(args, ',') + ")";
 		return functionSignature;

@@ -188,5 +188,4 @@ end $$;
 -- kustuta abifunktsioon
 drop function convert_lexeme_to_meaning_relation(bigint,bigint,varchar(100),numeric(5,4),bigint);
 
-
-
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array);

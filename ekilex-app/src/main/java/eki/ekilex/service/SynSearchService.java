@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.Complexity;
 import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
@@ -26,9 +25,10 @@ import eki.common.constant.LifecycleProperty;
 import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
@@ -36,7 +36,7 @@ import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SimpleWord;
+import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
@@ -47,7 +47,6 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.CudDbService;
-import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -56,7 +55,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	private static final String RAW_RELATION_CODE = "raw";
 
-	private static final float DEFAULT_LEXEME_WEIGHT = 1;
+	private static final float DEFAULT_MEANING_RELATION_WEIGHT = 1;
 
 	@Value("#{${relation.weight.multipliers}}")
 	private Map<String, Float> relationWeightMultiplierMap;
@@ -71,16 +70,13 @@ public class SynSearchService extends AbstractWordSearchService {
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
-	private LookupDbService lookupDbService;
-
-	@Autowired
 	private PermCalculator permCalculator;
 
 	@Transactional
-	public WordDetails getWordSynDetails(
-			Long wordId, String datasetCode, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes,
-			Tag activeTag, DatasetPermission userRole) throws Exception {
+	public WordDetails getWordSynDetails(Long wordId, List<ClassifierSelect> languagesOrder, List<String> synCandidateLangCodes,
+			List<String> synMeaningWordLangCodes, Tag activeTag, DatasetPermission userRole, EkiUserProfile userProfile) throws Exception {
 
+		String datasetCode = userRole.getDatasetCode();
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		Word word = synSearchDbService.getWord(wordId);
@@ -91,16 +87,16 @@ public class SynSearchService extends AbstractWordSearchService {
 		String wordLang = word.getLang();
 
 		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, wordLang, synMeaningWordLangCodes, userRole));
+		synLexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile));
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
 
-		List<Relation> relations = Collections.emptyList();
+		List<SynRelation> synRelations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {
-			relations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			synRelations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		}
-		List<Classifier> allWordRelationTypes = commonDataDbService.getWordRelationTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(relations, null, wordLang, allWordRelationTypes);
+		WordRelationDetails wordRelationDetails = new WordRelationDetails();
+		wordRelationDetails.setWordSynRelations(synRelations);
 
 		WordDetails wordDetails = new WordDetails();
 		word.setNotes(wordNotes);
@@ -112,11 +108,13 @@ public class SynSearchService extends AbstractWordSearchService {
 		return wordDetails;
 	}
 
-	private void populateLexeme(WordLexeme lexeme, String headwordLanguage, List<String> meaningWordLangs, DatasetPermission userRole) {
+	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, String headwordLanguage, List<String> meaningWordLangs,
+			DatasetPermission userRole, EkiUserProfile userProfile) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
+		String wordLang = lexeme.getWordLang();
 
 		permCalculator.applyCrud(userRole, lexeme);
 		List<MeaningWordLangGroup> meaningWordLangGroups = Collections.emptyList();
@@ -126,6 +124,10 @@ public class SynSearchService extends AbstractWordSearchService {
 			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, headwordLanguage);
 		}
 
+		List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
+		List<Relation> allMeaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Relation> synMeaningRelations = conversionUtil.extractSynMeaningRelations(allMeaningRelations);
+		List<List<Relation>> viewSynMeaningRelations = conversionUtil.composeViewMeaningRelations(synMeaningRelations, userProfile, wordLang, languagesOrder);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(userRole, definitions);
 
@@ -142,6 +144,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		Meaning meaning = new Meaning();
 		meaning.setMeaningId(meaningId);
 		meaning.setDefinitions(definitions);
+		meaning.setViewSynRelations(viewSynMeaningRelations);
 		lexeme.setMeaning(meaning);
 	}
 
@@ -163,45 +166,20 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public void createSecondarySynLexeme(Long meaningId, Long wordId, String datasetCode, Long existingLexemeId, Long relationId) throws Exception {
+	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId) throws Exception {
 
 		ActivityLogData activityLog;
-		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(relationId);
-		Float lexemeWeight = getCalculatedLexemeWeight(typeWordRelParams);
-		Complexity complexity = lookupDbService.getWordSecondaryLexemesCalculatedComplexity(wordId);
+		Long meaningRelationId;
+		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(wordRelationId);
+		Float meaningRelationWeight = getCalculatedMeaningRelationWeight(typeWordRelParams);
 
-		activityLog = activityLogService.prepareActivityLog("createSecondarySynLexeme", existingLexemeId, LifecycleLogOwner.LEXEME);
-		Long lexemeId = synSearchDbService.createLexeme(wordId, meaningId, datasetCode, LexemeType.SECONDARY, lexemeWeight, complexity);
-		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, LifecycleLogOwner.MEANING);
+		meaningRelationId = cudDbService.createMeaningRelation(targetMeaningId, sourceMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
+		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 
-		SimpleWord synWord = lookupDbService.getSimpleWord(wordId);
-		String synWordValue = synWord.getWordValue();
-		LogData matchLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, existingLexemeId, synWordValue);
-		createLifecycleLog(matchLogData);
-
-		LogData relationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, relationId, RelationStatus.PROCESSED.name());
-		createLifecycleLog(relationLogData);
-		Long relationWordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
-		activityLog = activityLogService.prepareActivityLog("createSecondarySynLexeme", relationWordId, LifecycleLogOwner.WORD);
-		synSearchDbService.changeRelationStatus(relationId, RelationStatus.PROCESSED.name());
-		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
-
-		Word word = synSearchDbService.getWord(wordId);
-		List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, Arrays.asList(word.getLang()), Arrays.asList(LexemeType.PRIMARY));
-
-		for (MeaningWord meaningWord : meaningWords) {
-			Long meaningWordId = meaningWord.getWordId();
-			Long meaningWordRelationId = synSearchDbService.getRelationId(meaningWordId, wordId, RAW_RELATION_CODE);
-
-			if (meaningWordRelationId != null) {
-				LogData oppositeRelationLogData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, meaningWordRelationId,
-						RelationStatus.PROCESSED.name());
-				createLifecycleLog(oppositeRelationLogData);
-				activityLog = activityLogService.prepareActivityLog("createSecondarySynLexeme", meaningWordId, LifecycleLogOwner.WORD);
-				synSearchDbService.changeRelationStatus(meaningWordRelationId, RelationStatus.PROCESSED.name());
-				activityLogService.createActivityLog(activityLog, meaningWordRelationId, ActivityEntity.WORD_RELATION);
-			}
-		}
+		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, LifecycleLogOwner.MEANING);
+		meaningRelationId = cudDbService.createMeaningRelation(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
+		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {
@@ -224,10 +202,10 @@ public class SynSearchService extends AbstractWordSearchService {
 		}
 	}
 
-	private Float getCalculatedLexemeWeight(List<TypeWordRelParam> typeWordRelParams) {
+	private Float getCalculatedMeaningRelationWeight(List<TypeWordRelParam> typeWordRelParams) {
 
 		if (typeWordRelParams.isEmpty()) {
-			return DEFAULT_LEXEME_WEIGHT;
+			return DEFAULT_MEANING_RELATION_WEIGHT;
 		}
 
 		float dividend = 0;

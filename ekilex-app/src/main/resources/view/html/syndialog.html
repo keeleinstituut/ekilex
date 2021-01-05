@@ -66,16 +66,16 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editSynLexemeWeightDlg_' + meaningWord.lexemeId}" class="modal" role="dialog" th:fragment="edit_meaning_word_lexeme_weight_dlg">
+  <div th:id="${'editSynMeaningRelationWeightDlg_' + relation.id}" class="modal" role="dialog" th:fragment="edit_syn_meaning_relation_weight_dlg">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${meaningWord.lexemeId}">
-            <input type="hidden" name="opCode" value="lexeme_weight">
+            <input type="hidden" name="id" th:value="${relation.id}">
+            <input type="hidden" name="opCode" value="meaning_relation_weight">
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${meaningWord.lexemeWeight}">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${relation.weight}">
               </div>
             </div>
           </div>

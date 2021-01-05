@@ -14,7 +14,7 @@ $(document).on("show.bs.modal", "[id^=addSynRelationDlg_]", function() {
 	initAddSynRelationDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editSynLexemeWeightDlg_]", function() {
+$(document).on("show.bs.modal", "[id^=editSynMeaningRelationWeightDlg_]", function() {
 	initGenericTextEditDlg($(this));
 });
 

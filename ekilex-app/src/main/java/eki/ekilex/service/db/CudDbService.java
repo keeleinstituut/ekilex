@@ -202,6 +202,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateMeaningRelationWeight(Long meaningRelationId, BigDecimal relationWeight) {
+		create
+				.update(MEANING_RELATION)
+				.set(MEANING_RELATION.WEIGHT, relationWeight)
+				.where(MEANING_RELATION.ID.eq(meaningRelationId))
+				.execute();
+	}
+
 	public void updateLexemeWeight(Long lexemeId, BigDecimal lexemeWeight) {
 		create
 				.update(LEXEME)
@@ -752,10 +760,17 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createMeaningRelation(Long meaningId1, Long meaningId2, String relationType) {
+		return createMeaningRelation(meaningId1, meaningId2, relationType, null);
+	}
+
+	public Long createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, Float relationWeight) {
 		MeaningRelationRecord meaningRelation = create.newRecord(MEANING_RELATION);
 		meaningRelation.setMeaning1Id(meaningId1);
 		meaningRelation.setMeaning2Id(meaningId2);
 		meaningRelation.setMeaningRelTypeCode(relationType);
+		if (relationWeight != null) {
+			meaningRelation.setWeight(BigDecimal.valueOf(relationWeight));
+		}
 		meaningRelation.store();
 		return meaningRelation.getId();
 	}
