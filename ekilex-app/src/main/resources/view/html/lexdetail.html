@@ -70,6 +70,7 @@
       <div th:replace="lexdialog :: add_lexeme_source_link_dlg"></div>
       <div th:replace="lexdialog :: add_learner_comment_dlg"></div>
       <div th:replace="lexdialog :: add_meaning_relation_dlg"></div>
+      <div th:replace="lexdialog :: add_syn_meaning_relation_dlg"></div>
       <div th:replace="lexdialog :: add_meaning_domain_dlg"></div>
       <div th:replace="lexdialog :: add_meaning_semantic_type_dlg"></div>
       <div th:replace="lexdialog :: add_government_dlg"></div>
@@ -174,6 +175,13 @@
               <div class="w-100 p-1">
                 <hr/>
               </div>
+              <button type="button" class="btn badge badge-success"
+                      title="Lisa uus seos"
+                      data-toggle="modal"
+                      th:data-target="${'#addSynMeaningRelationDlg_' + lexeme.lexemeId}"
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
               <span th:each="relations, relsIter : ${lexeme.meaning.viewSynRelations}" th:with="relSample = ${relations.get(0)}">
                 <th:block th:each="relation, relIter : ${relations}">
                   <button

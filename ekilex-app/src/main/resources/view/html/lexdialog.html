@@ -441,6 +441,61 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addSynMeaningRelationDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_syn_meaning_relation_dlg">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/meaningsearch}">
+            <input type="hidden" name="meaningId">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control required-field" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/create_relations}" method="post">
+            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="opCode" value="syn_meaning_relation">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select required class="form-control required-field" name="relationType">
+                  <option value="sarnane" selected>sarnane</option>
+                </select>
+              </div>
+            </div>
+            <div data-name="oppositeRelation" data-entity="MEANING" class="form-group row" style="display: none">
+              <div class="col-md-6">
+                <label class="col-form-label">
+                  vastassuuna seose tüüp
+                  <select required class="form-control required-field" name="oppositeRelationType">
+                  </select>
+                </label>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label>Seose kaal</label>
+                <input name="weight" type="number" min="0" max="1" step=".1" class="form-control required-field required-range">
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addGovernmentDlg_' + lexeme.lexemeId}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="add_government_dlg">

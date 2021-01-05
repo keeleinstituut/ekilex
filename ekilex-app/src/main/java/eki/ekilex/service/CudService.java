@@ -1193,15 +1193,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createSynRelation(Long word1Id, Long word2Id, String weightStr, String datasetCode) throws Exception {
+	public void createSynWordRelation(Long targetWordId, Long sourceWordId, String weightStr, String datasetCode) throws Exception {
 
-		boolean word2DatasetLexemeExists = lookupDbService.wordLexemeExists(word2Id, datasetCode);
+		boolean word2DatasetLexemeExists = lookupDbService.wordLexemeExists(sourceWordId, datasetCode);
 		if (!word2DatasetLexemeExists) {
-			createLexeme(word2Id, datasetCode, null);
+			createLexeme(sourceWordId, datasetCode, null);
 		}
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynRelation", word1Id, LifecycleLogOwner.WORD);
-		Long createdRelationId = cudDbService.createWordRelation(word1Id, word2Id, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		moveCreatedRelationToFirst(word1Id, createdRelationId);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, LifecycleLogOwner.WORD);
+		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
+		moveCreatedRelationToFirst(targetWordId, createdRelationId);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);

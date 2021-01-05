@@ -185,7 +185,10 @@ public abstract class AbstractPrivatePageController extends AbstractAuthActionCo
 
 	@ModelAttribute("meaningRelationTypes")
 	public List<Classifier> getMeaningRelationTypes() {
-		return commonDataService.getMeaningRelationTypes();
+		List<Classifier> meaningRelationTypes = commonDataService.getMeaningRelationTypes();
+		return meaningRelationTypes.stream()
+				.filter(meaningRelType -> !StringUtils.equals(meaningRelType.getCode(), MEANING_REL_TYPE_CODE_SIMILAR))
+				.collect(Collectors.toList());
 	}
 
 }

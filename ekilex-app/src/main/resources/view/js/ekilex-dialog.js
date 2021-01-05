@@ -94,6 +94,10 @@ $(function() {
 		initMultiselectRelationDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=addSynMeaningRelationDlg_]", function() {
+		initMultiselectRelationDlg($(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=addImageSourceLinkDlg_]", function() {
 		initAddSourceLinkDlg($(this));
 		initSourceNameAutocomplete($(this));

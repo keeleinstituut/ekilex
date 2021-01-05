@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -168,11 +169,22 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId) throws Exception {
 
-		ActivityLogData activityLog;
-		Long meaningRelationId;
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(wordRelationId);
 		Float meaningRelationWeight = getCalculatedMeaningRelationWeight(typeWordRelParams);
+		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight);
+	}
 
+	@Transactional
+	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, String weightStr) throws Exception {
+
+		Float meaningRelationWeight = NumberUtils.toFloat(weightStr);
+		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight);
+	}
+
+	private void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Float meaningRelationWeight) throws Exception {
+
+		ActivityLogData activityLog;
+		Long meaningRelationId;
 		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, LifecycleLogOwner.MEANING);
 		meaningRelationId = cudDbService.createMeaningRelation(targetMeaningId, sourceMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);

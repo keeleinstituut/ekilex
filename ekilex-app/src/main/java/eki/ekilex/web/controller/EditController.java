@@ -34,6 +34,7 @@ import eki.ekilex.service.CudService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.service.SynSearchService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -61,6 +62,9 @@ public class EditController extends AbstractPrivatePageController {
 
 	@Autowired
 	private ComplexOpService complexOpService;
+
+	@Autowired
+	private SynSearchService synSearchService;
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
@@ -609,11 +613,14 @@ public class EditController extends AbstractPrivatePageController {
 			case "word_relation":
 				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType);
 				break;
+			case "syn_meaning_relation":
+				synSearchService.createSynMeaningRelation(id1, id2, weightStr);
+				break;
 			case "raw_relation":
 				if (datasetCode == null) {
 					datasetCode = getDatasetCodeFromRole();
 				}
-				cudService.createSynRelation(id1, id2, weightStr, datasetCode);
+				cudService.createSynWordRelation(id1, id2, weightStr, datasetCode);
 				break;
 			}
 		}
