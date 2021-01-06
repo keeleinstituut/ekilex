@@ -30,7 +30,7 @@ function initializeSynSearch() {
 		var savedScrollPositions = getScrollPositions();
 
 		let id = $(this).data('id');
-		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
+		let markedSynMeaningId = $(document).find('.keyboard-nav-list-item-selected').data('meaning-id');
 
 		$('#synSearchResultsDiv').find('.list-group-item').each(function() {
 			$(this).removeClass('keyboard-nav-list-item-active active');
@@ -45,8 +45,8 @@ function initializeSynSearch() {
 		openWaitDlg();
 
 		let detailsUrl = applicationUrl + "syn_worddetails/" + id;
-		if (markedSynWordId != undefined) {
-			detailsUrl += '?markedSynWordId=' + markedSynWordId;
+		if (markedSynMeaningId != undefined) {
+			detailsUrl += '?markedSynMeaningId=' + markedSynMeaningId;
 		}
 
 		$.get(detailsUrl).done(function(data) {
@@ -420,9 +420,8 @@ function isDisabledItem(activeDiv, navigateItem) {
 	let panelIndex = activeDiv.attr('data-panel-index');
 
 	if (panelIndex == "2") {
-		let wordId = activeDiv.data('marked-word-id');
-		// TODO not working - yogesh
-		return navigateItem.find('input.relation-meaning-id[value="' + wordId + '"]').length != 0;
+		let meaningId = activeDiv.data('marked-meaning-id');
+		return navigateItem.find('input.relation-meaning-id[value="' + meaningId + '"]').length != 0;
 	}
 	return false;
 }
@@ -559,7 +558,7 @@ function handleEscapeKeyPress(currentActivePanelIndex) {
 		changeSynonymDefinitionDisplay('hide');
 	}
 	$('.keyboard-nav-list').each(function() {
-		$(this).removeAttr('data-marked-word-id');
+		$(this).removeAttr('data-marked-meaning-id');
 		$(this).removeAttr('data-active-panel');
 		$(this).removeClass('keyboard-nav-list-active');
 		$(this).find('[data-navigate-index]').each(function() {
@@ -588,12 +587,11 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 		currentSelectedItem.addClass('keyboard-nav-list-item-selected');
 
 		unActivateItem(currentSelectedItem, false);
-		let wordId = currentSelectedItem.children(':first').attr('data-word-id');
-		let meaningId = currentSelectedItem.children(':first').attr('data-meaning-id');
+		let meaningId = currentSelectedItem.attr('data-meaning-id');
 
 		let activatedList = $('div[data-panel-index="' + 2 + '"]');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-		activatedList.data('marked-word-id', wordId);
+		activatedList.data('marked-meaning-id', meaningId);
 
 		let selectedLexemeItem = findSelectedNavigateItem(activatedList);
 
@@ -604,13 +602,11 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 
 	} else if (currentActivePanelIndex == "2") {
 		if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-			let wordId = currentActiveList.data('marked-word-id');
-			// TODO keyboard mode not working
-			// up-down movement should be between meanings not words
-			let wordRelationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
-			let sourceMeaningId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
+			let meaningId = currentActiveList.data('marked-meaning-id');
+			let wordRelationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('relation-id');
+			let sourceMeaningId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('meaning-id');
 
-			if (wordId != undefined) {
+			if (meaningId != undefined) {
 				let targetMeaningId = currentSelectedItem.data('meaning-id');
 
 				let actionUrl = applicationUrl + 'syn_create_meaning_relation/' + targetMeaningId + '/' + sourceMeaningId + '/' + wordRelationId;
