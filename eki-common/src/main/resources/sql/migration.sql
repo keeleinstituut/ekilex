@@ -325,6 +325,48 @@ begin
 end $$;
 
 ------------------------------------------------
+--------- tühjade ilmikute kustutamine  --------
+------------------------------------------------
+
+delete
+from lexeme
+where id in (select l.id
+             from lexeme l,
+                  meaning m
+             where l.is_public = true
+             and   l.dataset_code != 'ety'
+             and   l.meaning_id = m.id
+             and   not exists (select lf.id from lexeme_freeform lf where lf.lexeme_id = l.id)
+             and   not exists (select cl.id from lexeme_deriv cl where cl.lexeme_id = l.id)
+             and   not exists (select cl.id from lexeme_pos cl where cl.lexeme_id = l.id)
+             and   not exists (select cl.id from lexeme_region cl where cl.lexeme_id = l.id)
+             and   not exists (select cl.id from lexeme_register cl where cl.lexeme_id = l.id)
+             and   not exists (select lsl.id
+                               from lexeme_source_link lsl
+                               where lsl.lexeme_id = l.id)
+             and   not exists (select lr.id from lex_relation lr where lr.lexeme1_id = l.id)
+             and   not exists (select lr.id from lex_relation lr where lr.lexeme2_id = l.id)
+             and   not exists (select l2.id
+                               from lexeme l2
+                               where l2.meaning_id = m.id
+                               and   l2.id != l.id)
+             and   not exists (select lt.id from lexeme_tag lt where lt.lexeme_id = l.id)
+             and   not exists (select lc.id from lex_colloc lc where lc.lexeme_id = l.id)
+             and   not exists (select mf.id
+                               from meaning_freeform mf
+                               where mf.meaning_id = m.id)
+             and   not exists (select mst.id
+                               from meaning_semantic_type mst
+                               where mst.meaning_id = m.id)
+             and   not exists (select mr.id
+                               from meaning_relation mr
+                               where mr.meaning1_id = m.id)
+             and   not exists (select d.id from definition d where d.meaning_id = m.id)
+             and   not exists (select md.meaning_id
+                               from meaning_domain md
+                               where md.meaning_id = m.id))
+
+------------------------------------------------
 ------------------ muu migra -------------------
 ------------------------------------------------
 
