@@ -14,27 +14,23 @@ public class Count extends AbstractDataObject {
 		this.value = 0;
 	}
 
-	public synchronized void increment() {
-		this.value++;
-	}
-
-	public synchronized void increment(int byMuch) {
-		this.value += byMuch;
-	}
-
-	public synchronized long incrementAndGetValue() {
+	public synchronized long increment() {
 		return this.value++;
 	}
 
-	public synchronized void decrement() {
-		this.value--;
+	public synchronized long increment(int byMuch) {
+		return this.value += byMuch;
 	}
 
-	public synchronized void decrement(int byMuch) {
-		this.value -= byMuch;
+	public synchronized long decrement() {
+		return this.value--;
+	}
+
+	public synchronized long decrement(int byMuch) {
+		return this.value -= byMuch;
 	}
 
 	public long getValue() {
-		return value;
+		return this.value;
 	}
 }
