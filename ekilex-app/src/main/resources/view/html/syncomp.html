@@ -5,16 +5,12 @@
   <div id="synCandidatesListDiv"
        class="overflow-auto h-100"
        data-panel-index="3"
-       th:attrappend="data-active-panel=${markedSynWordId != null}?'true'"
        th:fragment="syn_candidate_list">
     <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" width="100%" class="orderable list-unstyled p-0" data-op-code="word_relation">
       <li th:each="synRelation,relationIter : ${details.wordRelationDetails.wordSynRelations}"
           class="border"
           th:data-id="${synRelation.id}"
-          th:data-orderby="${synRelation.orderBy}"
-          th:data-navigate-index="${relationIter.index}"
-          th:classappend="${markedSynWordId != null && markedSynWordId == synRelation.wordId ? 'navigate-marked' : ''}"
-          th:attrappend="data-navigate-selected=${markedSynWordId != null && markedSynWordId == synRelation.wordId}?'true'">
+          th:data-orderby="${synRelation.orderBy}">
         <div class="d-flex flex-row hover-actions-container align-items-center pl-1 bg-light"
              th:data-word-id="${synRelation.wordId}"
              th:data-word="${synRelation.wordValue}"
@@ -80,7 +76,14 @@
             <i class="fa fa-exclamation-triangle text-muted" aria-hidden="true"></i>
           </span>
         </div>
-        <div class="draggable-synonym drag-handle keyboard-nav-list" th:each="meaning : ${synRelation.wordMeanings}" th:data-meaning-id="${meaning.meaningId}">
+        <div class="draggable-synonym drag-handle keyboard-nav-list"
+             th:each="meaning,meaningIter : ${synRelation.wordMeanings}"
+             th:data-meaning-id="${meaning.meaningId}"
+             th:data-relation-id="${synRelation.id}"
+             th:data-navigate-index="${meaningCounter.incrementAndGet()}"
+             th:data-navigate-selected="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId}?'true'"
+             th:data-active-panel="${markedSynMeaningId != null}?'true'"
+             th:classappend="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId ? 'navigate-marked' : ''}">
           <div>
             <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
               <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>

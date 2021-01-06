@@ -27,6 +27,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.Counter;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
@@ -171,7 +172,7 @@ public class SynSearchController extends AbstractSearchController {
 	@GetMapping(SYN_WORD_DETAILS_URI + "/{wordId}")
 	public String details(
 			@PathVariable("wordId") Long wordId,
-			@RequestParam(required = false) Long markedSynWordId,
+			@RequestParam(required = false) Long markedSynMeaningId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
@@ -185,14 +186,15 @@ public class SynSearchController extends AbstractSearchController {
 		Tag activeTag = userContextData.getActiveTag();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-
+		Counter meaningCounter = new Counter();
 		WordDetails details = synSearchService.getWordSynDetails(wordId, languagesOrder, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userRole, userProfile);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
-		model.addAttribute("markedSynWordId", markedSynWordId);
+		model.addAttribute("markedSynMeaningId", markedSynMeaningId);
 		model.addAttribute("candidateLangCodes", synCandidateLangCodes);
 		model.addAttribute("meaningWordLangCodes", synMeaningWordLangCodes);
+		model.addAttribute("meaningCounter", meaningCounter);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}
