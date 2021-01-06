@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
+import eki.common.data.Count;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.Counter;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.SearchFilter;
@@ -186,7 +186,7 @@ public class SynSearchController extends AbstractSearchController {
 		Tag activeTag = userContextData.getActiveTag();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Counter meaningCounter = new Counter();
+		Count meaningCount = new Count();
 		WordDetails details = synSearchService.getWordSynDetails(wordId, languagesOrder, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, userRole, userProfile);
 
 		model.addAttribute("wordId", wordId);
@@ -194,7 +194,7 @@ public class SynSearchController extends AbstractSearchController {
 		model.addAttribute("markedSynMeaningId", markedSynMeaningId);
 		model.addAttribute("candidateLangCodes", synCandidateLangCodes);
 		model.addAttribute("meaningWordLangCodes", synMeaningWordLangCodes);
-		model.addAttribute("meaningCounter", meaningCounter);
+		model.addAttribute("meaningCount", meaningCount);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
 	}

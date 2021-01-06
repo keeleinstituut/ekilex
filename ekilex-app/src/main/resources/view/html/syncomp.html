@@ -80,7 +80,7 @@
              th:each="meaning,meaningIter : ${synRelation.wordMeanings}"
              th:data-meaning-id="${meaning.meaningId}"
              th:data-relation-id="${synRelation.id}"
-             th:data-navigate-index="${meaningCounter.incrementAndGet()}"
+             th:data-navigate-index="${meaningCount.incrementAndGetValue()}"
              th:data-navigate-selected="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId}?'true'"
              th:data-active-panel="${markedSynMeaningId != null}?'true'"
              th:classappend="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId ? 'navigate-marked' : ''}">
