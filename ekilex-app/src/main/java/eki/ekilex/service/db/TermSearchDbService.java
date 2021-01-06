@@ -167,6 +167,14 @@ public class TermSearchDbService extends AbstractDataDbService {
 			limit = Integer.MAX_VALUE;
 		}
 
+		boolean fiCollationExists = fiCollationExists();
+		Field<?> wvobf;
+		if (fiCollationExists) {
+			wvobf = mm.field("order_by_word").collate("fi_FI");			
+		} else {
+			wvobf = mm.field("order_by_word");
+		}
+
 		/*
 		 * meaning words of same homonym and same meaning for different datasets are repeating
 		 * which is cleaned programmatically at ui conversion
@@ -179,8 +187,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.groupBy(
 						mm.field("meaning_id"),
 						mm.field("order_by_word_id"),
-						mm.field("order_by_word"))
-				.orderBy(mm.field("order_by_word"))
+						wvobf)
+				.orderBy(wvobf)
 				.limit(limit)
 				.offset(offset)
 				.fetchInto(TermMeaning.class);
@@ -297,12 +305,20 @@ public class TermSearchDbService extends AbstractDataDbService {
 			limit = Integer.MAX_VALUE;
 		}
 
+		boolean fiCollationExists = fiCollationExists();
+		Field<?> wvobf;
+		if (fiCollationExists) {
+			wvobf = wmm.field("word_value").collate("fi_FI");			
+		} else {
+			wvobf = wmm.field("word_value");
+		}
+
 		return create
 				.select(
 						wmm.field("meaning_id", Long.class),
 						mw.as("meaning_words"))
 				.from(wmm)
-				.orderBy(wmm.field("word_value"), wmm.field("homonym_nr"))
+				.orderBy(wvobf, wmm.field("homonym_nr"))
 				.limit(limit)
 				.offset(offset)
 				.fetchInto(TermMeaning.class);

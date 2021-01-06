@@ -717,6 +717,14 @@ public class LexSearchDbService extends AbstractDataDbService {
 						.and(l.DATASET_CODE.in(availableDatasetCodes)))
 				.groupBy(w.field("word_id")));
 
+		boolean fiCollationExists = fiCollationExists();
+
+		Field<?> wvobf;
+		if (fiCollationExists) {
+			wvobf = w.field("word_value").collate("fi_FI");
+		} else {
+			wvobf = w.field("word_value");
+		}
 		Table<Record16<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[]>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
@@ -737,7 +745,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						dscf.as("dataset_codes"))
 				.from(w)
 				.orderBy(
-						w.field("word_value"),
+						wvobf,
 						w.field("homonym_nr"))
 				.asTable("ww");
 

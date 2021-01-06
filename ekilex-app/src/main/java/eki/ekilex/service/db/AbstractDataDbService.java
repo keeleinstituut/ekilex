@@ -20,6 +20,7 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FormMode;
@@ -236,5 +237,14 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.groupBy(lexemeIdField)
 				.asField();
 		return clf;
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
+	protected boolean fiCollationExists() {
+		Integer fiCollationCnt = create
+				.selectCount()
+				.from("pg_collation where lower(collcollate) = 'fi_fi.utf8'")
+				.fetchSingleInto(Integer.class);
+		return fiCollationCnt > 0;
 	}
 }
