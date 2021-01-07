@@ -89,6 +89,19 @@ public class HomeController extends AbstractPublicPageController {
 		return APPLY_PAGE;
 	}
 
+	@PostMapping(APPLY_LIMITED_URI)
+	public String applyLimited(Model model) {
+
+		EkiUser user = userContext.getUser();
+		if (Boolean.TRUE.equals(user.getEnabled())) {
+			populateStatData(model);
+			return HOME_PAGE;
+		}
+		Long userId = user.getId();
+		userService.enableLimitedUser(userId);
+		return "redirect:" + LANG_ADVICE_URI;
+	}
+
 	private void populateUserApplicationData(EkiUser user, Model model) {
 
 		List<EkiUserApplication> userApplications = userService.getUserApplications(user.getId());

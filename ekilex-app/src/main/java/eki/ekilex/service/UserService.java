@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.GlobalConstant;
 import eki.common.util.CodeGenerator;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
@@ -31,7 +32,7 @@ import eki.ekilex.service.db.UserDbService;
 import eki.ekilex.service.db.UserProfileDbService;
 
 @Component
-public class UserService implements WebConstant {
+public class UserService implements WebConstant, GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -257,6 +258,13 @@ public class UserService implements WebConstant {
 	@Transactional
 	public void enableUser(Long userId, boolean enable) {
 		userDbService.enableUser(userId, enable);
+	}
+
+	@Transactional
+	public void enableLimitedUser(Long userId) {
+		userDbService.enableUser(userId, true);
+		permissionDbService.createDatasetPermission(userId, DATASET_LIMITED, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
+		updateUserSecurityContext();
 	}
 
 	@Transactional

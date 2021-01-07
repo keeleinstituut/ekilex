@@ -24,6 +24,8 @@ public interface WebConstant {
 
 	String REAPPLY_URI = "/reapply";
 
+	String APPLY_LIMITED_URI = "/apply_limited";
+
 	String PERMISSIONS_PAGE = "permissions";
 
 	String PERMISSIONS_URI = "/permissions";
@@ -93,6 +95,10 @@ public interface WebConstant {
 	String MORPHOLOGY_URI = "/morphology";
 
 	String MORPHOLOGY_PAGE = "morphology";
+
+	String LANG_ADVICE_URI = "/langadvice";
+
+	String LANG_ADVICE_PAGE = "langadvice";
 
 	String LEX_JOIN_URI = "/lexjoin";
 
