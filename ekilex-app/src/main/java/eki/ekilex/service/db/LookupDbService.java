@@ -343,7 +343,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
-	public Long getMeaningRelationOppositeRelationId(Long relationId) {
+	public Long getMeaningRelationOppositeRelationId(Long relationId, String oppositeRelTypeCode) {
 
 		MeaningRelation mr1 = MEANING_RELATION.as("mr1");
 		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
@@ -355,7 +355,7 @@ public class LookupDbService extends AbstractDataDbService {
 						mr1.ID.eq(relationId)
 								.and(mr1.MEANING1_ID.eq(mr2.MEANING2_ID))
 								.and(mr1.MEANING2_ID.eq(mr2.MEANING1_ID))
-								.and(mr1.MEANING_REL_TYPE_CODE.eq(mr2.MEANING_REL_TYPE_CODE)))
+								.and(mr2.MEANING_REL_TYPE_CODE.eq(oppositeRelTypeCode)))
 				.fetchSingleInto(Long.class);
 	}
 
