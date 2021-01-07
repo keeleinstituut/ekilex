@@ -57,6 +57,7 @@ import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
@@ -340,6 +341,22 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(WORD.ID.eq(LEXEME.WORD_ID))
 								.and(WORD.LANG.eq(lang)))
 				.fetchInto(Long.class);
+	}
+
+	public Long getMeaningRelationOppositeRelationId(Long relationId) {
+
+		MeaningRelation mr1 = MEANING_RELATION.as("mr1");
+		MeaningRelation mr2 = MEANING_RELATION.as("mr2");
+
+		return create
+				.select(mr2.ID)
+				.from(mr1, mr2)
+				.where(
+						mr1.ID.eq(relationId)
+								.and(mr1.MEANING1_ID.eq(mr2.MEANING2_ID))
+								.and(mr1.MEANING2_ID.eq(mr2.MEANING1_ID))
+								.and(mr1.MEANING_REL_TYPE_CODE.eq(mr2.MEANING_REL_TYPE_CODE)))
+				.fetchSingleInto(Long.class);
 	}
 
 	public String getImageTitle(Long imageId) {

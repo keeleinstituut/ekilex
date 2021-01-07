@@ -227,13 +227,20 @@
           <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
           <small th:text="${viewUtil.getFormattedLexemeWeight(relation.weight)}" class="text-secondary"></small>
         </button>
-          <button type="button" class="btn badge badge-secondary btn-xs"
-                  title="Muuda sünonüümi seose kaalu"
-                  data-toggle="modal"
-                  th:data-target="${'#editSynMeaningRelationWeightDlg_' + relation.id}"
-                  sec:authorize="#vars.lexeme.crudGrant">
-            <i class="fa fa-edit" aria-hidden="true"></i>
-          </button>
+        <button type="button" class="btn badge badge-secondary btn-xs"
+                title="Muuda vaste seose kaalu"
+                data-toggle="modal"
+                th:data-target="${'#editSynMeaningRelationWeightDlg_' + relation.id}"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-edit" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-secondary btn-xs"
+                th:data-id="${relation.id}"
+                data-op-code="syn_meaning_relation"
+                data-toggle="delete-confirm"
+                sec:authorize="#vars.lexeme.crudGrant">
+          <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda vaste seos"></i>
+        </button>
         <span th:unless="${relIter.last}">,</span>
       </th:block>
       <span th:unless="${relsIter.last}">|</span>

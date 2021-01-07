@@ -1637,6 +1637,21 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void deleteSynMeaningRelation(Long relationId) throws Exception {
+		ActivityLogData activityLog;
+		Long oppositeRelationId = lookupDbService.getMeaningRelationOppositeRelationId(relationId);
+		Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
+		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, LifecycleLogOwner.MEANING);
+		cudDbService.deleteMeaningRelation(oppositeRelationId);
+		activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
+
+		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
+		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, LifecycleLogOwner.MEANING);
+		cudDbService.deleteMeaningRelation(relationId);
+		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
+	}
+
+	@Transactional
 	public void deleteMeaningLearnerComment(Long learnerCommentId) throws Exception {
 		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, learnerCommentId);
 		createLifecycleLog(logData);

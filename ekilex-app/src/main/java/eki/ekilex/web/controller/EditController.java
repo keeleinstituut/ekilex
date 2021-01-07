@@ -532,6 +532,9 @@ public class EditController extends AbstractPrivatePageController {
 		case "meaning_relation":
 			cudService.deleteMeaningRelation(id);
 			break;
+		case "syn_meaning_relation":
+			cudService.deleteSynMeaningRelation(id);
+			break;
 		case "word_gender":
 			cudService.updateWordGender(id, null);
 			break;
