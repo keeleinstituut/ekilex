@@ -177,12 +177,6 @@
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
     <script>
-    	$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-    		btnOkLabel : 'Jah',
-    		btnCancelLabel : 'Ei',
-    		title : 'Kinnita vaste ilmiku kustutamine',
-    		onConfirm : deleteLexemeAndWordAndMeaning
-    	});
         $('[data-toggle=delete-confirm]').confirmation({
           btnOkLabel : 'Jah',
           btnCancelLabel : 'Ei',

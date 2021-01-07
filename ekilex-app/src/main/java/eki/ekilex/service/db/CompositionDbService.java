@@ -56,6 +56,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.LexCollocationGroupTuple;
@@ -288,6 +289,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinLexemeRegions(targetLexemeId, sourceLexemeId);
 		joinLexemeRelations(targetLexemeId, sourceLexemeId);
 		joinLexemePublicity(targetLexemeId, sourceLexemeId);
+		joinLexemeComplexity(targetLexemeId, sourceLexemeId);
 		joinLexemeTags(targetLexemeId, sourceLexemeId);
 
 		// prehistoric
@@ -338,6 +340,18 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		boolean sourceLexemePublicity = create.select(LEXEME.IS_PUBLIC).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(boolean.class);
 		if (PUBLICITY_PUBLIC == sourceLexemePublicity) {
 			create.update(LEXEME).set(LEXEME.IS_PUBLIC, PUBLICITY_PUBLIC).where(LEXEME.ID.eq(targetLexemeId)).execute();
+		}
+	}
+
+	private void joinLexemeComplexity(Long targetLexemeId, Long sourceLexemeId) {
+
+		Complexity targetLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(targetLexemeId)).fetchOneInto(Complexity.class);
+		if (Complexity.ANY == targetLexemeComplexity) {
+			return;
+		}
+		Complexity sourceLexemeComplexity = create.select(LEXEME.COMPLEXITY).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOneInto(Complexity.class);
+		if (targetLexemeComplexity != sourceLexemeComplexity) {
+			create.update(LEXEME).set(LEXEME.COMPLEXITY, Complexity.ANY.name()).where(LEXEME.ID.eq(targetLexemeId)).execute();
 		}
 	}
 
