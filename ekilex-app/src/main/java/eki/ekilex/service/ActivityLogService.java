@@ -371,6 +371,12 @@ public class ActivityLogService implements SystemConstant {
 		createActivityLog(activityLogData, -1L, entityName);
 	}
 
+	public void createActivityLog(ActivityLogData activityLogData, List<Long> entityIds, ActivityEntity entityName) throws Exception {
+		for (Long entityId : entityIds) {
+			createActivityLog(activityLogData, entityId, entityName);
+		}
+	}
+
 	public void createActivityLog(ActivityLogData activityLogData, Long entityId, ActivityEntity entityName) throws Exception {
 
 		activityLogData.setEntityId(entityId);
