@@ -7,12 +7,11 @@
 <body>
   <th:block th:fragment="search_form(searchPageName, showDatasetSelect)">
     <div class="d-flex flex-row flex-nowrap">
-      <div
-        th:if="${(searchPageName == 'lex_search' || searchPageName == 'term_search') && showDatasetSelect}"
-        data-plugin="paneToggle"
-        data-hideable="searchColumn"
-        data-extendable="resultColumn"
-        class="searchResultsToggle">
+      <div th:if="${(searchPageName == 'lex_search' || searchPageName == 'term_search') && showDatasetSelect}"
+           data-plugin="paneToggle"
+           data-hideable="searchColumn"
+           data-extendable="resultColumn"
+           class="searchResultsToggle">
         <i class="fa fa-list" aria-hidden="true"></i>
       </div>
       <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
@@ -497,14 +496,14 @@
               <input type="text" class="form-control">
             </div>
             <div name="UPDATED_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
-                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                  <input type="text" class="form-control">
-                  <div class="input-group-addon input-group-append">
-                    <div class="input-group-text">
-                      <i class="fa fa-calendar"></i>
-                    </div>
+              <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                <input type="text" class="form-control">
+                <div class="input-group-addon input-group-append">
+                  <div class="input-group-text">
+                    <i class="fa fa-calendar"></i>
                   </div>
                 </div>
+              </div>
             </div>
             <div name="DATASET_USAGE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">

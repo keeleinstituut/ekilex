@@ -99,7 +99,7 @@ public class HomeController extends AbstractPublicPageController {
 		}
 		Long userId = user.getId();
 		userService.enableLimitedUser(userId);
-		return "redirect:" + LANG_ADVICE_URI;
+		return "redirect:" + LIMITED_TERM_SEARCH_URI;
 	}
 
 	private void populateUserApplicationData(EkiUser user, Model model) {
