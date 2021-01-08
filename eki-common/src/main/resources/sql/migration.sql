@@ -371,3 +371,6 @@ where id in (select l.id
 ------------------------------------------------
 
 create type type_word_rel_meaning as (meaning_id bigint, definitions text array);
+
+-- terminivõrgustiku sõnakogu
+insert into dataset (code, type, name) values ('vrk', 'TERM', 'Terminivõrgustik');

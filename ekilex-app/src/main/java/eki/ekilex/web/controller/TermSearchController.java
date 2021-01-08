@@ -36,7 +36,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class TermSearchController extends AbstractSearchController {
+public class TermSearchController extends AbstractPrivateSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermSearchController.class);
 

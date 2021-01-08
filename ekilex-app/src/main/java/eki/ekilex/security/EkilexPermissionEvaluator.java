@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.PermConstant;
 import eki.common.constant.ReferenceOwner;
@@ -31,7 +32,7 @@ import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
 
 @Component("permEval")
-public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant {
+public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant, GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(EkilexPermissionEvaluator.class);
 
@@ -45,6 +46,52 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	@Autowired
 	private SourceLinkDbService sourceLinkDbService;
+
+	// page perm
+
+	@Transactional
+	public boolean isPrivatePageAccessPermitted(Authentication authentication) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return false;
+		}
+		if (user.isAdmin()) {
+			return true;
+		}
+		if (user.isMaster()) {
+			return true;
+		}
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		boolean privateAccessPermExists = datasetPermissions.stream()
+				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
+						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
+						&& !StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
+		return privateAccessPermExists;
+	}
+
+	@Transactional
+	public boolean isLimitedPageAccessPermitted(Authentication authentication) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return false;
+		}
+		if (user.isAdmin()) {
+			return true;
+		}
+		if (user.isMaster()) {
+			return true;
+		}
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		boolean limitedAccessPermExists = datasetPermissions.stream()
+				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
+						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
+						&& StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
+		return limitedAccessPermExists;
+	}
 
 	// source
 
