@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.StatData;
 import eki.ekilex.data.StatDataRow;
+import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.StatDataService;
 import eki.ekilex.service.UserProfileService;
 
@@ -38,6 +40,9 @@ public class HomeController extends AbstractPublicPageController {
 	@Autowired
 	private UserProfileService userProfileService;
 
+	@Autowired
+	private EkilexPermissionEvaluator permissionEvaluator;
+
 	@GetMapping(INDEX_URI)
 	public String index() {
 		boolean isAuthenticatedUser = userContext.isAuthenticatedUser();
@@ -48,12 +53,17 @@ public class HomeController extends AbstractPublicPageController {
 	}
 
 	@GetMapping(HOME_URI)
-	public String home(Model model) {
-		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getEnabled())) {
+	public String home(Authentication authentication, Model model) {
+		boolean isPrivatePageAccessPermitted = permissionEvaluator.isPrivatePageAccessPermitted(authentication);
+		if (isPrivatePageAccessPermitted) {
 			populateStatData(model);
 			return HOME_PAGE;
 		}
+		boolean isLimitedPageAccessPermitted = permissionEvaluator.isLimitedPageAccessPermitted(authentication);
+		if (isLimitedPageAccessPermitted) {
+			return "redirect:" + LIMITED_TERM_SEARCH_URI;
+		}
+		EkiUser user = userContext.getUser();
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
 	}

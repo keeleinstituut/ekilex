@@ -93,7 +93,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		return limitedAccessPermExists;
 	}
 
-	// source
+	// source crud
 
 	@Transactional
 	public boolean isSourceCrudGranted(Authentication authentication, String crudRoleDataset, Long sourceId) {
@@ -126,7 +126,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		return isGranted;
 	}
 
-	// source link
+	// source link crud
 
 	@Transactional
 	public boolean isSourceLinkCrudGranted(Principal principal, String crudRoleDataset, SourceLink sourceLink) {
