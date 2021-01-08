@@ -31,7 +31,7 @@
                   </label>
                   <label class="btn btn-secondary" th:classappend="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING ? 'active' : ''}">
                     <span>Mõisted</span>
-                    <input type="radio" name="resultMode" autocomplete="off"  id="search-result-mode-2"
+                    <input type="radio" name="resultMode" autocomplete="off" id="search-result-mode-2"
                            th:checked="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING}"
                            th:value="${T(eki.ekilex.constant.SearchResultMode).MEANING}"/>
                   </label>
@@ -65,12 +65,11 @@
     </div>
   </div>
   <th:block th:fragment="details" th:if="${meaning != null}">
-    <div
-    style="height:100%; overflow:auto;"
-      th:data-id="${meaningId}"
-      id="details-area"
-      data-rel="details-area"
-      th:data-word="${meaningId}"
+    <div style="height:100%; overflow:auto;"
+         th:data-id="${meaningId}"
+         id="details-area"
+         data-rel="details-area"
+         th:data-word="${meaningId}"
          th:with="
            isMeaningLexemeCrudGranted=${#vars.meaning.subGrant},
            isMeaningAnyLexemeCrudGranted=${#vars.meaning.anyGrant}">
@@ -81,10 +80,8 @@
       <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
       <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn" data-behaviour="replace"></button>
-      
       <div class="navigate-panel term-panel card shadow h-100">
         <div class="card border-0 mb-2">
-          
           <div class="card-body">
             <div class="border-bottom pb-2 title-bar">
               <div class="d-flex flex-row align-items-center">
@@ -102,35 +99,33 @@
                           th:data-meaning-id="${meaningId}"
                           sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Lisa termin</button>
                   <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
-                    title="Tähenduste ühendamine"
-                    sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
+                     title="Tähenduste ühendamine"
+                     sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
                   <button id="duplicateMeaningBtn"
                           title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
                           class="btn btn-secondary mr-1"
                           th:data-meaning-id="${meaningId}"
                           sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
                   <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
-                    data-original-title="Viimati muudetud">
+                       data-original-title="Viimati muudetud">
                     <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
                   </div>
                   <button class="btn btn-link" type="button"
-                    th:data-id="${meaningId}"
-                    data-callback="doNewSearchTermSearch"
-                    data-toggle="deleteMeaningAndLexemesAndWords"
-                    sec:authorize="#vars.isMeaningLexemeCrudGranted">Kustuta</button>
-                  
+                          th:data-id="${meaningId}"
+                          data-callback="doNewSearchTermSearch"
+                          data-toggle="deleteMeaningAndLexemesAndWords"
+                          sec:authorize="#vars.isMeaningLexemeCrudGranted">Kustuta</button>
                 </div>
                 <div class="ml-auto d-flex align-items-center flex-row">
                   <a th:href="@{'/meaningactivitylog:' + ${meaningId}}"
-                    data-toggle="modal"
-                    data-target="#meaningActivityLogDlg"
-                    class="btn btn-secondary ml-2"
-                    sec:authorize="#vars.meaning.readGrant">Logi</a>
+                     data-toggle="modal"
+                     data-target="#meaningActivityLogDlg"
+                     class="btn btn-secondary ml-2"
+                     sec:authorize="#vars.meaning.readGrant">Logi</a>
                   <div th:data-id="${meaningId}" data-plugin="contextmenu" data-leftclick="true" data-contextmenu:closepanel="Sulge" class="fa fa-ellipsis-v paneMenu">
                   </div>
                 </div>
               </div>
-
             </div>
             <div class="row">
               <div class="col">
@@ -176,9 +171,10 @@
                     </button>
                   </div>
                   <div th:if="${definitionLangGroup.selected}" class="orderable" data-op-code="definition">
-                    <div class="ml-4" style="position: relative" th:each="definition, itemIter: ${definitionLangGroup.definitions}"
-                        th:data-id="${definition.id}"
-                        th:data-orderby="${definition.orderBy}">
+                    <div class="ml-4" style="position: relative"
+                         th:each="definition, itemIter: ${definitionLangGroup.definitions}"
+                         th:data-id="${definition.id}"
+                         th:data-orderby="${definition.orderBy}">
                       <div th:replace="termdialog :: edit_definition_dlg"></div>
                       <div th:replace="termdialog :: add_definition_source_link_dlg"></div>
                       <div th:replace="termdialog :: add_definition_note_dlg"></div>
@@ -255,8 +251,8 @@
                         </div>
                         <div class="orderable" data-op-code="definition_note">
                           <div th:each="note,noteIter : ${definition.notes}"
-                              th:data-id="${note.id}"
-                              th:data-orderby="${note.orderBy}">
+                               th:data-id="${note.id}"
+                               th:data-orderby="${note.orderBy}">
                             <div th:replace="termdialog :: edit_definition_note_dlg"></div>
                             <div th:replace="termdialog :: add_definition_note_source_link_dlg"></div>
                             <div style="display: list-item; position: absolute"></div>
@@ -354,8 +350,8 @@
                   </div>
                   <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="meaning_note">
                     <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
-                        th:data-id="${note.id}"
-                        th:data-orderby="${note.orderBy}">
+                         th:data-id="${note.id}"
+                         th:data-orderby="${note.orderBy}">
                       <div th:replace="termdialog :: edit_meaning_note_dlg"></div>
                       <div th:replace="termdialog :: add_meaning_note_source_link_dlg"></div>
                       <div style="display: list-item; position: absolute"></div>
@@ -634,25 +630,24 @@
                 </table>
               </div>
             </div>
-            
           </div>
         </div>
         <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
           <div class="lang-block">
             <div class="block-title">
               <button name="lang-collapse-btn" type="button" class="btn-lang"
-                th:data-lang="${lexemeLangGroup.lang}"
-                th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}">
+                      th:data-lang="${lexemeLangGroup.lang}"
+                      th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}">
                 <i th:class="${lexemeLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
               </button>
               <span th:text="${viewUtil.getLangIso2(lexemeLangGroup.lang)}" class="ml-2"></span>
             </div>
             <div class="orderable" data-op-code="lexeme">
               <div th:each="lexeme,itemIter : ${lexemeLangGroup.lexemes}"
-                  th:if="${lexemeLangGroup.selected}"
-                  th:data-id="${lexeme.lexemeId}"
-                  th:data-orderby="${lexeme.orderBy}"
-                  class="card border-0 border-top-1">
+                   th:if="${lexemeLangGroup.selected}"
+                   th:data-id="${lexeme.lexemeId}"
+                   th:data-orderby="${lexeme.orderBy}"
+                   class="card border-0 border-top-1">
                 <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
                 <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
                 <div th:replace="termdialog :: add_usage_dlg"></div>
@@ -668,7 +663,10 @@
                   <div class="block-subtitle">
                     <div class="d-flex align-items-center flex-wrap">
                       <div class="hidden-buttons">
-                        <span th:data-id="${lexeme.wordId}" th:id="${'word-value-' + lexeme.wordId}" th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}" class="ttl word-value"></span>
+                        <span class="ttl word-value"
+                              th:data-id="${lexeme.wordId}"
+                              th:id="${'word-value-' + lexeme.wordId}"
+                              th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}"></span>
                         <button type="button" class="btn badge badge-primary"
                                 title="Muuda"
                                 data-toggle="modal"
@@ -678,7 +676,6 @@
                         </button>
                       </div>
                       <span th:if="${lexeme.word.displayMorphCode != null}" th:text="${lexeme.word.displayMorphCode}" class="pl-1"></span>
-
                       <button class="btn" data-plugin="identificator"><span class="fa fa-info-circle"></span></button>
                       <button type="button" class="btn badge badge-secondary float-right mt-1"
                               title="Lisa andmeid"
@@ -687,11 +684,11 @@
                               sec:authorize="#vars.lexeme.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
-                      <button
-                        class="btn"
-                        data-plugin="status"
-                        sec:authorize="#vars.lexeme.crudGrant"
-                      ><span class="fa"></span></button>
+                      <button class="btn"
+                              data-plugin="status"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <span class="fa"></span>
+                      </button>
                       <span class="valuestatus" data-plugin="valueStatus"></span>
                     </div>
                     <div class="ml-auto">
@@ -907,9 +904,10 @@
                           </button>
                         </div>
                         <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="lexeme_note">
-                          <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
-                              th:data-id="${note.id}"
-                              th:data-orderby="${note.orderBy}">
+                          <div class="ml-4" style="position: relative"
+                               th:each="note, itemIter: ${noteLangGroup.notes}"
+                               th:data-id="${note.id}"
+                               th:data-orderby="${note.orderBy}">
                             <div th:replace="termdialog :: edit_lexeme_note_dlg"></div>
                             <div th:replace="termdialog :: add_lexeme_note_source_link_dlg"></div>
                             <div style="display: list-item; position: absolute"></div>
@@ -1000,7 +998,7 @@
                 </div>
               </div>
             </div>
-          </div><!--/lang-block-->
+          </div>
         </th:block>
         <div th:replace="common :: #meaningActivityLogDlg"></div>
       </div>

@@ -96,9 +96,9 @@ public interface WebConstant {
 
 	String MORPHOLOGY_PAGE = "morphology";
 
-	String LANG_ADVICE_URI = "/langadvice";
+	String LIMITED_TERM_SEARCH_URI = "/limitedtermsearch";
 
-	String LANG_ADVICE_PAGE = "langadvice";
+	String LIMITED_TERM_SEARCH_PAGE = "limitedtermsearch";
 
 	String LEX_JOIN_URI = "/lexjoin";
 

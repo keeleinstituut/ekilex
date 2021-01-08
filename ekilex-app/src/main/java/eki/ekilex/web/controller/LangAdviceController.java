@@ -15,10 +15,10 @@ import eki.ekilex.constant.WebConstant;
 @PreAuthorize("principal.enabled == true && isAuthenticated() && @permEval.isLimitedPageAccessPermitted(authentication)")
 public class LangAdviceController extends AbstractSearchController {
 
-	@GetMapping(LANG_ADVICE_URI)
+	@GetMapping(LIMITED_TERM_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 
-		return LANG_ADVICE_PAGE;
+		return LIMITED_TERM_SEARCH_PAGE;
 	}
 
 }
