@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>Võrgustiku otsing</title>
+<title th:text="#{limterm.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
 </th:block>
 <head>
 <body class="body-with-navbar compacted d-flex flex-column">
-  <th:block th:replace="common :: nav_bar(activeItem = 'limited')"></th:block>
+  <th:block th:replace="common :: nav_bar(activeItem = 'limterm')"></th:block>
   <div class="card shadow rounded-0 border-0">
     <div class="card-body px-2 py-3">
       <form id="searchForm" th:action="@{/limtermsearch}" method="post">
@@ -21,6 +21,12 @@
     <div class="row no-gutters pt-2 h-100">
       <div class="mt-4 float-left" th:if="${noResults == true}">
         <div th:text="#{term.not.found}">Not found.</div>
+        <button type="button"
+                class="btn btn-primary mt-2"
+                data-toggle="modal"
+                data-target="#newWordDlg"
+                sec:authorize="#vars.userRoleData.crudRoleSelected"
+                th:text="#{limterm.new.word}">Uus keelend</button>
       </div>
       <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;" th:if="${isSearchResult}">
         <div id="results_div" class="card shadow" th:if="${termSearchResult.resultExist}">
@@ -46,7 +52,7 @@
       <div th:replace="termdialog :: add_meaning_data_dlg"></div>
       <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
       <div th:replace="termdialog :: add_definition_dlg"></div>
-      <div th:replace="termdialog :: add_meaning_note_dlg"></div>
+      <div th:replace="termdialog :: add_lim_term_meaning_note_dlg"></div>
       <div th:replace="termdialog :: add_meaning_relation_dlg"></div>
       <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn" data-behaviour="replace"></button>
@@ -54,10 +60,21 @@
         <div class="card border-0 mb-2">
           <div class="card-body">
             <div th:replace="termcomp :: meaning_header"></div>
+            <div class="row">
+              <div class="col">
+                <button type="button" class="btn badge badge-secondary float-right"
+                        title="Lisa andmeid"
+                        data-toggle="modal"
+                        th:data-target="${'#addMeaningDataDlg_' + meaningId}"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <div th:replace="termcomp :: lim_term_meaning_note"></div>
             <div th:replace="termcomp :: meaning_domain"></div>
             <div th:replace="termcomp :: meaning_semantic_type"></div>
             <div th:replace="termcomp :: meaning_definition"></div>
-            <div th:replace="termcomp :: meaning_note"></div>
             <div th:replace="termcomp :: meaning_image"></div>
             <div th:replace="termcomp :: meaning_freeform"></div>
             <div th:replace="termcomp :: meaning_relation"></div>
@@ -118,7 +135,6 @@
             </div>
           </div>
         </th:block>
-<!--        TODO should log be hidden in limited term?-->
         <div th:replace="common :: #meaningActivityLogDlg"></div>
       </div>
       <script th:replace="common :: confirmations"></script>

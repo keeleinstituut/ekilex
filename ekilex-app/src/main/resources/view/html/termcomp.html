@@ -402,7 +402,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}" th:fragment="meaning_note">
+  <div class="row" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}" th:fragment="term_meaning_note">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
@@ -497,6 +497,102 @@
         </div>
       </th:block>
     </div>
+  </div>
+  <div class="row" th:fragment="lim_term_meaning_note">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">
+        Võrgustiku märkused
+        <button type="button" class="btn badge badge-secondary float-right mr-4"
+                title="Lisa uus"
+                data-toggle="modal"
+                th:data-target="${'#addLimTermMeaningNoteDlg_' + meaningId}"
+                sec:authorize="#vars.meaning.crudGrant">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+      </span>
+    </div>
+    <div class="col pl-0">
+      <th:block th:each="noteLangGroup : ${meaning.noteLangGroups}">
+        <div>
+          <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
+          <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
+                  th:data-lang="${noteLangGroup.lang}"
+                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+            <i th:class="${noteLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
+          </button>
+        </div>
+        <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="meaning_note">
+          <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
+               th:data-id="${note.id}"
+               th:data-orderby="${note.orderBy}">
+            <div th:replace="termdialog :: edit_lim_term_meaning_note_dlg"></div>
+            <div th:replace="termdialog :: add_meaning_note_source_link_dlg"></div>
+            <div style="display: list-item; position: absolute"></div>
+            <div class="action-column">
+              <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
+            </div>
+            <div class="invisible-buttons action-buttons-anchor mw-80">
+              <span th:utext="${note.valuePrese}"></span>
+              <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
+              <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
+                [
+                <button type="button" class="btn badge badge-secondary"
+                        title="Lisa allikaviide"
+                        data-toggle="modal"
+                        th:data-target="${'#addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-external-link" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+              <div class="action-buttons-2">
+                <button type="button" class="btn badge badge-primary"
+                        th:title="Muuda"
+                        data-toggle="modal"
+                        th:data-target="${'#editLimTermMeaningNoteDlg_' + meaningId + '_' + note.id}"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        th:data-id="${note.id}"
+                        data-op-code="meaning_note"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <div class="hidden-buttons">
+              <span th:each="sourceLink : ${note.sourceLinks}">
+                [
+                <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                <span th:if="${sourceLink.name != null}">
+                  <span th:text="${sourceLink.name}"></span>
+                </span>
+                <button type="button" class="btn badge badge-warning"
+                        th:data-id="${sourceLink.id}"
+                        data-op-code="meaning_ff_source_link"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.meaning.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
+              </span>
+              <button type="button" class="btn badge badge-secondary"
+                      title="Lisa allikaviide"
+                      data-toggle="modal"
+                      th:data-target="${'#addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}"
+                      sec:authorize="#vars.meaning.crudGrant">
+                <i class="fa fa-external-link" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </th:block>
+    </div>
+    <hr/>
   </div>
   <div class="row" th:if="${not #lists.isEmpty(meaning.images)}" th:fragment="meaning_image">
     <hr>
