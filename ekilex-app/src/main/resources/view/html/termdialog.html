@@ -648,6 +648,38 @@
       </div>
     </div>
   </div>
+  <div th:id="${'addLimTermMeaningNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_lim_term_meaning_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${meaningId}">
+            <input type="hidden" name="opCode" value="meaning_note">
+            <input type="hidden" name="value">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
+            <input type="hidden" name="public" value="true">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}">vali keel...</option>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == sessionBean.recentNoteLanguage}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'editMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_meaning_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
@@ -673,6 +705,37 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
               </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLimTermMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_lim_term_meaning_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${note.id}">
+            <input type="hidden" name="opCode" value="meaning_note">
+            <input type="hidden" name="value" th:value="${note.valuePrese}">
+            <input type="hidden" name="complexity" th:value="${note.complexity}">
+            <input type="hidden" name="public" th:value="${note.public}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == note.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
             </div>
           </div>
           <div class="modal-footer">

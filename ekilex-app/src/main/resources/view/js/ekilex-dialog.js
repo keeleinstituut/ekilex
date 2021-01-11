@@ -121,12 +121,22 @@ $(function() {
 		initSelectDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=addLimTermMeaningNoteDlg_]", function(e) {
+		initEkiEditorDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=addMeaningNoteDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
 
 	$(document).on("show.bs.modal", "[id^=editMeaningNoteDlg_]", function(e) {
+		initEkiEditorDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editLimTermMeaningNoteDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));
 	});
