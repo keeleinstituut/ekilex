@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title>Võrgustiku otsing</title>
 <th:block th:fragment="links">
 </th:block>
 <head>
-<!--<body class="body-with-navbar">-->
 <body class="body-with-navbar compacted d-flex flex-column">
   <th:block th:replace="common :: nav_bar(activeItem = 'limited')"></th:block>
-<!--  <div class="card shadow rounded-0 border-0 flex-shrink-0">-->
   <div class="card shadow rounded-0 border-0">
     <div class="card-body px-2 py-3">
       <form id="searchForm" th:action="@{/limtermsearch}" method="post">
@@ -26,7 +24,7 @@
       </div>
       <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;" th:if="${isSearchResult}">
         <div id="results_div" class="card shadow" th:if="${termSearchResult.resultExist}">
-          <div th:replace="limtermcomp :: search_result"></div>
+          <div th:replace="termcomp :: lim_term_search_result"></div>
         </div>
       </div>
       <div class="h-100 d-flex flex-column" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
@@ -55,18 +53,89 @@
       <div class="navigate-panel term-panel card shadow h-100">
         <div class="card border-0 mb-2">
           <div class="card-body">
-            <div th:replace="commontermcomp :: meaning_header"></div>
-            <div th:replace="commontermcomp :: meaning_domain"></div>
-            <div th:replace="commontermcomp :: meaning_semantic_type"></div>
-            <div th:replace="commontermcomp :: meaning_definition"></div>
-            <div th:replace="commontermcomp :: meaning_note"></div>
-            <div th:replace="commontermcomp :: meaning_image"></div>
-            <div th:replace="commontermcomp :: meaning_freeform"></div>
-            <div th:replace="commontermcomp :: meaning_relation"></div>
+            <div th:replace="termcomp :: meaning_header"></div>
+            <div th:replace="termcomp :: meaning_domain"></div>
+            <div th:replace="termcomp :: meaning_semantic_type"></div>
+            <div th:replace="termcomp :: meaning_definition"></div>
+            <div th:replace="termcomp :: meaning_note"></div>
+            <div th:replace="termcomp :: meaning_image"></div>
+            <div th:replace="termcomp :: meaning_freeform"></div>
+            <div th:replace="termcomp :: meaning_relation"></div>
           </div>
         </div>
-<!--        TODO in progress...-->
+        <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
+          <div class="lang-block">
+            <div class="block-title">
+              <button name="lang-collapse-btn" type="button" class="btn-lang"
+                      th:data-lang="${lexemeLangGroup.lang}"
+                      th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}">
+                <i th:class="${lexemeLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
+              </button>
+              <span th:text="${viewUtil.getLangIso2(lexemeLangGroup.lang)}" class="ml-2"></span>
+            </div>
+            <div class="orderable" data-op-code="lexeme">
+              <div th:each="lexeme,itemIter : ${lexemeLangGroup.lexemes}"
+                   th:if="${lexemeLangGroup.selected}"
+                   th:data-id="${lexeme.lexemeId}"
+                   th:data-orderby="${lexeme.orderBy}"
+                   class="card border-0 border-top-1">
+                <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
+                <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
+                <div th:replace="termdialog :: add_usage_dlg"></div>
+                <div th:replace="termdialog :: add_lexeme_relation_dlg"></div>
+                <div th:replace="termdialog :: add_lexeme_note_dlg"></div>
+                <div th:replace="termdialog :: add_lexeme_tag_dlg"></div>
+                <div th:replace="termdialog :: edit_lexeme_publicity_dlg"></div>
+                <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
+                <div th:replace="termdialog :: edit_word_value_dlg"></div>
+                <div th:replace="termdialog :: edit_word_gender_dlg"></div>
+                <div th:replace="termdialog :: edit_word_lang_dlg"></div>
+                <div class="card-body pb-4" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
+                  <div th:replace="termcomp :: lexeme_header"></div>
+                  <div>
+                    <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
+                    <div th:replace="termcomp :: data_ids"></div>
+                    <div th:replace="termcomp :: tags"></div>
+                    <div th:replace="termcomp :: lexeme_complexity"></div>
+                    <div th:replace="termcomp :: lexeme_publicity"></div>
+                    <div th:replace="termcomp :: lexeme_value_state"></div>
+                    <div th:replace="termcomp :: word_gender"></div>
+                    <div th:replace="termcomp :: word_lang"></div>
+                    <div th:replace="termcomp :: word_type"></div>
+                    <div th:replace="termcomp :: lexeme_grammar"></div>
+                    <div th:replace="termcomp :: lexeme_pos"></div>
+                    <div th:replace="termcomp :: lexeme_derivative"></div>
+                    <div th:replace="termcomp :: lexeme_register"></div>
+                    <div th:replace="termcomp :: lexeme_region"></div>
+                  </div>
+                  <div th:replace="termcomp :: lexeme_source_link"></div>
+                  <div th:replace="termcomp :: lexeme_usage"></div>
+                  <div th:replace="termcomp :: lexeme_relation"></div>
+                  <div th:replace="termcomp :: lexeme_note"></div>
+                  <div th:replace="termcomp :: lexeme_freeform"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </th:block>
+<!--        TODO should log be hidden in limited term?-->
+        <div th:replace="common :: #meaningActivityLogDlg"></div>
       </div>
+      <script th:replace="common :: confirmations"></script>
+      <script>
+        $('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
+          btnOkLabel: 'Jah',
+          btnCancelLabel: 'Ei',
+          title: 'Kinnita kustutamine',
+          onConfirm: deleteMeaningAndLexemesAndWords
+        });
+        $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
+          btnOkLabel: 'Jah',
+          btnCancelLabel: 'Ei',
+          title: 'Kinnita kustutamine',
+          onConfirm: deleteLexemeAndWordAndMeaning
+        });
+      </script>
     </div>
   </th:block>
   <div th:replace="common :: #sourceDetailsDlg"></div>

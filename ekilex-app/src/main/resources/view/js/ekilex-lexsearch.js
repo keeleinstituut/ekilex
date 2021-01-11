@@ -41,6 +41,7 @@ $.fn.valueStatus = function() {
 	main.find('[data-toggle="delete-confirm"]').deleteConfirm();
 }
 
+// TODO move to ekilex-common.js?
 function initializeSearch(type) {
 	viewType = type;
 	$(window).on('update:wordId', () => {
