@@ -6,9 +6,8 @@
 <body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
   <div class="container-fluid">
     <div>
-      <a th:href="@{/}">
-        <span>
-          Ekilex <small class="pl-2" th:text="${'v.'+appData.appVersion}" th:if="${appData != null}">1.0.0</small>
+      <a th:href="@{/}"> <span>
+          Ekilex <small class="pl-2" th:text="${'v.' + appData.appVersion}" th:if="${appData != null}">1.0.0</small>
         </span>
       </a>
     </div>

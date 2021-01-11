@@ -14,6 +14,8 @@ public class WordData extends AbstractDataObject {
 
 	private List<Lexeme> termLexemes;
 
+	private List<Lexeme> limTermLexemes;
+
 	private List<Paradigm> paradigms;
 
 	private String firstAvailableVocalForm;
@@ -50,6 +52,14 @@ public class WordData extends AbstractDataObject {
 
 	public void setTermLexemes(List<Lexeme> termLexemes) {
 		this.termLexemes = termLexemes;
+	}
+
+	public List<Lexeme> getLimTermLexemes() {
+		return limTermLexemes;
+	}
+
+	public void setLimTermLexemes(List<Lexeme> limTermLexemes) {
+		this.limTermLexemes = limTermLexemes;
 	}
 
 	public List<Paradigm> getParadigms() {

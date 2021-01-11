@@ -62,9 +62,6 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
-		if (request.getAttribute("javax.servlet.error.status_code") != null) {
-			return;
-		}
 		if (modelAndView == null) {
 			return;
 		}
@@ -103,7 +100,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		String userAgent = request.getHeader("User-Agent");
 		if (StringUtils.contains(userAgent, "Trident")) {
 			int year = Calendar.getInstance().get(Calendar.YEAR);
-			modelAndView.addObject("year", new Integer(year));
+			modelAndView.addObject("year", String.valueOf(year));
 			modelAndView.setViewName("iescareoff");
 			return true;
 		}
