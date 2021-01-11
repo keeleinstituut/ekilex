@@ -38,21 +38,21 @@ public class LimitedTermSearchController extends AbstractSearchController {
 	@Autowired
 	private TermSearchService termSearchService;
 
-	@GetMapping(LIMITED_TERM_SEARCH_URI)
+	@GetMapping(LIM_TERM_SEARCH_URI)
 	public String initSearch(Model model) {
 
-		initSearchForms(LIMITED_TERM_SEARCH_PAGE, model);
-		return LIMITED_TERM_SEARCH_PAGE;
+		initSearchForms(LIM_TERM_SEARCH_PAGE, model);
+		return LIM_TERM_SEARCH_PAGE;
 	}
 
-	@PostMapping(LIMITED_TERM_SEARCH_URI)
+	@PostMapping(LIM_TERM_SEARCH_URI)
 	public String limitedTermSearch(
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter) throws Exception {
 
 		simpleSearchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(simpleSearchFilter);
-		formDataCleanup(LIMITED_TERM_SEARCH_PAGE, detailSearchFilter);
+		formDataCleanup(LIM_TERM_SEARCH_PAGE, detailSearchFilter);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -63,25 +63,25 @@ public class LimitedTermSearchController extends AbstractSearchController {
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, SearchResultMode.MEANING, null);
 
-		return "redirect:" + LIMITED_TERM_SEARCH_URI + searchUri;
+		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping(value = LIMITED_TERM_SEARCH_URI + "/**")
+	@GetMapping(value = LIM_TERM_SEARCH_URI + "/**")
 	public String limitedTermSearch(Model model, HttpServletRequest request) throws Exception {
 
-		final String searchPage = LIMITED_TERM_SEARCH_PAGE;
+		final String searchPage = LIM_TERM_SEARCH_PAGE;
 
 		// if redirect from login arrives
 		initSearchForms(searchPage, model);
 
-		String searchUri = StringUtils.removeStart(request.getRequestURI(), LIMITED_TERM_SEARCH_URI);
+		String searchUri = StringUtils.removeStart(request.getRequestURI(), LIM_TERM_SEARCH_URI);
 		logger.debug(searchUri);
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(searchPage, searchUri);
 
 		if (!searchUriData.isValid()) {
 			model.addAttribute("invalidSearch", Boolean.TRUE);
-			return LIMITED_TERM_SEARCH_PAGE;
+			return LIM_TERM_SEARCH_PAGE;
 		}
 
 		String roleDatasetCode = getDatasetCodeFromRole();
@@ -107,7 +107,7 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		model.addAttribute("noResults", noResults);
 		model.addAttribute("searchUri", searchUri);
 
-		return LIMITED_TERM_SEARCH_PAGE;
+		return LIM_TERM_SEARCH_PAGE;
 	}
 
 }

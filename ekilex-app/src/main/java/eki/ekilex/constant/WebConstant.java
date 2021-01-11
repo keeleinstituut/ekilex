@@ -96,9 +96,9 @@ public interface WebConstant {
 
 	String MORPHOLOGY_PAGE = "morphology";
 
-	String LIMITED_TERM_SEARCH_URI = "/limitedtermsearch";
+	String LIM_TERM_SEARCH_URI = "/limtermsearch";
 
-	String LIMITED_TERM_SEARCH_PAGE = "limitedtermsearch";
+	String LIM_TERM_SEARCH_PAGE = "limtermsearch";
 
 	String LEX_JOIN_URI = "/lexjoin";
 
