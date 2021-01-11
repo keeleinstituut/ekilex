@@ -272,6 +272,7 @@ function getBreadcrumbsData(detailsDiv, word) {
 	return crumbs;
 }
 
+// TODO move to ekilex-common.js?
 function loadDetails(wordId, task, lastWordId) {
 	$("[id^='select_wait_']").hide();
 	$("#select_wait_" + wordId).show();
@@ -281,9 +282,13 @@ function loadDetails(wordId, task, lastWordId) {
 	$("#word-result-" + wordId).addClass('active');
 	openWaitDlg();
 
-	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
+	let wordDetailsUrl;
 	if (viewType === 'term') {
-		wordDetailsUrl = applicationUrl + 'meaningdetails/' + wordId;
+		wordDetailsUrl = applicationUrl + 'termmeaningdetails/' + wordId;
+	} else if (viewType === 'lim_term') {
+		wordDetailsUrl = applicationUrl + 'limtermmeaningdetails/' + wordId;
+	} else {
+		wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
 	}
 	
 	$.get(wordDetailsUrl).done(function(data) {

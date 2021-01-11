@@ -130,7 +130,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		return TERM_SEARCH_PAGE;
 	}
 
-	@GetMapping(MEANING_DETAILS_URI + "/{meaningId}")
+	@GetMapping(TERM_MEANING_DETAILS_URI + "/{meaningId}")
 	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
 
 		logger.debug("meaning details for {}", meaningId);

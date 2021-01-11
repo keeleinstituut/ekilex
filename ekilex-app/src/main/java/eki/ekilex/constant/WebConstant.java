@@ -56,7 +56,9 @@ public interface WebConstant {
 
 	String PARADIGMS_URI = "/paradigms";
 
-	String MEANING_DETAILS_URI = "/meaningdetails";
+	String TERM_MEANING_DETAILS_URI = "/termmeaningdetails";
+
+	String LIM_TERM_MEANING_DETAILS_URI = "/limtermmeaningdetails";
 
 	String DOMAINS_URI = "/domains";
 

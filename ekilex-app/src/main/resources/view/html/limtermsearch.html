@@ -56,186 +56,16 @@
         <div class="card border-0 mb-2">
           <div class="card-body">
             <div th:replace="commontermcomp :: meaning_header"></div>
-            <!--            TODO siin pooleli ...-->
-            <div th:replace="termcomp :: meaning_domain"></div>
-            <div th:replace="termcomp :: meaning_semantic_type"></div>
-            <div class="row">
-              <div class="col pr-0 col-w13rem">
-                <span class="lbl">Seletused</span>
-                <button type="button" class="btn badge badge-secondary float-right mr-4"
-                        title="Lisa uus"
-                        data-toggle="modal"
-                        th:data-target="${'#addDefinitionDlg_' + meaningId}"
-                        sec:authorize="#vars.isMeaningLexemeCrudGranted">
-                  <i class="fa fa-plus" aria-hidden="true"></i>
-                </button>
-              </div>
-              <div class="col pl-0">
-                <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
-                  <div>
-                    <span th:text="${viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
-                    <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
-                            th:data-lang="${definitionLangGroup.lang}"
-                            th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
-                      <i th:class="${definitionLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                  <div th:if="${definitionLangGroup.selected}" class="orderable" data-op-code="definition">
-                    <div class="ml-4" style="position: relative"
-                         th:each="definition, itemIter: ${definitionLangGroup.definitions}"
-                         th:data-id="${definition.id}"
-                         th:data-orderby="${definition.orderBy}">
-                      <div th:replace="termdialog :: edit_definition_dlg"></div>
-                      <div th:replace="termdialog :: add_definition_source_link_dlg"></div>
-                      <div th:replace="termdialog :: add_definition_note_dlg"></div>
-                      <div style="display: list-item; position: absolute"></div>
-                      <div class="action-column">
-                        <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
-                      </div>
-                      <div class="invisible-buttons action-buttons-anchor mw-80">
-                        <span th:utext="${definition.value}"></span>
-                        <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
-                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" th:if="${definition.crudGrant}"></span>
-                        <span th:if="${#lists.isEmpty(definition.sourceLinks)}" class="show-on-mouseover">
-                          [
-                          <button type="button" class="btn badge badge-secondary"
-                                  title="Lisa allikaviide"
-                                  data-toggle="modal"
-                                  th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}"
-                                  sec:authorize="#vars.definition.crudGrant">
-                            <i class="fa fa-external-link" aria-hidden="true"></i>
-                          </button>
-                          ]
-                        </span>
-                        <div class="action-buttons-3">
-                          <button type="button" class="btn badge badge-primary"
-                                  title="Muuda"
-                                  data-toggle="modal"
-                                  th:data-target="${'#editDefinitionDlg_' + definition.id}"
-                                  sec:authorize="#vars.definition.crudGrant">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
-                          </button>
-                          <button type="button" class="btn badge badge-secondary"
-                                  title="Lisa märkus"
-                                  data-toggle="modal"
-                                  th:data-target="${'#addDefinitionNoteDlg_' + definition.id}"
-                                  sec:authorize="#vars.definition.crudGrant">
-                            <i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  data-op-code="definition"
-                                  th:data-id="${definition.id}"
-                                  data-toggle="delete-confirm"
-                                  data-placement="right"
-                                  sec:authorize="#vars.definition.crudGrant">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                        </div>
-                      </div>
-                      <div class="hidden-buttons">
-                        <span th:each="sourceLink : ${definition.sourceLinks}" th:if="${not #lists.isEmpty(definition.sourceLinks)}">
-                          [
-                          <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                          <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
-                          <button type="button" class="btn badge badge-warning"
-                                  data-op-code="def_source_link"
-                                  th:data-id="${sourceLink.id}"
-                                  data-toggle="delete-confirm"
-                                  data-placement="right"
-                                  sec:authorize="#vars.definition.crudGrant">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                          ]
-                        </span>
-                        <button type="button" class="btn badge badge-secondary"
-                                title="Lisa allikaviide"
-                                data-toggle="modal"
-                                th:data-target="${'#addDefinitionSourceLinkDlg_' + definition.id}"
-                                sec:authorize="#vars.definition.crudGrant">
-                          <i class="fa fa-external-link" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                      <div th:if="${not #lists.isEmpty(definition.notes)}" class="col pl-0">
-                        <div>
-                          <span class="lbl">Märkused</span>
-                        </div>
-                        <div class="orderable" data-op-code="definition_note">
-                          <div th:each="note,noteIter : ${definition.notes}"
-                               th:data-id="${note.id}"
-                               th:data-orderby="${note.orderBy}">
-                            <div th:replace="termdialog :: edit_definition_note_dlg"></div>
-                            <div th:replace="termdialog :: add_definition_note_source_link_dlg"></div>
-                            <div style="display: list-item; position: absolute"></div>
-                            <div class="action-column">
-                              <th:block th:replace="common :: ordering_buttons(${noteIter})" sec:authorize="#vars.definition.crudGrant"></th:block>
-                            </div>
-                            <div class="small invisible-buttons action-buttons-anchor mw-80 ml-4">
-                              <span th:utext="${note.valuePrese}"></span>
-                              <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${definition.crudGrant}"></span>
-                              <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
-                                [
-                                <button type="button" class="btn badge badge-secondary"
-                                        title="Lisa allikaviide"
-                                        data-toggle="modal"
-                                        th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
-                                        sec:authorize="#vars.definition.crudGrant">
-                                  <i class="fa fa-external-link" aria-hidden="true"></i>
-                                </button>
-                                ]
-                              </span>
-                              <div class="action-buttons-2">
-                                <button type="button" class="btn badge badge-primary"
-                                        th:title="Muuda"
-                                        data-toggle="modal"
-                                        th:data-target="${'#editDefinitionNoteDlg_' + definition.id + '_' + note.id}"
-                                        sec:authorize="#vars.definition.crudGrant">
-                                  <i class="fa fa-edit" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-warning"
-                                        th:data-id="${note.id}"
-                                        data-op-code="definition_note"
-                                        data-toggle="delete-confirm"
-                                        data-placement="right"
-                                        sec:authorize="#vars.definition.crudGrant">
-                                  <i class="fa fa-remove" aria-hidden="true"></i>
-                                </button>
-                              </div>
-                            </div>
-                            <div class="small hidden-buttons ml-4">
-                              <span th:each="sourceLink : ${note.sourceLinks}">
-                                [
-                                <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                                <span th:if="${sourceLink.name != null}">
-                                  <span th:text="${sourceLink.name}"></span>
-                                </span>
-                                <button type="button" class="btn badge badge-warning"
-                                        th:data-id="${sourceLink.id}"
-                                        data-op-code="definition_ff_source_link"
-                                        data-toggle="delete-confirm"
-                                        data-placement="right"
-                                        sec:authorize="#vars.definition.crudGrant">
-                                  <i class="fa fa-remove" aria-hidden="true"></i>
-                                </button>
-                                ]
-                              </span>
-                              <button type="button" class="btn badge badge-secondary"
-                                      title="Lisa allikaviide"
-                                      data-toggle="modal"
-                                      th:data-target="${'#addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}"
-                                      sec:authorize="#vars.definition.crudGrant">
-                                <i class="fa fa-external-link" aria-hidden="true"></i>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </th:block>
-              </div>
-            </div>
+            <div th:replace="commontermcomp :: meaning_domain"></div>
+            <div th:replace="commontermcomp :: meaning_semantic_type"></div>
+            <div th:replace="commontermcomp :: meaning_definition"></div>
+            <div th:replace="commontermcomp :: meaning_note"></div>
+            <div th:replace="commontermcomp :: meaning_image"></div>
+            <div th:replace="commontermcomp :: meaning_freeform"></div>
+            <div th:replace="commontermcomp :: meaning_relation"></div>
           </div>
         </div>
+<!--        TODO in progress...-->
       </div>
     </div>
   </th:block>
@@ -247,7 +77,7 @@
   <div th:replace="sourcedialog :: add_source_dlg('term_search')"></div>
   <script th:inline="javascript">
 	  $(function(){
-		  initializeSearch('term');
+		  initializeSearch('lim_term');
 	  });
   </script>
 </body>
