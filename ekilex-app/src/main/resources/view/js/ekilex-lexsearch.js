@@ -263,7 +263,11 @@ function initializeSearch(type) {
 		}
 	}
 
-	initNewWordDlg();
+	if (viewType === 'lim_term') {
+		initNewLimTermWordDlg();
+	} else {
+		initNewWordDlg();
+	}
 	initClassifierAutocomplete();
 };
 

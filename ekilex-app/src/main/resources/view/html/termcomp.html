@@ -53,12 +53,56 @@
         <span class="fa fa-ellipsis-v"></span>
       </div>
       <div>
-        <h1 id="word-value-179411" class="mb-0"><span th:text="${meaningId}"></span></h1>
+        <h1 class="mb-0"><span th:text="${meaningId}"></span></h1>
       </div>
       <div class="ml-2">
         <button class="btn btn-secondary mr-1"
                 data-toggle="modal"
                 data-target="#newWordDlg"
+                th:data-meaning-id="${meaningId}"
+                sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Lisa termin</button>
+        <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
+           title="Tähenduste ühendamine"
+           sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
+        <button id="duplicateMeaningBtn"
+                title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
+                class="btn btn-secondary mr-1"
+                th:data-meaning-id="${meaningId}"
+                sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
+        <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
+             data-original-title="Viimati muudetud">
+          <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
+        </div>
+        <button class="btn btn-link" type="button"
+                th:data-id="${meaningId}"
+                data-callback="doNewSearchTermSearch"
+                data-toggle="deleteMeaningAndLexemesAndWords"
+                sec:authorize="#vars.isMeaningLexemeCrudGranted">Kustuta</button>
+      </div>
+      <div class="ml-auto d-flex align-items-center flex-row">
+        <a th:href="@{'/meaningactivitylog:' + ${meaningId}}"
+           data-toggle="modal"
+           data-target="#meaningActivityLogDlg"
+           class="btn btn-secondary ml-2"
+           sec:authorize="#vars.meaning.readGrant">Logi</a>
+        <div th:data-id="${meaningId}" data-plugin="contextmenu" data-leftclick="true" data-contextmenu:closepanel="Sulge" class="fa fa-ellipsis-v paneMenu">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border-bottom pb-2 title-bar" th:fragment="lim_term_meaning_header">
+    <div class="d-flex flex-row align-items-center">
+      <div class="dragHandle">
+        <span class="fa fa-ellipsis-v"></span>
+        <span class="fa fa-ellipsis-v"></span>
+      </div>
+      <div>
+        <h1 class="mb-0"><span th:text="${meaningId}"></span></h1>
+      </div>
+      <div class="ml-2">
+        <button class="btn btn-secondary mr-1"
+                data-toggle="modal"
+                data-target="#newLimTermWordDlg"
                 th:data-meaning-id="${meaningId}"
                 sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Lisa termin</button>
         <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"

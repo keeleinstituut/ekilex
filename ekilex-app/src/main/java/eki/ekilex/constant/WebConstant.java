@@ -161,6 +161,8 @@ public interface WebConstant {
 
 	String TERM_CREATE_WORD_URI = "/term_create_word";
 
+	String LIM_TERM_CREATE_WORD_URI = "/lim_term_create_word";
+
 	String CREATE_HOMONYM_URI = "/create_homonym";
 
 	String CREATE_RELATIONS_URI = "/create_relations";

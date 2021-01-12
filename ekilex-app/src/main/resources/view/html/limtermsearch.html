@@ -24,7 +24,7 @@
         <button type="button"
                 class="btn btn-primary mt-2"
                 data-toggle="modal"
-                data-target="#newWordDlg"
+                data-target="#newLimTermWordDlg"
                 sec:authorize="#vars.userRoleData.crudRoleSelected"
                 th:text="#{limterm.new.word}">Uus keelend</button>
       </div>
@@ -59,7 +59,7 @@
       <div class="navigate-panel term-panel card shadow h-100">
         <div class="card border-0 mb-2">
           <div class="card-body">
-            <div th:replace="termcomp :: meaning_header"></div>
+            <div th:replace="termcomp :: lim_term_meaning_header"></div>
             <div class="row">
               <div class="col">
                 <button type="button" class="btn badge badge-secondary float-right"
