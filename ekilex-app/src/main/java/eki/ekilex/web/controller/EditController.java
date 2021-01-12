@@ -41,7 +41,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class EditController extends AbstractPrivatePageController {
+public class EditController extends AbstractMutableDataPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EditController.class);
 
