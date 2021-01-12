@@ -216,13 +216,37 @@
       </div>
     </th:block>
   </div>
-  <th:block th:fragment="meaning_relations_data" th:if="${not #lists.isEmpty(lexeme.meaning.viewSynRelations)}">
+  <th:block th:fragment="meaning_words_data" th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
+    <div th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}"
+         class="orderable d-flex flex-row flex-wrap"
+         data-op-code="lexeme_meaning_word"
+         th:data-additional-info="${lexeme.lexemeId}">
+      <span th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
+      <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
+           th:data-id="${meaningWord.lexemeId}"
+           th:data-orderby="${meaningWord.orderBy}"
+           th:data-orderpos="${meaningWordIter.index}">
+        <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
+          <a href="#" class="mr-2 draggable-meaning droppable-meaning do-refresh">
+            <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+            <span th:if="${meaningWord.homonymsExist}"
+                  th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
+                  th:text="${meaningWord.homonymNr}">
+            </span>
+            <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
+          </a>
+          <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
+        </div>
+      </div>
+    </div>
+  </th:block>
+  <div class="border-top" th:fragment="meaning_relations_data" th:if="${not #lists.isEmpty(lexeme.meaning.viewSynRelations)}">
     <span th:each="relations, relsIter : ${lexeme.meaning.viewSynRelations}" class="hidden-buttons">
       <th:block th:each="relation, relIter : ${relations}">
         <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
         <input type="hidden" class="relation-meaning-id" th:value="${relation.meaningId}"/>
         <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}">
-          <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
+          <span style="color: #00874F" th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
           <span th:text="${relation.wordHomonymNr}"></span>
           <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
           <small th:text="${viewUtil.getFormattedLexemeWeight(relation.weight)}" class="text-secondary"></small>
@@ -245,7 +269,7 @@
       </th:block>
       <span th:unless="${relsIter.last}">|</span>
     </span>
-  </th:block>
+  </div>
   <div th:fragment="syn_logdata" sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
     <a th:href="@{'/wordactivitylog:' + ${wordId}}" data-toggle="modal"
        data-target="#wordActivityLogDlg"

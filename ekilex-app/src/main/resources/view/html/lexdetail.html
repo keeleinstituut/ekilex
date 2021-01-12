@@ -134,8 +134,11 @@
                       data-behaviour="replace"
                       data-plugin="contextmenu"
                       data-contextmenu:compare="Ava uues paneelis">
-                      <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
-                      <span th:text="${meaningWord.homonymNr}"></span>
+                      <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                      <span th:if="${meaningWord.homonymsExist}"
+                            th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
+                            th:text="${meaningWord.homonymNr}">
+                      </span>
                       <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
                     </button>
                     <button type="button" class="btn badge badge-primary"
@@ -192,7 +195,7 @@
                     data-behaviour="replace"
                     data-plugin="contextmenu"
                     data-contextmenu:compare="Ava uues paneelis">
-                    <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
+                    <span style="color: #00874F" th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                     <span th:text="${relation.wordHomonymNr}"></span>
                     <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                     <small th:text="${viewUtil.getFormattedLexemeWeight(relSample.weight)}" class="text-secondary"></small>

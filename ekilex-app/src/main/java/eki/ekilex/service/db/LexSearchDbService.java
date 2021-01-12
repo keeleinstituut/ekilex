@@ -348,6 +348,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wtz.as("foreign"),
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
+						l2.TYPE.as("lexeme_type"),
 						l2.ORDER_BY)
 				.from(l1, l2, w2)
 				.where(
