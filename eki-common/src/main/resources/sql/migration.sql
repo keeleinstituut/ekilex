@@ -287,10 +287,24 @@ begin
     order by w_xxx.word_id, w_xxx.lexeme_id, w_sss.word_id)
   loop
     -- any rels
-    update word_relation r set word1_id = w_m_row.tgt_word_id where r.word1_id = w_m_row.src_word_id;
+    update word_relation r1
+       set word1_id = w_m_row.tgt_word_id
+    where r1.word1_id = w_m_row.src_word_id
+    and   not exists (select r2.id
+                      from word_relation r2
+                      where r2.word1_id = w_m_row.tgt_word_id
+                      and   r2.word2_id = r1.word2_id
+                      and   r2.word_rel_type_code = r1.word_rel_type_code);
     get diagnostics tmp_cnt = row_count;
     any_rec_cnt := any_rec_cnt + tmp_cnt;
-    update word_relation r set word2_id = w_m_row.tgt_word_id where r.word2_id = w_m_row.src_word_id;
+    update word_relation r1
+       set word2_id = w_m_row.tgt_word_id
+    where r1.word2_id = w_m_row.src_word_id
+    and   not exists (select r2.id
+                      from word_relation r2
+                      where r2.word2_id = w_m_row.tgt_word_id
+                      and   r2.word1_id = r1.word1_id
+                      and   r2.word_rel_type_code = r1.word_rel_type_code);
     get diagnostics tmp_cnt = row_count;
     any_rec_cnt := any_rec_cnt + tmp_cnt;
     update word_etymology we set word_id = w_m_row.tgt_word_id where we.word_id = w_m_row.src_word_id;
