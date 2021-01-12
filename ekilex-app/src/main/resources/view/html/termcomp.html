@@ -108,7 +108,7 @@
         <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
            title="Tähenduste ühendamine"
            sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
-        <button id="duplicateMeaningBtn"
+        <button id="duplicateLimTermMeaningBtn"
                 title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
                 class="btn btn-secondary mr-1"
                 th:data-meaning-id="${meaningId}"

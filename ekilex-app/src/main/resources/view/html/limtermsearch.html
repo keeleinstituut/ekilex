@@ -49,7 +49,7 @@
          th:with="
            isMeaningLexemeCrudGranted=${#vars.meaning.subGrant},
            isMeaningAnyLexemeCrudGranted=${#vars.meaning.anyGrant}">
-      <div th:replace="termdialog :: add_meaning_data_dlg"></div>
+      <div th:replace="termdialog :: add_lim_term_meaning_data_dlg"></div>
       <div th:replace="termdialog :: add_meaning_domain_dlg"></div>
       <div th:replace="termdialog :: add_definition_dlg"></div>
       <div th:replace="termdialog :: add_lim_term_meaning_note_dlg"></div>
@@ -65,7 +65,7 @@
                 <button type="button" class="btn badge badge-secondary float-right"
                         title="Lisa andmeid"
                         data-toggle="modal"
-                        th:data-target="${'#addMeaningDataDlg_' + meaningId}"
+                        th:data-target="${'#addLimTermMeaningDataDlg_' + meaningId}"
                         sec:authorize="#vars.meaning.crudGrant">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>

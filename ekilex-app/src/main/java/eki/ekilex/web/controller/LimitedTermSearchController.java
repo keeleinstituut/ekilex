@@ -121,8 +121,6 @@ public class LimitedTermSearchController extends AbstractSearchController {
 	@GetMapping(LIM_TERM_MEANING_DETAILS_URI + "/{meaningId}")
 	public String meaningDetails(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
 
-		// TODO identical to TermSearchController -> meaningDetails?
-
 		logger.debug("meaning details for {}", meaningId);
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
@@ -137,6 +135,16 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		model.addAttribute("meaningId", meaningId);
 
 		return LIM_TERM_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
+	}
+
+	@GetMapping(LIM_TERM_MEANING_BACK_URI + "/{meaningId}")
+	public String limMeaningBack(@PathVariable("meaningId") Long meaningId) {
+
+		List<String> datasets = getUserPreferredDatasetCodes();
+		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, firstWordValue, meaningId);
+
+		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}
 
 }

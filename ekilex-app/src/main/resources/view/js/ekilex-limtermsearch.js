@@ -1,3 +1,22 @@
+$(document).on('click', '#duplicateLimTermMeaningBtn', function() {
+	let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
+	$.post(url).done(function(data) {
+		let response = JSON.parse(data);
+		if (response.status === 'ok') {
+			openMessageDlg(response.message);
+			let duplicateMeaningId = response.duplicateMeaningId;
+			setTimeout(function() {
+				window.location = applicationUrl + 'limtermmeaningback/' + duplicateMeaningId;
+			}, 1500);
+		} else {
+			openAlertDlg(response.message);
+		}
+	}).fail(function(data) {
+		openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+		console.log(data);
+	});
+});
+
 function initNewLimTermWordDlg() {
 	let newWordDlg = $('#newLimTermWordDlg');
 	newWordDlg.on('shown.bs.modal', function(e) {

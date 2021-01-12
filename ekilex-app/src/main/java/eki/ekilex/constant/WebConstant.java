@@ -289,6 +289,8 @@ public interface WebConstant {
 
 	String MEANING_BACK_URI = "/meaningback";
 
+	String LIM_TERM_MEANING_BACK_URI = "/limtermmeaningback";
+
 	String PAGE_FRAGMENT_ELEM = " :: ";
 
 	String REDIRECT_PREF = "redirect:";
