@@ -1680,8 +1680,8 @@
   <th:block th:fragment="morpho-rus-adj-basetable(paradigm)">
     <div class="scrollable-table">
       <div class="scrollable-table--scroller">
-        <table class="first-row-sizes" data-fixColumn="true">
-          <tr class="unindent">
+       <table class="stretch-middle-td">
+          <tr>
             <th>
               <span>падеж / kääne</span>
             </th>
@@ -1689,10 +1689,10 @@
             <th>&nbsp;</th>
           </tr>
           <tr >
-            <th>
+            <th colspan="2">
               <b>eдинственное число / ainsus</b>
             </th>
-            <th colspan="2">&nbsp;</th>
+            <th>&nbsp;</th>
           </tr>
           <tr>
             <th colspan="3">
@@ -1736,7 +1736,7 @@
               <span class="highlight">какого? / missugust?</span>
             </td>
             <td class="text-right">
-              <span class="highlight">одуш. / elus</span>
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,anim')"></th:block>
@@ -1744,7 +1744,7 @@
           </tr>
           <tr>
             <td class="text-right">
-              неодуш. / eluta
+              <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,inan')"></th:block>
@@ -1812,15 +1812,15 @@
               <span class="highlight">какую? / missugust?</span>
             </td>
             <td class="text-right">
-              одуш. / elus
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td rowspan="2">
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,accs')"></th:block>
             </td>
           </tr>
           <tr>
-            <td class="text-right">
-              неодуш. / eluta
+           <td class="text-right">
+             <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
           </tr>
           <tr>
@@ -1885,15 +1885,15 @@
               <span class="highlight">какого? / missugust?</span>
             </td>
             <td class="text-right">
-              одуш. / elus
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td rowspan="2">
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,accs')"></th:block>
             </td>
           </tr>
           <tr>
-            <td class="text-right">
-              неодуш. / eluta
+            <td  class="text-right">
+              <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
           </tr>
           <tr>
@@ -1917,9 +1917,10 @@
             </td>
           </tr>
           <tr>
-            <th colspan="3">
+            <th colspan="2">
               <b>множественное число / mitmus</b>
             </th>
+            <th>&nbsp;</th>
           </tr>
           <tr>
             <td colspan="2">
@@ -1958,7 +1959,7 @@
               <span class="highlight">каких? / missuguseid?</span>
             </td>
             <td class="text-right">
-              одуш. / elus
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,anim')"></th:block>
@@ -1966,7 +1967,7 @@
           </tr>
           <tr>
             <td class="text-right">
-              неодуш. / eluta
+              <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,inan')"></th:block>
@@ -2015,7 +2016,7 @@
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                 <table class="first-row-sizes" data-fixColumn="true">
+                 <table class="stretch-middle-td">
                   <tr>
                     <th colspan="2">Краткое прилагательное / Omadussõna lühike vorm</th>
                   </tr>
@@ -2036,7 +2037,7 @@
                   </tr>
                   <tr>
                     <td>
-                      женский род  / naissugu
+                      женский род / naissugu
                       <br />
                       <span class="highlight">какова? / missugune?</span>
                     </td>
@@ -2069,16 +2070,16 @@
             </div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                 <table class="first-row-sizes" data-fixColumn="true">
+                <table class="stretch-middle-td">
                   <tr>
                     <th colspan="2">Cтепени сравнения / Võrdlusastmed</th>
                   </tr>
                   <tr>
-                    <td>
+                    <td >
                       Сравнительная степень / Keskvõrre
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,masc,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'COMP', '')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2086,7 +2087,7 @@
                       Превосходная степень / Ülivõrre
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SUPR,masc,sing,nomn')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SUPR,masc,sing,nomn', '')"></th:block>
                     </td>
                   </tr>
                  </table>
