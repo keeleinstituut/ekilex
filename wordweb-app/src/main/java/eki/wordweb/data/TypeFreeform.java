@@ -1,5 +1,6 @@
 package eki.wordweb.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.constant.Complexity;
@@ -19,6 +20,10 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 	private String lang;
 
 	private Complexity complexity;
+
+	private String createdBy;
+
+	private Timestamp createdOn;
 
 	private List<TypeSourceLink> sourceLinks;
 
@@ -66,6 +71,22 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Timestamp getCreatedOn() {
+		return createdOn;
+	}
+
+	public void setCreatedOn(Timestamp createdOn) {
+		this.createdOn = createdOn;
 	}
 
 	@Override

@@ -78,7 +78,9 @@ create type type_freeform as (
 				type varchar(100),
 				value text,
 				lang char(3),
-				complexity varchar(100));
+				complexity varchar(100),
+				created_by text,
+				created_on timestamp);
 create type type_colloc_member as (
 				lexeme_id bigint,
 				word_id bigint,

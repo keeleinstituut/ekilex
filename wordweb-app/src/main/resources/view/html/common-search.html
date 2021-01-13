@@ -369,7 +369,8 @@
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
                       <span th:each="note, noteIter : ${noteEntry.value}">
-                        <span th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
+                        <span th:utext="${note.value}"></span>
+                        <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                         <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                           <span th:each="sourceLink : ${note.sourceLinks}">
                             <button type="button" class="source-link btn btn-link-dark p-0 pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
@@ -378,6 +379,7 @@
                             </button>
                           </span>
                         </th:block>
+                        <span th:unless="${noteIter.last}" class="ml-n1">;</span>
                       </span>
                     </div>
                   </th:block>
