@@ -1472,8 +1472,11 @@
                     <th colspan="2">Причастия / Kesksõnad</th>
                   </tr>
                   <tr>
+                    <th  colspan="2">настоящее время / olevik</th>
+                  </tr>
+                  <tr>
                     <td>
-                      действительное причастие настоящего времени / v-kesksõna
+                      действительное причастие / v-kesksõna
                       <br />
                       <span class="highlight">какой? что делающий? / missugune?</span>
                     </td>
@@ -1483,17 +1486,7 @@
                   </tr>
                   <tr>
                     <td>
-                      действительное причастие прошедшего времени / nud-kesksõna
-                      <br />
-                      <span class="highlight">какой? что делавший? что сделавший? / missugune?</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,past,actv', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      страдательное причастие настоящего времени / tav-kesksõna
+                      страдательное причастие / tav-kesksõna
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1503,7 +1496,9 @@
                   </tr>
                   <tr>
                     <td>
-                      страдательное причастие настоящего времени (краткая форма) / tav-kesksõna (lühike vorm)
+                      страдательное причастие / tav-kesksõna 
+                      <br />
+                      <small>(краткая форма / lühike vorm)</small>
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1511,9 +1506,22 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTS,pres,pssv', '')"></th:block>
                     </td>
                   </tr>
+                   <tr>
+                    <th  colspan="2">прошедшее время / minevik</th>
+                  </tr>
                   <tr>
                     <td>
-                      страдательное причастие прошедшего времени / tud-kesksõna
+                      действительное причастие / nud-kesksõna
+                      <br />
+                      <span class="highlight">какой? что делавший? что сделавший? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,past,actv', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      страдательное причастие / tud-kesksõna
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1523,7 +1531,9 @@
                   </tr>
                   <tr>
                     <td>
-                      страдательное причастие прошедшего времени (краткая форма) / tud-kesksõna (lühike vorm)
+                      страдательное причастие / tud-kesksõna
+                      <br />
+                      <small>(краткая форма / lühike vorm)</small>
                       <br />
                       <span class="highlight">каков? / missugune?</span>
                     </td>
@@ -1542,7 +1552,7 @@
                   </tr>
                   <tr>
                     <td>
-                      деепричастие настоящего времени / oleviku des-vorm
+                       настоящее время / oleviku des-vorm
                       <br />
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
@@ -1552,7 +1562,7 @@
                   </tr>
                   <tr>
                     <td>
-                      деепричастие прошедшего времени / mineviku des-vorm
+                      прошедшее время / mineviku des-vorm
                       <br />
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
@@ -1585,7 +1595,7 @@
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                <table class="first-row-sizes" data-fixColumn="true">
+                <table class="first-row-sizes" >
                   <tr class="unindent">
                     <th>падеж <br /> kääne</th>
                     <th>eдинственное число <br /> ainsus</th>
@@ -2140,7 +2150,7 @@
                 <table class="pb-5">
                   <tr>
                     <td>
-                      неизменяемое слово / muutumatu vorm
+                      неизменяемое слово / muutumatu sõna
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ID', '')"></th:block>
