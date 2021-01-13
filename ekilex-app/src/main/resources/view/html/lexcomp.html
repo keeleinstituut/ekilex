@@ -528,11 +528,11 @@
               data-toggle="modal"
               th:data-target="${'#addWordTypeDlg_' + wordId}"
               sec:authorize="#vars.details.word.crudGrant">
-        <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sõna tüüp
+        <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Keelendi tüüp
       </button>
     </th:block>
     <th:block th:unless="${#lists.isEmpty(details.wordTypes)}">
-      <div th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" title="Sõna tüüp" class="hover-actions-container hover-actions-container-outline">
+      <div th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" title="Keelendi tüüp" class="hover-actions-container hover-actions-container-outline">
         <span th:replace="lexdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
