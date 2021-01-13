@@ -109,7 +109,7 @@
                 data-target="#newLimTermWordDlg"
                 th:data-meaning-id="${meaningId}"
                 sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Lisa termin</button>
-        <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
+        <a class="btn btn-secondary mr-1" th:href="@{'/limtermmeaningjoin/' + ${meaningId}}"
            title="Tähenduste ühendamine"
            sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
         <button id="duplicateLimTermMeaningBtn"

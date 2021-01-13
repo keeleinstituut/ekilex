@@ -120,6 +120,10 @@ public interface WebConstant {
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
 
+	String LIM_TERM_MEANING_JOIN_URI = "/limtermmeaningjoin";
+
+	String LIM_TERM_MEANING_JOIN_PAGE = "limtermmeaningjoin";
+
 	String VALIDATE_MEANING_JOIN_URI = "/validatemeaningjoin";
 
 	String WORD_JOIN_URI = "/wordjoin";
