@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+  <th:block th:fragment="meaning_details(meaning)" th:if="${meaning != null}">
+    <div class="row">
+      <div class="col col-w2rem">
+        <input name="sourceMeaningIds" type="checkbox" class="mt-2"
+               th:value="${meaning.meaningId}"
+               th:if="${meaning.meaningId != targetMeaningId}"
+               sec:authorize="#vars.permDataUtil.isSourceMeaningCrudGranted(#vars.meaning.meaningId, #vars.targetMeaningId)"/>
+        <input type="checkbox" class="mt-2" th:if="${meaning.meaningId == targetMeaningId}" checked="checked" th:disabled="true" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-1 pr-0">
+        <span class="lbl">ID</span>
+      </div>
+      <div class="col pl-0">
+        <span th:text="${meaning.meaningId}"></span>
+      </div>
+    </div>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.definitionLangGroups)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Seletused</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
+          <div th:each="definition, itemIter: ${definitionLangGroup.definitions}">
+            <div style="display: list-item; position: absolute"></div>
+            <div>
+              <span th:utext="${definition.value}"></span>
+              <span class="font-italic text-info" th:text="${definition.typeValue}"></span>
+              <span th:each="sourceLink : ${definition.sourceLinks}">
+                [
+                <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                ]
+              </span>
+            </div>
+          </div>
+        </th:block>
+      </div>
+    </div>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Valdkonnad</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="classif,classifIter : ${meaning.domains}">
+          <div style="display: list-item; position: absolute"></div>
+          <div>
+            <span th:text="${classif.code}"></span>
+            <th:block th:unless="${classif.code == classif.value}">
+              -
+              <span th:text="${classif.value}"></span>
+            </th:block>
+          </div>
+        </th:block>
+      </div>
+    </div>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Märkused</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="noteLangGroup : ${lexeme.meaning.noteLangGroups}">
+          <th:block th:each="note : ${noteLangGroup}">
+            <div style="display: list-item; position: absolute"></div>
+            <div th:utext="${note.valuePrese}"></div>
+          </th:block>
+        </th:block>
+      </div>
+    </div>
+    <div class="row" th:if="${not #lists.isEmpty(meaning.freeforms)}">
+      <div class="col-1 pr-0">
+        <span class="lbl">Concept id</span>
+      </div>
+      <div class="col pl-0">
+        <th:block th:each="freeform : ${meaning.freeforms}">
+          <div th:if="${freeform.type.toString() == 'CONCEPT_ID'}">
+            <div style="display: list-item; position: absolute"></div>
+            <span th:utext="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
+          </div>
+        </th:block>
+      </div>
+    </div>
+    <th:block th:each="lexemeLangGroup : ${meaning.lexemeLangGroups}">
+      <div class="border rounded mb-2 p-2" th:each="lexeme : ${lexemeLangGroup.lexemes}">
+        <div>
+          <span th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}" class="font-weight-bold"></span>
+          <span th:text="${'(' + viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-2"></span>
+          <b class="float-right" th:text="${lexeme.datasetCode}"></b>
+        </div>
+        <div class="row">
+          <div class="col-1 pr-0">
+            <span class="lbl">Identifikaatorid</span>
+          </div>
+          <div class="col pl-0">
+            <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
+            <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
+            <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-1 pr-0">
+            <span class="lbl">Avalikkus</span>
+          </div>
+          <div class="col pl-0">
+            <span th:if="${lexeme.public}">avalik</span>
+            <span th:unless="${lexeme.public}">mitteavalik</span>
+          </div>
+        </div>
+        <div class="row" th:if="${lexeme.lexemeValueStateCode != null}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Väärtusolek</span>
+          </div>
+          <div class="col pl-0">
+            <span th:text="${lexeme.lexemeValueStateCode}"></span>
+          </div>
+        </div>
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.wordTypes)}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Sõna tüüp</span>
+          </div>
+          <div class="col pl-0">
+            <span th:each="classif,classifIter : ${lexeme.wordTypes}">
+              <span th:text="${classif.code}"></span>
+              <th:block th:unless="${classif.code == classif.value}">
+                -
+                <span th:text="${classif.value}"></span>
+              </th:block>
+            </span>
+          </div>
+        </div>
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Allikaviited</span>
+          </div>
+          <div class="col pl-0">
+            <th:block th:each="sourceLink : ${lexeme.sourceLinks}">
+              [
+              <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+              <span th:if="${sourceLink.name != null}">
+                <span th:text="${sourceLink.name}"></span>
+              </span>
+              ]
+            </th:block>
+          </div>
+        </div>
+        <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
+          <div class="col-1 pr-0">
+            <span class="lbl">Kasutusnäited</span>
+          </div>
+          <div class="col pl-0">
+            <th:block th:each="usage : ${lexeme.usages}">
+              <div style="display: list-item; position: absolute"></div>
+              <div>
+                <span th:utext="${usage.value}"></span>
+                <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
+                <span th:if="${not #lists.isEmpty(usage.authors)}">
+                  (
+                  <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
+                    <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
+                    <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></a>
+                    <span th:if="${sourceLink.name != null}">
+                      <span th:text="${sourceLink.name}"></span>
+                    </span>
+                    <span th:unless="${sourceLinkIter.last}">, </span>
+                  </span>
+                  )
+                </span>
+                <span th:each="sourceLink : ${usage.sourceLinks}">
+                  [
+                  <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                  <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                  ]
+                </span>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </th:block>
+</body>
+</html>
