@@ -29,7 +29,25 @@ $(document).on("change", "select.meaning-data-select[name='opCode']", function()
 	}
 });
 
+$(document).on("change", "select.lim-term-meaning-data-select[name='opCode']", function() {
+	var opCode = $(this).val();
+	var localForm = $(this).closest("form");
+	localForm.find(".value-group").hide();
+	var meaningId = localForm.find("[name=id2]").val();
+	var dlgElemId = "#" + opCode + '_' + meaningId;
+	if (opCode.endsWith('Dlg')) {
+		$(dlgElemId).modal("show");
+		$("#addLimTermMeaningDataDlg_" + meaningId).modal("hide");
+	} else {
+		$(dlgElemId).show();
+	}
+});
+
 $(document).on("show.bs.modal", "[id^=addMeaningDataDlg_]", function() {
+	initAddMultiDataDlg($(this));
+});
+
+$(document).on("show.bs.modal", "[id^=addLimTermMeaningDataDlg_]", function() {
 	initAddMultiDataDlg($(this));
 });
 

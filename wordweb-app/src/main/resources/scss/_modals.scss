@@ -252,8 +252,14 @@
     display: inline-block;
   }
   .word-sufix-rus {
-    min-width: 75px;
+    min-width: 80px;
     display: inline-block;
+  }
+  .word-prefix-adjective-rus {
+    min-width: 125px;
+    display: inline-block;
+    color: $gray-350;
+    font-size: 12px;
   }
 
   table {

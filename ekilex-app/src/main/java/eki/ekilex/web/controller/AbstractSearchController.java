@@ -26,7 +26,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.SearchHelper;
 
-public abstract class AbstractSearchController extends AbstractPrivatePageController {
+public abstract class AbstractSearchController extends AbstractAuthActionController {
 
 	@Autowired
 	protected CommonDataService commonDataService;

@@ -41,7 +41,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class EditController extends AbstractPrivatePageController {
+public class EditController extends AbstractMutableDataPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(EditController.class);
 
@@ -531,6 +531,9 @@ public class EditController extends AbstractPrivatePageController {
 			break;
 		case "meaning_relation":
 			cudService.deleteMeaningRelation(id);
+			break;
+		case "syn_meaning_relation":
+			cudService.deleteSynMeaningRelation(id);
 			break;
 		case "word_gender":
 			cudService.updateWordGender(id, null);

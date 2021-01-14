@@ -24,6 +24,8 @@ public interface WebConstant {
 
 	String REAPPLY_URI = "/reapply";
 
+	String APPLY_LIMITED_URI = "/apply_limited";
+
 	String PERMISSIONS_PAGE = "permissions";
 
 	String PERMISSIONS_URI = "/permissions";
@@ -54,7 +56,9 @@ public interface WebConstant {
 
 	String PARADIGMS_URI = "/paradigms";
 
-	String MEANING_DETAILS_URI = "/meaningdetails";
+	String TERM_MEANING_DETAILS_URI = "/termmeaningdetails";
+
+	String LIM_TERM_MEANING_DETAILS_URI = "/limtermmeaningdetails";
 
 	String DOMAINS_URI = "/domains";
 
@@ -94,6 +98,10 @@ public interface WebConstant {
 
 	String MORPHOLOGY_PAGE = "morphology";
 
+	String LIM_TERM_SEARCH_URI = "/limtermsearch";
+
+	String LIM_TERM_SEARCH_PAGE = "limtermsearch";
+
 	String LEX_JOIN_URI = "/lexjoin";
 
 	String LEX_JOIN_PAGE = "lexjoin";
@@ -111,6 +119,10 @@ public interface WebConstant {
 	String MEANING_JOIN_URI = "/meaningjoin";
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
+
+	String LIM_TERM_MEANING_JOIN_URI = "/limtermmeaningjoin";
+
+	String LIM_TERM_MEANING_JOIN_PAGE = "limtermmeaningjoin";
 
 	String VALIDATE_MEANING_JOIN_URI = "/validatemeaningjoin";
 
@@ -152,6 +164,8 @@ public interface WebConstant {
 	String LEX_CREATE_WORD_URI = "/lex_create_word";
 
 	String TERM_CREATE_WORD_URI = "/term_create_word";
+
+	String LIM_TERM_CREATE_WORD_URI = "/lim_term_create_word";
 
 	String CREATE_HOMONYM_URI = "/create_homonym";
 
@@ -278,6 +292,8 @@ public interface WebConstant {
 	String LEX_BACK_URI = "/lexback";
 
 	String MEANING_BACK_URI = "/meaningback";
+
+	String LIM_TERM_MEANING_BACK_URI = "/limtermmeaningback";
 
 	String PAGE_FRAGMENT_ELEM = " :: ";
 

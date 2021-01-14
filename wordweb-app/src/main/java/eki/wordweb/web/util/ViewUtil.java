@@ -11,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.DatasetType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.TextDecoration;
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.SystemConstant;
@@ -19,13 +21,14 @@ import eki.wordweb.data.DecoratedWordType;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguageData;
+import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.StaticParadigm;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
 
 @Component
-public class ViewUtil implements WebConstant, SystemConstant {
+public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
 	private CommonDataService commonDataService;
@@ -39,6 +42,22 @@ public class ViewUtil implements WebConstant, SystemConstant {
 
 	public ViewUtil() {
 		ekilexMarkupPattern = Pattern.compile("<[/]?eki-[^>]*>");
+	}
+
+	public boolean isLexData(Lexeme lexeme) {
+		return DatasetType.LEX.equals(lexeme.getDatasetType());
+	}
+
+	public boolean isAnyTermData(Lexeme lexeme) {
+		return DatasetType.TERM.equals(lexeme.getDatasetType());
+	}
+
+	public boolean isProTermData(Lexeme lexeme) {
+		return DatasetType.TERM.equals(lexeme.getDatasetType()) && !StringUtils.equals(DATASET_LIMITED, lexeme.getDatasetCode());
+	}
+
+	public boolean isLimTermData(Lexeme lexeme) {
+		return DatasetType.TERM.equals(lexeme.getDatasetType()) && StringUtils.equals(DATASET_LIMITED, lexeme.getDatasetCode());
 	}
 
 	public LanguageData getLangData(String langIso3) {
@@ -200,5 +219,9 @@ public class ViewUtil implements WebConstant, SystemConstant {
 	public String getDetailSearchUri(String word) {
 		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, word, null);
 		return uri;
+	}
+
+	public String getEkilexLimTermMeaningDetailsUrl(Long meaningId) {
+		return webUtil.composeEkilexLimTermDetailsUrl(meaningId);
 	}
 }

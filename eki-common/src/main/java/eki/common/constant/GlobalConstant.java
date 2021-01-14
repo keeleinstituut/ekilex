@@ -6,6 +6,8 @@ public interface GlobalConstant {
 
 	String DATASET_SSS = "sss";
 
+	String DATASET_LIMITED = "vrk";
+
 	boolean PUBLICITY_PUBLIC = true;
 
 	boolean PUBLICITY_PRIVATE = false;

@@ -1472,8 +1472,11 @@
                     <th colspan="2">Причастия / Kesksõnad</th>
                   </tr>
                   <tr>
+                    <th  colspan="2">настоящее время / olevik</th>
+                  </tr>
+                  <tr>
                     <td>
-                      действительное причастие настоящего времени / v-kesksõna
+                      действительное причастие / v-kesksõna
                       <br />
                       <span class="highlight">какой? что делающий? / missugune?</span>
                     </td>
@@ -1483,17 +1486,7 @@
                   </tr>
                   <tr>
                     <td>
-                      действительное причастие прошедшего времени / nud-kesksõna
-                      <br />
-                      <span class="highlight">какой? что делавший? что сделавший? / missugune?</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,past,actv', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      страдательное причастие настоящего времени / tav-kesksõna
+                      страдательное причастие / tav-kesksõna
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1503,7 +1496,9 @@
                   </tr>
                   <tr>
                     <td>
-                      страдательное причастие настоящего времени (краткая форма) / tav-kesksõna (lühike vorm)
+                      страдательное причастие / tav-kesksõna 
+                      <br />
+                      <small>(краткая форма / lühike vorm)</small>
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1511,9 +1506,22 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTS,pres,pssv', '')"></th:block>
                     </td>
                   </tr>
+                   <tr>
+                    <th  colspan="2">прошедшее время / minevik</th>
+                  </tr>
                   <tr>
                     <td>
-                      страдательное причастие прошедшего времени / tud-kesksõna
+                      действительное причастие / nud-kesksõna
+                      <br />
+                      <span class="highlight">какой? что делавший? что сделавший? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,past,actv', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      страдательное причастие / tud-kesksõna
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1523,7 +1531,9 @@
                   </tr>
                   <tr>
                     <td>
-                      страдательное причастие прошедшего времени (краткая форма) / tud-kesksõna (lühike vorm)
+                      страдательное причастие / tud-kesksõna
+                      <br />
+                      <small>(краткая форма / lühike vorm)</small>
                       <br />
                       <span class="highlight">каков? / missugune?</span>
                     </td>
@@ -1542,7 +1552,7 @@
                   </tr>
                   <tr>
                     <td>
-                      деепричастие настоящего времени / oleviku des-vorm
+                       настоящее время / oleviku des-vorm
                       <br />
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
@@ -1552,7 +1562,7 @@
                   </tr>
                   <tr>
                     <td>
-                      деепричастие прошедшего времени / mineviku des-vorm
+                      прошедшее время / mineviku des-vorm
                       <br />
                       <span class="highlight">что делая? что сделав? / mida tehes?</span>
                     </td>
@@ -1585,7 +1595,7 @@
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                <table class="first-row-sizes" data-fixColumn="true">
+                <table class="first-row-sizes" >
                   <tr class="unindent">
                     <th>падеж <br /> kääne</th>
                     <th>eдинственное число <br /> ainsus</th>
@@ -1680,8 +1690,8 @@
   <th:block th:fragment="morpho-rus-adj-basetable(paradigm)">
     <div class="scrollable-table">
       <div class="scrollable-table--scroller">
-        <table class="first-row-sizes" data-fixColumn="true">
-          <tr class="unindent">
+       <table class="stretch-middle-td">
+          <tr>
             <th>
               <span>падеж / kääne</span>
             </th>
@@ -1689,10 +1699,10 @@
             <th>&nbsp;</th>
           </tr>
           <tr >
-            <th>
+            <th colspan="2">
               <b>eдинственное число / ainsus</b>
             </th>
-            <th colspan="2">&nbsp;</th>
+            <th>&nbsp;</th>
           </tr>
           <tr>
             <th colspan="3">
@@ -1736,7 +1746,7 @@
               <span class="highlight">какого? / missugust?</span>
             </td>
             <td class="text-right">
-              <span class="highlight">одуш. / elus</span>
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,anim')"></th:block>
@@ -1744,7 +1754,7 @@
           </tr>
           <tr>
             <td class="text-right">
-              неодуш. / eluta
+              <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'masc,sing,accs,inan')"></th:block>
@@ -1812,15 +1822,15 @@
               <span class="highlight">какую? / missugust?</span>
             </td>
             <td class="text-right">
-              одуш. / elus
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td rowspan="2">
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'femn,sing,accs')"></th:block>
             </td>
           </tr>
           <tr>
-            <td class="text-right">
-              неодуш. / eluta
+           <td class="text-right">
+             <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
           </tr>
           <tr>
@@ -1885,15 +1895,15 @@
               <span class="highlight">какого? / missugust?</span>
             </td>
             <td class="text-right">
-              одуш. / elus
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td rowspan="2">
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'neut,sing,accs')"></th:block>
             </td>
           </tr>
           <tr>
-            <td class="text-right">
-              неодуш. / eluta
+            <td  class="text-right">
+              <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
           </tr>
           <tr>
@@ -1917,9 +1927,10 @@
             </td>
           </tr>
           <tr>
-            <th colspan="3">
+            <th colspan="2">
               <b>множественное число / mitmus</b>
             </th>
+            <th>&nbsp;</th>
           </tr>
           <tr>
             <td colspan="2">
@@ -1958,7 +1969,7 @@
               <span class="highlight">каких? / missuguseid?</span>
             </td>
             <td class="text-right">
-              одуш. / elus
+              <span class="word-prefix-adjective-rus">одуш. / elus</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,anim')"></th:block>
@@ -1966,7 +1977,7 @@
           </tr>
           <tr>
             <td class="text-right">
-              неодуш. / eluta
+              <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
             </td>
             <td>
               <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,accs,inan')"></th:block>
@@ -2015,7 +2026,7 @@
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                 <table class="first-row-sizes" data-fixColumn="true">
+                 <table class="stretch-middle-td">
                   <tr>
                     <th colspan="2">Краткое прилагательное / Omadussõna lühike vorm</th>
                   </tr>
@@ -2036,7 +2047,7 @@
                   </tr>
                   <tr>
                     <td>
-                      женский род  / naissugu
+                      женский род / naissugu
                       <br />
                       <span class="highlight">какова? / missugune?</span>
                     </td>
@@ -2069,16 +2080,16 @@
             </div>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
-                 <table class="first-row-sizes" data-fixColumn="true">
+                <table class="stretch-middle-td">
                   <tr>
                     <th colspan="2">Cтепени сравнения / Võrdlusastmed</th>
                   </tr>
                   <tr>
-                    <td>
+                    <td >
                       Сравнительная степень / Keskvõrre
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,masc,sing')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'COMP', '')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -2086,7 +2097,7 @@
                       Превосходная степень / Ülivõrre
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'SUPR,masc,sing,nomn')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SUPR,masc,sing,nomn', '')"></th:block>
                     </td>
                   </tr>
                  </table>
@@ -2139,7 +2150,7 @@
                 <table class="pb-5">
                   <tr>
                     <td>
-                      неизменяемое слово / muutumatu vorm
+                      неизменяемое слово / muutumatu sõna
                     </td>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'ID', '')"></th:block>

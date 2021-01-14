@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriUtils;
 
@@ -12,6 +13,11 @@ import eki.wordweb.constant.WebConstant;
 
 @Component
 public class WebUtil implements WebConstant, GlobalConstant {
+
+	private static final String MEANING_ID_URL_PLACEHOLDER = "{meaningId}";
+
+	@Value("${ekilex.limterm.details.url}")
+	private String ekilexLimTermDetailsUrl;
 
 	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr) {
 		String encodedWord = UriUtils.encode(word, UTF_8);
@@ -38,5 +44,15 @@ public class WebUtil implements WebConstant, GlobalConstant {
 				.map(value -> UriUtils.encode(value, UTF_8))
 				.collect(Collectors.joining(String.valueOf(UI_FILTER_VALUES_SEPARATOR)));
 		return encodedSeparatedValuesStr;
+	}
+
+	public String composeEkilexLimTermDetailsUrl(Long meaningId) {
+		String limTermDetailsUrl = StringUtils.replace(ekilexLimTermDetailsUrl, MEANING_ID_URL_PLACEHOLDER, String.valueOf(meaningId));
+		return limTermDetailsUrl;
+	}
+
+	public String getEkilexLimTermSearchUrl() {
+		String limTermSearchUrl = StringUtils.substringBefore(ekilexLimTermDetailsUrl, "?");
+		return limTermSearchUrl;
 	}
 }

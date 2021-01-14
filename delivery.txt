@@ -1,1 +1,6 @@
 Märkused ver 1.21.0 tarne kohta:
+
+sõnaveebis võrgustiku sisseviskamise lingi määrang:
+
+ekilex.limterm.details.url=https://(ekilex)/limtermsearch?id={meaningId}
+

@@ -7,12 +7,11 @@
 <body>
   <th:block th:fragment="search_form(searchPageName, showDatasetSelect)">
     <div class="d-flex flex-row flex-nowrap">
-      <div
-        th:if="${(searchPageName == 'lex_search' || searchPageName == 'term_search') && showDatasetSelect}"
-        data-plugin="paneToggle"
-        data-hideable="searchColumn"
-        data-extendable="resultColumn"
-        class="searchResultsToggle">
+      <div th:if="${(searchPageName == 'lex_search' || searchPageName == 'term_search') && showDatasetSelect}"
+           data-plugin="paneToggle"
+           data-hideable="searchColumn"
+           data-extendable="resultColumn"
+           class="searchResultsToggle">
         <i class="fa fa-list" aria-hidden="true"></i>
       </div>
       <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
@@ -22,7 +21,8 @@
         <th:block th:replace="::detail_search(${searchPageName})"></th:block>
         <th:block th:replace="::simple_search"></th:block>
       </div>
-      <div class="d-flex flex-row align-items-center" th:with="detailsUri=${searchPageName == 'lex_search' ? 'lexsearch' : searchPageName == 'term_search' ? 'termsearch' : ''}">
+      <div class="d-flex flex-row align-items-center"
+           th:with="detailsUri=${searchPageName == 'lex_search' ? 'lexsearch' : searchPageName == 'term_search' ? 'termsearch' : searchPageName == 'lim_term_search' ? 'limtermsearch' : ''}">
         <button type="button" id="share-details-link" th:data-details-uri="${detailsUri}" class="btn btn-light ml-2">Otselink</button>
       </div>
     </div>
@@ -55,7 +55,7 @@
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
                         th:value="${entity}" th:selected="${group.entity == entity}"
                         th:text="#{|term.search.entity.${entity.name()}|}"
-                        th:if="${searchPageName == 'term_search'}">entityName</option>
+                        th:if="${searchPageName == 'term_search' || searchPageName == 'lim_term_search'}">entityName</option>
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getSourceEntities()}"
                         th:value="${entity}" th:selected="${group.entity == entity}"
                         th:text="#{|source.search.entity.${entity.name()}|}"
@@ -366,7 +366,8 @@
                 <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
               </select>
             </div>
-            <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}" th:if="${searchPageName == 'term_search'}">
+            <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
+                 th:if="${searchPageName == 'term_search' || searchPageName == 'lim_term_search'}">
               <select th:name="${entity}">
                 <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
               </select>
@@ -497,14 +498,14 @@
               <input type="text" class="form-control">
             </div>
             <div name="UPDATED_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
-                <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                  <input type="text" class="form-control">
-                  <div class="input-group-addon input-group-append">
-                    <div class="input-group-text">
-                      <i class="fa fa-calendar"></i>
-                    </div>
+              <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                <input type="text" class="form-control">
+                <div class="input-group-addon input-group-append">
+                  <div class="input-group-text">
+                    <i class="fa fa-calendar"></i>
                   </div>
                 </div>
+              </div>
             </div>
             <div name="DATASET_USAGE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">

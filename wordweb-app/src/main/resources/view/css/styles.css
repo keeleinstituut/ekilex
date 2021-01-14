@@ -18302,8 +18302,15 @@ body {
 }
 
 .wordmodal .word-sufix-rus {
-  min-width: 75px;
+  min-width: 80px;
   display: inline-block;
+}
+
+.wordmodal .word-prefix-adjective-rus {
+  min-width: 125px;
+  display: inline-block;
+  color: #687887;
+  font-size: 12px;
 }
 
 .wordmodal table {

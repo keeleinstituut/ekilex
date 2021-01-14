@@ -133,6 +133,7 @@
                   </div>
                   <th:block th:replace="syncomp :: definitions_data"></th:block>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
+                  <th:block th:replace="syncomp :: meaning_words_data"></th:block>
                   <th:block th:replace="syncomp :: meaning_relations_data"></th:block>
                 </div>
               </div>
@@ -177,12 +178,6 @@
       <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
     </div>
     <script>
-    	$('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-    		btnOkLabel : 'Jah',
-    		btnCancelLabel : 'Ei',
-    		title : 'Kinnita vaste ilmiku kustutamine',
-    		onConfirm : deleteLexemeAndWordAndMeaning
-    	});
         $('[data-toggle=delete-confirm]').confirmation({
           btnOkLabel : 'Jah',
           btnCancelLabel : 'Ei',

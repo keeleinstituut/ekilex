@@ -45,7 +45,9 @@ create type type_freeform as (
 				type varchar(100),
 				value text,
 				lang char(3),
-				complexity varchar(100));
+				complexity varchar(100),
+				created_by text,
+				created_on timestamp);
 create type type_colloc_member as (
 				lexeme_id bigint,
 				word_id bigint,
@@ -745,7 +747,14 @@ from (select m.id
                    and   ff.type = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
   left outer join (select mf.meaning_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) notes
+                          array_agg(row (
+                            ff.id,
+                            ff.type,
+                            ' ' || ff.value_prese,
+                            ff.lang,
+                            ff.complexity,
+                            ff.created_by,
+                            ff.created_on)::type_freeform order by ff.order_by) notes
                    from meaning_freeform mf,
                         freeform ff
                    where mf.freeform_id = ff.id
@@ -810,7 +819,14 @@ from lexeme l
                    group by lf.lexeme_id) anote
                on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) notes
+                          array_agg(row (
+                            ff.id,
+                            ff.type,
+                            ' ' || ff.value_prese,
+                            ff.lang,
+                            ff.complexity,
+                            null,
+                            null)::type_freeform order by ff.order_by) notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -819,7 +835,14 @@ from lexeme l
                    group by lf.lexeme_id) pnote
                on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity)::type_freeform order by ff.order_by) grammars
+                          array_agg(row (
+                            ff.id,
+                            ff.type,
+                            ' ' || ff.value_prese,
+                            ff.lang,
+                            ff.complexity,
+                            null,
+                            null)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -827,7 +850,14 @@ from lexeme l
                    group by lf.lexeme_id) gramm
                on gramm.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_text, ff.lang, ff.complexity)::type_freeform order by ff.order_by) governments
+                          array_agg(row (
+                            ff.id,
+                            ff.type,
+                            ' ' || ff.value_prese,
+                            ff.lang,
+                            ff.complexity,
+                            null,
+                            null)::type_freeform order by ff.order_by) governments
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -878,7 +908,14 @@ from lexeme l
                                 l2.type mw_lex_type,
                                 l2.weight mw_lex_weight,
                                 --NB! space sym replaced by temp placeholder because nested complex type array masking failure by postgres
-                                (select array_agg(row (ff.id, ff.type, replace(ff.value_text, ' ', '`'), ff.lang, ff.complexity)::type_freeform order by ff.order_by)
+                                (select array_agg(row (
+                                      ff.id,
+                                      ff.type,
+                                      replace(ff.value_text, ' ', '`'),
+                                      ff.lang,
+                                      ff.complexity,
+                                      null,
+                                      null)::type_freeform order by ff.order_by)
                                  from lexeme_freeform lf,
                                       freeform ff
                                  where lf.lexeme_id = l2.id

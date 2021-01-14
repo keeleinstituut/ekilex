@@ -91,8 +91,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VOCAL_FORM, wordId, vocalForm);
 		createLifecycleLog(logData);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, LifecycleLogOwner.WORD);
-		Long formId = cudDbService.updateWordVocalForm(wordId, vocalForm);
-		activityLogService.createActivityLog(activityLog, formId, ActivityEntity.FORM);
+		List<Long> formIds = cudDbService.updateWordVocalForm(wordId, vocalForm);
+		activityLogService.createActivityLog(activityLog, formIds, ActivityEntity.FORM);
 	}
 
 	@Transactional
@@ -1632,6 +1632,21 @@ public class CudService extends AbstractService implements GlobalConstant {
 		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, LifecycleLogOwner.MEANING);
+		cudDbService.deleteMeaningRelation(relationId);
+		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
+	}
+
+	@Transactional
+	public void deleteSynMeaningRelation(Long relationId) throws Exception {
+		ActivityLogData activityLog;
+		Long oppositeRelationId = lookupDbService.getMeaningRelationSameTypeOppositeRelationId(relationId);
+		Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
+		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, LifecycleLogOwner.MEANING);
+		cudDbService.deleteMeaningRelation(oppositeRelationId);
+		activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
+
+		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
+		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, LifecycleLogOwner.MEANING);
 		cudDbService.deleteMeaningRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
 	}

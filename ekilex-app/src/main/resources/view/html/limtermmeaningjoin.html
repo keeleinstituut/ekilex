@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{meaning.join.title}">EKILEX tähenduste ühendamine</title>
 <th:block th:fragment="links">
@@ -10,7 +10,7 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary" th:href="@{'/meaningback/' + ${targetMeaningId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{'/limtermmeaningback/' + ${targetMeaningId}}">Tagasi</a>
       </p>
     </div>
     <div class="card shadow mt-4" id="details-area">
@@ -34,7 +34,7 @@
       </div>
       <th:block th:if="${#lists.isEmpty(validationMessages)}">
         <div class="card-body">
-          <form th:action="@{'/meaningjoin/' + ${targetMeaningId}}" method="post">
+          <form th:action="@{'/limtermmeaningjoin/' + ${targetMeaningId}}" method="post">
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
@@ -54,7 +54,7 @@
           <span th:text="#{lexjoin.not.found}">Not found.</span>
         </div>
         <div class="card-body" th:if="${not #lists.isEmpty(sourceMeanings)}">
-          <form th:action="@{/meaningjoin}" method="post">
+          <form th:action="@{/limtermmeaningjoin}" method="post">
             <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
             <div class="row mb-4">
               <div class="col">
@@ -72,13 +72,13 @@
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <script th:inline="javascript">
-  	initializeMeaningJoin();
-  	$('[data-toggle=join-confirm]').confirmation({
-  		btnOkLabel : 'Jah',
-  		btnCancelLabel : 'Ei',
-  		title : 'Kas olete kindel, et soovite tähendused ühendada?',
-  		onConfirm : joinMeanings
-  	});
+	  initializeMeaningJoin();
+	  $('[data-toggle=join-confirm]').confirmation({
+		  btnOkLabel : 'Jah',
+		  btnCancelLabel : 'Ei',
+		  title : 'Kas olete kindel, et soovite tähendused ühendada?',
+		  onConfirm : joinMeanings
+	  });
   </script>
 </body>
 </html>

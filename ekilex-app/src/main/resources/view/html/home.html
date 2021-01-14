@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(_,~{::links})">
-  <th:block th:fragment="links">
-  </th:block>
+<th:block th:fragment="links">
+</th:block>
 </head>
 <body class="body-with-navbar">
-<th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
+  <th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
@@ -26,8 +26,9 @@
           <a th:href="@{/sourcesearch}">Allikate otsing</a>
         </p>
         <p>
-          <hr />
+          <a th:href="@{/limtermsearch}">Võrgustiku otsing</a>
         </p>
+        <hr />
         <p>
           <a th:href="@{/morphology}" sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
         </p>
@@ -47,7 +48,7 @@
           <a th:href="@{/stat}">Statistika</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
-        <hr/>
+        <hr />
         <p>
           <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>
         </p>
@@ -159,9 +160,8 @@
       </div>
     </div>
   </div>
-
   <script th:inline="javascript">
-	  initializeHome();
+	initializeHome();
   </script>
 </body>
 </html>

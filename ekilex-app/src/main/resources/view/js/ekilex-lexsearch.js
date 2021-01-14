@@ -41,6 +41,7 @@ $.fn.valueStatus = function() {
 	main.find('[data-toggle="delete-confirm"]').deleteConfirm();
 }
 
+// TODO move to ekilex-common.js?
 function initializeSearch(type) {
 	viewType = type;
 	$(window).on('update:wordId', () => {
@@ -262,7 +263,11 @@ function initializeSearch(type) {
 		}
 	}
 
-	initNewWordDlg();
+	if (viewType === 'lim_term') {
+		initNewLimTermWordDlg();
+	} else {
+		initNewWordDlg();
+	}
 	initClassifierAutocomplete();
 };
 
@@ -272,6 +277,7 @@ function getBreadcrumbsData(detailsDiv, word) {
 	return crumbs;
 }
 
+// TODO move to ekilex-common.js?
 function loadDetails(wordId, task, lastWordId) {
 	$("[id^='select_wait_']").hide();
 	$("#select_wait_" + wordId).show();
@@ -281,9 +287,13 @@ function loadDetails(wordId, task, lastWordId) {
 	$("#word-result-" + wordId).addClass('active');
 	openWaitDlg();
 
-	let wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
+	let wordDetailsUrl;
 	if (viewType === 'term') {
-		wordDetailsUrl = applicationUrl + 'meaningdetails/' + wordId;
+		wordDetailsUrl = applicationUrl + 'termmeaningdetails/' + wordId;
+	} else if (viewType === 'lim_term') {
+		wordDetailsUrl = applicationUrl + 'limtermmeaningdetails/' + wordId;
+	} else {
+		wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
 	}
 	
 	$.get(wordDetailsUrl).done(function(data) {

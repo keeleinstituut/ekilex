@@ -5,14 +5,16 @@ import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.Record14;
+import org.jooq.Record17;
 import org.jooq.Record19;
 import org.jooq.Record3;
 import org.jooq.Table;
@@ -30,6 +32,7 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
@@ -226,9 +229,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 			String resultLang, boolean fetchAll, int offset) {
 
 		Lexeme lm = LEXEME.as("lm");
+		Lexeme lw = LEXEME.as("lw");
 		Word wm = WORD.as("wm");
 		Lexeme lds = LEXEME.as("lds");
 		Dataset ds = DATASET.as("ds");
+		Language ln = LANGUAGE.as("ln");
+		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
 		Field<String[]> wtf = getWordTypesField(wmid.field("word_id", Long.class));
 		Field<Boolean> wtpf = getWordIsPrefixoidField(wmid.field("word_id", Long.class));
@@ -237,6 +243,22 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Field<Boolean> lvsmpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
 		Field<Boolean> lvslpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED));
+
+		Field<Long> wmdsobf = DSL
+				.select(DSL.min(ds.ORDER_BY))
+				.from(lw, ds)
+				.where(lw.WORD_ID.eq(wm.ID).and(lw.DATASET_CODE.eq(ds.CODE)))
+				.asField();
+		Field<Long> wlnobf = DSL
+				.select(ln.ORDER_BY)
+				.from(ln)
+				.where(ln.CODE.eq(wm.LANG))
+				.asField();
+		Field<Long> wtobf = DSL
+				.select(DSL.count(wt.ID))
+				.from(wt)
+				.where(wt.WORD_ID.eq(wm.ID).and(wt.WORD_TYPE_CODE.in(Arrays.asList(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
+				.asField();
 
 		Table<Record3<Long, String, Long>> wdsf = DSL
 				.selectDistinct(lds.WORD_ID, lds.DATASET_CODE, ds.ORDER_BY)
@@ -256,7 +278,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 			wherewm = wherewm.and(wm.LANG.eq(resultLang));
 		}
 
-		Table<Record14<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[]>> wmm = DSL
+		Table<Record17<Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[], Long, Long, Long>> wmm = DSL
 				.select(
 						wmid.field("meaning_id", Long.class),
 						wmid.field("word_id", Long.class),
@@ -271,7 +293,10 @@ public class TermSearchDbService extends AbstractDataDbService {
 						lvsmpf.as("most_preferred"),
 						lvslpf.as("least_preferred"),
 						lm.IS_PUBLIC,
-						wds.as("dataset_codes"))
+						wds.as("dataset_codes"),
+						wmdsobf.as("word_min_ds_order_by"),
+						wlnobf.as("word_lang_order_by"),
+						wtobf.as("word_type_order_by"))
 				.from(wmid
 						.innerJoin(lm).on(lm.WORD_ID.eq(wmid.field("word_id", Long.class)).and(lm.MEANING_ID.eq(wmid.field("meaning_id", Long.class))))
 						.innerJoin(wm).on(wherewm))
@@ -318,7 +343,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wmm.field("meaning_id", Long.class),
 						mw.as("meaning_words"))
 				.from(wmm)
-				.orderBy(wvobf, wmm.field("homonym_nr"))
+				.orderBy(
+						wmm.field("word_min_ds_order_by"),
+						wmm.field("word_lang_order_by"),
+						wvobf,
+						wmm.field("word_type_order_by"),
+						wmm.field("homonym_nr"))
 				.limit(limit)
 				.offset(offset)
 				.fetchInto(TermMeaning.class);

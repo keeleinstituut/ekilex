@@ -1,7 +1,5 @@
 package eki.ekilex.web.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +41,7 @@ import eki.ekilex.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexSearchController extends AbstractSearchController {
+public class LexSearchController extends AbstractPrivateSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LexSearchController.class);
 
@@ -193,57 +191,6 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("totalCount", result.getTotalCount());
 
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "word_search_result";
-	}
-
-	@GetMapping("/lexemesearch")
-	public String searchLexeme(
-			@RequestParam String searchFilter,
-			@RequestParam Long lexemeId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) throws Exception {
-
-		logger.debug("lexeme search {}, lexeme {}", searchFilter, lexemeId);
-
-		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-
-		String lexemeDatasetCode = lookupService.getLexemeDatasetCode(lexemeId);
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		List<String> tagNames = userContextData.getTagNames();
-		List<String> datasetCodes = Arrays.asList(lexemeDatasetCode);
-
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
-
-		model.addAttribute("lexemesFoundBySearch", lexemes);
-
-		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_search_result";
-	}
-
-	@GetMapping("/meaningsearch")
-	public String searchMeaning(@RequestParam String searchFilter, Model model) {
-
-		logger.debug("meaning search {}", searchFilter);
-
-		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
-
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		List<String> tagNames = userContextData.getTagNames();
-		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
-
-		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
-
-		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
-		List<Long> distinctMeanings = new ArrayList<>();
-		for (WordLexeme lexeme : lexemes) {
-			if (!distinctMeanings.contains(lexeme.getMeaningId())) {
-				lexemesFileterdByMeaning.add(lexeme);
-				distinctMeanings.add(lexeme.getMeaningId());
-			}
-		}
-		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
-
-		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_search_result";
 	}
 
 	@GetMapping("/personsearch")

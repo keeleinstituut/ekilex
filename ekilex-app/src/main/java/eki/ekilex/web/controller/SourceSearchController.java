@@ -30,7 +30,7 @@ import eki.ekilex.service.SourceService;
 
 @ConditionalOnWebApplication
 @Controller
-public class SourceSearchController extends AbstractSearchController {
+public class SourceSearchController extends AbstractPrivateSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceSearchController.class);
 

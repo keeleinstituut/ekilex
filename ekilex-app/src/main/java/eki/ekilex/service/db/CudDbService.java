@@ -346,7 +346,7 @@ public class CudDbService extends AbstractDataDbService {
 		create.update(WORD).set(WORD.VALUE_AS_WORD, valueAsWord).where(WORD.ID.eq(wordId)).execute();
 	}
 
-	public Long updateWordVocalForm(Long wordId, String vocalForm) {
+	public List<Long> updateWordVocalForm(Long wordId, String vocalForm) {
 		return create.update(FORM)
 				.set(FORM.VOCAL_FORM, vocalForm)
 				.from(PARADIGM)
@@ -354,8 +354,8 @@ public class CudDbService extends AbstractDataDbService {
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.returning(FORM.ID)
-				.fetchOne()
-				.getId();
+				.fetch()
+				.getValues(FORM.ID);
 	}
 
 	public void updateWordGender(Long wordId, String genderCode) {

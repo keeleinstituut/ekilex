@@ -28,7 +28,6 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
-import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.UnifSearchService;
@@ -141,17 +140,15 @@ public class UnifSearchController extends AbstractController {
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
 		WordData wordData = unifSearchService.getWordData(wordId, searchFilter, DISPLAY_LANG);
 
+		String wordValue = wordData.getWord().getWord();
+		sessionBean.setRecentWord(wordValue);
+
+		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
-		populateRecent(sessionBean, wordData);
+		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 
 		return UNIF_SEARCH_PAGE + " :: worddetails";
-	}
-
-	private void populateRecent(SessionBean sessionBean, WordData wordData) {
-		Word word = wordData.getWord();
-		String wordValue = word.getWord();
-		sessionBean.setRecentWord(wordValue);
 	}
 
 	private SearchValidation validateAndCorrectSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr) {

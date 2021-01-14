@@ -532,6 +532,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM.COMPLEXITY,
 						FREEFORM.IS_PUBLIC,
 						FREEFORM.ORDER_BY,
+						FREEFORM.MODIFIED_BY,
+						FREEFORM.MODIFIED_ON,
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
 						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),

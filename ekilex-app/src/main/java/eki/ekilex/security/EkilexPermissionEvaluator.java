@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.PermConstant;
 import eki.common.constant.ReferenceOwner;
@@ -31,7 +32,7 @@ import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
 
 @Component("permEval")
-public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant {
+public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant, GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(EkilexPermissionEvaluator.class);
 
@@ -46,7 +47,68 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	@Autowired
 	private SourceLinkDbService sourceLinkDbService;
 
-	// source
+	// page perm
+
+	@Transactional
+	public boolean isMutableDataPageAccessPermitted(Authentication authentication) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return false;
+		}
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		boolean crudPermExists = datasetPermissions.stream()
+				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
+						&& AUTH_OPS_CRUD.contains(datasetPermission.getAuthOperation().name()));
+		return crudPermExists;
+	}
+
+	@Transactional
+	public boolean isPrivatePageAccessPermitted(Authentication authentication) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return false;
+		}
+		if (user.isAdmin()) {
+			return true;
+		}
+		if (user.isMaster()) {
+			return true;
+		}
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		boolean privateAccessPermExists = datasetPermissions.stream()
+				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
+						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
+						&& !StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
+		return privateAccessPermExists;
+	}
+
+	@Transactional
+	public boolean isLimitedPageAccessPermitted(Authentication authentication) {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		Long userId = user.getId();
+		if (!Boolean.TRUE.equals(user.getEnabled())) {
+			return false;
+		}
+		if (user.isAdmin()) {
+			return true;
+		}
+		if (user.isMaster()) {
+			return true;
+		}
+		List<DatasetPermission> datasetPermissions = permissionDbService.getDatasetPermissions(userId);
+		boolean limitedAccessPermExists = datasetPermissions.stream()
+				.anyMatch(datasetPermission -> AuthorityItem.DATASET.equals(datasetPermission.getAuthItem())
+						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
+						&& StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
+		return limitedAccessPermExists;
+	}
+
+	// source crud
 
 	@Transactional
 	public boolean isSourceCrudGranted(Authentication authentication, String crudRoleDataset, Long sourceId) {
@@ -79,7 +141,7 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		return isGranted;
 	}
 
-	// source link
+	// source link crud
 
 	@Transactional
 	public boolean isSourceLinkCrudGranted(Principal principal, String crudRoleDataset, SourceLink sourceLink) {

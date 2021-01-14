@@ -117,10 +117,14 @@
       </div>
     </div>
   </th:block>
-  <th:block th:fragment="lexeme-data" th:with="isLex = ${lexeme.datasetType.name() == 'LEX'}, isTerm = ${lexeme.datasetType.name() == 'TERM'}">
+  <th:block th:fragment="lexeme-data" th:with="
+            isLex = ${viewUtil.isLexData(lexeme)},
+            isAnyTerm = ${viewUtil.isAnyTermData(lexeme)},
+            isProTerm = ${viewUtil.isProTermData(lexeme)},
+            isLimTerm = ${viewUtil.isLimTermData(lexeme)}">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-4 pl-3': ''">
-      <h6 class="font-weight-bold" th:if="${isTerm}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
-      <th:block th:if="${isTerm && (lexeme.preferredTermMeaningWord != null)}">
+      <h6 class="font-weight-bold" th:if="${isProTerm}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
+      <th:block th:if="${isAnyTerm && (lexeme.preferredTermMeaningWord != null)}">
         <div>
           <span th:utext="#{|label.term.suggest|(${viewUtil.getWordValueMarkup(wordData.word)})}"></span>
           <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, lexeme.preferredTermMeaningWord.word, lexeme.preferredTermMeaningWord.homonymNr)}}" class="synonym">
@@ -128,7 +132,7 @@
           </a>
         </div>
       </th:block>
-      <th:block th:if="${isLex || (isTerm && (lexeme.preferredTermMeaningWord == null))}">
+      <th:block th:if="${isLex || (isAnyTerm && (lexeme.preferredTermMeaningWord == null))}">
         <div class="d-flex flex-row">
           <th:block th:if="${isLex && wordData.multipleLexLexemesExist}">
             <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
@@ -137,9 +141,16 @@
             <div class="meaning">
               <div class="definition-row definition-area">
                 <div class="mb-3" th:if="${lexeme.showSection1}">
-                  <th:block th:if="${isTerm}">
+                  <th:block th:if="${isAnyTerm}">
                     <span>ID:</span>
-                    <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
+                    <th:block th:if="${isLimTerm}">
+                      <a th:href="${viewUtil.getEkilexLimTermMeaningDetailsUrl(lexeme.meaningId)}">
+                        <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
+                      </a>
+                    </th:block>
+                    <th:block th:if="${isProTerm}">
+                      <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
+                    </th:block>
                   </th:block>
                   <th:block th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
                     <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
@@ -251,7 +262,7 @@
                             <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                           </a>
                           <span th:if="${meaningWord.additionalDataExists}" class="text-small">
-                            <span th:if="${isTerm && (meaningWord.mwLexValueState != null)}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                            <span th:if="${isAnyTerm && (meaningWord.mwLexValueState != null)}" th:text="${meaningWord.mwLexValueState.value}"></span>
                             <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
                               <span class="type-two text-uppercase" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
@@ -358,7 +369,8 @@
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
                       <span th:each="note, noteIter : ${noteEntry.value}">
-                        <span th:utext="${note.value + (noteIter.last ? '' : '; ')}"></span>
+                        <span th:utext="${note.value}"></span>
+                        <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                         <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
                           <span th:each="sourceLink : ${note.sourceLinks}">
                             <button type="button" class="source-link btn btn-link-dark p-0 pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
@@ -367,6 +379,7 @@
                             </button>
                           </span>
                         </th:block>
+                        <span th:unless="${noteIter.last}" class="ml-n1">;</span>
                       </span>
                     </div>
                   </th:block>

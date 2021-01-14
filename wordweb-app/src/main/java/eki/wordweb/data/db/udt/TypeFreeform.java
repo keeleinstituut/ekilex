@@ -7,6 +7,8 @@ package eki.wordweb.data.db.udt;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 
+import java.sql.Timestamp;
+
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
@@ -20,7 +22,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
 
-    private static final long serialVersionUID = -913791627;
+    private static final long serialVersionUID = 141898784;
 
     /**
      * The reference instance of <code>public.type_freeform</code>
@@ -59,6 +61,16 @@ public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
      * The attribute <code>public.type_freeform.complexity</code>.
      */
     public static final UDTField<TypeFreeformRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_FREEFORM, "");
+
+    /**
+     * The attribute <code>public.type_freeform.created_by</code>.
+     */
+    public static final UDTField<TypeFreeformRecord, String> CREATED_BY = createField(DSL.name("created_by"), org.jooq.impl.SQLDataType.CLOB, TYPE_FREEFORM, "");
+
+    /**
+     * The attribute <code>public.type_freeform.created_on</code>.
+     */
+    public static final UDTField<TypeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP, TYPE_FREEFORM, "");
 
     /**
      * No further instances allowed

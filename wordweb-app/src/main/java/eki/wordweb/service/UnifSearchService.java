@@ -56,10 +56,11 @@ public class UnifSearchService extends AbstractSearchService {
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
 		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, dataFilter, displayLang);
 
-		Map<DatasetType, List<Lexeme>> lexemeGroups = lexemes.stream().collect(Collectors.groupingBy(Lexeme::getDatasetType));
+		List<Lexeme> lexLexemes = lexemes.stream().filter(lexeme -> DatasetType.LEX.equals(lexeme.getDatasetType())).collect(Collectors.toList());
+		List<Lexeme> termLexemes = lexemes.stream().filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && !StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED)).collect(Collectors.toList());
+		List<Lexeme> limTermLexemes = lexemes.stream().filter(lexeme -> DatasetType.TERM.equals(lexeme.getDatasetType()) && StringUtils.equals(lexeme.getDatasetCode(), DATASET_LIMITED)).collect(Collectors.toList());
 
 		// lex conv
-		List<Lexeme> lexLexemes = lexemeGroups.get(DatasetType.LEX);
 		if (CollectionUtils.isNotEmpty(lexLexemes)) {
 			List<CollocationTuple> collocTuples = searchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
@@ -71,15 +72,19 @@ public class UnifSearchService extends AbstractSearchService {
 		}
 
 		// term conv
-		List<Lexeme> termLexemes = lexemeGroups.get(DatasetType.TERM);
 		if (CollectionUtils.isNotEmpty(termLexemes)) {
 			lexemeConversionUtil.sortLexemes(termLexemes, DatasetType.TERM);
+		}
+
+		// lim term conv
+		if (CollectionUtils.isNotEmpty(limTermLexemes)) {
+			lexemeConversionUtil.sortLexemes(limTermLexemes, DatasetType.TERM);
 		}
 
 		// word common
 		wordConversionUtil.composeCommon(word, lexemes);
 
-		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes);
+		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes, limTermLexemes);
 	}
 
 	@Override

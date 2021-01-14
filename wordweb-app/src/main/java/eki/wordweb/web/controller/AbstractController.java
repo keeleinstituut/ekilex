@@ -50,8 +50,10 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		} else {
 			sessionBean = getSessionBean(model);
 		}
+		String ekilexLimTermSearchUrl = webUtil.getEkilexLimTermSearchUrl();
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
+		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 		return sessionBean;
 	}
 
@@ -112,6 +114,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		if (!StringUtils.isNumeric(value)) {
 			return null;
 		}
-		return new Integer(value);
+		return Integer.valueOf(value);
 	}
 }

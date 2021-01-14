@@ -153,9 +153,10 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			List<Form> forms,
 			List<Paradigm> paradigms,
 			List<Lexeme> lexLexemes,
-			List<Lexeme> termLexemes) {
+			List<Lexeme> termLexemes,
+			List<Lexeme> limTermLexemes) {
 
-		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes);
+		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes) || CollectionUtils.isNotEmpty(limTermLexemes);
 		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(word.getRelatedWords());
 		boolean multipleLexLexemesExist = CollectionUtils.size(lexLexemes) > 1;
 		String firstAvailableVocalForm = null;
@@ -176,6 +177,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordData.setWord(word);
 		wordData.setLexLexemes(lexLexemes);
 		wordData.setTermLexemes(termLexemes);
+		wordData.setLimTermLexemes(limTermLexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);

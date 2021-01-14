@@ -266,9 +266,9 @@ function initNewWordDlg() {
 		});
 		let searchValue = $("input[name='simpleSearchFilter']").val() || '';
 		if (!searchValue.includes('*') && !searchValue.includes('?')) {
-			newWordDlg.find('[name=value]').val(searchValue);
+			newWordDlg.find('[name=wordValue]').val(searchValue);
 		} else {
-			newWordDlg.find('[name=value]').val(null);
+			newWordDlg.find('[name=wordValue]').val(null);
 		}
 		let meaningId = $(e.relatedTarget).data('meaning-id');
 		$('[name=meaningId]').val(meaningId);

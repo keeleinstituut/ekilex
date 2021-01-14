@@ -129,7 +129,7 @@
   <th:block th:fragment="word_types(details)" th:if="${details != null}">
     <div class="row" th:if="${not #lists.isEmpty(details.wordTypes)}">
       <div class="col pr-0 col-w13rem">
-        <span class="lbl">Sõna tüüp</span>
+        <span class="lbl">Keelendi tüüp</span>
       </div>
       <div class="col pl-0">
         <span th:each="classif,classifIter : ${details.wordTypes}" class="hidden-buttons">
