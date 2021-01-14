@@ -8,7 +8,7 @@
 
 .lexeme-list-item {
   .lexeme-inner{
-    @include transition(transform ease-in-out .3s);
+    
   }
   &.ui-state-active {
     color: $gray-900;
