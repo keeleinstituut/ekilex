@@ -53,13 +53,6 @@ function initializeSynSearch() {
 			let detailsDiv = $('#syn-details-area');
 			detailsDiv.replaceWith(data);
 
-			/* for testing purposes only */
-			const repeat = 6;
-			detailsDiv = $('#syn-details-area .lexeme-list');
-			for( var i = 0; i < repeat; i++) {
-				detailsDiv.append($(data).find('.lexeme-list').html());
-			}
-
 			$('.tooltip').remove();
 			closeWaitDlg();
 			$("#syn_select_wait_" + id).hide();
