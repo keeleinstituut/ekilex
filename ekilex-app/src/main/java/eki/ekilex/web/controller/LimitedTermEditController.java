@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +33,8 @@ import eki.ekilex.web.util.SearchHelper;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class LimitedTermEditController extends AbstractMutableDataPageController {
 
+	private final List<String> limitedDatasets = new ArrayList<>(Arrays.asList(DATASET_LIMITED));
+
 	@Autowired
 	private CudService cudService;
 
@@ -52,10 +56,8 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
-			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
-
 			sessionBean.setRecentLanguage(language);
-			searchUri = searchHelper.composeSearchUri(userPrefDatasetCodes, wordValue);
+			searchUri = searchHelper.composeSearchUri(limitedDatasets, wordValue);
 			cudService.createWord(wordDetails);
 		}
 		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
@@ -67,16 +69,15 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 
 		if (searchFilter == null) {
-			String targetMeaningFirstWord = termSearchService.getMeaningFirstWordValue(targetMeaningId, userPrefDatasetCodes);
+			String targetMeaningFirstWord = termSearchService.getMeaningFirstWordValue(targetMeaningId, limitedDatasets);
 			searchFilter = targetMeaningFirstWord;
 		}
 
 		Meaning targetMeaning = lookupService.getMeaningOfJoinTarget(userRole, targetMeaningId, languagesOrder);
-		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(userRole, userPrefDatasetCodes, searchFilter, languagesOrder, targetMeaningId);
+		List<Meaning> sourceMeanings = lookupService.getMeaningsOfJoinCandidates(userRole, limitedDatasets, searchFilter, languagesOrder, targetMeaningId);
 
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("targetMeaningId", targetMeaningId);
@@ -91,9 +92,8 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 
 		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds);
 
-		List<String> datasets = getUserPreferredDatasetCodes();
-		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, datasets);
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, wordValue, targetMeaningId);
+		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, limitedDatasets);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(limitedDatasets, wordValue, targetMeaningId);
 
 		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}

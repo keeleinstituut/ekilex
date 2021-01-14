@@ -43,6 +43,8 @@ public class LimitedTermSearchController extends AbstractSearchController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LimitedTermSearchController.class);
 
+	private final List<String> limitedDatasets = new ArrayList<>(Arrays.asList(DATASET_LIMITED));
+
 	@Autowired
 	private TermSearchService termSearchService;
 
@@ -66,10 +68,7 @@ public class LimitedTermSearchController extends AbstractSearchController {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
 
-		String roleDatasetCode = getDatasetCodeFromRole();
-		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
-
-		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, SearchResultMode.MEANING, null);
+		String searchUri = searchHelper.composeSearchUri(searchMode, limitedDatasets, simpleSearchFilter, detailSearchFilter, SearchResultMode.MEANING, null);
 
 		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}
@@ -92,8 +91,6 @@ public class LimitedTermSearchController extends AbstractSearchController {
 			return LIM_TERM_SEARCH_PAGE;
 		}
 
-		String roleDatasetCode = getDatasetCodeFromRole();
-		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 		String searchMode = searchUriData.getSearchMode();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
@@ -103,9 +100,9 @@ public class LimitedTermSearchController extends AbstractSearchController {
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, roleDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, limitedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		} else {
-			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, roleDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		}
 		boolean noResults = termSearchResult.getResultCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -127,10 +124,9 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		List<String> selectedDatasets = userProfile.getPreferredDatasets();
 		UserContextData userContextData = getUserContextData();
 		Tag activeTag = userContextData.getActiveTag();
-		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder, userProfile, user, activeTag);
+		Meaning meaning = termSearchService.getMeaning(meaningId, limitedDatasets, languagesOrder, userProfile, user, activeTag);
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 
@@ -140,9 +136,8 @@ public class LimitedTermSearchController extends AbstractSearchController {
 	@GetMapping(LIM_TERM_MEANING_BACK_URI + "/{meaningId}")
 	public String limMeaningBack(@PathVariable("meaningId") Long meaningId) {
 
-		List<String> datasets = getUserPreferredDatasetCodes();
-		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, datasets);
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, firstWordValue, meaningId);
+		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, limitedDatasets);
+		String searchUri = searchHelper.composeSearchUriAndAppendId(limitedDatasets, firstWordValue, meaningId);
 
 		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}
