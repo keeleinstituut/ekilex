@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_FREQ;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREQ_CORP;
+import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
@@ -25,15 +26,17 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Param;
+import org.jooq.Record11;
 import org.jooq.Record16;
-import org.jooq.Record8;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +59,7 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFreq;
 import eki.ekilex.data.db.tables.FreqCorp;
+import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -74,6 +78,7 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.service.db.util.LexSearchConditionComposer;
 import eki.ekilex.service.db.util.SearchFilterHelper;
@@ -652,8 +657,27 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
+		Language ln = LANGUAGE.as("ln");
+		Dataset ds = DATASET.as("ds");
+		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
-		Table<Record8<Long, String, String, Integer, String, String, String, String>> w = DSL
+		Field<Long> mdsobf = DSL
+				.select(DSL.min(ds.ORDER_BY))
+				.from(l, ds)
+				.where(l.WORD_ID.eq(w1.ID).and(l.DATASET_CODE.eq(ds.CODE)))
+				.asField();
+		Field<Long> lnobf = DSL
+				.select(ln.ORDER_BY)
+				.from(ln)
+				.where(ln.CODE.eq(w1.LANG))
+				.asField();
+		Field<Long> wtobf = DSL
+				.select(DSL.count(wt.ID))
+				.from(wt)
+				.where(wt.WORD_ID.eq(w1.ID).and(wt.WORD_TYPE_CODE.in(Arrays.asList(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
+				.asField();
+
+		Table<Record11<Long, String, String, Integer, String, String, String, String, Long, Long, Long>> w = DSL
 				.select(
 						w1.ID.as("word_id"),
 						w1.VALUE.as("word_value"),
@@ -662,7 +686,10 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w1.LANG,
 						w1.WORD_CLASS,
 						w1.GENDER_CODE,
-						w1.ASPECT_CODE)
+						w1.ASPECT_CODE,
+						mdsobf.as("min_ds_order_by"),
+						lnobf.as("lang_order_by"),
+						wtobf.as("word_type_order_by"))
 				.from(w1)
 				.where(where)
 				//.groupBy(w1.ID)
@@ -746,7 +773,10 @@ public class LexSearchDbService extends AbstractDataDbService {
 						dscf.as("dataset_codes"))
 				.from(w)
 				.orderBy(
+						w.field("min_ds_order_by"),
+						w.field("lang_order_by"),
 						wvobf,
+						w.field("word_type_order_by"),
 						w.field("homonym_nr"))
 				.asTable("ww");
 
