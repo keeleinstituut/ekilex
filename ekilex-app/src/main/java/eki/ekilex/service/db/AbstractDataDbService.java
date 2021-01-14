@@ -11,6 +11,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -237,6 +238,26 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.groupBy(lexemeIdField)
 				.asField();
 		return clf;
+	}
+
+	protected Field<TypeClassifierRecord> getLexemeValueStateField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.VALUE_STATE.name())), VALUE_STATE_LABEL.CODE, VALUE_STATE_LABEL.VALUE).toString();
+		Field<TypeClassifierRecord> claggf = DSL.field(
+				"array_agg("
+						+ clrowsql
+						+ "::type_classifier)",
+				TypeClassifierRecord.class);
+
+		return DSL
+				.select(claggf)
+				.from(LEXEME, VALUE_STATE_LABEL)
+				.where(
+						LEXEME.ID.eq(lexemeIdField)
+								.and(VALUE_STATE_LABEL.CODE.eq(LEXEME.VALUE_STATE_CODE))
+								.and(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang))
+								.and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.asField();
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

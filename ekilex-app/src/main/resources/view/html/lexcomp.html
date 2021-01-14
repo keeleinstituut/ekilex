@@ -26,11 +26,11 @@
                 <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
               </small>
               <span class="d-flex align-items-start">
-                <small th:if="${not #lists.isEmpty(word.lexemesValueStateCodes)}">
-                  <span th:text="${#strings.listJoin(word.lexemesValueStateCodes, ', ')}"></span>
+                <small th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}">
+                  <span th:text="${#strings.listJoin(word.lexemesValueStateLabels, ', ')}"></span>
                 </small>
                 <small th:if="${word.lexemesArePublic != null}">
-                  <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateCodes)}">|</span>
+                  <span class="ml-1" th:if="${not #lists.isEmpty(word.lexemesValueStateLabels)}">|</span>
                   <span th:if="${word.lexemesArePublic}">avalik</span>
                   <span th:unless="${word.lexemesArePublic}">mitteavalik</span>
                 </small>
@@ -119,12 +119,12 @@
       </button>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state">
+  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueState != null}" th:fragment="lexeme_value_state">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Väärtusolek</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${lexeme.lexemeValueStateCode}"></span>
+      <span th:text="${lexeme.lexemeValueState.value}"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"

@@ -958,12 +958,12 @@
       </button>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display: none;">
+  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueState != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display: none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Väärtusolek</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${lexeme.lexemeValueStateCode}"></span>
+      <span th:text="${lexeme.lexemeValueState.value}"></span>
       <button type="button" class="btn badge badge-primary" title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editLexemeValueStateCodeDlg_' + lexeme.lexemeId}"

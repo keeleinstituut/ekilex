@@ -49,6 +49,8 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private String lexemeValueStateCode;
 
+	private Classifier lexemeValueState;
+
 	private List<String> tags;
 
 	private boolean isPublic;
@@ -268,6 +270,14 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setLexemeValueStateCode(String lexemeValueStateCode) {
 		this.lexemeValueStateCode = lexemeValueStateCode;
+	}
+
+	public Classifier getLexemeValueState() {
+		return lexemeValueState;
+	}
+
+	public void setLexemeValueState(Classifier lexemeValueState) {
+		this.lexemeValueState = lexemeValueState;
 	}
 
 	@Override

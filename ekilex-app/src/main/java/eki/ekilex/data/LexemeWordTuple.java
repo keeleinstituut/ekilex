@@ -21,6 +21,8 @@ public class LexemeWordTuple extends AbstractDataObject {
 
 	private String lexemeValueStateCode;
 
+	private Classifier lexemeValueState;
+
 	private boolean isPublic;
 
 	private Complexity complexity;
@@ -103,6 +105,14 @@ public class LexemeWordTuple extends AbstractDataObject {
 
 	public void setLexemeValueStateCode(String lexemeValueStateCode) {
 		this.lexemeValueStateCode = lexemeValueStateCode;
+	}
+
+	public Classifier getLexemeValueState() {
+		return lexemeValueState;
+	}
+
+	public void setLexemeValueState(Classifier lexemeValueState) {
+		this.lexemeValueState = lexemeValueState;
 	}
 
 	public boolean isPublic() {
