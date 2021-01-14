@@ -37,7 +37,7 @@
   <th:block th:fragment="nav_bar">
     <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'syn' ? '' : 'fixed-top'}">
       <a th:href="@{/}">
-        <span th:if="${activeItem == 'home'}" class="text-white">
+        <span th:if="${activeItem == 'home' || activeItem == 'limterm'}" class="text-white">
           Ekilex <small class="pl-2" th:text="${'v.' + appData.appVersion}">1.0.0</small>
         </span>
       </a>
@@ -57,6 +57,7 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
               <a class="dropdown-item side-menu-item" sec:authorize="#vars.userRoleData.crudRoleSelected" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Vasted</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
                  sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
@@ -80,7 +81,7 @@
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
         <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
       </button>
-      <button type="button" class="btn btn-primary rounded-0"
+      <button type="button" class="btn btn-primary rounded-0 border-left ml-2"
               data-toggle="modal"
               data-target="#newLimTermWordDlg"
               sec:authorize="#vars.userRoleData.crudRoleSelected"
