@@ -35,15 +35,38 @@ import eki.ekilex.web.util.ValueUtil;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SourceEditController extends AbstractPrivatePageController {
+public class SourceEditController extends AbstractMutableDataPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceEditController.class);
+
+	private static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 15;
 
 	@Autowired
 	private SourceService sourceService;
 
 	@Autowired
 	private ValueUtil valueUtil;
+
+	@GetMapping(SOURCE_NAME_SEARCH_URI + "/{nameSearchFilter}")
+	@ResponseBody
+	public List<String> sourceNameSearch(@PathVariable("nameSearchFilter") String nameSearchFilter) {
+
+		List<String> sourceNames = sourceService.getSourceNames(nameSearchFilter, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		return sourceNames;
+	}
+
+	@GetMapping(SEARCH_SOURCES_URI)
+	public String sourceSearch(@RequestParam String searchFilter, Model model) {
+
+		logger.debug("Searching by : \"{}\"", searchFilter);
+
+		List<Source> sources = sourceService.getSources(searchFilter);
+		model.addAttribute("searchFilter", searchFilter);
+		model.addAttribute("sources", sources);
+		model.addAttribute("sourceCount", sources.size());
+
+		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "source_link_dlg";
+	}
 
 	@PostMapping(UPDATE_SOURCE_PROPERTY_URI)
 	public String updateSourceProperty(
