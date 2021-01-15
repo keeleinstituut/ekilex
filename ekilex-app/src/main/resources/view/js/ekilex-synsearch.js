@@ -30,7 +30,7 @@ function initializeSynSearch() {
 		var savedScrollPositions = getScrollPositions();
 
 		let id = $(this).data('id');
-		let markedSynWordId = $(document).find('.keyboard-nav-list-item-selected').children(':first').data('word-id');
+		let markedSynMeaningId = $(document).find('.keyboard-nav-list-item-selected').data('meaning-id');
 
 		$('#synSearchResultsDiv').find('.list-group-item').each(function() {
 			$(this).removeClass('keyboard-nav-list-item-active active');
@@ -45,14 +45,13 @@ function initializeSynSearch() {
 		openWaitDlg();
 
 		let detailsUrl = applicationUrl + "syn_worddetails/" + id;
-		if (markedSynWordId != undefined) {
-			detailsUrl += '?markedSynWordId=' + markedSynWordId;
+		if (markedSynMeaningId != undefined) {
+			detailsUrl += '?markedSynMeaningId=' + markedSynMeaningId;
 		}
 
 		$.get(detailsUrl).done(function(data) {
 			let detailsDiv = $('#syn-details-area');
 			detailsDiv.replaceWith(data);
-
 			$('.tooltip').remove();
 			closeWaitDlg();
 			$("#syn_select_wait_" + id).hide();
@@ -73,7 +72,6 @@ function initializeSynSearch() {
 				containment: "window",
 				helper: "clone"
 			});
-
 			$(document).find('.draggable-meaning').draggable(
 				{
 					revert: "invalid",
@@ -84,12 +82,37 @@ function initializeSynSearch() {
 				}
 			);
 
+			let scrollDebounce;
+			$('.lexeme-list').off('scroll.droppable').on('scroll.droppable', function(){
+				const main = $(this);
+				clearTimeout(scrollDebounce);
+				scrollDebounce = setTimeout(function(){
+					const elements = main.find('.lexeme-list-item');
+					const scrollTop = main.scrollTop();
+					const mainHeight = main.height();
+					const topPos = main.offset().top + scrollTop;
+					console.log(elements.length);
+					elements.each(function(){
+						const obj = $(this);
+						const objTop = obj.offset().top + scrollTop;
+						if (objTop + 100 > topPos && objTop - 100 < topPos + mainHeight) {
+							obj.addClass('canAccept');
+							obj.find('.droppable-meaning').addClass('canAccept');
+						} else {
+							obj.removeClass('canAccept');
+							obj.find('.droppable-meaning').removeClass('canAccept');
+						}
+					});
+				}, 150);
+			}).trigger('scroll');
+
 			$(document).find('.droppable-meaning').droppable({
 				accept: function(draggableDiv) {
 					if ($(this).is('.canAccept')) {
+
 						let draggableLexemeId = draggableDiv.closest('.droppable-lexeme').attr('data-lexeme-id');
 						let droppableLexemeId = $(this).closest('.droppable-lexeme').attr('data-lexeme-id');
-
+						
 						return draggableLexemeId === droppableLexemeId;
 					}
 				}
@@ -118,38 +141,15 @@ function initializeSynSearch() {
 				}
 			});
 
-			let scrollDebounce;
-			$('.lexeme-list').off('scroll.droppable').on('scroll.droppable', function(){
-				const main = $(this);
-				clearTimeout(scrollDebounce);
-				scrollDebounce = setTimeout(function(){
-					const elements = main.find('.lexeme-list-item, .droppable-meaning');
-					const scrollTop = main.scrollTop();
-					const mainHeight = main.height();
-					const topPos = main.offset().top + scrollTop;
-					console.log(elements.length);
-					elements.each(function(){
-						const obj = $(this);
-						const objTop = obj.offset().top + scrollTop;
-						if (objTop + 100 > topPos && objTop - 100 < topPos + mainHeight) {
-							obj.addClass('canAccept');
-						} else {
-							obj.removeClass('canAccept');
-						}
-					});
-				}, 150);
-			}).trigger('scroll');
-
-		
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
 					if ($(this).is('.canAccept')) {
 						if (draggableDiv.hasClass("draggable-synonym")) {
-							let wordId = draggableDiv.data('word-id');
-							let existingWord = $(this).find("input.meaning-word-id[value='" + wordId + "']");
-							
-							if (!existingWord.length) {
-								return  true;
+							let meaningId = draggableDiv.data('meaning-id');
+							let existingMeaning = $(this).find("input.relation-meaning-id[value='" + meaningId + "']");
+
+							if (!existingMeaning.length) {
+								return true;
 							}
 						}
 					}
@@ -159,13 +159,12 @@ function initializeSynSearch() {
 					"ui-droppable-hover": "ui-state-hover"
 				},
 				drop: function(event, ui) {
-					let relationId = ui.draggable.parent().data('id');
 
-					let meaningId = $(this).data('meaning-id');
-					let lexemeId = $(this).data('lexeme-id');
-					let wordId = ui.draggable.data('word-id');
+					let targetMeaningId = $(this).data('meaning-id');
+					let wordRelationId = ui.draggable.parent().data('id');
+					let sourceMeaningId = ui.draggable.data('meaning-id');
 
-					let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+					let actionUrl = applicationUrl + 'syn_create_meaning_relation/' + targetMeaningId + '/' + sourceMeaningId + '/' + wordRelationId;
 
 					openWaitDlg();
 					let callbackFunc = () => refreshSynDetails();
@@ -450,9 +449,8 @@ function isDisabledItem(activeDiv, navigateItem) {
 	let panelIndex = activeDiv.attr('data-panel-index');
 
 	if (panelIndex == "2") {
-		let wordId = activeDiv.data('marked-word-id');
-
-		return navigateItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+		let meaningId = activeDiv.data('marked-meaning-id');
+		return navigateItem.find('input.relation-meaning-id[value="' + meaningId + '"]').length != 0;
 	}
 	return false;
 }
@@ -589,7 +587,7 @@ function handleEscapeKeyPress(currentActivePanelIndex) {
 		changeSynonymDefinitionDisplay('hide');
 	}
 	$('.keyboard-nav-list').each(function() {
-		$(this).removeAttr('data-marked-word-id');
+		$(this).removeAttr('data-marked-meaning-id');
 		$(this).removeAttr('data-active-panel');
 		$(this).removeClass('keyboard-nav-list-active');
 		$(this).find('[data-navigate-index]').each(function() {
@@ -618,29 +616,29 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 		currentSelectedItem.addClass('keyboard-nav-list-item-selected');
 
 		unActivateItem(currentSelectedItem, false);
-		let wordId = currentSelectedItem.children(':first').attr('data-word-id');
+		let meaningId = currentSelectedItem.attr('data-meaning-id');
 
 		let activatedList = $('div[data-panel-index="' + 2 + '"]');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-		activatedList.data('marked-word-id', wordId);
+		activatedList.data('marked-meaning-id', meaningId);
 
 		let selectedLexemeItem = findSelectedNavigateItem(activatedList);
 
-		let lexemeExists = selectedLexemeItem.find('input.meaning-word-id[value="' + wordId + '"]').length != 0;
+		let lexemeExists = selectedLexemeItem.find('input.relation-meaning-id[value="' + meaningId + '"]').length != 0;
 
 		selectedLexemeItem.addClass(lexemeExists ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 		selectedLexemeItem.attr(NAVIGATE_SELECTED_ATTR, true);
 
 	} else if (currentActivePanelIndex == "2") {
 		if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-			let wordId = currentActiveList.data('marked-word-id');
-			let relationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('id');
+			let meaningId = currentActiveList.data('marked-meaning-id');
+			let wordRelationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('relation-id');
+			let sourceMeaningId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('meaning-id');
 
-			if (wordId != undefined) {
-				let lexemeId = currentSelectedItem.data('lexeme-id');
-				let meaningId = currentSelectedItem.data('meaning-id');
+			if (meaningId != undefined) {
+				let targetMeaningId = currentSelectedItem.data('meaning-id');
 
-				let actionUrl = applicationUrl + 'syn_create_lexeme/' + meaningId + '/' + wordId + '/' + lexemeId + '/' + relationId;
+				let actionUrl = applicationUrl + 'syn_create_meaning_relation/' + targetMeaningId + '/' + sourceMeaningId + '/' + wordRelationId;
 				let callbackFunc = () => refreshSynDetails();
 				doPostRelationChange(actionUrl, callbackFunc);
 
