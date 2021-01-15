@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MORPH_FREQ;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
@@ -230,6 +231,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
@@ -254,6 +256,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						l.LEVEL1,
 						l.LEVEL2,
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+						lvalstf.as("lexeme_value_state"),
 						l.IS_PUBLIC,
 						l.COMPLEXITY,
 						l.WEIGHT,
@@ -288,6 +291,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lderf = getLexemeDerivsField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return create
 				.select(
@@ -310,6 +314,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						l.LEVEL1,
 						l.LEVEL2,
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+						lvalstf.as("lexeme_value_state"),
 						l.IS_PUBLIC,
 						l.COMPLEXITY,
 						l.WEIGHT,
@@ -700,21 +705,24 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtz = getWordIsForeignField(w.field("word_id", Long.class));
 
-		Field<String[]> lxvsf;
+		Field<String[]> lxvslvf;
 		Field<Boolean> lxpsf;
 		Field<String[]> lxtnf;
 		if (userRole == null) {
-			lxvsf = DSL.field(DSL.val(new String[0]));
+			lxvslvf = DSL.field(DSL.val(new String[0]));
 			lxpsf = DSL.field(DSL.val((Boolean) null));
 			lxtnf = DSL.field(DSL.val(new String[0]));
 		} else {
 			String userRoleDatasetCode = userRole.getDatasetCode();
-			lxvsf = DSL.field(DSL
-					.select(DSL.arrayAggDistinct(l.VALUE_STATE_CODE))
-					.from(l)
+			lxvslvf = DSL.field(DSL
+					.select(DSL.arrayAggDistinct(VALUE_STATE_LABEL.VALUE))
+					.from(l, VALUE_STATE_LABEL)
 					.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
 							.and(l.DATASET_CODE.eq(userRoleDatasetCode))
-							.and(l.VALUE_STATE_CODE.isNotNull()))
+							.and(l.VALUE_STATE_CODE.isNotNull())
+							.and(VALUE_STATE_LABEL.CODE.eq(l.VALUE_STATE_CODE))
+							.and(VALUE_STATE_LABEL.LANG.eq(CLASSIF_LABEL_LANG_EST))
+							.and(VALUE_STATE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP)))
 					.groupBy(w.field("word_id")));
 			lxpsf = DSL.field(DSL
 					.select(DSL.field(DSL.val(PUBLICITY_PUBLIC).eq(DSL.all(DSL.arrayAggDistinct(l.IS_PUBLIC)))))
@@ -768,7 +776,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
 						lxpsf.as("lexemes_are_public"),
-						lxvsf.as("lexemes_value_state_codes"),
+						lxvslvf.as("lexemes_value_state_labels"),
 						lxtnf.as("lexemes_tag_names"),
 						dscf.as("dataset_codes"))
 				.from(w)

@@ -1,10 +1,8 @@
 package eki.ekilex.web.util;
 
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import eki.ekilex.service.CommonDataService;
 public class ViewUtil implements InitializingBean {
 
 	private static final String LEXEME_WEIGHT_PATTERN = "#.##";
-
-	private static final int DEFINITION_MAX_CHARS = 100;
 
 	private Map<String, String> languageIso2Map = null;
 
