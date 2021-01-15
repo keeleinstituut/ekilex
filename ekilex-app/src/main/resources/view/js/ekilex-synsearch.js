@@ -123,7 +123,7 @@ function initializeSynSearch() {
 				const main = $(this);
 				clearTimeout(scrollDebounce);
 				scrollDebounce = setTimeout(function(){
-					const elements = main.find('.lexeme-list-item');
+					const elements = main.find('.lexeme-list-item, .droppable-meaning');
 					const scrollTop = main.scrollTop();
 					const mainHeight = main.height();
 					const topPos = main.offset().top + scrollTop;
