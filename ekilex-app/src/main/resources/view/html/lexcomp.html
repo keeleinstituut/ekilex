@@ -93,7 +93,7 @@
       <span class="lbl">Detailsus</span>
     </div>
     <div class="col pl-0">
-      <span th:text="#{'enum.complexity.' + ${lexeme.complexity}}"></span>
+      <span th:text="#{'enum.complexity.' + ${lexeme.complexity}}" data-plugin="complexity"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
@@ -158,7 +158,7 @@
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
         <span th:replace="lexdialog :: edit_lexeme_grammar_dlg"></span>
         <span th:utext="${grammar.valuePrese}"></span>
-        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${grammar.complexity}} + ')'"></span>
+        <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${grammar.complexity}} + ')'" data-plugin="complexity"></span>
         <button type="button" class="btn badge badge-primary"
                 title="Muuda"
                 data-toggle="modal"

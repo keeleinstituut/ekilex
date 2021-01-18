@@ -332,8 +332,6 @@ function loadDetails(wordId, task, lastWordId) {
 				});
 				var scrollPosition = parseInt(dataObject.attr('data-id')) === wordId ? detailsDiv[0].scrollTop : 0;
 
-				console.log(detailsDiv);
-				console.log(detailsDiv[0].scrollTop);
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 				var newDiv;
 				detailsDiv.replaceWith(newDiv = $(dataObject[0].outerHTML));
@@ -510,6 +508,10 @@ $.fn.complexity = function() {
 		'(Detailne)': 'fa fa-hourglass',
 		'(Lihtne)': 'fa fa-hourglass-o',
 		'(Lihtne/Detailne)': 'fa fa-hourglass-end',
+		'(Avalik)': 'fa fa-unlock',
+		'(Mitteavalik)': 'fa fa-lock',
 	};
-	main.addClass('complexity-icon').html('<i class="'+types[text]+'"></i>');
+
+	main.addClass('complexity-icon').attr('title', text).html('<i class="'+types[text]+'"></i>');
+	main.tooltip();
 }
