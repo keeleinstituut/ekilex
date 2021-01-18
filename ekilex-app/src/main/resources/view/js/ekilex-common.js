@@ -23,7 +23,11 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
 function doPostDelete(deleteUrl, callback) {
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
-			callback();
+			if (QueryParams.parseParams(deleteUrl).id) {
+				$('#lexeme-details-'+QueryParams.parseParams(deleteUrl).id).parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+			} else {
+				callback();
+			}
 		} else {
 			openAlertDlg("Andmete eemaldamine ebaõnnestus.");
 			console.log(data);

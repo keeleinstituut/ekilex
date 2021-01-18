@@ -1,6 +1,6 @@
 class QueryParamsService {
-  parseParams() {
-    const search = window.location.search;
+  parseParams(params) {
+    const search = params || window.location.search;
     const query = search.substring(search.indexOf('?') + 1);
 
     var re = /([^&=]+)=?([^&]*)/g;
@@ -70,6 +70,7 @@ class QueryParamsService {
     const search = this.generateSearch(params);
     window.history.replaceState(null, null, `?${search}`);
   }
+
 }
 
 const QueryParams = new QueryParamsService();
