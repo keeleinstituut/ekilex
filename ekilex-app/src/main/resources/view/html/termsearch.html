@@ -52,14 +52,14 @@
       <div class="mt-4 float-left" th:if="${noResults == true}">
         <div th:text="#{term.not.found}">Not found.</div>
       </div>
-      <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;" id="searchColumn" th:if="${isSearchResult}">
-        <div id="results_div" class="card shadow" th:if="${termSearchResult.resultExist}">
+      <div class="col-3 pr-2 pb-2" style="align-self: stretch; overflow-y: auto;" id="searchColumn" th:if="${isSearchResult}">
+        <div id="results_div" class="card shadow" th:if="${termSearchResult.resultExist}" style="height: 100%;">
           <div th:replace="termcomp :: term_search_result"></div>
         </div>
       </div>
       <div class="h-100 d-flex flex-column" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
         <div class="scrollable-area" data-plugin="ekiSortable">
-          <div id="details-area" data-rel="details-area" style="height:100%; overflow:auto;"></div>
+          <div id="details-area" data-rel="details-area" style="height: 100%; overflow: auto;"></div>
         </div>
       </div>
     </div>
