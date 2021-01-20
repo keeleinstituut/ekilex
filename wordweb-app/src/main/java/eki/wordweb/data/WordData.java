@@ -22,7 +22,7 @@ public class WordData extends AbstractDataObject {
 
 	private String firstAvailableAudioFile;
 
-	private boolean unknownForm;
+	private boolean morphologyExists;
 
 	private boolean relevantDataExists;
 
@@ -86,12 +86,12 @@ public class WordData extends AbstractDataObject {
 		this.firstAvailableAudioFile = firstAvailableAudioFile;
 	}
 
-	public boolean isUnknownForm() {
-		return unknownForm;
+	public boolean isMorphologyExists() {
+		return morphologyExists;
 	}
 
-	public void setUnknownForm(boolean unknownForm) {
-		this.unknownForm = unknownForm;
+	public void setMorphologyExists(boolean morphologyExists) {
+		this.morphologyExists = morphologyExists;
 	}
 
 	public boolean isRelevantDataExists() {

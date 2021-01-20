@@ -13,7 +13,9 @@ public interface WebConstant {
 
 	String LITE_SEARCH_PAGE = "simple-search";
 
-	String MORPHO_PAGE = "morpho";
+	String MORPHO_SHORT_PAGE = "morpho-short";
+
+	String MORPHO_FULL_PAGE = "morpho-full";
 
 	String LEARN_PAGE = "learn";
 

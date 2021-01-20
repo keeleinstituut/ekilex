@@ -22,7 +22,7 @@ import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguageData;
 import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.StaticParadigm;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
@@ -162,7 +162,7 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return htmlBuf.toString();
 	}
 
-	public List<Form> getForms(StaticParadigm paradigm, String morphCode) {
+	public List<Form> getForms(Paradigm paradigm, String morphCode) {
 		if (paradigm == null) {
 			return Collections.emptyList();
 		}

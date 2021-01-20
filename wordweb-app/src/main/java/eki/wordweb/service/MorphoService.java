@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.StaticParadigm;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ParadigmConversionUtil;
 
@@ -24,11 +24,11 @@ public class MorphoService implements WebConstant, SystemConstant {
 	protected ParadigmConversionUtil paradigmConversionUtil;
 
 	@Transactional
-	public StaticParadigm getStaticParadigm(Long paradigmId, Integer maxDisplayLevel) {
+	public Paradigm getParadigm(Long paradigmId, Integer maxDisplayLevel) {
 
 		List<Form> forms = searchDbService.getParadigmForms(paradigmId, maxDisplayLevel);
 		paradigmConversionUtil.calcFreqScale(forms);
-		StaticParadigm staticParadigm = paradigmConversionUtil.composeStaticParadigm(paradigmId, forms, DISPLAY_LANG);
-		return staticParadigm;
+		Paradigm paradigm = paradigmConversionUtil.composeParadigm(paradigmId, forms, DISPLAY_LANG);
+		return paradigm;
 	}
 }
