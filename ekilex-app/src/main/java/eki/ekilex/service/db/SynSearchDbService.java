@@ -4,6 +4,7 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
@@ -16,7 +17,7 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record18;
-import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -60,6 +62,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
 		LexemePos lp = LEXEME_POS.as("lp");
+		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		Definition d = DEFINITION.as("d");
 
 		Field<TypeWordRelParamRecord[]> relp = DSL
@@ -69,12 +72,22 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(rp.WORD_RELATION_ID)
 				.asField();
 
-		Table<Record2<Long, String[]>> relmt = DSL
-				.select(l2.MEANING_ID, DSL.arrayAgg(d.VALUE).orderBy(l2.ORDER_BY, d.ORDER_BY).as("definitions"))
+
+		Table<Record3<Long, String[], String[]>> relmt = DSL
+				// TODO try to combine distinct and order by - yogesh
+				.select(
+						l2.MEANING_ID,
+						// DSL.arrayAgg(d.VALUE).orderBy(l2.ORDER_BY, d.ORDER_BY).as("definitions"),
+						DSL.arrayAggDistinct(d.VALUE).as("definitions"),
+						// DSL.arrayAgg(lr.REGISTER_CODE).orderBy(l2.ORDER_BY, lr.ORDER_BY).as("lex_register_codes"))
+						DSL.arrayAggDistinct(lr.REGISTER_CODE).as("lex_register_codes"))
 				.from(
-						l2.leftOuterJoin(d).on(
-								l2.MEANING_ID.eq(d.MEANING_ID)
-										.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%")))))
+						l2
+								.leftOuterJoin(d).on(
+										l2.MEANING_ID.eq(d.MEANING_ID)
+										.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
+								.leftOuterJoin(lr).on(
+										l2.ID.eq(lr.LEXEME_ID)))
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
 								.and(l2.DATASET_CODE.eq(datasetCode))
@@ -83,7 +96,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.asTable("relmt");
 
 		Field<TypeWordRelMeaningRecord[]> relm = DSL
-				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions, relmt.lex_register_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
 				.from(relmt)
 				.asField("relm");
 

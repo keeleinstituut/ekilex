@@ -1,8 +1,10 @@
 package eki.ekilex.web.util;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,5 +78,29 @@ public class ViewUtil implements InitializingBean {
 	public String composeFunction(String functionName, Object... args) {
 		String functionSignature = functionName + "(" + StringUtils.join(args, ',') + ")";
 		return functionSignature;
+	}
+
+	public String getLexRegisterTooltipHtml(List<String> lexRegisterCodes) {
+
+		StringBuilder htmlBuf = new StringBuilder();
+		if (CollectionUtils.isEmpty(lexRegisterCodes) || StringUtils.isEmpty(lexRegisterCodes.get(0))) {
+			htmlBuf.append("register puudub");
+		} else {
+			boolean multipleRegisters = lexRegisterCodes.size() > 1;
+			if (multipleRegisters) {
+				int definitionsCount = 1;
+				htmlBuf.append("<p style='text-align:left'>");
+				for (String lexRegisterCode : lexRegisterCodes) {
+					htmlBuf.append(definitionsCount++);
+					htmlBuf.append(". ");
+					htmlBuf.append(lexRegisterCode);
+					htmlBuf.append("<br>");
+				}
+				htmlBuf.append("</p>");
+			} else {
+				htmlBuf.append(lexRegisterCodes.get(0));
+			}
+		}
+		return htmlBuf.toString();
 	}
 }

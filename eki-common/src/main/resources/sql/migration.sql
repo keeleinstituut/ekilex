@@ -392,7 +392,7 @@ drop function convert_lexeme_to_meaning_relation(bigint,bigint,varchar(100),nume
 ------------------ muu migra -------------------
 ------------------------------------------------
 
-create type type_word_rel_meaning as (meaning_id bigint, definitions text array);
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array);
 
 -- terminivõrgustiku sõnakogu
 insert into dataset (code, type, name) values ('vrk', 'TERM', 'Terminivõrgustik');

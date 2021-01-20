@@ -12,6 +12,8 @@ public class TypeWordRelMeaning extends AbstractDataObject {
 
 	private List<String> definitions;
 
+	private List<String> lexRegisterCodes;
+
 	public Long getMeaningId() {
 		return meaningId;
 	}
@@ -26,5 +28,13 @@ public class TypeWordRelMeaning extends AbstractDataObject {
 
 	public void setDefinitions(List<String> definitions) {
 		this.definitions = definitions;
+	}
+
+	public List<String> getLexRegisterCodes() {
+		return lexRegisterCodes;
+	}
+
+	public void setLexRegisterCodes(List<String> lexRegisterCodes) {
+		this.lexRegisterCodes = lexRegisterCodes;
 	}
 }

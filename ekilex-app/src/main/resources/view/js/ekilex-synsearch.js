@@ -72,15 +72,13 @@ function initializeSynSearch() {
 				containment: "window",
 				helper: "clone"
 			});
-			$(document).find('.draggable-meaning').draggable(
-				{
-					revert: "invalid",
-					appendTo: "body",
-					containment: "window",
-					helper: "clone"
 
-				}
-			);
+			$(document).find('.draggable-syn-rel').draggable({
+				revert: "invalid",
+				appendTo: "body",
+				containment: "window",
+				helper: "clone"
+			});
 
 			let scrollDebounce;
 			$('.lexeme-list').off('scroll.droppable').on('scroll.droppable', function(){
@@ -97,49 +95,16 @@ function initializeSynSearch() {
 						const objTop = obj.offset().top + scrollTop;
 						if (objTop + 100 > topPos && objTop - 100 < topPos + mainHeight) {
 							obj.addClass('canAccept');
-							obj.find('.droppable-meaning').addClass('canAccept');
+							obj.find('.droppable-lexeme').addClass('canAccept');
+							obj.find('.droppable-syn-rel').addClass('canAccept');
 						} else {
 							obj.removeClass('canAccept');
-							obj.find('.droppable-meaning').removeClass('canAccept');
+							obj.find('.droppable-lexeme').removeClass('canAccept');
+							obj.find('.droppable-syn-rel').removeClass('canAccept');
 						}
 					});
 				}, 150);
 			}).trigger('scroll');
-
-			$(document).find('.droppable-meaning').droppable({
-				accept: function(draggableDiv) {
-					if ($(this).is('.canAccept')) {
-
-						let draggableLexemeId = draggableDiv.closest('.droppable-lexeme').attr('data-lexeme-id');
-						let droppableLexemeId = $(this).closest('.droppable-lexeme').attr('data-lexeme-id');
-						
-						return draggableLexemeId === droppableLexemeId;
-					}
-				}
-				,
-				greedy: true,
-				classes: {
-					"ui-droppable-active": "ui-state-active",
-					"ui-droppable-hover": "ui-state-hover"
-				},
-				drop: function(event, ui) {
-					let draggableOrderable = ui.draggable.closest('[data-orderpos]');
-					let draggableOrderPos = Number(draggableOrderable.data('orderpos'));
-					let orderingBtn = $(this);
-					let droppableOrderable = $(this).closest('[data-orderpos]');
-					let droppableOrderPos = Number(droppableOrderable.data('orderpos'));
-					let posDelta = droppableOrderPos - draggableOrderPos;
-
-					let draggableItem = ui.draggable;
-
-					let orderingData = changeLexemeMeaningOrdering(draggableItem, posDelta);
-					openWaitDlg();
-					postJson(applicationUrl + 'update_ordering', orderingData);
-					if (orderingBtn.hasClass('do-refresh')) {
-						refreshSynDetails();
-					}
-				}
-			});
 
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
@@ -169,6 +134,39 @@ function initializeSynSearch() {
 					openWaitDlg();
 					let callbackFunc = () => refreshSynDetails();
 					doPostRelationChange(actionUrl, callbackFunc);
+				}
+			});
+
+			$(document).find('.droppable-syn-rel').droppable({
+				accept: function(draggableDiv) {
+					if ($(this).is('.canAccept')) {
+						if (draggableDiv.hasClass("draggable-syn-rel")) {
+							let draggableSynRelLexemeId = draggableDiv.closest('.droppable-syn-rel').attr('data-lexeme-id');
+							let droppableSynRelLexemeId = $(this).closest('.droppable-syn-rel').attr('data-lexeme-id');
+
+							return draggableSynRelLexemeId === droppableSynRelLexemeId;
+						}
+					}
+				},
+				classes: {
+					"ui-droppable-active": "ui-state-active",
+					"ui-droppable-hover": "ui-state-hover"
+				},
+				drop: function(event, ui) {
+
+					let draggableOrderable = ui.draggable.closest('[data-orderpos]');
+					let draggableOrderPos = Number(draggableOrderable.data('orderpos'));
+					let orderingBtn = $(this);
+					let droppableOrderable = $(this).closest('[data-orderpos]');
+					let droppableOrderPos = Number(droppableOrderable.data('orderpos'));
+					let posDelta = droppableOrderPos - draggableOrderPos;
+					let draggableItem = ui.draggable;
+					let orderingData = changeLexemeSynRelationOrdering(draggableItem, posDelta);
+					openWaitDlg();
+					postJson(applicationUrl + 'update_ordering', orderingData);
+					if (orderingBtn.hasClass('do-refresh')) {
+						refreshSynDetails();
+					}
 				}
 			});
 
@@ -221,7 +219,7 @@ function initializeSynSearch() {
 	});
 
 	$(document).find('.draggable-synonym').draggable();
-	$(document).find('.draggable-meaning').draggable();
+	$(document).find('.draggable-syn-rel').draggable();
 
 	$(document).on('keydown', handleKeyPress);
 
@@ -380,7 +378,7 @@ function activateSynCandidatesList() {
 	changeSynonymDefinitionDisplay('show');
 }
 
-function changeLexemeMeaningOrdering(target, delta) {
+function changeLexemeSynRelationOrdering(target, delta) {
 	let orderBlock = target.closest('.orderable');
 	let opCode = orderBlock.attr("data-op-code");
 	let itemToMove = target.closest('[data-orderby]');
@@ -397,14 +395,11 @@ function changeLexemeMeaningOrdering(target, delta) {
 		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos); position += increment) {
 			let nextPos = delta > 0 ? position - 1 : position + 1;
 			let nextOrderPos = $(items.get(nextPos)).attr('data-orderpos');
-			//TODO - remove debug if dragging works as expected
-			console.log($(items.get(position)).attr('data-orderpos') + ' -> ' + $(items.get(nextPos)).attr('data-orderpos'));
 
 			$(items.get(position)).attr('data-orderby', $(items.get(nextOrderPos)).attr('data-orderby'));
 			$(items.get(position)).attr('data-orderpos', nextOrderPos);
 		}
-		//TODO - remove debug if dragging works as expected
-		console.log($(items.get(itemToMovePos)).attr('data-orderpos') + ' => ' + orderpos);
+
 		$(items.get(itemToMovePos)).attr('data-orderpos', orderpos);
 		$(items.get(itemToMovePos)).attr('data-orderby', orderby);
 
@@ -418,8 +413,7 @@ function changeLexemeMeaningOrdering(target, delta) {
 			$(item).find('.order-up').prop('hidden', indx == 0);
 			$(item).find('.order-down').prop('hidden', indx == items.length - 1);
 			let itemData = {};
-			itemData.id = $(item).attr('data-id');
-			itemData.code = $(item).attr('data-code');
+			itemData.id = $(item).attr('data-relation-id');
 			itemData.orderby = $(item).attr('data-orderby');
 			orderedItems.push(itemData);
 		});
