@@ -148,3 +148,10 @@ footer p {
     opacity: 0.3;
   }
 }
+
+.complexity-icon {
+  display: inline-block;
+  [class*='hourglass']{
+    transform: rotate(-90deg);
+  }
+}

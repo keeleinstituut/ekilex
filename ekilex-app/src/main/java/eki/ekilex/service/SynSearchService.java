@@ -172,6 +172,11 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(wordRelationId);
 		Float meaningRelationWeight = getCalculatedMeaningRelationWeight(typeWordRelParams);
 		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight);
+
+		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, LifecycleLogOwner.WORD);
+		synSearchDbService.changeRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
+		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
 	}
 
 	@Transactional
