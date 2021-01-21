@@ -72,27 +72,32 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(rp.WORD_RELATION_ID)
 				.asField();
 
+		Field<String[]> definitions = DSL
+				.select(DSL.arrayAgg(d.VALUE).orderBy(d.ORDER_BY))
+				.from(d)
+				.where(d.MEANING_ID.eq(l2.MEANING_ID)
+						.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
+				.groupBy(l2.MEANING_ID)
+				.asField("definitions");
+
+		Field<String[]> lexRegisterCodes = DSL
+				.select(DSL.arrayAgg(lr.REGISTER_CODE).orderBy(lr.ORDER_BY))
+				.from(lr)
+				.where(lr.LEXEME_ID.eq(l2.ID))
+				.groupBy(l2.ID)
+				.asField("lex_register_codes");
 
 		Table<Record3<Long, String[], String[]>> relmt = DSL
-				// TODO try to combine distinct and order by - yogesh
 				.select(
 						l2.MEANING_ID,
-						// DSL.arrayAgg(d.VALUE).orderBy(l2.ORDER_BY, d.ORDER_BY).as("definitions"),
-						DSL.arrayAggDistinct(d.VALUE).as("definitions"),
-						// DSL.arrayAgg(lr.REGISTER_CODE).orderBy(l2.ORDER_BY, lr.ORDER_BY).as("lex_register_codes"))
-						DSL.arrayAggDistinct(lr.REGISTER_CODE).as("lex_register_codes"))
-				.from(
-						l2
-								.leftOuterJoin(d).on(
-										l2.MEANING_ID.eq(d.MEANING_ID)
-										.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
-								.leftOuterJoin(lr).on(
-										l2.ID.eq(lr.LEXEME_ID)))
+						definitions,
+						lexRegisterCodes)
+				.from(l2)
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
 								.and(l2.DATASET_CODE.eq(datasetCode))
 								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
-				.groupBy(l2.WORD_ID, l2.MEANING_ID)
+				.groupBy(l2.ID)
 				.asTable("relmt");
 
 		Field<TypeWordRelMeaningRecord[]> relm = DSL
