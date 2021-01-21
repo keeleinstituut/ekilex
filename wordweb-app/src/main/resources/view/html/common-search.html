@@ -147,6 +147,9 @@
                   <span class="lexeme grammars tag" th:if="${not #lists.isEmpty(lexeme.grammars)}">
                     <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                   </span>
+                  <!-- valueState -->
+                  <span class="lexeme tag" th:if="${!isTerm && (lexeme.valueState != null)}" th:text="${lexeme.valueState.value}"></span>
+                  <!--span class="lexeme tag" th:if="${(lexeme.valueState == null)}" th:text="väärtusolek"></span-->
                 </div>
                 <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                   <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
@@ -204,9 +207,13 @@
                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, meaningWord.word, meaningWord.homonymNr)}}" class="synonym">
                           <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                         </a>
-                        <span th:if="${meaningWord.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
+                        <span th:if="${meaningWord.additionalDataExists}" class="synonym-additional-meta text-small">
+                          <span th:if="${(meaningWord.mwLexValueState != null)}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                          <!--th:block th:if="${not #strings.isEmpty(meaningWord.mwLexValueStateCode)}">
+                            <span class="type-two text-uppercase" th:text="${meaningWord.mwLexValueStateCode}"></span>
+                          </th:block-->
                           <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
-                            <span class="type-two" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                            <span class="type-two text-uppercase" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
                         <span th:unless="${meaningWordIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
@@ -251,7 +258,8 @@
                             <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}">tee</span>
                           </a>
                           <span th:if="${meaningWord.additionalDataExists}" class="text-small">
-                            <span th:if="${isTerm && (meaningWord.mwLexValueState != null)}" th:text="${meaningWord.mwLexValueState.value}"></span>
+                            <span data-temp-th-if="${isTerm && (meaningWord.mwLexValueState != null)}"
+                                  th:if="${(meaningWord.mwLexValueState != null)}" th:text="${meaningWord.mwLexValueState.value}"></span>
                             <th:block th:if="${not #lists.isEmpty(meaningWord.mwLexRegisters)}">
                               <span class="type-two text-uppercase" th:each="register,regIter : ${meaningWord.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
