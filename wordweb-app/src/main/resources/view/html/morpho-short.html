@@ -79,8 +79,9 @@
     <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
     <table>
       <th:block th:replace=" :: morpho-row(${paradigm}, 'INFN', '')"></th:block>
-      <th:block th:replace=" :: morpho-row(${paradigm}, '', 'sing,1per,pres,indc')"></th:block>
-      <th:block th:replace=" :: morpho-row(${paradigm}, '', 'sing,2per,pres,indc')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,3per,past,indc', 'sing,1per,pres,indc')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'femn,sing,3per,past,indc', 'sing,2per,pres,indc')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,3per,past,indc', 'sing,3per,pres,indc')"></th:block>
     </table>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
