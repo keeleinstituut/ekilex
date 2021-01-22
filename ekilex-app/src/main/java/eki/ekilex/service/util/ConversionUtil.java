@@ -45,7 +45,7 @@ import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
-import eki.ekilex.data.Image;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
@@ -348,20 +348,20 @@ public class ConversionUtil implements GlobalConstant {
 		return notes;
 	}
 
-	public List<Image> composeMeaningImages(List<ImageSourceTuple> imageSourceTuples) {
+	public List<Media> composeMeaningImages(List<ImageSourceTuple> imageSourceTuples) {
 
-		List<Image> images = new ArrayList<>();
+		List<Media> images = new ArrayList<>();
 
-		Map<Long, Image> imageMap = new HashMap<>();
+		Map<Long, Media> imageMap = new HashMap<>();
 		List<SourceLink> sourceLinks;
 
 		for (ImageSourceTuple tuple : imageSourceTuples) {
 			Long imageId = tuple.getImageFreeformId();
 			Long sourceLinkId = tuple.getSourceLinkId();
 
-			Image image = imageMap.get(imageId);
+			Media image = imageMap.get(imageId);
 			if (image == null) {
-				image = new Image();
+				image = new Media();
 				sourceLinks = new ArrayList<>();
 				image.setSourceLinks(sourceLinks);
 				image.setId(imageId);

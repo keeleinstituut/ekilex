@@ -89,13 +89,13 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.data.Video;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
@@ -579,7 +579,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(ImageSourceTuple.class);
 	}
 
-	public List<Video> getMeaningVideos(Long meaningId) {
+	public List<Media> getMeaningVideos(Long meaningId) {
 
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
@@ -593,7 +593,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mff.MEANING_ID.eq(meaningId)
 								.and(ff.ID.eq(mff.FREEFORM_ID))
 								.and(ff.TYPE.eq(FreeformType.VIDEO_FILE.name())))
-				.fetchInto(Video.class);
+				.fetchInto(Media.class);
 	}
 
 	public List<OrderedClassifier> getMeaningDomains(Long meaningId) {

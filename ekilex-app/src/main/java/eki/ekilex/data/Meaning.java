@@ -25,9 +25,9 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<FreeForm> learnerComments;
 
-	private List<Image> images;
+	private List<Media> images;
 
-	private List<Video> videos;
+	private List<Media> videos;
 
 	private List<NoteLangGroup> noteLangGroups;
 
@@ -113,19 +113,19 @@ public class Meaning extends AbstractCrudEntity {
 		this.learnerComments = learnerComments;
 	}
 
-	public List<Image> getImages() {
+	public List<Media> getImages() {
 		return images;
 	}
 
-	public void setImages(List<Image> images) {
+	public void setImages(List<Media> images) {
 		this.images = images;
 	}
 
-	public List<Video> getVideos() {
+	public List<Media> getVideos() {
 		return videos;
 	}
 
-	public void setVideos(List<Video> videos) {
+	public void setVideos(List<Media> videos) {
 		this.videos = videos;
 	}
 
