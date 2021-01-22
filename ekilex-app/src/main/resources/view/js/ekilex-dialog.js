@@ -113,6 +113,16 @@ $(function() {
 		alignAndFocus(e, $(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=addMeaningVideoDlg_]", function(e) {
+		initGenericTextAddDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editMeaningVideoDlg_]", function(e) {
+		initGenericTextEditDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=addMeaningSemanticTypeDlg_]", function() {
 		initAddMultiDataDlg($(this));
 	});

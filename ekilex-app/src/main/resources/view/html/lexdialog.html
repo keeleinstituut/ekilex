@@ -32,6 +32,7 @@
                   <option value="meaning_semantic_type" sec:authorize="#vars.lexeme.meaning.crudGrant">Semantiline tüüp</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.lexeme.meaning.crudGrant">Tähenduse seos</option>
                   <option value="addMeaningNoteDlg" sec:authorize="#vars.lexeme.meaning.crudGrant">Tähenduse märkus</option>
+                  <option value="addMeaningVideoDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Video</option>
                   <option value="addLearnerCommentDlg" sec:authorize="#vars.lexeme.meaning.crudGrant">Õppekommentaar</option>
                   <option value="addOdLexemeRecommendationDlg" sec:authorize="#vars.lexeme.crudGrant">ÕS soovitab</option>
                 </select>
@@ -1795,6 +1796,53 @@
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningVideoDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="add_meaning_video_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="opCode" value="meaning_video">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" placeholder="sisesta video url" name="value"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Lisa</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningVideoDlg_' + lexeme.lexemeId + '_' + video.id}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal" role="dialog" th:fragment="edit_meaning_video_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${video.id}">
+            <input type="hidden" name="opCode" value="meaning_video">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" name="value" th:text="${video.sourceUrl}"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Salvesta</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            </div>
           </div>
         </form>
       </div>

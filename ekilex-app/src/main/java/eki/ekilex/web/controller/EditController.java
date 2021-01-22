@@ -189,6 +189,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
 			break;
+		case "meaning_video":
+			cudService.createMeaningVideo(itemData.getId(), itemValue);
+			break;
 		case "create_syn_word":
 			datasetCode = getDatasetCodeFromRole();
 			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, itemData.getLanguage(), itemData.getValue2());
@@ -321,6 +324,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), itemValue);
+			break;
+		case "meaning_video":
+			cudService.updateMeaningVideo(itemData.getId(), itemValue);
 			break;
 		case "meaning_semantic_type":
 			cudService.updateMeaningSemanticType(itemData.getId(), itemData.getCurrentValue(), itemValue);
@@ -540,6 +546,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "meaning_image":
 			cudService.deleteMeaningImage(id);
+			break;
+		case "meaning_video":
+			cudService.deleteMeaningVideo(id);
 			break;
 		case "word_type":
 			cudService.deleteWordType(id, valueToDelete);

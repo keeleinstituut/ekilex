@@ -14,12 +14,14 @@ $(function() {
 		}
 	});
 
-	$(document).on("show.bs.modal", "[id^=addGovernmentDlg_]", function() {
+	$(document).on("show.bs.modal", "[id^=addGovernmentDlg_]", function(e) {
 		initGenericTextAddDlg($(this));
+		alignAndFocus(e, $(this));
 	});
 
-	$(document).on("show.bs.modal", "[id^=editGovernmentDlg_]", function() {
+	$(document).on("show.bs.modal", "[id^=editGovernmentDlg_]", function(e) {
 		initGenericTextEditDlg($(this));
+		alignAndFocus(e, $(this));
 	});
 
 	$(document).on("show.bs.modal", "[id^=addUsageAuthorDlg_]", function() {

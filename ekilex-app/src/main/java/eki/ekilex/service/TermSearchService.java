@@ -44,6 +44,7 @@ import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.Video;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
@@ -153,6 +154,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 		List<Image> images = conversionUtil.composeMeaningImages(imageSourceTuples);
+		List<Video> videos = commonDataDbService.getMeaningVideos(meaningId);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, meaningNotes);
@@ -222,6 +224,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setSemanticTypes(semanticTypes);
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setImages(images);
+		meaning.setVideos(videos);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(allMeaningRelations);

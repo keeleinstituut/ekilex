@@ -604,6 +604,16 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateMeaningVideo(Long videoId, String valuePrese) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(videoId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.VIDEO_FILE, freeform);
+	}
+
+	@Transactional
 	public void updateOdWordRecommendation(Long freeformId, String valuePrese) throws Exception {
 
 		FreeForm freeform = new FreeForm();
@@ -1115,6 +1125,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		createMeaningFreeformChildFreeform(ActivityEntity.IMAGE_FILE, freeform);
+	}
+
+	@Transactional
+	public void createMeaningVideo(Long meaningId, String valuePrese) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.VIDEO_FILE);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		createMeaningFreeform(ActivityEntity.VIDEO_FILE, meaningId, freeform);
 	}
 
 	@Transactional
@@ -1690,6 +1709,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningImage", meaningId, LifecycleLogOwner.MEANING);
 		cudDbService.deleteFreeform(imageId);
 		activityLogService.createActivityLog(activityLog, imageId, ActivityEntity.IMAGE_FILE);
+	}
+
+	@Transactional
+	public void deleteMeaningVideo(Long videoId) throws Exception {
+		Long meaningId = activityLogService.getOwnerId(videoId, ActivityEntity.VIDEO_FILE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningVideo", meaningId, LifecycleLogOwner.MEANING);
+		cudDbService.deleteFreeform(videoId);
+		activityLogService.createActivityLog(activityLog, videoId, ActivityEntity.VIDEO_FILE);
 	}
 
 	@Transactional

@@ -48,6 +48,7 @@ import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.Video;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
@@ -234,6 +235,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 			List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 			List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
+			List<Video> meaningVideos = commonDataDbService.getMeaningVideos(meaningId);
 			List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 			List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 			permCalculator.filterVisibility(userRole, meaningNotes);
@@ -262,6 +264,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLearnerComments(meaningLearnerComments);
 			meaning.setImages(meaningImages);
+			meaning.setVideos(meaningVideos);
 			meaning.setNoteLangGroups(meaningNoteLangGroups);
 			meaning.setSemanticTypes(meaningSemanticTypes);
 			meaning.setRelations(allMeaningRelations);

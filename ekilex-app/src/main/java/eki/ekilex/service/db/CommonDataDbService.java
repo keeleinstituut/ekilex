@@ -95,6 +95,7 @@ import eki.ekilex.data.Origin;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.Video;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
@@ -107,6 +108,7 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Source;
@@ -575,6 +577,23 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(iff.TYPE.eq(FreeformType.IMAGE_FILE.name())))
 				.orderBy(iff.ORDER_BY)
 				.fetchInto(ImageSourceTuple.class);
+	}
+
+	public List<Video> getMeaningVideos(Long meaningId) {
+
+		Freeform ff = FREEFORM.as("ff");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+
+		return create
+				.select(
+						ff.ID,
+						ff.VALUE_TEXT.as("sourceUrl"))
+				.from(ff, mff)
+				.where(
+						mff.MEANING_ID.eq(meaningId)
+								.and(ff.ID.eq(mff.FREEFORM_ID))
+								.and(ff.TYPE.eq(FreeformType.VIDEO_FILE.name())))
+				.fetchInto(Video.class);
 	}
 
 	public List<OrderedClassifier> getMeaningDomains(Long meaningId) {

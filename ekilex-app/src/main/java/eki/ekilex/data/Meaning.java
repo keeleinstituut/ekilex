@@ -27,6 +27,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<Image> images;
 
+	private List<Video> videos;
+
 	private List<NoteLangGroup> noteLangGroups;
 
 	private List<Relation> relations;
@@ -117,6 +119,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setImages(List<Image> images) {
 		this.images = images;
+	}
+
+	public List<Video> getVideos() {
+		return videos;
+	}
+
+	public void setVideos(List<Video> videos) {
+		this.videos = videos;
 	}
 
 	public List<NoteLangGroup> getNoteLangGroups() {
