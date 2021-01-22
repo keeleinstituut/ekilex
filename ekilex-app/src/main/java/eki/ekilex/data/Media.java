@@ -12,8 +12,6 @@ public class Media extends AbstractDataObject {
 
 	private String sourceUrl;
 
-	private String fileName;
-
 	private String title;
 
 	private List<SourceLink> sourceLinks;
@@ -32,14 +30,6 @@ public class Media extends AbstractDataObject {
 
 	public void setSourceUrl(String sourceUrl) {
 		this.sourceUrl = sourceUrl;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
 	}
 
 	public String getTitle() {

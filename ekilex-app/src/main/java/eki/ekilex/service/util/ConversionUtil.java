@@ -365,7 +365,7 @@ public class ConversionUtil implements GlobalConstant {
 				sourceLinks = new ArrayList<>();
 				image.setSourceLinks(sourceLinks);
 				image.setId(imageId);
-				image.setFileName(tuple.getImageFreeformValueText());
+				image.setSourceUrl(tuple.getImageFreeformValueText());
 				image.setTitle(tuple.getTitleFreeformValueText());
 				imageMap.put(imageId, image);
 				images.add(image);

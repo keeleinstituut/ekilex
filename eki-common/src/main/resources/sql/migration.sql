@@ -396,3 +396,14 @@ create type type_word_rel_meaning as (meaning_id bigint, definitions text array,
 
 -- terminivõrgustiku sõnakogu
 insert into dataset (code, type, name) values ('vrk', 'TERM', 'Terminivõrgustik');
+
+-- pildi failinimed URL-ideks
+update freeform
+set value_text = '/files/images/' || value_text
+where type = 'IMAGE_FILE'
+  and value_text not like '%/files/images/%';
+
+update freeform
+set value_prese = '/files/images/' || value_prese
+where type = 'IMAGE_FILE'
+  and value_prese not like '%/files/images/%';
