@@ -646,15 +646,30 @@
     <hr>
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Pildid</span>
+      <button type="button" class="btn badge badge-secondary float-right mr-4"
+              title="Lisa pilt"
+              data-toggle="modal"
+              th:data-target="${'#addMeaningImageDlg_' + meaningId}"
+              sec:authorize="#vars.meaning.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
     </div>
     <div class="col pl-0">
       <th:block th:each="image : ${meaning.images}">
+        <div th:replace="termdialog :: edit_meaning_image_dlg"></div>
         <div th:replace="termdialog :: add_image_title_dlg"></div>
         <div th:replace="termdialog :: edit_image_title_dlg"></div>
         <div th:replace="termdialog :: add_image_source_link_dlg"></div>
         <div class="invisible-buttons action-buttons-anchor w-100">
           <img class="w-25" th:src="${image.sourceUrl}">
           <span class="invisible-buttons">
+            <button type="button" class="btn badge badge-primary"
+                    th:title="Muuda"
+                    data-toggle="modal"
+                    th:data-target="${'#editMeaningImageDlg_' + image.id}"
+                    sec:authorize="#vars.meaning.crudGrant">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
             <button type="button" class="btn badge badge-warning align-bottom"
                     title="Kustuta pilt"
                     data-op-code="meaning_image"

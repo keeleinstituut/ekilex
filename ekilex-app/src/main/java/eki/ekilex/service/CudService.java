@@ -593,6 +593,16 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateMeaningImage(Long imageId, String valuePrese) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setId(imageId);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+
+		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
+	}
+
+	@Transactional
 	public void updateImageTitle(Long imageId, String valuePrese) throws Exception {
 
 		FreeForm freeform = new FreeForm();
@@ -1114,6 +1124,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		createDefinitionFreeform(ActivityEntity.DEFINITION_NOTE, definitionId, freeform);
+	}
+
+	@Transactional
+	public void createMeaningImage(Long meaningId, String valuePrese) throws Exception {
+
+		FreeForm freeform = new FreeForm();
+		freeform.setType(FreeformType.IMAGE_FILE);
+		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		createMeaningFreeform(ActivityEntity.IMAGE_FILE, meaningId, freeform);
 	}
 
 	@Transactional

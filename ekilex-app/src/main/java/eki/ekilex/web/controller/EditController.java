@@ -186,6 +186,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "word_note":
 			cudService.createWordNote(itemData.getId(), itemValue);
 			break;
+		case "meaning_image":
+			cudService.createMeaningImage(itemData.getId(), itemValue);
+			break;
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
 			break;
@@ -321,6 +324,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "word_note":
 			cudService.updateWordNote(itemData.getId(), itemValue);
+			break;
+		case "meaning_image":
+			cudService.updateMeaningImage(itemData.getId(), itemValue);
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), itemValue);
