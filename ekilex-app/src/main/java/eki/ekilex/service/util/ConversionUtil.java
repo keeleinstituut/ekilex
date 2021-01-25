@@ -367,6 +367,7 @@ public class ConversionUtil implements GlobalConstant {
 				image.setId(imageId);
 				image.setSourceUrl(tuple.getImageFreeformValueText());
 				image.setTitle(tuple.getTitleFreeformValueText());
+				image.setComplexity(tuple.getImageFreeformComplexity());
 				imageMap.put(imageId, image);
 				images.add(image);
 			} else {

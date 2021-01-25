@@ -22,7 +22,7 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeFreeform;
-import eki.wordweb.data.TypeImageFile;
+import eki.wordweb.data.TypeMediaFile;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeMeaningWord;
@@ -296,12 +296,15 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Map<String, List<TypeFreeform>> notesByLangUnordered = notes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
 			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
 		}
-		List<TypeImageFile> imageFiles = tuple.getImageFiles();
-		List<TypeImageFile> filteredImageFiles = filter(imageFiles, lexComplexity);
+		List<TypeMediaFile> imageFiles = tuple.getImageFiles();
+		List<TypeMediaFile> filteredImageFiles = filter(imageFiles, lexComplexity);
 		applySourceLinks(filteredImageFiles, meaningFreeformSourceLinks);
+		List<TypeMediaFile> mediaFiles = tuple.getMediaFiles();
+		List<TypeMediaFile> filteredMediaFiles = filter(mediaFiles, lexComplexity);
 		lexeme.setMeaningNotes(notes);
 		lexeme.setMeaningNotesByLang(notesByLangOrdered);
 		lexeme.setImageFiles(filteredImageFiles);
+		lexeme.setMediaFiles(filteredMediaFiles);
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 

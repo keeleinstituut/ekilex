@@ -123,12 +123,12 @@ $(function() {
 		alignAndFocus(e, $(this));
 	});
 
-	$(document).on("show.bs.modal", "[id^=addMeaningVideoDlg_]", function(e) {
+	$(document).on("show.bs.modal", "[id^=addMeaningMediaDlg_]", function(e) {
 		initGenericTextAddDlg($(this));
 		alignAndFocus(e, $(this));
 	});
 
-	$(document).on("show.bs.modal", "[id^=editMeaningVideoDlg_]", function(e) {
+	$(document).on("show.bs.modal", "[id^=editMeaningMediaDlg_]", function(e) {
 		initGenericTextEditDlg($(this));
 		alignAndFocus(e, $(this));
 	});

@@ -187,13 +187,13 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.createWordNote(itemData.getId(), itemValue);
 			break;
 		case "meaning_image":
-			cudService.createMeaningImage(itemData.getId(), itemValue);
+			cudService.createMeaningImage(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
 		case "image_title":
 			cudService.createImageTitle(itemData.getId(), itemValue);
 			break;
-		case "meaning_video":
-			cudService.createMeaningVideo(itemData.getId(), itemValue);
+		case "meaning_media":
+			cudService.createMeaningMedia(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
 		case "create_syn_word":
 			datasetCode = getDatasetCodeFromRole();
@@ -326,13 +326,13 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateWordNote(itemData.getId(), itemValue);
 			break;
 		case "meaning_image":
-			cudService.updateMeaningImage(itemData.getId(), itemValue);
+			cudService.updateMeaningImage(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
 		case "image_title":
 			cudService.updateImageTitle(itemData.getId(), itemValue);
 			break;
-		case "meaning_video":
-			cudService.updateMeaningVideo(itemData.getId(), itemValue);
+		case "meaning_media":
+			cudService.updateMeaningMedia(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
 		case "meaning_semantic_type":
 			cudService.updateMeaningSemanticType(itemData.getId(), itemData.getCurrentValue(), itemValue);
@@ -553,8 +553,8 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_image":
 			cudService.deleteMeaningImage(id);
 			break;
-		case "meaning_video":
-			cudService.deleteMeaningVideo(id);
+		case "meaning_media":
+			cudService.deleteMeaningMedia(id);
 			break;
 		case "word_type":
 			cudService.deleteWordType(id, valueToDelete);

@@ -113,7 +113,7 @@
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse seos</option>
                   <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant">Semantiline tüüp</option>
                   <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Pilt</option>
-                  <option value="addMeaningVideoDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Video</option>
+                  <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Videod ja muu meedia</option>
                 </select>
               </div>
             </div>
@@ -1147,6 +1147,14 @@
                 <textarea class="form-control" rows="1" placeholder="sisesta pildi url" name="value"></textarea>
               </div>
             </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
+                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                </select>
+              </div>
+            </div>
             <div class="modal-footer">
               <button type="submit" class="btn btn-primary">Lisa</button>
               <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
@@ -1166,6 +1174,17 @@
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${image.sourceUrl}"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control" name="complexity">
+                  <option th:each="complexity : ${enabledComplexities}"
+                          th:value="${complexity}"
+                          th:selected="${complexity == image.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                  </option>
+                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -1213,17 +1232,25 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningVideoDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_video_dlg">
+  <div th:id="${'addMeaningMediaDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_media_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
-            <input type="hidden" name="opCode" value="meaning_video">
+            <input type="hidden" name="opCode" value="meaning_media">
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" placeholder="sisesta video url" name="value"></textarea>
+                <textarea class="form-control" rows="1" placeholder="sisesta meedia url" name="value"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control required-field" name="complexity">
+                  <option value="" hidden disabled selected>vali detailsus...</option>
+                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
+                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -1235,16 +1262,27 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningVideoDlg_' + video.id}" class="modal" role="dialog" th:fragment="edit_meaning_video_dlg">
+  <div th:id="${'editMeaningMediaDlg_' + media.id}" class="modal" role="dialog" th:fragment="edit_meaning_media_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${video.id}">
-            <input type="hidden" name="opCode" value="meaning_video">
+            <input type="hidden" name="id" th:value="${media.id}">
+            <input type="hidden" name="opCode" value="meaning_media">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" name="value" th:text="${video.sourceUrl}"></textarea>
+                <textarea class="form-control" rows="1" name="value" th:text="${media.sourceUrl}"></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control" name="complexity">
+                  <option th:each="complexity : ${enabledComplexities}"
+                          th:value="${complexity}"
+                          th:selected="${complexity == media.complexity}"
+                          th:text="#{'enum.complexity.' + ${complexity}}">value
+                  </option>
+                </select>
               </div>
             </div>
             <div class="modal-footer">

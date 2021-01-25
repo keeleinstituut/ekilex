@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
 public class Media extends AbstractDataObject {
@@ -13,6 +14,8 @@ public class Media extends AbstractDataObject {
 	private String sourceUrl;
 
 	private String title;
+
+	private Complexity complexity;
 
 	private List<SourceLink> sourceLinks;
 
@@ -38,6 +41,14 @@ public class Media extends AbstractDataObject {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public List<SourceLink> getSourceLinks() {

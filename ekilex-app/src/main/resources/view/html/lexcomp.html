@@ -1030,34 +1030,34 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.videos)}" th:fragment="meaning_video">
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.medias)}" th:fragment="meaning_media">
     <hr>
     <div class="col pr-0 col-w13rem">
-      <span class="lbl">Videod</span>
+      <span class="lbl">Videod ja muu meedia</span>
       <button type="button" class="btn badge badge-success float-right mr-4"
               title="Lisa uus"
               data-toggle="modal"
-              th:data-target="${'#addMeaningVideoDlg_' + lexeme.lexemeId}"
+              th:data-target="${'#addMeaningMediaDlg_' + lexeme.lexemeId}"
               sec:authorize="#vars.isMeaningLexemeCrudGranted">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
     <div class="col pl-0">
-      <th:block th:each="video : ${lexeme.meaning.videos}">
-        <div th:replace="lexdialog :: edit_meaning_video_dlg"></div>
+      <th:block th:each="media : ${lexeme.meaning.medias}">
+        <div th:replace="lexdialog :: edit_meaning_media_dlg"></div>
         <div class="invisible-buttons action-buttons-anchor w-100">
-          <iframe th:src="${video.sourceUrl}" allowfullscreen></iframe>
+          <iframe th:src="${media.sourceUrl}" allowfullscreen></iframe>
           <button type="button" class="btn badge badge-primary align-bottom"
                   title="Muuda"
                   data-toggle="modal"
-                  th:data-target="${'#editMeaningVideoDlg_' + lexeme.lexemeId + '_' + video.id}"
+                  th:data-target="${'#editMeaningMediaDlg_' + lexeme.lexemeId + '_' + media.id}"
                   sec:authorize="#vars.lexeme.meaning.crudGrant">
             <i class="fa fa-edit" aria-hidden="true"></i>
           </button>
           <button type="button" class="btn badge badge-warning align-bottom"
-                  title="Kustuta video"
-                  data-op-code="meaning_video"
-                  th:data-id="${video.id}"
+                  title="Kustuta meedia"
+                  data-op-code="meaning_media"
+                  th:data-id="${media.id}"
                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   data-toggle="delete-confirm"
                   sec:authorize="#vars.lexeme.meaning.crudGrant">

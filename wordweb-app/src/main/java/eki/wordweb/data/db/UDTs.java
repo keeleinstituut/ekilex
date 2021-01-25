@@ -8,11 +8,11 @@ import eki.wordweb.data.db.udt.TypeCollocMember;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeFreeform;
-import eki.wordweb.data.db.udt.TypeImageFile;
 import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypeMeaningWord;
+import eki.wordweb.data.db.udt.TypeMediaFile;
 import eki.wordweb.data.db.udt.TypeSourceLink;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWordEtymRelation;
@@ -46,11 +46,6 @@ public class UDTs {
     public static TypeFreeform TYPE_FREEFORM = eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM;
 
     /**
-     * The type <code>public.type_image_file</code>
-     */
-    public static TypeImageFile TYPE_IMAGE_FILE = eki.wordweb.data.db.udt.TypeImageFile.TYPE_IMAGE_FILE;
-
-    /**
      * The type <code>public.type_lang_complexity</code>
      */
     public static TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
@@ -69,6 +64,11 @@ public class UDTs {
      * The type <code>public.type_meaning_word</code>
      */
     public static TypeMeaningWord TYPE_MEANING_WORD = eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
+
+    /**
+     * The type <code>public.type_media_file</code>
+     */
+    public static TypeMediaFile TYPE_MEDIA_FILE = eki.wordweb.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE;
 
     /**
      * The type <code>public.type_source_link</code>

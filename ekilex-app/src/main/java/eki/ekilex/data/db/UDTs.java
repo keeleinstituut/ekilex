@@ -10,11 +10,11 @@ import eki.ekilex.data.db.udt.TypeCollocMember;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
 import eki.ekilex.data.db.udt.TypeFreeform;
-import eki.ekilex.data.db.udt.TypeImageFile;
 import eki.ekilex.data.db.udt.TypeLangComplexity;
 import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeMeaningWord;
+import eki.ekilex.data.db.udt.TypeMediaFile;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -61,11 +61,6 @@ public class UDTs {
     public static TypeFreeform TYPE_FREEFORM = eki.ekilex.data.db.udt.TypeFreeform.TYPE_FREEFORM;
 
     /**
-     * The type <code>public.type_image_file</code>
-     */
-    public static TypeImageFile TYPE_IMAGE_FILE = eki.ekilex.data.db.udt.TypeImageFile.TYPE_IMAGE_FILE;
-
-    /**
      * The type <code>public.type_lang_complexity</code>
      */
     public static TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
@@ -84,6 +79,11 @@ public class UDTs {
      * The type <code>public.type_meaning_word</code>
      */
     public static TypeMeaningWord TYPE_MEANING_WORD = eki.ekilex.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
+
+    /**
+     * The type <code>public.type_media_file</code>
+     */
+    public static TypeMediaFile TYPE_MEDIA_FILE = eki.ekilex.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE;
 
     /**
      * The type <code>public.type_source_link</code>
