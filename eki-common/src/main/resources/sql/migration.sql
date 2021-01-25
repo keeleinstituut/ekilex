@@ -407,3 +407,5 @@ update freeform
 set value_prese = 'https://sonaveeb.ee/files/images/' || value_prese
 where type = 'IMAGE_FILE'
   and value_prese not like '%https://sonaveeb.ee/files/images/%';
+  
+delete from form where mode = 'UNKNOWN';
