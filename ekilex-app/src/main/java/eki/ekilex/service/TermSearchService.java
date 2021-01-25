@@ -153,7 +153,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 		List<Media> images = conversionUtil.composeMeaningImages(imageSourceTuples);
-		List<Media> videos = commonDataDbService.getMeaningVideos(meaningId);
+		List<Media> medias = commonDataDbService.getMeaningMedias(meaningId);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, meaningNotes);
@@ -223,7 +223,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setSemanticTypes(semanticTypes);
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setImages(images);
-		meaning.setVideos(videos);
+		meaning.setMedias(medias);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(allMeaningRelations);

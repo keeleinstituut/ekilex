@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
@@ -10,6 +11,8 @@ public class ImageSourceTuple extends AbstractDataObject {
 	private Long imageFreeformId;
 
 	private String imageFreeformValueText;
+
+	private Complexity imageFreeformComplexity;
 
 	private String titleFreeformValueText;
 
@@ -37,6 +40,14 @@ public class ImageSourceTuple extends AbstractDataObject {
 
 	public void setImageFreeformValueText(String imageFreeformValueText) {
 		this.imageFreeformValueText = imageFreeformValueText;
+	}
+
+	public Complexity getImageFreeformComplexity() {
+		return imageFreeformComplexity;
+	}
+
+	public void setImageFreeformComplexity(Complexity imageFreeformComplexity) {
+		this.imageFreeformComplexity = imageFreeformComplexity;
 	}
 
 	public String getTitleFreeformValueText() {

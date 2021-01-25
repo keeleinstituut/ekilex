@@ -5,15 +5,15 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class TypeImageFile extends AbstractDataObject implements ComplexityType, SourceLinkType {
+public class TypeMediaFile extends AbstractDataObject implements ComplexityType, SourceLinkType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long freeformId;
 
-	private String imageFile;
+	private String sourceUrl;
 
-	private String imageTitle;
+	private String title;
 
 	private Complexity complexity;
 
@@ -32,20 +32,20 @@ public class TypeImageFile extends AbstractDataObject implements ComplexityType,
 		this.freeformId = freeformId;
 	}
 
-	public String getImageFile() {
-		return imageFile;
+	public String getSourceUrl() {
+		return sourceUrl;
 	}
 
-	public void setImageFile(String imageFile) {
-		this.imageFile = imageFile;
+	public void setSourceUrl(String sourceUrl) {
+		this.sourceUrl = sourceUrl;
 	}
 
-	public String getImageTitle() {
-		return imageTitle;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setImageTitle(String imageTitle) {
-		this.imageTitle = imageTitle;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	@Override

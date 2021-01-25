@@ -560,6 +560,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(
 						iff.ID.as("image_freeform_id"),
 						iff.VALUE_TEXT.as("image_freeform_value_text"),
+						iff.COMPLEXITY.as("image_freeform_complexity"),
 						tff.VALUE_TEXT.as("title_freeform_value_text"),
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
@@ -579,7 +580,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(ImageSourceTuple.class);
 	}
 
-	public List<Media> getMeaningVideos(Long meaningId) {
+	public List<Media> getMeaningMedias(Long meaningId) {
 
 		Freeform ff = FREEFORM.as("ff");
 		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
@@ -587,12 +588,13 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						ff.ID,
-						ff.VALUE_TEXT.as("sourceUrl"))
+						ff.VALUE_TEXT.as("sourceUrl"),
+						ff.COMPLEXITY)
 				.from(ff, mff)
 				.where(
 						mff.MEANING_ID.eq(meaningId)
 								.and(ff.ID.eq(mff.FREEFORM_ID))
-								.and(ff.TYPE.eq(FreeformType.VIDEO_FILE.name())))
+								.and(ff.TYPE.eq(FreeformType.MEDIA_FILE.name())))
 				.fetchInto(Media.class);
 	}
 

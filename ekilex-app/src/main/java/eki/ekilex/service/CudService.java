@@ -593,10 +593,11 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateMeaningImage(Long imageId, String valuePrese) throws Exception {
+	public void updateMeaningImage(Long imageId, String valuePrese, Complexity complexity) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(imageId);
+		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
@@ -614,13 +615,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateMeaningVideo(Long videoId, String valuePrese) throws Exception {
+	public void updateMeaningMedia(Long mediaId, String valuePrese, Complexity complexity) throws Exception {
 
 		FreeForm freeform = new FreeForm();
-		freeform.setId(videoId);
+		freeform.setId(mediaId);
+		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.VIDEO_FILE, freeform);
+		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform);
 	}
 
 	@Transactional
@@ -1127,10 +1129,11 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createMeaningImage(Long meaningId, String valuePrese) throws Exception {
+	public void createMeaningImage(Long meaningId, String valuePrese, Complexity complexity) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.IMAGE_FILE);
+		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 		createMeaningFreeform(ActivityEntity.IMAGE_FILE, meaningId, freeform);
 	}
@@ -1147,12 +1150,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void createMeaningVideo(Long meaningId, String valuePrese) throws Exception {
+	public void createMeaningMedia(Long meaningId, String valuePrese, Complexity complexity) throws Exception {
 
 		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.VIDEO_FILE);
+		freeform.setType(FreeformType.MEDIA_FILE);
+		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-		createMeaningFreeform(ActivityEntity.VIDEO_FILE, meaningId, freeform);
+		createMeaningFreeform(ActivityEntity.MEDIA_FILE, meaningId, freeform);
 	}
 
 	@Transactional
@@ -1731,11 +1735,11 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void deleteMeaningVideo(Long videoId) throws Exception {
-		Long meaningId = activityLogService.getOwnerId(videoId, ActivityEntity.VIDEO_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningVideo", meaningId, LifecycleLogOwner.MEANING);
-		cudDbService.deleteFreeform(videoId);
-		activityLogService.createActivityLog(activityLog, videoId, ActivityEntity.VIDEO_FILE);
+	public void deleteMeaningMedia(Long mediaId) throws Exception {
+		Long meaningId = activityLogService.getOwnerId(mediaId, ActivityEntity.MEDIA_FILE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, LifecycleLogOwner.MEANING);
+		cudDbService.deleteFreeform(mediaId);
+		activityLogService.createActivityLog(activityLog, mediaId, ActivityEntity.MEDIA_FILE);
 	}
 
 	@Transactional

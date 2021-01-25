@@ -102,7 +102,7 @@ public class ActivityLogService implements SystemConstant {
 			ActivityEntity.EXTERNAL_SOURCE_ID,
 			ActivityEntity.LEARNER_COMMENT,
 			ActivityEntity.IMAGE_FILE,
-			ActivityEntity.VIDEO_FILE,
+			ActivityEntity.MEDIA_FILE,
 			ActivityEntity.SEMANTIC_TYPE,
 			ActivityEntity.SYSTEMATIC_POLYSEMY_PATTERN,
 			ActivityEntity.GENUS,
@@ -618,7 +618,7 @@ public class ActivityLogService implements SystemConstant {
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 		List<Media> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
-		List<Media> meaningVideos = commonDataDbService.getMeaningVideos(meaningId);
+		List<Media> meaningMedias = commonDataDbService.getMeaningMedias(meaningId);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, null);
@@ -632,7 +632,7 @@ public class ActivityLogService implements SystemConstant {
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(meaningLearnerComments);
 		meaning.setImages(meaningImages);
-		meaning.setVideos(meaningVideos);
+		meaning.setMedias(meaningMedias);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setSemanticTypes(meaningSemanticTypes);
 		meaning.setRelations(meaningRelations);

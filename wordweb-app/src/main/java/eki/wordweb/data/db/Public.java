@@ -29,11 +29,11 @@ import eki.wordweb.data.db.udt.TypeCollocMember;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeFreeform;
-import eki.wordweb.data.db.udt.TypeImageFile;
 import eki.wordweb.data.db.udt.TypeLangComplexity;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypeMeaningWord;
+import eki.wordweb.data.db.udt.TypeMediaFile;
 import eki.wordweb.data.db.udt.TypeSourceLink;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWordEtymRelation;
@@ -55,7 +55,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1246411700;
+    private static final long serialVersionUID = 800422075;
 
     /**
      * The reference instance of <code>public</code>
@@ -222,11 +222,11 @@ public class Public extends SchemaImpl {
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
             TypeFreeform.TYPE_FREEFORM,
-            TypeImageFile.TYPE_IMAGE_FILE,
             TypeLangComplexity.TYPE_LANG_COMPLEXITY,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeMeaningWord.TYPE_MEANING_WORD,
+            TypeMediaFile.TYPE_MEDIA_FILE,
             TypeSourceLink.TYPE_SOURCE_LINK,
             TypeUsage.TYPE_USAGE,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
