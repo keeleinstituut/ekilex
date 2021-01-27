@@ -27,6 +27,7 @@ class paneToggle {
 
   toggleStatus() {
     const status = this.getStatus() === 'active' ? 'deactive' : 'active';
+    console.log(status);
     Cookies.set(this.storageKey, status, 365);
   }
 

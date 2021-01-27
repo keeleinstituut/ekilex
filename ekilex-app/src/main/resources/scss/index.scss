@@ -155,3 +155,14 @@ footer p {
     transform: rotate(-90deg);
   }
 }
+
+.ui-sortable{
+  .ui-state-highlight{
+    height: 45px;
+    border-color: #5AABE0;
+    background-color: #EAF1F8;
+  }
+  .ui-sortable-helper {
+    background: white;
+  }
+}

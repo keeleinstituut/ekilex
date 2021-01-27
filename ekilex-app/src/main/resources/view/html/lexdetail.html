@@ -3,7 +3,7 @@
 <head></head>
 <body>
   <th:block th:fragment="lexeme_details_lite">
-    <div class="px-3 pb-2 pt-2 border-bottom border-light">
+    <div class="px-3 pb-2 pt-2 border-bottom border-light details-closed">
       <div class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-4': ''">
         <div class="d-flex flex-row flex-nowrap align-items-start">
           <span th:if="${lexeme.levels != null}"
@@ -55,7 +55,7 @@
     </div>
   </th:block>
   <th:block th:fragment="lexeme_details_full">
-    <div class="px-3 pb-2 mb-2 border-bottom border-light"
+    <div class="px-3 pb-2 mb-2 border-bottom border-light details-open"
          th:with="
            isMeaningLexemeCrudGranted=${#vars.lexeme.meaning.subGrant},
            isMeaningAnyLexemeCrudGranted=${#vars.lexeme.meaning.anyGrant}">

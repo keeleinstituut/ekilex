@@ -409,6 +409,7 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 		closeWaitDlg();
 		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
 		$(window).trigger('update:multiSelect');
+		$(window).trigger('update:sorter');
 		$wpm.bindObjects();
 	}).fail(function(data) {
 		alert('Lekseemi detailide päring ebaõnnestus');
