@@ -63,4 +63,6 @@ public interface SystemConstant {
 	String WORD_SEARCH_GROUP_FORM = "form";
 
 	char TEMP_CONVERSION_PLACEHOLDER = '`';
+
+	String ILLEGAL_FORM_VALUE = "-";
 }

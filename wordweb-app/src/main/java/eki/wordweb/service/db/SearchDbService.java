@@ -17,6 +17,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -157,6 +158,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
 		String searchWordLower = StringUtils.lowerCase(searchWord);
+
+		if (StringUtils.equals(searchWordLower, ILLEGAL_FORM_VALUE)) {
+			return Collections.emptyList();
+		}
 
 		Table<MviewWwWordRecord> ww = DSL
 				.selectFrom(w)
