@@ -22,11 +22,12 @@
               <tr>
                 <th class="m-1 p-1" style="width: 5%">Kood</th>
                 <th class="m-1 p-1" style="width: 20%">Nimi</th>
-                <th class="m-1 p-1" style="width: 55%">Kirjeldus</th>
-                <th class="m-1 p-1 text-center" style="width: 5%">Nähtav</th>
-                <th class="m-1 p-1 text-center" style="width: 5%">Avalik</th>
-                <th class="m-1 p-1 text-center" style="width: 5%">Peremees</th>
-                <th class="m-1 p-1" style="width: 5%"></th>
+                <th class="m-1 p-1" style="width: 50%">Kirjeldus</th>
+                <th class="m-1 p-1" style="width: 8%">Kontaktid</th>
+                <th class="m-1 p-1 text-center" style="width: 4%">Nähtav</th>
+                <th class="m-1 p-1 text-center" style="width: 4%">Avalik</th>
+                <th class="m-1 p-1 text-center" style="width: 4%">Peremees</th>
+                <th class="m-1 p-1" style="width: 4%"></th>
               </tr>
               <th:block th:each="dataset : ${datasets}">
                 <tr th:classappend="${dataset.superior} ? 'font-weight-bold': ''">
@@ -39,6 +40,9 @@
                   <td class="m-1 p-1">
                     <small data-toggle="tooltip" data-placement="bottom" th:title="${dataset.description}"
                            th:text="${#strings.abbreviate(dataset.description, 500)}"></small>
+                  </td>
+                  <td class="m-1 p-1 pl-2 pr-2 border-left border-right">
+                    <small data-toggle="tooltip" data-placement="bottom" th:title="${dataset.contact}" th:text="${dataset.contact}"></small>
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span class="text-secondary fa" th:classappend="${dataset.visible ? 'fa-check-square-o' : 'fa-square-o'}"

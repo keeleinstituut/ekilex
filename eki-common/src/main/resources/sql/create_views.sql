@@ -118,6 +118,28 @@ create type type_meaning_relation as (
 				lex_government_values text array,
 				meaning_rel_type_code varchar(100));
 
+create view view_ww_dataset_word_menu 
+as
+select w.dataset_code,
+       w.first_letter,
+       array_agg(w.word order by w.word) words
+from (select left (w.value, 1) first_letter,
+             w.value word,
+             l.dataset_code
+      from word w,
+           lexeme l,
+           dataset ds
+      where w.value != ''
+      and   l.word_id = w.id
+      and   l.is_public = true
+      and   l.dataset_code = ds.code
+      and   ds.is_public = true
+      and   ds.code not in ('ety', 'sss')) w
+group by w.dataset_code,
+         w.first_letter
+order by w.dataset_code,
+         w.first_letter;
+
 create view view_ww_word_search
 as
 select ws.sgroup,
@@ -2033,6 +2055,7 @@ create view view_ww_dataset
        type,
        name,
        description,
+       contact,
        is_superior,
        order_by
      from dataset

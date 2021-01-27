@@ -460,6 +460,7 @@ create table dataset
   type varchar(10) not null,
   name text not null,
   description text,
+  contact text,
   is_visible boolean default true,
   is_public boolean default true,
   is_superior boolean default false,

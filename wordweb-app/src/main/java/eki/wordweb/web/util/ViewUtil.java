@@ -221,6 +221,16 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		return uri;
 	}
 
+	public String getDetailSearchUri(String word, String datasetCode) {
+		String uri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, datasetCode, word, null);
+		return uri;
+	}
+
+	public String getDatasetFirstLetterSearchUri(String datasetCode, Character firstLetter) {
+		String uri = webUtil.composeDatasetFirstLetterSearchUri(datasetCode, firstLetter);
+		return uri;
+	}
+
 	public String getEkilexLimTermMeaningDetailsUrl(Long meaningId) {
 		return webUtil.composeEkilexLimTermDetailsUrl(meaningId);
 	}

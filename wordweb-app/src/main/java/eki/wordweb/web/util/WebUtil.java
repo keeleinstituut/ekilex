@@ -22,7 +22,7 @@ public class WebUtil implements WebConstant, GlobalConstant {
 	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr) {
 		String encodedWord = UriUtils.encode(word, UTF_8);
 		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
-		String searchUri = SEARCH_URI + UNIF_URI + "/" + destinLangsStr + "/" + encodedDatasetCodesStr + "/" + encodedWord;
+		String searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}
@@ -31,7 +31,7 @@ public class WebUtil implements WebConstant, GlobalConstant {
 
 	public String composeSimpleSearchUri(String destinLangsStr, String word, Integer homonymNr) {
 		String encodedWord = UriUtils.encode(word, UTF_8);
-		String searchUri = SEARCH_URI + LITE_URI + "/" + destinLangsStr + "/" + encodedWord;
+		String searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord);
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}
@@ -44,6 +44,11 @@ public class WebUtil implements WebConstant, GlobalConstant {
 				.map(value -> UriUtils.encode(value, UTF_8))
 				.collect(Collectors.joining(String.valueOf(UI_FILTER_VALUES_SEPARATOR)));
 		return encodedSeparatedValuesStr;
+	}
+
+	public String composeDatasetFirstLetterSearchUri(String datasetCode, Character firstLetter) {
+		String uri = StringUtils.join(DATASET_HOME_URI, '/', datasetCode, '/', firstLetter);
+		return uri;
 	}
 
 	public String composeEkilexLimTermDetailsUrl(Long meaningId) {

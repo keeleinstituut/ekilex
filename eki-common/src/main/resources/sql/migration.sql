@@ -409,3 +409,5 @@ where type = 'IMAGE_FILE'
   and value_prese not like '%https://sonaveeb.ee/files/images/%';
   
 delete from form where mode = 'UNKNOWN';
+
+alter table dataset add column contact text;

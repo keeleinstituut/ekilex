@@ -164,6 +164,21 @@ public class CommonDataDbService implements SystemConstant {
 				.fetchMap(cllbl.CODE, LanguageData.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #datasetCode}")
+	public Dataset getDataset(String datasetCode) {
+		return create
+				.select(
+						MVIEW_WW_DATASET.CODE,
+						MVIEW_WW_DATASET.TYPE,
+						MVIEW_WW_DATASET.NAME,
+						MVIEW_WW_DATASET.DESCRIPTION,
+						MVIEW_WW_DATASET.IS_SUPERIOR)
+				.from(MVIEW_WW_DATASET)
+				.where(MVIEW_WW_DATASET.CODE.eq(datasetCode))
+				.fetchOptionalInto(Dataset.class)
+				.orElse(null);
+	}
+
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Dataset> getDatasets() {
 		return create
