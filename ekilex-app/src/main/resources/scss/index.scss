@@ -155,3 +155,41 @@ footer p {
     transform: rotate(-90deg);
   }
 }
+
+.ui-sortable{
+  .ui-state-highlight{
+    height: 45px;
+    border-color: #5AABE0;
+    background-color: #EAF1F8;
+  }
+  .ui-sortable-helper {
+    background: white;
+  }
+}
+
+.orderable.ui-sortable {
+  display: inline-flex !important;
+  flex-wrap: wrap;
+  width: 50%;
+}
+.draggable-syn-rel {
+  display: inline-flex;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  margin-right: 10px;
+  position: relative;
+  .handle {
+    padding: 3px 4px 0 4px;
+  }
+  .floating-buttons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+}
+#syn-details-area {
+  .orderable {
+    width: 100% !important;
+  }
+}

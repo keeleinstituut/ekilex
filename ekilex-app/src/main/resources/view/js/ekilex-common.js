@@ -7,24 +7,33 @@ $.fn.deleteConfirm = function() {
 	});
 };
 
-function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
+function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.', callback) {
 	return $.ajax({
 		url: url,
 		data: JSON.stringify(dataObject),
 		method: 'POST',
 		dataType: 'json',
-		contentType: 'application/json'
-	}).fail(function(data) {
+		contentType: 'application/json',
+		success: function(){
+			if (callback) {
+				callback();
+			}
+		},
+	})
+	
+	.fail(function(data) {
 		console.log(data);
 		openAlertDlg(failMessage);
 	});
 };
 
 function doPostDelete(deleteUrl, callback) {
+	
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
+			console.log(deleteUrl);
 			if (QueryParams.parseParams(deleteUrl).id) {
-				$('#lexeme-details-'+QueryParams.parseParams(deleteUrl).id).parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+				$(`[id*="${QueryParams.parseParams(deleteUrl).id}"]:first, [data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`).parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
 			} else {
 				callback();
 			}
