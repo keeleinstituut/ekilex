@@ -6,6 +6,7 @@ class Sorter {
     this.type = this.main.attr('data-sorter:type');
   }
 
+  /* Unified sunctionality */
   bindSortable() {
     this.main.sortable({
       items: '> .sortable-main-group',
@@ -26,57 +27,64 @@ class Sorter {
     });
 
     if (this.type === 'lex-details') {
-      this.children.each(function(){
-        $(this).sortable({
-          placeholder: "ui-state-highlight",
-          start: function(event, ui){
-            ui.placeholder.css({
-              height: ui.item.outerHeight(),
-            })
-          }
-        });
-      });
+      this.bindLexDetails();
       this.checkRequirements();
     } else if (this.type === 'meaning_relation') {
-
-      const main = this.main;
-      const originalOrder = [];
-
-      main.find('.sortable-main-group').each(function(index){
-        originalOrder.push($(this).attr('data-orderby'));
-      });
-
-      this.main.on('sortstop', function(event, ui){
-        setTimeout(function(){
-          const data = {
-            additionalInfo: main.attr('data-additional-info'),
-            opCode: 'meaning_relation',
-            items: [],
-          };
-
-          main.find('.sortable-main-group').each(function(index){
-            data.items.push({
-              id: $(this).attr('data-relation-id'),
-              orderby: originalOrder[index],
-              text: $(this).find('button:first').text(),
-            });
-          });
-  
-          console.log(data);
-          const orderingBtn = ui.item;
-          
-          openWaitDlg();
-          postJson(applicationUrl + 'update_ordering', data, 'Salvestamine ebaõnnestus.', function(){
-            if (orderingBtn.hasClass('do-refresh')) {
-              refreshSynDetails();
-            }
-          });
-          
-        }, 60);
-      });
-
+      this.bindMeaningRelations();
     }
 
+  }
+
+  /* Custom lex details functionality */
+  bindLexDetails() {
+    this.children.each(function(){
+      $(this).sortable({
+        placeholder: "ui-state-highlight",
+        start: function(event, ui){
+          ui.placeholder.css({
+            height: ui.item.outerHeight(),
+          })
+        }
+      });
+    });
+  }
+
+  /* Custom meaning relations functionality */
+  bindMeaningRelations() {
+    const main = this.main;
+    const originalOrder = [];
+
+    main.find('.sortable-main-group').each(function(index){
+      originalOrder.push($(this).attr('data-orderby'));
+    });
+
+    this.main.on('sortstop', function(event, ui){
+      setTimeout(function(){
+        const data = {
+          additionalInfo: main.attr('data-additional-info'),
+          opCode: 'meaning_relation',
+          items: [],
+        };
+
+        main.find('.sortable-main-group').each(function(index){
+          data.items.push({
+            id: $(this).attr('data-relation-id'),
+            orderby: originalOrder[index],
+            text: $(this).find('button:first').text(),
+          });
+        });
+
+        const orderingBtn = ui.item;
+        
+        openWaitDlg();
+        postJson(applicationUrl + 'update_ordering', data, 'Salvestamine ebaõnnestus.', function(){
+          if (orderingBtn.hasClass('do-refresh')) {
+            refreshSynDetails();
+          }
+        });
+        
+      }, 60);
+    });
   }
   
   checkRequirements() {
@@ -121,8 +129,8 @@ class Sorter {
     
     this.main.find('.level-1-element').each(function(){
       const obj = $(this);
-      const children = obj.nextUntil('.level-1-element');
-      const bound = $.merge(obj, children);
+      const siblings = obj.nextUntil('.level-1-element');
+      const bound = $.merge(obj, siblings);
       bound.wrapAll('<div class="sortable-main-group"></div>')
     });
 
@@ -130,7 +138,6 @@ class Sorter {
   }
 
   initialize() {
-    console.log(this.type);
     if (this.type === 'lex-details') {
       this.differentiateLexDetails();
       $(window).on('update:sorter', () => {
