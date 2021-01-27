@@ -213,7 +213,7 @@ public class UnifSearchController extends AbstractController {
 		return searchValidation;
 	}
 
-	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
+	private void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
 		SessionBean sessionBean = populateCommonModel(model);
 		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter(DISPLAY_LANG);

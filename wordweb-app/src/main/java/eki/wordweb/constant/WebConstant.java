@@ -5,6 +5,8 @@ public interface WebConstant {
 	//TODO should be set by defaults and/or ui
 	String DISPLAY_LANG = "est";
 
+	String DATASET_HOME_PAGE = "dataset-home";
+
 	String UNIF_HOME_PAGE = "unif-home";
 
 	String UNIF_SEARCH_PAGE = "unif-search";
@@ -38,6 +40,8 @@ public interface WebConstant {
 	String ERROR_PAGE = "error";
 
 	String HOME_URI = "/";
+
+	String DATASET_HOME_URI = "/ds";
 
 	@Deprecated
 	String LEX_URI = "/lex";

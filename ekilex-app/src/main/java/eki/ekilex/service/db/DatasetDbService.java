@@ -42,6 +42,7 @@ public class DatasetDbService {
 						DATASET.NAME,
 						DATASET.TYPE,
 						DATASET.DESCRIPTION,
+						DATASET.CONTACT,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC,
 						DATASET.IS_SUPERIOR)
@@ -60,12 +61,14 @@ public class DatasetDbService {
 						DATASET.NAME,
 						DATASET.TYPE,
 						DATASET.DESCRIPTION,
+						DATASET.CONTACT,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC)
 				.values(dataset.getCode(),
 						dataset.getName(),
 						(dataset.getType() != null ? dataset.getType().name() : null),
 						dataset.getDescription(),
+						dataset.getContact(),
 						dataset.isVisible(),
 						dataset.isPublic())
 				.execute();
@@ -79,6 +82,7 @@ public class DatasetDbService {
 				.set(DATASET.NAME, dataset.getName())
 				.set(DATASET.TYPE, (dataset.getType() != null ? dataset.getType().name() : null))
 				.set(DATASET.DESCRIPTION, dataset.getDescription())
+				.set(DATASET.CONTACT, dataset.getContact())
 				.set(DATASET.IS_VISIBLE, dataset.isVisible())
 				.set(DATASET.IS_PUBLIC, dataset.isPublic())
 				.where(DATASET.CODE.eq(dataset.getCode()))
@@ -157,6 +161,7 @@ public class DatasetDbService {
 						DATASET.NAME,
 						DATASET.TYPE,
 						DATASET.DESCRIPTION,
+						DATASET.CONTACT,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC,
 						DATASET.IS_VISIBLE)

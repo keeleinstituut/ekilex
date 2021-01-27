@@ -77,11 +77,12 @@ function initializeDatasets() {
 		let thisForm = $(this).find('form');
 
 		$.get(fetchUrl).done(function(dataset) {
-
+		
 			thisForm.find('input[name="code"]').val(dataset.code);
 			thisForm.find('input[name="name"]').val(dataset.name);
 			thisForm.find('select[name="type"]').val(dataset.type);
 			thisForm.find('textarea[name="description"]').val(dataset.description);
+			thisForm.find('textarea[name="contact"]').val(dataset.contact);
 			thisForm.find('input[name="public"]').attr('checked', dataset.public);
 			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);
 

@@ -1,3 +1,4 @@
+drop materialized view if exists mview_ww_dataset_word_menu;
 drop materialized view if exists mview_ww_word_search;
 drop materialized view if exists mview_ww_word;
 drop materialized view if exists mview_ww_form;
@@ -151,6 +152,16 @@ create type type_meaning_relation as (
 				lex_register_codes varchar(100) array,
 				lex_government_values text array,
 				meaning_rel_type_code varchar(100));
+
+create materialized view mview_ww_dataset_word_menu as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_dataset_word_menu') as dataset_word_menu(
+	dataset_code varchar(10),
+	first_letter char(1),
+	words text array
+);
 
 create materialized view mview_ww_word_search as
 select * from
@@ -397,6 +408,7 @@ dblink(
 	type varchar(10),
 	name text,
 	description text,
+	contact text,
 	is_superior boolean,
 	order_by bigint
 );
@@ -415,6 +427,7 @@ dblink(
 	order_by bigint
 );
 
+create index mview_ww_dataset_word_menu_dataset_fletter_idx on mview_ww_dataset_word_menu (dataset_code, first_letter);
 create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
 create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);

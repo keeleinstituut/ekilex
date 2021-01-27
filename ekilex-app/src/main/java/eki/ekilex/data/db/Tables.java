@@ -100,6 +100,7 @@ import eki.ekilex.data.db.tables.ValueStateLabel;
 import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
 import eki.ekilex.data.db.tables.ViewWwDataset;
+import eki.ekilex.data.db.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink;
 import eki.ekilex.data.db.tables.ViewWwForm;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
@@ -622,6 +623,11 @@ public class Tables {
      * The table <code>public.view_ww_dataset</code>.
      */
     public static final ViewWwDataset VIEW_WW_DATASET = ViewWwDataset.VIEW_WW_DATASET;
+
+    /**
+     * The table <code>public.view_ww_dataset_word_menu</code>.
+     */
+    public static final ViewWwDatasetWordMenu VIEW_WW_DATASET_WORD_MENU = ViewWwDatasetWordMenu.VIEW_WW_DATASET_WORD_MENU;
 
     /**
      * The table <code>public.view_ww_definition_source_link</code>.

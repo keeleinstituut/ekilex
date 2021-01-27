@@ -21,6 +21,8 @@ public class Dataset extends AbstractDataObject {
 
 	private String description;
 
+	private String contact;
+
 	private boolean isVisible;
 
 	private boolean isPublic;
@@ -63,6 +65,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getContact() {
+		return contact;
+	}
+
+	public void setContact(String contact) {
+		this.contact = contact;
 	}
 
 	public boolean isVisible() {

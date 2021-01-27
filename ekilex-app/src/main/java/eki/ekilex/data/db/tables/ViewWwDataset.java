@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -26,7 +26,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
 
-    private static final long serialVersionUID = 103809054;
+    private static final long serialVersionUID = -54782084;
 
     /**
      * The reference instance of <code>public.view_ww_dataset</code>
@@ -60,6 +60,11 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
      * The column <code>public.view_ww_dataset.description</code>.
      */
     public final TableField<ViewWwDatasetRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_dataset.contact</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, String> CONTACT = createField(DSL.name("contact"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_dataset.is_superior</code>.
@@ -97,7 +102,7 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
     }
 
     private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT dataset.code,\n    dataset.type,\n    dataset.name,\n    dataset.description,\n    dataset.is_superior,\n    dataset.order_by\n   FROM dataset\n  WHERE (dataset.is_public = true)\n  ORDER BY dataset.order_by;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT dataset.code,\n    dataset.type,\n    dataset.name,\n    dataset.description,\n    dataset.contact,\n    dataset.is_superior,\n    dataset.order_by\n   FROM dataset\n  WHERE (dataset.is_public = true)\n  ORDER BY dataset.order_by;"));
     }
 
     public <O extends Record> ViewWwDataset(Table<O> child, ForeignKey<O, ViewWwDatasetRecord> key) {
@@ -136,11 +141,11 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, String, Boolean, Long> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<String, String, String, String, String, Boolean, Long> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

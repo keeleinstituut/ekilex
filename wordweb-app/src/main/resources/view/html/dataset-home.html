@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(_,~{::links},_)">
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-common-audio.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
+</th:block>
+</head>
+<body class="home-page d-flex flex-column">
+  <th:block th:replace="common-app :: update-msg"></th:block>
+  <th:block th:replace="common-app :: wcag-search"></th:block>
+  <th:block th:replace="common-app :: ie-user"></th:block>
+  <div class="header-container d-flex">
+    <div th:replace="common-app :: lang-and-menu-btn"></div>
+  </div>
+  <div class="container-fluid home-page-content">
+    <div class="row">
+      <div class="col align-self-center main-content-wrapper">
+        <div class="row">
+          <div aria-hidden="true" class="col-12 mb-1 mb-md-2">
+            <h1 th:text="${datasetHomeData.dataset.name}"></h1>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
+            <p th:text="${datasetHomeData.dataset.description}" class="text-justify">Sõnakogu kirjeldus</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
+            <div th:replace="common-search :: search"></div>
+          </div>
+        </div>
+        <div class="text-center mt-5">
+          <th:block th:each="firstLetter : ${datasetHomeData.firstLetters}">
+            <a th:href="@{${viewUtil.getDatasetFirstLetterSearchUri(datasetHomeData.dataset.code, firstLetter)}}">
+              <span th:text="${firstLetter}"></span>
+            </a>
+          </th:block>
+        </div>
+        <th:block th:if="${datasetWords != null}">
+          <div class="row">
+            <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
+              <hr />
+              <th:block th:each="word : ${datasetWords}">
+                <div class="text-left">
+                  <a th:href="@{${viewUtil.getDetailSearchUri(word, datasetHomeData.dataset.code)}}" th:text="${word}"></a>
+                </div>
+              </th:block>
+            </div>
+          </div>
+        </th:block>
+        <div class="logo-wrapper">
+          <ul class="logo-list list-unstyled">
+            <li>
+              <span class="esf-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="erf-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="eki-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="htm-logo mini-logo"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:replace="common-app :: footer-content"></div>
+  <div th:replace="common-app :: feedback-form"></div>
+  <script th:inline="javascript">
+  	var currentPage = /*[[@{/}]]*/"/";
+  	var searchWordFragUrl = /*[[@{/searchwordfrag/unif}]]*/"/searchwordfrag/unif";
+  	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
+  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  	setActiveMenuItem('search-unif');
+  </script>
+</body>
+</html>
