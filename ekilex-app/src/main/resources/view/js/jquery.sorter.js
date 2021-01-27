@@ -53,10 +53,12 @@ class Sorter {
             opCode: 'meaning_relation',
             items: [],
           };
+
           main.find('.sortable-main-group').each(function(index){
             data.items.push({
               id: $(this).attr('data-relation-id'),
-              orderby: index.toString(),
+              orderby: originalOrder[index],
+              text: $(this).find('button:first').text(),
             });
           });
   
@@ -64,10 +66,11 @@ class Sorter {
           const orderingBtn = ui.item;
           
           openWaitDlg();
-          postJson(applicationUrl + 'update_ordering', data);
-          if (orderingBtn.hasClass('do-refresh')) {
-            refreshSynDetails();
-          }
+          postJson(applicationUrl + 'update_ordering', data, 'Salvestamine ebaõnnestus.', function(){
+            if (orderingBtn.hasClass('do-refresh')) {
+              refreshSynDetails();
+            }
+          });
           
         }, 60);
       });

@@ -170,7 +170,7 @@ footer p {
 .orderable.ui-sortable {
   display: inline-flex !important;
   flex-wrap: wrap;
-  width: 100%;
+  width: 50%;
 }
 .draggable-syn-rel {
   display: inline-flex;
@@ -184,7 +184,12 @@ footer p {
   }
   .floating-buttons {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
+  }
+}
+#syn-details-area {
+  .orderable {
+    width: 100% !important;
   }
 }
