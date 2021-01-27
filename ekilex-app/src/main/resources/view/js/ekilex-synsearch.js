@@ -92,7 +92,6 @@ function initializeSynSearch() {
 					const scrollTop = main.scrollTop();
 					const mainHeight = main.height();
 					const topPos = main.offset().top + scrollTop;
-					console.log(elements.length);
 					elements.each(function(){
 						const obj = $(this);
 						const objTop = obj.offset().top + scrollTop;

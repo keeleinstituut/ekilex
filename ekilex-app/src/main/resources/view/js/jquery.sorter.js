@@ -74,7 +74,6 @@ class Sorter {
           });
         });
 
-        console.log(data);
         const orderingBtn = ui.item;
         
         openWaitDlg();
@@ -130,8 +129,8 @@ class Sorter {
     
     this.main.find('.level-1-element').each(function(){
       const obj = $(this);
-      const children = obj.nextUntil('.level-1-element');
-      const bound = $.merge(obj, children);
+      const siblings = obj.nextUntil('.level-1-element');
+      const bound = $.merge(obj, siblings);
       bound.wrapAll('<div class="sortable-main-group"></div>')
     });
 
@@ -139,7 +138,6 @@ class Sorter {
   }
 
   initialize() {
-    console.log(this.type);
     if (this.type === 'lex-details') {
       this.differentiateLexDetails();
       $(window).on('update:sorter', () => {
