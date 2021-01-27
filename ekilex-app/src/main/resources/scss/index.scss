@@ -166,3 +166,25 @@ footer p {
     background: white;
   }
 }
+
+.orderable.ui-sortable {
+  display: inline-flex !important;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.draggable-syn-rel {
+  display: inline-flex;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  margin-right: 10px;
+  position: relative;
+  .handle {
+    padding: 3px 4px 0 4px;
+  }
+  .floating-buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+}

@@ -28,12 +28,12 @@
         </div>
       </div>
       <div class="col-9 h-100 d-flex flex-column">
-        <div id="syn-details-area"></div>
+        <div id="syn-details-area" data-rel="details-area"></div>
       </div>
     </div>
   </div>
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" id="syn-details-area" class="h-100">
+    <div th:data-id="${wordId}" id="syn-details-area" class="h-100" data-rel="details-area">
       <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">

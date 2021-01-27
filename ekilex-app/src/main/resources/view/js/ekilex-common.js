@@ -21,11 +21,12 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
 };
 
 function doPostDelete(deleteUrl, callback) {
+	
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
 			console.log(deleteUrl);
 			if (QueryParams.parseParams(deleteUrl).id) {
-				$(`[id*="${QueryParams.parseParams(deleteUrl).id}"]:first`).parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+				$(`[id*="${QueryParams.parseParams(deleteUrl).id}"]:first, [data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`).parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
 			} else {
 				callback();
 			}

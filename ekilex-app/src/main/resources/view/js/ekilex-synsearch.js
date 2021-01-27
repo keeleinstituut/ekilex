@@ -57,6 +57,7 @@ function initializeSynSearch() {
 			$("#syn_select_wait_" + id).hide();
 			$('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
 
+			$wpm.bindObjects();
 			$('.syn-stats-popover').popover({
 				template: '<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header"></h3></div><div class="popover-body"></div></div>',
 				placement: 'top',
@@ -73,12 +74,14 @@ function initializeSynSearch() {
 				helper: "clone"
 			});
 
+			/*
 			$(document).find('.draggable-syn-rel').draggable({
 				revert: "invalid",
 				appendTo: "body",
 				containment: "window",
 				helper: "clone"
 			});
+			*/
 
 			let scrollDebounce;
 			$('.lexeme-list').off('scroll.droppable').on('scroll.droppable', function(){
@@ -95,12 +98,10 @@ function initializeSynSearch() {
 						const objTop = obj.offset().top + scrollTop;
 						if (objTop + 100 > topPos && objTop - 100 < topPos + mainHeight) {
 							obj.addClass('canAccept');
-							obj.find('.droppable-lexeme').addClass('canAccept');
-							obj.find('.droppable-syn-rel').addClass('canAccept');
+							obj.find('.droppable-lexeme, .droppable-syn-rel').addClass('canAccept');
 						} else {
 							obj.removeClass('canAccept');
-							obj.find('.droppable-lexeme').removeClass('canAccept');
-							obj.find('.droppable-syn-rel').removeClass('canAccept');
+							obj.find('.droppable-lexeme, .droppable-syn-rel').removeClass('canAccept');
 						}
 					});
 				}, 150);
@@ -137,6 +138,7 @@ function initializeSynSearch() {
 				}
 			});
 
+			/*
 			$(document).find('.droppable-syn-rel').droppable({
 				accept: function(draggableDiv) {
 					if ($(this).is('.canAccept')) {
@@ -169,6 +171,7 @@ function initializeSynSearch() {
 					}
 				}
 			});
+			*/
 
 			if (IS_KEYBOARD_MODE) {
 				activateSynCandidatesList();
@@ -272,6 +275,8 @@ function initializeSynSearch() {
 			$('#synSearchResultsDiv').html(data);
 			$('#synSearchResultsDiv').parent().scrollTop(0);
 			$('#syn-details-area').empty();
+			$wpm.bindObjects();
+			
 		}).fail(function (data) {
 			console.log(data);
 			closeWaitDlg();

@@ -11,9 +11,17 @@ class Sorter {
       items: '> .sortable-main-group',
       placeholder: "ui-state-highlight",
       start: function(event, ui){
-        ui.placeholder.css({
-          height: ui.item.outerHeight(),
-        })
+        if (this.type === 'lex-details') {
+          ui.placeholder.css({
+            height: ui.item.outerHeight(),
+          })
+        } else {
+          ui.placeholder.css({
+            display: 'inline-block',
+            width: ui.item.outerWidth(),
+            height: ui.item.outerHeight(),
+          })
+        }
       }
     });
 
@@ -28,23 +36,62 @@ class Sorter {
           }
         });
       });
+      this.checkRequirements();
+    } else if (this.type === 'meaning_relation') {
+
+      const main = this.main;
+      const originalOrder = [];
+
+      main.find('.sortable-main-group').each(function(index){
+        originalOrder.push($(this).attr('data-orderby'));
+      });
+
+      this.main.on('sortstop', function(event, ui){
+        setTimeout(function(){
+          const data = {
+            additionalInfo: main.attr('data-additional-info'),
+            opCode: 'meaning_relation',
+            items: [],
+          };
+          main.find('.sortable-main-group').each(function(index){
+            data.items.push({
+              id: $(this).attr('data-relation-id'),
+              orderby: index.toString(),
+            });
+          });
+  
+          console.log(data);
+          const orderingBtn = ui.item;
+          
+          openWaitDlg();
+          postJson(applicationUrl + 'update_ordering', data);
+          if (orderingBtn.hasClass('do-refresh')) {
+            refreshSynDetails();
+          }
+          
+        }, 60);
+      });
+
     }
 
-    this.checkRequirements();
   }
   
   checkRequirements() {
     this.canActivate = this.main.find('.details-open').length === 0;
     if (this.canActivate && this.main.sortable('instance')) {
       this.main.sortable('enable');
-      this.children.each(function(){
-        $(this).sortable('enable');
-      });
+      if (this.children) {
+        this.children.each(function(){
+          $(this).sortable('enable');
+        });
+      }
     } else {
       this.main.sortable('disable');
-      this.children.each(function(){
-        $(this).sortable('disable');
-      });
+      if (this.children) {
+        this.children.each(function(){
+          $(this).sortable('disable');
+        });
+      }
     }
     return this.canActivate;
   }
@@ -75,19 +122,19 @@ class Sorter {
       const bound = $.merge(obj, children);
       bound.wrapAll('<div class="sortable-main-group"></div>')
     });
-    
-
-    
 
     this.children = this.main.find('.sortable-child-group');
   }
 
   initialize() {
+    console.log(this.type);
     if (this.type === 'lex-details') {
       this.differentiateLexDetails();
       $(window).on('update:sorter', () => {
         this.checkRequirements();
       });
+    } else {
+      this.main.children().addClass('sortable-main-group');
     }
     this.bindSortable();
   }
