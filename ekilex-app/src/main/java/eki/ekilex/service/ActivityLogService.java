@@ -37,7 +37,7 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
-import eki.ekilex.data.Image;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.Meaning;
@@ -102,6 +102,7 @@ public class ActivityLogService implements SystemConstant {
 			ActivityEntity.EXTERNAL_SOURCE_ID,
 			ActivityEntity.LEARNER_COMMENT,
 			ActivityEntity.IMAGE_FILE,
+			ActivityEntity.MEDIA_FILE,
 			ActivityEntity.SEMANTIC_TYPE,
 			ActivityEntity.SYSTEMATIC_POLYSEMY_PATTERN,
 			ActivityEntity.GENUS,
@@ -616,7 +617,8 @@ public class ActivityLogService implements SystemConstant {
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<FreeForm> meaningLearnerComments = commonDataDbService.getMeaningLearnerComments(meaningId);
 		List<ImageSourceTuple> meaningImageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
-		List<Image> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
+		List<Media> meaningImages = conversionUtil.composeMeaningImages(meaningImageSourceTuples);
+		List<Media> meaningMedias = commonDataDbService.getMeaningMedias(meaningId);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, null);
@@ -630,6 +632,7 @@ public class ActivityLogService implements SystemConstant {
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(meaningLearnerComments);
 		meaning.setImages(meaningImages);
+		meaning.setMedias(meaningMedias);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setSemanticTypes(meaningSemanticTypes);
 		meaning.setRelations(meaningRelations);

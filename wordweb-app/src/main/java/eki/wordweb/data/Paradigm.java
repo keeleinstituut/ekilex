@@ -1,6 +1,7 @@
 package eki.wordweb.data;
 
 import java.util.List;
+import java.util.Map;
 
 import eki.common.data.AbstractDataObject;
 
@@ -12,17 +13,9 @@ public class Paradigm extends AbstractDataObject {
 
 	private String comment;
 
-	private String title;
+	private String inflectionType;
 
-	private List<ParadigmGroup> groups;
-
-	private boolean expandable;
-
-	//TODO will be removed later
-	private List<Form> forms;
-
-	//TODO will be removed later
-	private List<FormPair> compactForms;
+	private Map<String, List<Form>> formMorphCodeMap;
 
 	public Long getParadigmId() {
 		return paradigmId;
@@ -40,44 +33,20 @@ public class Paradigm extends AbstractDataObject {
 		this.comment = comment;
 	}
 
-	public String getTitle() {
-		return title;
+	public String getInflectionType() {
+		return inflectionType;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setInflectionType(String inflectionType) {
+		this.inflectionType = inflectionType;
 	}
 
-	public List<ParadigmGroup> getGroups() {
-		return groups;
+	public Map<String, List<Form>> getFormMorphCodeMap() {
+		return formMorphCodeMap;
 	}
 
-	public void setGroups(List<ParadigmGroup> groups) {
-		this.groups = groups;
-	}
-
-	public boolean isExpandable() {
-		return expandable;
-	}
-
-	public void setExpandable(boolean expandable) {
-		this.expandable = expandable;
-	}
-
-	public List<Form> getForms() {
-		return forms;
-	}
-
-	public void setForms(List<Form> forms) {
-		this.forms = forms;
-	}
-
-	public List<FormPair> getCompactForms() {
-		return compactForms;
-	}
-
-	public void setCompactForms(List<FormPair> compactForms) {
-		this.compactForms = compactForms;
+	public void setFormMorphCodeMap(Map<String, List<Form>> formMorphCodeMap) {
+		this.formMorphCodeMap = formMorphCodeMap;
 	}
 
 }

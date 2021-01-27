@@ -98,6 +98,16 @@ $(function() {
 		initMultiselectRelationDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=addMeaningImageDlg_]", function(e) {
+		initGenericTextAddDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editMeaningImageDlg_]", function(e) {
+		initGenericTextEditDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=addImageSourceLinkDlg_]", function() {
 		initAddSourceLinkDlg($(this));
 		initSourceNameAutocomplete($(this));
@@ -110,6 +120,16 @@ $(function() {
 
 	$(document).on("show.bs.modal", "[id^=editImageTitleDlg_]", function(e) {
 		initEkiEditorDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=addMeaningMediaDlg_]", function(e) {
+		initGenericTextAddDlg($(this));
+		alignAndFocus(e, $(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editMeaningMediaDlg_]", function(e) {
+		initGenericTextEditDlg($(this));
 		alignAndFocus(e, $(this));
 	});
 

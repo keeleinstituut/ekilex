@@ -18,7 +18,7 @@ create type type_definition as (
 				complexity varchar(100),
 				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_image_file as (freeform_id bigint, image_file text, image_title text, complexity varchar(100));
+create type type_media_file as (freeform_id bigint, source_url text, title text, complexity varchar(100));
 create type type_source_link as (
 				ref_owner varchar(100),
 				owner_id bigint,
@@ -653,6 +653,7 @@ as
 select m.id meaning_id,
        m_dom.domain_codes,
        m_img.image_files,
+       m_media.media_files,
        m_spp.systematic_polysemy_patterns,
        m_smt.semantic_types,
        m_lcm.learner_comments,
@@ -712,7 +713,7 @@ from (select m.id
                             ff_if.value_text,
                             ff_it.value_text,
                             ff_if.complexity
-                          )::type_image_file
+                          )::type_media_file
                           order by
                           ff_if.order_by,
                           ff_it.order_by
@@ -725,6 +726,20 @@ from (select m.id
                                   on ff_it.parent_id = ff_if.id
                                  and ff_it.type = 'IMAGE_TITLE'
                    group by mff.meaning_id) m_img on m_img.meaning_id = m.id
+  left outer join (select mff.meaning_id,
+                          array_agg(row (
+                                      ff_mf.id,
+                                      ff_mf.value_text,
+                                      null,
+                                      ff_mf.complexity
+                                      )::type_media_file
+                                    order by ff_mf.order_by
+                            ) media_files
+                   from meaning_freeform mff
+                          inner join freeform ff_mf
+                                     on ff_mf.id = mff.freeform_id
+                                       and ff_mf.type = 'MEDIA_FILE'
+                   group by mff.meaning_id) m_media on m_media.meaning_id = m.id
   left outer join (select mf.meaning_id,
                           array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
                    from meaning_freeform mf,

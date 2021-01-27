@@ -2,17 +2,20 @@ package eki.ekilex.data;
 
 import java.util.List;
 
+import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
-public class Image extends AbstractDataObject {
+public class Media extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
-	private String fileName;
+	private String sourceUrl;
 
 	private String title;
+
+	private Complexity complexity;
 
 	private List<SourceLink> sourceLinks;
 
@@ -24,12 +27,12 @@ public class Image extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public String getFileName() {
-		return fileName;
+	public String getSourceUrl() {
+		return sourceUrl;
 	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setSourceUrl(String sourceUrl) {
+		this.sourceUrl = sourceUrl;
 	}
 
 	public String getTitle() {
@@ -38,6 +41,14 @@ public class Image extends AbstractDataObject {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Complexity getComplexity() {
+		return complexity;
+	}
+
+	public void setComplexity(Complexity complexity) {
+		this.complexity = complexity;
 	}
 
 	public List<SourceLink> getSourceLinks() {

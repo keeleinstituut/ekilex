@@ -392,7 +392,20 @@ drop function convert_lexeme_to_meaning_relation(bigint,bigint,varchar(100),nume
 ------------------ muu migra -------------------
 ------------------------------------------------
 
-create type type_word_rel_meaning as (meaning_id bigint, definitions text array);
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array);
 
 -- terminivõrgustiku sõnakogu
 insert into dataset (code, type, name) values ('vrk', 'TERM', 'Terminivõrgustik');
+
+-- pildi failinimed URL-ideks
+update freeform
+set value_text = 'https://sonaveeb.ee/files/images/' || value_text
+where type = 'IMAGE_FILE'
+  and value_text not like '%https://sonaveeb.ee/files/images/%';
+
+update freeform
+set value_prese = 'https://sonaveeb.ee/files/images/' || value_prese
+where type = 'IMAGE_FILE'
+  and value_prese not like '%https://sonaveeb.ee/files/images/%';
+  
+delete from form where mode = 'UNKNOWN';

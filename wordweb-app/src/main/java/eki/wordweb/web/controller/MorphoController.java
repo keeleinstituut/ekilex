@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.StaticParadigm;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.service.MorphoService;
 
 @ConditionalOnWebApplication
@@ -46,10 +46,10 @@ public class MorphoController implements WebConstant, SystemConstant, GlobalCons
 
 	private String getMorpho(Long paradigmId, String wordClass, String lang, Integer maxDisplayLevel, Model model) {
 
-		StaticParadigm staticParadigm = morphoService.getStaticParadigm(paradigmId, maxDisplayLevel);
-		model.addAttribute("paradigm", staticParadigm);
+		Paradigm paradigm = morphoService.getParadigm(paradigmId, maxDisplayLevel);
+		model.addAttribute("paradigm", paradigm);
 		String viewFragment = "morpho-" + wordClass + '_' + lang;
-		return MORPHO_PAGE + " :: " + viewFragment;
+		return MORPHO_FULL_PAGE + " :: " + viewFragment;
 	}
 
 }

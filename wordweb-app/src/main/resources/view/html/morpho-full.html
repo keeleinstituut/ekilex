@@ -1469,14 +1469,14 @@
               <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
                   <tr>
-                    <th colspan="2">Причастия / Kesksõnad</th>
+                    <th colspan="2">Причастие / Kesksõna</th>
                   </tr>
                   <tr>
                     <th  colspan="2">настоящее время / olevik</th>
                   </tr>
                   <tr>
                     <td>
-                      действительное причастие / v-kesksõna
+                      действительное / v-kesksõna
                       <br />
                       <span class="highlight">какой? что делающий? / missugune?</span>
                     </td>
@@ -1486,7 +1486,7 @@
                   </tr>
                   <tr>
                     <td>
-                      страдательное причастие / tav-kesksõna
+                      страдательное / tav-kesksõna
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1494,11 +1494,12 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PRTF,pres,pssv', '')"></th:block>
                     </td>
                   </tr>
+
                   <tr>
                     <td>
-                      страдательное причастие / tav-kesksõna 
+                      страдательное / tav-kesksõna 
                       <br />
-                      <small>(краткая форма / lühike vorm)</small>
+                      <span class="small">(краткая форма / lühike vorm)</span>
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1511,7 +1512,7 @@
                   </tr>
                   <tr>
                     <td>
-                      действительное причастие / nud-kesksõna
+                      действительное / nud-kesksõna
                       <br />
                       <span class="highlight">какой? что делавший? что сделавший? / missugune?</span>
                     </td>
@@ -1521,7 +1522,7 @@
                   </tr>
                   <tr>
                     <td>
-                      страдательное причастие / tud-kesksõna
+                      страдательное / tud-kesksõna
                       <br />
                       <span class="highlight">какой? / missugune?</span>
                     </td>
@@ -1531,9 +1532,9 @@
                   </tr>
                   <tr>
                     <td>
-                      страдательное причастие / tud-kesksõna
+                      страдательное / tud-kesksõna
                       <br />
-                      <small>(краткая форма / lühike vorm)</small>
+                      <span class="small">(краткая форма / lühike vorm)</span>
                       <br />
                       <span class="highlight">каков? / missugune?</span>
                     </td>
@@ -1548,7 +1549,7 @@
               <div class="scrollable-table--scroller">
                 <table class="stretch-middle-td">
                   <tr>
-                    <th colspan="2">Деепричастия / des-vorm</th>
+                    <th colspan="2">Деепричастие / des-vorm</th>
                   </tr>
                   <tr>
                     <td>
@@ -1692,11 +1693,9 @@
       <div class="scrollable-table--scroller">
        <table class="stretch-middle-td">
           <tr>
-            <th>
-              <span>падеж / kääne</span>
+            <th colspan="3">
+              падеж / kääne
             </th>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
           </tr>
           <tr >
             <th colspan="2">
@@ -1705,9 +1704,10 @@
             <th>&nbsp;</th>
           </tr>
           <tr>
-            <th colspan="3">
+            <th colspan="2">
               мужской род / meessugu
             </th>
+            <th>&nbsp;</th>
           </tr>
           <tr>
             <td colspan="2">
@@ -1781,9 +1781,10 @@
             </td>
           </tr>
           <tr>
-            <th colspan="3">
+            <th colspan="2">
               женский род / naissugu
             </th>
+            <th>&nbsp;</th>
           </tr>
           <tr>
             <td colspan="2">
@@ -1854,9 +1855,10 @@
             </td>
           </tr>
           <tr>
-            <th colspan="3">
+            <th colspan="2">
               средний род / kesksugu
             </th>
+            <th>&nbsp;</th>
           </tr>
           <tr>
             <td colspan="2">
@@ -2022,7 +2024,7 @@
         <div class="modal-body">
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <b>Положительная степень / Algvõrre</b>
+            <h2>Положительная степень / Algvõrre</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -2123,7 +2125,7 @@
         <div class="modal-body">
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <b>Превосходная степень / Ülivõrre</b>
+            <h2>Превосходная степень / Ülivõrre</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
         </div>

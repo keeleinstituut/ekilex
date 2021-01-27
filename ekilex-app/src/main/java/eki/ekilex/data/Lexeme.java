@@ -50,7 +50,7 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private List<Usage> usages;
 
-	private List<Image> images;
+	private List<Media> images;
 
 	private List<FreeForm> freeforms;
 
@@ -234,11 +234,11 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.usages = usages;
 	}
 
-	public List<Image> getImages() {
+	public List<Media> getImages() {
 		return images;
 	}
 
-	public void setImages(List<Image> images) {
+	public void setImages(List<Media> images) {
 		this.images = images;
 	}
 

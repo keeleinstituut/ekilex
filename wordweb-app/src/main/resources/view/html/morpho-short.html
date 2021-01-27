@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+  <th:block th:fragment="morpho-forms(paradigm, morphCode)">
+    <td>
+      <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
+        <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
+          <span class="form-value-field" th:utext="${form.valuePrese}" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}"></span>
+          <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker" th:if="${(form.audioFile != null)}"
+            th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}" onclick="generateAudioAndPlay(this)">
+            <span class="icon icon-speaker"></span>
+          </button>
+        </th:block>
+        <span th:unless="${formIter.last}">~</span>
+      </th:block>
+    </td>
+  </th:block>
+  <th:block th:fragment="morpho-row(paradigm, morphCodeLeft, morphCodeRight)">
+    <tr>
+      <th:block th:replace=" :: morpho-forms(${paradigm}, ${morphCodeLeft})"></th:block>
+      <th:block th:replace=" :: morpho-forms(${paradigm}, ${morphCodeRight})"></th:block>
+    </tr>
+  </th:block>
+  <th:block th:fragment="morpho-paradigm-header(paradigm)">
+    <th:block th:if="${paradigm.inflectionType}">
+      <p>
+        <span th:text="${paradigm.inflectionType}">33i</span>
+      </p>
+    </th:block>
+    <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+  </th:block>
+  <th:block th:fragment="morpho-paradigm-footer(paradigm)">
+    <div th:if="${paradigm.inflectionType} != '41'" class="modal-button">
+      <button type="button" class="btn btn-bold pl-0 pr-0" data-toggle="modal" th:data-target="${'#morpho-modal-' + paradigmIter.index}">
+        <i class="fa fa-expand-alt"></i>
+        <span th:text="#{button.morpho.show}">Näita tabelina</span>
+      </button>
+      <div class="modal wordmodal" tabindex="-1" role="dialog" aria-labelledby="Modaali pealkiri" aria-hidden="true"
+           th:id="${'morpho-modal-' + paradigmIter.index}"
+           th:data-paradigm-id="${paradigm.paradigmId}">
+        <div class="morpho-content"></div>
+      </div>
+    </div>
+  </th:block>
+  <th:block th:fragment="morpho-verb_est">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'Sup', 'IndIpfSg3')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'Inf', 'PtsPtPs')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'IndPrSg3', 'ImpPrSg2')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'PtsPtIps', 'IndPrIps')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+  <th:block th:fragment="morpho-noomen_est">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'SgN', 'PlN')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'SgG', 'PlG')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'SgP', 'PlP')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+  <th:block th:fragment="morpho-muutumatu_est">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'ID', '')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+  <th:block th:fragment="morpho-noun_rus">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'sing,nomn', 'plur,nomn')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+  <th:block th:fragment="morpho-verb_rus">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'INFN', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,3per,past,indc', 'sing,1per,pres,indc')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'femn,sing,3per,past,indc', 'sing,2per,pres,indc')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,3per,past,indc', 'sing,3per,pres,indc')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+  <th:block th:fragment="morpho-adjective1_rus">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'femn,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'plur,nomn', '')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+  <th:block th:fragment="morpho-adjective2_rus">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'femn,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'plur,nomn', '')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+  <th:block th:fragment="morpho-indeclinable_rus">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'ID', '')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
+</body>
+</html>

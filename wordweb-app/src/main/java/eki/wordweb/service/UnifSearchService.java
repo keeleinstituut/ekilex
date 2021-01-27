@@ -17,8 +17,8 @@ import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchFilter;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
@@ -47,7 +47,7 @@ public class UnifSearchService extends AbstractSearchService {
 		List<WordEtymTuple> wordEtymTuples = searchDbService.getWordEtymologyTuples(wordId);
 		etymConversionUtil.composeWordEtymology(word, wordEtymTuples, displayLang);
 		List<Form> forms = searchDbService.getWordForms(wordId, maxDisplayLevel);
-		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(word, forms, displayLang);
+		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, DISPLAY_LANG);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data

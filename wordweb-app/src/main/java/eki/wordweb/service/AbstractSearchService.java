@@ -23,8 +23,8 @@ import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DataFilter;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchFilter;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
@@ -172,6 +172,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 				isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstAvailableWordForm.getMorphCode());
 			}
 		}
+		boolean morphologyExists = CollectionUtils.isNotEmpty(paradigms) && StringUtils.isNotBlank(word.getWordClass()) && !isUnknownForm;
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);
@@ -181,7 +182,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordData.setParadigms(paradigms);
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableAudioFile(firstAvailableAudioFile);
-		wordData.setUnknownForm(isUnknownForm);
+		wordData.setMorphologyExists(morphologyExists);
 		wordData.setRelevantDataExists(relevantDataExists);
 		wordData.setLexemesExist(lexemesExist);
 		wordData.setMultipleLexLexemesExist(multipleLexLexemesExist);

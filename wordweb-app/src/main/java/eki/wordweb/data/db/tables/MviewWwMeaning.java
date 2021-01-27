@@ -10,7 +10,7 @@ import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeDomainRecord;
 import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
-import eki.wordweb.data.db.udt.records.TypeImageFileRecord;
+import eki.wordweb.data.db.udt.records.TypeMediaFileRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row8;
+import org.jooq.Row9;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = 1132581903;
+    private static final long serialVersionUID = -960861164;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -63,7 +63,12 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.image_files</code>.
      */
-    public final TableField<MviewWwMeaningRecord, TypeImageFileRecord[]> IMAGE_FILES = createField(DSL.name("image_files"), eki.wordweb.data.db.udt.TypeImageFile.TYPE_IMAGE_FILE.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, TypeMediaFileRecord[]> IMAGE_FILES = createField(DSL.name("image_files"), eki.wordweb.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_meaning.media_files</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, TypeMediaFileRecord[]> MEDIA_FILES = createField(DSL.name("media_files"), eki.wordweb.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.systematic_polysemy_patterns</code>.
@@ -160,11 +165,11 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row8 type methods
+    // Row9 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row8<Long, TypeDomainRecord[], TypeImageFileRecord[], String[], String[], String[], TypeFreeformRecord[], TypeDefinitionRecord[]> fieldsRow() {
-        return (Row8) super.fieldsRow();
+    public Row9<Long, TypeDomainRecord[], TypeMediaFileRecord[], TypeMediaFileRecord[], String[], String[], String[], TypeFreeformRecord[], TypeDefinitionRecord[]> fieldsRow() {
+        return (Row9) super.fieldsRow();
     }
 }

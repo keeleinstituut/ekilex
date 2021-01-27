@@ -14,7 +14,9 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private List<TypeDomain> domainCodes;
 
-	private List<TypeImageFile> imageFiles;
+	private List<TypeMediaFile> imageFiles;
+
+	private List<TypeMediaFile> mediaFiles;
 
 	private List<String> systematicPolysemyPatterns;
 
@@ -56,12 +58,20 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 		this.domainCodes = domainCodes;
 	}
 
-	public List<TypeImageFile> getImageFiles() {
+	public List<TypeMediaFile> getImageFiles() {
 		return imageFiles;
 	}
 
-	public void setImageFiles(List<TypeImageFile> imageFiles) {
+	public void setImageFiles(List<TypeMediaFile> imageFiles) {
 		this.imageFiles = imageFiles;
+	}
+
+	public List<TypeMediaFile> getMediaFiles() {
+		return mediaFiles;
+	}
+
+	public void setMediaFiles(List<TypeMediaFile> mediaFiles) {
+		this.mediaFiles = mediaFiles;
 	}
 
 	public List<String> getSystematicPolysemyPatterns() {

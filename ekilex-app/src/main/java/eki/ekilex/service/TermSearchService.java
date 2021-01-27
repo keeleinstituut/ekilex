@@ -25,7 +25,7 @@ import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.Image;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
@@ -152,7 +152,8 @@ public class TermSearchService extends AbstractSearchService {
 		domains = conversionUtil.removeOrderedClassifierDuplicates(domains);
 		List<FreeForm> meaningFreeforms = commonDataDbService.getMeaningFreeforms(meaningId, excludeMeaningAttributeTypes);
 		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
-		List<Image> images = conversionUtil.composeMeaningImages(imageSourceTuples);
+		List<Media> images = conversionUtil.composeMeaningImages(imageSourceTuples);
+		List<Media> medias = commonDataDbService.getMeaningMedias(meaningId);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, meaningNotes);
@@ -222,6 +223,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setSemanticTypes(semanticTypes);
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setImages(images);
+		meaning.setMedias(medias);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(allMeaningRelations);

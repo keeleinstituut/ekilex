@@ -89,6 +89,7 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
@@ -107,6 +108,7 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.Source;
@@ -558,6 +560,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(
 						iff.ID.as("image_freeform_id"),
 						iff.VALUE_TEXT.as("image_freeform_value_text"),
+						iff.COMPLEXITY.as("image_freeform_complexity"),
 						tff.VALUE_TEXT.as("title_freeform_value_text"),
 						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
 						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
@@ -575,6 +578,24 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.and(iff.TYPE.eq(FreeformType.IMAGE_FILE.name())))
 				.orderBy(iff.ORDER_BY)
 				.fetchInto(ImageSourceTuple.class);
+	}
+
+	public List<Media> getMeaningMedias(Long meaningId) {
+
+		Freeform ff = FREEFORM.as("ff");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+
+		return create
+				.select(
+						ff.ID,
+						ff.VALUE_TEXT.as("sourceUrl"),
+						ff.COMPLEXITY)
+				.from(ff, mff)
+				.where(
+						mff.MEANING_ID.eq(meaningId)
+								.and(ff.ID.eq(mff.FREEFORM_ID))
+								.and(ff.TYPE.eq(FreeformType.MEDIA_FILE.name())))
+				.fetchInto(Media.class);
 	}
 
 	public List<OrderedClassifier> getMeaningDomains(Long meaningId) {

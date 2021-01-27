@@ -21,7 +21,8 @@ drop type if exists type_freeform;
 drop type if exists type_lang_complexity;
 drop type if exists type_definition;
 drop type if exists type_domain;
-drop type if exists type_image_file;
+drop type if exists type_image_file;  --TODO remove later
+drop type if exists type_media_file;
 drop type if exists type_usage;
 drop type if exists type_source_link;
 drop type if exists type_colloc_member;
@@ -51,7 +52,7 @@ create type type_definition as (
 				complexity varchar(100),
 				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_image_file as (freeform_id bigint, image_file text, image_title text, complexity varchar(100));
+create type type_media_file as (freeform_id bigint, source_url text, title text, complexity varchar(100));
 create type type_source_link as (
 				ref_owner varchar(100),
 				owner_id bigint,
@@ -232,7 +233,8 @@ dblink(
 	'select * from view_ww_meaning') as meaning(
 	meaning_id bigint,
 	domain_codes type_domain array,
-	image_files type_image_file array,
+	image_files type_media_file array,
+	media_files type_media_file array,
 	systematic_polysemy_patterns text array,
 	semantic_types text array,
 	learner_comments text array,

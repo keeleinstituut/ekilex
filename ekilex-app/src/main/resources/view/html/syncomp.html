@@ -84,7 +84,7 @@
              th:data-navigate-selected="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId}?'true'"
              th:data-active-panel="${markedSynMeaningId != null}?'true'"
              th:classappend="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId ? 'navigate-marked' : ''}">
-          <div>
+          <div data-toggle="tooltip" data-html="true" th:title="${viewUtil.getLexRegisterTooltipHtml(meaning.lexRegisterCodes)}">
             <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
               <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
             </span>
@@ -227,7 +227,7 @@
            th:data-orderby="${meaningWord.orderBy}"
            th:data-orderpos="${meaningWordIter.index}">
         <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
-          <a href="#" class="mr-2 draggable-meaning droppable-meaning do-refresh">
+          <a href="#" class="mr-2">
             <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
             <span th:if="${meaningWord.homonymsExist}"
                   th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
@@ -240,33 +240,51 @@
       </div>
     </div>
   </th:block>
-  <div class="border-top" th:fragment="meaning_relations_data" th:if="${not #lists.isEmpty(lexeme.meaning.viewSynRelations)}">
-    <span th:each="relations, relsIter : ${lexeme.meaning.viewSynRelations}" class="hidden-buttons">
-      <th:block th:each="relation, relIter : ${relations}">
-        <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
+  <div th:fragment="meaning_relations_data"
+       th:if="${not #lists.isEmpty(lexeme.meaning.viewSynRelations)}"
+       class="orderable border-top"
+       data-op-code="meaning_relation"
+       th:data-additional-info="${lexeme.lexemeId}">
+    <span th:each="relations, relsIter : ${lexeme.meaning.viewSynRelations}"
+          class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
+          th:data-lexeme-id="${lexeme.lexemeId}"
+          th:data-orderby="${relations.get(0).orderBy}"
+          th:data-relation-id="${relations.get(0).id}"
+          th:data-orderpos="${relsIter.index}">
+      <span class="handle drag-handle border-right border-light text-muted" title="Lohista siit">
+        <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
+      </span>
+        <span th:each="relation, relIter : ${relations}">
         <input type="hidden" class="relation-meaning-id" th:value="${relation.meaningId}"/>
+        <input type="hidden" class="relation-lexeme-id" th:value="${lexeme.lexemeId}"/>
         <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}">
           <span style="color: #00874F" th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
           <span th:text="${relation.wordHomonymNr}"></span>
           <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
-          <small th:text="${viewUtil.getFormattedLexemeWeight(relation.weight)}" class="text-secondary"></small>
-        </button>
-        <button type="button" class="btn badge badge-secondary btn-xs"
-                title="Muuda vaste seose kaalu"
-                data-toggle="modal"
-                th:data-target="${'#editSynMeaningRelationWeightDlg_' + relation.id}"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-edit" aria-hidden="true"></i>
-        </button>
-        <button type="button" class="btn badge badge-secondary btn-xs"
-                th:data-id="${relation.id}"
-                data-op-code="syn_meaning_relation"
-                data-toggle="delete-confirm"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda vaste seos"></i>
+          <th:block th:if="${not #lists.isEmpty(relation.lexemeRegisterCodes)}">
+            <small th:each="registerCode,regIter : ${relation.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+          </th:block>
         </button>
         <span th:unless="${relIter.last}">,</span>
-      </th:block>
+        <th:block th:if="${relIter.last}">
+          <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
+          <small th:text="${viewUtil.getFormattedLexemeWeight(relation.weight)}" class="text-secondary"></small>
+          <button type="button" class="btn badge badge-secondary btn-xs"
+                  title="Muuda vaste seose kaalu"
+                  data-toggle="modal"
+                  th:data-target="${'#editSynMeaningRelationWeightDlg_' + relation.id}"
+                  sec:authorize="#vars.lexeme.crudGrant">
+            <i class="fa fa-edit" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn badge badge-secondary btn-xs"
+                  th:data-id="${relation.id}"
+                  data-op-code="syn_meaning_relation"
+                  data-toggle="delete-confirm"
+                  sec:authorize="#vars.lexeme.crudGrant">
+            <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda vaste seos"></i>
+          </button>
+        </th:block>
+      </span>
       <span th:unless="${relsIter.last}">|</span>
     </span>
   </div>
