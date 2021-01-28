@@ -35,7 +35,6 @@ import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
@@ -45,6 +44,8 @@ import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.Synonym;
+import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -147,11 +148,10 @@ public class LexSearchService extends AbstractWordSearchService {
 						Long lexemeId = lexeme.getLexemeId();
 						Long meaningId = lexeme.getMeaningId();
 						String datasetCode = lexeme.getDatasetCode();
-						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
+						List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 						permCalculator.filterVisibility(userRole, definitions);
-						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
+						lexeme.setMeaningWords(meaningWords);
 						Meaning meaning = new Meaning();
 						meaning.setDefinitions(definitions);
 						lexeme.setMeaning(meaning);
@@ -178,6 +178,8 @@ public class LexSearchService extends AbstractWordSearchService {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
+		List<String> preferredMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
+
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
@@ -186,8 +188,12 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		permCalculator.applyCrud(userRole, lexeme);
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
-		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, wordLang);
+
+		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
+		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, preferredMeaningWordLangs);
+		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, synMeaningWords, userProfile, wordLang, languagesOrder);
+		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synonyms, languagesOrder);
+
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
 		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -195,7 +201,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		permCalculator.filterVisibility(userRole, definitions);
 
 		lexeme.setTags(tags);
-		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
+		lexeme.setSynonymLangGroups(synonymLangGroups);
 		lexeme.setMeaning(meaning);
 
 		meaning.setMeaningId(meaningId);
@@ -241,11 +247,8 @@ public class LexSearchService extends AbstractWordSearchService {
 			List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 			List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
-			List<Relation> allMeaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Relation> synMeaningRelations = conversionUtil.extractSynMeaningRelations(allMeaningRelations);
-			List<List<Relation>> viewSynMeaningRelations = conversionUtil.composeViewMeaningRelations(synMeaningRelations, userProfile, wordLang, languagesOrder);
-			List<Relation> otherMeaningRelations = conversionUtil.extractOtherMeaningRelations(allMeaningRelations);
-			List<List<Relation>> viewOtherMeaningRelations = conversionUtil.composeViewMeaningRelations(otherMeaningRelations, userProfile, wordLang, languagesOrder);
+			List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<List<Relation>> viewMeaningRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, wordLang, languagesOrder);
 			List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 
 			lexeme.setGovernments(governments);
@@ -266,9 +269,8 @@ public class LexSearchService extends AbstractWordSearchService {
 			meaning.setMedias(meaningMedias);
 			meaning.setNoteLangGroups(meaningNoteLangGroups);
 			meaning.setSemanticTypes(meaningSemanticTypes);
-			meaning.setRelations(allMeaningRelations);
-			meaning.setViewSynRelations(viewSynMeaningRelations);
-			meaning.setViewOtherRelations(viewOtherMeaningRelations);
+			meaning.setRelations(meaningRelations);
+			meaning.setViewRelations(viewMeaningRelations);
 			meaning.setDefinitionLangGroups(definitionLangGroups);
 
 			boolean lexemeOrMeaningClassifiersExist =

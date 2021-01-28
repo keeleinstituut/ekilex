@@ -35,7 +35,6 @@ import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordCandidates;
-import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
@@ -170,9 +169,8 @@ public class LookupService extends AbstractWordSearchService {
 				Long lexemeId = lexeme.getLexemeId();
 				Long meaningId = lexeme.getMeaningId();
 				String datasetCode = lexeme.getDatasetCode();
-				List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-				List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
-				lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
+				List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
+				lexeme.setMeaningWords(meaningWords);
 				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 				permCalculator.filterVisibility(userRole, definitions);
 				List<String> lexemeDefinitionValues = definitions.stream().map(def -> def.getValue()).collect(Collectors.toList());
@@ -265,8 +263,7 @@ public class LookupService extends AbstractWordSearchService {
 						Long meaningId = lexeme.getMeaningId();
 						String datasetCode = lexeme.getDatasetCode();
 						String datasetName = datasetNameMap.get(datasetCode);
-						List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-						List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
+						List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 						List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 						permCalculator.filterVisibility(userRole, definitions);
 						List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
@@ -276,7 +273,7 @@ public class LookupService extends AbstractWordSearchService {
 						permCalculator.filterVisibility(userRole, usages);
 
 						lexeme.setDatasetName(datasetName);
-						lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
+						lexeme.setMeaningWords(meaningWords);
 						lexeme.setGovernments(governments);
 						lexeme.setUsages(usages);
 						Meaning meaning = new Meaning();
@@ -407,12 +404,11 @@ public class LookupService extends AbstractWordSearchService {
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
-		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
-		List<MeaningWordLangGroup> meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, lexeme.getWordLang());
+		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(userRole, definitions);
 
-		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
+		lexeme.setMeaningWords(meaningWords);
 		Meaning meaning = new Meaning();
 		meaning.setDefinitions(definitions);
 		lexeme.setMeaning(meaning);

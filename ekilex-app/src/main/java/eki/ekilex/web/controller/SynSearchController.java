@@ -192,8 +192,6 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 		model.addAttribute("markedSynMeaningId", markedSynMeaningId);
-		model.addAttribute("candidateLangCodes", synCandidateLangCodes);
-		model.addAttribute("meaningWordLangCodes", synMeaningWordLangCodes);
 		model.addAttribute("meaningCount", meaningCount);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
@@ -245,24 +243,6 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("selectedWordMorphCode", morphCode);
 
 		return SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
-	}
-
-	@PostMapping(UPDATE_SYN_CANDIDATE_LANGS_URI)
-	@ResponseBody
-	public String updateCandidateLangs(@RequestParam("languages") List<String> languages) {
-
-		Long userId = userContext.getUserId();
-		userProfileService.updateUserPreferredSynCandidateLangs(languages, userId);
-		return RESPONSE_OK_VER1;
-	}
-
-	@PostMapping(UPDATE_SYN_MEANING_WORD_LANGS_URI)
-	@ResponseBody
-	public String updateMeaningWordLangs(@RequestParam("languages") List<String> languages) {
-
-		Long userId = userContext.getUserId();
-		userProfileService.updateUserPreferredMeaningWordLangs(languages, userId);
-		return RESPONSE_OK_VER1;
 	}
 
 }

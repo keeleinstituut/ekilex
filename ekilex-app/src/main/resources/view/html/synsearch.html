@@ -46,11 +46,6 @@
                     th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
                     sec:authorize="#vars.details.word.subGrant">Märgi tehtuks
             </button>
-            <button type="button" class="btn px-2 rounded-0" data-toggle="modal" data-target="#selectSynMeaningWordLangDlg">
-              <span th:title="#{syn.choose.meaning.word.languages}" data-toggle="tooltip">
-                <i class="action-icon fa fa-globe" aria-hidden="true"></i>
-              </span>
-            </button>
             <div th:replace="syncomp :: syn_logdata"></div>
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
@@ -133,8 +128,7 @@
                   </div>
                   <th:block th:replace="syncomp :: definitions_data"></th:block>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
-                  <th:block th:replace="syncomp :: meaning_words_data"></th:block>
-                  <th:block th:replace="syncomp :: meaning_relations_data"></th:block>
+                  <th:block th:replace="syncomp :: syn_data"></th:block>
                 </div>
               </div>
             </div>
@@ -143,12 +137,6 @@
                 <div class="d-flex bg-light px-2 align-items-center">
                   <span th:text="#{syn.candidates.title}">Sünonüümide kandidaadid</span>
                   <div class="ml-auto d-flex flex-row align-items-center">
-                    <span class="border-left py-2"></span>
-                    <button type="button" class="btn btn-light px-2 rounded-0" data-toggle="modal" data-target="#selectSynCandidateLangDlg">
-                      <span th:title="#{syn.choose.candidates.languages}" data-toggle="tooltip">
-                        <i class="action-icon fa fa-globe" aria-hidden="true"></i>
-                      </span>
-                    </button>
                     <span class="border-left py-2"></span>
                     <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0" th:disabled="${markedSynMeaningId != null}">
                       <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
@@ -170,8 +158,6 @@
         </div>
       </div>
     </div>
-    <div th:replace="syndialog :: #selectSynCandidateLangDlg"></div>
-    <div th:replace="syndialog :: #selectSynMeaningWordLangDlg"></div>
     <div th:replace="syndialog :: add_word_note_dlg"></div>
     <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.word.lang}, ${details.wordRelationDetails.wordSynRelations})"></div>
     <div th:if="${!#lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" th:each="synRelation : ${details.wordRelationDetails.wordSynRelations}">

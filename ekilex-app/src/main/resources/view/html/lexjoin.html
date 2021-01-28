@@ -83,16 +83,14 @@
           <span th:utext="${viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
           &nbsp;
         </span>
-        <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
-          <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
-            <span class="pt-0">
-              <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
-              <span th:text="${meaningWord.homonymNr}"></span>
-              <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
-            </span>
-            <span th:unless="${meaningWordIter.last}">|</span>
+        <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+          <span class="pt-0">
+            <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+            <span th:text="${meaningWord.homonymNr}"></span>
+            <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
           </span>
-        </th:block>
+          <span th:unless="${meaningWordIter.last}">|</span>
+        </span>
         <span th:if="${lexeme.levels != null}">
           <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
         </span>

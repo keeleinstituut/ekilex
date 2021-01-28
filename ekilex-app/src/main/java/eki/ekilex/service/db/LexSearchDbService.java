@@ -47,7 +47,6 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchCriterionGroup;
@@ -330,47 +329,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
 				.fetchOptionalInto(WordLexeme.class)
 				.orElse(null);
-	}
-
-	public List<MeaningWord> getMeaningWords(Long lexemeId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Word w2 = WORD.as("w2");
-
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
-		Field<String> fmcf = getFormMorphCodeField(w2.ID);
-
-		return create
-				.select(
-						w2.ID.as("word_id"),
-						w2.VALUE.as("word_value"),
-						w2.VALUE_PRESE.as("word_value_prese"),
-						fmcf.as("morph_code"),
-						w2.HOMONYM_NR,
-						w2.LANG,
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
-						l2.ID.as("lexeme_id"),
-						l2.WEIGHT.as("lexeme_weight"),
-						l2.TYPE.as("lexeme_type"),
-						l2.ORDER_BY)
-				.from(l1, l2, w2)
-				.where(
-						l1.ID.eq(lexemeId)
-						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
-						.and(l2.ID.ne(l1.ID))
-						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
-						.and(l2.WORD_ID.eq(w2.ID))
-						)
-				.groupBy(w2.ID, l2.ID)
-				.orderBy(w2.LANG, l2.ORDER_BY)
-				.fetchInto(MeaningWord.class);
 	}
 
 	public eki.ekilex.data.Word getWord(Long wordId) {

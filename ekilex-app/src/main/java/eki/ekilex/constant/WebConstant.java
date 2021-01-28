@@ -279,10 +279,6 @@ public interface WebConstant {
 
 	String SYN_SEARCH_WORDS = "/syn_search_words";
 
-	String UPDATE_SYN_CANDIDATE_LANGS_URI = "/update_syn_candidate_langs";
-
-	String UPDATE_SYN_MEANING_WORD_LANGS_URI = "/update_syn_meaning_word_langs";
-
 	String USER_PROFILE_PAGE = "userprofile";
 
 	String USER_PROFILE_URI = "/userprofile";

@@ -25,7 +25,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.LexemeType;
-import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
@@ -282,65 +281,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.from(l)
 								.where(l.WORD_ID.eq(w.ID))))
 				.fetchOneInto(eki.ekilex.data.Word.class);
-	}
-
-	public List<MeaningWord> getSynMeaningWords(Long lexemeId, List<String> meaningWordLangs, List<LexemeType> lexemeTypes) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Lexeme lh = LEXEME.as("lh");
-		Word w2 = WORD.as("w2");
-		Word wh = WORD.as("wh");
-
-		Field<String[]> wtf = getWordTypesField(w2.ID);
-		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
-		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
-		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
-		Field<String> fmcf = getFormMorphCodeField(w2.ID);
-
-		Field<Boolean> whe = DSL
-				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
-				.from(wh)
-				.where(
-						wh.VALUE.eq(w2.VALUE)
-								.andExists(DSL
-										.select(lh.ID)
-										.from(lh)
-										.where(
-												lh.WORD_ID.eq(wh.ID)
-														.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))
-				.groupBy(wh.VALUE)
-				.asField();
-
-		return create
-				.select(
-						w2.ID.as("word_id"),
-						w2.VALUE.as("word_value"),
-						w2.VALUE_PRESE.as("word_value_prese"),
-						fmcf.as("morph_code"),
-						w2.HOMONYM_NR,
-						whe.as("homonyms_exist"),
-						w2.LANG,
-						wtf.as("word_type_codes"),
-						wtpf.as("prefixoid"),
-						wtsf.as("suffixoid"),
-						wtz.as("foreign"),
-						l2.ID.as("lexeme_id"),
-						l2.TYPE.as("lexeme_type"),
-						l2.WEIGHT.as("lexeme_weight"),
-						l2.ORDER_BY)
-				.from(l1, l2, w2)
-				.where(
-						l1.ID.eq(lexemeId)
-								.and(l2.MEANING_ID.eq(l1.MEANING_ID))
-								.and(l2.ID.ne(l1.ID))
-								.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
-								.and(l2.WORD_ID.eq(w2.ID))
-								.and(l2.TYPE.in(lexemeTypes))
-								.and(w2.LANG.in(meaningWordLangs)))
-				.groupBy(w2.ID, l2.ID)
-				.orderBy(w2.LANG, l2.ORDER_BY)
-				.fetchInto(MeaningWord.class);
 	}
 
 	public List<Relation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {

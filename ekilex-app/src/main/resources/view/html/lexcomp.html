@@ -184,7 +184,7 @@
       <span class="lbl">Ilmiku kaal</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${viewUtil.getFormattedLexemeWeight(lexeme.weight)}"></span>
+      <span th:text="${viewUtil.getFormattedWeight(lexeme.weight)}"></span>
       <button type="button" class="btn badge badge-primary"
               title="Muuda"
               data-toggle="modal"
@@ -1086,7 +1086,7 @@
       </table>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.viewOtherRelations)}" th:fragment="meaning_other_relation">
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.viewRelations)}" th:fragment="meaning_relation">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Tähenduse seosed</span>
@@ -1100,7 +1100,7 @@
     </div>
     <div class="col pl-0">
       <table class="table table-striped">
-        <tr th:each="relations : ${lexeme.meaning.viewOtherRelations}" th:with="relSample = ${relations.get(0)}" class="hidden-buttons">
+        <tr th:each="relations : ${lexeme.meaning.viewRelations}" th:with="relSample = ${relations.get(0)}" class="hidden-buttons">
           <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
             <span class="text-monospace" th:text="${relSample.meaningId}"></span>
           </td>
@@ -1149,7 +1149,6 @@
           </td>
           <td>
             <span th:text="${relSample.relTypeLabel}"></span>
-            <small th:text="${relSample.weight}" class="text-secondary"></small>
           </td>
           <td>
             <button type="button" class="btn badge badge-warning"

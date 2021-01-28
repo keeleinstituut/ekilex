@@ -66,16 +66,16 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editSynMeaningRelationWeightDlg_' + relation.id}" class="modal" role="dialog" th:fragment="edit_syn_meaning_relation_weight_dlg">
+  <div th:id="${'editSynMeaningRelationWeightDlg_' + syn.relationId}" class="modal" role="dialog" th:fragment="edit_syn_meaning_relation_weight_dlg">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${relation.id}">
+            <input type="hidden" name="id" th:value="${syn.relationId}">
             <input type="hidden" name="opCode" value="meaning_relation_weight">
             <div class="form-group row">
               <div class="col-md-12">
-                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${relation.weight}">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${syn.weight}">
               </div>
             </div>
           </div>
@@ -116,58 +116,6 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
         </div>
-      </div>
-    </div>
-  </div>
-  <div id="selectSynCandidateLangDlg" class="modal" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_syn_candidate_langs}" method="post">
-          <div class="modal-body">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <select name="languages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
-                        th:title="#{syn.choose.candidates.languages}"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
-                  <th:block th:each="language: ${userRoleLanguages}">
-                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${candidateLangCodes != null && #lists.contains(candidateLangCodes, language.code)}"/>
-                  </th:block>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button id="updateSynCandidateLangsSubmitBtn" type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div id="selectSynMeaningWordLangDlg" class="modal" role="dialog">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_syn_meaning_word_langs}" method="post">
-          <div class="modal-body">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <select name="languages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
-                        th:title="#{syn.choose.meaning.word.languages}"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
-                  <th:block th:each="language: ${userRoleLanguages}">
-                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${meaningWordLangCodes != null && #lists.contains(meaningWordLangCodes, language.code)}"/>
-                  </th:block>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button id="updateSynMeaningWordLangsBtn" type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
       </div>
     </div>
   </div>

@@ -41,15 +41,13 @@
               <td class="p-0">
                 <div>
                   <span th:utext="${viewUtil.getWordValueMarkup(lexeme)}" class="ttl"></span>
-                  <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
-                    <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
-                      <span class="pt-0">
-                        <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
-                        <span th:text="${meaningWord.homonymNr}"></span>
-                        <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
-                      </span>
-                      <span th:unless="${meaningWordIter.last}">|</span>
-                    </th:block>
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <span class="pt-0">
+                      <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                      <span th:text="${meaningWord.homonymNr}"></span>
+                      <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
+                    </span>
+                    <span th:unless="${meaningWordIter.last}">|</span>
                   </th:block>
                   <input name="ids" type="checkbox" class="float-right mt-2 mr-2" th:value="${lexeme.lexemeId}"/>
                   <small th:if="${lexeme.levels != null}" th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
@@ -86,16 +84,13 @@
                     <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
                     <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
                   </div>
-                  <div th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
-                    <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
-                      <th:block th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
-                        <span class="pt-0">
-                          <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
-                          <span th:text="${meaningWord.homonymNr}"></span>
-                          <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
-                        </span>
-                        <span th:unless="${meaningWordIter.last}">|</span>
-                      </th:block>
+                  <div th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
+                    <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                      <span class="pt-0">
+                        <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                        <span th:text="${meaningWord.homonymNr}"></span>
+                        <span th:text="${'( ' + viewUtil.getLangIso2(meaningWord.lang) + ' )'}"></span>
+                      </span>
                     </th:block>
                   </div>
                 </div>

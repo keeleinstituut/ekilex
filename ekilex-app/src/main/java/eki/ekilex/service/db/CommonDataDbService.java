@@ -65,6 +65,7 @@ import static eki.ekilex.data.db.Tables.WORD_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -73,6 +74,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record3;
+import org.jooq.Record9;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.cache.annotation.Cacheable;
@@ -89,6 +91,7 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
@@ -695,6 +698,134 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(DefSourceAndNoteSourceTuple.class);
 	}
 
+	public List<MeaningWord> getMeaningWords(Long lexemeId) {
+		return getMeaningWords(lexemeId, null);
+	}
+
+	public List<MeaningWord> getMeaningWords(Long lexemeId, List<String> meaningWordLangs) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Lexeme lh = LEXEME.as("lh");
+		Word w2 = WORD.as("w2");
+		Word wh = WORD.as("wh");
+
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+		Field<String> fmcf = getFormMorphCodeField(w2.ID);
+
+		Field<Boolean> whe = DSL
+				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
+				.from(wh)
+				.where(
+						wh.VALUE.eq(w2.VALUE)
+								.andExists(DSL
+										.select(lh.ID)
+										.from(lh)
+										.where(
+												lh.WORD_ID.eq(wh.ID)
+														.and(lh.DATASET_CODE.eq(l2.DATASET_CODE)))))
+				.groupBy(wh.VALUE)
+				.asField();
+
+		Condition where =
+				l1.ID.eq(lexemeId)
+						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
+						.and(l2.ID.ne(l1.ID))
+						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
+						.and(l2.WORD_ID.eq(w2.ID));
+
+		if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
+			where = where.and(w2.LANG.in(meaningWordLangs));
+		}
+
+		return create
+				.select(
+						w2.ID.as("word_id"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
+						fmcf.as("morph_code"),
+						w2.HOMONYM_NR,
+						whe.as("homonyms_exist"),
+						w2.LANG,
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						l2.ID.as("lexeme_id"),
+						l2.TYPE.as("lexeme_type"),
+						l2.WEIGHT.as("lexeme_weight"),
+						l2.ORDER_BY)
+				.from(l1, l2, w2)
+				.where(where)
+				.groupBy(w2.ID, l2.ID)
+				.orderBy(w2.LANG, l2.ORDER_BY)
+				.fetchInto(MeaningWord.class);
+	}
+
+	public List<Relation> getSynMeaningRelations(Long meaningId, String datasetCode) {
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		Meaning m2 = MEANING.as("m2");
+		Lexeme l2 = LEXEME.as("l2");
+		Lexeme lh = LEXEME.as("lh");
+		Word w2 = WORD.as("w2");
+		Word wh = WORD.as("wh");
+
+		Table<Record9<Long, Long, Long, String, String, String, Integer, BigDecimal, Long>> mrel = DSL
+				.select(
+						mr.ID.as("id"),
+						m2.ID.as("meaning_id"),
+						w2.ID.as("word_id"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
+						w2.LANG.as("word_lang"),
+						w2.HOMONYM_NR.as("word_homonym_nr"),
+						mr.WEIGHT,
+						mr.ORDER_BY
+				)
+				.from(
+						mr
+								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
+								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)).and(l2.DATASET_CODE.eq(datasetCode)))
+								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID)))
+				.where(
+						mr.MEANING1_ID.eq(meaningId)
+								.and(mr.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_CODE_SIMILAR)))
+				.groupBy(m2.ID, mr.ID, w2.ID)
+				.asTable("mrel");
+
+		Field<Boolean> whe = DSL
+				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
+				.from(wh)
+				.where(
+						wh.VALUE.eq(mrel.field("word_value", String.class))
+								.andExists(DSL
+										.select(lh.ID)
+										.from(lh)
+										.where(lh.WORD_ID.eq(wh.ID).and(lh.DATASET_CODE.eq(datasetCode)))))
+				.groupBy(wh.VALUE)
+				.asField();
+
+		return create
+				.select(
+						mrel.field("id"),
+						mrel.field("meaning_id"),
+						mrel.field("word_id"),
+						mrel.field("word_value"),
+						mrel.field("word_value_prese"),
+						mrel.field("word_lang"),
+						mrel.field("word_homonym_nr"),
+						mrel.field("weight"),
+						mrel.field("order_by"),
+						whe.as("homonyms_exist"))
+				.from(mrel)
+				.orderBy(mrel.field("order_by"))
+				.fetchInto(Relation.class);
+	}
+
 	public List<Relation> getMeaningRelations(
 			Long meaningId, List<String> meaningWordPreferredOrderDatasetCodes, String classifierLabelLang, String classifierLabelTypeCode) {
 
@@ -801,7 +932,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
 								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
 								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID)))
-				.where(mr.MEANING1_ID.eq(meaningId))
+				.where(mr.MEANING1_ID.eq(meaningId).and(mr.MEANING_REL_TYPE_CODE.ne(MEANING_REL_TYPE_CODE_SIMILAR)))
 				.groupBy(m2.ID, mr.ID, w2.ID)
 				.orderBy(mr.ID, DSL.field("lexeme_order_by"))
 				.fetchInto(Relation.class);

@@ -411,3 +411,5 @@ where type = 'IMAGE_FILE'
 delete from form where mode = 'UNKNOWN';
 
 alter table dataset add column contact text;
+
+delete from lexeme where type = 'SECONDARY';

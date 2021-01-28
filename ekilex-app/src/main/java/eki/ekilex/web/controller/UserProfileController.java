@@ -54,7 +54,9 @@ public class UserProfileController extends AbstractPrivatePageController {
 			@RequestParam(name = "showLexMeaningRelationSourceLangWords", required = false) boolean showLexMeaningRelationSourceLangWords,
 			@RequestParam(name = "showMeaningRelationFirstWordOnly", required = false) boolean showMeaningRelationFirstWordOnly,
 			@RequestParam(name = "showMeaningRelationMeaningId", required = false) boolean showMeaningRelationMeaningId,
-			@RequestParam(name = "showMeaningRelationWordDatasets", required = false) boolean showMeaningRelationWordDatasets) {
+			@RequestParam(name = "showMeaningRelationWordDatasets", required = false) boolean showMeaningRelationWordDatasets,
+			@RequestParam("meaningWordLanguages") List<String> meaningWordLanguages,
+			@RequestParam("synCandidateLanguages") List<String> synCandidateLanguages) {
 
 		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
@@ -63,6 +65,8 @@ public class UserProfileController extends AbstractPrivatePageController {
 		userProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		userProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		userProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
+		userProfile.setPreferredSynLexMeaningWordLangs(meaningWordLanguages);
+		userProfile.setPreferredSynCandidateLangs(synCandidateLanguages);
 		userProfileService.updateUserProfile(userProfile);
 		return "redirect:" + USER_PROFILE_URI;
 	}

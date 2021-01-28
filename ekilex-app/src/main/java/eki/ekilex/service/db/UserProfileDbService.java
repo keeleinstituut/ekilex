@@ -46,24 +46,6 @@ public class UserProfileDbService {
 				.execute();
 	}
 
-	public void updatePreferredSynCandidateLangs(List<String> languages, Long userId) {
-
-		String[] languagesArray = languages.toArray(new String[0]);
-		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_SYN_CANDIDATE_LANGS, languagesArray)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
-	}
-
-	public void updatePreferredMeaningWordLangs(List<String> languages, Long userId) {
-
-		String[] languagesArray = languages.toArray(new String[0]);
-		create.update(EKI_USER_PROFILE)
-				.set(EKI_USER_PROFILE.PREFERRED_SYN_LEX_MEANING_WORD_LANGS, languagesArray)
-				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
-				.execute();
-	}
-
 	public void updateUserProfile(EkiUserProfile userProfile) {
 
 		Long userId = userProfile.getUserId();

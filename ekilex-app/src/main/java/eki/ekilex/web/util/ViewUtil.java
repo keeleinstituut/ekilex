@@ -17,18 +17,18 @@ import eki.ekilex.service.CommonDataService;
 @Component
 public class ViewUtil implements InitializingBean {
 
-	private static final String LEXEME_WEIGHT_PATTERN = "#.##";
+	private static final String WEIGHT_PATTERN = "#.##";
 
 	private Map<String, String> languageIso2Map = null;
 
-	private DecimalFormat lexemeWeightFormat;
+	private DecimalFormat weightFormat;
 
 	@Autowired
 	private CommonDataService commonDataService;
 
 	@Override
 	public void afterPropertiesSet() {
-		lexemeWeightFormat = new DecimalFormat(LEXEME_WEIGHT_PATTERN);
+		weightFormat = new DecimalFormat(WEIGHT_PATTERN);
 	}
 
 	public String getLangIso2(String langIso3) {
@@ -71,8 +71,8 @@ public class ViewUtil implements InitializingBean {
 		return htmlBuf.toString();
 	}
 
-	public String getFormattedLexemeWeight(Float lexemeWeight) {
-		return lexemeWeightFormat.format(lexemeWeight);
+	public String getFormattedWeight(Float weight) {
+		return weightFormat.format(weight);
 	}
 
 	public String composeFunction(String functionName, Object... args) {

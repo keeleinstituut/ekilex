@@ -245,18 +245,6 @@ function initializeSynSearch() {
 		});
 	});
 
-	$(document).on("click", "#updateSynCandidateLangsSubmitBtn", function(e) {
-		e.preventDefault();
-		let dlg = $("#selectSynCandidateLangDlg");
-		validateAndSubmitLangSelectForm(dlg);
-	});
-
-	$(document).on("click", "#updateSynMeaningWordLangsBtn", function(e) {
-		e.preventDefault();
-		let dlg = $("#selectSynMeaningWordLangDlg");
-		validateAndSubmitLangSelectForm(dlg);
-	});
-
 	$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg();
 		let url = applicationUrl + "syn_paging";
@@ -353,24 +341,6 @@ function initAddSynRelationDlg(addDlg) {
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		addDlg.find('.form-control').first().focus();
 	});
-}
-
-function validateAndSubmitLangSelectForm(dlg) {
-	let form = dlg.find('form');
-	if (checkRequiredFields(form)) {
-		$.ajax({
-			url: form.attr('action'),
-			data: form.serialize(),
-			method: 'POST',
-		}).done(function() {
-			dlg.modal('hide');
-			refreshSynDetails();
-		}).fail(function(data) {
-			dlg.modal('hide');
-			console.log(data);
-			openAlertDlg('Viga! Keele valik ebaõnnestus');
-		});
-	}
 }
 
 function activateSynCandidatesList() {

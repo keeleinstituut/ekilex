@@ -46,14 +46,12 @@
           <hr />
           <div>
             <span th:each="lexeme, lexemeIter : ${wordCandidate.lexemes}">
-              <th:block th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}">
-                <span th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}">
-                  <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
-                  <span th:text="${meaningWord.homonymNr}"></span>
-                  <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
-                  <span th:unless="${meaningWordIter.last}">,</span>
-                </span>
-              </th:block>
+              <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                <span th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
+                <span th:text="${meaningWord.homonymNr}"></span>
+                <span th:text="${'(' + viewUtil.getLangIso2(meaningWord.lang) + ')'}"></span>
+                <span th:unless="${meaningWordIter.last}">,</span>
+              </span>
             </span>
           </div>
           <div class="mt-2" th:if="${not #lists.isEmpty(wordCandidate.definitions)}">

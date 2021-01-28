@@ -66,16 +66,6 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public void updateUserPreferredSynCandidateLangs(List<String> languages, Long userId) {
-		userProfileDbService.updatePreferredSynCandidateLangs(languages, userId);
-	}
-
-	@Transactional
-	public void updateUserPreferredMeaningWordLangs(List<String> languages, Long userId) {
-		userProfileDbService.updatePreferredMeaningWordLangs(languages, userId);
-	}
-
-	@Transactional
 	public void updateUserProfile(EkiUserProfile userProfile) {
 		userProfileDbService.updateUserProfile(userProfile);
 	}

@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.groupingBy;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
+import eki.common.constant.SynonymType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.CollocMember;
@@ -45,7 +47,6 @@ import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Form;
-import eki.ekilex.data.Media;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
@@ -54,7 +55,7 @@ import eki.ekilex.data.LexemeTag;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.MeaningWordLangGroup;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
@@ -68,6 +69,9 @@ import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.data.SynWord;
+import eki.ekilex.data.Synonym;
+import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TypeTermMeaningWord;
@@ -843,19 +847,125 @@ public class ConversionUtil implements GlobalConstant {
 		return collocations;
 	}
 
-	public List<Relation> extractSynMeaningRelations(List<Relation> allRelations) {
-		List<Relation> synMeaningRelations = allRelations.stream()
-				.filter(relation -> StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getRelTypeCode()))
-				.sorted(Comparator.comparing(Relation::getOrderBy))
-				.collect(Collectors.toList());
-		return synMeaningRelations;
+	public List<Synonym> composeSynonyms(
+			List<Relation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang, List<ClassifierSelect> languagesOrder) {
+
+		List<Synonym> synonyms = new ArrayList<>();
+
+		for (MeaningWord meaningWord : meaningWords) {
+			Synonym meaningWordSyn = new Synonym();
+			meaningWordSyn.setType(SynonymType.MEANING_WORD);
+			meaningWordSyn.setWordLang(meaningWord.getLang());
+			meaningWordSyn.setWeight(meaningWord.getLexemeWeight());
+			meaningWordSyn.setOrderBy(meaningWord.getOrderBy());
+
+			SynWord synWord = new SynWord();
+			synWord.setLexemeId(meaningWord.getLexemeId());
+			synWord.setWordId(meaningWord.getWordId());
+			synWord.setWordValue(meaningWord.getWordValue());
+			synWord.setWordValuePrese(meaningWord.getWordValuePrese());
+			synWord.setHomonymNr(meaningWord.getHomonymNr());
+			synWord.setHomonymsExist(meaningWord.isHomonymsExist());
+			synWord.setLang(meaningWord.getLang());
+			synWord.setWordTypeCodes(meaningWord.getWordTypeCodes());
+			synWord.setPrefixoid(meaningWord.isPrefixoid());
+			synWord.setSuffixoid(meaningWord.isSuffixoid());
+			synWord.setForeign(meaningWord.isForeign());
+			meaningWordSyn.setWords(Arrays.asList(synWord));
+
+			synonyms.add(meaningWordSyn);
+		}
+
+		if (synMeaningRelations != null) {
+			List<String> allLangs = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			boolean showFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
+			boolean showSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
+
+			List<String> prefWordLangs;
+			if (showSourceLangWords && StringUtils.isNotEmpty(wordLang)) {
+				prefWordLangs = Collections.singletonList(wordLang);
+			} else {
+				prefWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
+			}
+
+			filterMeaningRelations(prefWordLangs, allLangs, synMeaningRelations, showFirstWordOnly);
+
+			Map<Long, List<Relation>> groupedByIdRelationsMap = synMeaningRelations.stream().collect(groupingBy(Relation::getId));
+			for (List<Relation> groupedByIdRelations : groupedByIdRelationsMap.values()) {
+
+				Map<String, List<Relation>> groupedByLangRelations = groupedByIdRelations.stream().collect(groupingBy(Relation::getWordLang));
+				for (List<Relation> groupedByLangRelation : groupedByLangRelations.values()) {
+
+					Relation firstGroupRelation = groupedByLangRelation.get(0);
+					Synonym meaningRelSyn = new Synonym();
+					meaningRelSyn.setType(SynonymType.MEANING_REL);
+					meaningRelSyn.setWordLang(firstGroupRelation.getWordLang());
+					meaningRelSyn.setRelationId(firstGroupRelation.getId());
+					meaningRelSyn.setMeaningId(firstGroupRelation.getMeaningId());
+					meaningRelSyn.setWeight(firstGroupRelation.getWeight());
+					meaningRelSyn.setOrderBy(firstGroupRelation.getOrderBy());
+
+					List<SynWord> synWords = new ArrayList<>();
+					for (Relation groupedRelation : groupedByLangRelation) {
+						SynWord synWord = new SynWord();
+						synWord.setWordId(groupedRelation.getWordId());
+						synWord.setWordValue(groupedRelation.getWordValue());
+						synWord.setWordValuePrese(groupedRelation.getWordValuePrese());
+						synWord.setHomonymNr(groupedRelation.getWordHomonymNr());
+						synWord.setHomonymsExist(groupedRelation.isHomonymsExist());
+						synWord.setLang(groupedRelation.getWordLang());
+						synWords.add(synWord);
+					}
+					meaningRelSyn.setWords(synWords);
+					synonyms.add(meaningRelSyn);
+				}
+			}
+		}
+
+		return synonyms;
 	}
 
-	public List<Relation> extractOtherMeaningRelations(List<Relation> allRelations) {
-		List<Relation> otherMeaningRelations = allRelations.stream()
-				.filter(relation -> !StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getRelTypeCode()))
-				.collect(Collectors.toList());
-		return otherMeaningRelations;
+	public List<SynonymLangGroup> composeSynonymLangGroups(List<Synonym> synonyms, List<ClassifierSelect> languagesOrder) {
+
+		List<String> langCodeOrder;
+		List<String> selectedLangCodes;
+		if (CollectionUtils.isEmpty(languagesOrder)) {
+			langCodeOrder = synonyms.stream().map(Synonym::getWordLang).distinct().collect(Collectors.toList());
+			selectedLangCodes = new ArrayList<>();
+		} else {
+			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		}
+
+		List<SynonymLangGroup> synonymLangGroups = new ArrayList<>();
+		Map<String, SynonymLangGroup> synonymLangGroupMap = new HashMap<>();
+
+		synonyms.sort(Comparator.comparing(Synonym::getType).thenComparingLong(Synonym::getOrderBy));
+
+		for (Synonym synonym : synonyms) {
+			String lang = synonym.getWordLang();
+			SynonymLangGroup synonymLangGroup = synonymLangGroupMap.get(lang);
+			if (synonymLangGroup == null) {
+				boolean isSelected = selectedLangCodes.contains(lang);
+				synonymLangGroup = new SynonymLangGroup();
+				synonymLangGroup.setLang(lang);
+				synonymLangGroup.setSelected(isSelected);
+				synonymLangGroup.setSynonyms(new ArrayList<>());
+				synonymLangGroupMap.put(lang, synonymLangGroup);
+				synonymLangGroups.add(synonymLangGroup);
+			}
+			synonymLangGroup.getSynonyms().add(synonym);
+		}
+
+		synonymLangGroups.sort((SynonymLangGroup gr1, SynonymLangGroup gr2) -> {
+			String lang1 = gr1.getLang();
+			String lang2 = gr2.getLang();
+			int langOrder1 = langCodeOrder.indexOf(lang1);
+			int langOrder2 = langCodeOrder.indexOf(lang2);
+			return langOrder1 - langOrder2;
+		});
+
+		return synonymLangGroups;
 	}
 
 	public List<List<Relation>> composeViewMeaningRelations(List<Relation> relations, EkiUserProfile userProfile, String sourceLang, List<ClassifierSelect> languagesOrder) {
@@ -1013,29 +1123,6 @@ public class ConversionUtil implements GlobalConstant {
 		collocMember.setWord(collocTuple.getCollocMemberWord());
 		collocMember.setWeight(collocTuple.getCollocMemberWeight());
 		collocation.getCollocMembers().add(collocMember);
-	}
-
-	public List<MeaningWordLangGroup> composeMeaningWordLangGroups(List<MeaningWord> meaningWords, String headwordLang) {
-
-		List<MeaningWordLangGroup> meaningWordLangGroups = new ArrayList<>();
-		Map<String, MeaningWordLangGroup> meaningWordLangGroupMap = new HashMap<>();
-		List<MeaningWord> meaningWordsOrderBy = meaningWords.stream().sorted(Comparator.comparing(MeaningWord::getOrderBy)).collect(Collectors.toList());
-
-		for (MeaningWord meaningWord : meaningWordsOrderBy) {
-			String lang = meaningWord.getLang();
-			MeaningWordLangGroup meaningWordLangGroup = meaningWordLangGroupMap.get(lang);
-			if (meaningWordLangGroup == null) {
-				meaningWordLangGroup = new MeaningWordLangGroup();
-				meaningWordLangGroup.setLang(lang);
-				meaningWordLangGroup.setMeaningWords(new ArrayList<>());
-				meaningWordLangGroupMap.put(lang, meaningWordLangGroup);
-				meaningWordLangGroups.add(meaningWordLangGroup);
-			}
-			meaningWordLangGroup.getMeaningWords().add(meaningWord);
-		}
-
-		meaningWordLangGroups.sort(Comparator.comparing(meaningWordLangGroup -> !StringUtils.equals(meaningWordLangGroup.getLang(), headwordLang)));
-		return meaningWordLangGroups;
 	}
 
 	public boolean isLexemesActiveTagComplete(DatasetPermission userRole, List<? extends LexemeTag> lexemes, Tag activeTag) {

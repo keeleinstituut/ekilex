@@ -37,12 +37,12 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
-import eki.ekilex.data.Media;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningWord;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
@@ -533,7 +533,7 @@ public class ActivityLogService implements SystemConstant {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
-		List<MeaningWord> meaningWords = lexSearchDbService.getMeaningWords(lexemeId);
+		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);

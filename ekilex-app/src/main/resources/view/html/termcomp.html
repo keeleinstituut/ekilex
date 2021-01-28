@@ -835,7 +835,7 @@
       </table>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.viewOtherRelations)}" th:fragment="meaning_relation">
+  <div class="row" th:if="${not #lists.isEmpty(meaning.viewRelations)}" th:fragment="meaning_relation">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Tähenduse seosed</span>
@@ -848,8 +848,8 @@
       </button>
     </div>
     <div class="col pl-0">
-      <table class="table table-striped" th:if="${not #lists.isEmpty(meaning.viewOtherRelations)}">
-        <tr th:each="relations : ${meaning.viewOtherRelations}" th:with="relSample = ${relations.get(0)}" class="hidden-buttons">
+      <table class="table table-striped" th:if="${not #lists.isEmpty(meaning.viewRelations)}">
+        <tr th:each="relations : ${meaning.viewRelations}" th:with="relSample = ${relations.get(0)}" class="hidden-buttons">
           <td class="pr-3" th:if="${userProfile.showMeaningRelationMeaningId}">
             <span class="text-monospace" th:text="${relSample.meaningId}"></span>
           </td>
@@ -891,7 +891,6 @@
           </td>
           <td>
             <span th:text="${relSample.relTypeLabel}"></span>
-            <small th:text="${relSample.weight}" class="text-secondary"></small>
           </td>
           <td>
             <button type="button" class="btn badge badge-warning"

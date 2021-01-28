@@ -25,7 +25,6 @@ import eki.ekilex.data.DefinitionNote;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.Media;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
@@ -33,6 +32,7 @@ import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
+import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
@@ -159,9 +159,8 @@ public class TermSearchService extends AbstractSearchService {
 		permCalculator.filterVisibility(userRole, meaningNotes);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, languagesOrder);
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
-		List<Relation> allMeaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Relation> otherMeaningRelations = conversionUtil.extractOtherMeaningRelations(allMeaningRelations);
-		List<List<Relation>> viewOtherMeaningRelations = conversionUtil.composeViewMeaningRelations(otherMeaningRelations, userProfile, null, languagesOrder);
+		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
 		Timestamp latestLogEventTime = activityLogDbService.getLatestLogTimeForMeaning(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
@@ -226,8 +225,8 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setMedias(medias);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
-		meaning.setRelations(allMeaningRelations);
-		meaning.setViewOtherRelations(viewOtherMeaningRelations);
+		meaning.setRelations(meaningRelations);
+		meaning.setViewRelations(viewRelations);
 		meaning.setActiveTagComplete(isActiveTagComplete);
 		meaning.setLastChangedOn(latestLogEventTime);
 

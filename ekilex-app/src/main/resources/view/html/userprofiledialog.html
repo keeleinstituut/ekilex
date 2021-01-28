@@ -53,7 +53,7 @@
         <form th:action="@{/update_meaning_rel_prefs}" method="post">
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-auto col-form-label">Kuvatavate keelendite keeled</label>
+              <label class="col-md-auto col-form-label">Tähenduse seose juures kuvatavate keelendite keeled</label>
               <div class="col-md-12">
                 <select name="meaningRelationWordLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
                         title="Vali tähenduste seoste juures kuvatavate sõnade keeled"
@@ -88,6 +88,32 @@
                 <input type="checkbox" name="showMeaningRelationWordDatasets" th:checked="${userProfile.showMeaningRelationWordDatasets}">
                 <span>Näita sõnakogude koode</span>
               </label>
+            </div>
+            <div class="row">
+              <label class="col-md-auto col-form-label">Kuvatavate täissünonüümide keeled</label>
+              <div class="col-md-12">
+                <select name="meaningWordLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
+                        title="Vali tähenduse juures kuvatavate täissünonüümide keeled"
+                        th:data-select-all-text="#{button.select.all.text}"
+                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                  <th:block th:each="language: ${userRoleLanguages}">
+                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynLexMeaningWordLangs != null && #lists.contains(userProfile.preferredSynLexMeaningWordLangs, language.code)}"/>
+                  </th:block>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-auto col-form-label">Vastete kandidaatide keeled</label>
+              <div class="col-md-12">
+                <select name="synCandidateLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
+                        title="Vali vastete vaates kuvatavate kandidaatide keeled"
+                        th:data-select-all-text="#{button.select.all.text}"
+                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                  <th:block th:each="language: ${userRoleLanguages}">
+                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynCandidateLangs != null && #lists.contains(userProfile.preferredSynCandidateLangs, language.code)}"/>
+                  </th:block>
+                </select>
+              </div>
             </div>
           </div>
           <div class="modal-footer">

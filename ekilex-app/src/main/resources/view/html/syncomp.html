@@ -217,82 +217,68 @@
       </div>
     </th:block>
   </div>
-  <th:block th:fragment="meaning_words_data" th:if="${not #lists.isEmpty(lexeme.meaningWordLangGroups)}">
-    <div th:each="meaningWordLangGroup : ${lexeme.meaningWordLangGroups}"
-         class="orderable d-flex flex-row flex-wrap"
-         data-op-code="lexeme_meaning_word"
-         th:data-additional-info="${lexeme.lexemeId}">
-      <span th:text="${viewUtil.getLangIso2(meaningWordLangGroup.lang)}" class="mr-2"></span>
-      <div th:each="meaningWord,meaningWordIter : ${meaningWordLangGroup.meaningWords}"
-           th:data-id="${meaningWord.lexemeId}"
-           th:data-orderby="${meaningWord.orderBy}"
-           th:data-orderpos="${meaningWordIter.index}">
-        <div class="hover-actions-container d-flex flex-row flex-grow-0 flex-shrink-0">
-          <a href="#" class="mr-2">
-            <span th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}" th:utext="${viewUtil.getWordValueMarkup(meaningWord)}"></span>
-            <span th:if="${meaningWord.homonymsExist}"
-                  th:styleappend="${meaningWord.lexemeType == 'SECONDARY' ? 'color: #00874F' : ''}"
-                  th:text="${meaningWord.homonymNr}">
+<!--  TODO op-code ja sorteri type vastavalt süno tüübile? aga siis peaks mingi alam-div olema-->
+  <div th:fragment="syn_data"
+           th:if="${not #lists.isEmpty(lexeme.synonymLangGroups)}"
+           class="orderable border-top"
+           data-op-code="meaning_relation"
+           data-plugin="sorter"
+           data-sorter:type="meaning_relation"
+           th:data-additional-info="${lexeme.lexemeId}">
+    <div class="orderable d-flex flex-row flex-wrap" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
+      <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
+      <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+      <!--    TODO erinevad classid ja id-d tuleb eritüüpidel arvatavasti külge panna-->
+<!--      TODO orderBy osa peaks vist siia kuhugi panema-->
+<!--      TODO probleem on positsiooniga, sest vaja oleks vist positsiooni enda tüüpi sünos-->
+      <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
+            class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
+            th:data-lexeme-id="${lexeme.lexemeId}"
+            th:data-orderby="${syn.orderBy}"
+            th:data-relation-id="${syn.relationId}"
+            th:data-id="${syn.relationId}"
+            th:data-orderpos="${synIter.index}"
+            th:with="
+              isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
+              isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
+<!--        <span class="handle drag-handle border-right border-light text-muted" title="Lohista siit">-->
+<!--          <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>-->
+<!--        </span>-->
+        <span class="hidden-buttons">
+          <th:block th:each="synWord, synWordIter : ${syn.words}">
+            <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
+            <input type="hidden" class="relation-lexeme-id" th:value="${lexeme.lexemeId}"/>
+            <span th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}">
+              <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
+              <span th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></span>
+              <span th:text="${'[ ' + viewUtil.getFormattedWeight(syn.weight) + ' ]'}"></span>
             </span>
-            <span th:text="${'[ ' + viewUtil.getFormattedLexemeWeight(meaningWord.lexemeWeight) + ' ]'}"></span>
-          </a>
-          <span th:unless="${meaningWordIter.last}">&nbsp;|&nbsp;</span>
-        </div>
-      </div>
-    </div>
-  </th:block>
-  <div th:fragment="meaning_relations_data"
-       th:if="${not #lists.isEmpty(lexeme.meaning.viewSynRelations)}"
-       class="orderable border-top"
-       data-op-code="meaning_relation"
-       data-plugin="sorter"
-       data-sorter:type="meaning_relation"
-       th:data-additional-info="${lexeme.lexemeId}">
-    <span th:each="relations, relsIter : ${lexeme.meaning.viewSynRelations}"
-          class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
-          th:data-lexeme-id="${lexeme.lexemeId}"
-          th:data-orderby="${relations.get(0).orderBy}"
-          th:data-relation-id="${relations.get(0).id}"
-          th:data-id="${relations.get(0).id}"
-          th:data-orderpos="${relsIter.index}">
-      <span class="handle drag-handle border-right border-light text-muted" title="Lohista siit">
-        <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
-      </span>
-        <span th:each="relation, relIter : ${relations}">
-        <input type="hidden" class="relation-meaning-id" th:value="${relation.meaningId}"/>
-        <input type="hidden" class="relation-lexeme-id" th:value="${lexeme.lexemeId}"/>
-        <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}">
-          <span style="color: #00874F" th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
-          <span th:text="${relation.wordHomonymNr}"></span>
-          <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
-          <th:block th:if="${not #lists.isEmpty(relation.lexemeRegisterCodes)}">
-            <small th:each="registerCode,regIter : ${relation.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+            <span th:unless="${synWordIter.last}">,</span>
+            <th:block th:if="${isMeaningWordSyn}">
+  <!--            TODO nothing?-->
+            </th:block>
           </th:block>
-        </button>
-        <span th:unless="${relIter.last}">,</span>
-        <th:block th:if="${relIter.last}">
-          <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
-          <small th:text="${viewUtil.getFormattedLexemeWeight(relation.weight)}" class="text-secondary"></small>
-          <div class="floating-buttons">
+          <th:block th:if="${isMeaningRelSyn}">
+            <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
             <button type="button" class="btn badge badge-secondary btn-xs"
                     title="Muuda vaste seose kaalu"
                     data-toggle="modal"
-                    th:data-target="${'#editSynMeaningRelationWeightDlg_' + relation.id}"
+                    th:data-target="${'#editSynMeaningRelationWeightDlg_' + syn.relationId}"
                     sec:authorize="#vars.lexeme.crudGrant">
               <i class="fa fa-edit" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn badge badge-secondary btn-xs"
-                    th:data-id="${relation.id}"
+                    th:data-id="${syn.relationId}"
                     data-op-code="syn_meaning_relation"
                     data-toggle="delete-confirm"
                     sec:authorize="#vars.lexeme.crudGrant">
               <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda vaste seos"></i>
             </button>
-          </div><!--/floating-buttons-->
-        </th:block>
+          </th:block>
+          <span th:unless="${synIter.last}">|</span>
+        </span>
       </span>
-      <span th:unless="${relsIter.last}">|</span>
-    </span>
+    </div>
   </div>
   <div th:fragment="syn_logdata" sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
     <a th:href="@{'/wordactivitylog:' + ${wordId}}" data-toggle="modal"

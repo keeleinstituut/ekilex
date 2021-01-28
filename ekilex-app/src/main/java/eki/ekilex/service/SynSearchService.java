@@ -1,7 +1,6 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.LexemeType;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
@@ -33,11 +31,12 @@ import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.LogData;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.MeaningWordLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
+import eki.ekilex.data.Synonym;
+import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
@@ -109,26 +108,21 @@ public class SynSearchService extends AbstractWordSearchService {
 		return wordDetails;
 	}
 
-	private void populateLexeme(WordLexeme lexeme, List<ClassifierSelect> languagesOrder, String headwordLanguage, List<String> meaningWordLangs,
-			DatasetPermission userRole, EkiUserProfile userProfile) {
+	private void populateLexeme(
+			WordLexeme lexeme, List<ClassifierSelect> languagesOrder, String headwordLanguage, List<String> meaningWordLangs, DatasetPermission userRole,
+			EkiUserProfile userProfile) {
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
-		String wordLang = lexeme.getWordLang();
 
 		permCalculator.applyCrud(userRole, lexeme);
-		List<MeaningWordLangGroup> meaningWordLangGroups = Collections.emptyList();
-		if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
-			List<LexemeType> lexemeTypes = Arrays.asList(LexemeType.PRIMARY, LexemeType.SECONDARY);
-			List<MeaningWord> meaningWords = synSearchDbService.getSynMeaningWords(lexemeId, meaningWordLangs, lexemeTypes);
-			meaningWordLangGroups = conversionUtil.composeMeaningWordLangGroups(meaningWords, headwordLanguage);
-		}
 
-		List<String> meaningWordPreferredOrderDatasetCodes = Arrays.asList(datasetCode);
-		List<Relation> allMeaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Relation> synMeaningRelations = conversionUtil.extractSynMeaningRelations(allMeaningRelations);
-		List<List<Relation>> viewSynMeaningRelations = conversionUtil.composeViewMeaningRelations(synMeaningRelations, userProfile, wordLang, languagesOrder);
+		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
+		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangs);
+		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
+		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synonyms, languagesOrder);
+
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(userRole, definitions);
 
@@ -139,13 +133,13 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 
-		lexeme.setMeaningWordLangGroups(meaningWordLangGroups);
+		lexeme.setWordLang(headwordLanguage);
+		lexeme.setSynonymLangGroups(synonymLangGroups);
 		lexeme.setUsages(usages);
 		lexeme.setTags(tags);
 		Meaning meaning = new Meaning();
 		meaning.setMeaningId(meaningId);
 		meaning.setDefinitions(definitions);
-		meaning.setViewSynRelations(viewSynMeaningRelations);
 		lexeme.setMeaning(meaning);
 	}
 
