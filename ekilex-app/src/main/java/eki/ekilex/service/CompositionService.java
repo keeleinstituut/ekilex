@@ -382,13 +382,6 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public void separateLexemeMeaning(Long lexemeId) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("separateLexemeMeaning", lexemeId, LifecycleLogOwner.LEXEME);
-		Long meaningId = compositionDbService.separateLexemeMeaning(lexemeId);
-		activityLogService.createActivityLog(activityLog, meaningId, ActivityEntity.MEANING);
-	}
-
-	@Transactional
 	public void joinLexemes(Long targetLexemeId, List<Long> sourceLexemeIds) throws Exception {
 		for (Long sourceLexemeId: sourceLexemeIds) {
 			joinLexemes(targetLexemeId, sourceLexemeId);

@@ -585,64 +585,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	public Long separateLexemeMeaning(Long lexemeId) {
-
-		Long newMeaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-		Long lexemeMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();//just one?
-
-		separateMeaningDefinitions(newMeaningId, lexemeMeaningId);
-		separateMeaningDomains(newMeaningId, lexemeMeaningId);
-		separateMeaningRelations(newMeaningId, lexemeMeaningId);
-		separateMeaningFreeforms(newMeaningId, lexemeMeaningId);
-		create.update(LEXEME).set(LEXEME.MEANING_ID, newMeaningId).where(LEXEME.ID.eq(lexemeId)).execute();
-		return newMeaningId;
-	}
-
-	private void separateMeaningFreeforms(Long newMeaningId, Long lexemeMeaningId) {
-		Result<MeaningFreeformRecord> freeforms = create.selectFrom(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(lexemeMeaningId)).fetch();
-		freeforms.forEach(f -> {
-			Long freeformId = cloneFreeform(f.getFreeformId(), null);
-			create.insertInto(MEANING_FREEFORM, MEANING_FREEFORM.MEANING_ID, MEANING_FREEFORM.FREEFORM_ID).values(newMeaningId, freeformId).execute();
-		});
-	}
-
-	private void separateMeaningRelations(Long newMeaningId, Long lexemeMeaningId) {
-		Result<MeaningRelationRecord> relations = create.selectFrom(MEANING_RELATION).where(MEANING_RELATION.MEANING1_ID.eq(lexemeMeaningId)).fetch();
-		relations.forEach(r -> {
-			create
-					.insertInto(MEANING_RELATION, MEANING_RELATION.MEANING1_ID, MEANING_RELATION.MEANING2_ID, MEANING_RELATION.MEANING_REL_TYPE_CODE)
-					.values(newMeaningId, r.getMeaning2Id(), r.getMeaningRelTypeCode())
-					.execute();
-		});
-		relations = create.selectFrom(MEANING_RELATION).where(MEANING_RELATION.MEANING2_ID.eq(lexemeMeaningId)).fetch();
-		relations.forEach(r -> {
-			create
-					.insertInto(MEANING_RELATION, MEANING_RELATION.MEANING1_ID, MEANING_RELATION.MEANING2_ID, MEANING_RELATION.MEANING_REL_TYPE_CODE)
-					.values(r.getMeaning1Id(), newMeaningId, r.getMeaningRelTypeCode())
-					.execute();
-		});
-	}
-
-	private void separateMeaningDomains(Long newMeaningId, Long lexemeMeaningId) {
-		Result<MeaningDomainRecord> domains = create.selectFrom(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(lexemeMeaningId)).fetch();
-		domains.forEach(d -> {
-			create
-					.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
-					.values(newMeaningId, d.getDomainOrigin(), d.getDomainCode())
-					.execute();
-		});
-	}
-
-	private void separateMeaningDefinitions(Long newMeaningId, Long lexemeMeaningId) {
-		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
-		definitions.forEach(d -> {
-			create
-					.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG, DEFINITION.DEFINITION_TYPE_CODE, DEFINITION.COMPLEXITY)
-					.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang(), d.getDefinitionTypeCode(), d.getComplexity())
-					.execute();
-		});
-	}
-
 	public Long cloneLexeme(Long lexemeId, Long meaningId, Long wordId) {
 
 		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();

@@ -163,20 +163,6 @@ public class LexEditController extends AbstractPrivatePageController {
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping(LEX_SEPARATE_URI + "/{lexemeId}")
-	public String separate(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		SimpleWord lexemeSimpleWord = lookupService.getLexemeSimpleWord(lexemeId);
-		String lexemeWordValue = lexemeSimpleWord.getWordValue();
-		Long lexemeWordId = lexemeSimpleWord.getWordId();
-		compositionService.separateLexemeMeaning(lexemeId);
-
-		List<String> datasets = getUserPreferredDatasetCodes();
-		String searchUri = searchHelper.composeSearchUriAndAppendId(datasets, lexemeWordValue, lexemeWordId);
-
-		return "redirect:" + LEX_SEARCH_URI + searchUri;
-	}
-
 	@ResponseBody
 	@PostMapping(LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {

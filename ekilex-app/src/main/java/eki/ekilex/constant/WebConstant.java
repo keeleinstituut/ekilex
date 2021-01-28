@@ -108,8 +108,6 @@ public interface WebConstant {
 
 	String VALIDATE_LEX_JOIN_URI = "/validatelexjoin";
 
-	String LEX_SEPARATE_URI = "/lexseparate";
-
 	String LEX_DUPLICATE_URI = "/lexduplicate";
 
 	String EMPTY_LEX_DUPLICATE_URI = "/emptylexduplicate";
