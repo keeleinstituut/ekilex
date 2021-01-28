@@ -85,6 +85,16 @@
     </table>
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
+  <th:block th:fragment="morpho-adjective_rus">
+    <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
+    <table>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'masc,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'femn,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'neut,sing,nomn', '')"></th:block>
+      <th:block th:replace=" :: morpho-row(${paradigm}, 'plur,nomn', '')"></th:block>
+    </table>
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
   <th:block th:fragment="morpho-adjective1_rus">
     <th:block th:replace=" :: morpho-paradigm-header(${paradigm})"></th:block>
     <table>

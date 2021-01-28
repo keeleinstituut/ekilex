@@ -2009,6 +2009,27 @@
       </div>
     </div>
   </th:block>
+   <th:block th:fragment="morpho-adjective_rus">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI vene keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
+          </div>
+        </div>
+      </div>
+    </div>
+  </th:block>
   <th:block th:fragment="morpho-adjective1_rus">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
