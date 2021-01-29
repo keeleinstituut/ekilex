@@ -68,7 +68,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 			+ "and table_name = :pkTableName "
 			+ "and source_pk = :pkValue";
 
-	private static final String EKI_LINK_TEXT_FRAGMENT = "<eki-link link-type='meaning_link'";
+	private static final String EKI_LINK_TEXT_FRAGMENT = "<eki-link";
 
 	private static final String[] TABLE_NAMES_THAT_PREREQUISIT_PARENT_DATA = new String[] {
 			DEFINITION, LEXEME_RELATION, MEANING_RELATION, WORD_RELATION, WORD_ETYMOLOGY_RELATION
@@ -600,31 +600,40 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 		} else if (StringUtils.equalsIgnoreCase(DEFINITION, tableName)) {
 			String definitionValuePrese = (String) dataMap.get("value_prese");
 			if (StringUtils.contains(definitionValuePrese, EKI_LINK_TEXT_FRAGMENT)) {
-				String importCode = context.getImportCode();
-				Document definitionValueDoc = Jsoup.parse(definitionValuePrese);
-				Elements ekiLinks = definitionValueDoc.select("eki-link[link-type='meaning_link']");
-				for (Element ekiLink : ekiLinks) {
-					String sourceLinkIdStr = ekiLink.attr("link-id");
-					Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
-					String targetLinkId;
-					List<Object> pkMapping = getPkMapping(importCode, MEANING, sourceLinkId);
-					if (CollectionUtils.isEmpty(pkMapping)) {
-						targetLinkId = sourceLinkIdStr;
-						boolean recordExists = recordExists(MEANING, "id", sourceLinkId);
-						if (!recordExists) {
-							context.getUnresolvedMeaningLinkCount().increment();
-						}
-					} else {
-						targetLinkId = pkMapping.get(0).toString();
-						context.getResolvedMeaningLinkCount().increment();
-					}
-					ekiLink.attr("link-id", targetLinkId);
-				}
-				definitionValuePrese = definitionValueDoc.html();
+				definitionValuePrese = handleContainedMeaningLinks(context, definitionValuePrese);
 				dataMapCopy.put("value_prese", definitionValuePrese);
 			}
 		}
 		return dataMapCopy;
+	}
+
+	private String handleContainedMeaningLinks(Context context, String valuePrese) throws Exception {
+
+		String importCode = context.getImportCode();
+		Document valueHtmlDoc = Jsoup.parse(valuePrese);
+		Elements ekiMeaningLinks = valueHtmlDoc.select("eki-link[link-type='meaning_link']");
+		for (Element ekiMeaningLink : ekiMeaningLinks) {
+			String sourceMeaningIdStr = ekiMeaningLink.attr("link-id");
+			if (StringUtils.isBlank(sourceMeaningIdStr)) {
+				continue;
+			}
+			Long sourceMeaningId = Long.valueOf(sourceMeaningIdStr);
+			String targetMeaningIdStr;
+			List<Object> pkMapping = getPkMapping(importCode, MEANING, sourceMeaningId);
+			if (CollectionUtils.isEmpty(pkMapping)) {
+				targetMeaningIdStr = new String(sourceMeaningIdStr);
+				boolean recordExists = recordExists(MEANING, "id", sourceMeaningId);
+				if (!recordExists) {
+					context.getUnresolvedMeaningLinkCount().increment();
+				}
+			} else {
+				targetMeaningIdStr = pkMapping.get(0).toString();
+				context.getResolvedMeaningLinkCount().increment();
+			}
+			ekiMeaningLink.attr("link-id", targetMeaningIdStr);
+		}
+		valuePrese = valueHtmlDoc.html();
+		return valuePrese;
 	}
 
 	private boolean recordExists(List<TableColumn> tableFkColumns, Map<String, Object> dataMap) throws Exception {
