@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class SynWord extends AbstractDataObject implements DecoratedWordType {
@@ -17,6 +19,8 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 	private boolean homonymsExist;
 
 	private String lang;
+
+	private List<String> lexemeRegisterCodes;
 
 	private String[] wordTypeCodes;
 
@@ -78,6 +82,14 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public List<String> getLexemeRegisterCodes() {
+		return lexemeRegisterCodes;
+	}
+
+	public void setLexemeRegisterCodes(List<String> lexemeRegisterCodes) {
+		this.lexemeRegisterCodes = lexemeRegisterCodes;
 	}
 
 	@Override

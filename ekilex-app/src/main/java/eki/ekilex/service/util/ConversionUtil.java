@@ -914,6 +914,7 @@ public class ConversionUtil implements GlobalConstant {
 						synWord.setHomonymNr(groupedRelation.getWordHomonymNr());
 						synWord.setHomonymsExist(groupedRelation.isHomonymsExist());
 						synWord.setLang(groupedRelation.getWordLang());
+						synWord.setLexemeRegisterCodes(groupedRelation.getLexemeRegisterCodes());
 						synWords.add(synWord);
 					}
 					meaningRelSyn.setWords(synWords);

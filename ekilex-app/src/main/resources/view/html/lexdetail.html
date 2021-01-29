@@ -30,11 +30,12 @@
                     data-contextmenu:compare="Ava uues paneelis">
                     <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
                     <span th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></span>
+                    <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                     <span th:text="${'[ ' + viewUtil.getFormattedWeight(syn.weight) + ' ]'}"></span>
                   </button>
                   <span th:unless="${synWordIter.last}">,</span>
-                  <span th:unless="${synIter.last}">|</span>
                 </span>
+                <span th:unless="${synIter.last}">|</span>
               </span>
             </div>
           </div>
@@ -143,6 +144,7 @@
                               data-contextmenu:compare="Ava uues paneelis">
                         <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
                         <span th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></span>
+                        <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                         <span th:text="${'[ ' + viewUtil.getFormattedWeight(syn.weight) + ' ]'}"></span>
                       </button>
                       <span th:unless="${synWordIter.last}">,</span>

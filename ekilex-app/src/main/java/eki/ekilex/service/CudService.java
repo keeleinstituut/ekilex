@@ -1682,10 +1682,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteSynMeaningRelation(Long relationId) throws Exception {
 		ActivityLogData activityLog;
 		Long oppositeRelationId = lookupDbService.getMeaningRelationSameTypeOppositeRelationId(relationId);
-		Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
-		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, LifecycleLogOwner.MEANING);
-		cudDbService.deleteMeaningRelation(oppositeRelationId);
-		activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
+		if (oppositeRelationId != null) {
+			Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
+			activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, LifecycleLogOwner.MEANING);
+			cudDbService.deleteMeaningRelation(oppositeRelationId);
+			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
+		}
 
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
 		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, LifecycleLogOwner.MEANING);
