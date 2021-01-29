@@ -73,8 +73,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
+import org.jooq.Record10;
 import org.jooq.Record3;
-import org.jooq.Record9;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.cache.annotation.Cacheable;
@@ -771,10 +771,18 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Meaning m2 = MEANING.as("m2");
 		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
+		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 
-		Table<Record9<Long, Long, Long, String, String, String, Integer, BigDecimal, Long>> mrel = DSL
+		Field<String[]> lexRegisterCodes = DSL
+				.select(DSL.arrayAgg(lr.REGISTER_CODE).orderBy(lr.ORDER_BY))
+				.from(lr)
+				.where(lr.LEXEME_ID.eq(l2.ID))
+				.groupBy(l2.ID)
+				.asField("lexeme_register_codes");
+
+		Table<Record10<Long, Long, Long, String, String, String, Integer, String[], BigDecimal, Long>> mrel = DSL
 				.select(
 						mr.ID.as("id"),
 						m2.ID.as("meaning_id"),
@@ -783,6 +791,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						w2.VALUE_PRESE.as("word_value_prese"),
 						w2.LANG.as("word_lang"),
 						w2.HOMONYM_NR.as("word_homonym_nr"),
+						lexRegisterCodes,
 						mr.WEIGHT,
 						mr.ORDER_BY
 				)
@@ -794,7 +803,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(
 						mr.MEANING1_ID.eq(meaningId)
 								.and(mr.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_CODE_SIMILAR)))
-				.groupBy(m2.ID, mr.ID, w2.ID)
+				.groupBy(m2.ID, mr.ID, l2.ID, w2.ID)
 				.asTable("mrel");
 
 		Field<Boolean> whe = DSL
@@ -818,6 +827,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mrel.field("word_value_prese"),
 						mrel.field("word_lang"),
 						mrel.field("word_homonym_nr"),
+						mrel.field("lexeme_register_codes"),
 						mrel.field("weight"),
 						mrel.field("order_by"),
 						whe.as("homonyms_exist"))

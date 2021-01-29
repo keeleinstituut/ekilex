@@ -250,8 +250,9 @@
             <input type="hidden" class="relation-lexeme-id" th:value="${lexeme.lexemeId}"/>
             <span th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}">
               <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
-              <span th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></span>
-              <span th:text="${'[ ' + viewUtil.getFormattedWeight(syn.weight) + ' ]'}"></span>
+              <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
+              <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+              <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
             </span>
             <span th:unless="${synWordIter.last}">,</span>
             <th:block th:if="${isMeaningWordSyn}">
