@@ -888,15 +888,15 @@ public class ConversionUtil implements GlobalConstant {
 				prefWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 			}
 
-			filterMeaningRelations(prefWordLangs, allLangs, synMeaningRelations, showFirstWordOnly);
-
 			Map<Long, List<Relation>> groupedByIdRelationsMap = synMeaningRelations.stream().collect(groupingBy(Relation::getId));
 			for (List<Relation> groupedByIdRelations : groupedByIdRelationsMap.values()) {
 
-				Map<String, List<Relation>> groupedByLangRelations = groupedByIdRelations.stream().collect(groupingBy(Relation::getWordLang));
-				for (List<Relation> groupedByLangRelation : groupedByLangRelations.values()) {
+				Map<String, List<Relation>> groupedByLangRelationsMap = groupedByIdRelations.stream().collect(groupingBy(Relation::getWordLang));
+				for (List<Relation> groupedByLangRelations : groupedByLangRelationsMap.values()) {
 
-					Relation firstGroupRelation = groupedByLangRelation.get(0);
+					filterMeaningRelations(prefWordLangs, allLangs, groupedByLangRelations, showFirstWordOnly);
+
+					Relation firstGroupRelation = groupedByLangRelations.get(0);
 					Synonym meaningRelSyn = new Synonym();
 					meaningRelSyn.setType(SynonymType.MEANING_REL);
 					meaningRelSyn.setWordLang(firstGroupRelation.getWordLang());
@@ -906,15 +906,15 @@ public class ConversionUtil implements GlobalConstant {
 					meaningRelSyn.setOrderBy(firstGroupRelation.getOrderBy());
 
 					List<SynWord> synWords = new ArrayList<>();
-					for (Relation groupedRelation : groupedByLangRelation) {
+					for (Relation groupedByLangRelation : groupedByLangRelations) {
 						SynWord synWord = new SynWord();
-						synWord.setWordId(groupedRelation.getWordId());
-						synWord.setWordValue(groupedRelation.getWordValue());
-						synWord.setWordValuePrese(groupedRelation.getWordValuePrese());
-						synWord.setHomonymNr(groupedRelation.getWordHomonymNr());
-						synWord.setHomonymsExist(groupedRelation.isHomonymsExist());
-						synWord.setLang(groupedRelation.getWordLang());
-						synWord.setLexemeRegisterCodes(groupedRelation.getLexemeRegisterCodes());
+						synWord.setWordId(groupedByLangRelation.getWordId());
+						synWord.setWordValue(groupedByLangRelation.getWordValue());
+						synWord.setWordValuePrese(groupedByLangRelation.getWordValuePrese());
+						synWord.setHomonymNr(groupedByLangRelation.getWordHomonymNr());
+						synWord.setHomonymsExist(groupedByLangRelation.isHomonymsExist());
+						synWord.setLang(groupedByLangRelation.getWordLang());
+						synWord.setLexemeRegisterCodes(groupedByLangRelation.getLexemeRegisterCodes());
 						synWords.add(synWord);
 					}
 					meaningRelSyn.setWords(synWords);
