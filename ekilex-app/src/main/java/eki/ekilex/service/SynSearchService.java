@@ -120,7 +120,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangs);
-		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
+		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, meaningWords, userProfile, headwordLanguage);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synonyms, languagesOrder);
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);

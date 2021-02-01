@@ -191,7 +191,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, preferredMeaningWordLangs);
-		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, synMeaningWords, userProfile, wordLang, languagesOrder);
+		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, synMeaningWords, userProfile, wordLang);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synonyms, languagesOrder);
 
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);

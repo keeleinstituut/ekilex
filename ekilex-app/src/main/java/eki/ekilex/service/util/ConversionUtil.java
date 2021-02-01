@@ -847,8 +847,7 @@ public class ConversionUtil implements GlobalConstant {
 		return collocations;
 	}
 
-	public List<Synonym> composeSynonyms(
-			List<Relation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang, List<ClassifierSelect> languagesOrder) {
+	public List<Synonym> composeSynonyms(List<Relation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang) {
 
 		List<Synonym> synonyms = new ArrayList<>();
 
@@ -877,7 +876,6 @@ public class ConversionUtil implements GlobalConstant {
 		}
 
 		if (synMeaningRelations != null) {
-			List<String> allLangs = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
 			boolean showFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
 			boolean showSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
 
@@ -894,19 +892,28 @@ public class ConversionUtil implements GlobalConstant {
 				Map<String, List<Relation>> groupedByLangRelationsMap = groupedByIdRelations.stream().collect(groupingBy(Relation::getWordLang));
 				for (List<Relation> groupedByLangRelations : groupedByLangRelationsMap.values()) {
 
-					filterMeaningRelations(prefWordLangs, allLangs, groupedByLangRelations, showFirstWordOnly);
+					String groupWordLang = groupedByLangRelations.get(0).getWordLang();
+					if (!prefWordLangs.contains(groupWordLang)) {
+						continue;
+					}
 
-					Relation firstGroupRelation = groupedByLangRelations.get(0);
-					Synonym meaningRelSyn = new Synonym();
-					meaningRelSyn.setType(SynonymType.MEANING_REL);
-					meaningRelSyn.setWordLang(firstGroupRelation.getWordLang());
-					meaningRelSyn.setRelationId(firstGroupRelation.getId());
-					meaningRelSyn.setMeaningId(firstGroupRelation.getMeaningId());
-					meaningRelSyn.setWeight(firstGroupRelation.getWeight());
-					meaningRelSyn.setOrderBy(firstGroupRelation.getOrderBy());
-
+					Synonym meaningRelSyn = null;
+					boolean isFirstWord = true;
 					List<SynWord> synWords = new ArrayList<>();
 					for (Relation groupedByLangRelation : groupedByLangRelations) {
+						if (meaningRelSyn == null) {
+							meaningRelSyn = new Synonym();
+							meaningRelSyn.setType(SynonymType.MEANING_REL);
+							meaningRelSyn.setWordLang(groupWordLang);
+							meaningRelSyn.setRelationId(groupedByLangRelation.getId());
+							meaningRelSyn.setMeaningId(groupedByLangRelation.getMeaningId());
+							meaningRelSyn.setWeight(groupedByLangRelation.getWeight());
+							meaningRelSyn.setOrderBy(groupedByLangRelation.getOrderBy());
+						}
+
+						if (showFirstWordOnly && !isFirstWord) {
+							break;
+						}
 						SynWord synWord = new SynWord();
 						synWord.setWordId(groupedByLangRelation.getWordId());
 						synWord.setWordValue(groupedByLangRelation.getWordValue());
@@ -916,6 +923,7 @@ public class ConversionUtil implements GlobalConstant {
 						synWord.setLang(groupedByLangRelation.getWordLang());
 						synWord.setLexemeRegisterCodes(groupedByLangRelation.getLexemeRegisterCodes());
 						synWords.add(synWord);
+						isFirstWord = false;
 					}
 					meaningRelSyn.setWords(synWords);
 					synonyms.add(meaningRelSyn);
