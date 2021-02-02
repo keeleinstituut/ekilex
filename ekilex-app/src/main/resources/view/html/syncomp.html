@@ -222,63 +222,65 @@
            th:if="${not #lists.isEmpty(lexeme.synonymLangGroups)}"
            class="orderable border-top"
            data-op-code="meaning_relation"
-           data-plugin="sorter"
-           data-sorter:type="meaning_relation"
            th:data-additional-info="${lexeme.lexemeId}">
-    <div class="orderable d-flex flex-row flex-wrap" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
+           
+    <div class="orderable d-flex flex-row" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" >
       <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
       <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
       <!--    TODO erinevad classid ja id-d tuleb eritüüpidel arvatavasti külge panna-->
 <!--      TODO orderBy osa peaks vist siia kuhugi panema-->
 <!--      TODO probleem on positsiooniga, sest vaja oleks vist positsiooni enda tüüpi sünos-->
-      <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
-            class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
-            th:data-lexeme-id="${lexeme.lexemeId}"
-            th:data-orderby="${syn.orderBy}"
-            th:data-relation-id="${syn.relationId}"
-            th:data-id="${syn.relationId}"
-            th:data-orderpos="${synIter.index}"
-            th:with="
-              isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
-              isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
-<!--        <span class="handle drag-handle border-right border-light text-muted" title="Lohista siit">-->
-<!--          <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>-->
-<!--        </span>-->
-        <span class="hidden-buttons">
-          <th:block th:each="synWord, synWordIter : ${syn.words}">
-            <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
-            <input type="hidden" class="relation-lexeme-id" th:value="${lexeme.lexemeId}"/>
-            <span th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}">
-              <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
-              <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-              <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-              <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-            </span>
-            <span th:unless="${synWordIter.last}">,</span>
-            <th:block th:if="${isMeaningWordSyn}">
-  <!--            TODO nothing?-->
+      <div data-plugin="sorter"
+          data-sorter:type="meaning_relation">
+        <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
+              class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
+              th:data-lexeme-id="${lexeme.lexemeId}"
+              th:data-orderby="${syn.orderBy}"
+              th:data-relation-id="${syn.relationId}"
+              th:data-id="${syn.relationId}"
+              th:data-orderpos="${synIter.index}"
+              th:with="
+                isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
+                isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
+  <!--        <span class="handle drag-handle border-right border-light text-muted" title="Lohista siit">-->
+  <!--          <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>-->
+  <!--        </span>-->
+          <span class="hidden-buttons">
+            <th:block th:each="synWord, synWordIter : ${syn.words}">
+              <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
+              <input type="hidden" class="relation-lexeme-id" th:value="${lexeme.lexemeId}"/>
+              <span th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}">
+                <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
+                <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
+                <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+              </span>
+              <span th:unless="${synWordIter.last}">,</span>
+              <th:block th:if="${isMeaningWordSyn}">
+    <!--            TODO nothing?-->
+              </th:block>
             </th:block>
-          </th:block>
-          <th:block th:if="${isMeaningRelSyn}">
-            <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
-            <button type="button" class="btn badge badge-secondary btn-xs"
-                    title="Muuda vaste seose kaalu"
-                    data-toggle="modal"
-                    th:data-target="${'#editSynMeaningRelationWeightDlg_' + syn.relationId}"
-                    sec:authorize="#vars.lexeme.crudGrant">
-              <i class="fa fa-edit" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn badge badge-secondary btn-xs"
-                    th:data-id="${syn.relationId}"
-                    data-op-code="syn_meaning_relation"
-                    data-toggle="delete-confirm"
-                    sec:authorize="#vars.lexeme.crudGrant">
-              <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda vaste seos"></i>
-            </button>
-          </th:block>
-          <span th:unless="${synIter.last}">|</span>
+            <th:block th:if="${isMeaningRelSyn}">
+              <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
+              <button type="button" class="btn badge badge-secondary btn-xs"
+                      title="Muuda vaste seose kaalu"
+                      data-toggle="modal"
+                      th:data-target="${'#editSynMeaningRelationWeightDlg_' + syn.relationId}"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-secondary btn-xs"
+                      th:data-id="${syn.relationId}"
+                      data-op-code="syn_meaning_relation"
+                      data-toggle="delete-confirm"
+                      sec:authorize="#vars.lexeme.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda vaste seos"></i>
+              </button>
+            </th:block>
+            <span th:unless="${synIter.last}">|</span>
+          </span>
         </span>
-      </span>
+      </div>
     </div>
   </div>
   <div th:fragment="syn_logdata" sec:authorize="#vars.details.word.readGrant" class="ml-auto d-flex align-items-center flex-row">
