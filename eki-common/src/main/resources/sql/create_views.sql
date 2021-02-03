@@ -94,15 +94,15 @@ create type type_word_relation as (
 				word_type_codes varchar(100) array,
 				lex_complexities varchar(100) array);
 create type type_lexeme_relation as (
-                lexeme_id bigint,
-                word_id bigint,
-                word text,
-                word_prese text,
-                homonym_nr integer,
-                lang char(3),
-                word_type_codes varchar(100) array,
-                complexity varchar(100),
-                lex_rel_type_code varchar(100));
+        lexeme_id bigint,
+        word_id bigint,
+        word text,
+        word_prese text,
+        homonym_nr integer,
+        lang char(3),
+        word_type_codes varchar(100) array,
+        complexity varchar(100),
+        lex_rel_type_code varchar(100));
 create type type_meaning_relation as (
 				meaning_id bigint,
 				word_id bigint,
@@ -113,6 +113,7 @@ create type type_meaning_relation as (
 				aspect_code varchar(100),
 				word_type_codes varchar(100) array,
 				complexity varchar(100),
+        weight numeric(5,4),
 				lex_value_state_codes varchar(100) array,
 				lex_register_codes varchar(100) array,
 				lex_government_values text array,
@@ -1638,6 +1639,7 @@ select r.m1_id meaning_id,
          r.aspect_code,
          r.word_type_codes,
          r.complexity,
+         r.weight,
          r.lex_value_state_codes,
          r.lex_register_codes,
          r.lex_government_values,
@@ -1656,6 +1658,7 @@ from (select mr.meaning1_id m1_id,
              w.lang word_lang,
              w.aspect_code aspect_code,
              l.complexity,
+             mr.weight,
              (select array_agg(wt.word_type_code)
               from word_word_type wt
               where wt.word_id = w.id

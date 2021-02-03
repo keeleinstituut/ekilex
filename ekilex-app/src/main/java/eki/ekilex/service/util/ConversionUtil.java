@@ -875,7 +875,7 @@ public class ConversionUtil implements GlobalConstant {
 			synonyms.add(meaningWordSyn);
 		}
 
-		if (synMeaningRelations != null) {
+		if (CollectionUtils.isNotEmpty(synMeaningRelations)) {
 			boolean showFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
 			boolean showSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
 

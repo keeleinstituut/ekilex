@@ -97,11 +97,11 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<TypeMeaningWord> meaningWords;
 
-	private List<TypeMeaningWord> sourceLangMeaningWords;
+	private List<Synonym> sourceLangSynonyms;
 
-	private List<TypeMeaningWord> destinLangMatchWords;
+	private List<Synonym> destinLangSynonyms;
 
-	private Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLang;
+	private Map<String, List<Synonym>> destinLangSynonymsByLang;
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
@@ -473,28 +473,28 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.meaningWords = meaningWords;
 	}
 
-	public List<TypeMeaningWord> getSourceLangMeaningWords() {
-		return sourceLangMeaningWords;
+	public List<Synonym> getSourceLangSynonyms() {
+		return sourceLangSynonyms;
 	}
 
-	public void setSourceLangMeaningWords(List<TypeMeaningWord> sourceLangMeaningWords) {
-		this.sourceLangMeaningWords = sourceLangMeaningWords;
+	public void setSourceLangSynonyms(List<Synonym> sourceLangSynonyms) {
+		this.sourceLangSynonyms = sourceLangSynonyms;
 	}
 
-	public List<TypeMeaningWord> getDestinLangMatchWords() {
-		return destinLangMatchWords;
+	public List<Synonym> getDestinLangSynonyms() {
+		return destinLangSynonyms;
 	}
 
-	public void setDestinLangMatchWords(List<TypeMeaningWord> destinLangMatchWords) {
-		this.destinLangMatchWords = destinLangMatchWords;
+	public void setDestinLangSynonyms(List<Synonym> destinLangSynonyms) {
+		this.destinLangSynonyms = destinLangSynonyms;
 	}
 
-	public Map<String, List<TypeMeaningWord>> getDestinLangMatchWordsByLang() {
-		return destinLangMatchWordsByLang;
+	public Map<String, List<Synonym>> getDestinLangSynonymsByLang() {
+		return destinLangSynonymsByLang;
 	}
 
-	public void setDestinLangMatchWordsByLang(Map<String, List<TypeMeaningWord>> destinLangMatchWordsByLang) {
-		this.destinLangMatchWordsByLang = destinLangMatchWordsByLang;
+	public void setDestinLangSynonymsByLang(Map<String, List<Synonym>> destinLangSynonymsByLang) {
+		this.destinLangSynonymsByLang = destinLangSynonymsByLang;
 	}
 
 	public List<TypeLexemeRelation> getRelatedLexemes() {
