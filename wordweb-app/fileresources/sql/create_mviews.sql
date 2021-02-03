@@ -148,6 +148,7 @@ create type type_meaning_relation as (
 				aspect_code varchar(100),
 				word_type_codes varchar(100) array,
 				complexity varchar(100),
+        weight numeric(5,4),
 				lex_value_state_codes varchar(100) array,
 				lex_register_codes varchar(100) array,
 				lex_government_values text array,

@@ -13,6 +13,8 @@ public class TypeMeaningRelation extends WordTypeData implements ComplexityType 
 
 	private Complexity complexity;
 
+	private Float weight;
+
 	private List<String> lexValueStateCodes;
 
 	private List<Classifier> lexValueStates;
@@ -42,6 +44,14 @@ public class TypeMeaningRelation extends WordTypeData implements ComplexityType 
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Float getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Float weight) {
+		this.weight = weight;
 	}
 
 	public List<String> getLexValueStateCodes() {

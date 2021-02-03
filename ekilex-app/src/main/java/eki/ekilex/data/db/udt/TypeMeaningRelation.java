@@ -7,6 +7,8 @@ package eki.ekilex.data.db.udt;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.udt.records.TypeMeaningRelationRecord;
 
+import java.math.BigDecimal;
+
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
@@ -20,7 +22,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
 
-    private static final long serialVersionUID = 1507646415;
+    private static final long serialVersionUID = -1894218260;
 
     /**
      * The reference instance of <code>public.type_meaning_relation</code>
@@ -79,6 +81,11 @@ public class TypeMeaningRelation extends UDTImpl<TypeMeaningRelationRecord> {
      * The attribute <code>public.type_meaning_relation.complexity</code>.
      */
     public static final UDTField<TypeMeaningRelationRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_RELATION, "");
+
+    /**
+     * The attribute <code>public.type_meaning_relation.weight</code>.
+     */
+    public static final UDTField<TypeMeaningRelationRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), org.jooq.impl.SQLDataType.NUMERIC(5, 4), TYPE_MEANING_RELATION, "");
 
     /**
      * The attribute <code>public.type_meaning_relation.lex_value_state_codes</code>.

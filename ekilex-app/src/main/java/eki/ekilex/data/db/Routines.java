@@ -4,14 +4,11 @@
 package eki.ekilex.data.db;
 
 
-import eki.ekilex.data.db.routines.ConvertLexemeToMeaningRelation;
 import eki.ekilex.data.db.routines.MergeHomonymsToSss;
 import eki.ekilex.data.db.routines.Unaccent1;
 import eki.ekilex.data.db.routines.Unaccent2;
 import eki.ekilex.data.db.routines.UnaccentInit;
 import eki.ekilex.data.db.routines.UnaccentLexize;
-
-import java.math.BigDecimal;
 
 import org.jooq.Configuration;
 import org.jooq.Field;
@@ -22,20 +19,6 @@ import org.jooq.Field;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
-
-    /**
-     * Call <code>public.convert_lexeme_to_meaning_relation</code>
-     */
-    public static void convertLexemeToMeaningRelation(Configuration configuration, Long m1Id, Long m2Id, String mRelTypeCode, BigDecimal lSecWeigth, Long lSecOrderBy) {
-        ConvertLexemeToMeaningRelation p = new ConvertLexemeToMeaningRelation();
-        p.setM1Id(m1Id);
-        p.setM2Id(m2Id);
-        p.setMRelTypeCode(mRelTypeCode);
-        p.setLSecWeigth(lSecWeigth);
-        p.setLSecOrderBy(lSecOrderBy);
-
-        p.execute(configuration);
-    }
 
     /**
      * Call <code>public.merge_homonyms_to_sss</code>
