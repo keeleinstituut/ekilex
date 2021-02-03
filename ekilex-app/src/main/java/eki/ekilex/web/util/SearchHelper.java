@@ -33,6 +33,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 
 	private static final char PATH_SEPARATOR = '/';
 	private static final char DATASETS_SEPARATOR = ',';
+	private static final char TRUNCATED_SYM = '.';
 	private static final String EMPTY_VALUE = "-";
 	private static final String SEARCH_MODE = "smode";
 	private static final String RESULT_MODE = "rmode";
@@ -44,6 +45,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 	private static final String CRITERION = "crit";
 	private static final String CRITERION_VALUE = "val";
 	private static final String CRITERION_CLASSIFIER = "cla";
+	private static final String CRITERION_VAL_ANTI_TRUNC_MASK = "¤";
 
 	@Autowired
 	private UserContext userContext;
@@ -165,6 +167,9 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 								uriBuf.append(code);
 							} else {
 								critValue = StringUtils.trim(critValue);
+								if (StringUtils.contains(critValue, TRUNCATED_SYM)) {
+									critValue = critValue + CRITERION_VAL_ANTI_TRUNC_MASK;
+								}
 								critValue = encode(critValue);
 								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(CRITERION_VALUE);
@@ -258,6 +263,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				if (StringUtils.equals(CRITERION_VALUE, searchValueType)) {
 					String searchValueStr = uriParts[uriPartIndex + 4];
 					searchValueStr = decode(searchValueStr);
+					searchValueStr = StringUtils.stripEnd(searchValueStr, CRITERION_VAL_ANTI_TRUNC_MASK);
 					searchValueStr = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchValueStr);
 					if (StringUtils.equals(EMPTY_VALUE, searchValueStr)) {
 						searchValueObj = null;
