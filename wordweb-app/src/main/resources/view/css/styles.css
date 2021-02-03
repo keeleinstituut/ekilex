@@ -18993,6 +18993,14 @@ eki-link {
   margin-top: 30px;
 }
 
+.morphology-paradigm table {
+  width: 100%;
+}
+
+.morphology-paradigm table td {
+  width: 50%;
+}
+
 .homonym-image {
   display: block;
   width: 100%;
