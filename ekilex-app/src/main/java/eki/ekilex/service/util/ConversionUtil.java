@@ -869,6 +869,7 @@ public class ConversionUtil implements GlobalConstant {
 			synWord.setPrefixoid(meaningWord.isPrefixoid());
 			synWord.setSuffixoid(meaningWord.isSuffixoid());
 			synWord.setForeign(meaningWord.isForeign());
+			synWord.setLexemeRegisterCodes(meaningWord.getLexRegisterCodes());
 			meaningWordSyn.setWords(Arrays.asList(synWord));
 
 			synonyms.add(meaningWordSyn);

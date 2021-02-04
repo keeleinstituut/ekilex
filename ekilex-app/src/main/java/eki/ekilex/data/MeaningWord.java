@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class MeaningWord extends AbstractDataObject implements DecoratedWordType {
@@ -33,6 +35,8 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 	private String lexemeType;
 
 	private Float lexemeWeight;
+
+	private List<String> lexRegisterCodes;
 
 	private Long orderBy;
 
@@ -158,6 +162,14 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	public void setLexemeWeight(Float lexemeWeight) {
 		this.lexemeWeight = lexemeWeight;
+	}
+
+	public List<String> getLexRegisterCodes() {
+		return lexRegisterCodes;
+	}
+
+	public void setLexRegisterCodes(List<String> lexRegisterCodes) {
+		this.lexRegisterCodes = lexRegisterCodes;
 	}
 
 	public Long getOrderBy() {
