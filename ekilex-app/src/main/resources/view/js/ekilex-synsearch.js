@@ -352,53 +352,6 @@ function activateSynCandidatesList() {
 	changeSynonymDefinitionDisplay('show');
 }
 
-function changeLexemeSynRelationOrdering(target, delta) {
-	let orderBlock = target.closest('.orderable');
-	let opCode = orderBlock.attr("data-op-code");
-	let itemToMove = target.closest('[data-orderby]');
-	let additionalInfo = orderBlock.attr('data-additional-info');
-	let items = orderBlock.find('[data-orderby]');
-	let itemToMovePos = items.index(itemToMove);
-	let orderedItems = [];
-	if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {
-		let orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
-		let orderpos = $(items.get(itemToMovePos + delta)).attr('data-orderpos');
-
-		let increment = delta > 0 ? -1 : 1;
-
-		for (var position = itemToMovePos + delta; (delta < 0 && position < itemToMovePos) || (delta >= 0 && position > itemToMovePos); position += increment) {
-			let nextPos = delta > 0 ? position - 1 : position + 1;
-			let nextOrderPos = $(items.get(nextPos)).attr('data-orderpos');
-
-			$(items.get(position)).attr('data-orderby', $(items.get(nextOrderPos)).attr('data-orderby'));
-			$(items.get(position)).attr('data-orderpos', nextOrderPos);
-		}
-
-		$(items.get(itemToMovePos)).attr('data-orderpos', orderpos);
-		$(items.get(itemToMovePos)).attr('data-orderby', orderby);
-
-		if (delta > 0) {
-			$(items.get(itemToMovePos + delta)).after($(items.get(itemToMovePos)));
-		} else {
-			$(items.get(itemToMovePos + delta)).before($(items.get(itemToMovePos)));
-		}
-		items = orderBlock.find('[data-orderby]');
-		items.each(function(indx, item) {
-			$(item).find('.order-up').prop('hidden', indx == 0);
-			$(item).find('.order-down').prop('hidden', indx == items.length - 1);
-			let itemData = {};
-			itemData.id = $(item).attr('data-relation-id');
-			itemData.orderby = $(item).attr('data-orderby');
-			orderedItems.push(itemData);
-		});
-	}
-	return {
-		opCode: opCode,
-		items: orderedItems,
-		additionalInfo: additionalInfo
-	};
-}
-
 function doPostRelationChange(actionUrl, callbackFunc) {
 
 	$.post(actionUrl).done(function(data) {

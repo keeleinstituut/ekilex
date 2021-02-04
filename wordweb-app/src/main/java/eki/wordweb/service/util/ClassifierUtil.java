@@ -18,7 +18,6 @@ import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.Synonym;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
@@ -105,22 +104,6 @@ public class ClassifierUtil {
 		classifierCode = meaningWord.getMwLexValueStateCode();
 		classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
 		meaningWord.setMwLexValueState(classifier);
-	}
-
-	public void applyClassifiers(Synonym syn, String displayLang) {
-		String classifierCode;
-		List<String> classifierCodes;
-		Classifier classifier;
-		List<Classifier> classifiers;
-		classifierCode = syn.getAspectCode();
-		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
-		syn.setAspect(classifier);
-		classifierCodes = syn.getLexRegisterCodes();
-		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
-		syn.setLexRegisters(classifiers);
-		classifierCode = syn.getLexValueStateCode();
-		classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
-		syn.setLexValueState(classifier);
 	}
 
 	public void applyClassifiers(LexemeMeaningTuple tuple, Lexeme lexeme, String displayLang) {

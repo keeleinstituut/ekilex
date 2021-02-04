@@ -216,8 +216,8 @@
                           <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                         </a>
                         <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
-                          <th:block th:if="${not #lists.isEmpty(syn.lexRegisters)}">
-                            <span class="type-two" th:each="register,regIter : ${syn.lexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                          <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
+                            <span class="type-two" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
                         <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
@@ -262,9 +262,9 @@
                             <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="text-small">
-                            <span th:if="${isAnyTerm && (syn.lexValueState != null)}" th:text="${syn.lexValueState.value}"></span>
-                            <th:block th:if="${not #lists.isEmpty(syn.lexRegisters)}">
-                              <span class="type-two text-uppercase" th:each="register,regIter : ${syn.lexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                            <span th:if="${isAnyTerm && (syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
+                            <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
+                              <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
                           </span>
                           <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>

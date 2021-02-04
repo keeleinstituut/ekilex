@@ -97,11 +97,11 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<TypeMeaningWord> meaningWords;
 
-	private List<Synonym> sourceLangSynonyms;
+	private List<TypeMeaningWord> sourceLangSynonyms;
 
-	private List<Synonym> destinLangSynonyms;
+	private List<TypeMeaningWord> destinLangSynonyms;
 
-	private Map<String, List<Synonym>> destinLangSynonymsByLang;
+	private Map<String, List<TypeMeaningWord>> destinLangSynonymsByLang;
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
@@ -473,27 +473,27 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.meaningWords = meaningWords;
 	}
 
-	public List<Synonym> getSourceLangSynonyms() {
+	public List<TypeMeaningWord> getSourceLangSynonyms() {
 		return sourceLangSynonyms;
 	}
 
-	public void setSourceLangSynonyms(List<Synonym> sourceLangSynonyms) {
+	public void setSourceLangSynonyms(List<TypeMeaningWord> sourceLangSynonyms) {
 		this.sourceLangSynonyms = sourceLangSynonyms;
 	}
 
-	public List<Synonym> getDestinLangSynonyms() {
+	public List<TypeMeaningWord> getDestinLangSynonyms() {
 		return destinLangSynonyms;
 	}
 
-	public void setDestinLangSynonyms(List<Synonym> destinLangSynonyms) {
+	public void setDestinLangSynonyms(List<TypeMeaningWord> destinLangSynonyms) {
 		this.destinLangSynonyms = destinLangSynonyms;
 	}
 
-	public Map<String, List<Synonym>> getDestinLangSynonymsByLang() {
+	public Map<String, List<TypeMeaningWord>> getDestinLangSynonymsByLang() {
 		return destinLangSynonymsByLang;
 	}
 
-	public void setDestinLangSynonymsByLang(Map<String, List<Synonym>> destinLangSynonymsByLang) {
+	public void setDestinLangSynonymsByLang(Map<String, List<TypeMeaningWord>> destinLangSynonymsByLang) {
 		this.destinLangSynonymsByLang = destinLangSynonymsByLang;
 	}
 
