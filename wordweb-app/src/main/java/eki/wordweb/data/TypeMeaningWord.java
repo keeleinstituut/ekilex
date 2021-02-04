@@ -4,15 +4,20 @@ import java.util.List;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.LexemeType;
+import eki.common.constant.SynonymType;
 import eki.common.data.Classifier;
 
 public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;
 
+	private SynonymType type;
+
 	private Long lexemeId;
 
 	private Long meaningId;
+
+	private Long relationId;
 
 	private Long mwLexemeId;
 
@@ -21,6 +26,8 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 	private LexemeType mwLexType;
 
 	private Float mwLexWeight;
+
+	private List<String> mwLexGovernmentValues;
 
 	private List<TypeFreeform> mwLexGovernments;
 
@@ -33,6 +40,14 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 	private Classifier mwLexValueState;
 
 	private boolean additionalDataExists;
+
+	public SynonymType getType() {
+		return type;
+	}
+
+	public void setType(SynonymType type) {
+		this.type = type;
+	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -48,6 +63,14 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public Long getRelationId() {
+		return relationId;
+	}
+
+	public void setRelationId(Long relationId) {
+		this.relationId = relationId;
 	}
 
 	public Long getMwLexemeId() {
@@ -85,6 +108,14 @@ public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	public void setMwLexWeight(Float mwLexWeight) {
 		this.mwLexWeight = mwLexWeight;
+	}
+
+	public List<String> getMwLexGovernmentValues() {
+		return mwLexGovernmentValues;
+	}
+
+	public void setMwLexGovernmentValues(List<String> mwLexGovernmentValues) {
+		this.mwLexGovernmentValues = mwLexGovernmentValues;
 	}
 
 	public List<TypeFreeform> getMwLexGovernments() {
