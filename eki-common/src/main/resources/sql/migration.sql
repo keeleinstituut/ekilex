@@ -419,7 +419,7 @@ delete from lexeme where type = 'SECONDARY';
 alter table word add column vocal_form text null;
 
 update word w
-   set vocal_form = f.vocal_form
+   set vocal_form = '[' || f.vocal_form || ']'
 from paradigm p,
      form f
 where p.word_id = w.id
