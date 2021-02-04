@@ -46,8 +46,6 @@ public class Form extends AbstractDataObject {
 
 	private String displayFormsWrapup;
 
-	private String vocalForm;
-
 	private String audioFile;
 
 	private Integer orderBy;
@@ -210,14 +208,6 @@ public class Form extends AbstractDataObject {
 
 	public void setDisplayFormsWrapup(String displayFormsWrapup) {
 		this.displayFormsWrapup = displayFormsWrapup;
-	}
-
-	public String getVocalForm() {
-		return vocalForm;
-	}
-
-	public void setVocalForm(String vocalForm) {
-		this.vocalForm = vocalForm;
 	}
 
 	public String getAudioFile() {

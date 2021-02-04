@@ -22,8 +22,6 @@ public class Form extends AbstractDataObject {
 
 	private String displayForm;
 
-	private String vocalForm;
-
 	private String morphCode;
 
 	private String morphValue;
@@ -83,14 +81,6 @@ public class Form extends AbstractDataObject {
 
 	public void setDisplayForm(String displayForm) {
 		this.displayForm = displayForm;
-	}
-
-	public String getVocalForm() {
-		return vocalForm;
-	}
-
-	public void setVocalForm(String vocalForm) {
-		this.vocalForm = vocalForm;
 	}
 
 	public String getMorphCode() {

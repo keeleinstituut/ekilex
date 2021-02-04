@@ -91,8 +91,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VOCAL_FORM, wordId, vocalForm);
 		createLifecycleLog(logData);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, LifecycleLogOwner.WORD);
-		List<Long> formIds = cudDbService.updateWordVocalForm(wordId, vocalForm);
-		activityLogService.createActivityLog(activityLog, formIds, ActivityEntity.FORM);
+		cudDbService.updateWordVocalForm(wordId, vocalForm);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional

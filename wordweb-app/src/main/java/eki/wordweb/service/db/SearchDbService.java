@@ -333,6 +333,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.WORD_TYPE_CODES,
 						w.DISPLAY_MORPH_CODE,
 						w.ASPECT_CODE,
+						w.VOCAL_FORM,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
 						wesl.SOURCE_LINKS.as("word_etym_source_links"),

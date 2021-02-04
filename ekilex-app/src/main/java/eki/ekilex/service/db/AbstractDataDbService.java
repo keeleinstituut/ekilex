@@ -120,16 +120,6 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return wtz;
 	}
 
-	protected Field<String> getFormVocalFormField(Field<Long> wordIdField) {
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
-		return DSL.field(DSL
-				.select(DSL.field("array_to_string(array_agg(distinct f.vocal_form), ',')").cast(String.class))
-				.from(p, f)
-				.where(p.WORD_ID.eq(wordIdField).and(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
-				.groupBy(wordIdField));
-	}
-
 	protected Field<String> getFormMorphCodeField(Field<Long> wordIdField) {
 		Paradigm p = PARADIGM.as("p");
 		Form f = FORM.as("f");

@@ -153,7 +153,6 @@ public class ConversionUtil implements GlobalConstant {
 			form.setMode(tuple.getMode());
 			form.setComponents(tuple.getComponents());
 			form.setDisplayForm(tuple.getDisplayForm());
-			form.setVocalForm(tuple.getVocalForm());
 			form.setMorphCode(tuple.getMorphCode());
 			form.setMorphValue(tuple.getMorphValue());
 			form.setMorphFrequency(tuple.getMorphFrequency());

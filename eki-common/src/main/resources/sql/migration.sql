@@ -413,3 +413,19 @@ delete from form where mode = 'UNKNOWN';
 alter table dataset add column contact text;
 
 delete from lexeme where type = 'SECONDARY';
+
+-- form.vocal_form -> word.vocal_form
+
+alter table word add column vocal_form text null;
+
+update word w
+   set vocal_form = f.vocal_form
+from paradigm p,
+     form f
+where p.word_id = w.id
+and   f.paradigm_id = p.id
+and   f.mode = 'WORD'
+and   f.vocal_form is not null
+and   f.vocal_form != '';
+
+alter table form drop column vocal_form cascade;

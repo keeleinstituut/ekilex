@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -2040170351;
+    private static final long serialVersionUID = 496603232;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -135,11 +135,6 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.display_form</code>.
      */
     public final TableField<MviewWwFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.vocal_form</code>.
-     */
-    public final TableField<MviewWwFormRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.mview_ww_form.audio_file</code>.

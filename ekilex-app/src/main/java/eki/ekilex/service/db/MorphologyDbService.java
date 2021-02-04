@@ -58,7 +58,6 @@ public class MorphologyDbService {
 						FORM.VALUE_PRESE,
 						FORM.COMPONENTS,
 						FORM.DISPLAY_FORM,
-						FORM.VOCAL_FORM,
 						FORM.AUDIO_FILE)
 				.values(
 						form.getParadigmId(),
@@ -73,7 +72,6 @@ public class MorphologyDbService {
 						form.getValuePrese(),
 						form.getComponents(),
 						form.getDisplayForm(),
-						form.getVocalForm(),
 						form.getAudioFile())
 				.returning(FORM.ID)
 				.fetchOne()

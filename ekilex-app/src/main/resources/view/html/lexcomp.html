@@ -466,7 +466,7 @@
     </th:block>
     <th:block th:unless="${#strings.isEmpty(details.word.vocalForm)}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="'[' + ${details.word.vocalForm} + ']'" data-toggle="tooltip" title="Hääldus"></span>
+        <span th:text="${details.word.vocalForm}" data-toggle="tooltip" title="Hääldus"></span>
         <div class="hover-actions hover-actions-bottom-right">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
