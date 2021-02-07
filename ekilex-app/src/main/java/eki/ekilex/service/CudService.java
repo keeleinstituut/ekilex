@@ -74,6 +74,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		value = textDecorationService.unifyToApostrophe(value);
 		String valueAsWord = textDecorationService.removeAccents(value, lang);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, LifecycleLogOwner.WORD);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
@@ -782,6 +783,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		Long meaningId = wordDetails.getMeaningId();
 
 		value = textDecorationService.removeEkiElementMarkup(value);
+		value = textDecorationService.unifyToApostrophe(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
 				.createWordAndLexeme(value, value, valueAsWord, language, dataset, PUBLICITY_PUBLIC, meaningId);
@@ -1210,6 +1212,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		value = textDecorationService.unifyToApostrophe(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
 				.createWordAndLexeme(value, valuePrese, valueAsWord, language, datasetCode, PUBLICITY_PRIVATE, null);

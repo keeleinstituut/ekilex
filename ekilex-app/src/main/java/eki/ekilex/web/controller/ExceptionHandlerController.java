@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.security.access.AccessDeniedException;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import eki.common.data.AppData;
 import eki.common.exception.ApiException;
 import eki.common.util.CodeGenerator;
+import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.api.ApiResponse;
@@ -26,6 +29,9 @@ import eki.ekilex.data.api.ApiResponse;
 public class ExceptionHandlerController implements WebConstant, ApiConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(ExceptionHandlerController.class);
+
+	@Autowired
+	private AppDataHolder appDataHolder;
 
 	@ExceptionHandler(Exception.class)
 	public ModelAndView genericException(HttpServletRequest request, Exception exception) throws Exception {
@@ -53,10 +59,13 @@ public class ExceptionHandlerController implements WebConstant, ApiConstant {
 			logger.error(errorId, exception);
 		}
 
+		AppData appData = appDataHolder.getAppData();
+
 		modelAndView = new ModelAndView();
 		modelAndView.addObject("errorName", exception.getMessage());
 		modelAndView.addObject("errorId", errorId);
 		modelAndView.addObject("errorDescription", exception.toString());
+		modelAndView.addObject(APP_DATA_MODEL_KEY, appData);
 		modelAndView.setViewName(ERROR_PAGE);
 		return modelAndView;
 	}

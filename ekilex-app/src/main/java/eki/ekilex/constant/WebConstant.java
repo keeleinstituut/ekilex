@@ -30,6 +30,8 @@ public interface WebConstant {
 
 	String PERMISSIONS_URI = "/permissions";
 
+	String MAINTENANCE_URI = "/maintenance";
+
 	String COMPONENT_URI = "/comp";
 
 	String VIEW_RESOURCES_URI = "/view";

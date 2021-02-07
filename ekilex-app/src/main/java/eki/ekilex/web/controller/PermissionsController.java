@@ -26,7 +26,6 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
 
@@ -45,18 +44,6 @@ public class PermissionsController extends AbstractPrivatePageController {
 
 	@Autowired
 	private CommonDataService commonDataService;
-
-	@Autowired
-	private MaintenanceService maintenanceService;
-
-	@ResponseBody
-	@GetMapping(PERMISSIONS_URI + "/clearcache")
-	public String clearCache() {
-
-		maintenanceService.clearCache();
-
-		return RESPONSE_OK_VER1;
-	}
 
 	@GetMapping(PERMISSIONS_URI)
 	public String permissions(@ModelAttribute("orderBy") String orderByStr, Model model) {
@@ -176,7 +163,9 @@ public class PermissionsController extends AbstractPrivatePageController {
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/deletedatasetperm/{datasetPermissionId}/{orderBy}")
-	public String deleteDatasetPerm(@PathVariable("datasetPermissionId") Long datasetPermissionId, @PathVariable("orderBy") OrderingField orderBy,
+	public String deleteDatasetPerm(
+			@PathVariable("datasetPermissionId") Long datasetPermissionId,
+			@PathVariable("orderBy") OrderingField orderBy,
 			Model model) {
 
 		permissionService.deleteDatasetPermission(datasetPermissionId);
@@ -185,8 +174,11 @@ public class PermissionsController extends AbstractPrivatePageController {
 	}
 
 	@PostMapping(PERMISSIONS_URI + "/updatereviewcomment")
-	public String updateReviewComment(@RequestParam("userId") Long userId, @RequestParam("reviewComment") String reviewComment,
-			@RequestParam("orderBy") OrderingField orderBy, RedirectAttributes attributes) {
+	public String updateReviewComment(
+			@RequestParam("userId") Long userId,
+			@RequestParam("reviewComment") String reviewComment,
+			@RequestParam("orderBy") OrderingField orderBy,
+			RedirectAttributes attributes) {
 
 		userService.updateReviewComment(userId, reviewComment);
 		attributes.addFlashAttribute("orderBy", orderBy);
