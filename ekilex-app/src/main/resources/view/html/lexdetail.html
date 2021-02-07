@@ -35,7 +35,7 @@
                   </button>
                   <span th:unless="${synWordIter.last}">,</span>
                 </span>
-                <span th:unless="${synIter.last}">|</span>
+                <span class="mr-1" th:unless="${synIter.last}">|</span>
               </span>
             </div>
           </div>
@@ -138,18 +138,19 @@
                     <div class="hidden-buttons">
                       <th:block th:each="synWord, synWordIter : ${syn.words}">
                         <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
-                        <div class="btn btn-link p-0"
-                             th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"
-                             th:data-id="${synWord.wordId}"
-                             name="details-btn"
-                             data-behaviour="replace"
-                             data-plugin="contextmenu"
-                             data-contextmenu:compare="Ava uues paneelis">
+                        <button type="button"
+                                class="btn btn-link p-0"
+                                th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"
+                                th:data-id="${synWord.wordId}"
+                                name="details-btn"
+                                data-behaviour="replace"
+                                data-plugin="contextmenu"
+                                data-contextmenu:compare="Ava uues paneelis">
                           <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
                           <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                           <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-                        </div>
+                        </button>
                         <span th:unless="${synWordIter.last}">,</span>
                         <th:block th:if="${isMeaningWordSyn}">
                           <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>

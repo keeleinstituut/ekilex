@@ -30,6 +30,8 @@ class Sorter {
       this.main.sortable({
         items: '> .sortable-child-group',
         placeholder: "ui-state-highlight",
+        handle: 'button',
+        cancel: '',
         start: function(event, ui) {
           ui.placeholder.css({
             display: 'inline-block',
