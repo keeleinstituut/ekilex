@@ -17,10 +17,8 @@ public interface TextDecoration {
 	CodeValue META = new CodeValue("eki-meta", "Metatähistus");
 
 	CodeValue LINK = new CodeValue("eki-link", "Viide");
-	
+
 	CodeValue FORM = new CodeValue("eki-form", "Formatiiv");
 
-	CodeValue[] EKI_MARKUP_ELEMENTS = new CodeValue[] {
-			FOREIGN, HIGHLIGHT, STRESS, SUB, SUP, META, LINK, FORM
-	};
+	CodeValue[] EKI_MARKUP_ELEMENTS = new CodeValue[] {FOREIGN, HIGHLIGHT, STRESS, SUB, SUP, META, LINK};
 }

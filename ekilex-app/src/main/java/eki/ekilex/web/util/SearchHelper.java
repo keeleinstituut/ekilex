@@ -114,11 +114,14 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 
 		// search crit
 		if (StringUtils.equals(WebConstant.SEARCH_MODE_SIMPLE, searchMode) && StringUtils.isNotBlank(simpleSearchFilter)) {
-			simpleSearchFilter = encode(simpleSearchFilter);
+			String critValue = new String(simpleSearchFilter);
+			critValue = StringUtils.trim(critValue);
+			critValue = valueUtil.unifyToApostrophe(critValue);
+			critValue = encode(critValue);
 			uriBuf.append(PATH_SEPARATOR);
 			uriBuf.append(SIMPLE_SEARCH_FILTER);
 			uriBuf.append(PATH_SEPARATOR);
-			uriBuf.append(simpleSearchFilter);
+			uriBuf.append(critValue);
 		} else if (StringUtils.equals(WebConstant.SEARCH_MODE_DETAIL, searchMode) && (detailSearchFilter != null)) {
 			List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
 			if (CollectionUtils.isNotEmpty(criteriaGroups)) {
@@ -167,6 +170,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 								uriBuf.append(code);
 							} else {
 								critValue = StringUtils.trim(critValue);
+								critValue = valueUtil.unifyToApostrophe(critValue);
 								if (StringUtils.contains(critValue, TRUNCATED_SYM)) {
 									critValue = critValue + CRITERION_VAL_ANTI_TRUNC_MASK;
 								}
@@ -265,6 +269,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 					searchValueStr = decode(searchValueStr);
 					searchValueStr = StringUtils.stripEnd(searchValueStr, CRITERION_VAL_ANTI_TRUNC_MASK);
 					searchValueStr = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchValueStr);
+					searchValueStr = valueUtil.unifyToApostrophe(searchValueStr);
 					if (StringUtils.equals(EMPTY_VALUE, searchValueStr)) {
 						searchValueObj = null;
 					} else {

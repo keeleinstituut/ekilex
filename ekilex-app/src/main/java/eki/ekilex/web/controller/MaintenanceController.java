@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import eki.common.data.Count;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.service.MaintenanceService;
 
@@ -38,10 +41,10 @@ public class MaintenanceController implements WebConstant {
 
 	@ResponseBody
 	@GetMapping(MAINTENANCE_URI + "/recalcaccents")
-	public String recalcAccents() {
+	public Map<String, Count> recalcAccents() {
 
-		maintenanceService.unifyApostrophesAndRecalcAccents();
+		Map<String, Count> resultCounts = maintenanceService.unifyApostrophesAndRecalcAccents();
 
-		return RESPONSE_OK_VER1;
+		return resultCounts;
 	}
 }

@@ -1,6 +1,8 @@
 package eki.ekilex.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -83,43 +85,50 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	}
 
 	@Transactional
-	public void unifyApostrophesAndRecalcAccents() {
+	public Map<String, Count> unifyApostrophesAndRecalcAccents() {
 
 		logger.info("Unifying apostrophes and updating accents...");
 
-		Count unifiedApostropheCount = new Count();
-		Count accentRecalcCount = new Count();
+		Count unifiedApostropheWordCount = new Count();
+		Count accentRecalcWordCount = new Count();
+		Map<String, Count> resultCounts = new HashMap<>();
+		resultCounts.put("unifiedApostropheWordCount", unifiedApostropheWordCount);
+		resultCounts.put("accentRecalcWordCount", accentRecalcWordCount);
 
 		List<WordRecord> wordRecords = maintenanceDbService.getWordRecords();
 		boolean updateExists;
 		for (WordRecord wordRecord : wordRecords) {
 			String value = wordRecord.getValue();
+			String valuePrese = wordRecord.getValuePrese();
 			String valueAsWordSrc = wordRecord.getValueAsWord();
 			String lang = wordRecord.getLang();
 			String valueClean = textDecorationService.unifyToApostrophe(value);
+			String valuePreseClean = textDecorationService.unifyToApostrophe(valuePrese);
 			updateExists = false;
 			if (!StringUtils.equals(value, valueClean)) {
 				wordRecord.setValue(valueClean);
-				unifiedApostropheCount.increment();
+				wordRecord.setValuePrese(valuePreseClean);
+				unifiedApostropheWordCount.increment();
 				updateExists = true;
 			}
 			String valueAsWordTrgt = textDecorationService.removeAccents(valueClean, lang);
 			if (StringUtils.isNotBlank(valueAsWordTrgt) && !StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
 				wordRecord.setValueAsWord(valueAsWordTrgt);
-				accentRecalcCount.increment();
+				accentRecalcWordCount.increment();
 				updateExists = true;
 			}
 			if (updateExists) {
 				wordRecord.update();
 			}
 		}
-		if (unifiedApostropheCount.getValue() > 0) {
-			logger.info("Unified apostrophe word count: {}", unifiedApostropheCount.getValue());
+		if (unifiedApostropheWordCount.getValue() > 0) {
+			logger.info("Unified apostrophe word count: {}", unifiedApostropheWordCount.getValue());
 		}
-		if (accentRecalcCount.getValue() > 0) {
-			logger.info("Accent recalc word count: {}", accentRecalcCount.getValue());
+		if (accentRecalcWordCount.getValue() > 0) {
+			logger.info("Accent recalc word count: {}", accentRecalcWordCount.getValue());
 		}
 		logger.info("...apostrophes and accents done");
+		return resultCounts;
 	}
 
 	@Scheduled(cron = DELETE_FLOATING_DATA_TIME_4_AM)

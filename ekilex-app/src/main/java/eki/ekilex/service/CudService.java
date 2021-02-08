@@ -73,8 +73,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 		createLifecycleLog(logData);
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
+		valuePrese = textDecorationService.unifyToApostrophe(valuePrese);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		value = textDecorationService.unifyToApostrophe(value);
 		String valueAsWord = textDecorationService.removeAccents(value, lang);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, LifecycleLogOwner.WORD);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
@@ -1211,8 +1211,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void createWordAndSynRelation(
 			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr) throws Exception {
 
+		valuePrese = textDecorationService.unifyToApostrophe(valuePrese);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		value = textDecorationService.unifyToApostrophe(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
 				.createWordAndLexeme(value, valuePrese, valueAsWord, language, datasetCode, PUBLICITY_PRIVATE, null);
