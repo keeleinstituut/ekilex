@@ -417,6 +417,17 @@ public class EditController extends AbstractMutableDataPageController {
 	}
 
 	@ResponseBody
+	@PostMapping(UPDATE_LEXEME_LEVELS_URI)
+	public String updateLexemeLevels(@RequestParam("lexemeId") Long lexemeId, @RequestParam("position") int position) throws Exception {
+
+		logger.debug("Change lexeme levels for id {}, new position {}", lexemeId, position);
+
+		cudService.updateLexemeLevels(lexemeId, position);
+
+		return RESPONSE_OK_VER1;
+	}
+
+	@ResponseBody
 	@PostMapping(CONFIRM_OP_URI)
 	public ConfirmationRequest confirmOperation(@RequestBody ConfirmationRequest confirmationRequest) {
 
