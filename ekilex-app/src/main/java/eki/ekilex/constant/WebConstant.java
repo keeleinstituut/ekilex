@@ -50,6 +50,8 @@ public interface WebConstant {
 
 	String TERM_PAGING_URI = "/term_paging";
 
+	String LIM_TERM_PAGING_URI = "/lim_term_paging";
+
 	String TERM_COMPONENTS_PAGE = "termcomp";
 
 	String WORD_DETAILS_URI = "/worddetails";

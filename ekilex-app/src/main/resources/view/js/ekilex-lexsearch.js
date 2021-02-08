@@ -209,6 +209,8 @@ function initializeSearch(type) {
 		let url = applicationUrl + "lex_paging";
 		if (viewType === 'term') {
 			url = applicationUrl + "term_paging";
+		} else if (viewType === 'lim_term') {
+			url = applicationUrl + "lim_term_paging";
 		}
 		let button = $(this);
 		let direction = button.data("direction");
