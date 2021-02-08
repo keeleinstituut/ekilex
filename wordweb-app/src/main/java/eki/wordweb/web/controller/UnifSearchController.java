@@ -66,6 +66,7 @@ public class UnifSearchController extends AbstractController {
 			return "redirect:" + SEARCH_URI + UNIF_URI;
 		}
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
+		searchWord = textDecorationService.unifyToApostrophe(searchWord);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		String searchUri = webUtil.composeDetailSearchUri(destinLangStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;

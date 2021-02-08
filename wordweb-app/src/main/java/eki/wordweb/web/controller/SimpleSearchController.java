@@ -65,6 +65,7 @@ public class SimpleSearchController extends AbstractController {
 			return "redirect:" + SEARCH_URI + LITE_URI;
 		}
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
+		searchWord = textDecorationService.unifyToApostrophe(searchWord);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
 		String searchUri = webUtil.composeSimpleSearchUri(destinLangStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;

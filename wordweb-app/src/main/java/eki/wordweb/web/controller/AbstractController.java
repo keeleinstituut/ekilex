@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.service.TextDecorationService;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.UiFilterElement;
@@ -31,6 +32,9 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 
 	@Value("${wordweb.feedback.service.url:}")
 	protected String feedbackServiceUrl;
+
+	@Autowired
+	protected TextDecorationService textDecorationService;
 
 	@Autowired
 	protected WebUtil webUtil;
