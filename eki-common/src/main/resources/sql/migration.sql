@@ -408,7 +408,8 @@ set value_prese = 'https://sonaveeb.ee/files/images/' || value_prese
 where type = 'IMAGE_FILE'
   and value_prese not like '%https://sonaveeb.ee/files/images/%';
   
-delete from form where mode = 'UNKNOWN';
+delete from form where mode in ('UNKNOWN', 'AS_WORD');
+delete from form where mode = 'WORD' and morph_code = '??';
 
 alter table dataset add column contact text;
 
@@ -429,3 +430,5 @@ and   f.vocal_form is not null
 and   f.vocal_form != '';
 
 alter table form drop column vocal_form cascade;
+alter table form add column is_questionable boolean not null default false;
+
