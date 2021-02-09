@@ -105,7 +105,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				}
 
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria,
-						SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR,
+						SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_VALUE_STATE,
 						SearchKey.LEXEME_GOVERNMENT, SearchKey.COMPLEXITY, SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER);
 				if (containsSearchKeys) {
 					Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY));
@@ -120,9 +120,11 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyLexemePosValueFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemePosExistsFilters(searchCriteria, l1.ID, where1);
 					where1 = searchFilterHelper.applyLexemeComplexityFilters(searchCriteria, l1.COMPLEXITY, where1);
+					where1 = searchFilterHelper.applyLexemeValueStateFilters(searchCriteria, l1.VALUE_STATE_CODE, where1);
 					where = where.andExists(DSL.select(l1.ID).from(l1).where(where1));
 				}
 
+				// TODO remove or fix - yogesh
 				containsSearchKeys = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.SECONDARY_MEANING_WORD);
 				if (containsSearchKeys) {
 					Lexeme l2 = Lexeme.LEXEME.as("l2");
@@ -166,7 +168,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Condition where1 = l1.WORD_ID.eq(w1.ID)
 						.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-						.and(l2.WORD_ID.eq(w2.ID));
+						.and(l2.WORD_ID.eq(w2.ID))
+						.and(l1.ID.ne(l2.ID));
 				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
 
