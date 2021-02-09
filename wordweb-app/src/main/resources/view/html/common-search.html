@@ -352,7 +352,8 @@
               </div>
               <div class="row" th:if="${(not #maps.isEmpty(lexeme.lexemeNotesByLang)) or (not #maps.isEmpty(lexeme.meaningNotesByLang))}">
                 <div class="col-6">
-                  <b th:text="#{label.public.note}">Hea teada</b>
+                  <b th:unless="${isLimTerm}" th:text="#{label.public.note}">Hea teada</b>
+                  <b th:if="${isLimTerm}" th:text="#{label.limterm.note}">Arutelu</b>
                 </div>
                 <div class="col-12">
                   <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
@@ -368,7 +369,7 @@
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                      <span th:each="note, noteIter : ${noteEntry.value}">
+                      <div th:each="note, noteIter : ${noteEntry.value}">
                         <span th:utext="${note.value}"></span>
                         <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                         <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
@@ -380,7 +381,7 @@
                           </span>
                         </th:block>
                         <span th:unless="${noteIter.last}" class="ml-n1">;</span>
-                      </span>
+                      </div>
                     </div>
                   </th:block>
                 </div>

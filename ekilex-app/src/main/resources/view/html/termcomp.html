@@ -549,7 +549,7 @@
   <div class="row" th:fragment="lim_term_meaning_note">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
-        Võrgustiku märkused
+        Arutelu
         <button type="button" class="btn badge badge-secondary float-right mr-4"
                 title="Lisa uus"
                 data-toggle="modal"
@@ -569,19 +569,15 @@
             <i th:class="${noteLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
           </button>
         </div>
-        <div th:if="${noteLangGroup.selected}" class="orderable" data-op-code="meaning_note">
-          <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}"
-               th:data-id="${note.id}"
-               th:data-orderby="${note.orderBy}">
+        <div th:if="${noteLangGroup.selected}" data-op-code="meaning_note">
+          <div class="ml-4" style="position: relative" th:each="note, itemIter: ${noteLangGroup.notes}">
             <div th:replace="termdialog :: edit_lim_term_meaning_note_dlg"></div>
             <div th:replace="termdialog :: add_meaning_note_source_link_dlg"></div>
             <div style="display: list-item; position: absolute"></div>
-            <div class="action-column">
-              <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
-            </div>
             <div class="invisible-buttons action-buttons-anchor mw-80">
               <span th:utext="${note.valuePrese}"></span>
               <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
+              <span class="ctxt" th:text="${#dates.format(note.modifiedOn, 'dd.MM.yyyy HH:mm')}" th:if="${note.modifiedOn != null}"></span>
               <span class="show-on-mouseover" th:if="${#lists.isEmpty(note.sourceLinks)}">
                 [
                 <button type="button" class="btn badge badge-secondary"

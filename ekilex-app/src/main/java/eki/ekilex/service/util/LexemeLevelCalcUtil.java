@@ -13,6 +13,66 @@ import eki.ekilex.data.WordLexeme;
 @Component
 public class LexemeLevelCalcUtil {
 
+	public void recalculateLevels(Long sourceLexemeId, List<WordLexeme> lexemes, int targetPosition) {
+
+		WordLexeme sourceLexeme = lexemes.stream().filter(l -> l.getLexemeId().equals(sourceLexemeId)).findFirst().get();
+		int sourcePosition = lexemes.indexOf(sourceLexeme);
+		int levelToChange = getLevelToChange(lexemes, sourceLexeme);
+		boolean isSourceLexemeLevelIncrease = targetPosition > sourcePosition;
+		boolean isSourceLexemeLevelDecrease = targetPosition < sourcePosition;
+
+		if (isSourceLexemeLevelIncrease) {
+			if (levelToChange == 1) {
+				List<WordLexeme> lexemesToIncrease = getSameLevel1Lexemes(lexemes, sourceLexeme);
+
+				List<WordLexeme> lexemesToDecrease = lexemes.subList(sourcePosition, targetPosition);
+				lexemesToDecrease = lexemesToDecrease.stream()
+						.filter(lexeme -> !lexemesToIncrease.contains(lexeme))
+						.collect(Collectors.toList());
+				WordLexeme lastLevel1LexemeToDecrease = lexemes.get(targetPosition);
+				Integer maxLevel1 = lastLevel1LexemeToDecrease.getLevel1();
+				List<WordLexeme> lastLexemesToDecrease = getSameLevel1Lexemes(lexemes, lastLevel1LexemeToDecrease);
+				lexemesToDecrease.addAll(lastLexemesToDecrease);
+
+				lexemesToDecrease.forEach(lexeme -> {
+					Integer currentLevel1 = lexeme.getLevel1();
+					lexeme.setLevel1(currentLevel1 - 1);
+				});
+				lexemesToIncrease.forEach(lexeme -> lexeme.setLevel1(maxLevel1));
+			} else if (levelToChange == 2) {
+				List<WordLexeme> lexemesToDecrease = lexemes.subList(sourcePosition + 1, targetPosition + 1);
+				Integer maxLevel2 = lexemesToDecrease.get(lexemesToDecrease.size() - 1).getLevel2();
+
+				sourceLexeme.setLevel2(maxLevel2);
+				lexemesToDecrease.forEach(lexeme -> {
+					Integer currentLevel2 = lexeme.getLevel2();
+					lexeme.setLevel2(currentLevel2 - 1);
+				});
+			}
+		} else if (isSourceLexemeLevelDecrease) {
+			if (levelToChange == 1) {
+				List<WordLexeme> lexemesToDecrease = getSameLevel1Lexemes(lexemes, sourceLexeme);
+				List<WordLexeme> lexemesToIncrease = lexemes.subList(targetPosition, sourcePosition);
+				Integer minLevel1 = lexemesToIncrease.get(0).getLevel1();
+
+				lexemesToIncrease.forEach(lexeme -> {
+					Integer currentLevel1 = lexeme.getLevel1();
+					lexeme.setLevel1(currentLevel1 + 1);
+				});
+				lexemesToDecrease.forEach(lexeme -> lexeme.setLevel1(minLevel1));
+			} else if (levelToChange == 2) {
+				List<WordLexeme> lexemesToIncrease = lexemes.subList(targetPosition, sourcePosition);
+				Integer minLevel2 = lexemesToIncrease.get(0).getLevel2();
+
+				sourceLexeme.setLevel2(minLevel2);
+				lexemesToIncrease.forEach(lexeme -> {
+					Integer currentLevel2 = lexeme.getLevel2();
+					lexeme.setLevel2(currentLevel2 + 1);
+				});
+			}
+		}
+	}
+
 	public void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
 
 		Optional<WordLexeme> lexemeOptional = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst();
@@ -135,4 +195,12 @@ public class LexemeLevelCalcUtil {
 			return lex.getLevel2();
 		}
 	}
+
+	private List<WordLexeme> getSameLevel1Lexemes(List<WordLexeme> lexemes, WordLexeme lexeme) {
+
+		return lexemes.stream()
+				.filter(l -> l.getLevel1().equals(lexeme.getLevel1()))
+				.collect(Collectors.toList());
+	}
+
 }

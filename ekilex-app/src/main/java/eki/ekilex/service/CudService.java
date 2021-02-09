@@ -387,6 +387,23 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateLexemeLevels(Long lexemeId, int lexemePosition) throws Exception {
+
+		if (lexemeId == null) {
+			return;
+		}
+
+		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
+		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, lexemePosition);
+		for (WordLexeme lexeme : lexemes) {
+			Long otherLexemeId = lexeme.getLexemeId();
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, LifecycleLogOwner.LEXEME);
+			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
+			activityLogService.createActivityLog(activityLog, otherLexemeId, ActivityEntity.LEXEME);
+		}
+	}
+
+	@Transactional
 	public void updateLexemeGovernment(Long lexemeGovernmentId, String value, Complexity complexity) throws Exception {
 
 		FreeForm freeform = new FreeForm();
