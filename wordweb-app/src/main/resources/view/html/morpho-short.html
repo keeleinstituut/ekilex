@@ -27,7 +27,13 @@
   <th:block th:fragment="morpho-paradigm-header(paradigm)">
     <th:block th:if="${paradigm.inflectionType}">
       <p>
-        <span th:text="${paradigm.inflectionType}">33i</span>
+        Muuttüüp
+        <a aria-label="Vaata muuttüübi kirjeldust, avab uues aknas"
+        href="${'https://www.eki.ee/dict/qs/muuttyybid.html#' + paradigm.inflectionType}"
+        target="_blank">
+          <span th:text="${paradigm.inflectionType}">33i</span>
+          <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+        </a>
       </p>
     </th:block>
     <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
