@@ -50,6 +50,8 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.data.db.tables.DatasetPermission;
+import eki.ekilex.data.db.tables.EkiUser;
+import eki.ekilex.data.db.tables.EkiUserApplication;
 import eki.ekilex.data.db.tables.EkiUserProfile;
 
 @Component
@@ -61,40 +63,65 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		create = context;
 	}
 
-	public List<EkiUserPermData> getUsers(OrderingField orderBy) {
+	public List<EkiUserPermData> getUsers(
+			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy) {
+
+		EkiUser eu = EKI_USER.as("eu");
+		EkiUserApplication eua = EKI_USER_APPLICATION.as("eua");
+		DatasetPermission dsp = DATASET_PERMISSION.as("dsp");
+
+		Condition enablePendingCond = eu.IS_ENABLED.isNull()
+				.and(eu.IS_REVIEWED.isFalse().or(eu.IS_REVIEWED.isNull()))
+				.andExists(DSL
+						.select(eua.ID)
+						.from(eua)
+						.where(eua.USER_ID.eq(eu.ID)));
+
+		Condition where = DSL.noCondition();
+		if (StringUtils.isNotBlank(userNameFilter)) {
+			String userNameFilterLike = "%" + StringUtils.lowerCase(userNameFilter) + "%";
+			where = where.and(DSL.lower(eu.NAME).like(userNameFilterLike));
+		}
+		if (StringUtils.isNotBlank(userPermDatasetCodeFilter)) {
+			where = where.andExists(DSL
+					.select(dsp.ID)
+					.from(dsp)
+					.where(
+							dsp.USER_ID.eq(eu.ID)
+							.and(dsp.DATASET_CODE.eq(userPermDatasetCodeFilter))));
+		}
+		if (Boolean.TRUE.equals(userEnablePendingFilter)) {
+			where = where.and(enablePendingCond);
+		}
 
 		SortField<?> orderByField;
 		if (orderBy == OrderingField.NAME) {
-			orderByField = EKI_USER.NAME.asc();
+			orderByField = eu.NAME.asc();
 		} else if (orderBy == OrderingField.DATE) {
-			orderByField = EKI_USER.CREATED.asc();
+			orderByField = eu.CREATED.asc();
 		} else {
-			orderByField = EKI_USER.NAME.asc();
+			orderByField = eu.NAME.asc();
 		}
 
-		Field<Boolean> enablePendingField = field(
-				EKI_USER.IS_ENABLED.isNull()
-						.and(EKI_USER.IS_REVIEWED.isFalse().or(EKI_USER.IS_REVIEWED.isNull()))
-						.andExists(DSL
-								.select(EKI_USER_APPLICATION.ID)
-								.from(EKI_USER_APPLICATION)
-								.where(EKI_USER_APPLICATION.USER_ID.eq(EKI_USER.ID))));
+		Field<Boolean> epf = field(enablePendingCond);
+		Field<Boolean> akef = field(eu.API_KEY.isNotNull());
 
 		return create
 				.select(
-						EKI_USER.ID,
-						EKI_USER.NAME,
-						EKI_USER.EMAIL,
-						DSL.field(EKI_USER.API_KEY.isNotNull()).as("api_key_exists"),
-						EKI_USER.IS_API_CRUD.as("api_crud"),
-						EKI_USER.IS_ADMIN.as("admin"),
-						EKI_USER.IS_MASTER.as("master"),
-						EKI_USER.IS_ENABLED.as("enabled"),
-						EKI_USER.IS_REVIEWED.as("reviewed"),
-						EKI_USER.REVIEW_COMMENT,
-						EKI_USER.CREATED.as("created_on"),
-						enablePendingField.as("enable_pending"))
-				.from(EKI_USER)
+						eu.ID,
+						eu.NAME,
+						eu.EMAIL,
+						akef.as("api_key_exists"),
+						eu.IS_API_CRUD.as("api_crud"),
+						eu.IS_ADMIN.as("admin"),
+						eu.IS_MASTER.as("master"),
+						eu.IS_ENABLED.as("enabled"),
+						eu.IS_REVIEWED.as("reviewed"),
+						eu.REVIEW_COMMENT,
+						eu.CREATED.as("created_on"),
+						epf.as("enable_pending"))
+				.from(eu)
+				.where(where)
 				.orderBy(orderByField)
 				.fetchInto(EkiUserPermData.class);
 	}

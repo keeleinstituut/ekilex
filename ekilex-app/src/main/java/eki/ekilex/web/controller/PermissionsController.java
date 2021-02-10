@@ -28,10 +28,11 @@ import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
+import eki.ekilex.web.bean.PermSearchBean;
 
 @ConditionalOnWebApplication
 @Controller
-@SessionAttributes(WebConstant.SESSION_BEAN)
+@SessionAttributes({WebConstant.SESSION_BEAN, WebConstant.PERM_SEARCH_BEAN})
 public class PermissionsController extends AbstractPrivatePageController {
 
 	private static final OrderingField DEFAULT_ORDER_BY = OrderingField.NAME;
@@ -45,105 +46,180 @@ public class PermissionsController extends AbstractPrivatePageController {
 	@Autowired
 	private CommonDataService commonDataService;
 
-	@GetMapping(PERMISSIONS_URI)
-	public String permissions(@ModelAttribute("orderBy") String orderByStr, Model model) {
-
-		OrderingField orderBy = null;
-		if (StringUtils.isNotBlank(orderByStr)) {
-			orderBy = OrderingField.valueOf(orderByStr);
+	private PermSearchBean getPermSearchBean(Model model) {
+		PermSearchBean permSearchBean = (PermSearchBean) model.asMap().get(PERM_SEARCH_BEAN);
+		if (permSearchBean == null) {
+			permSearchBean = new PermSearchBean();
+			model.addAttribute(PERM_SEARCH_BEAN, permSearchBean);
 		}
+		return permSearchBean;
+	}
+
+	@GetMapping(PERMISSIONS_URI)
+	public String permissions(Model model) {
+
 		EkiUser user = userContext.getUser();
 		if (!user.isDatasetOwnershipExist() && !user.isAdmin()) {
 			return "redirect:" + HOME_URI;
 		}
-		populateUserPermDataModel(model, orderBy);
+
+		PermSearchBean permFormBean = new PermSearchBean();
+		permFormBean.setOrderBy(DEFAULT_ORDER_BY);
+		model.addAttribute(PERM_SEARCH_BEAN, permFormBean);
+
 		return PERMISSIONS_PAGE;
 	}
 
-	@PostMapping(PERMISSIONS_URI)
-	public String permissions(@RequestParam("orderBy") OrderingField orderBy, RedirectAttributes attributes) {
+	@PostMapping(PERMISSIONS_URI + SEARCH_URI)
+	public String searchPost(
+			@RequestParam(name = "userNameFilter", required = false) String userNameFilter,
+			@RequestParam(name = "userPermDatasetCodeFilter", required = false) String userPermDatasetCodeFilter,
+			@RequestParam(name = "userEnablePendingFilter", required = false) Boolean userEnablePendingFilter,
+			Model model) {
 
-		attributes.addFlashAttribute("orderBy", orderBy);
-		return "redirect:" + PERMISSIONS_URI;
+		if (StringUtils.isBlank(userNameFilter)
+				&& StringUtils.isBlank(userPermDatasetCodeFilter)
+				&& (userEnablePendingFilter == null)) {
+			return "redirect:" + PERMISSIONS_URI;
+		}
+		if (StringUtils.length(userNameFilter) == 1) {
+			return "redirect:" + PERMISSIONS_URI;
+		}
+
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		permSearchBean.setUserNameFilter(userNameFilter);
+		permSearchBean.setUserPermDatasetCodeFilter(userPermDatasetCodeFilter);
+		permSearchBean.setUserEnablePendingFilter(userEnablePendingFilter);
+
+		populateUserPermDataModel(model);
+
+		return PERMISSIONS_PAGE;
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/enable/{userId}/{orderBy}")
-	public String enable(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + SEARCH_URI)
+	public String searchGet(
+			@ModelAttribute("userNameFilter") String userNameFilter,
+			@ModelAttribute("userPermDatasetCodeFilter") String userPermDatasetCodeFilter,
+			@ModelAttribute("userEnablePendingFilter") String userEnablePendingFilterStr,
+			Model model) {
+
+		if (StringUtils.isBlank(userNameFilter)
+				&& StringUtils.isBlank(userPermDatasetCodeFilter)
+				&& StringUtils.isBlank(userEnablePendingFilterStr)) {
+			return "redirect:" + PERMISSIONS_URI;
+		}
+		if (StringUtils.length(userNameFilter) == 1) {
+			return "redirect:" + PERMISSIONS_URI;
+		}
+
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		permSearchBean.setUserNameFilter(userNameFilter);
+		permSearchBean.setUserPermDatasetCodeFilter(userPermDatasetCodeFilter);
+		permSearchBean.setUserEnablePendingFilter(Boolean.valueOf(userEnablePendingFilterStr));
+
+		populateUserPermDataModel(model);
+
+		return PERMISSIONS_PAGE;
+	}
+
+	@PostMapping(PERMISSIONS_URI + "/orderby")
+	public String orderBy(@RequestParam("orderBy") OrderingField orderBy, Model model, RedirectAttributes redirectAttributes) {
+
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		permSearchBean.setOrderBy(orderBy);
+
+		prepareSearchRedirect(permSearchBean, redirectAttributes);
+
+		return "redirect:" + PERMISSIONS_URI + "/search";
+	}
+
+	@GetMapping(PERMISSIONS_URI + "/enable/{userId}")
+	public String enable(@PathVariable("userId") Long userId, Model model) {
 
 		userService.enableUser(userId, true);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+		
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/disable/{userId}/{orderBy}")
-	public String disable(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/disable/{userId}")
+	public String disable(@PathVariable("userId") Long userId, Model model) {
 
 		userService.enableUser(userId, false);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/setapicrud/{userId}/{orderBy}")
-	public String setApiCrud(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/setapicrud/{userId}")
+	public String setApiCrud(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setApiCrud(userId, true);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/remapicrud/{userId}/{orderBy}")
-	public String remApiCrud(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/remapicrud/{userId}")
+	public String remApiCrud(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setApiCrud(userId, false);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/setadmin/{userId}/{orderBy}")
-	public String setAdmin(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/setadmin/{userId}")
+	public String setAdmin(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setAdmin(userId, true);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/remadmin/{userId}/{orderBy}")
-	public String remAdmin(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/remadmin/{userId}")
+	public String remAdmin(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setAdmin(userId, false);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/setmaster/{userId}/{orderBy}")
-	public String setMaster(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/setmaster/{userId}")
+	public String setMaster(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setMaster(userId, true);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/remmaster/{userId}/{orderBy}")
-	public String remMaster(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/remmaster/{userId}")
+	public String remMaster(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setMaster(userId, false);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/setreviewed/{userId}/{orderBy}")
-	public String setReviewed(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/setreviewed/{userId}")
+	public String setReviewed(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setReviewed(userId, true);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/remreviewed/{userId}/{orderBy}")
-	public String remReviewed(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/remreviewed/{userId}")
+	public String remReviewed(@PathVariable("userId") Long userId, Model model) {
 
 		userService.setReviewed(userId, false);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
@@ -154,22 +230,24 @@ public class PermissionsController extends AbstractPrivatePageController {
 			@RequestParam(value = "authItem", required = false) AuthorityItem authItem,
 			@RequestParam(value = "authOp", required = false) AuthorityOperation authOp,
 			@RequestParam(value = "authLang", required = false) String authLang,
-			@RequestParam("orderBy") OrderingField orderBy,
-			RedirectAttributes attributes) {
+			Model model, RedirectAttributes redirectAttributes) {
 
 		permissionService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
-		attributes.addFlashAttribute("orderBy", orderBy);
-		return "redirect:" + PERMISSIONS_URI;
+
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		prepareSearchRedirect(permSearchBean, redirectAttributes);
+
+		return "redirect:" + PERMISSIONS_URI + "/search";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/deletedatasetperm/{datasetPermissionId}/{orderBy}")
+	@GetMapping(PERMISSIONS_URI + "/deletedatasetperm/{datasetPermissionId}")
 	public String deleteDatasetPerm(
 			@PathVariable("datasetPermissionId") Long datasetPermissionId,
-			@PathVariable("orderBy") OrderingField orderBy,
 			Model model) {
 
 		permissionService.deleteDatasetPermission(datasetPermissionId);
-		populateUserPermDataModel(model, orderBy);
+		populateUserPermDataModel(model);
+
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
@@ -177,20 +255,27 @@ public class PermissionsController extends AbstractPrivatePageController {
 	public String updateReviewComment(
 			@RequestParam("userId") Long userId,
 			@RequestParam("reviewComment") String reviewComment,
-			@RequestParam("orderBy") OrderingField orderBy,
-			RedirectAttributes attributes) {
+			Model model, RedirectAttributes redirectAttributes) {
 
 		userService.updateReviewComment(userId, reviewComment);
-		attributes.addFlashAttribute("orderBy", orderBy);
-		return "redirect:" + PERMISSIONS_URI;
+
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		prepareSearchRedirect(permSearchBean, redirectAttributes);
+
+		return "redirect:" + PERMISSIONS_URI + "/search";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/deletereviewcomment/{userId}/{orderBy}")
-	public String deleteReviewComment(@PathVariable("userId") Long userId, @PathVariable("orderBy") OrderingField orderBy, RedirectAttributes attributes) {
+	@GetMapping(PERMISSIONS_URI + "/deletereviewcomment/{userId}")
+	public String deleteReviewComment(
+			@PathVariable("userId") Long userId,
+			Model model, RedirectAttributes redirectAttributes) {
 
 		userService.updateReviewComment(userId, null);
-		attributes.addFlashAttribute("orderBy", orderBy);
-		return "redirect:" + PERMISSIONS_URI;
+
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		prepareSearchRedirect(permSearchBean, redirectAttributes);
+
+		return "redirect:" + PERMISSIONS_URI + "/search";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/sendpermissionsemail/{userEmail}")
@@ -213,13 +298,35 @@ public class PermissionsController extends AbstractPrivatePageController {
 		return jsonMapper.writeValueAsString(userLanguages);
 	}
 
-	private void populateUserPermDataModel(Model model, OrderingField orderBy) {
+	private void populateUserPermDataModel(Model model) {
 
-		if (orderBy == null) {
-			orderBy = DEFAULT_ORDER_BY;
-		}
-		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions(orderBy);
+		PermSearchBean permSearchBean = getPermSearchBean(model);
+		String userNameFilter = permSearchBean.getUserNameFilter();
+		String userPermDatasetCodeFilter = permSearchBean.getUserPermDatasetCodeFilter();
+		Boolean userEnablePendingFilter = permSearchBean.getUserEnablePendingFilter();
+		OrderingField orderBy = permSearchBean.getOrderBy();
+
+		List<EkiUserPermData> ekiUserPermissions = permissionService.getEkiUserPermissions(
+				userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy);
 		model.addAttribute("ekiUserPermissions", ekiUserPermissions);
-		model.addAttribute("orderBy", orderBy);
+	}
+
+	private void prepareSearchRedirect(PermSearchBean permSearchBean, RedirectAttributes redirectAttributes) {
+
+		String userNameFilter = permSearchBean.getUserNameFilter();
+		String userPermDatasetCodeFilter = permSearchBean.getUserPermDatasetCodeFilter();
+		Boolean userEnablePendingFilter = permSearchBean.getUserEnablePendingFilter();
+		OrderingField orderBy = permSearchBean.getOrderBy();
+
+		if (StringUtils.isNotBlank(userNameFilter)) {
+			redirectAttributes.addFlashAttribute("userNameFilter", userNameFilter);
+		}
+		if (StringUtils.isNotBlank(userPermDatasetCodeFilter)) {
+			redirectAttributes.addFlashAttribute("userPermDatasetCodeFilter", userPermDatasetCodeFilter);
+		}
+		if (userEnablePendingFilter != null) {
+			redirectAttributes.addFlashAttribute("userEnablePendingFilter", userEnablePendingFilter);
+		}
+		redirectAttributes.addFlashAttribute("orderBy", orderBy);
 	}
 }

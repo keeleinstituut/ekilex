@@ -30,6 +30,8 @@ public interface WebConstant {
 
 	String PERMISSIONS_URI = "/permissions";
 
+	String SEARCH_URI = "/search";
+
 	String MAINTENANCE_URI = "/maintenance";
 
 	String COMPONENT_URI = "/comp";
@@ -312,6 +314,8 @@ public interface WebConstant {
 	// model keys
 
 	String SESSION_BEAN = "sessionBean";
+
+	String PERM_SEARCH_BEAN = "permSearchBean";
 
 	String APP_DATA_MODEL_KEY = "appData";
 
