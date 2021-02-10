@@ -119,7 +119,7 @@ function deleteDatasetPermission(datasetPermId) {
 		permissionsArea.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg('Viga!');
+		openAlertDlg('Õiguste muutmine ebaõnnestus!');
 	});
 };
 

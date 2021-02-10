@@ -29,13 +29,14 @@ public enum SearchKey {
 	LEXEME_GOVERNMENT(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_POS(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_REGISTER(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	LEXEME_VALUE_STATE(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS, SearchOperand.EXISTS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
 	OD_RECOMMENDATION(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	RELATION_TYPE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	COMPLEXITY(OperandSets.CLASSIFIER_OPERANDS, SearchValueType.TEXTUAL),
 	FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	RANK(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
-	ATTRIBUTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
-	CONCEPT_ID(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.NUMERIC)
+	ATTRIBUTE_NAME(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
+	ATTRIBUTE_VALUE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL)
 	;
 
 	private SearchOperand[] operands;
