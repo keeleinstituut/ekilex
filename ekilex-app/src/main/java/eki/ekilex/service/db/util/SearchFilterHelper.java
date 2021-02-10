@@ -333,7 +333,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where.andExists(DSL.select(lal.ID).from(l1, lal, al).where(where1));
 	}
 
-	public Condition applyLexemeComplexityFilters(List<SearchCriterion> searchCriteria, Field<String> lexemeComplexityField, Condition condition) {
+	public Condition applyLexemeComplexityFilters(List<SearchCriterion> searchCriteria, Field<String> entityComplexityField, Condition condition) {
 
 		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.COMPLEXITY, SearchOperand.EQUALS);
 		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.COMPLEXITY, SearchOperand.NOT_EQUALS);
@@ -341,14 +341,14 @@ public class SearchFilterHelper implements GlobalConstant {
 		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
 			for (SearchCriterion criterion : positiveValueCriteria) {
 				String complexity = criterion.getSearchValue().toString();
-				condition = condition.and(lexemeComplexityField.eq(complexity));
+				condition = condition.and(entityComplexityField.eq(complexity));
 			}
 		}
 
 		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
 			for (SearchCriterion criterion : negativeValueCriteria) {
 				String complexity = criterion.getSearchValue().toString();
-				condition = condition.and(lexemeComplexityField.ne(complexity));
+				condition = condition.and(entityComplexityField.ne(complexity));
 			}
 		}
 
@@ -858,7 +858,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	public Condition applyPublicityFilters(List<SearchCriterion> searchCriteria, Field<Boolean> lexemeIsPublicField, Condition condition) {
+	public Condition applyPublicityFilters(List<SearchCriterion> searchCriteria, Field<Boolean> entityIsPublicField, Condition condition) {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
 				.filter(crit -> crit.getSearchKey().equals(SearchKey.PUBLICITY)
@@ -872,7 +872,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			boolean isPublic = BooleanUtils.toBoolean(criterion.getSearchValue().toString());
-			condition = condition.and(lexemeIsPublicField.eq(isPublic));
+			condition = condition.and(entityIsPublicField.eq(isPublic));
 		}
 		return condition;
 	}
