@@ -210,7 +210,7 @@ public class LexSearchServiceTest implements SystemConstant {
 		wordGroup.getSearchCriteria().clear();
 		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.CONTAINS;
-		searchValue = new String("aha");
+		searchValue = new String("ha");
 
 		searchCriterion = new SearchCriterion();
 		searchCriterion.setSearchKey(searchKey);
@@ -220,7 +220,7 @@ public class LexSearchServiceTest implements SystemConstant {
 
 		words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, null, null, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 
-		assertEquals("Incorrect count of matches", 0, words.size());
+		assertEquals("Incorrect count of matches", 5, words.size());
 
 		// case #5
 		wordGroup.getSearchCriteria().clear();
