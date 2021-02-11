@@ -44,7 +44,6 @@ import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.Synonym;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
@@ -178,7 +177,10 @@ public class LexSearchService extends AbstractWordSearchService {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
-		List<String> preferredMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
+		List<String> preferredMeaningWordLangs = new ArrayList<>();
+		if (userProfile != null) {
+			preferredMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
+		}
 
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
@@ -191,8 +193,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, preferredMeaningWordLangs);
-		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, synMeaningWords, userProfile, wordLang);
-		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synonyms, languagesOrder);
+		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, userProfile, wordLang, languagesOrder);
 
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId);
 		meaningDomains = conversionUtil.removeOrderedClassifierDuplicates(meaningDomains);

@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row16;
+import org.jooq.Row15;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = -1359228120;
+    private static final long serialVersionUID = 46775784;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -113,11 +113,6 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.display_form</code>.
      */
     public final TableField<FormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.form.vocal_form</code>.
-     */
-    public final TableField<FormRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.form.audio_file</code>.
@@ -227,11 +222,11 @@ public class Form extends TableImpl<FormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row16 type methods
+    // Row15 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Long, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, String, Long> fieldsRow() {
-        return (Row16) super.fieldsRow();
+    public Row15<Long, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Long> fieldsRow() {
+        return (Row15) super.fieldsRow();
     }
 }

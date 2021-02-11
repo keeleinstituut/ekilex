@@ -147,8 +147,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array_agg(row ("
 						+ "m.word_id,"
-						+ "m.word_value,"
-						+ "m.word_value_prese,"
+						+ "' ' || m.word_value,"
+						+ "' ' || m.word_value_prese,"
 						+ "m.homonym_nr,"
 						+ "m.lang,"
 						+ "m.word_type_codes,"
@@ -310,8 +310,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
 						+ "wm.word_id,"
-						+ "wm.word_value,"
-						+ "wm.word_value_prese,"
+						+ "' ' || wm.word_value,"
+						+ "' ' || wm.word_value_prese,"
 						+ "wm.homonym_nr,"
 						+ "wm.lang,"
 						+ "wm.word_type_codes,"

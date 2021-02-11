@@ -142,4 +142,38 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}
 
+	@PostMapping(LIM_TERM_PAGING_URI)
+	public String paging(
+			@RequestParam("offset") int offset,
+			@RequestParam("searchUri") String searchUri,
+			@RequestParam("direction") String direction,
+			Model model) throws Exception {
+
+		SearchUriData searchUriData = searchHelper.parseSearchUri(LIM_TERM_SEARCH_PAGE, searchUri);
+
+		String searchMode = searchUriData.getSearchMode();
+		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
+		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		boolean fetchAll = false;
+
+		if ("next".equals(direction)) {
+			offset += DEFAULT_MAX_RESULTS_LIMIT;
+		} else if ("previous".equals(direction)) {
+			offset -= DEFAULT_MAX_RESULTS_LIMIT;
+		}
+
+		TermSearchResult termSearchResult;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, limitedDatasets, SearchResultMode.MEANING, null, fetchAll, offset);
+		} else {
+			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, SearchResultMode.MEANING, null, fetchAll, offset);
+		}
+
+		termSearchResult.setOffset(offset);
+		model.addAttribute("termSearchResult", termSearchResult);
+		model.addAttribute("searchUri", searchUri);
+
+		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lim_term_search_result";
+	}
+
 }

@@ -18504,6 +18504,11 @@ eki-link {
   /* cursor: pointer; */
 }
 
+eki-form {
+  font-style: italic;
+  color: #004F87;
+}
+
 @media (max-width: 767.98px) {
   .page-title {
     position: absolute;

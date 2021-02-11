@@ -8,6 +8,8 @@ public class Word extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
+	private String vocalForm;
+
 	private String alternativeWord;
 
 	private String wordClass;
@@ -50,6 +52,14 @@ public class Word extends WordTypeData {
 	private boolean wordRelationsExist;
 
 	private boolean selected;
+
+	public String getVocalForm() {
+		return vocalForm;
+	}
+
+	public void setVocalForm(String vocalForm) {
+		this.vocalForm = vocalForm;
+	}
 
 	public String getAlternativeWord() {
 		return alternativeWord;

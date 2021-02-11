@@ -35,7 +35,7 @@
                   </button>
                   <span th:unless="${synWordIter.last}">,</span>
                 </span>
-                <span th:unless="${synIter.last}">|</span>
+                <span class="mr-1" th:unless="${synIter.last}">|</span>
               </span>
             </div>
           </div>
@@ -113,85 +113,90 @@
                 <span th:text="${lexeme.levels}"></span>
               </span>
             </span>
-            <button type="button" class="btn btn-secondary btn-compact btn-sm ml-2"
-                    title="Lisa uus sünonüümi seos"
-                    data-toggle="modal"
-                    th:data-target="${'#addSynMeaningRelationDlg_' + lexeme.lexemeId}"
-                    sec:authorize="#vars.lexeme.meaning.crudGrant">
-              <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sünonüümi seos
-            </button>
             <div>
-<!--              TODO ordering-->
-              <div th:each="synonymLangGroup : ${lexeme.synonymLangGroups}"
-                   class="orderable d-flex flex-row flex-wrap mr-2"
-                   data-op-code="todo"
-                   th:data-additional-info="${lexeme.lexemeId}">
+              <button type="button" class="btn btn-secondary btn-compact btn-sm ml-2"
+                      title="Lisa uus sünonüümi seos"
+                      data-toggle="modal"
+                      th:data-target="${'#addSynMeaningRelationDlg_' + lexeme.lexemeId}"
+                      sec:authorize="#vars.lexeme.meaning.crudGrant">
+                <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sünonüümi seos
+              </button>
+              <div th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" class="orderable d-flex flex-row mr-2">
                 <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
                 <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
-                <div th:each="syn,synIter : ${synonymLangGroup.synonyms}"
-                     th:with="
-                       isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
-                       isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
-                  <div class="hidden-buttons">
-                    <th:block th:each="synWord, synWordIter : ${syn.words}">
-                      <button type="button"
-                              class="btn btn-link p-0"
-                              th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"
-                              th:data-id="${synWord.wordId}"
-                              name="details-btn"
-                              data-behaviour="replace"
-                              data-plugin="contextmenu"
-                              data-contextmenu:compare="Ava uues paneelis">
-                        <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
-                        <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                        <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                        <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-                      </button>
-                      <span th:unless="${synWordIter.last}">,</span>
-                      <th:block th:if="${isMeaningWordSyn}">
-                        <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
+                <div data-plugin="sorter" data-sorter:type="syn">
+                  <div th:each="syn,synIter : ${synonymLangGroup.synonyms}"
+                       class="draggable-syn-rel do-refresh"
+                       th:data-lexeme-id="${lexeme.lexemeId}"
+                       th:data-orderby="${syn.orderBy}"
+                       th:data-relation-id="${syn.relationId}"
+                       th:data-syn-type="${syn.type}"
+                       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                       th:with="
+                         isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
+                         isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
+                    <div class="hidden-buttons">
+                      <th:block th:each="synWord, synWordIter : ${syn.words}">
+                        <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
+                        <button type="button"
+                                class="btn btn-link p-0"
+                                th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"
+                                th:data-id="${synWord.wordId}"
+                                name="details-btn"
+                                data-behaviour="replace"
+                                data-plugin="contextmenu"
+                                data-contextmenu:compare="Ava uues paneelis">
+                          <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
+                          <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
+                          <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                          <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                        </button>
+                        <span th:unless="${synWordIter.last}">,</span>
+                        <th:block th:if="${isMeaningWordSyn}">
+                          <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
+                          <button type="button" class="btn badge badge-primary"
+                                  title="Muuda vastet"
+                                  data-toggle="modal"
+                                  th:data-target="${'#editMeaningWordAndLexemeWeightDlg_' + synWord.lexemeId}"
+                                  sec:authorize="#vars.lexeme.crudGrant">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button th:id="${'duplicateMeaningWordAndLexemeBtn_' + lexeme.lexemeId}"
+                                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                                  th:data-lexeme-id="${synWord.lexemeId}"
+                                  class="btn badge badge-primary"
+                                  title="Tee vastest duplikaat"
+                                  sec:authorize="#vars.lexeme.crudGrant">
+                            <i class="fa fa-clone" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-id="${synWord.lexemeId}"
+                                  data-callback="refreshDetailsSearch"
+                                  data-toggle="deleteLexemeAndWordAndMeaning"
+                                  sec:authorize="#vars.lexeme.crudGrant">
+                            <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste"></i>
+                          </button>
+                        </th:block>
+                      </th:block>
+                      <th:block th:if="${isMeaningRelSyn}">
+                        <div th:replace="lexdialog :: edit_syn_meaning_relation_weight_dlg"></div>
                         <button type="button" class="btn badge badge-primary"
-                                title="Muuda vastet"
+                                title="Muuda vaste seose kaalu"
                                 data-toggle="modal"
-                                th:data-target="${'#editMeaningWordAndLexemeWeightDlg_' + synWord.lexemeId}"
+                                th:data-target="${'#editSynMeaningRelationWeightDlg_' + syn.relationId}"
                                 sec:authorize="#vars.lexeme.crudGrant">
                           <i class="fa fa-edit" aria-hidden="true"></i>
                         </button>
-                        <button th:id="${'duplicateMeaningWordAndLexemeBtn_' + lexeme.lexemeId}"
-                                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                                th:data-lexeme-id="${synWord.lexemeId}"
-                                class="btn badge badge-primary"
-                                title="Tee vastest duplikaat"
-                                sec:authorize="#vars.lexeme.crudGrant">
-                          <i class="fa fa-clone" aria-hidden="true"></i>
-                        </button>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-id="${synWord.lexemeId}"
-                                data-callback="refreshDetailsSearch"
-                                data-toggle="deleteLexemeAndWordAndMeaning"
+                                th:data-id="${syn.relationId}"
+                                data-op-code="syn_meaning_relation"
+                                data-toggle="delete-confirm"
                                 sec:authorize="#vars.lexeme.crudGrant">
-                          <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste"></i>
+                          <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste seos"></i>
                         </button>
                       </th:block>
-                    </th:block>
-                    <th:block th:if="${isMeaningRelSyn}">
-                      <div th:replace="lexdialog :: edit_syn_meaning_relation_weight_dlg"></div>
-                      <button type="button" class="btn badge badge-primary"
-                              title="Muuda vaste seose kaalu"
-                              data-toggle="modal"
-                              th:data-target="${'#editSynMeaningRelationWeightDlg_' + syn.relationId}"
-                              sec:authorize="#vars.lexeme.crudGrant">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-warning"
-                              th:data-id="${syn.relationId}"
-                              data-op-code="syn_meaning_relation"
-                              data-toggle="delete-confirm"
-                              sec:authorize="#vars.lexeme.crudGrant">
-                        <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste seos"></i>
-                      </button>
-                    </th:block>
-                    <span th:unless="${synIter.last}">|</span>
+                      <span th:unless="${synIter.last}">|</span>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -99,6 +99,11 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 		return DEFINITION_TYPE_UNDEFINED;
 	}
 
+	@ModelAttribute("meaningAttributes")
+	public String[] getMeaningAttributes() {
+		return MEANING_ATTRIBUTES;
+	}
+
 	protected void initSearchForms(String searchPage, Model model) {
 
 		SessionBean sessionBean = getSessionBean(model);

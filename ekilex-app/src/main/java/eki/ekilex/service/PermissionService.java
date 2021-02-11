@@ -36,9 +36,10 @@ public class PermissionService implements SystemConstant {
 	private EmailService emailService;
 
 	@Transactional
-	public List<EkiUserPermData> getEkiUserPermissions(OrderingField orderBy) {
+	public List<EkiUserPermData> getEkiUserPermissions(
+			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy) {
 
-		List<EkiUserPermData> users = permissionDbService.getUsers(orderBy);
+		List<EkiUserPermData> users = permissionDbService.getUsers(userNameFilter, userPermDatasetCodeFilter, userEnablePendingFilter, orderBy);
 		for (EkiUserPermData user : users) {
 			Long userId = user.getId();
 			List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);

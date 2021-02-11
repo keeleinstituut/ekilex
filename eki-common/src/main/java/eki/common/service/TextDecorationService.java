@@ -19,9 +19,6 @@ import eki.common.data.TextDecorationDescriptor;
 @Component
 public class TextDecorationService implements InitializingBean, TextDecoration {
 
-	//TODO remove later when new kind of cleanup has been tested
-	//private static final String EKI_MARKUP_GENERIC_PATTERN = "[&]\\w+[;]";
-
 	private static final String EKI_MARKUP_PATTERN_FOREIGN = "(&ema;(.+?)&eml;)";
 
 	private static final String EKI_MARKUP_PATTERN_HIGHLIGHT = "(&ba;(.+?)&bl;)";
@@ -45,6 +42,10 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
 
 	private static final String[] DISCLOSED_DIACRITIC_LANGS = new String[] {"rus"};
+
+	private static final char[] ACCENT_APOSTROPHES = new char[] {'´', '`', '‘', '’'};
+
+	private static final char APOSTROPHE = '\'';
 
 	private List<TextDecorationDescriptor> allEkiMarkupDescriptors;
 
@@ -216,6 +217,22 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		Pattern pattern = Pattern.compile("<eki-[^>]*>.*?</eki-[^>]*>");
 		Matcher matcher = pattern.matcher(text);
 		return matcher.find();
+	}
+
+	public String unifyToApostrophe(String value) {
+		if (StringUtils.isBlank(value)) {
+			return value;
+		}
+		StringBuffer cleanValueBuf = new StringBuffer();
+		char[] chars = value.toCharArray();
+		for (char c : chars) {
+			if (ArrayUtils.contains(ACCENT_APOSTROPHES, c)) {
+				cleanValueBuf.append(APOSTROPHE);
+			} else {
+				cleanValueBuf.append(c);
+			}
+		}
+		return cleanValueBuf.toString();
 	}
 
 	public String removeAccents(String value, String lang) {

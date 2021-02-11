@@ -128,13 +128,13 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherel = searchFilterHelper.applyPublicityFilters(searchCriteria, l1.IS_PUBLIC, wherel);
 				wherel = searchFilterHelper.applyLexemeRegisterValueFilters(searchCriteria, l1.ID, wherel);
 				wherel = searchFilterHelper.applyLexemeRegisterExistsFilters(searchCriteria, l1.ID, wherel);
+				wherel = searchFilterHelper.applyLexemeValueStateFilters(searchCriteria, l1.VALUE_STATE_CODE, wherel);
 
 			} else if (SearchEntity.CONCEPT.equals(searchEntity)) {
 
 				wherem = searchFilterHelper.applyDomainValueFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyDomainExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
-				wherem = searchFilterHelper.applyConceptIdFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningAttributeFilters(searchCriteria, m1.ID, wherem);
 				wherem = applyMeaningActivityLogFilters(searchCriteria, m1.ID, wherem);
 

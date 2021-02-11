@@ -185,12 +185,7 @@
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CONCEPT_ID'}">
-                  <input type="text" class="form-control"
-                         th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
-                </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ATTRIBUTE'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ATTRIBUTE_VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
@@ -341,6 +336,29 @@
                             th:text="${register.value}">register</option>
                   </select>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_VALUE_STATE'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="valueState : ${lexemeValueStates}"
+                            th:value="${valueState.code}"
+                            th:selected="${criteria.searchValue == valueState.code}"
+                            th:text="${valueState.value}">value state</option>
+                  </select>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ATTRIBUTE_NAME'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          data-style="btn-outline-secondary">
+                    <option th:each="meaningAttribute : ${meaningAttributes}"
+                            th:value="${meaningAttribute}"
+                            th:selected="${criteria.searchValue == meaningAttribute}"
+                            th:text="${meaningAttribute}">attribute name</option>
+                  </select>
+                </div>
                 <div class="col-auto">
                   <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
@@ -392,10 +410,7 @@
             <div name="RANK" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
-            <div name="CONCEPT_ID" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
-            </div>
-            <div name="ATTRIBUTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+            <div name="ATTRIBUTE_VALUE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control">
             </div>
             <div name="VALUE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
@@ -538,6 +553,16 @@
             <div name="LEXEME_REGISTER" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
+              </select>
+            </div>
+            <div name="LEXEME_VALUE_STATE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="valueState : ${lexemeValueStates}" th:value="${valueState.code}" th:text="${valueState.value}">value state</option>
+              </select>
+            </div>
+            <div name="ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="meaningAttribute : ${meaningAttributes}" th:value="${meaningAttribute}" th:text="${meaningAttribute}">attribute name</option>
               </select>
             </div>
           </div>

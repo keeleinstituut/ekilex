@@ -153,7 +153,6 @@ public class ConversionUtil implements GlobalConstant {
 			form.setMode(tuple.getMode());
 			form.setComponents(tuple.getComponents());
 			form.setDisplayForm(tuple.getDisplayForm());
-			form.setVocalForm(tuple.getVocalForm());
 			form.setMorphCode(tuple.getMorphCode());
 			form.setMorphValue(tuple.getMorphValue());
 			form.setMorphFrequency(tuple.getMorphFrequency());
@@ -847,7 +846,8 @@ public class ConversionUtil implements GlobalConstant {
 		return collocations;
 	}
 
-	public List<Synonym> composeSynonyms(List<Relation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang) {
+	public List<SynonymLangGroup> composeSynonymLangGroups(
+			List<Relation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang, List<ClassifierSelect> languagesOrder) {
 
 		List<Synonym> synonyms = new ArrayList<>();
 
@@ -870,19 +870,24 @@ public class ConversionUtil implements GlobalConstant {
 			synWord.setPrefixoid(meaningWord.isPrefixoid());
 			synWord.setSuffixoid(meaningWord.isSuffixoid());
 			synWord.setForeign(meaningWord.isForeign());
+			synWord.setLexemeRegisterCodes(meaningWord.getLexRegisterCodes());
 			meaningWordSyn.setWords(Arrays.asList(synWord));
 
 			synonyms.add(meaningWordSyn);
 		}
 
 		if (CollectionUtils.isNotEmpty(synMeaningRelations)) {
-			boolean showFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
-			boolean showSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
+			boolean showFirstWordOnly = false;
+			boolean showSourceLangWords = false;
+			if (userProfile != null) {
+				showFirstWordOnly = userProfile.isShowMeaningRelationFirstWordOnly();
+				showSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
+			}
 
-			List<String> prefWordLangs;
+			List<String> prefWordLangs = new ArrayList<>();
 			if (showSourceLangWords && StringUtils.isNotEmpty(wordLang)) {
-				prefWordLangs = Collections.singletonList(wordLang);
-			} else {
+				prefWordLangs.add(wordLang);
+			} else if (userProfile != null) {
 				prefWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 			}
 
@@ -893,7 +898,7 @@ public class ConversionUtil implements GlobalConstant {
 				for (List<Relation> groupedByLangRelations : groupedByLangRelationsMap.values()) {
 
 					String groupWordLang = groupedByLangRelations.get(0).getWordLang();
-					if (!prefWordLangs.contains(groupWordLang)) {
+					if (CollectionUtils.isNotEmpty(prefWordLangs) && !prefWordLangs.contains(groupWordLang)) {
 						continue;
 					}
 
@@ -931,10 +936,12 @@ public class ConversionUtil implements GlobalConstant {
 			}
 		}
 
-		return synonyms;
-	}
+		if (CollectionUtils.isEmpty(synonyms)) {
+			return new ArrayList<>();
+		}
 
-	public List<SynonymLangGroup> composeSynonymLangGroups(List<Synonym> synonyms, List<ClassifierSelect> languagesOrder) {
+		List<SynonymLangGroup> synonymLangGroups = new ArrayList<>();
+		Map<String, SynonymLangGroup> synonymLangGroupMap = new HashMap<>();
 
 		List<String> langCodeOrder;
 		List<String> selectedLangCodes;
@@ -945,9 +952,6 @@ public class ConversionUtil implements GlobalConstant {
 			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
 			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
 		}
-
-		List<SynonymLangGroup> synonymLangGroups = new ArrayList<>();
-		Map<String, SynonymLangGroup> synonymLangGroupMap = new HashMap<>();
 
 		synonyms.sort(Comparator.comparing(Synonym::getType).thenComparingLong(Synonym::getOrderBy));
 

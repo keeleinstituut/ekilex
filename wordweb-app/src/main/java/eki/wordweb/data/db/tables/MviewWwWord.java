@@ -20,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row20;
+import org.jooq.Row21;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -606449642;
+    private static final long serialVersionUID = 976325094;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -104,6 +104,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.aspect_code</code>.
      */
     public final TableField<MviewWwWordRecord, String> ASPECT_CODE = createField(DSL.name("aspect_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.vocal_form</code>.
+     */
+    public final TableField<MviewWwWordRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word.lang_complexities</code>.
@@ -220,11 +225,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row20 type methods
+    // Row21 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row20<Long, String, String, String, String, Long, Integer, String, String[], String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], BigDecimal, Long, Boolean, Long, Integer> fieldsRow() {
-        return (Row20) super.fieldsRow();
+    public Row21<Long, String, String, String, String, Long, Integer, String, String[], String, String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], BigDecimal, Long, Boolean, Long, Integer> fieldsRow() {
+        return (Row21) super.fieldsRow();
     }
 }

@@ -560,7 +560,8 @@ create table word
   word_class varchar(100) null,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
-  aspect_code varchar(100) references aspect(code) null
+  aspect_code varchar(100) references aspect(code) null,
+  vocal_form text null
 );
 alter sequence word_id_seq restart with 10000;
 
@@ -699,7 +700,6 @@ create table form
   value_prese text not null,
   components varchar(100) array null,
   display_form varchar(255) null,
-  vocal_form varchar(255) null,
   audio_file varchar(255) null,
   order_by bigserial
 );

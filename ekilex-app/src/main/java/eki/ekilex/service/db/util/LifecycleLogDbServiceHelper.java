@@ -148,7 +148,6 @@ public class LifecycleLogDbServiceHelper extends AbstractDataDbService {
 	public Map<String, Object> getWordData(DSLContext create, Long entityId) {
 
 		Word w = WORD.as("w");
-		Field<String> fvff = getFormVocalFormField(w.ID);
 		Field<String> fmcf = getFormMorphCodeField(w.ID);
 		Map<String, Object> result = create
 				.selectDistinct(
@@ -158,7 +157,7 @@ public class LifecycleLogDbServiceHelper extends AbstractDataDbService {
 						w.VALUE,
 						w.VALUE_PRESE,
 						w.DISPLAY_MORPH_CODE,
-						fvff.as("vocal_form"),
+						w.VOCAL_FORM,
 						fmcf.as("morph_code"))
 				.from(w)
 				.where(w.ID.eq(entityId))

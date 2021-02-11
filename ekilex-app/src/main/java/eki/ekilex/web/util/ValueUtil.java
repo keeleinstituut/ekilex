@@ -71,4 +71,8 @@ public class ValueUtil implements SystemConstant {
 		wordValue = trimAndCleanAndRemoveHtmlAndLimit(wordValue);
 		details.setWordValue(wordValue);
 	}
+
+	public String unifyToApostrophe(String value) {
+		return textDecorationService.unifyToApostrophe(value);
+	}
 }

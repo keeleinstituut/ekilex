@@ -35,7 +35,6 @@ import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
-import eki.ekilex.data.Synonym;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.TypeWordRelParam;
@@ -120,8 +119,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangs);
-		List<Synonym> synonyms = conversionUtil.composeSynonyms(synMeaningRelations, meaningWords, userProfile, headwordLanguage);
-		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synonyms, languagesOrder);
+		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.filterVisibility(userRole, definitions);

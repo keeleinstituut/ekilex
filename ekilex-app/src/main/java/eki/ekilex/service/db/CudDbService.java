@@ -346,16 +346,11 @@ public class CudDbService extends AbstractDataDbService {
 		create.update(WORD).set(WORD.VALUE_AS_WORD, valueAsWord).where(WORD.ID.eq(wordId)).execute();
 	}
 
-	public List<Long> updateWordVocalForm(Long wordId, String vocalForm) {
-		return create.update(FORM)
-				.set(FORM.VOCAL_FORM, vocalForm)
-				.from(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.returning(FORM.ID)
-				.fetch()
-				.getValues(FORM.ID);
+	public void updateWordVocalForm(Long wordId, String vocalForm) {
+		create.update(WORD)
+				.set(WORD.VOCAL_FORM, vocalForm)
+				.where(WORD.ID.eq(wordId))
+				.execute();
 	}
 
 	public void updateWordGender(Long wordId, String genderCode) {

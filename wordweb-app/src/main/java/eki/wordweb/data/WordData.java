@@ -18,8 +18,6 @@ public class WordData extends AbstractDataObject {
 
 	private List<Paradigm> paradigms;
 
-	private String firstAvailableVocalForm;
-
 	private String firstAvailableAudioFile;
 
 	private boolean morphologyExists;
@@ -68,14 +66,6 @@ public class WordData extends AbstractDataObject {
 
 	public void setParadigms(List<Paradigm> paradigms) {
 		this.paradigms = paradigms;
-	}
-
-	public String getFirstAvailableVocalForm() {
-		return firstAvailableVocalForm;
-	}
-
-	public void setFirstAvailableVocalForm(String firstAvailableVocalForm) {
-		this.firstAvailableVocalForm = firstAvailableVocalForm;
 	}
 
 	public String getFirstAvailableAudioFile() {

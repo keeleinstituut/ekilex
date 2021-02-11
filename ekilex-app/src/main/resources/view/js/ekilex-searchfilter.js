@@ -128,9 +128,9 @@ function initialiseDetailSearch() {
 	$(document).on("change", "select[name$='searchOperand']", function() {
 
 		const textTypeSearchKeys = [
-			"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "OD_RECOMMENDATION",
-			"CONCEPT_ID", "ATTRIBUTE"];
-		const selectTypeSearchKeys = ["DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE"];
+			"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "OD_RECOMMENDATION", "ATTRIBUTE_VALUE"];
+		const selectTypeSearchKeys = [
+			"DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "LEXEME_VALUE_STATE", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE", "ATTRIBUTE_NAME"];
 		const nonValueSearchOperands = ["NOT_EXISTS", "EXISTS", "SINGLE", "MULTIPLE"];
 
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');

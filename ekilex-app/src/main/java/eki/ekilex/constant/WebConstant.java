@@ -30,6 +30,10 @@ public interface WebConstant {
 
 	String PERMISSIONS_URI = "/permissions";
 
+	String SEARCH_URI = "/search";
+
+	String MAINTENANCE_URI = "/maintenance";
+
 	String COMPONENT_URI = "/comp";
 
 	String VIEW_RESOURCES_URI = "/view";
@@ -47,6 +51,8 @@ public interface WebConstant {
 	String TERM_SEARCH_URI = "/termsearch";
 
 	String TERM_PAGING_URI = "/term_paging";
+
+	String LIM_TERM_PAGING_URI = "/lim_term_paging";
 
 	String TERM_COMPONENTS_PAGE = "termcomp";
 
@@ -179,6 +185,8 @@ public interface WebConstant {
 
 	String UPDATE_LEVELS_URI = "/update_levels";
 
+	String UPDATE_LEXEME_LEVELS_URI = "/update_lexeme_levels";
+
 	String UPDATE_WORD_VALUE_URI = "/update_word_value";
 
 	String UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI = "/update_word_data_and_lexeme_weight";
@@ -306,6 +314,8 @@ public interface WebConstant {
 	// model keys
 
 	String SESSION_BEAN = "sessionBean";
+
+	String PERM_SEARCH_BEAN = "permSearchBean";
 
 	String APP_DATA_MODEL_KEY = "appData";
 

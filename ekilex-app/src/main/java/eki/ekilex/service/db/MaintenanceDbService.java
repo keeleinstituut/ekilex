@@ -18,6 +18,8 @@ import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.db.Routines;
+import eki.ekilex.data.db.tables.records.WordRecord;
 
 @Component
 public class MaintenanceDbService implements GlobalConstant {
@@ -33,6 +36,10 @@ public class MaintenanceDbService implements GlobalConstant {
 
 	@Autowired
 	private DSLContext create;
+
+	public List<WordRecord> getWordRecords() {
+		return create.selectFrom(WORD).fetchInto(WordRecord.class);
+	}
 
 	public void mergeHomonymsToSss(String[] includedLangs) {
 

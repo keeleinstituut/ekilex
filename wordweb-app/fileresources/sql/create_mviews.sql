@@ -193,6 +193,7 @@ dblink(
 	word_type_codes varchar(100) array,
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
+	vocal_form text,
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
@@ -227,15 +228,14 @@ dblink(
 	value_prese text,
 	components varchar(100) array,
 	display_form varchar(255),
-	vocal_form varchar(255),
 	audio_file varchar(255),
 	order_by bigint,
 	form_freq_value numeric(12,7),
-    form_freq_rank bigint,
-    form_freq_rank_max bigint,
-    morph_freq_value numeric(12,7),
-    morph_freq_rank bigint,
-    morph_freq_rank_max bigint
+	form_freq_rank bigint,
+	form_freq_rank_max bigint,
+	morph_freq_value numeric(12,7),
+	morph_freq_rank bigint,
+	morph_freq_rank_max bigint
 );
 
 create materialized view mview_ww_meaning as

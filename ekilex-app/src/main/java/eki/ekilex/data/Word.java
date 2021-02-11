@@ -12,8 +12,6 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String wordValuePrese;
 
-	private String vocalForm;
-
 	private Integer homonymNr;
 
 	private String lang;
@@ -23,6 +21,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 	private String genderCode;
 
 	private String aspectCode;
+
+	private String vocalForm;
 
 	private String morphCode;
 
@@ -86,14 +86,6 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.wordValuePrese = valuePrese;
 	}
 
-	public String getVocalForm() {
-		return vocalForm;
-	}
-
-	public void setVocalForm(String vocalForm) {
-		this.vocalForm = vocalForm;
-	}
-
 	public Integer getHomonymNr() {
 		return homonymNr;
 	}
@@ -132,6 +124,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setAspectCode(String aspectCode) {
 		this.aspectCode = aspectCode;
+	}
+
+	public String getVocalForm() {
+		return vocalForm;
+	}
+
+	public void setVocalForm(String vocalForm) {
+		this.vocalForm = vocalForm;
 	}
 
 	public String getMorphCode() {

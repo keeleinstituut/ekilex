@@ -707,6 +707,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
+		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 
@@ -715,6 +716,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 		Field<String> fmcf = getFormMorphCodeField(w2.ID);
+		Field<String[]> lrc = DSL.field(DSL.select(DSL.arrayAgg(lr.REGISTER_CODE)).from(lr).where(lr.LEXEME_ID.eq(l2.ID)));
 
 		Field<Boolean> whe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
@@ -757,6 +759,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.TYPE.as("lexeme_type"),
 						l2.WEIGHT.as("lexeme_weight"),
+						lrc.as("lex_register_codes"),
 						l2.ORDER_BY)
 				.from(l1, l2, w2)
 				.where(where)

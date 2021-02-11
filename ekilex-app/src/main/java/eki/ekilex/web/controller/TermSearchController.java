@@ -183,6 +183,6 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("termSearchResult", termSearchResult);
 		model.addAttribute("searchUri", searchUri);
 
-		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
+		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "term_search_result";
 	}
 }

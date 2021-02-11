@@ -73,6 +73,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		createLifecycleLog(logData);
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
+		valuePrese = textDecorationService.unifyToApostrophe(valuePrese);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, lang);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, LifecycleLogOwner.WORD);
@@ -91,8 +92,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VOCAL_FORM, wordId, vocalForm);
 		createLifecycleLog(logData);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, LifecycleLogOwner.WORD);
-		List<Long> formIds = cudDbService.updateWordVocalForm(wordId, vocalForm);
-		activityLogService.createActivityLog(activityLog, formIds, ActivityEntity.FORM);
+		cudDbService.updateWordVocalForm(wordId, vocalForm);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
@@ -379,6 +380,23 @@ public class CudService extends AbstractService implements GlobalConstant {
 			Long otherLexemeId = lexeme.getLexemeId();
 			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, otherLexemeId, logEntry);
 			createLifecycleLog(logData);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, LifecycleLogOwner.LEXEME);
+			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
+			activityLogService.createActivityLog(activityLog, otherLexemeId, ActivityEntity.LEXEME);
+		}
+	}
+
+	@Transactional
+	public void updateLexemeLevels(Long lexemeId, int lexemePosition) throws Exception {
+
+		if (lexemeId == null) {
+			return;
+		}
+
+		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
+		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, lexemePosition);
+		for (WordLexeme lexeme : lexemes) {
+			Long otherLexemeId = lexeme.getLexemeId();
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, LifecycleLogOwner.LEXEME);
 			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
 			activityLogService.createActivityLog(activityLog, otherLexemeId, ActivityEntity.LEXEME);
@@ -782,6 +800,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		Long meaningId = wordDetails.getMeaningId();
 
 		value = textDecorationService.removeEkiElementMarkup(value);
+		value = textDecorationService.unifyToApostrophe(value);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
 				.createWordAndLexeme(value, value, valueAsWord, language, dataset, PUBLICITY_PUBLIC, meaningId);
@@ -1209,6 +1228,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void createWordAndSynRelation(
 			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr) throws Exception {
 
+		valuePrese = textDecorationService.unifyToApostrophe(valuePrese);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String valueAsWord = textDecorationService.removeAccents(value, language);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService

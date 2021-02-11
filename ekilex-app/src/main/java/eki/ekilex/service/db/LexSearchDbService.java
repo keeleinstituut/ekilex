@@ -198,7 +198,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 						f.MODE,
 						f.COMPONENTS,
 						f.DISPLAY_FORM,
-						f.VOCAL_FORM,
 						f.MORPH_CODE,
 						ml.VALUE.as("morph_value"),
 						mff.as("morph_frequency"),
@@ -362,7 +361,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
-		Field<String> fvff = getFormVocalFormField(w.ID);
 		Field<String> fmcf = getFormMorphCodeField(w.ID);
 		Field<String[]> lxtnf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
@@ -375,8 +373,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
 						w.VALUE_PRESE.as("word_value_prese"),
+						w.VOCAL_FORM,
 						fmcf.as("morph_code"),
-						fvff.as("vocal_form"),
 						w.HOMONYM_NR,
 						w.LANG,
 						w.WORD_CLASS,

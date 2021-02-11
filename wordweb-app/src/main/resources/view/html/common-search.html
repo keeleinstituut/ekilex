@@ -96,7 +96,7 @@
               th:data-url-to-audio="@{'/files/audio/' + ${wordData.firstAvailableAudioFile}}" onclick="generateAudioAndPlay(this)">
         <span class="icon icon-speaker"></span>
       </button>
-      <span id="spellingLine" class="mr-2" th:if="${wordData.firstAvailableVocalForm != null}" th:text="${'['+wordData.firstAvailableVocalForm+']'}"></span>
+      <span id="spellingLine" class="mr-2" th:if="${wordData.word.vocalForm != null}" th:text="${wordData.word.vocalForm}"></span>
       <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
         <span class="tag my-1" th:text="${wordType.value}"></span>
       </th:block>
@@ -216,8 +216,8 @@
                           <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                         </a>
                         <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
-                          <th:block th:if="${not #lists.isEmpty(syn.lexRegisters)}">
-                            <span class="type-two" th:each="register,regIter : ${syn.lexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                          <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
+                            <span class="type-two" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
                         <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
@@ -262,9 +262,9 @@
                             <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="text-small">
-                            <span th:if="${isAnyTerm && (syn.lexValueState != null)}" th:text="${syn.lexValueState.value}"></span>
-                            <th:block th:if="${not #lists.isEmpty(syn.lexRegisters)}">
-                              <span class="type-two text-uppercase" th:each="register,regIter : ${syn.lexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                            <span th:if="${isAnyTerm && (syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
+                            <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
+                              <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
                           </span>
                           <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
@@ -352,7 +352,8 @@
               </div>
               <div class="row" th:if="${(not #maps.isEmpty(lexeme.lexemeNotesByLang)) or (not #maps.isEmpty(lexeme.meaningNotesByLang))}">
                 <div class="col-6">
-                  <b th:text="#{label.public.note}">Hea teada</b>
+                  <b th:unless="${isLimTerm}" th:text="#{label.public.note}">Hea teada</b>
+                  <b th:if="${isLimTerm}" th:text="#{label.limterm.note}">Arutelu</b>
                 </div>
                 <div class="col-12">
                   <th:block th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}">
@@ -368,7 +369,7 @@
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                      <span th:each="note, noteIter : ${noteEntry.value}">
+                      <div th:each="note, noteIter : ${noteEntry.value}">
                         <span th:utext="${note.value}"></span>
                         <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                         <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
@@ -380,7 +381,7 @@
                           </span>
                         </th:block>
                         <span th:unless="${noteIter.last}" class="ml-n1">;</span>
-                      </span>
+                      </div>
                     </div>
                   </th:block>
                 </div>

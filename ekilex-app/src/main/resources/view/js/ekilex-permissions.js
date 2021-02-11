@@ -3,12 +3,11 @@ $(function(){
 	$(document).on("click", ":input[name='userEnableCheck']", function() {
 		var userId = $(this).data('id');
 		var checked = $(this).is(':checked');
-		var orderBy = $(this).data('order-by');
 		var userEnableUrl;
 		if (checked == true) {
-			userEnableUrl = applicationUrl + 'permissions/enable/' + userId + '/' + orderBy;
+			userEnableUrl = applicationUrl + 'permissions/enable/' + userId;
 		} else {
-			userEnableUrl = applicationUrl + 'permissions/disable/' + userId + '/' + orderBy;
+			userEnableUrl = applicationUrl + 'permissions/disable/' + userId;
 		}
 		$.get(userEnableUrl).done(function(data) {
 			var permissionsArea = $('#permissionsArea');
@@ -22,12 +21,11 @@ $(function(){
 	$(document).on("click", ":input[name='userApiCrudCheck']", function() {
 		var userId = $(this).data('id');
 		var checked = $(this).is(':checked');
-		var orderBy = $(this).data('order-by');
 		var userEnableUrl;
 		if (checked == true) {
-			userEnableUrl = applicationUrl + 'permissions/setapicrud/' + userId + '/' + orderBy;
+			userEnableUrl = applicationUrl + 'permissions/setapicrud/' + userId;
 		} else {
-			userEnableUrl = applicationUrl + 'permissions/remapicrud/' + userId + '/' + orderBy;
+			userEnableUrl = applicationUrl + 'permissions/remapicrud/' + userId;
 		}
 		$.get(userEnableUrl).done(function(data) {
 			var permissionsArea = $('#permissionsArea');
@@ -41,12 +39,11 @@ $(function(){
 	$(document).on("click", ":input[name='userAdminCheck']", function() {
 		var userId = $(this).data('id');
 		var checked = $(this).is(':checked');
-		var orderBy = $(this).data('order-by');
 		var setAdminUrl;
 		if (checked == true) {
-			setAdminUrl = applicationUrl + 'permissions/setadmin/' + userId + '/' + orderBy;
+			setAdminUrl = applicationUrl + 'permissions/setadmin/' + userId;
 		} else {
-			setAdminUrl = applicationUrl + 'permissions/remadmin/' + userId + '/' + orderBy;
+			setAdminUrl = applicationUrl + 'permissions/remadmin/' + userId;
 		}
 		$.get(setAdminUrl).done(function(data) {
 			var permissionsArea = $('#permissionsArea');
@@ -60,12 +57,11 @@ $(function(){
 	$(document).on("click", ":input[name='userMasterCheck']", function() {
 		var userId = $(this).data('id');
 		var checked = $(this).is(':checked');
-		var orderBy = $(this).data('order-by');
 		var setMasterUrl;
 		if (checked == true) {
-			setMasterUrl = applicationUrl + 'permissions/setmaster/' + userId + '/' + orderBy;
+			setMasterUrl = applicationUrl + 'permissions/setmaster/' + userId;
 		} else {
-			setMasterUrl = applicationUrl + 'permissions/remmaster/' + userId + '/' + orderBy;
+			setMasterUrl = applicationUrl + 'permissions/remmaster/' + userId;
 		}
 		$.get(setMasterUrl).done(function(data) {
 			var permissionsArea = $('#permissionsArea');
@@ -79,12 +75,11 @@ $(function(){
 	$(document).on("click", ":input[name='userReviewedCheck']", function() {
 		var userId = $(this).data('id');
 		var checked = $(this).is(':checked');
-		var orderBy = $(this).data('order-by');
 		var setReviewedUrl;
 		if (checked == true) {
-			setReviewedUrl = applicationUrl + 'permissions/setreviewed/' + userId + '/' + orderBy;
+			setReviewedUrl = applicationUrl + 'permissions/setreviewed/' + userId;
 		} else {
-			setReviewedUrl = applicationUrl + 'permissions/remreviewed/' + userId + '/' + orderBy;
+			setReviewedUrl = applicationUrl + 'permissions/remreviewed/' + userId;
 		}
 		$.get(setReviewedUrl).done(function(data) {
 			var permissionsArea = $('#permissionsArea');
@@ -106,7 +101,8 @@ $(function(){
 			var datasetLanguages = JSON.parse(response);
 			$.each(datasetLanguages, function (index, language) {
 				$languages.append($("<option></option>")
-					.attr("value", language.code).text(language.value));
+					.attr("value", language.code)
+					.text(language.value));
 			});
 	
 		}).fail(function (response) {
@@ -116,14 +112,14 @@ $(function(){
 	});
 });
 
-function deleteDatasetPermission(datasetPermId, orderBy) {
-	var deleteDatasetPermUrl = applicationUrl + 'permissions/deletedatasetperm/' + datasetPermId + '/' + orderBy;
+function deleteDatasetPermission(datasetPermId) {
+	var deleteDatasetPermUrl = applicationUrl + 'permissions/deletedatasetperm/' + datasetPermId;
 	$.get(deleteDatasetPermUrl).done(function(data) {
 		var permissionsArea = $('#permissionsArea');
 		permissionsArea.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg('Viga!');
+		openAlertDlg('Õiguste muutmine ebaõnnestus!');
 	});
 };
 
