@@ -260,6 +260,8 @@ public class UnifSearchController extends AbstractController {
 
 	private String decode(String value) {
 		value = UriUtils.decode(value, UTF_8);
-		return value.replace(ENCODE_SYM_SLASH, "/").replace(ENCODE_SYM_PERCENT, "%").replace(ENCODE_SYM_BACKSLASH, "\\");
-	}
+		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
+		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
+		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
+		return value;	}
 }
