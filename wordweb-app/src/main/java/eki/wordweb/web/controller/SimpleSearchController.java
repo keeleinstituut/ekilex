@@ -120,6 +120,7 @@ public class SimpleSearchController extends AbstractController {
 			@PathVariable("wordFrag") String wordFragment,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		wordFragment = textDecorationService.unifyToApostrophe(wordFragment);
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);

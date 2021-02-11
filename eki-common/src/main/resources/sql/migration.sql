@@ -409,7 +409,7 @@ where type = 'IMAGE_FILE'
   and value_prese not like '%https://sonaveeb.ee/files/images/%';
   
 delete from form where mode in ('UNKNOWN', 'AS_WORD');
-delete from form where mode = 'WORD' and morph_code = '??';
+delete from form where mode = 'WORD' and morph_code = '??' and audio_file is null;
 
 alter table dataset add column contact text;
 
