@@ -20,7 +20,7 @@ public class WebUtil implements WebConstant, GlobalConstant {
 	private String ekilexLimTermDetailsUrl;
 
 	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr) {
-		String encodedWord = UriUtils.encode(word, UTF_8);
+		String encodedWord = encode(word);
 		String encodedDatasetCodesStr = encodeSeparatedValuesStr(datasetCodesStr);
 		String searchUri = StringUtils.join(SEARCH_URI, UNIF_URI, '/', destinLangsStr, '/', encodedDatasetCodesStr, '/', encodedWord);
 		if (homonymNr != null) {
@@ -30,20 +30,12 @@ public class WebUtil implements WebConstant, GlobalConstant {
 	}
 
 	public String composeSimpleSearchUri(String destinLangsStr, String word, Integer homonymNr) {
-		String encodedWord = UriUtils.encode(word, UTF_8);
+		String encodedWord = encode(word);
 		String searchUri = StringUtils.join(SEARCH_URI, LITE_URI, '/', destinLangsStr, '/', encodedWord);
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}
 		return searchUri;
-	}
-
-	public String encodeSeparatedValuesStr(String separatedValuesStr) {
-		String[] valuesArr = StringUtils.split(separatedValuesStr, UI_FILTER_VALUES_SEPARATOR);
-		String encodedSeparatedValuesStr = Arrays.stream(valuesArr)
-				.map(value -> UriUtils.encode(value, UTF_8))
-				.collect(Collectors.joining(String.valueOf(UI_FILTER_VALUES_SEPARATOR)));
-		return encodedSeparatedValuesStr;
 	}
 
 	public String composeDatasetFirstLetterSearchUri(String datasetCode, Character firstLetter) {
@@ -59,5 +51,21 @@ public class WebUtil implements WebConstant, GlobalConstant {
 	public String getEkilexLimTermSearchUrl() {
 		String limTermSearchUrl = StringUtils.substringBefore(ekilexLimTermDetailsUrl, "?");
 		return limTermSearchUrl;
+	}
+
+	private String encodeSeparatedValuesStr(String separatedValuesStr) {
+		String[] valuesArr = StringUtils.split(separatedValuesStr, UI_FILTER_VALUES_SEPARATOR);
+		String encodedSeparatedValuesStr = Arrays.stream(valuesArr)
+				.map(value -> UriUtils.encode(value, UTF_8))
+				.collect(Collectors.joining(String.valueOf(UI_FILTER_VALUES_SEPARATOR)));
+		return encodedSeparatedValuesStr;
+	}
+
+	private String encode(String value) {
+		value = StringUtils.replace(value, "/", ENCODE_SYM_SLASH);
+		value = StringUtils.replace(value, "\\", ENCODE_SYM_BACKSLASH);
+		value = StringUtils.replace(value, "%", ENCODE_SYM_PERCENT);
+		value = UriUtils.encode(value, UTF_8);
+		return value;
 	}
 }

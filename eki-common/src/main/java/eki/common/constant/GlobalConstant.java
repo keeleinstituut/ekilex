@@ -71,4 +71,10 @@ public interface GlobalConstant {
 	String STAT_API_KEY_HEADER_NAME = "stat-api-key";
 
 	String EMPTY_API_KEY = "empty-api-key";
+
+	String ENCODE_SYM_SLASH = "$2F";
+
+	String ENCODE_SYM_PERCENT = "$25";
+
+	String ENCODE_SYM_BACKSLASH = "$5C";
 }
