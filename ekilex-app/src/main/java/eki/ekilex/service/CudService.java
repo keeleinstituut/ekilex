@@ -73,9 +73,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 		createLifecycleLog(logData);
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
-		valuePrese = textDecorationService.unifyToApostrophe(valuePrese);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		String valueAsWord = textDecorationService.removeAccents(value, lang);
+		String cleanValue = textDecorationService.unifyToApostrophe(value);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue, lang);
+		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
+			valueAsWord = cleanValue;
+		}
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, LifecycleLogOwner.WORD);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
 		if (StringUtils.isNotEmpty(valueAsWord)) {
