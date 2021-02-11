@@ -237,12 +237,10 @@
             <th:block th:each="synWord, synWordIter : ${syn.words}">
               <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
               <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
-              <span th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}">
-                <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
-                <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-              </span>
+              <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}"></span>
+              <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
+              <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+              <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
               <span th:unless="${synWordIter.last}">,</span>
             </th:block>
             <th:block th:if="${isMeaningRelSyn}">
