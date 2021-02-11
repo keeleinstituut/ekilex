@@ -2,11 +2,6 @@ var sessionTimeoutBufferSec = 60;
 
 $(document).ready(function() {
 
-	var sessionTimeoutMs = (sessionTimeoutSec - sessionTimeoutBufferSec) * 1000;
-	setTimeout(function() {
-		window.location = applicationUrl;
-	}, sessionTimeoutMs);
-
 	$('[autofocus]:not(:focus)').eq(0).focus();
 	$('.home-page #search').focus();
 
