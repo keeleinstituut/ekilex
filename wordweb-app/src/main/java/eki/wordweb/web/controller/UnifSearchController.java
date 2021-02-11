@@ -93,7 +93,7 @@ public class UnifSearchController extends AbstractController {
 			sessionBean = getSessionBean(model);
 		}
 
-		searchWord = UriUtils.decode(searchWord, UTF_8);
+		searchWord = decode(searchWord);
 		SearchValidation searchValidation = validateAndCorrectSearch(destinLangsStr, datasetCodesStr, searchWord, homonymNrStr);
 		sessionBean.setSearchWord(searchWord);
 
@@ -256,5 +256,10 @@ public class UnifSearchController extends AbstractController {
 		model.addAttribute("datasetCodesStr", datasetCodesStr);
 		model.addAttribute("selectedDatasetsStr", selectedDatasetsStr);
 		model.addAttribute("isDatasetFiltered", isDatasetFiltered);
+	}
+
+	private String decode(String value) {
+		value = UriUtils.decode(value, UTF_8);
+		return value.replace(ENCODE_SYM_SLASH, "/").replace(ENCODE_SYM_PERCENT, "%").replace(ENCODE_SYM_BACKSLASH, "\\");
 	}
 }

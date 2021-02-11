@@ -404,10 +404,12 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 	}
 
 	private String encode(String value) {
+		value = value.replace("/", ENCODE_SYM_SLASH).replace("%", ENCODE_SYM_PERCENT).replace("\\", ENCODE_SYM_BACKSLASH);
 		return UriUtils.encode(value, UTF_8);
 	}
 
 	private String decode(String value) {
-		return UriUtils.decode(value, UTF_8);
+		value = UriUtils.decode(value, UTF_8);
+		return value.replace(ENCODE_SYM_SLASH, "/").replace(ENCODE_SYM_PERCENT, "%").replace(ENCODE_SYM_BACKSLASH, "\\");
 	}
 }
