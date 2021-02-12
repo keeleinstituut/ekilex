@@ -233,11 +233,9 @@ public class PermissionsController extends AbstractPrivatePageController {
 			Model model, RedirectAttributes redirectAttributes) {
 
 		permissionService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
+		populateUserPermDataModel(model);
 
-		PermSearchBean permSearchBean = getPermSearchBean(model);
-		prepareSearchRedirect(permSearchBean, redirectAttributes);
-
-		return "redirect:" + PERMISSIONS_URI + "/search";
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/deletedatasetperm/{datasetPermissionId}")
@@ -258,11 +256,9 @@ public class PermissionsController extends AbstractPrivatePageController {
 			Model model, RedirectAttributes redirectAttributes) {
 
 		userService.updateReviewComment(userId, reviewComment);
+		populateUserPermDataModel(model);
 
-		PermSearchBean permSearchBean = getPermSearchBean(model);
-		prepareSearchRedirect(permSearchBean, redirectAttributes);
-
-		return "redirect:" + PERMISSIONS_URI + "/search";
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/deletereviewcomment/{userId}")
@@ -271,11 +267,9 @@ public class PermissionsController extends AbstractPrivatePageController {
 			Model model, RedirectAttributes redirectAttributes) {
 
 		userService.updateReviewComment(userId, null);
+		populateUserPermDataModel(model);
 
-		PermSearchBean permSearchBean = getPermSearchBean(model);
-		prepareSearchRedirect(permSearchBean, redirectAttributes);
-
-		return "redirect:" + PERMISSIONS_URI + "/search";
+		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
 	@GetMapping(PERMISSIONS_URI + "/sendpermissionsemail/{userEmail}")

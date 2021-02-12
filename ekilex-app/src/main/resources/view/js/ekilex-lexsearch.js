@@ -1,14 +1,14 @@
 var viewType = '';
 
-$.fn.identificator = function(){
+$.fn.identificator = function() {
 	var main = $(this);
 	var parent = main.parents('.card-body:first');
 	var labels = '';
-	parent.find('[data-id="identificators"]').find('span').each(function(){
+	parent.find('[data-id="identificators"]').find('span').each(function() {
 		if (labels !== '') {
-			labels+= ', ';
+			labels += ', ';
 		}
-		labels+= $(this).text();
+		labels += $(this).text();
 	});
 	main.attr('title', labels);
 	main.tooltip();
@@ -25,7 +25,7 @@ $.fn.status = function() {
 	} else {
 		main.find('span').addClass('fa-lock');
 	}
-	main.on('click', function(e){
+	main.on('click', function(e) {
 		e.preventDefault();
 		$(target).modal('show', main);
 	});
@@ -64,7 +64,7 @@ function initializeSearch(type) {
 	$(document).on('change', '[name="resultMode"]', function() {
 		$(this).closest('form').submit();
 	});
-	
+
 	$(document).on("click", ":button[name='details-btn'], #refresh-details", function() {
 		const wordId = $(this).data('id');
 		const behaviour = $(this).data('behaviour') || false;
@@ -115,7 +115,7 @@ function initializeSearch(type) {
 			console.log(data);
 		});
 	});
-	
+
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
 		const btn = $(this);
 		let lang = btn.attr("data-lang");
@@ -124,7 +124,7 @@ function initializeSearch(type) {
 			code: lang
 		};
 		let successCallbackName = $(this).attr("data-callback");
-		let	successCallbackFunc = () => eval(successCallbackName);
+		let successCallbackFunc = () => eval(successCallbackName);
 		postJson(applicationUrl + 'update_item', itemData).done(function() {
 
 			if (viewType === 'term') {
@@ -192,7 +192,7 @@ function initializeSearch(type) {
 	$(document).on('click', '[id^=duplicateMeaningWordAndLexemeBtn_]', function() {
 		let lexemeId = $(this).data('lexeme-id');
 		let successCallbackName = $(this).data("callback");
-		let	successCallbackFunc = () => eval(successCallbackName);
+		let successCallbackFunc = () => eval(successCallbackName);
 		let url = applicationUrl + 'meaningwordandlexduplicate/' + lexemeId;
 		$.post(url).done(function() {
 			successCallbackFunc();
@@ -204,7 +204,6 @@ function initializeSearch(type) {
 
 	$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg();
-
 
 		let url = applicationUrl + "lex_paging";
 		if (viewType === 'term') {
@@ -221,11 +220,11 @@ function initializeSearch(type) {
 			url: url,
 			data: form.serialize(),
 			method: 'POST',
-		}).done(function (data) {
+		}).done(function(data) {
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
 			$wpm.bindObjects();
-		}).fail(function (data) {
+		}).fail(function(data) {
 			console.log(data);
 			openAlertDlg('Lehekülje muutmine ebaõnnestus');
 		}).always(function() {
@@ -297,14 +296,14 @@ function loadDetails(wordId, task, lastWordId) {
 	} else {
 		wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
 	}
-	
+
 	$.get(wordDetailsUrl).done(function(data) {
 
 		closeWaitDlg();
 
 		let detailsDiv = $('#details-area');
 		let scrollPos = detailsDiv.scrollTop();
-		
+
 		if (!task) {
 			if (detailsDiv.length === 0) {
 				$('#resultColumn:first').find('.scrollable-area').append(detailsDiv = $('<div data-rel="details-area"></div>'));
@@ -319,7 +318,7 @@ function loadDetails(wordId, task, lastWordId) {
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
 		} else {
-			
+
 			const dataObject = $(data);
 			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordId}`);
 			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordId}`);
@@ -356,7 +355,6 @@ function loadDetails(wordId, task, lastWordId) {
 			}
 		}
 
-		
 		decorateSourceLinks(detailsDiv);
 		initClassifierAutocomplete();
 		//detailsDiv.scrollTop(scrollPos);
@@ -366,7 +364,7 @@ function loadDetails(wordId, task, lastWordId) {
 		$("#select_wait_" + wordId).hide();
 		$('.tooltip').remove();
 
-		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
+		$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
 
 		$('#results_div .list-group-item').removeClass('active');
 		$('#resultColumn:first').find('[data-rel="details-area"]').each((index, element) => {
@@ -377,7 +375,7 @@ function loadDetails(wordId, task, lastWordId) {
 		$('#results_div .list-group-item').each((index, element) => {
 			const elem = $(element);
 			const button = elem.find('button');
-			if( elem.is('.active') ) {
+			if (elem.is('.active')) {
 				button.removeAttr('data-contextmenu:compare');
 				button.attr('data-contextmenu:closePanel', 'Sulge paneel');
 			} else {
@@ -409,7 +407,7 @@ function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 		initClassifierAutocomplete();
 		$('.tooltip').remove();
 		closeWaitDlg();
-		$('[data-toggle="tooltip"]').tooltip({trigger:'hover'});
+		$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
 		$(window).trigger('update:multiSelect');
 		$(window).trigger('update:sorter');
 		$wpm.bindObjects();
@@ -426,7 +424,7 @@ function initLexemeLevelsDlg(editDlg) {
 		let editForm = editDlg.find('form');
 		editDlg.find('[name="action"]').val($(this).data('action'));
 		let url = editForm.attr('action') + '?' + editForm.serialize();
-		
+
 		$.post(url).done(function(data) {
 			let id = editDlg.parents('[data-rel="details-area"]:first').data('id');
 			let detailsButton = editDlg.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first');
@@ -477,7 +475,7 @@ function refreshDetailsSearch(id) {
 		}
 	}
 	var refreshButton = $(`#resultColumn [data-id="${id}"]:first`);
-	if (!refreshButton.is('[data-rel="details-area"]') ){
+	if (!refreshButton.is('[data-rel="details-area"]')) {
 		refreshButton = refreshButton.parents('[data-rel="details-area"]');
 	}
 	refreshButton = refreshButton.find('#refresh-details');
@@ -515,6 +513,6 @@ $.fn.complexity = function() {
 		'(Mitteavalik)': 'fa fa-lock',
 	};
 
-	main.addClass('complexity-icon').attr('title', text).html('<i class="'+types[text]+'"></i>');
+	main.addClass('complexity-icon').attr('title', text).html('<i class="' + types[text] + '"></i>');
 	main.tooltip();
 }
