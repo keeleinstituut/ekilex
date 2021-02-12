@@ -437,3 +437,4 @@ set value_prese = value_text
 where value_prese is null
   and type = 'GOVERNMENT';
 
+select setval('meaning_relation_order_by_seq', (select max(order_by) + 1 from meaning_relation));
