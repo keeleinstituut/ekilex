@@ -139,7 +139,7 @@
                       <th:block th:each="synWord, synWordIter : ${syn.words}">
                         <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
                         <button type="button"
-                                class="btn btn-link p-0"
+                                class="btn btn-link p-0 syn-handle"
                                 th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"
                                 th:data-id="${synWord.wordId}"
                                 name="details-btn"

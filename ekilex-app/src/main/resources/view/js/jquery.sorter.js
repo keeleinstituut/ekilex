@@ -30,7 +30,7 @@ class Sorter {
       this.main.sortable({
         items: '> .sortable-child-group',
         placeholder: "ui-state-highlight",
-        handle: 'button',
+        handle: '.syn-handle',
         cancel: '',
         start: function(event, ui) {
           ui.placeholder.css({
