@@ -1,4 +1,4 @@
-$(function(){
+$(function() {
 
 	$.fn.userEnableCheck = function() {
 		var main = $(this);
@@ -77,7 +77,7 @@ $(function(){
 			});
 		});
 	}
-	
+
 	$.fn.userMasterCheck = function() {
 		var main = $(this);
 		main.on('click', function(e) {
@@ -103,7 +103,7 @@ $(function(){
 			});
 		});
 	}
-	
+
 	$.fn.userReviewedCheck = function() {
 		var main = $(this);
 		main.on('click', function(e) {
@@ -137,17 +137,17 @@ $(function(){
 			var datasetCode = main.val();
 			var $languages = main.closest('form').find('[name="authLang"]');
 			let getDatasetLanguagesUrl = applicationUrl + 'permissions/dataset_languages/' + datasetCode;
-			$.get(getDatasetLanguagesUrl).done(function (response) {
+			$.get(getDatasetLanguagesUrl).done(function(response) {
 				$languages.empty();
 				$languages.append($("<option value=''></option>"));
 				var datasetLanguages = JSON.parse(response);
-				$.each(datasetLanguages, function (index, language) {
+				$.each(datasetLanguages, function(index, language) {
 					$languages.append($("<option></option>")
 						.attr("value", language.code)
 						.text(language.value));
 				});
 				$wpm.bindObjects();
-			}).fail(function (response) {
+			}).fail(function(response) {
 				console.log(response);
 				openAlertDlg("Andmekogu keelte päring ebaõnnestus");
 			});
@@ -244,14 +244,14 @@ function deleteDatasetPermission(datasetPermId) {
 
 function sendPermissionsEmail(userEmail) {
 	let sendPermissionsEmailUrl = applicationUrl + 'permissions/sendpermissionsemail/' + userEmail;
-	$.get(sendPermissionsEmailUrl).done(function (response) {
+	$.get(sendPermissionsEmailUrl).done(function(response) {
 		if (response === "OK") {
 			openMessageDlg("Kiri saadetud");
 		} else {
 			console.log(response);
 			openAlertDlg("Kirja saatmine ebaõnnestus");
 		}
-	}).fail(function (response) {
+	}).fail(function(response) {
 		console.log(response);
 		openAlertDlg("Kirja saatmine ebaõnnestus");
 	});
