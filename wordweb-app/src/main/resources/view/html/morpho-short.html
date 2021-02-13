@@ -26,7 +26,7 @@
   </th:block>
   <th:block th:fragment="morpho-paradigm-header(paradigm)">
     <th:block th:if="${paradigm.inflectionType}">
-      <p>
+      <p class="btn-bold">
         Muuttüüp
         <a aria-label="Vaata muuttüübi kirjeldust, avab uues aknas"
            th:href="${'https://www.eki.ee/dict/qs/muuttyybid.html#' + paradigm.inflectionType}"
