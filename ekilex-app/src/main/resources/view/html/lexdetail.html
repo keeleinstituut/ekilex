@@ -33,10 +33,9 @@
                           data-contextmenu:compare="Ava uues paneelis">
                           <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                          <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                          <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-                        </button>
-                        <span th:unless="${synWordIter.last}">,</span>
+                          <small class="text-gray" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                          <small class="text-gray" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                        </button><span th:unless="${synWordIter.last}">,</span>
                       </span>
                       <span class="mr-1" th:unless="${synIter.last}">|</span>
                     </span>
@@ -102,7 +101,7 @@
           <i class="fa fa-angle-up" aria-hidden="true"></i>
         </button>
         <div class="d-flex flex-row align-items-center flex-wrap">
-          <div class="d-flex flex-wrap">
+          <div class="d-flex flex-wrap w-100">
             <span class="btn pl-1 pr-1" th:if="${lexeme.levels != null}"
                   th:data-id="${lexeme.lexemeId}"
                   th:data-level1="${lexeme.level1}"
@@ -119,18 +118,20 @@
                 <span th:text="${lexeme.levels}"></span>
               </span>
             </span>
-            <div>
-              <button type="button" class="btn btn-secondary btn-compact btn-sm ml-2 position-relative"
+            <div class="w-100">
+              <div th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" class="orderable d-flex flex-row mr-2 w-100">
+                <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2">
+                  <span th:text="#{syn.abbreviation}"></span>
+                  <button type="button" class="btn btn-secondary btn-compact btn-sm position-relative"
                       title="Lisa uus sünonüümi seos"
                       data-toggle="modal"
                       th:data-target="${'#addSynMeaningRelationDlg_' + lexeme.lexemeId}"
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
-                <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>Sünonüümi seos
-              </button>
-              <div th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" class="orderable d-flex flex-row mr-2">
-                <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
+                    <i class="fa fa-plus action-icon" aria-hidden="true"></i>
+                  </button>
+                </span>
                 <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
-                <div data-plugin="sorter" data-sorter:type="syn">
+                <div data-plugin="sorter" data-sorter:type="syn" class="w-100">
                   <div th:each="syn,synIter : ${synonymLangGroup.synonyms}"
                        class="draggable-syn-rel do-refresh"
                        th:data-lexeme-id="${lexeme.lexemeId}"
@@ -154,10 +155,9 @@
                                 data-contextmenu:compare="Ava uues paneelis">
                           <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                          <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                          <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-                        </button>
-                        <span th:unless="${synWordIter.last}">,</span>
+                          <small class="text-gray" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                          <small class="text-gray" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                        </button><span th:unless="${synWordIter.last}">,</span>
                         <th:block th:if="${isMeaningWordSyn}">
                           <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                           <div class="meaning_buttons">

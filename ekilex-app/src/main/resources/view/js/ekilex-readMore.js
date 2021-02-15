@@ -18,7 +18,7 @@ class ReadMore {
   }
 
   appendDots() {
-    this.parent.append(this.handle = $('<div class="indicator"><i class="fa fa-angle-down"></i>Näita rohkem</div>'));
+    this.parent.append(this.handle = $('<div class="indicator"><i class="fa fa-ellipsis-h"></i></div>'));
   }
 
   bindEvents() {
@@ -41,7 +41,7 @@ class ReadMore {
       this.handle.html('<i class="fa fa-angle-up"></i>Näita vähem');
     } else {
       this.main.removeAttr('style');
-      this.handle.html('<i class="fa fa-angle-down"></i>Näita rohkem');
+      this.handle.html('<i class="fa fa-ellipsis-h"></i>');
     }
   }
 

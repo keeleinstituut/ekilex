@@ -32,7 +32,9 @@ footer p {
     display: flex;
     flex-direction: column-reverse;
 }
-
+.text-gray {
+  color: $gray-300;
+}
 .eki-logo {
     background: url(../img/eki.svg) center center no-repeat;
     display: inline-block;
@@ -173,7 +175,7 @@ footer p {
 .draggable-syn-rel {
   display: inline-flex;
   white-space: nowrap;
-  max-width: 100%;
+  max-width: 98%;
   position: relative;
   .handle {
     padding: 3px 4px 0 4px;
@@ -193,10 +195,15 @@ footer p {
   }
 }
 
+.ui-sortable-helper {
+  opacity: 0.6;
+  .meaning_buttons {
+    display: none !important;
+  }
+}
 .sorter-wrapper {
   padding-right: 50px;
   box-sizing: content-box;
-  margin-bottom:8px;
   position: relative;
   .ui-sortable-placeholder {
     display: inline-flex !important;
@@ -213,7 +220,7 @@ footer p {
     }
   }
   .sorter-more {
-    height: 24px;
+    max-height: 48px;
     overflow-y: hidden;
   }
 }
@@ -227,6 +234,7 @@ footer p {
     background:white;
     z-index: 10;
     text-align: center;
+    margin-left: -7px;
     button {
       display: inline-block;
     }
