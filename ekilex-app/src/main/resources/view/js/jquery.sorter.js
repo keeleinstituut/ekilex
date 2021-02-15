@@ -11,6 +11,7 @@ class Sorter {
     this.main.sortable({
       items: '> .sortable-main-group',
       placeholder: "ui-state-highlight",
+      tolerance: 'pointer',
       start: function(event, ui){
         if (this.type === 'lex-details') {
           ui.placeholder.css({
@@ -32,6 +33,7 @@ class Sorter {
         placeholder: "ui-state-highlight",
         handle: 'button',
         cancel: '',
+        tolerance: 'pointer',
         start: function(event, ui) {
           ui.placeholder.css({
             display: 'inline-block',

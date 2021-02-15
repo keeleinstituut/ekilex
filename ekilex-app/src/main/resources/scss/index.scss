@@ -151,9 +151,7 @@ footer p {
 
 .complexity-icon {
   display: inline-block;
-  [class*='hourglass']{
-    transform: rotate(-90deg);
-  }
+  margin:0 5px;
 }
 
 .ui-sortable{
@@ -175,7 +173,6 @@ footer p {
 .draggable-syn-rel {
   display: inline-flex;
   white-space: nowrap;
-  overflow: hidden;
   max-width: 100%;
   position: relative;
   .handle {
@@ -190,5 +187,59 @@ footer p {
 #syn-details-area {
   .orderable {
     width: 100% !important;
+    &:hover {
+      z-index: 10;
+    }
+  }
+}
+
+.sorter-wrapper {
+  padding-right: 50px;
+  box-sizing: content-box;
+  margin-bottom:8px;
+  position: relative;
+  .ui-sortable-placeholder {
+    display: inline-flex !important;
+    height: 17px !important;
+  }
+  .indicator {
+    cursor: pointer;
+    color:#687887;
+    font-size: 0.875rem;
+    z-index: 20;
+    font-weight: 700;
+    i {
+      margin-right: 5px;
+    }
+  }
+  .sorter-more {
+    height: 24px;
+    overflow-y: hidden;
+  }
+}
+
+[id*='lexeme-details'] {
+  .orderable + .orderable {
+    margin-top: -10px;
+  }
+}
+
+.draggable-syn-rel {
+  .meaning_buttons {
+    display: none;
+    position: absolute;
+    bottom: 4px;
+    left: 100%;
+    background:white;
+    z-index: 10;
+    text-align: center;
+    button {
+      display: inline-block;
+    }
+  }
+  &:hover {
+    .meaning_buttons{
+      display: block;
+    }
   }
 }
