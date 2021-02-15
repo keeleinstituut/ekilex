@@ -228,7 +228,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 			Table<Record3<Long, Long, Long[]>> wmid,
 			String resultLang, boolean fetchAll, int offset) {
 
-		Lexeme lm = LEXEME.as("lm");
+		Lexeme lvs = LEXEME.as("lvs");
 		Lexeme lw = LEXEME.as("lw");
 		Word wm = WORD.as("wm");
 		Lexeme lds = LEXEME.as("lds");
@@ -241,8 +241,27 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(wmid.field("word_id", Long.class));
 		Field<Boolean> wtz = getWordIsForeignField(wmid.field("word_id", Long.class));
 
-		Field<Boolean> lvsmpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED));
-		Field<Boolean> lvslpf = DSL.field(lm.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED));
+		Field<Boolean> lvsmpf = DSL.field(DSL.exists(DSL
+				.select(lvs.ID)
+				.from(lvs)
+				.where(
+						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
+						.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+						.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_MOST_PREFERRED)))));
+		Field<Boolean> lvslpf = DSL.field(DSL.exists(DSL
+				.select(lvs.ID)
+				.from(lvs)
+				.where(
+						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
+						.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+						.and(lvs.VALUE_STATE_CODE.eq(VALUE_STATE_LEAST_PREFERRED)))));
+		Field<Boolean> lpf = DSL.field(DSL.exists(DSL
+				.select(lvs.ID)
+				.from(lvs)
+				.where(
+						lvs.WORD_ID.eq(wmid.field("word_id", Long.class))
+						.and(lvs.MEANING_ID.eq(wmid.field("meaning_id", Long.class)))
+						.and(lvs.IS_PUBLIC.isTrue()))));
 
 		Field<Long> wmdsobf = DSL
 				.select(DSL.min(ds.ORDER_BY))
@@ -292,18 +311,15 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wtz.as("foreign"),
 						lvsmpf.as("most_preferred"),
 						lvslpf.as("least_preferred"),
-						lm.IS_PUBLIC,
+						lpf.as("is_public"),
 						wds.as("dataset_codes"),
 						wmdsobf.as("word_min_ds_order_by"),
 						wlnobf.as("word_lang_order_by"),
 						wtobf.as("word_type_order_by"))
-				.from(wmid
-						.innerJoin(lm).on(lm.WORD_ID.eq(wmid.field("word_id", Long.class)).and(lm.MEANING_ID.eq(wmid.field("meaning_id", Long.class))))
-						.innerJoin(wm).on(wherewm))
+				.from(wmid.innerJoin(wm).on(wherewm))
 				.groupBy(
 						wmid.field("word_id"),
 						wmid.field("meaning_id"),
-						lm.ID,
 						wm.ID)
 				.asTable("wm");
 
