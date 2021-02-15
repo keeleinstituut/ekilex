@@ -77,7 +77,9 @@ module.exports = function (grunt) {
 			components: {
 				src: [
 					'src/main/resources/view/js/*.js',
+					'!src/main/resources/view/js/_jquery-3.2.1.js',
 					'!src/main/resources/view/js/main.js',
+					
 				],
 				dest: 'src/main/resources/view/js/main.js'
 			},
@@ -112,7 +114,7 @@ module.exports = function (grunt) {
 				tasks: ['sass', 'px_to_rem', 'autoprefixer', 'clean:css', 'copy:css']
 			},
 			js: {
-				files: ['src/main/resources/view/js/*.js', '!src/main/resources/view/js/main.js'],
+				files: ['src/main/resources/view/js/**/**.js', '!src/main/resources/view/js/main.js'],
 				tasks: ['concat', 'babel', 'clean:js', 'copy:js'],
 				options: {
 					nospawn: true
