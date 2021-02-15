@@ -6,27 +6,42 @@ class ReadMore {
     this.status = false;
     this.debounce;
     this.debounceTime = 300;
-  }
-
-  checkHeights() {
-    if (this.status === 1) { return false; }
-    if (this.main.height() < this.container.height()) {
-      this.handle.show();
-    } else {
-      this.handle.hide();
-    }
+    this.hidden = 0;
   }
 
   appendDots() {
-    this.parent.append(this.handle = $('<div class="indicator"><i class="fa fa-ellipsis-h"></i></div>'));
+    const mainHeight = this.main.height();
+    this.hidden = 0;
+    this.main.find('div:first').children("*").each((index, e) => {
+      const obj = $(e);
+      if (Math.ceil(obj.position().top) >= mainHeight){
+        this.hidden = this.hidden + 1;
+        obj.hide();
+      } else {
+        obj.show();
+      }
+    });
+    if (this.hidden > 0) {
+      const lastVisible = this.main.find('div:first').children("*").filter(':visible').last();
+      lastVisible.after(this.handle = $('<div class="indicator"><i class="fa fa-ellipsis-h"></i></div>'));
+    }
   }
 
+  appendLabel() {
+    this.main.find('div:first').append(this.handle = $('<div class="indicator indicator-with-label"><i class="fa fa-angle-up"></i>Näita vähem</div>'));
+  }
+
+  bindHandle() {
+    if (this.handle) {
+      this.handle.on('click', (e) => {
+        e.preventDefault();
+        this.status = !this.status;
+        this.detectChange();
+      });
+    }
+  }
   bindEvents() {
-    this.handle.on('click', (e) => {
-      e.preventDefault();
-      this.status = !this.status;
-      this.detectChange();
-    });
+    this.bindHandle();
     $(window).on('resize', () => {
       clearTimeout(this.debounce);
       this.debounce = setTimeout(function() {
@@ -37,17 +52,23 @@ class ReadMore {
 
   detectChange() {
     if (this.status) {
-      this.main.css('height', 'auto');
-      this.handle.html('<i class="fa fa-angle-up"></i>Näita vähem');
+      this.main.find('div:first').children("*").show();
+      this.handle.remove();
+      this.handle = false;
+      this.main.css('max-height', '99999px');
+      this.appendLabel();
+      this.bindHandle();
     } else {
+      this.handle.remove();
+      this.handle = false;
       this.main.removeAttr('style');
-      this.handle.html('<i class="fa fa-ellipsis-h"></i>');
+      this.appendDots();
+      this.bindHandle();
     }
   }
 
   initialize() {
     this.appendDots();
-    this.checkHeights();
     this.bindEvents();
   }
 }

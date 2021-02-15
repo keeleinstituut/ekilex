@@ -215,6 +215,14 @@ footer p {
     font-size: 0.875rem;
     z-index: 20;
     font-weight: 700;
+    width: 1px;
+    vertical-align: bottom;
+    margin-bottom: -3px;
+    display: inline-block;
+    white-space: nowrap;
+    &.indicator-with-label {
+      width: auto;
+    }
     i {
       margin-right: 5px;
     }
@@ -230,7 +238,7 @@ footer p {
     display: none;
     position: absolute;
     bottom: 4px;
-    left: 100%;
+    left: 98%;
     background:white;
     z-index: 10;
     text-align: center;

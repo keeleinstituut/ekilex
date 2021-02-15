@@ -19,7 +19,9 @@
               <div class="sorter-wrapper">
                 <div class="sorter-more" data-plugin="readMore">
                   <div data-plugin="sorter" data-sorter:type="syn">
-                    <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
+                    <span
+                          style="display: inline-block;"
+                          th:each="syn,synIter : ${synonymLangGroup.synonyms}"
                           th:with="isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
                       <span th:each="synWord, synWordIter : ${syn.words}" class="btn-custom">
                         <button
@@ -120,7 +122,7 @@
             </span>
             <div class="w-100">
               <div th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" class="orderable d-flex flex-row mr-2 w-100">
-                <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2">
+                <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 30px;">
                   <span th:text="#{syn.abbreviation}"></span>
                   <button type="button" class="btn btn-secondary btn-compact btn-sm position-relative"
                       title="Lisa uus sünonüümi seos"
@@ -130,7 +132,7 @@
                     <i class="fa fa-plus action-icon" aria-hidden="true"></i>
                   </button>
                 </span>
-                <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+                <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2 flex-shrink-0" style="width: 30px;"></span>
                 <div data-plugin="sorter" data-sorter:type="syn" class="w-100">
                   <div th:each="syn,synIter : ${synonymLangGroup.synonyms}"
                        class="draggable-syn-rel do-refresh"
