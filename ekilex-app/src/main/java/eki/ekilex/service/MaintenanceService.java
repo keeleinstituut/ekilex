@@ -99,15 +99,12 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		boolean updateExists;
 		for (WordRecord wordRecord : wordRecords) {
 			String value = wordRecord.getValue();
-			String valuePrese = wordRecord.getValuePrese();
 			String valueAsWordSrc = wordRecord.getValueAsWord();
 			String lang = wordRecord.getLang();
 			String valueClean = textDecorationService.unifyToApostrophe(value);
-			String valuePreseClean = textDecorationService.unifyToApostrophe(valuePrese);
 			updateExists = false;
 			if (!StringUtils.equals(value, valueClean)) {
-				wordRecord.setValue(valueClean);
-				wordRecord.setValuePrese(valuePreseClean);
+				wordRecord.setValueAsWord(valueClean);
 				unifiedApostropheWordCount.increment();
 				updateExists = true;
 			}

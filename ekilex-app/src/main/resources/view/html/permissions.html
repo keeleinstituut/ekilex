@@ -105,7 +105,7 @@
                         <input type="checkbox"
                                th:data-id="${userPerm.id}"
                                th:data-order-by="${orderBy}"
-                               name="userApiCrudCheck"
+                               data-plugin="userApiCrudCheck"
                                th:checked="${userPerm.apiCrud}"
                                th:disabled="${!(userPerm.apiKeyExists && #vars.isAdmin)}"/>
                       </td>
@@ -113,7 +113,7 @@
                         <input type="checkbox"
                                th:data-id="${userPerm.id}"
                                th:data-order-by="${orderBy}"
-                               name="userAdminCheck"
+                               data-plugin="userAdminCheck"
                                th:checked="${userPerm.admin}"
                                th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
                       </td>
@@ -121,7 +121,7 @@
                         <input type="checkbox"
                                th:data-id="${userPerm.id}"
                                th:data-order-by="${orderBy}"
-                               name="userMasterCheck"
+                               data-plugin="userMasterCheck"
                                th:checked="${userPerm.master}"
                                th:disabled="${(#vars.isOwnPermission) || (!#vars.isAdmin)}"/>
                       </td>
@@ -129,7 +129,7 @@
                         <input type="checkbox"
                                th:data-id="${userPerm.id}"
                                th:data-order-by="${orderBy}"
-                               name="userEnableCheck"
+                               data-plugin="userEnableCheck"
                                th:checked="${userPerm.enabled}"
                                th:disabled="${#vars.isOwnPermission}"/>
                       </td>
@@ -137,7 +137,7 @@
                         <input type="checkbox"
                                th:data-id="${userPerm.id}"
                                th:data-order-by="${orderBy}"
-                               name="userReviewedCheck"
+                               data-plugin="userReviewedCheck"
                                th:checked="${userPerm.reviewed}"
                                th:disabled="${#vars.isOwnPermission}"/>
                       </td>
@@ -145,7 +145,7 @@
                         <div th:replace="permdialog :: edit_review_comment_dlg"></div>
                         <button type="button" class="btn badge badge-success" title="Lisa kommentaar"
                                 data-toggle="modal"
-                                th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
+                                th:data-target="${'#editPermReviewCommentDlg_' + userPerm.id}"
                                 sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
                                 th:if="${#strings.isEmpty(userPerm.reviewComment)}">
                           <i class="fa fa-plus" aria-hidden="true"></i>
@@ -154,16 +154,17 @@
                           <span th:text="${userPerm.reviewComment}"></span>
                           <button type="button" class="btn badge badge-primary" title="Muuda"
                                   data-toggle="modal"
-                                  th:data-target="${'#editReviewCommentDlg_' + userPerm.id}"
+                                  th:data-target="${'#editPermReviewCommentDlg_' + userPerm.id}"
                                   sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
-                          <a class="btn badge badge-warning"
-                             title="Kustuta kommentaar"
-                             th:href="@{'/permissions/deletereviewcomment/' + ${userPerm.id}}"
-                             sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
+                          <button type="button" class="btn badge badge-warning"
+                                  title="Kustuta kommentaar"
+                                  th:data-id="${userPerm.id}"
+                                  data-plugin="deletePermReviewCommentPlugin"
+                                  sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
                             <i class="fa fa-remove" aria-hidden="true"></i>
-                          </a>
+                          </button>
                         </div>
                       </td>
                       <td class="p-1">
@@ -247,5 +248,6 @@
     </div>
   </div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #waitDlg"></div>
 </body>
 </html>

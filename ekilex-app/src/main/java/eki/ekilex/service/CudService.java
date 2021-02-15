@@ -73,9 +73,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 		createLifecycleLog(logData);
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
-		valuePrese = textDecorationService.unifyToApostrophe(valuePrese);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		String valueAsWord = textDecorationService.removeAccents(value, lang);
+		String cleanValue = textDecorationService.unifyToApostrophe(value);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue, lang);
+		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
+			valueAsWord = cleanValue;
+		}
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, LifecycleLogOwner.WORD);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
 		if (StringUtils.isNotEmpty(valueAsWord)) {
@@ -800,8 +803,11 @@ public class CudService extends AbstractService implements GlobalConstant {
 		Long meaningId = wordDetails.getMeaningId();
 
 		value = textDecorationService.removeEkiElementMarkup(value);
-		value = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(value, language);
+		String cleanValue = textDecorationService.unifyToApostrophe(value);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue, language);
+		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
+			valueAsWord = cleanValue;
+		}
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
 				.createWordAndLexeme(value, value, valueAsWord, language, dataset, PUBLICITY_PUBLIC, meaningId);
 
@@ -1228,9 +1234,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void createWordAndSynRelation(
 			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr) throws Exception {
 
-		valuePrese = textDecorationService.unifyToApostrophe(valuePrese);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		String valueAsWord = textDecorationService.removeAccents(value, language);
+		String cleanValue = textDecorationService.unifyToApostrophe(value);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue, language);
+		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
+			valueAsWord = cleanValue;
+		}
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
 				.createWordAndLexeme(value, valuePrese, valueAsWord, language, datasetCode, PUBLICITY_PRIVATE, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();

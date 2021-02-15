@@ -11,7 +11,7 @@
           <div class="modal-body">
             <div class="form-group row">
               <div class="col-10">
-                <select class="form-control perm-dataset-code" name="datasetCode">
+                <select class="form-control perm-dataset-code" name="datasetCode" data-plugin="permDatasetCodeSelect">
                   <option value="" disabled selected>Vali</option>
                   <option th:each="dataset : ${userOwnedDatasets}"
                           th:value="${dataset.code}"
@@ -51,7 +51,7 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Lisa</button>
+              <button type="button" class="btn btn-primary" data-plugin="addDatasetPermPlugin">Lisa</button>
               <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
             </div>
           </div>
@@ -59,7 +59,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editReviewCommentDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="edit_review_comment_dlg">
+  <div th:id="${'editPermReviewCommentDlg_' + userPerm.id}" class="modal" role="dialog" th:fragment="edit_review_comment_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/permissions/updatereviewcomment}" method="post">
@@ -73,7 +73,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-primary" data-plugin="editPermReviewCommentPlugin">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

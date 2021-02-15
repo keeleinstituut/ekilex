@@ -409,7 +409,7 @@ where type = 'IMAGE_FILE'
   and value_prese not like '%https://sonaveeb.ee/files/images/%';
   
 delete from form where mode in ('UNKNOWN', 'AS_WORD');
-delete from form where mode = 'WORD' and morph_code = '??';
+delete from form where mode = 'WORD' and morph_code = '??' and audio_file is null;
 
 alter table dataset add column contact text;
 
@@ -432,3 +432,9 @@ and   f.vocal_form != '';
 alter table form drop column vocal_form cascade;
 alter table form add column is_questionable boolean not null default false;
 
+update freeform
+set value_prese = value_text
+where value_prese is null
+  and type = 'GOVERNMENT';
+
+select setval('meaning_relation_order_by_seq', (select max(order_by) + 1 from meaning_relation));

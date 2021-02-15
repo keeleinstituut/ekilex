@@ -369,7 +369,7 @@
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
-                      <div th:each="note, noteIter : ${noteEntry.value}">
+                      <div th:each="note : ${noteEntry.value}">
                         <span th:utext="${note.value}"></span>
                         <span th:if="${isLimTerm}" th:utext="${'[' + note.createdBy + ']'}" class="text-muted text-small"></span>
                         <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
@@ -380,7 +380,6 @@
                             </button>
                           </span>
                         </th:block>
-                        <span th:unless="${noteIter.last}" class="ml-n1">;</span>
                       </div>
                     </div>
                   </th:block>

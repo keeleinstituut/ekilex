@@ -218,12 +218,6 @@ footer p {
   }
 }
 
-[id*='lexeme-details'] {
-  .orderable + .orderable {
-    margin-top: -10px;
-  }
-}
-
 .draggable-syn-rel {
   .meaning_buttons {
     display: none;

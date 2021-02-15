@@ -93,7 +93,7 @@ public class UnifSearchController extends AbstractController {
 			sessionBean = getSessionBean(model);
 		}
 
-		searchWord = UriUtils.decode(searchWord, UTF_8);
+		searchWord = decode(searchWord);
 		SearchValidation searchValidation = validateAndCorrectSearch(destinLangsStr, datasetCodesStr, searchWord, homonymNrStr);
 		sessionBean.setSearchWord(searchWord);
 
@@ -124,6 +124,7 @@ public class UnifSearchController extends AbstractController {
 			@PathVariable("wordFrag") String wordFragment,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		wordFragment = textDecorationService.unifyToApostrophe(wordFragment);
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
@@ -257,4 +258,11 @@ public class UnifSearchController extends AbstractController {
 		model.addAttribute("selectedDatasetsStr", selectedDatasetsStr);
 		model.addAttribute("isDatasetFiltered", isDatasetFiltered);
 	}
+
+	private String decode(String value) {
+		value = UriUtils.decode(value, UTF_8);
+		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
+		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
+		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
+		return value;	}
 }

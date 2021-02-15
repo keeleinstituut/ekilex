@@ -31,7 +31,7 @@ class Sorter {
       this.main.sortable({
         items: '> .sortable-child-group',
         placeholder: "ui-state-highlight",
-        handle: 'button',
+        handle: '.syn-handle',
         cancel: '',
         tolerance: 'pointer',
         start: function(event, ui) {

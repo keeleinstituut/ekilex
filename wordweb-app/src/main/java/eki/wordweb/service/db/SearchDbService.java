@@ -165,20 +165,22 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		Table<MviewWwWordRecord> ww = DSL
 				.selectFrom(w)
-				.where(DSL.lower(w.WORD).eq(searchWordLower)
+				.where(DSL.or(DSL.lower(w.WORD).eq(searchWordLower), DSL.lower(w.AS_WORD).eq(searchWordLower)) 
 						.andNotExists(DSL
 								.select(f.FORM_ID)
 								.from(f)
 								.where(
 										f.WORD_ID.eq(w.WORD_ID)
-										.and(f.MODE.eq(FormMode.WORD.name())))))
+										.and(f.MODE.eq(FormMode.WORD.name()))
+										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE)))))
 				.unionAll(DSL
 						.selectFrom(w)
 						.whereExists(DSL
 								.select(f.WORD_ID)
 								.from(f)
 								.where(f.WORD_ID.eq(w.WORD_ID)
-										.and(DSL.lower(f.VALUE).eq(searchWordLower)))))
+										.and(DSL.lower(f.VALUE).eq(searchWordLower))
+										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE)))))
 				.asTable("w");
 
 		Condition where = applyLangCompDatasetFilter(w, dataFilter, DSL.noCondition());

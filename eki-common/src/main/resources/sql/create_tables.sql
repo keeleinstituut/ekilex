@@ -696,6 +696,7 @@ create table form
   display_level integer not null default 1,
   morph_code varchar(100) references morph(code) not null,
   morph_exists boolean not null,
+  is_questionable boolean not null default false,
   value text not null,
   value_prese text not null,
   components varchar(100) array null,
