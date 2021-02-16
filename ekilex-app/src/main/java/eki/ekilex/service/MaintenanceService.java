@@ -138,11 +138,6 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 			logger.debug("Maintenance service deleted {} floating freeforms", deletedFreeformCount);
 		}
 
-		int deletedLifecycleLogCount = maintenanceDbService.deleteFloatingLifecycleLogs();
-		if (deletedLifecycleLogCount > 0) {
-			logger.debug("Maintenance service deleted {} floating lifecycle logs", deletedLifecycleLogCount);
-		}
-
 		int deletedMeaningCount = maintenanceDbService.deleteFloatingMeanings();
 		if (deletedMeaningCount > 0) {
 			logger.debug("Maintenance service deleted {} floating meanings", deletedMeaningCount);

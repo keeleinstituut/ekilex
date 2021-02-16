@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.api.Form;
@@ -15,11 +16,8 @@ import eki.ekilex.data.api.Paradigm;
 @Component
 public class MorphologyDbService {
 
+	@Autowired
 	private DSLContext create;
-
-	public MorphologyDbService(DSLContext context) {
-		create = context;
-	}
 
 	public Long createParadigm(Paradigm paradigm) {
 

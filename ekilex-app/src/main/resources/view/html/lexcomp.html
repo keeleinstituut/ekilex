@@ -411,7 +411,7 @@
     </th:block>
     <th:block th:unless="${#strings.isEmpty(details.word.lang)}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.lang, allLanguages)}" data-toggle="tooltip" title="Keel"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.lang, allLanguages)}" data-toggle="tooltip" title="Keel"></span>
         <div class="hover-actions">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
@@ -499,7 +499,7 @@
     </th:block>
     <th:block th:unless="${details.word.genderCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.genderCode, wordGenders)}" data-toggle="tooltip" title="Sugu"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.genderCode, wordGenders)}" data-toggle="tooltip" title="Sugu"></span>
         <div class="hover-actions hover-actions-bottom-right">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm"
@@ -579,7 +579,7 @@
     </th:block>
     <th:block th:unless="${details.word.aspectCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}" data-toggle="tooltip" title="Aspekt"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.aspectCode, wordAspects)}" data-toggle="tooltip" title="Aspekt"></span>
         <div class="hover-actions">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal" th:data-target="${'#editWordAspectDlg_' + wordId}" sec:authorize="#vars.details.word.crudGrant">

@@ -13,7 +13,6 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
-import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 
 import java.util.List;
@@ -35,9 +34,9 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -69,12 +68,8 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
 
-	private DSLContext create;
-
 	@Autowired
-	public SourceDbService(DSLContext context) {
-		create = context;
-	}
+	private DSLContext create;
 
 	public List<SourcePropertyTuple> getSource(Long sourceId) {
 
@@ -276,7 +271,7 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 		SourceActivityLog sal = SOURCE_ACTIVITY_LOG.as("sal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
-		Condition where1 = sal.SOURCE_ID.eq(sourceIdField).and(sal.ACTIVITY_LOG_ID.eq(al.ID)).and(al.OWNER_NAME.eq(LifecycleLogOwner.SOURCE.name()));
+		Condition where1 = sal.SOURCE_ID.eq(sourceIdField).and(sal.ACTIVITY_LOG_ID.eq(al.ID)).and(al.OWNER_NAME.eq(ActivityOwner.SOURCE.name()));
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			String critValue = criterion.getSearchValue().toString();
@@ -448,9 +443,9 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
-		create.update(SOURCE_LIFECYCLE_LOG)
-				.set(SOURCE_LIFECYCLE_LOG.SOURCE_ID, targetSourceId)
-				.where(SOURCE_LIFECYCLE_LOG.SOURCE_ID.eq(originSourceId))
+		create.update(SOURCE_ACTIVITY_LOG)
+				.set(SOURCE_ACTIVITY_LOG.SOURCE_ID, targetSourceId)
+				.where(SOURCE_ACTIVITY_LOG.SOURCE_ID.eq(originSourceId))
 				.execute();
 
 		deleteSource(originSourceId);
@@ -479,18 +474,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 										.from(WORD_ETYMOLOGY_SOURCE_LINK)
 										.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(sourceId))))
 				.fetchSingleInto(Boolean.class);
-	}
-
-	public List<String> getSourceAttributesByType(Long sourceId, FreeformType freeformType) {
-
-		return create
-				.select(FREEFORM.VALUE_TEXT)
-				.from(FREEFORM)
-				.where(FREEFORM.ID.in(DSL.select(SOURCE_FREEFORM.FREEFORM_ID)
-						.from(SOURCE_FREEFORM)
-						.where(SOURCE_FREEFORM.SOURCE_ID.eq(sourceId)
-								.and(FREEFORM.TYPE.eq(freeformType.name())))))
-				.fetchInto(String.class);
 	}
 
 	private Result<FreeformRecord> getSourceFreeformRecords(Long sourceId) {

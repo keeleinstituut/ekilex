@@ -15,7 +15,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.ActivityOwner;
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.app.EkilexApplication;
 import eki.ekilex.data.ActivityLogData;
@@ -51,10 +51,10 @@ public class ActivityLogTest extends AbstractTest {
 
 		final Long ownerId = 123456L;
 
-		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.LEXEME);
-		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.WORD);
-		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.MEANING);
-		activityLogService.createActivityLog("dummy", ownerId, LifecycleLogOwner.SOURCE);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.LEXEME);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.WORD);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.MEANING);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.SOURCE);
 	}
 
 	@Test
@@ -62,7 +62,7 @@ public class ActivityLogTest extends AbstractTest {
 
 		final Long wordId = 1001L;
 		final Long ownerId = new Long(wordId);
-		final LifecycleLogOwner ownerName = LifecycleLogOwner.WORD;
+		final ActivityOwner ownerName = ActivityOwner.WORD;
 
 		String functName;
 		Long entityId;

@@ -438,21 +438,6 @@ create table tag
 -- dünaamiline andmestik --
 ---------------------------
 
--- olemi elutsükli logi
-create table lifecycle_log
-(
-  id bigserial primary key,
-  entity_id bigint not null,
-  entity_name text not null,
-  entity_prop text not null,
-  event_type varchar(100) not null,
-  event_by text not null,
-  event_on timestamp not null default statement_timestamp(),
-  recent text null,
-  entry text null
-);
-alter sequence lifecycle_log_id_seq restart with 10000;
-
 -- sõnakogu
 create table dataset
 (
@@ -539,14 +524,6 @@ create table source_freeform
   unique(source_id, freeform_id)
 );
 alter sequence source_freeform_id_seq restart with 10000;
-
-create table source_lifecycle_log
-(
-  id bigserial primary key,
-  source_id bigint references source(id) on delete cascade not null,
-  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
-);
-alter sequence source_lifecycle_log_id_seq restart with 10000;
 
 -- keelend (morfoloogiline homonüüm)
 create table word
@@ -664,14 +641,6 @@ create table word_freeform
 );
 alter sequence word_freeform_id_seq restart with 10000;
 
-create table word_lifecycle_log
-(
-  id bigserial primary key,
-  word_id bigint references word(id) on delete cascade not null,
-  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
-);
-alter sequence word_lifecycle_log_id_seq restart with 10000;
-
 -- paradigma
 create table paradigm
 (
@@ -757,14 +726,6 @@ create table meaning_semantic_type
   unique(meaning_id, semantic_type_code)
 );
 alter sequence meaning_semantic_type_id_seq restart with 10000;
-
-create table meaning_lifecycle_log
-(
-  id bigserial primary key,
-  meaning_id bigint references meaning(id) on delete cascade not null,
-  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
-);
-alter sequence meaning_lifecycle_log_id_seq restart with 10000;
 
 -- tähenduse vabavorm
 create table meaning_freeform
@@ -910,14 +871,6 @@ create table lexeme_freeform
   unique(lexeme_id, freeform_id)
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
-
-create table lexeme_lifecycle_log
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
-);
-alter sequence lexeme_lifecycle_log_id_seq restart with 10000;
 
 -- ilmiku seos
 create table lex_relation
@@ -1113,15 +1066,6 @@ create table source_activity_log
 );
 alter sequence source_activity_log_id_seq restart with 10000;
 
-create table lifecycle_activity_log
-(
-id bigserial primary key,
-lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null,
-activity_log_id bigint references activity_log(id) on delete cascade not null,
-unique(lifecycle_log_id,activity_log_id)
-);
-alter sequence lifecycle_activity_log_id_seq restart with 10000;
-
 create table game_nonword
 (
   id bigserial primary key,
@@ -1306,18 +1250,6 @@ create index word_freq_corp_id_idx on word_freq(freq_corp_id);
 create index word_freq_word_id_idx on word_freq(word_id);
 create index word_freq_value_id_idx on word_freq(value);
 create index word_freq_rank_id_idx on word_freq(rank);
-create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
-create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);
-create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meaning_id);
-create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
-create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
-create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
-create index source_lifecycle_log_source_id_idx on source_lifecycle_log(source_id);
-create index source_lifecycle_log_log_id_idx on source_lifecycle_log(lifecycle_log_id);
-create index lifecycle_log_event_on_idx on lifecycle_log(event_on);
-create index lifecycle_log_event_on_ms_idx on lifecycle_log((date_part('epoch', event_on) * 1000));
-create index lifecycle_log_event_by_idx on lifecycle_log(event_by);
-create index lifecycle_log_event_by_lower_idx on lifecycle_log(lower(event_by));
 create index lexeme_activity_log_lexeme_id_idx on lexeme_activity_log(lexeme_id);
 create index lexeme_activity_log_log_id_idx on lexeme_activity_log(activity_log_id);
 create index word_activity_log_word_id_idx on word_activity_log(word_id);
@@ -1334,8 +1266,6 @@ create index activity_log_owner_idx on activity_log(owner_name, owner_id);
 create index activity_funct_name_idx on activity_log(funct_name);
 create index activity_entity_name_idx on activity_log(entity_name);
 create index activity_entity_name_owner_name_event_on_idx on activity_log(entity_name, owner_name, (date_part('epoch', event_on) * 1000));
-create index lifecycle_activity_log_ll_id_idx on lifecycle_activity_log(lifecycle_log_id);
-create index lifecycle_activity_log_al_id_idx on lifecycle_activity_log(activity_log_id);
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
 create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
 create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);

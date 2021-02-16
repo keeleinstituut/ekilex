@@ -19,8 +19,6 @@
 	<modules>
 		<module>eki-common</module>
 		<module>ekilex-app</module>
-		<module>ekilex-etl</module>
-		<module>ekilex-rus-morph</module>
 		<module>wordweb-app</module>
         <module>ekistat-app</module>
 	</modules>
@@ -125,11 +123,6 @@
 				<artifactId>eki-common</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
 				<version>1.21-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>eki.ekilex</groupId>
-				<artifactId>ekilex-rus-morph</artifactId>
-				<version>1.0.0</version>
 			</dependency>
 			<!-- commons -->
 			<dependency>

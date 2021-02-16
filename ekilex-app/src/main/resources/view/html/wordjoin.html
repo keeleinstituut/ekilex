@@ -120,7 +120,7 @@
         <span class="lbl">Sugu</span>
       </div>
       <div class="col pl-0">
-        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.genderCode, wordGenders)}"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.genderCode, wordGenders)}"></span>
       </div>
     </div>
   </th:block>
@@ -146,7 +146,7 @@
         <span class="lbl">Aspekt</span>
       </div>
       <div class="col pl-0">
-        <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.word.aspectCode, wordAspects)}"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.aspectCode, wordAspects)}"></span>
       </div>
     </div>
   </th:block>

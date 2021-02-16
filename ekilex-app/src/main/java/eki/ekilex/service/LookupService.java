@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleEntity;
+import eki.common.constant.ActivityOwner;
 import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
@@ -340,14 +340,14 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<Classifier> getOppositeRelations(LifecycleEntity entity, String relationTypeCode) {
+	public List<Classifier> getOppositeRelations(ActivityOwner owner, String relationTypeCode) {
 
 		List<Classifier> oppositeRelations = new ArrayList<>();
-		if (LifecycleEntity.WORD.equals(entity)) {
+		if (ActivityOwner.WORD.equals(owner)) {
 			oppositeRelations = lookupDbService.getWordOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		} else if (LifecycleEntity.LEXEME.equals(entity)) {
+		} else if (ActivityOwner.LEXEME.equals(owner)) {
 			oppositeRelations = lookupDbService.getLexemeOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		} else if (LifecycleEntity.MEANING.equals(entity)) {
+		} else if (ActivityOwner.MEANING.equals(owner)) {
 			oppositeRelations = lookupDbService.getMeaningOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		}
 		return oppositeRelations;

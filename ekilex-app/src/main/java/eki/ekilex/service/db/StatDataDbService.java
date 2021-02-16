@@ -28,6 +28,7 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
@@ -37,11 +38,8 @@ import eki.ekilex.data.StatDataRow;
 @Component
 public class StatDataDbService implements GlobalConstant {
 
-	final private DSLContext create;
-
-	public StatDataDbService(DSLContext create) {
-		this.create = create;
-	}
+	@Autowired
+	private DSLContext create;
 
 	public StatData getMainEntityStatData() {
 
@@ -115,7 +113,7 @@ public class StatDataDbService implements GlobalConstant {
 				.fetchInto(StatDataRow.class);
 	}
 
-	public List<StatDataRow> getLifecycleUserStatData(Timestamp from) {
+	public List<StatDataRow> getActivityStatData(Timestamp from) {
 
 		Field<Integer> rowCount = DSL.field((DSL.count(ACTIVITY_LOG.ID)).as("row_count"));
 		return create

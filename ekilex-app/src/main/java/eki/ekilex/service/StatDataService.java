@@ -31,7 +31,7 @@ import java.util.Map;
 @Component
 public class StatDataService implements InitializingBean, SystemConstant, GlobalConstant {
 
-	private static final int LIFECYCLE_USER_STAT_DATA_LAST_DAYS_COUNT = 30;
+	private static final int ACTIVITY_STAT_DAYS_COUNT = 30;
 
 	@Value("${scheduling.enabled:false}")
 	private boolean isSchedulingEnabled;
@@ -51,14 +51,14 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 
 	private List<StatDataRow> lexemeDatasetStatData;
 
-	private List<StatDataRow> lifecycleUserStatData;
+	private List<StatDataRow> activityStatData;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		mainEntityStatData = new StatData();
 		freeformStatData = Collections.emptyList();
 		lexemeDatasetStatData = Collections.emptyList();
-		lifecycleUserStatData = Collections.emptyList();
+		activityStatData = Collections.emptyList();
 	}
 
 	@Scheduled(fixedDelay = UPDATE_STAT_DATA_DELAY, initialDelay = 60000)
@@ -68,11 +68,11 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 		if (!isSchedulingEnabled) {
 			return;
 		}
-		Timestamp from = getPastTimestamp(LIFECYCLE_USER_STAT_DATA_LAST_DAYS_COUNT);
+		Timestamp from = getPastTimestamp(ACTIVITY_STAT_DAYS_COUNT);
 		mainEntityStatData = statDataDbService.getMainEntityStatData();
 		freeformStatData = statDataDbService.getFreeformStatData();
 		lexemeDatasetStatData = statDataDbService.getLexemeDatasetStatData();
-		lifecycleUserStatData = statDataDbService.getLifecycleUserStatData(from);
+		activityStatData = statDataDbService.getActivityStatData(from);
 	}
 
 	public StatData getMainEntityStatData() {
@@ -87,8 +87,8 @@ public class StatDataService implements InitializingBean, SystemConstant, Global
 		return lexemeDatasetStatData;
 	}
 
-	public List<StatDataRow> getLifecycleUserStatData() {
-		return lifecycleUserStatData;
+	public List<StatDataRow> getActivityStatData() {
+		return activityStatData;
 	}
 
 	private Timestamp getPastTimestamp(int daysInPast) {

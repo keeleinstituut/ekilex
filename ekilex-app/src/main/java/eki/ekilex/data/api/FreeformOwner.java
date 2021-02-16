@@ -1,24 +1,24 @@
 package eki.ekilex.data.api;
 
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleEntity;
 import eki.common.data.AbstractDataObject;
 
 public class FreeformOwner extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private LifecycleEntity entity;
+	private ActivityEntity entity;
 
 	private Long entityId;
 
 	private FreeformType type;
 
-	public LifecycleEntity getEntity() {
+	public ActivityEntity getEntity() {
 		return entity;
 	}
 
-	public void setEntity(LifecycleEntity entity) {
+	public void setEntity(ActivityEntity entity) {
 		this.entity = entity;
 	}
 

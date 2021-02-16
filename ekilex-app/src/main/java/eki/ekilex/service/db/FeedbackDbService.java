@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Feedback;
@@ -16,11 +17,8 @@ import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
 @Component
 public class FeedbackDbService {
 
+	@Autowired
 	private DSLContext create;
-
-	public FeedbackDbService(DSLContext context) {
-		create = context;
-	}
 
 	public void createFeedback(Feedback feedback) {
 		FeedbackLogRecord feedbackLogRecord = create.newRecord(FEEDBACK_LOG);

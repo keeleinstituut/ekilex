@@ -250,11 +250,6 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_ID_SEQ = Internal.createSequence("lexeme_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.lexeme_lifecycle_log_id_seq</code>
-     */
-    public static final Sequence<Long> LEXEME_LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("lexeme_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.lexeme_order_by_seq</code>
      */
     public static final Sequence<Long> LEXEME_ORDER_BY_SEQ = Internal.createSequence("lexeme_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -305,16 +300,6 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_TAG_ID_SEQ = Internal.createSequence("lexeme_tag_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
-     * The sequence <code>public.lifecycle_activity_log_id_seq</code>
-     */
-    public static final Sequence<Long> LIFECYCLE_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("lifecycle_activity_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.lifecycle_log_id_seq</code>
-     */
-    public static final Sequence<Long> LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
      * The sequence <code>public.meaning_activity_log_id_seq</code>
      */
     public static final Sequence<Long> MEANING_ACTIVITY_LOG_ID_SEQ = Internal.createSequence("meaning_activity_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -338,11 +323,6 @@ public class Sequences {
      * The sequence <code>public.meaning_id_seq</code>
      */
     public static final Sequence<Long> MEANING_ID_SEQ = Internal.createSequence("meaning_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.meaning_lifecycle_log_id_seq</code>
-     */
-    public static final Sequence<Long> MEANING_LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("meaning_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.meaning_nr_id_seq</code>
@@ -428,11 +408,6 @@ public class Sequences {
      * The sequence <code>public.source_id_seq</code>
      */
     public static final Sequence<Long> SOURCE_ID_SEQ = Internal.createSequence("source_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.source_lifecycle_log_id_seq</code>
-     */
-    public static final Sequence<Long> SOURCE_LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("source_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.tag_order_by_seq</code>
@@ -533,11 +508,6 @@ public class Sequences {
      * The sequence <code>public.word_id_seq</code>
      */
     public static final Sequence<Long> WORD_ID_SEQ = Internal.createSequence("word_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
-
-    /**
-     * The sequence <code>public.word_lifecycle_log_id_seq</code>
-     */
-    public static final Sequence<Long> WORD_LIFECYCLE_LOG_ID_SEQ = Internal.createSequence("word_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_rel_type_order_by_seq</code>

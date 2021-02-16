@@ -499,7 +499,7 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 	$.ajax({
 		url: getOppositeClassifiersUrl,
 		data: {entity: entity, relationType: relationTypeValue},
-		method: 'POST',
+		method: 'GET',
 	}).done(function(classifiers) {
 		oppositeRelationSelect.children().remove();
 		if (classifiers.length === 0) {

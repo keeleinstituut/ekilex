@@ -134,15 +134,6 @@ public class DatasetDbService {
 			create.deleteFrom(MEANING).where(MEANING.ID.in(meaningIds)).execute();
 		}
 
-		// delete word lifecycle logs
-		helper.deleteWordLifecycleLogs(datasetCode, create);
-
-		// delete lexeme lifecycle logs
-		helper.deleteLexemeLifecycleLogs(datasetCode, create);
-
-		// delete meaning lifecycle logs
-		helper.deleteMeaningLifecycleLogs(datasetCode, create);
-
 		// delete dataset
 		create.delete(DATASET).where(DATASET.CODE.eq(datasetCode)).execute();
 	}

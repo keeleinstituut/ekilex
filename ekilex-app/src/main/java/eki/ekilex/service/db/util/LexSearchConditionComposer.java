@@ -38,7 +38,7 @@ import eki.common.constant.ActivityFunct;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.ActivityOwner;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -719,7 +719,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1
-						.and(al.OWNER_NAME.eq(LifecycleLogOwner.WORD.name()))
+						.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
 						.and(al.OWNER_ID.eq(wordIdField))
 						.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
 						.and(al.FUNCT_NAME.like(LIKE_CREATE));

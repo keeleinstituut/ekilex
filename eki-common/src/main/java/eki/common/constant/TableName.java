@@ -22,8 +22,6 @@ public interface TableName {
 	// dynamic
 	String SOURCE = "source";
 	String SOURCE_FREEFORM = "source_freeform";
-	@Deprecated
-	String SOURCE_LIFECYCLE_LOG = "source_lifecycle_log";
 	String SOURCE_ACTIVITY_LOG = "source_activity_log";
 	String WORD = "word";
 	String WORD_GUID = "word_guid";
@@ -35,8 +33,6 @@ public interface TableName {
 	String WORD_RELATION = "word_relation";
 	String WORD_RELATION_PARAM = "word_relation_param";
 	String WORD_GROUP = "word_group";
-	@Deprecated
-	String WORD_LIFECYCLE_LOG = "word_lifecycle_log";
 	String WORD_ACTIVITY_LOG = "word_activity_log";
 	String WORD_FREEFORM = "word_freeform";
 	String LEXEME = "lexeme";
@@ -48,8 +44,6 @@ public interface TableName {
 	String LEXEME_FREQUENCY = "lexeme_frequency";
 	String LEXEME_RELATION = "lex_relation";
 	String LEXEME_SOURCE_LINK = "lexeme_source_link";
-	@Deprecated
-	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";
 	String LEXEME_ACTIVITY_LOG = "lexeme_activity_log";
 	String LEXEME_TAG = "lexeme_tag";
 	String LEX_COLLOC = "lex_colloc";
@@ -61,8 +55,6 @@ public interface TableName {
 	String MEANING_SEMANTIC_TYPE = "meaning_semantic_type";
 	String MEANING_FREEFORM = "meaning_freeform";
 	String MEANING_RELATION = "meaning_relation";
-	@Deprecated
-	String MEANING_LIFECYCLE_LOG = "meaning_lifecycle_log";
 	String MEANING_ACTIVITY_LOG = "meaning_activity_log";
 	String DEFINITION = "definition";
 	String DEFINITION_FREEFORM = "definition_freeform";
@@ -75,8 +67,6 @@ public interface TableName {
 	String FREEFORM_SOURCE_LINK = "freeform_source_link";
 	String COLLOCATION = "collocation";
 	String COLLOCATION_FREEFORM = "collocation_freeform";
-	@Deprecated
-	String LIFECYCLE_LOG = "lifecycle_log";
 	String ACTIVITY_LOG = "activity_log";
 	String GAME_NONWORD = "game_nonword";
 }

@@ -163,9 +163,6 @@ begin
     get diagnostics tmp_cnt = row_count;
     any_rec_cnt := any_rec_cnt + tmp_cnt;
     -- log rels
-    update word_lifecycle_log wll set word_id = w_m_row.tgt_word_id where wll.word_id = w_m_row.src_word_id;
-    get diagnostics tmp_cnt = row_count;
-    log_rec_cnt := log_rec_cnt + tmp_cnt;
     update word_activity_log wal1
        set word_id = w_m_row.tgt_word_id
     where wal1.word_id = w_m_row.src_word_id

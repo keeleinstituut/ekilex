@@ -34,8 +34,6 @@ public interface WebConstant {
 
 	String MAINTENANCE_URI = "/maintenance";
 
-	String COMPONENT_URI = "/comp";
-
 	String VIEW_RESOURCES_URI = "/view";
 
 	String LEX_SEARCH_PAGE = "lexsearch";
@@ -60,15 +58,9 @@ public interface WebConstant {
 
 	String LEXEME_DETAILS_URI = "/lexemedetails";
 
-	String PARADIGMS_URI = "/paradigms";
-
 	String TERM_MEANING_DETAILS_URI = "/termmeaningdetails";
 
 	String LIM_TERM_MEANING_DETAILS_URI = "/limtermmeaningdetails";
-
-	String DOMAINS_URI = "/domains";
-
-	String DOMAIN_ORIGINS_URI = "/domainorigins";
 
 	String WORD_SELECT_URI = "/wordselect";
 
@@ -91,8 +83,6 @@ public interface WebConstant {
 	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";
 
 	String VALIDATE_MEANING_DATA_IMPORT_URI = "/validatemeaningdataimport";
-
-	String AUTH_ERROR_URI = "/autherror";
 
 	String SEND_FEEDBACK_URI = "/send_feedback";
 
@@ -153,13 +143,6 @@ public interface WebConstant {
 	String COMPONENTS_PAGE = "components";
 
 	String COMMON_PAGE = "common";
-
-	String LEXDIALOG_PAGE = "lexdialog";
-
-	String TERMDIALOG_PAGE = "termdialog";
-
-	@Deprecated
-	String LIFECYCLELOGVIEW_PAGE = "lifecyclelogview";
 
 	String ACTIVITYLOGVIEW_PAGE = "activitylogview";
 
@@ -249,10 +232,6 @@ public interface WebConstant {
 
 	String CLASSIFIERS_PAGE = "classifiers";
 
-	String CLASSIFIER_URI = "/classifier";
-
-	String EMPTY_CLASSIFIER_URI = "/empty_classifier";
-
 	String CREATE_CLASSIFIER_URI = "/create_classifier";
 
 	String UPDATE_CLASSIFIER_URI = "/update_classifier";
@@ -325,13 +304,9 @@ public interface WebConstant {
 
 	String CLASSIFIER_UTIL_KEY = "classifierUtil";
 
-	String USER_KEY = "user";
-
 	String USER_PROFILE_KEY = "userProfile";
 
 	String USER_ROLE_DATA_KEY = "userRoleData";
-
-	String SEARCH_WORD_KEY = "searchWord";
 
 	String REQUEST_START_TIME_KEY = "request_start_time";
 }

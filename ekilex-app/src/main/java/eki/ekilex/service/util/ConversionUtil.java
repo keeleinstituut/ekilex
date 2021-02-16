@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,11 +92,6 @@ public class ConversionUtil implements GlobalConstant {
 
 	@Autowired
 	private MessageSource messageSource;
-
-	public static String getClassifierValue(String code, List<Classifier> classifiers) {
-		Optional<Classifier> classifier = classifiers.stream().filter(c -> c.getCode().equals(code)).findFirst();
-		return classifier.isPresent() ? classifier.get().getValue() : code;
-	}
 
 	public void cleanTermMeanings(List<TermMeaning> termMeanings) {
 

@@ -36,7 +36,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.DatasetType;
-import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.ActivityOwner;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
@@ -395,14 +395,14 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 		logger.info("Creating activity logs for {} words, {} lexemes, {} meanings ...", loggingWordIds.size(), loggingLexemeIds.size(), loggingMeaningIds.size());
 
-		createActivityLogs(functName, loggingLexemeIds, LifecycleLogOwner.LEXEME);
-		createActivityLogs(functName, loggingWordIds, LifecycleLogOwner.WORD);
-		createActivityLogs(functName, loggingMeaningIds, LifecycleLogOwner.MEANING);
+		createActivityLogs(functName, loggingLexemeIds, ActivityOwner.LEXEME);
+		createActivityLogs(functName, loggingWordIds, ActivityOwner.WORD);
+		createActivityLogs(functName, loggingMeaningIds, ActivityOwner.MEANING);
 
 		logger.info("Activity logs created");
 	}
 
-	private void createActivityLogs(String functName, List<Long> ownerIds, LifecycleLogOwner ownerName) throws Exception {
+	private void createActivityLogs(String functName, List<Long> ownerIds, ActivityOwner ownerName) throws Exception {
 		for (Long ownerId : ownerIds) {
 			activityLogService.createActivityLog(functName, ownerId, ownerName);
 		}

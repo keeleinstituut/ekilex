@@ -53,19 +53,15 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.LifecycleActivityLog;
-import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
@@ -88,7 +84,6 @@ import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
@@ -127,7 +122,6 @@ import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
-import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -171,7 +165,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1286843074;
+    private static final long serialVersionUID = -1776876120;
 
     /**
      * The reference instance of <code>public</code>
@@ -424,11 +418,6 @@ public class Public extends SchemaImpl {
     public final LexemeFreeform LEXEME_FREEFORM = LexemeFreeform.LEXEME_FREEFORM;
 
     /**
-     * The table <code>public.lexeme_lifecycle_log</code>.
-     */
-    public final LexemeLifecycleLog LEXEME_LIFECYCLE_LOG = LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG;
-
-    /**
      * The table <code>public.lexeme_pos</code>.
      */
     public final LexemePos LEXEME_POS = LexemePos.LEXEME_POS;
@@ -454,16 +443,6 @@ public class Public extends SchemaImpl {
     public final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
 
     /**
-     * The table <code>public.lifecycle_activity_log</code>.
-     */
-    public final LifecycleActivityLog LIFECYCLE_ACTIVITY_LOG = LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG;
-
-    /**
-     * The table <code>public.lifecycle_log</code>.
-     */
-    public final LifecycleLog LIFECYCLE_LOG = LifecycleLog.LIFECYCLE_LOG;
-
-    /**
      * The table <code>public.meaning</code>.
      */
     public final Meaning MEANING = Meaning.MEANING;
@@ -482,11 +461,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_freeform</code>.
      */
     public final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
-
-    /**
-     * The table <code>public.meaning_lifecycle_log</code>.
-     */
-    public final MeaningLifecycleLog MEANING_LIFECYCLE_LOG = MeaningLifecycleLog.MEANING_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.meaning_nr</code>.
@@ -597,11 +571,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.source_freeform</code>.
      */
     public final SourceFreeform SOURCE_FREEFORM = SourceFreeform.SOURCE_FREEFORM;
-
-    /**
-     * The table <code>public.source_lifecycle_log</code>.
-     */
-    public final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.tag</code>.
@@ -794,11 +763,6 @@ public class Public extends SchemaImpl {
     public final WordGuid WORD_GUID = WordGuid.WORD_GUID;
 
     /**
-     * The table <code>public.word_lifecycle_log</code>.
-     */
-    public final WordLifecycleLog WORD_LIFECYCLE_LOG = WordLifecycleLog.WORD_LIFECYCLE_LOG;
-
-    /**
      * The table <code>public.word_rel_mapping</code>.
      */
     public final WordRelMapping WORD_REL_MAPPING = WordRelMapping.WORD_REL_MAPPING;
@@ -901,7 +865,6 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_FREEFORM_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ORDER_BY_SEQ,
             Sequences.LEXEME_ID_SEQ,
-            Sequences.LEXEME_LIFECYCLE_LOG_ID_SEQ,
             Sequences.LEXEME_ORDER_BY_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_POS_ORDER_BY_SEQ,
@@ -912,14 +875,11 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
             Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_TAG_ID_SEQ,
-            Sequences.LIFECYCLE_ACTIVITY_LOG_ID_SEQ,
-            Sequences.LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
-            Sequences.MEANING_LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_NR_ID_SEQ,
             Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
@@ -937,7 +897,6 @@ public class Public extends SchemaImpl {
             Sequences.SOURCE_ACTIVITY_LOG_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
-            Sequences.SOURCE_LIFECYCLE_LOG_ID_SEQ,
             Sequences.TAG_ORDER_BY_SEQ,
             Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
             Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
@@ -958,7 +917,6 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GROUP_MEMBER_ORDER_BY_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
-            Sequences.WORD_LIFECYCLE_LOG_ID_SEQ,
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
@@ -1020,19 +978,15 @@ public class Public extends SchemaImpl {
             LexemeActivityLog.LEXEME_ACTIVITY_LOG,
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
-            LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG,
             LexemePos.LEXEME_POS,
             LexemeRegion.LEXEME_REGION,
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
             LexemeTag.LEXEME_TAG,
-            LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG,
-            LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
             MeaningActivityLog.MEANING_ACTIVITY_LOG,
             MeaningDomain.MEANING_DOMAIN,
             MeaningFreeform.MEANING_FREEFORM,
-            MeaningLifecycleLog.MEANING_LIFECYCLE_LOG,
             MeaningNr.MEANING_NR,
             MeaningRelMapping.MEANING_REL_MAPPING,
             MeaningRelType.MEANING_REL_TYPE,
@@ -1055,7 +1009,6 @@ public class Public extends SchemaImpl {
             Source.SOURCE,
             SourceActivityLog.SOURCE_ACTIVITY_LOG,
             SourceFreeform.SOURCE_FREEFORM,
-            SourceLifecycleLog.SOURCE_LIFECYCLE_LOG,
             Tag.TAG,
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
@@ -1094,7 +1047,6 @@ public class Public extends SchemaImpl {
             WordGroup.WORD_GROUP,
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
-            WordLifecycleLog.WORD_LIFECYCLE_LOG,
             WordRelMapping.WORD_REL_MAPPING,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,

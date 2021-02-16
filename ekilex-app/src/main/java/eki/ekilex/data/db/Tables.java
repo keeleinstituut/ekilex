@@ -53,19 +53,15 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeActivityLog;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.LifecycleActivityLog;
-import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
@@ -88,7 +84,6 @@ import eki.ekilex.data.db.tables.SemanticTypeLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.SourceLifecycleLog;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
@@ -127,7 +122,6 @@ import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
-import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -390,11 +384,6 @@ public class Tables {
     public static final LexemeFreeform LEXEME_FREEFORM = LexemeFreeform.LEXEME_FREEFORM;
 
     /**
-     * The table <code>public.lexeme_lifecycle_log</code>.
-     */
-    public static final LexemeLifecycleLog LEXEME_LIFECYCLE_LOG = LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG;
-
-    /**
      * The table <code>public.lexeme_pos</code>.
      */
     public static final LexemePos LEXEME_POS = LexemePos.LEXEME_POS;
@@ -420,16 +409,6 @@ public class Tables {
     public static final LexemeTag LEXEME_TAG = LexemeTag.LEXEME_TAG;
 
     /**
-     * The table <code>public.lifecycle_activity_log</code>.
-     */
-    public static final LifecycleActivityLog LIFECYCLE_ACTIVITY_LOG = LifecycleActivityLog.LIFECYCLE_ACTIVITY_LOG;
-
-    /**
-     * The table <code>public.lifecycle_log</code>.
-     */
-    public static final LifecycleLog LIFECYCLE_LOG = LifecycleLog.LIFECYCLE_LOG;
-
-    /**
      * The table <code>public.meaning</code>.
      */
     public static final Meaning MEANING = Meaning.MEANING;
@@ -448,11 +427,6 @@ public class Tables {
      * The table <code>public.meaning_freeform</code>.
      */
     public static final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
-
-    /**
-     * The table <code>public.meaning_lifecycle_log</code>.
-     */
-    public static final MeaningLifecycleLog MEANING_LIFECYCLE_LOG = MeaningLifecycleLog.MEANING_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.meaning_nr</code>.
@@ -563,11 +537,6 @@ public class Tables {
      * The table <code>public.source_freeform</code>.
      */
     public static final SourceFreeform SOURCE_FREEFORM = SourceFreeform.SOURCE_FREEFORM;
-
-    /**
-     * The table <code>public.source_lifecycle_log</code>.
-     */
-    public static final SourceLifecycleLog SOURCE_LIFECYCLE_LOG = SourceLifecycleLog.SOURCE_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.tag</code>.
@@ -758,11 +727,6 @@ public class Tables {
      * The table <code>public.word_guid</code>.
      */
     public static final WordGuid WORD_GUID = WordGuid.WORD_GUID;
-
-    /**
-     * The table <code>public.word_lifecycle_log</code>.
-     */
-    public static final WordLifecycleLog WORD_LIFECYCLE_LOG = WordLifecycleLog.WORD_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.word_rel_mapping</code>.

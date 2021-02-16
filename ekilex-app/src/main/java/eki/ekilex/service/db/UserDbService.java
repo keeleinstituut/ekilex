@@ -10,6 +10,7 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.service.db.AbstractDbService;
@@ -20,11 +21,8 @@ import eki.ekilex.data.db.tables.records.EkiUserRecord;
 @Component
 public class UserDbService extends AbstractDbService {
 
+	@Autowired
 	private DSLContext create;
-
-	public UserDbService(DSLContext context) {
-		create = context;
-	}
 
 	public Long createUser(String email, String name, String password, String activationKey, String termsVer) {
 		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
