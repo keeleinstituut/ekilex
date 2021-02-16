@@ -1,26 +1,27 @@
 package eki.ekilex.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.FreeformType;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.ContentKey;
+import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
+import eki.common.constant.SourceType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.api.FreeformOwner;
-import eki.ekilex.service.db.SourceLinkDbService;
 
 @Component
-public class SourceLinkService extends AbstractService {
-
-	@Autowired
-	private SourceLinkDbService sourceLinkDbService;
+public class SourceLinkService extends AbstractSourceService {
 
 	@Transactional
 	public SourceLink getSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner) {
@@ -59,6 +60,27 @@ public class SourceLinkService extends AbstractService {
 		}
 		return null;
 	}
+
+    @Transactional
+    public void createSourceAndSourceLink(
+    		SourceType sourceType, List<SourceProperty> sourceProperties, Long sourceLinkOwnerId, String sourceLinkOwnerCode) throws Exception {
+
+        Long sourceId = createSource(sourceType, sourceProperties);
+
+		String sourceLinkValue = sourceProperties.get(0).getValueText();
+		ReferenceType sourceLinkRefType = ReferenceType.ANY;
+        String sourceLinkName = null;
+		List<String> freeformSourceLinkOwnerCodes = Arrays.asList(
+				"usage_source_link", "lexeme_ff_source_link", "meaning_ff_source_link", "definition_ff_source_link");
+
+		if (ContentKey.DEFINITION_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+            createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+        } else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+        	createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+		} else if (freeformSourceLinkOwnerCodes.contains(sourceLinkOwnerCode)) {
+			createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+		}
+    }
 
 	private boolean isSupportedSourceLink(FreeformOwner freeformOwner) {
 		if (ActivityEntity.LEXEME.equals(freeformOwner.getEntity())

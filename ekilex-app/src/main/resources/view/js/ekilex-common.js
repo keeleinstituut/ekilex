@@ -96,7 +96,7 @@ function alignAndFocus(e, dlg) {
 };
 
 // Do not change the selector to '.required-field' as it causes selectpicker to fire change event twice
-$(document).on("change", "input.required-field, select.required-field", function() {
+$(document).on("change", "input.required-field, select.required-field, textarea.required-field", function() {
 	let isSelectPicker = $(this).hasClass('classifier-select');
 	let markableField = isSelectPicker ? $(this).parent() : $(this);
 
@@ -308,7 +308,7 @@ function checkRequiredFields(thisForm) {
 	let isValid = true;
 
 	// Do not change the selector to '.required-field' as it causes selectpicker to fire change event twice
-	let requiredFields = thisForm.find('input.required-field:not(:hidden), select.required-field:not(:hidden)');
+	let requiredFields = thisForm.find('input.required-field:not(:hidden), select.required-field:not(:hidden), textarea.required-field:not(:hidden)');
 
 	requiredFields.each(function() {
 		let isRequiredRange = $(this).hasClass('required-range');
@@ -359,6 +359,7 @@ function initAddSourceLinkDlg(addDlg) {
 		let url = theForm.attr('action') + '?' + theForm.serialize();
 		$.get(url).done(function(data) {
 			addDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
+			$wpm.bindObjects();
 			addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
 				e.preventDefault();
 				let button = $(e.target);
@@ -371,7 +372,12 @@ function initAddSourceLinkDlg(addDlg) {
 				let theForm = button.closest('form');
 
 				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+					var successCallbackName = addDlg.attr("data-callback");
+					var successCallbackFunc = undefined;
+					if (successCallbackName) {
+						successCallbackFunc = () => eval(successCallbackName);
+					}
+					submitForm(theForm, 'Andmete muutmine ebaõnnestus.', successCallbackFunc).always(function() {
 						addDlg.modal('hide');
 					});
 				}
