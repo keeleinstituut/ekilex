@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.FreeformType;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
@@ -25,16 +25,12 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
-import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
-public class SourceService extends AbstractService {
+public class SourceService extends AbstractSourceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
-
-	@Autowired
-	private SourceDbService sourceDbService;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -140,14 +136,6 @@ public class SourceService extends AbstractService {
 			return Collections.emptyList();
 		}
 		return sourceDbService.getSourceNames(nameSearchFilter, limit);
-	}
-
-	@Transactional
-	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) throws Exception {
-
-		Long sourceId = sourceDbService.createSource(sourceType, sourceProperties);
-		activityLogService.createActivityLog("createSource", sourceId, ActivityOwner.SOURCE);
-		return sourceId;
 	}
 
 	@Transactional

@@ -200,6 +200,8 @@ public interface WebConstant {
 
 	String CREATE_SOURCE_URI = "/create_source";
 
+	String CREATE_SOURCE_AND_SOURCE_LINK_URI = "/create_source_and_source_link";
+
 	String VALIDATE_DELETE_SOURCE_URI = "/validate_delete_source";
 
 	String DELETE_SOURCE_URI = "/delete_source";

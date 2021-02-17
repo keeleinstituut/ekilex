@@ -102,39 +102,6 @@
       </tr>
     </table>
   </div>
-  <th:block th:fragment="add_new_source_property">
-    <div class="form-group row" id="source_property_element">
-      <div class="col-md-12">
-        <div class="border rounded" name="sourcePropertyGroup">
-          <div class="form-group row p-2 m-2">
-            <div class="col-auto">
-              <label title="Allika atribuudi nimetus">
-                <select required class="form-control" name="properties[][type]">
-                  <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value</option>
-                </select>
-              </label>
-            </div>
-            <div class="col-4 pl-0">
-              <button type="button" class="btn btn-success btn-sm mt-1" name="addPropertyGroupBtn" title="Lisa uus allika atribuut">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn btn-danger btn-sm mt-1" name="removePropertyGroupBtn" title="Eemalda">
-                <i class="fa fa-minus" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-          <div class="form-group row p-2 m-2" name="propertyValue">
-            <div class="col-12">
-              <textarea rows="3" class="form-control" name="properties[][valueText]"></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <script th:inline="javascript">
-    	initialiseAddNewProperty();
-    </script>
-  </th:block>
   <th:block th:fragment="source_join_details(targetSourceId,source)" th:if="${source != null}">
     <div>
       <table class="w-100" th:fragment="details">

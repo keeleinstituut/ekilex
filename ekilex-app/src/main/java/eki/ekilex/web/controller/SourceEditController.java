@@ -29,6 +29,7 @@ import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourceRequest;
 import eki.ekilex.data.UserContextData;
+import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.web.util.ValueUtil;
 
@@ -43,6 +44,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	@Autowired
 	private SourceService sourceService;
+
+	@Autowired
+	private SourceLinkService sourceLinkService;
 
 	@Autowired
 	private ValueUtil valueUtil;
@@ -147,24 +151,27 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		String sourceName = source.getName();
 		SourceType sourceType = source.getType();
-		List<SourceProperty> properties = source.getProperties();
-
 		logger.debug("Creating new source, source name: {}", sourceName);
 
-		SourceProperty name = new SourceProperty();
-		name.setType(FreeformType.SOURCE_NAME);
-		name.setValueText(sourceName);
-		properties.add(0, name);
-
-		properties.forEach(property -> {
-			String valueText = property.getValueText();
-			valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
-			property.setValueText(valueText);
-		});
-
-		Long sourceId = sourceService.createSource(sourceType, properties);
-
+		List<SourceProperty> sourceProperties = processSourceProperties(source);
+		Long sourceId = sourceService.createSource(sourceType, sourceProperties);
 		return String.valueOf(sourceId);
+	}
+
+	@PostMapping(CREATE_SOURCE_AND_SOURCE_LINK_URI)
+	@ResponseBody
+	public String createSourceAndSourceLink(@RequestBody SourceRequest source) throws Exception {
+
+		String sourceName = source.getName();
+		SourceType sourceType = source.getType();
+		Long sourceLinkOwnerId = source.getId();
+		String sourceLinkOwnerCode = source.getOpCode();
+		logger.debug("Creating new source and source link, source name: {}", sourceName);
+
+		List<SourceProperty> sourceProperties = processSourceProperties(source);
+		sourceLinkService.createSourceAndSourceLink(sourceType, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode);
+
+		return RESPONSE_OK_VER2;
 	}
 
 	@GetMapping(VALIDATE_DELETE_SOURCE_URI + "/{sourceId}")
@@ -235,6 +242,26 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		model.addAttribute("previousSearch", previousSearch);
 
 		return SOURCE_JOIN_PAGE;
+	}
+
+	private List<SourceProperty> processSourceProperties(SourceRequest source) {
+
+		String sourceName = source.getName();
+		List<SourceProperty> sourceProperties = source.getProperties();
+
+		SourceProperty name = new SourceProperty();
+		sourceName = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(sourceName);
+		name.setType(FreeformType.SOURCE_NAME);
+		name.setValueText(sourceName);
+		sourceProperties.add(0, name);
+
+		sourceProperties.forEach(property -> {
+			String valueText = property.getValueText();
+			valueText = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valueText);
+			property.setValueText(valueText);
+		});
+
+		return sourceProperties;
 	}
 
 }

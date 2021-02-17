@@ -233,4 +233,65 @@
       </div>
     </div>
   </form>
+  <form id="addSourceForm" th:action="@{/create_source}" method="post" th:fragment="add_source_form">
+    <div class="modal-body">
+      <div class="form-group row">
+        <div class="col-md-12">
+          <div class="border rounded">
+            <div class="form-group row p-2 m-2">
+              <div class="col-md-12">
+                <input class="form-control required-field" name="name" placeholder="allika nimetus">
+              </div>
+            </div>
+            <div class="form-group row p-2 m-2">
+              <div class="col-md-12">
+                <div class="form-group row">
+                  <div class="col-auto">
+                    <label title="Tüüp">
+                      <select required class="form-control required-field" name="type">
+                        <option value="" hidden disabled selected>vali allika tüüp</option>
+                        <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}">value</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row" id="source_property_element">
+        <div class="col-md-12">
+          <div class="border rounded" name="sourcePropertyGroup">
+            <div class="form-group row p-2 m-2">
+              <div class="col-auto">
+                <label title="Allika atribuudi nimetus">
+                  <select required class="form-control" name="properties[][type]">
+                    <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value</option>
+                  </select>
+                </label>
+              </div>
+              <div class="col-4 pl-0">
+                <button type="button" class="btn btn-success btn-sm mt-1" name="addPropertyGroupBtn" title="Lisa uus allika atribuut" data-plugin="addSourcePropertyGroup">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn btn-danger btn-sm mt-1" name="removePropertyGroupBtn" title="Eemalda" data-plugin="removeSourcePropertyGroup">
+                  <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <div class="form-group row p-2 m-2" name="propertyValue">
+              <div class="col-12">
+                <textarea rows="3" class="form-control required-field" name="properties[][valueText]"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button id="addSourceSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+    </div>
+  </form>
 </body>

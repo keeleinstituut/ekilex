@@ -1,3 +1,5 @@
+var viewType = '';
+
 function initEditSourcePropertyDlg(editDlg) {
 	validateAndSubmitAndUpdateSourcePropertyForm(editDlg);
 };
@@ -5,6 +7,11 @@ function initEditSourcePropertyDlg(editDlg) {
 function initAddSourcePropertyDlg(addDlg) {
 	validateAndSubmitAndUpdateSourcePropertyForm(addDlg);
 };
+
+function initializeSourceSearch() {
+	initDeleteConfirmations();
+	viewType = 'source';
+}
 
 function initDeleteConfirmations() {
 	$('[data-toggle=delete-source-property-confirm]').confirmation({
@@ -25,7 +32,7 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 	dlg.find('button[type="submit"]').off('click').on('click', function (e) {
 		e.preventDefault();
 		let form = dlg.find('form');
-		if (!isSourcePropertyFormValid(form)) {
+		if (!checkRequiredFields(form)) {
 			return;
 		}
 
@@ -43,20 +50,6 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 			openAlertDlg('Salvestamine ebaõnnestus');
 		});
 	});
-};
-
-function isSourcePropertyFormValid(form) {
-	validateRequiredSourceFormField(form, 'textarea', 'valueText');
-	return form.find(".error-show").length == 0;
-};
-
-function validateRequiredSourceFormField(form, type, fieldName) {
-	var fieldElement = form.find(type + "[name=" + fieldName + "]");
-	if (fieldElement.val() === null || fieldElement.val() == "") {
-		fieldElement.siblings(".errors").find(".alert-danger").addClass("error-show");
-	} else {
-		fieldElement.siblings(".errors").find(".alert-danger").removeClass("error-show");
-	}
 };
 
 function deleteSourceProperty() {
@@ -103,23 +96,37 @@ function submitAndUpdateSourceType(selectDlg) {
 	});
 };
 
-function initialiseAddNewProperty() {
-	displayButtons();
-
-	$(document).on("click", ":button[name='removePropertyGroupBtn']", function () {
-		$(this).closest('[name="sourcePropertyGroup"]').remove();
-		displayButtons();
+$.fn.addSourceAndSourceLinkPlugin = function() {
+	var main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		$("#noSourcesFoundDiv").hide();
+		$("#addSourceDiv").show();
+		$(this).closest('.modal-content').find('div[name="sourceLinkDlgFooter"]').hide();
+		displayRemoveButtons();
 	});
-
-	$(document).on("click", ":button[name='addPropertyGroupBtn']", function () {
-		let sourcePropertyGroupElement = $("#source_property_element").find('[name="sourcePropertyGroup"]').last();
-		createAndAttachCopyFromLastSourceItem(sourcePropertyGroupElement);
-		displayButtons();
-	});
-
 };
 
-function displayButtons() {
+$.fn.addSourcePropertyGroup = function() {
+	var main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		let sourcePropertyGroupElement = $("#source_property_element").find('[name="sourcePropertyGroup"]').last();
+		createAndAttachCopyFromLastSourceItem(sourcePropertyGroupElement);
+		displayRemoveButtons();
+	});
+};
+
+$.fn.removeSourcePropertyGroup = function() {
+	var main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		$(this).closest('[name="sourcePropertyGroup"]').remove();
+		displayRemoveButtons();
+	});
+};
+
+function displayRemoveButtons() {
 	$('[name="removePropertyGroupBtn"]').each(function (i, v) {
 		if ($("#source_property_element").find('[name="propertyValue"]').length === 1) {
 			$(this).hide();
@@ -130,15 +137,9 @@ function displayButtons() {
 };
 
 function createAndAttachCopyFromLastSourceItem(parentElement) {
-	let copyOfLastElement = parentElement.clone();
+	let copyOfLastElement = parentElement.clone(true);
 	copyOfLastElement.find('textArea').val(null);
 	parentElement.after(copyOfLastElement);
-};
-
-function isNewSourceFormValid(form) {
-	validateRequiredSourceFormField(form, 'input', 'sourceName');
-	validateRequiredSourceFormField(form, 'select', 'sourceType');
-	return form.find(".error-show").length == 0;
 };
 
 function executeValidateSourceDelete() {
@@ -169,6 +170,64 @@ function deleteSourceAndUpdateSearch(deleteUrl) {
 	});
 };
 
+function addSource() {
+	let addSourceForm = $("#addSourceForm");
+
+	if (!checkRequiredFields(addSourceForm)) {
+		return;
+	}
+
+	$.ajax({
+		url: addSourceForm.attr('action'),
+		data: JSON.stringify(addSourceForm.serializeJSON()),
+		method: 'POST',
+		dataType: 'json',
+		contentType: 'application/json'
+	}).done(function(sourceId) {
+		window.location = applicationUrl + 'sourcesearch/' + sourceId;
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg('Allika lisamine ebaõnnestus');
+	});
+}
+
+function addSourceAndSourceLink() {
+	let addSourceForm = $("#addSourceForm");
+	if (!checkRequiredFields(addSourceForm)) {
+		return;
+	}
+
+	let sourceModal = addSourceForm.closest('.modal');
+	let addSourceLinkForm = addSourceForm.closest('form[name="sourceLinkForm"]');
+	let sourceLinkIdInput = addSourceLinkForm.find('input[name="id"]');
+	let sourceLinkOpCodeInput = addSourceLinkForm.find('input[name="opCode"]');
+
+	addSourceForm.append(sourceLinkIdInput);
+	addSourceForm.append(sourceLinkOpCodeInput);
+
+	var successCallbackName = sourceModal.attr("data-callback");
+	var successCallbackFunc = undefined;
+	if (successCallbackName) {
+		successCallbackFunc = () => eval(successCallbackName);
+	} else {
+		successCallbackFunc = () => $('#refresh-details').trigger('click');
+	}
+
+	$.ajax({
+		url: applicationUrl + 'create_source_and_source_link',
+		data: JSON.stringify(addSourceForm.serializeJSON()),
+		method: 'POST',
+		dataType: 'json',
+		contentType: 'application/json'
+	}).done(function() {
+		sourceModal.modal('hide');
+		successCallbackFunc();
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg('Allika lisamine ebaõnnestus');
+	});
+}
+
 $(function(){
 
 	$(document).on('show.bs.modal', '#sourceActivityLogDlg', function(e) {
@@ -181,31 +240,12 @@ $(function(){
 			dlg.find('.modal-body').html(data);
 		});
 	});
-	$(document).on("click", "#addSourceSubmitBtn", function () {
-		let location = $(this).attr("data-location");
-		let form = $("#addSourceForm");
-		let dlg = $("#addSourceDlg");
-		if (!isNewSourceFormValid(form)) {
-			return;
-		}
 
-		$.ajax({
-			url: form.attr('action'),
-			data: JSON.stringify(form.serializeJSON()),
-			method: 'POST',
-			dataType: 'json',
-			contentType: 'application/json'
-		}).done(function (sourceId) {
-			if (location === "source_search") {
-				window.location = applicationUrl + 'sourcesearch/' + sourceId;
-			}
-			if (location === "term_search" || location === "lex_search") {
-				dlg.modal('hide');
-				openMessageDlg("Allikas lisatud");
-			}
-		}).fail(function (data) {
-			console.log(data);
-			openAlertDlg('Allika lisamine ebaõnnestus');
-		});
+	$(document).on("click", "#addSourceSubmitBtn", function() {
+		if (viewType === 'source') {
+			addSource();
+		} else {
+			addSourceAndSourceLink();
+		}
 	});
 });

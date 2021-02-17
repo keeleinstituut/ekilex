@@ -64,6 +64,9 @@ footer p {
   width: 100%;
 }
 
+.fontSize-12 {
+  font-size: 12px;
+}
 .breadcrumbs {
   line-height: 32px;
   border-top: 1px solid #CCD9E0;
@@ -174,7 +177,6 @@ footer p {
 }
 .draggable-syn-rel {
   display: inline-flex;
-  white-space: nowrap;
   max-width: 98%;
   position: relative;
   .handle {
@@ -202,7 +204,7 @@ footer p {
   }
 }
 .sorter-wrapper {
-  padding-right: 50px;
+  padding-right: 20px;
   box-sizing: content-box;
   position: relative;
   .ui-sortable-placeholder {
@@ -210,18 +212,27 @@ footer p {
     height: 17px !important;
   }
   .indicator {
+    margin-left: -11px;
+    background: white;
+    width: 11px;
+    height: 25px;
+    padding-top: 4px;
+    z-index: 1;
+
+
     cursor: pointer;
     color:#687887;
     font-size: 0.875rem;
     z-index: 20;
     font-weight: 700;
-    width: 1px;
     vertical-align: bottom;
     margin-bottom: -3px;
     display: inline-block;
     white-space: nowrap;
     &.indicator-with-label {
       width: auto;
+      margin-left: 3px;
+      font-size: 12px;
     }
     i {
       margin-right: 5px;
