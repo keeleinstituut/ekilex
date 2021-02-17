@@ -35,8 +35,8 @@
                           data-contextmenu:compare="Ava uues paneelis">
                           <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                          <small class="text-gray" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                          <small class="text-gray" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                          <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                          <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                         </button><span th:unless="${synWordIter.last}">,</span>
                       </span>
                       <span class="mr-1" th:unless="${synIter.last}">|</span>
@@ -157,8 +157,8 @@
                                 data-contextmenu:compare="Ava uues paneelis">
                           <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                          <small class="text-gray" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                          <small class="text-gray" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                          <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                          <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                         </button><span th:unless="${synWordIter.last}">,</span>
                         <th:block th:if="${isMeaningWordSyn}">
                           
