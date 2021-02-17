@@ -160,17 +160,19 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(word.getRelatedWords());
 		boolean multipleLexLexemesExist = CollectionUtils.size(lexLexemes) > 1;
 		String firstAvailableAudioFile = null;
-		boolean isUnknownForm = false;
+		boolean morphologyExists = false;
+
 		if (CollectionUtils.isNotEmpty(forms)) {
 			Form firstAvailableWordForm = forms.stream()
 					.filter(form -> form.getMode().equals(FormMode.WORD))
 					.findFirst().orElse(null);
 			if (firstAvailableWordForm != null) {
 				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
-				isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstAvailableWordForm.getMorphCode());
 			}
 		}
-		boolean morphologyExists = CollectionUtils.isNotEmpty(paradigms) && StringUtils.isNotBlank(word.getWordClass()) && !isUnknownForm;
+		if (CollectionUtils.isNotEmpty(paradigms)) {
+			morphologyExists = paradigms.stream().anyMatch(paradigm -> StringUtils.isNotBlank(paradigm.getWordClass()));
+		}
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);

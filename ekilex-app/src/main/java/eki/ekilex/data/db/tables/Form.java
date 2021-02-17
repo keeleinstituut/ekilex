@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row16;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = 46775784;
+    private static final long serialVersionUID = -1426845462;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -123,6 +123,11 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.order_by</code>.
      */
     public final TableField<FormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>public.form.is_questionable</code>.
+     */
+    public final TableField<FormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.form</code> table reference
@@ -222,11 +227,11 @@ public class Form extends TableImpl<FormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row16 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Long> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row16<Long, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Long, Boolean> fieldsRow() {
+        return (Row16) super.fieldsRow();
     }
 }

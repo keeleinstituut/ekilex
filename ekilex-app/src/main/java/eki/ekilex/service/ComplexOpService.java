@@ -10,7 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.LexemeType;
 import eki.ekilex.data.ConfirmationRequest;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -29,12 +28,6 @@ public class ComplexOpService {
 		String question;
 		String validationMessage = "";
 		boolean isValid = true;
-
-		LexemeType lexemeType = lookupDbService.getLexemeType(lexemeId);
-		boolean isPrimaryLexeme = lexemeType.equals(LexemeType.PRIMARY);
-		if (!isPrimaryLexeme) {
-			return createConfirmationRequest(questions, validationMessage, isValid);
-		}
 
 		boolean isOnlyPrimaryLexemeForMeaning = lookupDbService.isOnlyPrimaryLexemeForMeaning(lexemeId);
 		if (isOnlyPrimaryLexemeForMeaning) {
@@ -68,21 +61,21 @@ public class ComplexOpService {
 
 		List<String> questions = new ArrayList<>();
 		String question;
-		String validationMessage = "";
+		StringBuffer validatonMessageBuf = new StringBuffer();
 		boolean isValid = true;
 
 		if (userRole == null) {
 			isValid = false;
-			validationMessage += "Mõiste kustutamine pole ilma rollita õigustatud.";
-			return createConfirmationRequest(questions, validationMessage, isValid);
+			validatonMessageBuf.append("Mõiste kustutamine pole ilma rollita õigustatud.");
+			return createConfirmationRequest(questions, validatonMessageBuf.toString(), isValid);
 		}
 
 		String datasetCode = userRole.getDatasetCode();
-		boolean secondaryMeaningLexemeExists = lookupDbService.secondaryMeaningLexemeExists(meaningId, datasetCode);
-		if (secondaryMeaningLexemeExists) {
+		boolean meaningRelationsExist = lookupDbService.meaningRelationsExist(meaningId);
+		if (meaningRelationsExist) {
 			isValid = false;
-			validationMessage += "Valitud mõistel on osasünonüüme. Mõistet ei saa kustutada.";
-			return createConfirmationRequest(questions, validationMessage, isValid);
+			validatonMessageBuf.append("Valitud mõistel on seoseid. Mõistet ei saa kustutada.");
+			return createConfirmationRequest(questions, validatonMessageBuf.toString(), isValid);
 		}
 
 		boolean isOnlyLexemesForMeaning = lookupDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
@@ -94,13 +87,6 @@ public class ComplexOpService {
 		boolean isOnlyPrimaryLexemesForWords = lookupDbService.isOnlyPrimaryLexemesForWords(meaningId, datasetCode);
 		if (isOnlyPrimaryLexemesForWords) {
 			List<Long> wordIdsToDelete = getWordIdsToBeDeleted(meaningId, datasetCode);
-			boolean secondaryWordLexemeExists = lookupDbService.secondaryWordLexemeExists(wordIdsToDelete, datasetCode);
-			if (secondaryWordLexemeExists) {
-				isValid = false;
-				validationMessage += "Valitud mõiste termin on märgitud osasünonüümiks. Mõistet ei saa kustutada.";
-				return createConfirmationRequest(questions, validationMessage, isValid);
-			}
-
 			List<String> wordValuesToDelete = lookupDbService.getWordsValues(wordIdsToDelete);
 			String joinedWords = StringUtils.join(wordValuesToDelete, ", ");
 			question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
@@ -110,7 +96,7 @@ public class ComplexOpService {
 			questions.add(question);
 		}
 
-		return createConfirmationRequest(questions, validationMessage, isValid);
+		return createConfirmationRequest(questions, validatonMessageBuf.toString(), isValid);
 	}
 
 	@Transactional

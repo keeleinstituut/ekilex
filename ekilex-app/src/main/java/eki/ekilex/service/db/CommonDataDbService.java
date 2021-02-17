@@ -757,7 +757,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
 						l2.ID.as("lexeme_id"),
-						l2.TYPE.as("lexeme_type"),
 						l2.WEIGHT.as("lexeme_weight"),
 						lrc.as("lex_register_codes"),
 						l2.ORDER_BY)
@@ -801,7 +800,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
-								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)).and(l2.DATASET_CODE.eq(datasetCode)))
+								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.DATASET_CODE.eq(datasetCode)))
 								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID)))
 				.where(
 						mr.MEANING1_ID.eq(meaningId)
@@ -863,7 +862,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(l2)
 				.where(l2.MEANING_ID.eq(m2.ID)
 						.and(l2.WORD_ID.eq(w2.ID))
-						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l2.VALUE_STATE_CODE.isNotNull()))
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
@@ -872,8 +870,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(lr, l2)
 				.where(l2.MEANING_ID.eq(m2.ID)
 						.and(l2.WORD_ID.eq(w2.ID))
-						.and(lr.LEXEME_ID.eq(l2.ID))
-						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.and(lr.LEXEME_ID.eq(l2.ID)))
 				.groupBy(l2.WORD_ID, l2.MEANING_ID));
 
 		Field<String[]> lgf = DSL.field(DSL
@@ -881,7 +878,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(ff, lff, l2)
 				.where(l2.MEANING_ID.eq(m2.ID)
 						.and(l2.WORD_ID.eq(w2.ID))
-						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(lff.LEXEME_ID.eq(l2.ID))
 						.and(ff.ID.eq(lff.FREEFORM_ID))
 						.and(ff.TYPE.eq(FreeformType.GOVERNMENT.name())))
@@ -890,13 +886,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<String[]> ldsf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(l2.DATASET_CODE))
 				.from(l2)
-				.where(l2.WORD_ID.eq(w2.ID)
-						.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.where(l2.WORD_ID.eq(w2.ID))
 				.groupBy(l2.WORD_ID));
 
 		Condition orderByCond = l2.WORD_ID.eq(w2.ID)
-				.and(l2.MEANING_ID.eq(m2.ID))
-				.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY));
+				.and(l2.MEANING_ID.eq(m2.ID));
 
 		if (CollectionUtils.isNotEmpty(meaningWordPreferredOrderDatasetCodes)) {
 			if (meaningWordPreferredOrderDatasetCodes.size() == 1) {
@@ -943,7 +937,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
-								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID))
 								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID)))
 				.where(mr.MEANING1_ID.eq(meaningId).and(mr.MEANING_REL_TYPE_CODE.ne(MEANING_REL_TYPE_CODE_SIMILAR)))
 				.groupBy(m2.ID, mr.ID, w2.ID)
@@ -1187,7 +1181,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						r.ORDER_BY)
 				.from(
 						r
-						.innerJoin(l2).on(l2.ID.eq(r.LEXEME2_ID).and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.innerJoin(l2).on(l2.ID.eq(r.LEXEME2_ID))
 						.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID))
 						.leftOuterJoin(rtl).on(
 								r.LEX_REL_TYPE_CODE.eq(rtl.CODE)

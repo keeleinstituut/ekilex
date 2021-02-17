@@ -12,8 +12,6 @@ public class Word extends WordTypeData {
 
 	private String alternativeWord;
 
-	private String wordClass;
-
 	private String displayMorphCode;
 
 	private Classifier displayMorph;
@@ -27,9 +25,6 @@ public class Word extends WordTypeData {
 	private String definitionsWrapup;
 
 	private List<Classifier> summarisedPoses;
-
-	@Deprecated
-	private WordEtymology wordEtymology;
 
 	private WordEtymLevel wordEtymologyTree;
 
@@ -67,14 +62,6 @@ public class Word extends WordTypeData {
 
 	public void setAlternativeWord(String alternativeWord) {
 		this.alternativeWord = alternativeWord;
-	}
-
-	public String getWordClass() {
-		return wordClass;
-	}
-
-	public void setWordClass(String wordClass) {
-		this.wordClass = wordClass;
 	}
 
 	public String getDisplayMorphCode() {
@@ -131,14 +118,6 @@ public class Word extends WordTypeData {
 
 	public void setSummarisedPoses(List<Classifier> summarisedPoses) {
 		this.summarisedPoses = summarisedPoses;
-	}
-
-	public WordEtymology getWordEtymology() {
-		return wordEtymology;
-	}
-
-	public void setWordEtymology(WordEtymology wordEtymology) {
-		this.wordEtymology = wordEtymology;
 	}
 
 	public WordEtymLevel getWordEtymologyTree() {

@@ -32,8 +32,6 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	private Long lexemeId;
 
-	private String lexemeType;
-
 	private Float lexemeWeight;
 
 	private List<String> lexRegisterCodes;
@@ -146,14 +144,6 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
-	}
-
-	public String getLexemeType() {
-		return lexemeType;
-	}
-
-	public void setLexemeType(String lexemeType) {
-		this.lexemeType = lexemeType;
 	}
 
 	public Float getLexemeWeight() {

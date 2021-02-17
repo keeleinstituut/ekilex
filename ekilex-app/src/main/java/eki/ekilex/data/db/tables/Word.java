@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 187770380;
+    private static final long serialVersionUID = -721273710;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -63,11 +63,6 @@ public class Word extends TableImpl<WordRecord> {
      * The column <code>public.word.homonym_nr</code>.
      */
     public final TableField<WordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.word.word_class</code>.
-     */
-    public final TableField<WordRecord, String> WORD_CLASS = createField(DSL.name("word_class"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word.display_morph_code</code>.
@@ -210,11 +205,11 @@ public class Word extends TableImpl<WordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, String, Integer, String, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row10<Long, String, Integer, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

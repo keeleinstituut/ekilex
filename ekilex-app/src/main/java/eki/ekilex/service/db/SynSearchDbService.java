@@ -10,7 +10,6 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -24,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.LexemeType;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
@@ -94,8 +92,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(l2)
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
-								.and(l2.DATASET_CODE.eq(datasetCode))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(l2.DATASET_CODE.eq(datasetCode)))
 				.groupBy(l2.ID)
 				.asTable("relmt");
 
@@ -109,7 +106,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(lp, l2)
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(l2.DATASET_CODE.eq(datasetCode))
 								.and(lp.LEXEME_ID.eq(l2.ID)))
 				.asField();
@@ -216,10 +212,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						l.WEIGHT,
 						lposf.as("pos"))
 				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
-				.where(
-						l.WORD_ID.eq(wordId)
-								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(dsWhere))
+				.where(l.WORD_ID.eq(wordId).and(dsWhere))
 				.orderBy(ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
 				.fetchInto(WordLexeme.class);
 	}
@@ -241,15 +234,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 		return relationRecord != null ? relationRecord.get(WORD_RELATION.ID) : null;
 
-	}
-
-	public Long createLexeme(Long wordId, Long meaningId, String datasetCode, LexemeType lexemeType, Float lexemeWeight, Complexity complexity) {
-		return create
-				.insertInto(LEXEME, LEXEME.WORD_ID, LEXEME.MEANING_ID, LEXEME.DATASET_CODE, LEXEME.TYPE, LEXEME.WEIGHT, LEXEME.COMPLEXITY, LEXEME.IS_PUBLIC)
-				.values(wordId, meaningId, datasetCode, lexemeType.name(), BigDecimal.valueOf(lexemeWeight), complexity.name(), PUBLICITY_PUBLIC)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
 	}
 
 	public eki.ekilex.data.Word getWord(Long wordId) {

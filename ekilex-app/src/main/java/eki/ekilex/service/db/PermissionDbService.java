@@ -353,7 +353,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.DATASET_CODE.eq(providedDatasetCode))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
@@ -377,7 +376,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
 										.select(DATASET_PERMISSION.ID)
@@ -395,9 +393,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		Table<Record1<Integer>> lac = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("all_lex_count"))
 				.from(LEXEME)
-				.where(
-						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.where(LEXEME.WORD_ID.eq(wordId))
 				.groupBy(LEXEME.WORD_ID)
 				.asTable("lac");
 
@@ -425,7 +421,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.DATASET_CODE.eq(providedDatasetCode))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
@@ -462,7 +457,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(WORD.leftOuterJoin(LEXEME).on(
 						LEXEME.WORD_ID.eq(WORD.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.DATASET_CODE.eq(providedDatasetCode))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
@@ -494,7 +488,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID)).as("sup_lex_count"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.DATASET_CODE.eq(providedDatasetCode))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
@@ -517,7 +510,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID)).as("perm_lex_count"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
 										.select(DATASET_PERMISSION.ID)
@@ -535,8 +527,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID)).as("all_lex_count"))
 				.from(LEXEME)
 				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						LEXEME.MEANING_ID.eq(meaningId))
 				.groupBy(LEXEME.MEANING_ID)
 				.asTable("la");
 
@@ -564,7 +555,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.DATASET_CODE.eq(providedDatasetCode))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
@@ -590,7 +580,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.andExists(DSL
 										.select(DATASET_PERMISSION.ID)
 										.from(DATASET_PERMISSION)
@@ -619,7 +608,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(MEANING.leftOuterJoin(LEXEME).on(
 						LEXEME.MEANING_ID.eq(MEANING.ID)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.DATASET_CODE.eq(providedDatasetCode))
 								.and(providedRequiredAuthCond)
 								.andExists(DSL
@@ -650,7 +638,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(field(DSL.count(LEXEME.ID).gt(0)).as("is_granted"))
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId)
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(LEXEME.DATASET_CODE.eq(providedDatasetCode))
 						.and(providedRequiredAuthCond)
 						.andExists(DSL
@@ -740,7 +727,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 								.from(LEXEME, LEXEME_FREEFORM)
 								.where(
 										LEXEME.DATASET_CODE.eq(providedDatasetCode)
-												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 												.and(LEXEME_FREEFORM.LEXEME_ID.eq(LEXEME.ID))
 												.and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID))
 												.andExists(DSL

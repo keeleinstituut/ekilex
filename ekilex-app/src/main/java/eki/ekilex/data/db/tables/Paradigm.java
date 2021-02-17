@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Paradigm extends TableImpl<ParadigmRecord> {
 
-    private static final long serialVersionUID = 1169478223;
+    private static final long serialVersionUID = 2077089299;
 
     /**
      * The reference instance of <code>public.paradigm</code>
@@ -78,6 +78,11 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
      * The column <code>public.paradigm.is_secondary</code>.
      */
     public final TableField<ParadigmRecord, Boolean> IS_SECONDARY = createField(DSL.name("is_secondary"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.paradigm.word_class</code>.
+     */
+    public final TableField<ParadigmRecord, String> WORD_CLASS = createField(DSL.name("word_class"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.paradigm</code> table reference
@@ -173,11 +178,11 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<Long, Long, String, String, String, Boolean> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row7<Long, Long, String, String, String, Boolean, String> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

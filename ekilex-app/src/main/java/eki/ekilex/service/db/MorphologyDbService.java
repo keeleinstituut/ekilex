@@ -2,7 +2,6 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.List;
 
@@ -24,12 +23,14 @@ public class MorphologyDbService {
 		return create
 				.insertInto(PARADIGM,
 						PARADIGM.WORD_ID,
+						PARADIGM.WORD_CLASS,
 						PARADIGM.COMMENT,
 						PARADIGM.INFLECTION_TYPE_NR,
 						PARADIGM.INFLECTION_TYPE,
 						PARADIGM.IS_SECONDARY)
 				.values(
 						paradigm.getWordId(),
+						paradigm.getWordClass(),
 						paradigm.getComment(),
 						paradigm.getInflectionTypeNr(),
 						paradigm.getInflectionType(),
@@ -52,6 +53,7 @@ public class MorphologyDbService {
 						FORM.DISPLAY_LEVEL,
 						FORM.MORPH_CODE,
 						FORM.MORPH_EXISTS,
+						FORM.IS_QUESTIONABLE,
 						FORM.VALUE,
 						FORM.VALUE_PRESE,
 						FORM.COMPONENTS,
@@ -65,7 +67,8 @@ public class MorphologyDbService {
 						form.getMorphGroup3(),
 						form.getDisplayLevel(),
 						form.getMorphCode(),
-						form.getMorphExists(),
+						form.isMorphExists(),
+						form.isQuestionable(),
 						form.getValue(),
 						form.getValuePrese(),
 						form.getComponents(),
@@ -79,11 +82,6 @@ public class MorphologyDbService {
 	public void deleteParadigmsForWord(Long wordId) {
 
 		create.deleteFrom(PARADIGM).where(PARADIGM.WORD_ID.eq(wordId)).execute();
-	}
-
-	public void updateWordClass(Long wordId, String wordClass) {
-
-		create.update(WORD).set(WORD.WORD_CLASS, wordClass).where(WORD.ID.eq(wordId)).execute();
 	}
 
 	public List<Paradigm> getParadigms(Long wordId) {

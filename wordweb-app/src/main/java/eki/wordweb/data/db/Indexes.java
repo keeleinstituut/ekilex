@@ -69,6 +69,7 @@ public class Indexes {
     public static final Index MVIEW_WW_MEANING_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_MEANING_ID_IDX;
     public static final Index MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK_WORD_ID_IDX = Indexes0.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK_WORD_ID_IDX;
     public static final Index MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX;
+    public static final Index MVIEW_WW_WORD_AS_VALUE_PREFIX_IDX = Indexes0.MVIEW_WW_WORD_AS_VALUE_PREFIX_IDX;
     public static final Index MVIEW_WW_WORD_LANG_IDX = Indexes0.MVIEW_WW_WORD_LANG_IDX;
     public static final Index MVIEW_WW_WORD_VALUE_IDX = Indexes0.MVIEW_WW_WORD_VALUE_IDX;
     public static final Index MVIEW_WW_WORD_VALUE_PREFIX_IDX = Indexes0.MVIEW_WW_WORD_VALUE_PREFIX_IDX;
@@ -123,6 +124,7 @@ public class Indexes {
         public static Index MVIEW_WW_MEANING_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_meaning_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.MEANING_ID }, false);
         public static Index MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK_WORD_ID_IDX = Internal.createIndex("mview_ww_meaning_freeform_source_link_word_id_idx", MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK, new OrderField[] { MviewWwMeaningFreeformSourceLink.MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK.MEANING_ID }, false);
         public static Index MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_relation_meaning_id_idx", MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION, new OrderField[] { MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION.MEANING_ID }, false);
+        public static Index MVIEW_WW_WORD_AS_VALUE_PREFIX_IDX = Internal.createIndex("mview_ww_word_as_value_prefix_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.AS_WORD }, false);
         public static Index MVIEW_WW_WORD_LANG_IDX = Internal.createIndex("mview_ww_word_lang_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.LANG }, false);
         public static Index MVIEW_WW_WORD_VALUE_IDX = Internal.createIndex("mview_ww_word_value_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD }, false);
         public static Index MVIEW_WW_WORD_VALUE_PREFIX_IDX = Internal.createIndex("mview_ww_word_value_prefix_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD }, false);

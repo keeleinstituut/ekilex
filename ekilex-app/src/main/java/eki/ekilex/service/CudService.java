@@ -371,10 +371,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateLexemeComplexity(Long lexemeId, String complexity) throws Exception {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeComplexity", lexemeId, ActivityOwner.LEXEME);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
-		Long wordId = wordLexemeMeaningId.getWordId();
 		cudDbService.updateLexemeComplexity(lexemeId, complexity);
-		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
@@ -734,7 +731,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 		if (lexemeId == null) {
 			return;
 		}
-		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
 		cudDbService.createLexemeAutomaticTags(lexemeId);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
@@ -1183,7 +1179,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 		updateLexemeLevels(lexemeId, "delete");
 		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteLexeme(lexemeId);
-		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
 		if (isOnlyLexemeForMeaning) {
 			deleteMeaning(meaningId);
 		}

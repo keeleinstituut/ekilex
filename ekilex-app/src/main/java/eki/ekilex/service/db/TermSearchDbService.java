@@ -138,7 +138,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 						.innerJoin(wm).on(wm.ID.eq(m.field("word_id", Long.class)))
 						.innerJoin(lo).on(
 								lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
-										.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(wherelods))
 						.innerJoin(wo).on(wherewo)
 						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
@@ -217,10 +216,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.fetchCount(DSL
 						.selectDistinct(wo.ID)
 						.from(m
-								.innerJoin(lo).on(
-										lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
-												.and(lo.TYPE.eq(LEXEME_TYPE_PRIMARY))
-												.and(wherelods))
+								.innerJoin(lo).on(lo.MEANING_ID.eq(m.field("meaning_id", Long.class)).and(wherelods))
 								.innerJoin(wo).on(wherewo)));
 	}
 
@@ -427,7 +423,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.where(
 						MEANING.ID.eq(meaningId)
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(dsWhere))
 				.groupBy(MEANING.ID)
 				.fetchOptionalInto(eki.ekilex.data.Meaning.class)
@@ -493,7 +488,6 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.from(WORD, LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(dsWhere))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, WORD.ID)

@@ -18,10 +18,6 @@ public interface GlobalConstant {
 
 	String DEFINITION_TYPE_UNDEFINED = "määramata";
 
-	String LEXEME_TYPE_PRIMARY = LexemeType.PRIMARY.name();
-
-	String LEXEME_TYPE_SECONDARY = LexemeType.SECONDARY.name();
-
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
 
 	String DATASET_TYPE_TERM = DatasetType.TERM.name();

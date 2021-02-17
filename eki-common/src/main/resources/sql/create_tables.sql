@@ -534,7 +534,6 @@ create table word
   value_as_word text null,
   lang char(3) references language(code) null,
   homonym_nr integer default 1,
-  word_class varchar(100) null,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
   aspect_code varchar(100) references aspect(code) null,
@@ -646,6 +645,7 @@ create table paradigm
 (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
+  word_class varchar(100) null,
   comment text null,
   inflection_type_nr varchar(100),
   inflection_type varchar(100),
@@ -799,7 +799,6 @@ create table lexeme
   word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
   dataset_code varchar(10) references dataset(code) not null,
-  type varchar(50) not null,
   level1 integer default 0,
   level2 integer default 0,
   value_state_code varchar(100) references value_state(code) null,
@@ -1164,7 +1163,6 @@ create index meaning_nr_mnr_idx on meaning_nr(mnr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index lexeme_dataset_code_idx on lexeme(dataset_code);
-create index lexeme_type_idx on lexeme(type);
 create index lexeme_is_public_idx on lexeme(is_public);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);

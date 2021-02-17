@@ -139,7 +139,6 @@ public class Indexes {
     public static final Index LEXEME_DATASET_CODE_IDX = Indexes0.LEXEME_DATASET_CODE_IDX;
     public static final Index LEXEME_IS_PUBLIC_IDX = Indexes0.LEXEME_IS_PUBLIC_IDX;
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
-    public static final Index LEXEME_TYPE_IDX = Indexes0.LEXEME_TYPE_IDX;
     public static final Index LEXEME_WORD_ID_IDX = Indexes0.LEXEME_WORD_ID_IDX;
     public static final Index LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX = Indexes0.LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX;
     public static final Index LEXEME_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.LEXEME_ACTIVITY_LOG_LOG_ID_IDX;
@@ -284,7 +283,6 @@ public class Indexes {
         public static Index LEXEME_DATASET_CODE_IDX = Internal.createIndex("lexeme_dataset_code_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.DATASET_CODE }, false);
         public static Index LEXEME_IS_PUBLIC_IDX = Internal.createIndex("lexeme_is_public_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.IS_PUBLIC }, false);
         public static Index LEXEME_MEANING_ID_IDX = Internal.createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
-        public static Index LEXEME_TYPE_IDX = Internal.createIndex("lexeme_type_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.TYPE }, false);
         public static Index LEXEME_WORD_ID_IDX = Internal.createIndex("lexeme_word_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID }, false);
         public static Index LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX = Internal.createIndex("lexeme_activity_log_lexeme_id_idx", LexemeActivityLog.LEXEME_ACTIVITY_LOG, new OrderField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.LEXEME_ID }, false);
         public static Index LEXEME_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("lexeme_activity_log_log_id_idx", LexemeActivityLog.LEXEME_ACTIVITY_LOG, new OrderField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);

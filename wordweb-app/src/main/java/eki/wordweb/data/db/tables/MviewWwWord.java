@@ -20,7 +20,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row21;
+import org.jooq.Row20;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 976325094;
+    private static final long serialVersionUID = -1108392842;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -84,11 +84,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.homonym_nr</code>.
      */
     public final TableField<MviewWwWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word.word_class</code>.
-     */
-    public final TableField<MviewWwWordRecord, String> WORD_CLASS = createField(DSL.name("word_class"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_word.word_type_codes</code>.
@@ -195,7 +190,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_AS_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
     }
 
     @Override
@@ -225,11 +220,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row21 type methods
+    // Row20 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row21<Long, String, String, String, String, Long, Integer, String, String[], String, String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], BigDecimal, Long, Boolean, Long, Integer> fieldsRow() {
-        return (Row21) super.fieldsRow();
+    public Row20<Long, String, String, String, String, Long, Integer, String[], String, String, String, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], BigDecimal, Long, Boolean, Long, Integer> fieldsRow() {
+        return (Row20) super.fieldsRow();
     }
 }

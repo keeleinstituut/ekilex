@@ -61,7 +61,6 @@ create type type_meaning_word as (
 				meaning_id bigint,
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
-				mw_lex_type varchar(100),
 				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_freeform array,
 				mw_lex_register_codes varchar(100) array,
@@ -162,7 +161,6 @@ from (
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id
-                and l.type = 'PRIMARY'
                 and l.is_public = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
@@ -181,7 +179,6 @@ from (
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id
-                and l.type = 'PRIMARY'
                 and l.is_public = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
@@ -206,7 +203,6 @@ from (
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id
-                and l.type = 'PRIMARY'
                 and l.is_public = true
                 and ds.code = l.dataset_code
                 and ds.is_public = true)
@@ -236,8 +232,7 @@ from (
             and l2.word_id != l1.word_id
             inner join dataset l2ds on l2ds.code = l2.dataset_code
             inner join word w2 on w2.id = l2.word_id
-            where l1.type = 'PRIMARY'
-              and l1.is_public = true
+            where l1.is_public = true
               and l1ds.is_public = true
               and l2.is_public = true
               and l2ds.is_public = true)
@@ -253,8 +248,7 @@ from (
                  lexeme_freeform lff,
                  freeform ff,
                  dataset ds
-            where l.type = 'PRIMARY'
-              and l.is_public = true
+            where l.is_public = true
               and ds.code = l.dataset_code
               and ds.is_public = true
               and l.word_id = w.id
@@ -278,8 +272,7 @@ from (
                  freeform u,
                  freeform ut,
                  dataset ds
-            where l.type = 'PRIMARY'
-              and l.is_public = true
+            where l.is_public = true
               and l.word_id = w.id
               and ds.code = l.dataset_code
               and ds.is_public = true
@@ -300,8 +293,7 @@ from (
                  lexeme l,
                  definition d,
                  dataset ds
-            where l.type = 'PRIMARY'
-              and l.is_public = true
+            where l.is_public = true
               and l.word_id = w.id
               and ds.code = l.dataset_code
               and ds.is_public = true
@@ -322,7 +314,6 @@ select w.word_id,
        w.lang,
        w.lang_order_by,
        w.homonym_nr,
-       w.word_class,
        wt.word_type_codes,
        w.display_morph_code,
        w.aspect_code,
@@ -346,7 +337,6 @@ from (select w.id as word_id,
               where lc.code = w.lang
               limit 1) lang_order_by,
              w.homonym_nr,
-             w.word_class,
              w.display_morph_code,
              w.aspect_code,
              w.vocal_form,
@@ -360,7 +350,6 @@ from (select w.id as word_id,
               from lexeme l,
                    dataset ds
               where l.word_id = w.id
-              and   l.type = 'PRIMARY'
               and   l.is_public = true
               and   ds.code = l.dataset_code
               and   ds.is_public = true) min_ds_order_by,
@@ -373,7 +362,6 @@ from (select w.id as word_id,
                     from lexeme as l,
                          dataset ds
                     where l.word_id = w.id
-                    and   l.type = 'PRIMARY'
                     and   l.is_public = true
                     and   ds.code = l.dataset_code
                     and   ds.is_public = true)
@@ -389,7 +377,6 @@ from (select w.id as word_id,
                                 mw.meaning_id,
                                 mw.mw_lex_id,
                                 mw.mw_lex_complexity,
-                                mw.mw_lex_type,
                                 mw.mw_lex_weight,
                                 null,
                                 null,
@@ -415,7 +402,6 @@ from (select w.id as word_id,
                                 l1.order_by hw_lex_order_by,
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
-                                l2.type mw_lex_type,
                                 l2.weight mw_lex_weight,
                                 w2.id mw_word_id,
                                 ' ' || w2.value mw_word,
@@ -438,8 +424,7 @@ from (select w.id as word_id,
                                    on l2ds.code = l2.dataset_code
                            inner join word w2
                                    on w2.id = l2.word_id
-                         where l1.type = 'PRIMARY'
-                         and   l1.is_public = true
+                         where l1.is_public = true
                          and   l1ds.is_public = true
                          and   l2.is_public = true
                          and   l2ds.is_public = true) mw
@@ -471,8 +456,7 @@ from (select w.id as word_id,
                                on l2ds.code = l2.dataset_code
                        inner join word w2
                                on w2.id = l2.word_id
-                     where l1.type = 'PRIMARY'
-                     and   l1.is_public = true
+                     where l1.is_public = true
                      and   l1ds.is_public = true
                      and   l2.is_public = true
                      and   l2ds.is_public = true)
@@ -487,8 +471,7 @@ from (select w.id as word_id,
                           lexeme_freeform lff,
                           freeform ff,
                           dataset ds
-                     where l.type = 'PRIMARY'
-                     and   l.is_public = true
+                     where l.is_public = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   l.word_id = w.id
@@ -507,8 +490,7 @@ from (select w.id as word_id,
                           freeform u,
                           freeform ut,
                           dataset ds
-                     where l.type = 'PRIMARY'
-                     and   l.is_public = true
+                     where l.is_public = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   lff.lexeme_id = l.id
@@ -526,8 +508,7 @@ from (select w.id as word_id,
                      from lexeme l,
                           definition d,
                           dataset ds
-                     where l.type = 'PRIMARY'
-                     and   l.is_public = true
+                     where l.is_public = true
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   l.meaning_id = d.meaning_id
@@ -571,8 +552,7 @@ from (select w.id as word_id,
                            inner join definition d
                                    on d.meaning_id = l.meaning_id
                                   and d.is_public = true
-                         where l.type = 'PRIMARY'
-                         and   l.is_public = true
+                         where l.is_public = true
                          and   ds.is_public = true) wd
                    group by wd.word_id) wd
                on wd.word_id = w.word_id
@@ -602,6 +582,7 @@ from (select w.id as word_id,
 create view view_ww_form 
 as
 select w.id word_id,
+       p.word_class,
        w.value word,
        w.lang,
        p.id paradigm_id,
@@ -664,7 +645,6 @@ where exists (select l.id
               from lexeme as l,
                    dataset ds
               where l.word_id = w.id
-              and   l.type = 'PRIMARY'
               and   l.is_public = true
               and   ds.code = l.dataset_code
               and   ds.is_public = true)
@@ -689,7 +669,6 @@ from (select m.id
                     from lexeme as l,
                          dataset ds
                     where l.meaning_id = m.id
-                    and   l.type = 'PRIMARY'
                     and   l.is_public = true
                     and   ds.code = l.dataset_code
                     and   ds.is_public = true)) m
@@ -917,7 +896,6 @@ from lexeme l
                                 mw.meaning_id,
                                 mw.mw_lex_id,
                                 mw.mw_lex_complexity,
-                                mw.mw_lex_type,
                                 mw.mw_lex_weight,
                                 mw.mw_lex_governments,
                                 mw.mw_lex_register_codes,
@@ -944,7 +922,6 @@ from lexeme l
                                 l1.order_by hw_lex_order_by,
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
-                                l2.type mw_lex_type,
                                 l2.weight mw_lex_weight,
                                 --NB! space sym replaced by temp placeholder because nested complex type array masking failure by postgres
                                 (select array_agg(row (
@@ -986,8 +963,7 @@ from lexeme l
                                    on l2ds.code = l2.dataset_code
                            inner join word w2
                                    on w2.id = l2.word_id
-                         where l1.type = 'PRIMARY'
-                         and   l1.is_public = true
+                         where l1.is_public = true
                          and   l1ds.is_public = true
                          and   l2.is_public = true
                          and   l2ds.is_public = true) mw
@@ -1084,10 +1060,8 @@ from lexeme l
                                     on l2ds.code = l2.dataset_code
                             inner join word w2
                                     on w2.id = l2.word_id
-                          where l1.type = 'PRIMARY'
-                          and   l1.is_public = true
+                          where l1.is_public = true
                           and   l1ds.is_public = true
-                          and   l2.type = 'PRIMARY'
                           and   l2.is_public = true
                           and   l2ds.is_public = true)
                           union all
@@ -1101,8 +1075,7 @@ from lexeme l
                                lexeme_freeform lff,
                                freeform ff,
                                dataset ds
-                          where l.type = 'PRIMARY'
-                          and   l.is_public = true
+                          where l.is_public = true
                           and   ds.code = l.dataset_code
                           and   ds.is_public = true
                           and   l.word_id = w.id
@@ -1120,8 +1093,7 @@ from lexeme l
                                freeform u,
                                freeform ut,
                                dataset ds
-                          where l.type = 'PRIMARY'
-                          and   l.is_public = true
+                          where l.is_public = true
                           and   ds.code = l.dataset_code
                           and   ds.is_public = true
                           and   lff.lexeme_id = l.id
@@ -1139,8 +1111,7 @@ from lexeme l
                           from lexeme l,
                                definition d,
                                dataset ds
-                          where l.type = 'PRIMARY'
-                          and   l.is_public = true
+                          where l.is_public = true
                           and   l.meaning_id = d.meaning_id
                           and   d.is_public = true
                           and   ds.code = l.dataset_code
@@ -1157,14 +1128,12 @@ from lexeme l
                                word w2,
                                dataset l1ds,
                                dataset l2ds
-                          where l1.type = 'PRIMARY'
-                          and   l1.is_public = true
+                          where l1.is_public = true
                           and   l1ds.code = l1.dataset_code
                           and   l1ds.is_public = true
                           and   r.lexeme1_id = l1.id
                           and   r.lexeme2_id = l2.id
                           and   l2.dataset_code = l1.dataset_code
-                          and   l2.type = 'PRIMARY'
                           and   l2.is_public = true
                           and   l2ds.code = l2.dataset_code
                           and   l2ds.is_public = true
@@ -1178,8 +1147,7 @@ from lexeme l
                           from lexeme l1,
                                word w1,
                                dataset l1ds
-                          where l1.type = 'PRIMARY'
-                          and   l1.is_public = true
+                          where l1.is_public = true
                           and   l1ds.code = l1.dataset_code
                           and   l1ds.is_public = true
                           and   w1.id = l1.word_id
@@ -1189,7 +1157,6 @@ from lexeme l
                                             where l2.meaning_id = l1.meaning_id
                                             and   l2.dataset_code = l1.dataset_code
                                             and   l2.id != l1.id
-                                            and   l2.type = 'PRIMARY'
                                             and   l2.is_public = true
                                             and   l2ds.code = l2.dataset_code
                                             and   l2ds.is_public = true)
@@ -1205,8 +1172,7 @@ from lexeme l
                                             and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
                    group by lc.id) l_lc
                on l_lc.id = l.id
-where l.type = 'PRIMARY'
-and   l.is_public = true
+where l.is_public = true
 and   ds.is_public = true
 order by l.id;
 
@@ -1245,7 +1211,6 @@ from collocation as c
           on lc2.collocation_id = c.id
   inner join lexeme as l1
           on l1.id = lc1.lexeme_id
-         and l1.type = 'PRIMARY'
          and l1.is_public = true
   inner join dataset l1ds
           on l1ds.code = l1.dataset_code
@@ -1257,8 +1222,7 @@ from collocation as c
               from lexeme as l2,
                    word as w2,
                    dataset as l2ds
-              where l2.type = 'PRIMARY'
-              and   l2.is_public = true
+              where l2.is_public = true
               and   l2ds.code = l2.dataset_code
               and   l2ds.is_public = true
               and   l2.word_id = w2.id) lw2
@@ -1360,7 +1324,6 @@ from
           dataset ds
         where
         l.word_id = w.id
-        and l.type = 'PRIMARY'
         and l.is_public = true
         and ds.code = l.dataset_code
         and ds.type = 'LEX')
@@ -1397,10 +1360,8 @@ from
       l1.meaning_id = m.id
       and l2.meaning_id = m.id
       and l1.word_id != l2.word_id
-      and l1.type = 'PRIMARY'
       and l1.is_public = true
       and l2.dataset_code = 'ety'
-      and l2.type = 'PRIMARY'
       and l2.is_public = true
       and l2.word_id = w2.id
       and w2.lang = 'est'
@@ -1459,8 +1420,7 @@ from word w
                                          and exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
-                                                     where l.type = 'PRIMARY'
-                                                     and   l.is_public = true
+                                                     where l.is_public = true
                                                      and   ds.code = l.dataset_code
                                                      and   ds.is_public = true
                                                      and   l.word_id = wh.id)) as related_word_homonyms_exist,
@@ -1471,7 +1431,6 @@ from word w
                                          from lexeme lc,
                                               dataset ds
                                          where lc.word_id = w2.id
-                                         and lc.type = 'PRIMARY'
                                          and lc.is_public = true
                                          and ds.code = lc.dataset_code
                                          and ds.is_public = true
@@ -1489,8 +1448,7 @@ from word w
                                        where exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
-                                                     where l.type = 'PRIMARY'
-                                                     and   l.is_public = true
+                                                     where l.is_public = true
                                                      and   ds.code = l.dataset_code
                                                      and   ds.is_public = true
                                                      and   l.word_id = w.id)
@@ -1527,8 +1485,7 @@ from word w
                                          and exists (select l.id
                                                      from lexeme as l,
                                                           dataset ds
-                                                     where l.type = 'PRIMARY'
-                                                     and   l.is_public = true
+                                                     where l.is_public = true
                                                      and   ds.code = l.dataset_code
                                                      and   ds.is_public = true
                                                      and   l.word_id = wh.id)) as group_member_homonyms_exist,
@@ -1539,7 +1496,6 @@ from word w
                                  from lexeme lc,
                                       dataset ds
                                  where lc.word_id = w2.id
-                                 and lc.type = 'PRIMARY'
                                  and lc.is_public = true
                                  and ds.code = lc.dataset_code
                                  and ds.is_public = true
@@ -1559,7 +1515,6 @@ from word w
                                              from lexeme as l,
                                                   dataset ds
                                              where l.word_id = w.id
-                                             and l.type = 'PRIMARY'
                                              and l.is_public = true
                                              and ds.code = l.dataset_code
                                              and ds.is_public = true)
@@ -1577,7 +1532,6 @@ and   exists (select l.id
               from lexeme l,
                    dataset ds
               where l.word_id = w.id
-              and l.type = 'PRIMARY'
               and l.is_public = true
               and ds.code = l.dataset_code
               and ds.is_public = true);
@@ -1603,8 +1557,7 @@ from lex_relation r
                      l.complexity
               from lexeme l,
                    dataset lds
-              where l.type = 'PRIMARY'
-              and   l.is_public = true
+              where l.is_public = true
               and   lds.code = l.dataset_code
               and   lds.is_public = true) l2 on l2.lexeme_id = r.lexeme2_id
   inner join (select w.id word_id,
@@ -1620,7 +1573,6 @@ where exists (select l1.id
               from lexeme l1,
                    dataset l1ds
               where l1.id = r.lexeme1_id
-              and   l1.type = 'PRIMARY'
               and   l1.is_public = true
               and   l1ds.code = l1.dataset_code
               and   l1ds.is_public = true)
@@ -1669,7 +1621,6 @@ from (select mr.meaning1_id m1_id,
                    dataset l_ds
               where l.meaning_id = m.id
                 and l.word_id = w.id
-                and l.type = 'PRIMARY'
                 and l.is_public = true
                 and l_ds.code = l.dataset_code
                 and l_ds.is_public = true
@@ -1682,7 +1633,6 @@ from (select mr.meaning1_id m1_id,
               where l.meaning_id = m.id
                 and l.word_id = w.id
                 and lr.lexeme_id = l.id
-                and l.type = 'PRIMARY'
                 and l.is_public = true
                 and l_ds.code = l.dataset_code
                 and l_ds.is_public = true
@@ -1694,7 +1644,6 @@ from (select mr.meaning1_id m1_id,
                    dataset l_ds
               where l.meaning_id = m.id
                 and l.word_id = w.id
-                and l.type = 'PRIMARY'
                 and l.is_public = true
                 and l_ds.code = l.dataset_code
                 and l_ds.is_public = true
@@ -1707,14 +1656,13 @@ from (select mr.meaning1_id m1_id,
              mr.order_by
       from meaning_relation mr
            join meaning m on m.id = mr.meaning2_id
-           join lexeme l on l.meaning_id = m.id and l.type = 'PRIMARY' and l.is_public = true
+           join lexeme l on l.meaning_id = m.id and l.is_public = true
            join word w on w.id = l.word_id
            join dataset l_ds on l_ds.code = l.dataset_code and l_ds.is_public = true
       where exists(select lex.id
                    from lexeme lex,
                         dataset lex_ds
                    where lex.meaning_id = mr.meaning1_id
-                     and lex.type = 'PRIMARY'
                      and lex.is_public = true
                      and lex_ds.code = lex.dataset_code
                      and lex_ds.is_public = true)
@@ -1757,7 +1705,6 @@ and   exists (select l.id
               from lexeme l,
                    dataset ds
               where l.word_id = we.word_id
-              and   l.type = 'PRIMARY'
               and   l.is_public = true
               and   ds.code = l.dataset_code
               and   ds.is_public = true)
@@ -1794,8 +1741,7 @@ from lexeme l,
       and   sff.freeform_id = ff.id
       and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
       group by s.id) s
-where l.type = 'PRIMARY'
-and   l.is_public = true
+where l.is_public = true
 and   lsl.lexeme_id = l.id
 and   lsl.source_id = s.source_id
 and   ds.code = l.dataset_code
@@ -1834,8 +1780,7 @@ from lexeme l,
       and   sff.freeform_id = ff.id
       and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
       group by s.id) s
-where l.type = 'PRIMARY'
-and   l.is_public = true
+where l.is_public = true
 and   lff.lexeme_id = l.id
 and   lff.freeform_id = ffsl.freeform_id
 and   ffsl.source_id = s.source_id
@@ -1884,8 +1829,7 @@ from (select mff.meaning_id,
             and   sff.freeform_id = ff.id
             and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
             group by s.id) s
-      where l.type = 'PRIMARY'
-      and   l.is_public = true
+      where l.is_public = true
       and   l.meaning_id = mff.meaning_id
       and   ffsl.freeform_id = mff.freeform_id
       and   ffsl.source_id = s.source_id
@@ -1939,8 +1883,7 @@ from (select d.meaning_id,
             and   sff.freeform_id = ff.id
             and   ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
             group by s.id) s
-      where l.type = 'PRIMARY'
-      and   l.is_public = true
+      where l.is_public = true
       and   l.meaning_id = d.meaning_id
       and   d.is_public = true
       and   dsl.definition_id = d.id
@@ -1974,7 +1917,6 @@ from ((select w.word,
                            where l.word_id = w.id
                            and   l.complexity = 'SIMPLE'
                            and   l.dataset_code = 'sss'
-                           and   l.type = 'PRIMARY'
                            and   l.is_public = true
                            and   ds.code = l.dataset_code
                            and   ds.is_public = true)

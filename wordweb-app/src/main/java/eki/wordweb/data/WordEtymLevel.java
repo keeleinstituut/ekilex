@@ -33,8 +33,6 @@ public class WordEtymLevel extends AbstractDataObject {
 
 	private List<String> sourceLinkValues;
 
-	private String levelWrapup;
-
 	private List<WordEtymLevel> tree;
 
 	public Long getWordId() {
@@ -131,14 +129,6 @@ public class WordEtymLevel extends AbstractDataObject {
 
 	public void setSourceLinkValues(List<String> sourceLinkValues) {
 		this.sourceLinkValues = sourceLinkValues;
-	}
-
-	public String getLevelWrapup() {
-		return levelWrapup;
-	}
-
-	public void setLevelWrapup(String levelWrapup) {
-		this.levelWrapup = levelWrapup;
 	}
 
 	public List<WordEtymLevel> getTree() {

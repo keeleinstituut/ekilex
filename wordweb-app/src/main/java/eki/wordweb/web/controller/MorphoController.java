@@ -22,32 +22,31 @@ public class MorphoController implements WebConstant, SystemConstant, GlobalCons
 	@Autowired
 	private MorphoService morphoService;
 
-	@GetMapping(MORPHO_URI + LITE_URI + "/{paradigmId}/{wordClass}/{lang}")
+	@GetMapping(MORPHO_URI + LITE_URI + "/{paradigmId}/{lang}")
 	public String getMorphoLite(
 			@PathVariable("paradigmId") Long paradigmId,
-			@PathVariable("wordClass") String wordClass,
 			@PathVariable("lang") String lang,
 			Model model) {
 
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		return getMorpho(paradigmId, wordClass, lang, maxDisplayLevel, model);
+		return getMorpho(paradigmId, lang, maxDisplayLevel, model);
 	}
 
-	@GetMapping(MORPHO_URI + UNIF_URI + "/{paradigmId}/{wordClass}/{lang}")
+	@GetMapping(MORPHO_URI + UNIF_URI + "/{paradigmId}/{lang}")
 	public String getMorphoUnif(
 			@PathVariable("paradigmId") Long paradigmId,
-			@PathVariable("wordClass") String wordClass,
 			@PathVariable("lang") String lang,
 			Model model) {
 
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		return getMorpho(paradigmId, wordClass, lang, maxDisplayLevel, model);
+		return getMorpho(paradigmId, lang, maxDisplayLevel, model);
 	}
 
-	private String getMorpho(Long paradigmId, String wordClass, String lang, Integer maxDisplayLevel, Model model) {
+	private String getMorpho(Long paradigmId, String lang, Integer maxDisplayLevel, Model model) {
 
 		Paradigm paradigm = morphoService.getParadigm(paradigmId, maxDisplayLevel);
 		model.addAttribute("paradigm", paradigm);
+		String wordClass = paradigm.getWordClass();
 		String viewFragment = "morpho-" + wordClass + '_' + lang;
 		return MORPHO_FULL_PAGE + " :: " + viewFragment;
 	}

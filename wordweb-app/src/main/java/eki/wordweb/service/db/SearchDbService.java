@@ -330,7 +330,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.WORD_PRESE,
 						w.AS_WORD,
 						w.HOMONYM_NR,
-						w.WORD_CLASS,
 						w.LANG,
 						w.WORD_TYPE_CODES,
 						w.DISPLAY_MORPH_CODE,

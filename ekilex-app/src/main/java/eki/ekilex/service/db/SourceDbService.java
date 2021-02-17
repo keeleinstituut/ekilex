@@ -203,7 +203,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						.from(l, lsl)
 						.where(
 								l.DATASET_CODE.eq(datasetCode)
-										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(lsl.LEXEME_ID.eq(l.ID))
 										.and(lsl.SOURCE_ID.eq(sourceIdField)));
 
@@ -212,7 +211,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						.from(l, d, dsl)
 						.where(
 								l.DATASET_CODE.eq(datasetCode)
-										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(d.MEANING_ID.eq(l.MEANING_ID))
 										.and(dsl.DEFINITION_ID.eq(d.ID))
 										.and(dsl.SOURCE_ID.eq(sourceIdField)));
@@ -222,7 +220,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						.from(l, lff, ffsl)
 						.where(
 								l.DATASET_CODE.eq(datasetCode)
-										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(lff.LEXEME_ID.eq(l.ID))
 										.and(ffsl.FREEFORM_ID.eq(lff.FREEFORM_ID))
 										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
@@ -232,7 +229,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						.from(l, mff, ffsl)
 						.where(
 								l.DATASET_CODE.eq(datasetCode)
-										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(mff.MEANING_ID.eq(l.MEANING_ID))
 										.and(ffsl.FREEFORM_ID.eq(mff.FREEFORM_ID))
 										.and(ffsl.SOURCE_ID.eq(sourceIdField)));
@@ -242,7 +238,6 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 						.from(l, d, dff, ffsl)
 						.where(
 								l.DATASET_CODE.eq(datasetCode)
-										.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(d.MEANING_ID.eq(l.MEANING_ID))
 										.and(dff.DEFINITION_ID.eq(d.ID))
 										.and(ffsl.FREEFORM_ID.eq(dff.FREEFORM_ID))

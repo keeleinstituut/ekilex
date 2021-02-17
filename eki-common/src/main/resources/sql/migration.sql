@@ -386,6 +386,55 @@ end $$;
 drop function convert_lexeme_to_meaning_relation(bigint,bigint,varchar(100),numeric(5,4),bigint);
 
 ------------------------------------------------
+---------------- paradigmandus -----------------
+------------------------------------------------
+
+-- form.vocal_form -> word.vocal_form
+alter table word add column vocal_form text null;
+
+update word w
+   set vocal_form = '[' || f.vocal_form || ']'
+from paradigm p,
+     form f
+where p.word_id = w.id
+and   f.paradigm_id = p.id
+and   f.mode = 'WORD'
+and   f.vocal_form is not null
+and   f.vocal_form != '';
+
+alter table form drop column vocal_form cascade;
+alter table form add column is_questionable boolean not null default false;
+
+-- word.word_class -> paradigm.word_class
+alter table paradigm add column word_class varchar(100) null;
+
+update paradigm p
+   set word_class = w.word_class
+from word w
+where w.id = p.word_id
+and   w.word_class is not null
+and   w.word_class != '';
+
+alter table word drop column word_class cascade;
+
+------------------------------------------------
+--------------- obsolideerimised ---------------
+------------------------------------------------
+
+delete from form where mode in ('UNKNOWN', 'AS_WORD');
+delete from form where mode = 'WORD' and morph_code = '??' and audio_file is null;
+
+delete from lexeme where type = 'SECONDARY';
+alter table lexeme drop column type cascade;
+
+drop table source_lifecycle_log cascade;
+drop table word_lifecycle_log cascade;
+drop table lexeme_lifecycle_log cascade;
+drop table meaning_lifecycle_log cascade;
+drop table lifecycle_activity_log;
+drop table lifecycle_log cascade;
+
+------------------------------------------------
 ------------------ muu migra -------------------
 ------------------------------------------------
 
@@ -404,30 +453,6 @@ update freeform
 set value_prese = 'https://sonaveeb.ee/files/images/' || value_prese
 where type = 'IMAGE_FILE'
   and value_prese not like '%https://sonaveeb.ee/files/images/%';
-  
-delete from form where mode in ('UNKNOWN', 'AS_WORD');
-delete from form where mode = 'WORD' and morph_code = '??' and audio_file is null;
-
-alter table dataset add column contact text;
-
-delete from lexeme where type = 'SECONDARY';
-
--- form.vocal_form -> word.vocal_form
-
-alter table word add column vocal_form text null;
-
-update word w
-   set vocal_form = '[' || f.vocal_form || ']'
-from paradigm p,
-     form f
-where p.word_id = w.id
-and   f.paradigm_id = p.id
-and   f.mode = 'WORD'
-and   f.vocal_form is not null
-and   f.vocal_form != '';
-
-alter table form drop column vocal_form cascade;
-alter table form add column is_questionable boolean not null default false;
 
 update freeform
 set value_prese = value_text
@@ -435,3 +460,5 @@ where value_prese is null
   and type = 'GOVERNMENT';
 
 select setval('meaning_relation_order_by_seq', (select max(order_by) + 1 from meaning_relation));
+  
+alter table dataset add column contact text;

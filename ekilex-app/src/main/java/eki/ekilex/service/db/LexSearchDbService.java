@@ -36,7 +36,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Param;
-import org.jooq.Record11;
+import org.jooq.Record10;
 import org.jooq.Record16;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -267,7 +267,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(l.WORD_ID.eq(w.ID))
 								.and(l.MEANING_ID.eq(m.ID))
 								.and(l.DATASET_CODE.eq(ds.CODE))
-								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(dsWhere))
 				.groupBy(w.ID, l.ID, m.ID, ds.CODE)
 				.orderBy(w.ID, ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
@@ -365,7 +364,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<String[]> lxtnf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(DSL.coalesce(lt.TAG_NAME, "!")))
 				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
-				.where(l.WORD_ID.eq(w.ID).and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+				.where(l.WORD_ID.eq(w.ID))
 				.groupBy(w.ID));
 
 		return create
@@ -377,7 +376,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 						fmcf.as("morph_code"),
 						w.HOMONYM_NR,
 						w.LANG,
-						w.WORD_CLASS,
 						w.GENDER_CODE,
 						w.ASPECT_CODE,
 						w.DISPLAY_MORPH_CODE,
@@ -392,9 +390,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						.andExists(DSL
 								.select(l.ID)
 								.from(l)
-								.where(
-										l.WORD_ID.eq(w.ID)
-												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+								.where(l.WORD_ID.eq(w.ID))))
 				.fetchOptionalInto(eki.ekilex.data.Word.class)
 				.orElse(null);
 	}
@@ -551,8 +547,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(lc2.COLLOCATION_ID.eq(c.ID))
 								.and(lc2.LEXEME_ID.eq(l2.ID))
 								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-								.and(l2.WORD_ID.eq(w2.ID))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(l2.WORD_ID.eq(w2.ID)))
 				.groupBy(c.ID, pgr1.ID, rgr1.ID, lc1.ID, lc2.ID, l2.ID, w2.ID)
 				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
 				.fetchInto(CollocationTuple.class);
@@ -585,8 +580,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(lc2.COLLOCATION_ID.eq(c.ID))
 								.and(lc2.LEXEME_ID.eq(l2.ID))
 								.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-								.and(l2.WORD_ID.eq(w2.ID))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(l2.WORD_ID.eq(w2.ID)))
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetchInto(CollocationTuple.class);
 	}
@@ -638,14 +632,13 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.where(wt.WORD_ID.eq(w1.ID).and(wt.WORD_TYPE_CODE.in(Arrays.asList(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
 				.asField();
 
-		Table<Record11<Long, String, String, Integer, String, String, String, String, Long, Long, Long>> w = DSL
+		Table<Record10<Long,String,String,Integer,String,String,String,Long,Long,Long>> w = DSL
 				.select(
 						w1.ID.as("word_id"),
 						w1.VALUE.as("word_value"),
 						w1.VALUE_PRESE.as("word_value_prese"),
 						w1.HOMONYM_NR,
 						w1.LANG,
-						w1.WORD_CLASS,
 						w1.GENDER_CODE,
 						w1.ASPECT_CODE,
 						mdsobf.as("min_ds_order_by"),
@@ -695,7 +688,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 						.from(l
 								.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID).and(lt.TAG_NAME.in(tagNames))))
 						.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
-								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(l.DATASET_CODE.eq(userRoleDatasetCode)))
 						.groupBy(w.field("word_id")));
 			}
@@ -705,7 +697,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.select(DSL.arrayAggDistinct(l.DATASET_CODE))
 				.from(l)
 				.where(l.WORD_ID.eq(w.field("word_id").cast(Long.class))
-						.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 						.and(l.DATASET_CODE.in(availableDatasetCodes)))
 				.groupBy(w.field("word_id")));
 

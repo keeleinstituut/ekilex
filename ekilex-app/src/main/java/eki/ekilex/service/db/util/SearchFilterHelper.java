@@ -239,9 +239,7 @@ public class SearchFilterHelper implements GlobalConstant {
 		}
 
 		LexemeTag lt = LEXEME_TAG.as("lt");
-		where1 = where1
-				.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-				.and(lt.LEXEME_ID.eq(l1.ID));
+		where1 = where1.and(lt.LEXEME_ID.eq(l1.ID));
 
 		where1 = applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 
@@ -300,7 +298,6 @@ public class SearchFilterHelper implements GlobalConstant {
 		LexemeActivityLog lal = LEXEME_ACTIVITY_LOG.as("lal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
 		where1 = where1
-				.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
 				.and(lal.LEXEME_ID.eq(l1.ID))
 				.and(lal.ACTIVITY_LOG_ID.eq(al.ID))
 				.and(al.ENTITY_NAME.eq(entityName.name()));

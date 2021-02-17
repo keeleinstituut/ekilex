@@ -23,7 +23,9 @@ public class Form extends AbstractDataObject {
 
 	private String morphCode;
 
-	private Boolean morphExists;
+	private boolean morphExists;
+
+	private boolean isQuestionable;
 
 	private String value;
 
@@ -101,12 +103,20 @@ public class Form extends AbstractDataObject {
 		this.morphCode = morphCode;
 	}
 
-	public Boolean getMorphExists() {
+	public boolean isMorphExists() {
 		return morphExists;
 	}
 
-	public void setMorphExists(Boolean morphExists) {
+	public void setMorphExists(boolean morphExists) {
 		this.morphExists = morphExists;
+	}
+
+	public boolean isQuestionable() {
+		return isQuestionable;
+	}
+
+	public void setQuestionable(boolean isQuestionable) {
+		this.isQuestionable = isQuestionable;
 	}
 
 	public String getValue() {

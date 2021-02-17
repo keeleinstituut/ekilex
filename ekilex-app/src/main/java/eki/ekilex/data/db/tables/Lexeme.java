@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 477958894;
+    private static final long serialVersionUID = 304210819;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -96,11 +96,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     public final TableField<LexemeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.lexeme.type</code>.
-     */
-    public final TableField<LexemeRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(50).nullable(false), this, "");
-
-    /**
      * The column <code>public.lexeme.weight</code>.
      */
     public final TableField<LexemeRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), org.jooq.impl.SQLDataType.NUMERIC(5, 4).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.NUMERIC)), this, "");
@@ -150,7 +145,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_COMPLEXITY_IDX, Indexes.LEXEME_DATASET_CODE_IDX, Indexes.LEXEME_IS_PUBLIC_IDX, Indexes.LEXEME_MEANING_ID_IDX, Indexes.LEXEME_TYPE_IDX, Indexes.LEXEME_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.LEXEME_COMPLEXITY_IDX, Indexes.LEXEME_DATASET_CODE_IDX, Indexes.LEXEME_IS_PUBLIC_IDX, Indexes.LEXEME_MEANING_ID_IDX, Indexes.LEXEME_WORD_ID_IDX);
     }
 
     @Override
@@ -216,11 +211,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, Long, Long, String, Integer, Integer, String, String, Long, String, BigDecimal, Boolean> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row11<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

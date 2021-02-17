@@ -132,8 +132,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.selectFrom(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.gt(level1))
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.and(LEXEME.LEVEL1.gt(level1)))
 				.fetch();
 	}
 
@@ -143,8 +142,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.where(LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.DATASET_CODE.eq(datasetCode))
 						.and(LEXEME.LEVEL1.eq(level1))
-						.and(LEXEME.LEVEL2.gt(level2))
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.and(LEXEME.LEVEL2.gt(level2)))
 				.fetch();
 	}
 
@@ -154,8 +152,7 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.from(LEXEME)
 				.where(LEXEME.WORD_ID.eq(wordId)
 						.and(LEXEME.DATASET_CODE.eq(datasetCode))
-						.and(LEXEME.LEVEL1.eq(level1))
-						.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+						.and(LEXEME.LEVEL1.eq(level1)))
 				.fetchOneInto(Integer.class);
 	}
 

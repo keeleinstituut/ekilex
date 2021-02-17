@@ -16,8 +16,6 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String lang;
 
-	private String wordClass;
-
 	private String genderCode;
 
 	private String aspectCode;
@@ -100,14 +98,6 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public String getWordClass() {
-		return wordClass;
-	}
-
-	public void setWordClass(String wordClass) {
-		this.wordClass = wordClass;
 	}
 
 	public String getGenderCode() {

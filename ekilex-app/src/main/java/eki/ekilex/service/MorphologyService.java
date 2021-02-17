@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.api.Form;
 import eki.ekilex.data.api.Paradigm;
-import eki.ekilex.data.api.ParadigmWord;
 import eki.ekilex.data.api.ParadigmWrapper;
 import eki.ekilex.service.db.MorphologyDbService;
 
@@ -33,15 +32,12 @@ public class MorphologyService {
 		}
 
 		List<Paradigm> paradigms = paradigmWrapper.getParadigms();
-		List<ParadigmWord> paradigmWords = paradigms.stream().map(paradigm -> new ParadigmWord(paradigm.getWordId(), paradigm.getWordClass())).distinct().collect(Collectors.toList());
+		List<Long> wordIds = paradigms.stream().map(Paradigm::getWordId).distinct().collect(Collectors.toList());
 
-		logger.info("Replacing {} paradigms for {} words", paradigms.size(), paradigmWords.size());
+		logger.info("Replacing {} paradigms for {} words", paradigms.size(), wordIds.size());
 
-		for (ParadigmWord paradigmWord : paradigmWords) {
-			Long wordId = paradigmWord.getWordId();
-			String wordClass = paradigmWord.getWordClass();
+		for (Long wordId : wordIds) {
 			morphologyDbService.deleteParadigmsForWord(wordId);
-			morphologyDbService.updateWordClass(wordId, wordClass);
 		}
 
 		for (Paradigm paradigm : paradigms) {

@@ -438,7 +438,6 @@ public class CudDbService extends AbstractDataDbService {
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.IS_PUBLIC.ne(isPublic)))
 				.execute();
 	}
@@ -449,7 +448,6 @@ public class CudDbService extends AbstractDataDbService {
 				.set(LEXEME.IS_PUBLIC, isPublic)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.IS_PUBLIC.ne(isPublic)))
 				.execute();
 	}
@@ -467,8 +465,7 @@ public class CudDbService extends AbstractDataDbService {
 				.from(l)
 				.where(
 						l.WORD_ID.eq(w.ID)
-								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l.DATASET_CODE.eq(DATASET_SSS)))
+						.and(l.DATASET_CODE.eq(DATASET_SSS)))
 				.asField();
 
 		Table<Record3<Long, Integer, Integer>> ww = DSL
@@ -483,9 +480,7 @@ public class CudDbService extends AbstractDataDbService {
 								.andExists(DSL
 										.select(l.ID)
 										.from(l)
-										.where(
-												l.WORD_ID.eq(w.ID)
-														.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
+										.where(l.WORD_ID.eq(w.ID))))
 				.asTable("w");
 
 		Result<Record2<Long, Integer>> homonyms = create
@@ -510,35 +505,6 @@ public class CudDbService extends AbstractDataDbService {
 				homonymNrIter++;
 			}
 		}
-	}
-
-	public void adjustWordSecondaryLexemesComplexity(Long wordId) {
-
-		Lexeme lp = LEXEME.as("lp");
-		Lexeme ls = LEXEME.as("ls");
-		Field<String> complDetail = DSL.field(DSL.val(Complexity.DETAIL.name()));
-		Field<String> complAny = DSL.field(DSL.val(Complexity.ANY.name()));
-
-		Table<Record2<Long, String>> lc = DSL
-				.select(
-						ls.ID.as("lex_id"),
-						DSL.when(complDetail.eq(DSL.all(DSL.arrayAgg(lp.COMPLEXITY))), complDetail).otherwise(complAny).as("lex_compl"))
-				.from(ls, lp)
-				.where(
-						lp.WORD_ID.eq(wordId)
-								.and(lp.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(lp.IS_PUBLIC.isTrue())
-								.and(ls.WORD_ID.eq(lp.WORD_ID))
-								.and(ls.TYPE.eq(LEXEME_TYPE_SECONDARY)))
-				.groupBy(ls.ID)
-				.asTable("lc");
-
-		create
-				.update(LEXEME)
-				.set(LEXEME.COMPLEXITY, lc.field("lex_compl", String.class))
-				.from(lc)
-				.where(LEXEME.ID.eq(lc.field("lex_id", Long.class)))
-				.execute();
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexeme(
@@ -568,10 +534,9 @@ public class CudDbService extends AbstractDataDbService {
 
 		Long lexemeId = create
 				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
+						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, dataset, LEXEME_TYPE_PRIMARY,
-						1, 1, isPublic, COMPLEXITY_DETAIL)
+				.values(meaningId, wordId, dataset, 1, 1, isPublic, COMPLEXITY_DETAIL)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
@@ -664,7 +629,6 @@ public class CudDbService extends AbstractDataDbService {
 						.where(
 								l.WORD_ID.eq(wordId)
 										.and(l.DATASET_CODE.eq(datasetCode)
-												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 												.andNotExists(DSL
 														.select(lt.ID)
 														.from(lt)
@@ -689,7 +653,6 @@ public class CudDbService extends AbstractDataDbService {
 						.where(
 								l.MEANING_ID.eq(meaningId)
 										.and(l.DATASET_CODE.eq(datasetCode)
-												.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 												.andNotExists(DSL
 														.select(lt.ID)
 														.from(lt)
@@ -826,8 +789,7 @@ public class CudDbService extends AbstractDataDbService {
 					.where(
 							LEXEME.WORD_ID.eq(wordId)
 									.and(LEXEME.DATASET_CODE.eq(datasetCode))
-									.and(LEXEME.MEANING_ID.eq(meaningId))
-									.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+									.and(LEXEME.MEANING_ID.eq(meaningId)))
 					.fetchOptionalInto(Long.class)
 					.orElse(null);
 			if (existingLexemeId != null) {
@@ -836,10 +798,9 @@ public class CudDbService extends AbstractDataDbService {
 		}
 		Long lexemeId = create
 				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.TYPE,
+						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, LEXEME_TYPE_PRIMARY,
-						lexemeLevel1, 1, PUBLICITY_PUBLIC, COMPLEXITY_DETAIL)
+				.values(meaningId, wordId, datasetCode, lexemeLevel1, 1, PUBLICITY_PUBLIC, COMPLEXITY_DETAIL)
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
@@ -1056,8 +1017,7 @@ public class CudDbService extends AbstractDataDbService {
 						LEXEME_TAG.TAG_NAME.eq(tagName)
 								.and(LEXEME_TAG.LEXEME_ID.eq(LEXEME.ID))
 								.and(LEXEME.WORD_ID.eq(wordId))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.returning(LEXEME_TAG.LEXEME_ID)
 				.fetch()
 				.map(LexemeTagRecord::getLexemeId);
@@ -1074,8 +1034,7 @@ public class CudDbService extends AbstractDataDbService {
 						LEXEME_TAG.TAG_NAME.eq(tagName)
 								.and(LEXEME_TAG.LEXEME_ID.eq(LEXEME.ID))
 								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.returning(LEXEME_TAG.LEXEME_ID)
 				.fetch()
 				.map(LexemeTagRecord::getLexemeId);

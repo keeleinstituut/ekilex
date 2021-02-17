@@ -96,7 +96,6 @@ create type type_meaning_word as (
 				meaning_id bigint,
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
-				mw_lex_type varchar(100),
 				mw_lex_weight numeric(5,4),
 				mw_lex_governments type_freeform array,
 				mw_lex_register_codes varchar(100) array,
@@ -189,7 +188,6 @@ dblink(
 	lang char(3),
 	lang_order_by bigint,
 	homonym_nr integer,
-	word_class varchar(100),
 	word_type_codes varchar(100) array,
 	display_morph_code varchar(100),
 	aspect_code varchar(100),
@@ -211,6 +209,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_form') as form(
 	word_id bigint,
+	word_class varchar(100),
 	word text,
 	lang char(3),
 	paradigm_id bigint,

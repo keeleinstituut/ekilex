@@ -200,7 +200,7 @@ $(document).on("shown.bs.modal", "[id^='morpho-modal-']", function() {
 		main.append('<div class="morpho-content"></div>');
 	}
 	var morphoContentDiv = main.find(".morpho-content");
-	var morphoUrlWithParams = morphoUrl + "/" + paradigmId + "/" + currentWordClass + "/" + currentWordLang;
+	var morphoUrlWithParams = morphoUrl + "/" + paradigmId + "/" + currentWordLang;
 	$.get(morphoUrlWithParams).done(function(data) {
 		morphoContentDiv.replaceWith(data);
 		$('[data-toggle="tooltip"]').tooltip({

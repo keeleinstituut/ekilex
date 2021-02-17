@@ -1,7 +1,6 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -45,8 +44,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
-import eki.common.constant.FreeformType;
-import eki.common.constant.LexemeType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -94,8 +91,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(
 						l1.ID.eq(lexemeId)
 								.and(l1.WORD_ID.eq(l2.WORD_ID))
-								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(l1.DATASET_CODE.eq(l2.DATASET_CODE)))
 				.orderBy(l2.LEVEL1, l2.LEVEL2)
 				.fetchInto(WordLexeme.class);
 	}
@@ -147,7 +143,6 @@ public class LookupDbService extends AbstractDataDbService {
 						.from(LEXEME)
 						.where(
 								LEXEME.WORD_ID.eq(WORD.ID)
-										.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 										.and(LEXEME.DATASET_CODE.in(userPrefDatasetCodes))));
 	
 		if (isPrefixoid) {
@@ -255,8 +250,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchOptionalInto(Integer.class)
 				.orElse(0);
 	}
@@ -277,15 +271,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(Long.class);
-	}
-
-	public LexemeType getLexemeType(Long lexemeId) {
-	
-		return create
-				.select(LEXEME.TYPE)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(LexemeType.class);
 	}
 
 	public Long getLexemePosId(Long lexemeId, String posCode) {
@@ -337,7 +322,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
 								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(WORD.ID.eq(LEXEME.WORD_ID))
 								.and(WORD.LANG.eq(lang)))
 				.fetchInto(Long.class);
@@ -369,7 +353,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME, WORD)
 				.where(
 						LEXEME.MEANING_ID.in(meaningIds)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(WORD.ID.eq(LEXEME.WORD_ID)))
 				.groupBy(WORD.VALUE)
 				.asTable("wv");
@@ -390,8 +373,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.DATASET_CODE.eq(datasetCode))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchInto(WordLexemeMeaningIdTuple.class);
 	}
 
@@ -423,7 +405,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(m, l, w)
 				.where(
 						l.MEANING_ID.eq(m.ID)
-								.and(l.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(w.ID.eq(l.WORD_ID))
 								.and(whereFormValue)
 								.and(whereLexemeDataset)
@@ -438,7 +419,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(
 						MEANING.ID.eq(mid.field("meaning_id", Long.class))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)
 										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
 				.groupBy(MEANING.ID)
@@ -500,7 +480,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.fetchSingleInto(Boolean.class);
 	}
@@ -512,7 +491,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.WORD_ID.eq(wordId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.fetchSingleInto(Boolean.class);
 	}
@@ -530,6 +508,53 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean meaningRelationsExist(Long meaningId) {
+	
+		return create
+				.select(DSL.field(DSL.count(MEANING_RELATION.ID).gt(0)).as("meaning_relations_exists"))
+				.from(MEANING_RELATION)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId)
+						.or(MEANING_RELATION.MEANING2_ID.eq(meaningId)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
+	
+		return create
+				.select(field(DSL.count(MEANING_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(MEANING_RELATION)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId1)
+								.and(MEANING_RELATION.MEANING2_ID.eq(meaningId2))
+								.and(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean lexemeRelationExists(Long lexemeId1, Long lexemeId2, String relationType) {
+	
+		return create
+				.select(field(DSL.count(LEX_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(LEX_RELATION)
+				.where(
+						LEX_RELATION.LEXEME1_ID.eq(lexemeId1)
+								.and(LEX_RELATION.LEXEME2_ID.eq(lexemeId2))
+								.and(LEX_RELATION.LEX_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordRelationExists(Long wordId1, Long wordId2, String relationType) {
+	
+		return create
+				.select(field(DSL.count(WORD_RELATION.ID).eq(1)).as("relation_exists"))
+				.from(WORD_RELATION)
+				.where(
+						WORD_RELATION.WORD1_ID.eq(wordId1)
+								.and(WORD_RELATION.WORD2_ID.eq(wordId2))
+								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType)))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	public boolean wordHasForms(Long wordId) {
 
 		return create
@@ -539,6 +564,21 @@ public class LookupDbService extends AbstractDataDbService {
 						PARADIGM.WORD_ID.eq(wordId)
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.FORM.name())))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordLexemeExists(Long wordId, String datasetCode) {
+	
+		return create
+				.select(field(DSL.count(WORD.ID).gt(0)).as("word_lexeme_exists"))
+				.from(WORD)
+				.where(
+						WORD.ID.eq(wordId)
+								.andExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID)
+												.and(LEXEME.DATASET_CODE.eq(datasetCode)))))
 				.fetchSingleInto(Boolean.class);
 	}
 
@@ -598,9 +638,7 @@ public class LookupDbService extends AbstractDataDbService {
 						.where(
 								l1.ID.eq(lexemeId)
 										.and(l1.WORD_ID.eq(l2.WORD_ID))
-										.and(l1.ID.ne(l2.ID))
-										.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))));
+										.and(l1.ID.ne(l2.ID))));
 		return count == 0;
 	}
 
@@ -615,9 +653,7 @@ public class LookupDbService extends AbstractDataDbService {
 						.where(
 								l1.ID.eq(lexemeId)
 										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-										.and(l1.ID.ne(l2.ID))
-										.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))));
+										.and(l1.ID.ne(l2.ID))));
 		return count == 0;
 	}
 
@@ -632,9 +668,7 @@ public class LookupDbService extends AbstractDataDbService {
 						.where(
 								l1.ID.in(lexemeIds)
 										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-										.and(l1.ID.ne(l2.ID))
-										.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-										.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))));
+										.and(l1.ID.ne(l2.ID))));
 		return count == lexemeIds.size();
 	}
 
@@ -662,8 +696,6 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(l1.WORD_ID.eq(l2.WORD_ID))
 								.and(l1.DATASET_CODE.eq(datasetCode))
 								.and(l1.ID.ne(l2.ID))
-								.and(l1.TYPE.eq(LEXEME_TYPE_PRIMARY))
-								.and(l2.TYPE.eq(LEXEME_TYPE_PRIMARY))
 								.and(DSL.or(
 										l1.MEANING_ID.ne(l2.MEANING_ID),
 										l1.MEANING_ID.eq(l2.MEANING_ID).and(l1.DATASET_CODE.ne(l2.DATASET_CODE))))
@@ -682,80 +714,4 @@ public class LookupDbService extends AbstractDataDbService {
 		boolean exists = (id != null);
 		return exists;
 	}
-
-	public boolean secondaryMeaningLexemeExists(Long meaningId, String datasetCode) {
-
-		return create
-				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("secondary_lexeme_exists"))
-				.from(LEXEME)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_SECONDARY))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean secondaryWordLexemeExists(List<Long> wordIds, String datasetCode) {
-		return create
-				.select(DSL.field(DSL.count(LEXEME.ID).gt(0)).as("secondary_lexeme_exists"))
-				.from(LEXEME)
-				.where(
-						LEXEME.WORD_ID.in(wordIds)
-								.and(LEXEME.TYPE.eq(LEXEME_TYPE_SECONDARY))
-								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean wordLexemeExists(Long wordId, String datasetCode) {
-
-		return create
-				.select(field(DSL.count(WORD.ID).gt(0)).as("word_lexeme_exists"))
-				.from(WORD)
-				.where(
-						WORD.ID.eq(wordId)
-								.andExists(DSL
-										.select(LEXEME.ID)
-										.from(LEXEME)
-										.where(LEXEME.WORD_ID.eq(WORD.ID)
-												.and(LEXEME.DATASET_CODE.eq(datasetCode))
-												.and(LEXEME.TYPE.eq(LEXEME_TYPE_PRIMARY)))))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean wordRelationExists(Long wordId1, Long wordId2, String relationType) {
-
-		return create
-				.select(field(DSL.count(WORD_RELATION.ID).eq(1)).as("relation_exists"))
-				.from(WORD_RELATION)
-				.where(
-						WORD_RELATION.WORD1_ID.eq(wordId1)
-								.and(WORD_RELATION.WORD2_ID.eq(wordId2))
-								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType)))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean lexemeRelationExists(Long lexemeId1, Long lexemeId2, String relationType) {
-
-		return create
-				.select(field(DSL.count(LEX_RELATION.ID).eq(1)).as("relation_exists"))
-				.from(LEX_RELATION)
-				.where(
-						LEX_RELATION.LEXEME1_ID.eq(lexemeId1)
-								.and(LEX_RELATION.LEXEME2_ID.eq(lexemeId2))
-								.and(LEX_RELATION.LEX_REL_TYPE_CODE.eq(relationType)))
-				.fetchSingleInto(Boolean.class);
-	}
-
-	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
-
-		return create
-				.select(field(DSL.count(MEANING_RELATION.ID).eq(1)).as("relation_exists"))
-				.from(MEANING_RELATION)
-				.where(
-						MEANING_RELATION.MEANING1_ID.eq(meaningId1)
-								.and(MEANING_RELATION.MEANING2_ID.eq(meaningId2))
-								.and(MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(relationType)))
-				.fetchSingleInto(Boolean.class);
-	}
-
 }

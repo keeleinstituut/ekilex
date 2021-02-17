@@ -11,6 +11,8 @@ public class Paradigm extends AbstractDataObject {
 
 	private Long paradigmId;
 
+	private String wordClass;
+
 	private String comment;
 
 	private String inflectionType;
@@ -23,6 +25,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setParadigmId(Long paradigmId) {
 		this.paradigmId = paradigmId;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
 	}
 
 	public String getComment() {
