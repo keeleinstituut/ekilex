@@ -8,30 +8,23 @@ class Sorter {
 
   /* Unified sunctionality */
   bindSortable() {
-    this.main.sortable({
-      items: '> .sortable-main-group',
-      placeholder: "ui-state-highlight",
-      tolerance: 'pointer',
-      start: function(event, ui){
-        if (this.type === 'lex-details') {
-          ui.placeholder.css({
-            height: ui.item.outerHeight(),
-          })
-        } else {
+    if (this.type === 'syn') {
+      this.main.find('.main-items').sortable({
+        items: '.sortable-main-group',
+        placeholder: "ui-state-highlight",
+        cancel: '',
+        tolerance: 'pointer',
+        start: function(event, ui) {
           ui.placeholder.css({
             display: 'inline-block',
             width: ui.item.outerWidth(),
             height: ui.item.outerHeight(),
           })
         }
-      }
-    });
-
-    if (this.type === 'syn') {
-      this.main.sortable({
-        items: '> .sortable-child-group',
+      });
+      this.main.find('.child-items').sortable({
+        items: '.sortable-child-group',
         placeholder: "ui-state-highlight",
-        handle: '.syn-handle',
         cancel: '',
         tolerance: 'pointer',
         start: function(event, ui) {
@@ -43,6 +36,25 @@ class Sorter {
         }
       });
       this.bindSynonyms();
+    } else {
+      this.main.sortable({
+        items: '> .sortable-main-group',
+        placeholder: "ui-state-highlight",
+        tolerance: 'pointer',
+        start: function(event, ui){
+          if (this.type === 'lex-details') {
+            ui.placeholder.css({
+              height: ui.item.outerHeight(),
+            })
+          } else {
+            ui.placeholder.css({
+              display: 'inline-block',
+              width: ui.item.outerWidth(),
+              height: ui.item.outerHeight(),
+            })
+          }
+        }
+      });
     }
 
     if (this.type === 'lex-details') {
@@ -186,6 +198,8 @@ class Sorter {
         $(this).addClass('sortable-child-group');
       }
     });
+    this.main.find('.sortable-main-group').wrapAll('<span class="main-items">');
+    this.main.find('.sortable-child-group').wrapAll('<span class="child-items">');
   }
 
   initialize() {
