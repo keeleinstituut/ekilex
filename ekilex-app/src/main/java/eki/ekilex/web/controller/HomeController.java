@@ -132,16 +132,16 @@ public class HomeController extends AbstractPublicPageController {
 		StatData mainEntityStatData = statDataService.getMainEntityStatData();
 		List<StatDataRow> freeformStatData = statDataService.getFreeformStatData();
 		List<StatDataRow> lexemeDatasetStatData = statDataService.getLexemeDatasetStatData();
-		List<StatDataRow> lifecycleUserStatData = statDataService.getLifecycleUserStatData();
+		List<StatDataRow> activityStatData = statDataService.getActivityStatData();
 		boolean statExists = (mainEntityStatData.getDatasetCount() > 0)
 				&& CollectionUtils.isNotEmpty(freeformStatData)
 				&& CollectionUtils.isNotEmpty(lexemeDatasetStatData)
-				&& CollectionUtils.isNotEmpty(lifecycleUserStatData);
+				&& CollectionUtils.isNotEmpty(activityStatData);
 
 		model.addAttribute("mainEntityStatData", mainEntityStatData);
 		model.addAttribute("freeformStatData", freeformStatData);
 		model.addAttribute("lexemeDatasetStatData", lexemeDatasetStatData);
-		model.addAttribute("lifecycleUserStatData", lifecycleUserStatData);
+		model.addAttribute("activityStatData", activityStatData);
 		model.addAttribute("statExists", statExists);
 	}
 

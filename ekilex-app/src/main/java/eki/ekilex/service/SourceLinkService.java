@@ -1,30 +1,27 @@
 package eki.ekilex.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityOwner;
+import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleLogOwner;
-import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
+import eki.common.constant.SourceType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
-import eki.ekilex.data.LogData;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.api.FreeformOwner;
-import eki.ekilex.service.db.SourceLinkDbService;
 
 @Component
-public class SourceLinkService extends AbstractService {
-
-	@Autowired
-	private SourceLinkDbService sourceLinkDbService;
+public class SourceLinkService extends AbstractSourceService {
 
 	@Transactional
 	public SourceLink getSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner) {
@@ -54,8 +51,7 @@ public class SourceLinkService extends AbstractService {
 			FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
 			boolean isSupportedOwner = isSupportedSourceLink(freeformOwner);
 			if (isSupportedOwner) {
-				LifecycleEntity lifecycleEntity = freeformOwner.getEntity();
-				return createFreeformSourceLink(ownerId, sourceId, refType, value, name, lifecycleEntity);
+				return createFreeformSourceLink(ownerId, sourceId, refType, value, name);
 			}
 		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
 			return createDefinitionSourceLink(ownerId, sourceId, refType, value, name);
@@ -65,20 +61,41 @@ public class SourceLinkService extends AbstractService {
 		return null;
 	}
 
+    @Transactional
+    public void createSourceAndSourceLink(
+    		SourceType sourceType, List<SourceProperty> sourceProperties, Long sourceLinkOwnerId, String sourceLinkOwnerCode) throws Exception {
+
+        Long sourceId = createSource(sourceType, sourceProperties);
+
+		String sourceLinkValue = sourceProperties.get(0).getValueText();
+		ReferenceType sourceLinkRefType = ReferenceType.ANY;
+        String sourceLinkName = null;
+		List<String> freeformSourceLinkOwnerCodes = Arrays.asList(
+				"usage_source_link", "lexeme_ff_source_link", "meaning_ff_source_link", "definition_ff_source_link");
+
+		if (ContentKey.DEFINITION_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+            createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+        } else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
+        	createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+		} else if (freeformSourceLinkOwnerCodes.contains(sourceLinkOwnerCode)) {
+			createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+		}
+    }
+
 	private boolean isSupportedSourceLink(FreeformOwner freeformOwner) {
-		if (LifecycleEntity.LEXEME.equals(freeformOwner.getEntity())
+		if (ActivityEntity.LEXEME.equals(freeformOwner.getEntity())
 				&& FreeformType.NOTE.equals(freeformOwner.getType())) {
 			return true;
-		} else if (LifecycleEntity.LEXEME.equals(freeformOwner.getEntity())
+		} else if (ActivityEntity.LEXEME.equals(freeformOwner.getEntity())
 				&& FreeformType.USAGE.equals(freeformOwner.getType())) {
 			return true;
-		} else if (LifecycleEntity.MEANING.equals(freeformOwner.getEntity())
+		} else if (ActivityEntity.MEANING.equals(freeformOwner.getEntity())
 				&& FreeformType.NOTE.equals(freeformOwner.getType())) {
 			return true;
-		} else if (LifecycleEntity.MEANING.equals(freeformOwner.getEntity())
+		} else if (ActivityEntity.MEANING.equals(freeformOwner.getEntity())
 				&& FreeformType.IMAGE_FILE.equals(freeformOwner.getType())) {
 			return true;
-		} else if (LifecycleEntity.DEFINITION.equals(freeformOwner.getEntity())
+		} else if (ActivityEntity.DEFINITION.equals(freeformOwner.getEntity())
 				&& FreeformType.NOTE.equals(freeformOwner.getType())) {
 			return true;
 		}
@@ -89,11 +106,7 @@ public class SourceLinkService extends AbstractService {
 	public void deleteSourceLink(ReferenceOwner sourceLinkOwner, Long sourceLinkId) throws Exception {
 
 		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
-			SourceLink sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
-			Long ownerId = sourceLink.getOwnerId();
-			FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
-			LifecycleEntity lifecycleEntity = freeformOwner.getEntity();
-			deleteFreeformSourceLink(sourceLinkId, lifecycleEntity);
+			deleteFreeformSourceLink(sourceLinkId);
 		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
 			deleteDefinitionSourceLink(sourceLinkId);
 		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
@@ -103,54 +116,32 @@ public class SourceLinkService extends AbstractService {
 
 	@Transactional
 	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, ActivityOwner.LEXEME);
 		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceLinkValue);
-		createLifecycleLog(logData);
 		return sourceLinkId;
 	}
 
 	@Transactional
 	public void deleteLexemeSourceLink(Long sourceLinkId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeSourceLink", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeSourceLink", lexemeId, ActivityOwner.LEXEME);
 		sourceLinkDbService.deleteLexemeSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
 	@Transactional
 	public Long createFreeformSourceLink(
-			Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName, LifecycleEntity lifecycleEntity) throws Exception {
+			Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) throws Exception {
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrByFreeform(freeformId);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
 		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
-		LogData logData = new LogData(LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.FREEFORM_SOURCE_LINK, sourceLinkId, sourceLinkValue);
-		createLifecycleLog(logData);
-		return sourceLinkId;
-	}
-
-	//TODO not sure about this
-	@Transactional
-	public Long createFreeformSourceLink(
-			Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName,
-			LifecycleEntity lifecycleEntity, LifecycleProperty lifecycleProperty) throws Exception {
-		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrByFreeform(freeformId);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
-		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceLinkValue, sourceLinkName);
-		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
-		LogData logData = new LogData(LifecycleEventType.CREATE, lifecycleEntity, lifecycleProperty, sourceLinkId, sourceLinkValue);
-		createLifecycleLog(logData);
 		return sourceLinkId;
 	}
 
 	@Transactional
-	public void deleteFreeformSourceLink(Long sourceLinkId, LifecycleEntity lifecycleEntity) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, lifecycleEntity, LifecycleProperty.FREEFORM_SOURCE_LINK, sourceLinkId, null);
-		createLifecycleLog(logData);
+	public void deleteFreeformSourceLink(Long sourceLinkId) throws Exception {
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrBySourceLink(sourceLinkId);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
 		sourceLinkDbService.deleteFreeformSourceLink(sourceLinkId);
@@ -160,20 +151,16 @@ public class SourceLinkService extends AbstractService {
 	@Transactional
 	public Long createDefinitionSourceLink(Long definitionId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) throws Exception {
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING);
 		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceLinkValue);
-		createLifecycleLog(logData);
 		return sourceLinkId;
 	}
 
 	@Transactional
 	public void deleteDefinitionSourceLink(Long sourceLinkId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId, null);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionSourceLink", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionSourceLink", meaningId, ActivityOwner.MEANING);
 		sourceLinkDbService.deleteDefinitionSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}

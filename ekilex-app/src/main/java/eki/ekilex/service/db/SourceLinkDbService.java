@@ -17,7 +17,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.LifecycleEntity;
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.SourceLink;
@@ -48,31 +48,31 @@ public class SourceLinkDbService {
 
 		Table<Record2<String,Long>> xff = DSL
 				.select(
-						DSL.field(DSL.val(LifecycleEntity.LEXEME.name())).as(fieldNameEntity),
+						DSL.field(DSL.val(ActivityEntity.LEXEME.name())).as(fieldNameEntity),
 						lff.LEXEME_ID.as(fieldNameEntityId))
 				.from(lff)
 				.where(lff.FREEFORM_ID.eq(freeformId))
 				.unionAll(DSL
 						.select(
-								DSL.field(DSL.val(LifecycleEntity.MEANING.name())).as(fieldNameEntity),
+								DSL.field(DSL.val(ActivityEntity.MEANING.name())).as(fieldNameEntity),
 								mff.MEANING_ID.as(fieldNameEntityId))
 						.from(mff)
 						.where(mff.FREEFORM_ID.eq(freeformId)))
 				.unionAll(DSL
 						.select(
-								DSL.field(DSL.val(LifecycleEntity.WORD.name())).as(fieldNameEntity),
+								DSL.field(DSL.val(ActivityEntity.WORD.name())).as(fieldNameEntity),
 								wff.WORD_ID.as(fieldNameEntityId))
 						.from(wff)
 						.where(wff.FREEFORM_ID.eq(freeformId)))
 				.unionAll(DSL
 						.select(
-								DSL.field(DSL.val(LifecycleEntity.SOURCE.name())).as(fieldNameEntity),
+								DSL.field(DSL.val(ActivityEntity.SOURCE.name())).as(fieldNameEntity),
 								sff.SOURCE_ID.as(fieldNameEntityId))
 						.from(sff)
 						.where(sff.FREEFORM_ID.eq(freeformId)))
 				.unionAll(DSL
 						.select(
-								DSL.field(DSL.val(LifecycleEntity.DEFINITION.name())).as(fieldNameEntity),
+								DSL.field(DSL.val(ActivityEntity.DEFINITION.name())).as(fieldNameEntity),
 								dff.DEFINITION_ID.as(fieldNameEntityId))
 						.from(dff)
 						.where(dff.FREEFORM_ID.eq(freeformId)))

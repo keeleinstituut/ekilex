@@ -46,10 +46,10 @@
       </div>
     </div>
   </div>
-  <div th:replace="sourcedialog :: add_source_dlg('source_search')"></div>
+  <div th:replace="sourcedialog :: add_source_dlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">
-	  initDeleteConfirmations();
+	  initializeSourceSearch();
   </script>
 </body>
 </html>

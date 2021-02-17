@@ -15,6 +15,10 @@ public class SourceRequest extends AbstractDataObject {
 
 	private List<SourceProperty> properties;
 
+	private Long id;
+
+	private String opCode;
+
 	public String getName() {
 		return name;
 	}
@@ -37,5 +41,21 @@ public class SourceRequest extends AbstractDataObject {
 
 	public void setProperties(List<SourceProperty> properties) {
 		this.properties = properties;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getOpCode() {
+		return opCode;
+	}
+
+	public void setOpCode(String opCode) {
+		this.opCode = opCode;
 	}
 }

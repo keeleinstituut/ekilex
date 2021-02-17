@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ContentKey;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
@@ -31,7 +29,6 @@ import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
-import eki.ekilex.service.LookupService;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.service.SynSearchService;
@@ -56,9 +53,6 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@Autowired
 	private SourceLinkService sourceLinkService;
-
-	@Autowired
-	private LookupService lookupService;
 
 	@Autowired
 	private ComplexOpService complexOpService;
@@ -120,25 +114,23 @@ public class EditController extends AbstractMutableDataPageController {
 		case "usage_author":
 			sourceLinkValue = getSourceNameValue(itemData.getId2());
 			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
-			sourceLinkService.createFreeformSourceLink(
-					itemData.getId(), itemData.getId2(), refType, sourceLinkValue, null, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK);
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourceLinkValue, null);
 			break;
 		case "usage_source_link":
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(
-					itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.USAGE, LifecycleProperty.SOURCE_LINK);
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
 		case "lexeme_ff_source_link":
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.LEXEME);
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
 		case "meaning_ff_source_link":
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.MEANING);
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
 		case "definition_ff_source_link":
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue, LifecycleEntity.DEFINITION);
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(itemData.getId(), itemValue);
@@ -486,16 +478,16 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "usage_author":
 		case "usage_source_link":
-			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.USAGE);
+			sourceLinkService.deleteFreeformSourceLink(id);
 			break;
 		case "lexeme_ff_source_link":
-			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.LEXEME);
+			sourceLinkService.deleteFreeformSourceLink(id);
 			break;
 		case "meaning_ff_source_link":
-			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.MEANING);
+			sourceLinkService.deleteFreeformSourceLink(id);
 			break;
 		case "definition_ff_source_link":
-			sourceLinkService.deleteFreeformSourceLink(id, LifecycleEntity.DEFINITION);
+			sourceLinkService.deleteFreeformSourceLink(id);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
 			sourceLinkService.deleteDefinitionSourceLink(id);
@@ -654,12 +646,6 @@ public class EditController extends AbstractMutableDataPageController {
 			}
 		}
 		return RESPONSE_OK_VER1;
-	}
-
-	@PostMapping(OPPOSITE_RELATIONS_URI)
-	@ResponseBody
-	public List<Classifier> getOppositeRelations(@RequestParam("entity") LifecycleEntity entity, @RequestParam("relationType") String relationTypeCode) {
-		return lookupService.getOppositeRelations(entity, relationTypeCode);
 	}
 
 }

@@ -3,6 +3,7 @@ package eki.ekilex.web.util;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.TextDecoration;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DecoratedWordType;
 import eki.ekilex.service.CommonDataService;
 
@@ -102,5 +104,10 @@ public class ViewUtil implements InitializingBean {
 			}
 		}
 		return htmlBuf.toString();
+	}
+
+	public String getClassifierValue(String code, List<Classifier> classifiers) {
+		Optional<Classifier> classifier = classifiers.stream().filter(c -> c.getCode().equals(code)).findFirst();
+		return classifier.isPresent() ? classifier.get().getValue() : code;
 	}
 }

@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.ActivityOwner;
 import eki.common.data.AbstractDataObject;
 
 public class ActivityLog extends AbstractDataObject {
@@ -21,7 +21,7 @@ public class ActivityLog extends AbstractDataObject {
 
 	private Long ownerId;
 
-	private LifecycleLogOwner ownerName;
+	private ActivityOwner ownerName;
 
 	private Long entityId;
 
@@ -77,11 +77,11 @@ public class ActivityLog extends AbstractDataObject {
 		this.ownerId = ownerId;
 	}
 
-	public LifecycleLogOwner getOwnerName() {
+	public ActivityOwner getOwnerName() {
 		return ownerName;
 	}
 
-	public void setOwnerName(LifecycleLogOwner ownerName) {
+	public void setOwnerName(ActivityOwner ownerName) {
 		this.ownerName = ownerName;
 	}
 

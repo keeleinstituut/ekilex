@@ -36,7 +36,7 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.ActivityOwner;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -589,7 +589,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1
-						.and(al.OWNER_NAME.in(LifecycleLogOwner.WORD.name(), LifecycleLogOwner.LEXEME.name()))
+						.and(al.OWNER_NAME.in(ActivityOwner.WORD.name(), ActivityOwner.LEXEME.name()))
 						.andNot(al.ENTITY_NAME.eq(ActivityEntity.GRAMMAR.name()))
 						.andNot(al.FUNCT_NAME.eq(JOIN).and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name())))
 						.andNot(al.FUNCT_NAME.eq(JOIN_WORDS));
@@ -625,7 +625,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1
-						.and(al.OWNER_NAME.eq(LifecycleLogOwner.MEANING.name()))
+						.and(al.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
 						.and(al.OWNER_ID.eq(meaningIdField))
 						.and(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
 						.and(al.FUNCT_NAME.like(LIKE_CREATE));

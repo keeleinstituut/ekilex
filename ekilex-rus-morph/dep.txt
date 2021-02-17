@@ -1,3 +1,0 @@
-eki.ekilex:ekilex-rus-morph:jar:1.0.0
-+- org.apache.lucene:lucene-core:jar:6.6.0:compile
-\- org.apache.lucene:lucene-analyzers-common:jar:6.6.0:compile

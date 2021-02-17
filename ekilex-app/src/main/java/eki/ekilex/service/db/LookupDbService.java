@@ -359,15 +359,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchOneInto(Long.class);
 	}
 
-	public String getImageTitle(Long imageId) {
-		return create
-				.select(FREEFORM.VALUE_TEXT)
-				.from(FREEFORM)
-				.where(FREEFORM.PARENT_ID.eq(imageId)
-						.and(FREEFORM.TYPE.eq(FreeformType.IMAGE_TITLE.name())))
-				.fetchOneInto(String.class);
-	}
-
 	public Map<String, Integer[]> getMeaningsWordsWithMultipleHomonymNumbers(List<Long> meaningIds) {
 
 		Field<String> wordValue = WORD.VALUE.as("word_value");

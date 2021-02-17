@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.ActivityOwner;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.db.tables.ActivityLog;
@@ -126,14 +126,14 @@ public class ActivityLogDbService implements GlobalConstant {
 				.from(w, l)
 				.where(
 						l.ID.eq(al.OWNER_ID)
-								.and(al.OWNER_NAME.eq(LifecycleLogOwner.LEXEME.name()))
+								.and(al.OWNER_NAME.eq(ActivityOwner.LEXEME.name()))
 								.and(w.ID.eq(l.WORD_ID)))
 				.unionAll(DSL
 						.select(w.VALUE)
 						.from(w)
 						.where(
 								w.ID.eq(al.OWNER_ID)
-										.and(al.OWNER_NAME.eq(LifecycleLogOwner.WORD.name())))));
+										.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name())))));
 		return wvf;
 	}
 

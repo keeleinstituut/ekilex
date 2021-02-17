@@ -6,17 +6,12 @@ import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
-import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
-import static eki.ekilex.data.db.Tables.SOURCE_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GUID;
-import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 
 import java.util.List;
 
@@ -75,30 +70,6 @@ public class MaintenanceDbService implements GlobalConstant {
 						.select(WORD_FREEFORM.ID)
 						.from(WORD_FREEFORM)
 						.where(WORD_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID)))
-				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
-				.execute();
-	}
-
-	public int deleteFloatingLifecycleLogs() {
-
-		return create
-				.delete(LIFECYCLE_LOG)
-				.whereNotExists(DSL
-						.select(WORD_LIFECYCLE_LOG.ID)
-						.from(WORD_LIFECYCLE_LOG)
-						.where(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
-				.andNotExists(DSL
-						.select(MEANING_LIFECYCLE_LOG.ID)
-						.from(MEANING_LIFECYCLE_LOG)
-						.where(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
-				.andNotExists(DSL
-						.select(LEXEME_LIFECYCLE_LOG.ID)
-						.from(LEXEME_LIFECYCLE_LOG)
-						.where(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
-				.andNotExists(DSL
-						.select(SOURCE_LIFECYCLE_LOG.ID)
-						.from(SOURCE_LIFECYCLE_LOG)
-						.where(SOURCE_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID)))
 				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}

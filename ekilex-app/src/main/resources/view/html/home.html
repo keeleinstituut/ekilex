@@ -143,15 +143,15 @@
           <hr />
           <h5 class="pt-4">Viimase 30 päeva tegevused</h5>
           <table th:with="columns=${15}" class="table table-striped table-condensed">
-            <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lifecycleUserStatData) - 1, columns)}">
+            <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(activityStatData) - 1, columns)}">
               <tr>
                 <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}" th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].name}"></th>
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(activityStatData)}" th:text="${activityStatData[firstRowItemIndex + rowItemCount].name}"></th>
                 </th:block>
               </tr>
               <tr>
                 <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                  <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(lifecycleUserStatData)}" th:text="${lifecycleUserStatData[firstRowItemIndex + rowItemCount].rowCount}"></td>
+                  <td th:if="${firstRowItemIndex + rowItemCount < #arrays.length(activityStatData)}" th:text="${activityStatData[firstRowItemIndex + rowItemCount].rowCount}"></td>
                 </th:block>
               </tr>
             </th:block>

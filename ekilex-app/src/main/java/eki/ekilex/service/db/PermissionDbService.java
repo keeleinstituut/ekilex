@@ -36,6 +36,7 @@ import org.jooq.SelectSelectStep;
 import org.jooq.SortField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
@@ -57,11 +58,8 @@ import eki.ekilex.data.db.tables.EkiUserProfile;
 @Component
 public class PermissionDbService implements SystemConstant, GlobalConstant, PermConstant {
 
+	@Autowired
 	private DSLContext create;
-
-	public PermissionDbService(DSLContext context) {
-		create = context;
-	}
 
 	public List<EkiUserPermData> getUsers(
 			String userNameFilter, String userPermDatasetCodeFilter, Boolean userEnablePendingFilter, OrderingField orderBy) {

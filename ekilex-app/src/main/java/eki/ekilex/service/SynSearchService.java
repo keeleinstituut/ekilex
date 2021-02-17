@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleLogOwner;
-import eki.common.constant.LifecycleProperty;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.RelationStatus;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.ActivityLogData;
@@ -28,7 +26,6 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUserProfile;
-import eki.ekilex.data.LogData;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.NoteSourceTuple;
@@ -144,16 +141,11 @@ public class SynSearchService extends AbstractWordSearchService {
 	@Transactional
 	public void changeRelationStatus(Long relationId, String relationStatus) throws Exception {
 
-		LogData logData;
-		if (RelationStatus.DELETED.name().equals(relationStatus)) {
+		if (StringUtils.equals(RelationStatus.DELETED.name(), relationStatus)) {
 			moveChangedRelationToLast(relationId);
-			logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, relationId, relationStatus);
-		} else {
-			logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.STATUS, relationId, relationStatus);
 		}
-		createLifecycleLog(logData);
 		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, ActivityOwner.WORD);
 		synSearchDbService.changeRelationStatus(relationId, relationStatus);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 	}
@@ -166,7 +158,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight);
 
 		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, ActivityOwner.WORD);
 		synSearchDbService.changeRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
 		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
 	}
@@ -182,11 +174,11 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		ActivityLogData activityLog;
 		Long meaningRelationId;
-		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, LifecycleLogOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, ActivityOwner.MEANING);
 		meaningRelationId = cudDbService.createMeaningRelation(targetMeaningId, sourceMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 
-		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, LifecycleLogOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, ActivityOwner.MEANING);
 		meaningRelationId = cudDbService.createMeaningRelation(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 	}

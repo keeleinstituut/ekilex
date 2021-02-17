@@ -22,7 +22,7 @@ import com.flipkart.zjsonpatch.JsonDiff;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.ActivityOwner;
 import eki.common.exception.IllegalParamException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLog;
@@ -240,7 +240,7 @@ public class ActivityLogService implements SystemConstant {
 					throw new IllegalParamException("Missing activity entity owner mapping for lexeme freeform " + ffTypeName);
 				}
 			}
-			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.LEXEME, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.LEXEME, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("word_id");
 		if (id != null) {
@@ -253,7 +253,7 @@ public class ActivityLogService implements SystemConstant {
 					throw new IllegalParamException("Missing activity entity owner mapping for word freeform " + ffTypeName);
 				}
 			}
-			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.WORD, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.WORD, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("meaning_id");
 		if (id != null) {
@@ -266,7 +266,7 @@ public class ActivityLogService implements SystemConstant {
 					throw new IllegalParamException("Missing activity entity owner mapping for meaning freeform " + ffTypeName);
 				}
 			}
-			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.MEANING, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("d_meaning_id");
 		if (id != null) {
@@ -279,7 +279,7 @@ public class ActivityLogService implements SystemConstant {
 					throw new IllegalParamException("Missing activity entity owner mapping for definition freeform " + ffTypeName);
 				}
 			}
-			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.MEANING, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.MEANING, id, activityEntity);
 		}
 		id = (Long) freeformOwnerDataMap.get("source_id");
 		if (id != null) {
@@ -292,12 +292,12 @@ public class ActivityLogService implements SystemConstant {
 					throw new IllegalParamException("Missing activity entity owner mapping for source freeform " + ffTypeName);
 				}
 			}
-			return new ActivityLogOwnerEntityDescr(LifecycleLogOwner.SOURCE, id, activityEntity);
+			return new ActivityLogOwnerEntityDescr(ActivityOwner.SOURCE, id, activityEntity);
 		}
 		throw new IllegalParamException("Unable to locate owner of the freeform");
 	}
 
-	public ActivityLogData prepareActivityLog(String functName, Long ownerId, LifecycleLogOwner ownerName) throws Exception {
+	public ActivityLogData prepareActivityLog(String functName, Long ownerId, ActivityOwner ownerName) throws Exception {
 
 		String userName = userContext.getUserName();
 		ActivityLogData activityLogData = new ActivityLogData();
@@ -309,25 +309,25 @@ public class ActivityLogService implements SystemConstant {
 		WordLexemeMeaningIds prevWlmIds;
 		String prevData;
 
-		if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
+		if (ActivityOwner.LEXEME.equals(ownerName)) {
 			Long lexemeId = Long.valueOf(ownerId);
 			prevData = getLexemeDetailsJson(lexemeId);
 			prevWlmIds = activityLogDbService.getWordMeaningIds(lexemeId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
-		} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
+		} else if (ActivityOwner.WORD.equals(ownerName)) {
 			Long wordId = Long.valueOf(ownerId);
 			prevData = getWordDetailsJson(wordId);
 			prevWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
-		} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
+		} else if (ActivityOwner.MEANING.equals(ownerName)) {
 			Long meaningId = Long.valueOf(ownerId);
 			prevData = getMeaningDetailsJson(meaningId);
 			prevWlmIds = activityLogDbService.getLexemeWordIds(meaningId);
 			activityLogData.setPrevData(prevData);
 			activityLogData.setPrevWlmIds(prevWlmIds);
-		} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
+		} else if (ActivityOwner.SOURCE.equals(ownerName)) {
 			Long sourceId = Long.valueOf(ownerId);
 			prevData = getSourceJson(sourceId);
 			activityLogData.setPrevData(prevData);
@@ -335,7 +335,7 @@ public class ActivityLogService implements SystemConstant {
 		return activityLogData;
 	}
 
-	public void createActivityLog(String functName, Long ownerId, LifecycleLogOwner ownerName) throws Exception {
+	public void createActivityLog(String functName, Long ownerId, ActivityOwner ownerName) throws Exception {
 
 		Long entityId = Long.valueOf(ownerId);
 		ActivityEntity entityName = ActivityEntity.valueOf(ownerName.name());
@@ -346,13 +346,13 @@ public class ActivityLogService implements SystemConstant {
 			activityLogData.setEntityName(entityName);
 			activityLogData.setCurrData(EMPTY_CONTENT_JSON);
 			activityLogData.setCurrWlmIds(new WordLexemeMeaningIds());
-			if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
+			if (ActivityOwner.LEXEME.equals(ownerName)) {
 				handleWlmActivityLog(activityLogData);
-			} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
+			} else if (ActivityOwner.WORD.equals(ownerName)) {
 				handleWlmActivityLog(activityLogData);
-			} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
+			} else if (ActivityOwner.MEANING.equals(ownerName)) {
 				handleWlmActivityLog(activityLogData);
-			} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
+			} else if (ActivityOwner.SOURCE.equals(ownerName)) {
 				handleSourceActivityLog(activityLogData);
 			}
 		} else {
@@ -372,43 +372,37 @@ public class ActivityLogService implements SystemConstant {
 		createActivityLog(activityLogData, -1L, entityName);
 	}
 
-	public void createActivityLog(ActivityLogData activityLogData, List<Long> entityIds, ActivityEntity entityName) throws Exception {
-		for (Long entityId : entityIds) {
-			createActivityLog(activityLogData, entityId, entityName);
-		}
-	}
-
 	public void createActivityLog(ActivityLogData activityLogData, Long entityId, ActivityEntity entityName) throws Exception {
 
 		activityLogData.setEntityId(entityId);
 		activityLogData.setEntityName(entityName);
-		LifecycleLogOwner ownerName = activityLogData.getOwnerName();
+		ActivityOwner ownerName = activityLogData.getOwnerName();
 		Long ownerId = activityLogData.getOwnerId();
 		WordLexemeMeaningIds currWlmIds = null;
 		String currData = null;
 
-		if (LifecycleLogOwner.LEXEME.equals(ownerName)) {
+		if (ActivityOwner.LEXEME.equals(ownerName)) {
 			Long lexemeId = Long.valueOf(ownerId);
 			currData = getLexemeDetailsJson(lexemeId);
 			currWlmIds = activityLogDbService.getWordMeaningIds(lexemeId);
 			activityLogData.setCurrData(currData);
 			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
-		} else if (LifecycleLogOwner.WORD.equals(ownerName)) {
+		} else if (ActivityOwner.WORD.equals(ownerName)) {
 			Long wordId = Long.valueOf(ownerId);
 			currData = getWordDetailsJson(wordId);
 			currWlmIds = activityLogDbService.getLexemeMeaningIds(wordId);
 			activityLogData.setCurrData(currData);
 			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
-		} else if (LifecycleLogOwner.MEANING.equals(ownerName)) {
+		} else if (ActivityOwner.MEANING.equals(ownerName)) {
 			Long meaningId = Long.valueOf(ownerId);
 			currData = getMeaningDetailsJson(meaningId);
 			currWlmIds = activityLogDbService.getLexemeWordIds(meaningId);
 			activityLogData.setCurrData(currData);
 			activityLogData.setCurrWlmIds(currWlmIds);
 			handleWlmActivityLog(activityLogData);
-		} else if (LifecycleLogOwner.SOURCE.equals(ownerName)) {
+		} else if (ActivityOwner.SOURCE.equals(ownerName)) {
 			Long sourceId = Long.valueOf(ownerId);
 			currData = getSourceJson(sourceId);
 			activityLogData.setCurrData(currData);

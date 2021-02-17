@@ -2,26 +2,21 @@ package eki.ekilex.security;
 
 import java.io.Serializable;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.AuthorityItem;
-import eki.common.constant.AuthorityOperation;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LifecycleEntity;
 import eki.common.constant.PermConstant;
 import eki.common.constant.ReferenceOwner;
-import eki.common.data.AbstractDataObject;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SourceLink;
@@ -33,10 +28,6 @@ import eki.ekilex.service.db.SourceLinkDbService;
 
 @Component("permEval")
 public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConstant, GlobalConstant {
-
-	private static Logger logger = LoggerFactory.getLogger(EkilexPermissionEvaluator.class);
-
-	private static final char PERM_KEY_VALUE_SEPARATOR = ':';
 
 	@Autowired
 	private PermissionDbService permissionDbService;
@@ -192,13 +183,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	private boolean isFreeformSourceLinkCrudGranted(Long userId, DatasetPermission crudRole, Long ownerId) {
 		FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
-		LifecycleEntity entity = freeformOwner.getEntity();
+		ActivityEntity entity = freeformOwner.getEntity();
 		Long entityId = freeformOwner.getEntityId();
-		if (LifecycleEntity.LEXEME.equals(entity)) {
+		if (ActivityEntity.LEXEME.equals(entity)) {
 			return permissionDbService.isGrantedForLexeme(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (LifecycleEntity.MEANING.equals(entity)) {
+		} else if (ActivityEntity.MEANING.equals(entity)) {
 			return permissionDbService.isGrantedForMeaning(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		} else if (LifecycleEntity.DEFINITION.equals(entity)) {
+		} else if (ActivityEntity.DEFINITION.equals(entity)) {
 			return permissionDbService.isGrantedForDefinition(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 		return false;
@@ -221,11 +212,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	@Override
 	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
-		EkiUser user = (EkiUser) authentication.getPrincipal();
-		Long userId = user.getId();
-
-		logger.debug("userId: \"{}\" targetObj: \"{}\" permission: \"{}\"", userId, targetDomainObject, permission);
-
 		return false;
 	}
 
@@ -235,85 +221,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	@Override
 	public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
 
-		EkiUser user = (EkiUser) authentication.getPrincipal();
-		Long userId = user.getId();
-
-		// required authority
-		Authority requiredAuthority = parse(permission);
-		AuthorityItem requiredAuthItem = requiredAuthority.getAuthItem();
-		List<String> requiredAuthOps = requiredAuthority.getAuthOps();
-
-		if (requiredAuthOps.contains(AuthorityOperation.READ.name()) && user.isMaster()) {
-			return true;
-		}
-
-		DatasetPermission userRole = user.getRecentRole();
-		if (userRole == null) {
-			return false;
-		}
-
-		// provided user role
-		AuthorityOperation providedAuthOperation = userRole.getAuthOperation();
-		AuthorityItem providedAuthItem = userRole.getAuthItem();
-
-		Long entityId = Long.valueOf(targetId.toString());
-		boolean isPermGranted = false;
-
-		if (requiredAuthItem.equals(providedAuthItem) && requiredAuthOps.contains(providedAuthOperation.name())) {
-			if (StringUtils.equals(LifecycleEntity.WORD.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForWord(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
-			} else if (StringUtils.equals(LifecycleEntity.MEANING.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForMeaning(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
-			} else if (StringUtils.equals(LifecycleEntity.LEXEME.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForLexeme(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
-			} else if (StringUtils.equals(LifecycleEntity.DEFINITION.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForDefinition(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
-			} else if (StringUtils.equals(LifecycleEntity.USAGE.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForUsage(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
-			} else if (StringUtils.equals(LifecycleEntity.SOURCE.name(), targetType)) {
-				isPermGranted = permissionDbService.isGrantedForSource(userId, userRole, entityId, requiredAuthItem.name(), requiredAuthOps);
-			}
-		}
-
-		//logger.debug("userId: \"{}\" targetId: \"{}\" targetType: \"{}\" permission: \"{}\" granted: {}", userId, targetId, targetType, permission, isPermGranted);
-
-		return isPermGranted;
-	}
-
-	private Authority parse(Object permission) {
-		String permSentence = permission.toString();
-		String[] perms = StringUtils.split(permSentence, PERM_KEY_VALUE_SEPARATOR);
-		AuthorityItem authItem = AuthorityItem.valueOf(perms[0]);
-		AuthorityOperation authOp = AuthorityOperation.valueOf(perms[1]);
-		if (AuthorityItem.DATASET.equals(authItem)) {
-			if (AuthorityOperation.CRUD.equals(authOp)) {
-				return new Authority(authItem, AUTH_OPS_CRUD);
-			} else if (AuthorityOperation.READ.equals(authOp)) {
-				return new Authority(authItem, AUTH_OPS_READ);
-			}
-		}
-		return new Authority(authItem, Collections.emptyList());
-	}
-
-	public class Authority extends AbstractDataObject {
-
-		private static final long serialVersionUID = 1L;
-
-		private AuthorityItem authItem;
-
-		private List<String> authOps;
-
-		public Authority(AuthorityItem authItem, List<String> authOps) {
-			this.authItem = authItem;
-			this.authOps = authOps;
-		}
-
-		public AuthorityItem getAuthItem() {
-			return authItem;
-		}
-
-		public List<String> getAuthOps() {
-			return authOps;
-		}
+		return false;
 	}
 }

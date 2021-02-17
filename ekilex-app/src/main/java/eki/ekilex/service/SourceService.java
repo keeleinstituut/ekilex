@@ -14,31 +14,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleLogOwner;
-import eki.common.constant.LifecycleProperty;
 import eki.common.constant.SourceType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ActivityLogOwnerEntityDescr;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.LogData;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourcePropertyTuple;
-import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
-public class SourceService extends AbstractService {
+public class SourceService extends AbstractSourceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
-
-	@Autowired
-	private SourceDbService sourceDbService;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -147,29 +139,9 @@ public class SourceService extends AbstractService {
 	}
 
 	@Transactional
-	public Long createSource(SourceType sourceType, List<SourceProperty> sourceProperties) throws Exception {
-
-		Long sourceId = sourceDbService.createSource(sourceType, sourceProperties);
-		LogData sourceValueLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
-		createLifecycleLog(sourceValueLogData);
-		LogData sourceTypeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, sourceType.name());
-		createLifecycleLog(sourceTypeLogData);
-		for (SourceProperty sourceProperty : sourceProperties) {
-			LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(sourceProperty.getType().name());
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, sourceProperty.getValueText());
-			createLifecycleLog(logData);
-		}
-		activityLogService.createActivityLog("createSource", sourceId, LifecycleLogOwner.SOURCE);
-		return sourceId;
-	}
-
-	@Transactional
 	public void createSourceProperty(Long sourceId, FreeformType freeformType, String valueText) throws Exception {
 
-		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(freeformType.name());
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.SOURCE, lifecycleProperty, sourceId, valueText);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSourceProperty", sourceId, LifecycleLogOwner.SOURCE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSourceProperty", sourceId, ActivityOwner.SOURCE);
 		Long sourcePropertyId = sourceDbService.createSourceProperty(sourceId, freeformType, valueText);
 		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformType);
 	}
@@ -181,10 +153,6 @@ public class SourceService extends AbstractService {
 		if (sourceProperty == null) {
 			throw new OperationDeniedException();
 		}
-		FreeformType type = sourceProperty.getType();
-		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId, valueText);
-		createLifecycleLog(logData);
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
 		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
@@ -198,10 +166,6 @@ public class SourceService extends AbstractService {
 		if (sourceProperty == null) {
 			throw new OperationDeniedException();
 		}
-		FreeformType type = sourceProperty.getType();
-		LifecycleProperty lifecycleProperty = LifecycleProperty.valueOf(type.name());
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, lifecycleProperty, sourcePropertyId);
-		createLifecycleLog(logData);
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
 		sourceDbService.deleteSourceProperty(sourcePropertyId);
@@ -211,9 +175,7 @@ public class SourceService extends AbstractService {
 	@Transactional
 	public void updateSource(Long sourceId, SourceType type) throws Exception {
 
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.SOURCE, LifecycleProperty.SOURCE_TYPE, sourceId, type.name());
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, LifecycleLogOwner.SOURCE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE);
 		sourceDbService.updateSourceType(sourceId, type);
 		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
 	}
@@ -226,35 +188,20 @@ public class SourceService extends AbstractService {
 	@Transactional
 	public void deleteSource(Long sourceId) throws Exception {
 
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, sourceId);
-		createLifecycleLog(logData);
-		activityLogService.createActivityLog("deleteSource", sourceId, LifecycleLogOwner.SOURCE);
+		activityLogService.createActivityLog("deleteSource", sourceId, ActivityOwner.SOURCE);
 		sourceDbService.deleteSource(sourceId);
 	}
 
 	@Transactional
 	public void joinSources(Long targetSourceId, Long originSourceId) throws Exception {
 
-		String targetSourceNames = joinSourceNames(targetSourceId);
-		String originSourceNames = joinSourceNames(originSourceId);
-		LogData logData = new LogData(
-				LifecycleEventType.JOIN, LifecycleEntity.SOURCE, LifecycleProperty.VALUE, targetSourceId, originSourceNames, targetSourceNames);
-		createLifecycleLog(logData);
-
-		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinMeanings", originSourceId, LifecycleLogOwner.SOURCE);
-		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinMeanings", targetSourceId, LifecycleLogOwner.SOURCE);
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinMeanings", originSourceId, ActivityOwner.SOURCE);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinMeanings", targetSourceId, ActivityOwner.SOURCE);
 
 		sourceDbService.joinSources(targetSourceId, originSourceId);
 
 		activityLogService.createActivityLog(activityLog1, originSourceId, ActivityEntity.SOURCE);
 		activityLogService.createActivityLog(activityLog2, targetSourceId, ActivityEntity.SOURCE);
-	}
-
-	private String joinSourceNames(Long sourceId) {
-
-		List<String> names = sourceDbService.getSourceAttributesByType(sourceId, FreeformType.SOURCE_NAME);
-		String joinedNames = StringUtils.join(names, "; ");
-		return joinedNames;
 	}
 
 }

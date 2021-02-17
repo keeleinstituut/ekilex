@@ -17,10 +17,7 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleLogOwner;
-import eki.common.constant.LifecycleProperty;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.RelationStatus;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
@@ -28,7 +25,6 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
-import eki.ekilex.data.LogData;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
@@ -69,8 +65,6 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateWordValue(Long wordId, String valuePrese) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
-		createLifecycleLog(logData);
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
@@ -79,7 +73,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
 			valueAsWord = cleanValue;
 		}
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
 		if (StringUtils.isNotEmpty(valueAsWord)) {
 			cudDbService.updateAsWordValue(wordId, valueAsWord);
@@ -92,55 +86,42 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateWordVocalForm(Long wordId, String vocalForm) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.VOCAL_FORM, wordId, vocalForm);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordVocalForm(wordId, vocalForm);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
 	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordType", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordType", wordId, ActivityOwner.WORD);
 		Long wordWordTypeId = cudDbService.updateWordType(wordId, currentTypeCode, newTypeCode);
 		activityLogService.createActivityLog(activityLog, wordWordTypeId, ActivityEntity.WORD_TYPE);
-		LogData logData = new LogData(
-				LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, currentTypeCode, newTypeCode);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateWordAspect(Long wordId, String typeCode) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.ASPECT, wordId, typeCode);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordAspect", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordAspect", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordAspect(wordId, typeCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
 	public void updateWordDisplayMorph(Long wordId, String displayMorphCode) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.DISPLAY_MORPH_CODE, wordId, displayMorphCode);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordDisplayMorph", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordDisplayMorph", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordDisplayMorph(wordId, displayMorphCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
 	public void updateWordGender(Long wordId, String genderCode) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.GENDER, wordId, genderCode);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordGender", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordGender", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordGender(wordId, genderCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
 	public void updateWordLang(Long wordId, String langCode) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.LANG, wordId, langCode);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLang", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLang", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordLang(wordId, langCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
@@ -152,69 +133,49 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(wordNoteId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.WORD, ActivityEntity.WORD_NOTE, freeform);
+		updateFreeform(ActivityOwner.WORD, ActivityEntity.WORD_NOTE, freeform);
 	}
 
 	@Transactional
 	public void updateWordLexemesTagComplete(Long wordId, String userRoleDatasetCode, Tag tag) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLexemesTagComplete", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLexemesTagComplete", wordId, ActivityOwner.WORD);
 
 		String tagName = tag.getName();
 		boolean removeToComplete = tag.isRemoveToComplete();
-		List<Long> updatedLexemeIds;
-		LifecycleEventType eventType;
 
 		if (removeToComplete) {
-			updatedLexemeIds = cudDbService.deleteWordLexemesTag(wordId, userRoleDatasetCode, tagName);
-			eventType = LifecycleEventType.DELETE;
+			cudDbService.deleteWordLexemesTag(wordId, userRoleDatasetCode, tagName);
 		} else {
-			updatedLexemeIds = cudDbService.createWordLexemesTag(wordId, userRoleDatasetCode, tagName);
-			eventType = LifecycleEventType.CREATE;
+			cudDbService.createWordLexemesTag(wordId, userRoleDatasetCode, tagName);
 		}
 
 		activityLogService.createActivityLogUnknownEntity(activityLog, ActivityEntity.TAG);
-
-		updatedLexemeIds.forEach(lexemeId -> {
-			LogData logData = new LogData(eventType, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
-			createLifecycleLog(logData);
-		});
 	}
 
 	@Transactional
 	public void updateMeaningLexemesTagComplete(Long meaningId, String userRoleDatasetCode, Tag tag) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLexemesTagComplete", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLexemesTagComplete", meaningId, ActivityOwner.MEANING);
 
 		String tagName = tag.getName();
 		boolean removeToComplete = tag.isRemoveToComplete();
-		List<Long> updatedLexemeIds;
-		LifecycleEventType eventType;
 
 		if (removeToComplete) {
-			updatedLexemeIds = cudDbService.deleteMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
-			eventType = LifecycleEventType.DELETE;
+			cudDbService.deleteMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
 		} else {
-			updatedLexemeIds = cudDbService.createMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
-			eventType = LifecycleEventType.CREATE;
+			cudDbService.createMeaningLexemesTag(meaningId, userRoleDatasetCode, tagName);
 		}
 
 		activityLogService.createActivityLogUnknownEntity(activityLog, ActivityEntity.TAG);
-
-		updatedLexemeIds.forEach(lexemeId -> {
-			LogData logData = new LogData(eventType, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
-			createLifecycleLog(logData);
-		});
 	}
 
 	@Transactional
 	public void updateWordRelationOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_RELATION, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long wordRelationId = item.getId();
 			Long wordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordRelationOrdering", wordId, LifecycleLogOwner.WORD);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordRelationOrdering", wordId, ActivityOwner.WORD);
 			cudDbService.updateWordRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
 		}
@@ -223,11 +184,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateWordEtymologyOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long wordEtymId = item.getId();
 			Long wordId = activityLogService.getOwnerId(wordEtymId, ActivityEntity.WORD_ETYMOLOGY);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordEtymologyOrdering", wordId, LifecycleLogOwner.WORD);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordEtymologyOrdering", wordId, ActivityOwner.WORD);
 			cudDbService.updateWordEtymologyOrderby(item);
 			activityLogService.createActivityLog(activityLog, wordEtymId, ActivityEntity.WORD_ETYMOLOGY);
 		}
@@ -236,11 +195,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateMeaningDomainOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, item);
-			createListOrderingLifecycleLog(logData);
 			Long meaningDomainId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(meaningDomainId, ActivityEntity.DOMAIN);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomainOrdering", meaningId, LifecycleLogOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomainOrdering", meaningId, ActivityOwner.MEANING);
 			cudDbService.updateMeaningDomainOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 		}
@@ -250,11 +207,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void updateGovernmentOrdering(List<ListData> items) throws Exception {
 
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.GOVERNMENT, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long governmentId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateGovernmentOrdering", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateGovernmentOrdering", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
 		}
@@ -264,11 +219,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void updateUsageOrdering(List<ListData> items) throws Exception {
 
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.USAGE, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long usageId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageOrdering", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageOrdering", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 		}
@@ -278,11 +231,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void updateLexemeNoteOrdering(List<ListData> items) throws Exception {
 
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, item);
-			createListOrderingLifecycleLog(logData);
 			Long lexemeNoteId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNoteOrdering", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNoteOrdering", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 		}
@@ -291,11 +242,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateMeaningNoteOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING, LifecycleProperty.NOTE, item);
-			createListOrderingLifecycleLog(logData);
 			Long meaningNoteId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNoteOrdering", meaningId, LifecycleLogOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNoteOrdering", meaningId, ActivityOwner.MEANING);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
 		}
@@ -304,11 +253,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateDefinitionNoteOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, item);
-			createListOrderingLifecycleLog(logData);
 			Long definitionId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION_NOTE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionNoteOrdering", meaningId, LifecycleLogOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionNoteOrdering", meaningId, ActivityOwner.MEANING);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION_NOTE);
 		}
@@ -316,9 +263,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateLexemeMeaningWordOrdering(List<ListData> items, Long lexemeId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.MEANING_WORD, lexemeId);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeMeaningWordOrdering", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeMeaningWordOrdering", lexemeId, ActivityOwner.LEXEME);
 		for (ListData item : items) {
 			cudDbService.updateLexemeOrderby(item);
 		}
@@ -334,7 +279,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.USAGE, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE, freeform);
 	}
 
 	@Transactional
@@ -344,7 +289,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(usageTranslationId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.USAGE_TRANSLATION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE_TRANSLATION, freeform);
 	}
 
 	@Transactional
@@ -354,16 +299,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(usageDefinitionId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.USAGE_DEFINITION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE_DEFINITION, freeform);
 	}
 
 	@Transactional
 	public void updateLexemeOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long lexemeId = item.getId();
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeOrdering", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeOrdering", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.updateLexemeOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 		}
@@ -379,11 +322,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
-			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2());
 			Long otherLexemeId = lexeme.getLexemeId();
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, otherLexemeId, logEntry);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME);
 			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
 			activityLogService.createActivityLog(activityLog, otherLexemeId, ActivityEntity.LEXEME);
 		}
@@ -400,7 +340,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, lexemePosition);
 		for (WordLexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME);
 			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
 			activityLogService.createActivityLog(activityLog, otherLexemeId, ActivityEntity.LEXEME);
 		}
@@ -414,7 +354,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, value);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform);
 	}
 
 	@Transactional
@@ -425,14 +365,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.GRAMMAR, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GRAMMAR, freeform);
 	}
 
 	@Transactional
 	public void updateLexemeComplexity(Long lexemeId, String complexity) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.COMPLEXITY, lexemeId, complexity);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeComplexity", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeComplexity", lexemeId, ActivityOwner.LEXEME);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		cudDbService.updateLexemeComplexity(lexemeId, complexity);
@@ -442,39 +380,30 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePos", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePos", lexemeId, ActivityOwner.LEXEME);
 		Long lexemePosId = cudDbService.updateLexemePos(lexemeId, currentPos, newPos);
 		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, currentPos, newPos);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeDeriv", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeDeriv", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeDerivid = cudDbService.updateLexemeDeriv(lexemeId, currentDeriv, newDeriv);
 		activityLogService.createActivityLog(activityLog, lexemeDerivid, ActivityEntity.DERIV);
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivid, currentDeriv, newDeriv);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegister", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegister", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeRegisterId = cudDbService.updateLexemeRegister(lexemeId, currentRegister, newRegister);
 		activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
-		LogData logData = new LogData(
-				LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, currentRegister, newRegister);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegion", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegion", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeRegionId = cudDbService.updateLexemeRegion(lexemeId, currentRegion, newRegion);
 		activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, currentRegion, newRegion);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -487,23 +416,19 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.LEXEME_NOTE, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.LEXEME_NOTE, freeform);
 	}
 
 	@Transactional
 	public void updateLexemePublicity(Long lexemeId, boolean isPublic) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PUBLICITY, lexemeId, String.valueOf(isPublic));
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePublicity", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePublicity", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.updateLexemeProcessState(lexemeId, isPublic);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
 	public void updateLexemeValueState(Long lexemeId, String valueStateCode) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeValueState", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeValueState", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.updateLexemeValueState(lexemeId, valueStateCode);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
@@ -511,11 +436,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateLexemeRelationOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long lexemeRelationId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(lexemeRelationId, ActivityEntity.LEXEME_RELATION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRelationOrdering", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRelationOrdering", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.updateLexemeRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeRelationId, ActivityEntity.LEXEME_RELATION);
 		}
@@ -523,11 +446,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateDefinition(Long definitionId, String valuePrese, String lang, Complexity complexity, String typeCode, boolean isPublic) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
-		createLifecycleLog(logData);
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, ActivityOwner.MEANING);
 		cudDbService.updateDefinition(definitionId, value, valuePrese, lang, complexity, typeCode, isPublic);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 	}
@@ -535,11 +456,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateDefinitionOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.DEFINITION, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long definitionId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionOrdering", meaningId, LifecycleLogOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionOrdering", meaningId, ActivityOwner.MEANING);
 			cudDbService.updateDefinitionOrderby(item);
 			activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 		}
@@ -554,17 +473,15 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.DEFINITION_NOTE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.DEFINITION_NOTE, freeform);
 	}
 
 	@Transactional
 	public void updateMeaningRelationOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
-			LogData logData = new LogData(LifecycleEventType.ORDER_BY, LifecycleEntity.MEANING_RELATION, LifecycleProperty.ID, item);
-			createListOrderingLifecycleLog(logData);
 			Long meaningRelationId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationOrdering", meaningId, LifecycleLogOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationOrdering", meaningId, ActivityOwner.MEANING);
 			cudDbService.updateMeaningRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 		}
@@ -572,12 +489,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomain", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomain", meaningId, ActivityOwner.MEANING);
 		Long meaningDomainId = cudDbService.updateMeaningDomain(meaningId, currentDomain, newDomain);
 		activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
-		LogData logData = new LogData(
-				LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, currentDomain.getCode(), newDomain.getCode());
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -587,7 +501,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(learnerCommentId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform);
 	}
 
 	@Transactional
@@ -600,17 +514,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.MEANING_NOTE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEANING_NOTE, freeform);
 	}
 
 	@Transactional
 	public void updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningSemanticType", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningSemanticType", meaningId, ActivityOwner.MEANING);
 		Long meaningSemanticTypeId = cudDbService.updateMeaningSemanticType(meaningId, currentSemanticType, newSemanticType);
 		activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
-		LogData logData = new LogData(
-				LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.SEMANTIC_TYPE, meaningSemanticTypeId, currentSemanticType, newSemanticType);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -621,7 +532,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
 	}
 
 	@Transactional
@@ -632,7 +543,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setType(FreeformType.IMAGE_TITLE);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateChildFreeform(LifecycleLogOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
+		updateChildFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
 	}
 
 	@Transactional
@@ -643,7 +554,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform);
 	}
 
 	@Transactional
@@ -653,7 +564,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform);
+		updateFreeform(ActivityOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform);
 	}
 
 	@Transactional
@@ -663,7 +574,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.OD_LEXEME_RECOMMENDATION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_LEXEME_RECOMMENDATION, freeform);
 	}
 
 	@Transactional
@@ -673,7 +584,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.OD_USAGE_DEFINITION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_DEFINITION, freeform);
 	}
 
 	@Transactional
@@ -683,14 +594,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(LifecycleLogOwner.LEXEME, ActivityEntity.OD_USAGE_ALTERNATIVE, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_ALTERNATIVE, freeform);
 	}
 
 	@Transactional
 	public void updateLexemeWeight(Long lexemeId, String lexemeWeightStr) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.WEIGHT, lexemeId, lexemeWeightStr);
-		createLifecycleLog(logData);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeWeight", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeWeight", lexemeId, ActivityOwner.LEXEME);
 		BigDecimal lexemeWeight = new BigDecimal(lexemeWeightStr);
 		cudDbService.updateLexemeWeight(lexemeId, lexemeWeight);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
@@ -699,7 +608,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void updateMeaningRelationWeight(Long meaningRelationId, String relationWeightStr) throws Exception {
 		Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationWeight", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationWeight", meaningId, ActivityOwner.MEANING);
 		BigDecimal relationWeight = new BigDecimal(relationWeightStr);
 		cudDbService.updateMeaningRelationWeight(meaningRelationId, relationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
@@ -717,77 +626,22 @@ public class CudService extends AbstractService implements GlobalConstant {
 		updateLexemeWeight(lexemeId, lexemeWeight);
 	}
 
-	private void updateFreeform(LifecycleLogOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+	private void updateFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long freeformId = freeform.getId();
 		Long ownerId = activityLogService.getOwnerId(freeformId, activityEntity);
-		String valuePrese = freeform.getValuePrese();
-
-		// remove when lifecycle log is no longer needed
-		if (activityEntity.equals(ActivityEntity.LEXEME_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.MEANING_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.WORD_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.OD_WORD_RECOMMENDATION)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.OD_LEXEME_RECOMMENDATION)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.LEARNER_COMMENT)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.GRAMMAR)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.GOVERNMENT)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.USAGE)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.USAGE_TRANSLATION)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.USAGE_DEFINITION)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_DEFINITION)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_ALTERNATIVE)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.DEFINITION_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, freeformId, valuePrese);
-			createLifecycleLog(logData);
-		}
-
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeform", ownerId, logOwner);
 		cudDbService.updateFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
 	}
 
-	private void updateChildFreeform(LifecycleLogOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+	private void updateChildFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long parentId = freeform.getParentId();
 		Long ownerId = activityLogService.getOwnerId(parentId, activityEntity);
-		String valuePrese = freeform.getValuePrese();
-
-		if (activityEntity.equals(ActivityEntity.IMAGE_FILE)) {
-			String recent = lookupDbService.getImageTitle(parentId);
-			LogData logData = new LogData(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, parentId, recent, valuePrese);
-			createLifecycleLog(logData);
-		}
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateChildFreeformValue", ownerId, logOwner);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateChildFreeform", ownerId, logOwner);
 		cudDbService.updateChildFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, parentId, activityEntity);
 	}
@@ -813,30 +667,18 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
-
-		List<String> tagNames = cudDbService.createLexemeAutomaticTags(lexemeId);
-		LogData wordLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, value);
-		createLifecycleLog(wordLogData);
-		LogData lexemeLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, dataset);
-		createLifecycleLog(lexemeLogData);
-		tagNames.forEach(tagName -> {
-			LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
-			createLifecycleLog(tagLogData);
-		});
-
-		activityLogService.createActivityLog("createWord", wordId, LifecycleLogOwner.WORD);
-		activityLogService.createActivityLog("createWord", lexemeId, LifecycleLogOwner.LEXEME);
+		cudDbService.createLexemeAutomaticTags(lexemeId);
+		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD);
+		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME);
 
 		return wordId;
 	}
 
 	@Transactional
 	public void createWordType(Long wordId, String typeCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordType", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD);
 		Long wordTypeId = cudDbService.createWordType(wordId, typeCode);
 		activityLogService.createActivityLog(activityLog, wordTypeId, ActivityEntity.WORD_TYPE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordTypeId, typeCode);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -844,50 +686,28 @@ public class CudService extends AbstractService implements GlobalConstant {
 		ActivityLogData activityLog;
 		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
 		if (wordRelationGroupType.isPresent()) {
-			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, LifecycleLogOwner.WORD);
-			boolean doLogging = false;
-			String previousLogValue = null;
+			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD);
 			Long groupId = lookupDbService.getWordRelationGroupId(relationTypeCode, wordId);
 			if (groupId == null) {
 				groupId = cudDbService.createWordRelationGroup(relationTypeCode);
 				cudDbService.createWordRelationGroupMember(groupId, wordId);
 				cudDbService.createWordRelationGroupMember(groupId, targetWordId);
-				doLogging = true;
-			} else {
-				if (!lookupDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
-					List<Map<String, Object>> wordRelationGroupMembers = lookupDbService.getWordRelationGroupMembers(groupId);
-					previousLogValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
-					cudDbService.createWordRelationGroupMember(groupId, targetWordId);
-					doLogging = true;
-				}
-			}
-			if (doLogging) {
-				List<Map<String, Object>> wordRelationGroupMembers = lookupDbService.getWordRelationGroupMembers(groupId);
-				String logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
-				for (Map<String, Object> member : wordRelationGroupMembers) {
-					Long memberId = (Long) member.get("id");
-					LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION_GROUP_MEMBER, LifecycleProperty.VALUE, memberId,
-							previousLogValue, logValue);
-					createLifecycleLog(logData);
-				}
+			} else if (!lookupDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
+				cudDbService.createWordRelationGroupMember(groupId, targetWordId);
 			}
 			activityLogService.createActivityLog(activityLog, targetWordId, ActivityEntity.WORD_RELATION_GROUP_MEMBER);
 		} else {
-			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, LifecycleLogOwner.WORD);
+			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD);
 			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode, null);
 			activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
-			LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
-			createLifecycleLog(relationLogData);
 			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
 				boolean oppositeRelationExists = lookupDbService.wordRelationExists(targetWordId, wordId, oppositeRelationTypeCode);
 				if (oppositeRelationExists) {
 					return;
 				}
-				activityLog = activityLogService.prepareActivityLog("createWordRelation", targetWordId, LifecycleLogOwner.WORD);
+				activityLog = activityLogService.prepareActivityLog("createWordRelation", targetWordId, ActivityOwner.WORD);
 				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode, null);
 				activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.WORD_RELATION);
-				LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, oppositeRelationId);
-				createLifecycleLog(oppositeRelationLogData);
 			}
 		}
 	}
@@ -909,21 +729,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void createLexeme(Long wordId, String datasetCode, Long meaningId) throws Exception {
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexeme", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexeme", wordId, ActivityOwner.WORD);
 		Long lexemeId = cudDbService.createLexeme(wordId, datasetCode, meaningId, lexemeLevel1);
 		if (lexemeId == null) {
 			return;
 		}
 		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
-		List<String> tagNames = cudDbService.createLexemeAutomaticTags(lexemeId);
+		cudDbService.createLexemeAutomaticTags(lexemeId);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
-
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
-		createLifecycleLog(logData);
-		tagNames.forEach(tagName -> {
-			LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
-			createLifecycleLog(tagLogData);
-		});
 	}
 
 	@Transactional
@@ -965,47 +778,37 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createLexemePos(Long lexemeId, String posCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, ActivityOwner.LEXEME);
 		Long lexemePosId = cudDbService.createLexemePos(lexemeId, posCode);
 		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeTag(Long lexemeId, String tagName) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
 		activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeDeriv(Long lexemeId, String derivCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeDeriv", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeDeriv", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
 		activityLogService.createActivityLog(activityLog, lexemeDerivId, ActivityEntity.DERIV);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeRegister(Long lexemeId, String registerCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegister", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegister", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeRegisterId = cudDbService.createLexemeRegister(lexemeId, registerCode);
 		activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createLexemeRegion(Long lexemeId, String regionCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegion", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegion", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeRegionId = cudDbService.createLexemeRegion(lexemeId, regionCode);
 		activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -1046,51 +849,41 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String oppositeRelationType) throws Exception {
 		ActivityLogData activityLog;
-		activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId1, LifecycleLogOwner.LEXEME);
+		activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId1, ActivityOwner.LEXEME);
 		Long relationId = cudDbService.createLexemeRelation(lexemeId1, lexemeId2, relationType);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.LEXEME_RELATION);
-		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId, relationType);
-		createLifecycleLog(relationLogData);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
 			boolean oppositeRelationExists = lookupDbService.lexemeRelationExists(lexemeId2, lexemeId1, oppositeRelationType);
 			if (oppositeRelationExists) {
 				return;
 			}
-			activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId2, LifecycleLogOwner.LEXEME);
+			activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId2, ActivityOwner.LEXEME);
 			Long oppositeRelationId = cudDbService.createLexemeRelation(lexemeId2, lexemeId1, oppositeRelationType);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.LEXEME_RELATION);
-			LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
-			createLifecycleLog(oppositeRelationLogData);
 		}
 	}
 
 	@Transactional
 	public void createMeaningDomain(Long meaningId, Classifier domain) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, ActivityOwner.MEANING);
 		Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, domain);
 		activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
 	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, String oppositeRelationType) throws Exception {
 		ActivityLogData activityLog;
-		activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId1, LifecycleLogOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId1, ActivityOwner.MEANING);
 		Long relationId = cudDbService.createMeaningRelation(meaningId1, meaningId2, relationType);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
-		LogData relationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId, relationType);
-		createLifecycleLog(relationLogData);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
 			boolean oppositeRelationExists = lookupDbService.meaningRelationExists(meaningId2, meaningId1, oppositeRelationType);
 			if (oppositeRelationExists) {
 				return;
 			}
-			activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId2, LifecycleLogOwner.MEANING);
+			activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId2, ActivityOwner.MEANING);
 			Long oppositeRelationId = cudDbService.createMeaningRelation(meaningId2, meaningId1, oppositeRelationType);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
-			LogData oppositeRelationLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, oppositeRelationId, oppositeRelationType);
-			createLifecycleLog(oppositeRelationLogData);
 		}
 	}
 
@@ -1121,11 +914,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void createMeaningSemanticType(Long meaningId, String semanticTypeCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningSemanticType", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningSemanticType", meaningId, ActivityOwner.MEANING);
 		Long meaningSemanticTypeId = cudDbService.createMeaningSemanticType(meaningId, semanticTypeCode);
 		activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.SEMANTIC_TYPE, meaningSemanticTypeId, semanticTypeCode);
-		createLifecycleLog(logData);
 
 	}
 
@@ -1133,12 +924,10 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void createDefinition(
 			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic) throws Exception {
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING);
 		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity, isPublic);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
-		createLifecycleLog(logData);
 	}
 
 	@Transactional
@@ -1244,18 +1033,10 @@ public class CudService extends AbstractService implements GlobalConstant {
 				.createWordAndLexeme(value, valuePrese, valueAsWord, language, datasetCode, PUBLICITY_PRIVATE, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();
+		cudDbService.createLexemeAutomaticTags(createdLexemeId);
 
-		List<String> createdTagNames = cudDbService.createLexemeAutomaticTags(createdLexemeId);
-		createdTagNames.forEach(tagName -> {
-			LogData tagLogData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, createdLexemeId, tagName);
-			createLifecycleLog(tagLogData);
-		});
-
-		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, LifecycleLogOwner.WORD);
-		LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, createdWordId, valuePrese);
-		createLifecycleLog(logData);
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, LifecycleLogOwner.WORD);
+		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD);
 		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		moveCreatedRelationToFirst(existingWordId, createdRelationId);
 		BigDecimal weight = new BigDecimal(weightStr);
@@ -1270,7 +1051,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		if (!word2DatasetLexemeExists) {
 			createLexeme(sourceWordId, datasetCode, null);
 		}
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD);
 		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		moveCreatedRelationToFirst(targetWordId, createdRelationId);
 		BigDecimal weight = new BigDecimal(weightStr);
@@ -1281,80 +1062,34 @@ public class CudService extends AbstractService implements GlobalConstant {
 	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, FreeForm freeform) throws Exception {
 
 		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, ActivityOwner.WORD);
 		Long wordFreeformId = cudDbService.createWordFreeform(wordId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, wordFreeformId, activityEntity);
-		String valuePrese = freeform.getValuePrese();
-
-		// remove when lifecycle log is no longer needed
-		if (activityEntity.equals(ActivityEntity.WORD_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.NOTE, wordFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.OD_WORD_RECOMMENDATION)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, wordFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		}
 	}
 
 	private void createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform) throws Exception {
 
 		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeFreeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, lexemeFreeformId, activityEntity);
-		String valuePrese = freeform.getValuePrese();
-
-		// remove when lifecycle log is no longer needed
-		if (activityEntity.equals(ActivityEntity.OD_LEXEME_RECOMMENDATION)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, lexemeFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.LEXEME_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, lexemeFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.GRAMMAR)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.GOVERNMENT)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.USAGE)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, lexemeFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		}
 	}
 
 	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, FreeForm freeform) throws Exception {
 
 		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING);
 		Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, meaningFreeformId, activityEntity);
-		String valuePrese = freeform.getValuePrese();
-
-		// remove when lifecycle log is no longer needed
-		if (activityEntity.equals(ActivityEntity.LEARNER_COMMENT)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, meaningFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.MEANING_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, meaningFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		}
 	}
 
 	private void createDefinitionFreeform(ActivityEntity activityEntity, Long definitionId, FreeForm freeform) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionFreeform", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionFreeform", meaningId, ActivityOwner.MEANING);
 		Long definitionFreeformId = cudDbService.createDefinitionFreeform(definitionId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, definitionFreeformId, activityEntity);
-		String valuePrese = freeform.getValuePrese();
-
-		// remove when lifecycle log is no longer needed
-		if (activityEntity.equals(ActivityEntity.DEFINITION_NOTE)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		}
 	}
 
 	private void createMeaningFreeformChildFreeform(ActivityEntity activityEntity, FreeForm freeform) throws Exception {
@@ -1362,17 +1097,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 		String userName = userContext.getUserName();
 		Long meaningFreeformId = freeform.getParentId();
 		Long meaningId = activityLogService.getOwnerId(meaningFreeformId, activityEntity);
-		String valuePrese = freeform.getValuePrese();
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createChildFreeform", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createChildFreeform", meaningId, ActivityOwner.MEANING);
 		Long childFreeformId = cudDbService.createChildFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, childFreeformId, activityEntity);
-
-		// remove when lifecycle log is no longer needed
-		if (activityEntity.equals(ActivityEntity.IMAGE_FILE)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, meaningFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		}
 	}
 
 	private void createUsageChildFreeform(ActivityEntity activityEntity, FreeForm freeform) throws Exception {
@@ -1380,35 +1107,16 @@ public class CudService extends AbstractService implements GlobalConstant {
 		String userName = userContext.getUserName();
 		Long usageId = freeform.getParentId();
 		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		String valuePrese = freeform.getValuePrese();
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageChildFreeform", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageChildFreeform", lexemeId, ActivityOwner.LEXEME);
 		Long usageChildFreeformId = cudDbService.createChildFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, usageChildFreeformId, activityEntity);
-
-		// remove when lifecycle log is no longer needed
-		if (activityEntity.equals(ActivityEntity.USAGE_TRANSLATION)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageChildFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.USAGE_DEFINITION)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageChildFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_DEFINITION)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, usageChildFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		} else if (activityEntity.equals(ActivityEntity.OD_USAGE_ALTERNATIVE)) {
-			LogData logData = new LogData(LifecycleEventType.CREATE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, usageChildFreeformId, valuePrese);
-			createLifecycleLog(logData);
-		}
 	}
 
 	// --- DELETE ---
 
 	@Transactional
 	public void deleteWord(Long wordId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
-		createLifecycleLog(logData);
-		activityLogService.createActivityLog("deleteWord", wordId, LifecycleLogOwner.WORD);
+		activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD);
 		SimpleWord word = lookupDbService.getSimpleWord(wordId);
 		cudDbService.deleteWord(word);
 	}
@@ -1417,9 +1125,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteWordType(Long wordId, String typeCode) throws Exception {
 		if (StringUtils.isNotBlank(typeCode)) {
 			Long wordWordTypeId = lookupDbService.getWordWordTypeId(wordId, typeCode);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, typeCode, null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordType", wordId, LifecycleLogOwner.WORD);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordType", wordId, ActivityOwner.WORD);
 			cudDbService.deleteWordWordType(wordWordTypeId);
 			activityLogService.createActivityLog(activityLog, wordWordTypeId, ActivityEntity.WORD_TYPE);
 		}
@@ -1428,28 +1134,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void deleteWordRelation(Long relationId) throws Exception {
 		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordRelation", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordRelation", wordId, ActivityOwner.WORD);
 		Long groupId = lookupDbService.getWordRelationGroupId(relationId);
 		if (groupId == null) {
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
-			createLifecycleLog(logData);
 			cudDbService.deleteWordRelation(relationId);
 		} else {
 			List<Map<String, Object>> wordRelationGroupMembers = lookupDbService.getWordRelationGroupMembers(groupId);
-			String relationTypeCode = wordRelationGroupMembers.get(0).get("word_rel_type_code").toString();
-			String previousLogValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
-			String logValue = null;
-			if (wordRelationGroupMembers.size() > 2) {
-				logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream()
-						.filter(m -> !relationId.equals(m.get("id")))
-						.map(m -> m.get("value").toString()).collect(Collectors.joining(","));
-			}
-			for (Map<String, Object> member : wordRelationGroupMembers) {
-				Long memberId = (Long) member.get("id");
-				LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION_GROUP_MEMBER, LifecycleProperty.VALUE, memberId,
-						previousLogValue, logValue);
-				createLifecycleLog(logData);
-			}
 			cudDbService.deleteWordRelationGroupMember(relationId);
 			if (wordRelationGroupMembers.size() <= 2) {
 				cudDbService.deleteWordRelationGroup(groupId);
@@ -1460,30 +1150,24 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteWordNote(Long wordNoteId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.NOTE, wordNoteId);
-		createLifecycleLog(logData);
 		Long wordId = activityLogService.getOwnerId(wordNoteId, ActivityEntity.WORD_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordNote", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordNote", wordId, ActivityOwner.WORD);
 		cudDbService.deleteFreeform(wordNoteId);
 		activityLogService.createActivityLog(activityLog, wordNoteId, ActivityEntity.WORD_NOTE);
 	}
 
 	@Transactional
 	public void deleteDefinition(Long definitionId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, null);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinition", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinition", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteDefinition(definitionId);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 	}
 
 	@Transactional
 	public void deleteDefinitionNote(Long definitionNoteId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.NOTE, definitionNoteId);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionNote", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionNote", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteFreeform(definitionNoteId);
 		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
 	}
@@ -1496,12 +1180,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
-
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
-		createLifecycleLog(logData);
 		updateLexemeLevels(lexemeId, "delete");
-
-		activityLogService.createActivityLog("deleteLexeme", lexemeId, LifecycleLogOwner.LEXEME);
+		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteLexeme(lexemeId);
 		cudDbService.adjustWordSecondaryLexemesComplexity(wordId);
 		if (isOnlyLexemeForMeaning) {
@@ -1527,60 +1207,48 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteUsage(Long usageId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, usageId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsage", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsage", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(usageId);
 		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 	}
 
 	@Transactional
 	public void deleteUsageTranslation(Long usageTranslationId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageTranslation", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageTranslation", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(usageTranslationId);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
 	}
 
 	@Transactional
 	public void deleteUsageDefinition(Long usageDefinitionId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(usageDefinitionId);
 		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
 	}
 
 	@Transactional
 	public void deleteLexemeGovernment(Long governmentId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, governmentId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGovernment", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGovernment", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(governmentId);
 		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
 	}
 
 	@Transactional
 	public void deleteLexemeGrammar(Long grammarId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, grammarId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(grammarId, ActivityEntity.GRAMMAR);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGrammar", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGrammar", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(grammarId);
 		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
 	}
 
 	@Transactional
 	public void deleteLexemeNote(Long lexemeNoteId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.NOTE, lexemeNoteId);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeNote", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeNote", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(lexemeNoteId);
 		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.GRAMMAR);
 	}
@@ -1589,9 +1257,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteLexemePos(Long lexemeId, String posCode) throws Exception {
 		if (StringUtils.isNotBlank(posCode)) {
 			Long lexemePosId = lookupDbService.getLexemePosId(lexemeId, posCode);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemePos", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemePos", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.deleteLexemePos(lexemePosId);
 			activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 		}
@@ -1601,9 +1267,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteLexemeTag(Long lexemeId, String tagName) throws Exception {
 		if (StringUtils.isNotBlank(tagName)) {
 			Long lexemeTagId = lookupDbService.getLexemeTagId(lexemeId, tagName);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.TAG, lexemeId, tagName, null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeTag", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeTag", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.deleteLexemeTag(lexemeTagId);
 			activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 		}
@@ -1613,9 +1277,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteLexemeDeriv(Long lexemeId, String derivCode) throws Exception {
 		if (StringUtils.isNotBlank(derivCode)) {
 			Long lexemeDerivId = lookupDbService.getLexemeDerivId(lexemeId, derivCode);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode, null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeDeriv", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeDeriv", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.deleteLexemeDeriv(lexemeDerivId);
 			activityLogService.createActivityLog(activityLog, lexemeDerivId, ActivityEntity.DERIV);
 		}
@@ -1625,9 +1287,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteLexemeRegister(Long lexemeId, String registerCode) throws Exception {
 		if (StringUtils.isNotBlank(registerCode)) {
 			Long lexemeRegisterId = lookupDbService.getLexemeRegisterId(lexemeId, registerCode);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegister", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegister", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.deleteLexemeRegister(lexemeRegisterId);
 			activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
 		}
@@ -1637,9 +1297,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteLexemeRegion(Long lexemeId, String regionCode) throws Exception {
 		if (StringUtils.isNotBlank(regionCode)) {
 			Long lexemeRegionId = lookupDbService.getLexemeRegionId(lexemeId, regionCode);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGION, lexemeRegionId, regionCode, null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegion", lexemeId, LifecycleLogOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegion", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.deleteLexemeRegion(lexemeRegionId);
 			activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
 		}
@@ -1647,10 +1305,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteLexemeRelation(Long relationId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(relationId, ActivityEntity.LEXEME_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRelation", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRelation", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteLexemeRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.LEXEME_RELATION);
 	}
@@ -1666,9 +1322,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteMeaning(Long meaningId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId);
-		createLifecycleLog(logData);
-		activityLogService.createActivityLog("deleteMeaning", meaningId, LifecycleLogOwner.MEANING);
+		activityLogService.createActivityLog("deleteMeaning", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteMeaning(meaningId);
 	}
 
@@ -1676,9 +1330,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteMeaningDomain(Long meaningId, Classifier domain) throws Exception {
 		if (domain != null) {
 			Long meaningDomainId = lookupDbService.getMeaningDomainId(meaningId, domain);
-			LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, LifecycleLogOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, ActivityOwner.MEANING);
 			cudDbService.deleteMeaningDomain(meaningDomainId);
 			activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 		}
@@ -1688,10 +1340,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 	public void deleteMeaningSemanticType(Long meaningId, String semanticTypeCode) throws Exception {
 		if (StringUtils.isNotBlank(semanticTypeCode)) {
 			Long meaningSemanticTypeId = lookupDbService.getMeaningSemanticTypeId(meaningId, semanticTypeCode);
-			LogData logData = new LogData(
-					LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.SEMANTIC_TYPE, meaningSemanticTypeId, semanticTypeCode, null);
-			createLifecycleLog(logData);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, LifecycleLogOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, ActivityOwner.MEANING);
 			cudDbService.deleteMeaningSemanticType(meaningSemanticTypeId);
 			activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
 		}
@@ -1699,10 +1348,8 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteMeaningRelation(Long relationId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteMeaningRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
 	}
@@ -1713,54 +1360,45 @@ public class CudService extends AbstractService implements GlobalConstant {
 		Long oppositeRelationId = lookupDbService.getMeaningRelationSameTypeOppositeRelationId(relationId);
 		if (oppositeRelationId != null) {
 			Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
-			activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, LifecycleLogOwner.MEANING);
+			activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, ActivityOwner.MEANING);
 			cudDbService.deleteMeaningRelation(oppositeRelationId);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
 		}
 
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
-		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, LifecycleLogOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteMeaningRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
 	}
 
 	@Transactional
 	public void deleteMeaningLearnerComment(Long learnerCommentId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, learnerCommentId);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningLearnerComment", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningLearnerComment", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteFreeform(learnerCommentId);
 		activityLogService.createActivityLog(activityLog, learnerCommentId, ActivityEntity.LEARNER_COMMENT);
 	}
 
 	@Transactional
 	public void deleteMeaningNote(Long meaningNoteId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.NOTE, meaningNoteId);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNote", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNote", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteFreeform(meaningNoteId);
 		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
 	}
 
 	@Transactional
 	public void deleteImageTitle(Long imageId) throws Exception {
-		String recent = lookupDbService.getImageTitle(imageId);
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE_TITLE, imageId, recent, null);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(imageId, ActivityEntity.IMAGE_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteImageTitle", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteImageTitle", meaningId, ActivityOwner.MEANING);
 		Long imageTitleId = cudDbService.deleteImageTitle(imageId);
 		activityLogService.createActivityLog(activityLog, imageTitleId, ActivityEntity.IMAGE_TITLE);
 	}
 
 	@Transactional
 	public void deleteMeaningImage(Long imageId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.IMAGE, imageId);
-		createLifecycleLog(logData);
 		Long meaningId = activityLogService.getOwnerId(imageId, ActivityEntity.IMAGE_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningImage", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningImage", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteFreeform(imageId);
 		activityLogService.createActivityLog(activityLog, imageId, ActivityEntity.IMAGE_FILE);
 	}
@@ -1768,47 +1406,39 @@ public class CudService extends AbstractService implements GlobalConstant {
 	@Transactional
 	public void deleteMeaningMedia(Long mediaId) throws Exception {
 		Long meaningId = activityLogService.getOwnerId(mediaId, ActivityEntity.MEDIA_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, LifecycleLogOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, ActivityOwner.MEANING);
 		cudDbService.deleteFreeform(mediaId);
 		activityLogService.createActivityLog(activityLog, mediaId, ActivityEntity.MEDIA_FILE);
 	}
 
 	@Transactional
 	public void deleteOdWordRecommendation(Long freeformId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.OD_RECOMMENDATION, freeformId);
-		createLifecycleLog(logData);
 		Long wordId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdWordRecommendation", wordId, LifecycleLogOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdWordRecommendation", wordId, ActivityOwner.WORD);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
 	}
 
 	@Transactional
 	public void deleteOdLexemeRecommendation(Long freeformId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.OD_RECOMMENDATION, freeformId);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdLexemeRecommendation", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdLexemeRecommendation", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
 	}
 
 	@Transactional
 	public void deleteOdUsageDefinition(Long freeformId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.OD_DEFINITION, freeformId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageDefinition", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageDefinition", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_DEFINITION);
 	}
 
 	@Transactional
 	public void deleteOdUsageAlternative(Long freeformId) throws Exception {
-		LogData logData = new LogData(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.OD_ALTERNATIVE, freeformId, null);
-		createLifecycleLog(logData);
 		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageAlternative", lexemeId, LifecycleLogOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageAlternative", lexemeId, ActivityOwner.LEXEME);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
 	}

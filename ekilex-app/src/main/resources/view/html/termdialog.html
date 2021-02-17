@@ -423,7 +423,7 @@
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
-        <form th:action="@{/create_item}" method="post">
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
           <input type="hidden" name="opCode" value="lex_source_link">
           <input type="hidden" name="id2">
@@ -431,7 +431,7 @@
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
-        <div class="modal-footer">
+        <div name="sourceLinkDlgFooter" class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>
@@ -443,7 +443,7 @@
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
-        <form th:action="@{/create_item}" method="post">
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${usage.id}">
           <input type="hidden" name="opCode" value="usage_source_link">
           <input type="hidden" name="id2">
@@ -451,7 +451,7 @@
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
-        <div class="modal-footer">
+        <div name="sourceLinkDlgFooter" class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>
@@ -653,7 +653,7 @@
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
-        <form th:action="@{/create_item}" method="post">
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${note.id}">
           <input type="hidden" name="opCode" value="lexeme_ff_source_link">
           <input type="hidden" name="id2">
@@ -661,7 +661,7 @@
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
-        <div class="modal-footer">
+        <div name="sourceLinkDlgFooter" class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>
@@ -807,7 +807,7 @@
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
-        <form th:action="@{/create_item}" method="post">
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${note.id}">
           <input type="hidden" name="opCode" value="meaning_ff_source_link">
           <input type="hidden" name="id2">
@@ -815,7 +815,7 @@
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
-        <div class="modal-footer">
+        <div name="sourceLinkDlgFooter" class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>
@@ -919,7 +919,7 @@
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
-        <form th:action="@{/create_item}" method="post">
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${definition.id}">
           <input type="hidden" name="opCode" value="def_source_link">
           <input type="hidden" name="id2">
@@ -927,7 +927,7 @@
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
-        <div class="modal-footer">
+        <div name="sourceLinkDlgFooter" class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>
@@ -1007,7 +1007,7 @@
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
-        <form th:action="@{/create_item}" method="post">
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${note.id}">
           <input type="hidden" name="opCode" value="definition_ff_source_link">
           <input type="hidden" name="id2">
@@ -1015,7 +1015,7 @@
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
-        <div class="modal-footer">
+        <div name="sourceLinkDlgFooter" class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>
@@ -1122,7 +1122,7 @@
         <div class="modal-body">
           <form th:replace="components :: source_search_form"></form>
         </div>
-        <form th:action="@{/create_item}" method="post">
+        <form name="sourceLinkForm" th:action="@{/create_item}" method="post">
           <input type="hidden" name="id" th:value="${image.id}">
           <input type="hidden" name="opCode" value="meaning_ff_source_link">
           <input type="hidden" name="id2">
@@ -1130,7 +1130,7 @@
           <input type="hidden" name="value">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
-        <div class="modal-footer">
+        <div name="sourceLinkDlgFooter" class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </div>

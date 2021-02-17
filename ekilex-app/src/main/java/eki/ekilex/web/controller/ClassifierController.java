@@ -10,11 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.ActivityOwner;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierFull;
 import eki.ekilex.service.ClassifierService;
 
@@ -83,5 +86,11 @@ public class ClassifierController extends AbstractPrivatePageController {
 			return RESPONSE_OK_VER1;
 		}
 		return "fail";
+	}
+
+	@GetMapping(OPPOSITE_RELATIONS_URI)
+	@ResponseBody
+	public List<Classifier> getOppositeRelations(@RequestParam("entity") ActivityOwner owner, @RequestParam("relationType") String relationTypeCode) {
+		return lookupService.getOppositeRelations(owner, relationTypeCode);
 	}
 }

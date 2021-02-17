@@ -12,7 +12,6 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
@@ -26,7 +25,6 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -37,7 +35,6 @@ import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
-import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -197,17 +194,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		return create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).fetch();
 	}
 
-	public String getFirstDefinitionOfMeaning(Long meaningId) {
-		String definition = create
-				.select(DEFINITION.VALUE_PRESE)
-				.from(DEFINITION)
-				.where(DEFINITION.MEANING_ID.eq(meaningId))
-				.orderBy(DEFINITION.ORDER_BY)
-				.limit(1)
-				.fetchOneInto(String.class);
-		return definition;
-	}
-
 	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
 
 		Lexeme l1 = LEXEME.as("l1");
@@ -256,10 +242,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinMeaningRelations(targetMeaningId, sourceMeaningId);
 		joinMeaningSemanticTypes(targetMeaningId, sourceMeaningId);
 
-		// prehistoric
-		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, targetMeaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
-
-		// contemporary
 		MeaningActivityLog mals = MEANING_ACTIVITY_LOG.as("mals");
 		MeaningActivityLog malt = MEANING_ACTIVITY_LOG.as("malt");
 		create
@@ -292,10 +274,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		joinLexemeComplexity(targetLexemeId, sourceLexemeId);
 		joinLexemeTags(targetLexemeId, sourceLexemeId);
 
-		// prehistoric
-		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, targetLexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
-
-		// contemporary
 		LexemeActivityLog lals = LEXEME_ACTIVITY_LOG.as("lals");
 		LexemeActivityLog lalt = LEXEME_ACTIVITY_LOG.as("lalt");
 		create
@@ -1152,13 +1130,6 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		joinWordEtymologyRelations(targetWordId, sourceWordId);
 
-		// prehistoric
-		create.update(WORD_LIFECYCLE_LOG)
-				.set(WORD_LIFECYCLE_LOG.WORD_ID, targetWordId)
-				.where(WORD_LIFECYCLE_LOG.WORD_ID.eq(sourceWordId))
-				.execute();
-
-		// contemporary
 		WordActivityLog wals = WORD_ACTIVITY_LOG.as("wals");
 		WordActivityLog walt = WORD_ACTIVITY_LOG.as("walt");
 		create.update(wals)

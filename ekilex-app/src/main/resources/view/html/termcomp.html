@@ -1441,7 +1441,7 @@
       <span class="lbl">Sugu</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.word.genderCode, wordGenders)}"></span>
+      <span th:text="${viewUtil.getClassifierValue(lexeme.word.genderCode, wordGenders)}"></span>
       <button type="button" class="btn badge badge-primary" title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editWordGenderDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}">
@@ -1462,7 +1462,7 @@
       <span class="lbl">Sõna keel</span>
     </div>
     <div class="col pl-0">
-      <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.word.lang, allLanguages)}"></span>
+      <span th:text="${viewUtil.getClassifierValue(lexeme.word.lang, allLanguages)}"></span>
       <button type="button" class="btn badge badge-primary" title="Muuda"
               data-toggle="modal"
               th:data-target="${'#editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}"
