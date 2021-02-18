@@ -223,6 +223,7 @@ dblink(
 	display_level integer,
 	morph_code varchar(100),
 	morph_exists boolean,
+	is_questionable boolean,
 	value text,
 	value_prese text,
 	components varchar(100) array,

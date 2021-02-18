@@ -40,7 +40,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
-import eki.wordweb.data.DataFilter;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
@@ -79,7 +79,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 	private JooqBugCompensator jooqBugCompensator;
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, DataFilter dataFilter, int maxWordCount) {
+	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, SearchContext searchContext, int maxWordCount) {
 
 		String wordInfixLower = StringUtils.lowerCase(wordInfix);
 		String wordInfixCrit = '%' + wordInfixLower + '%';
@@ -117,10 +117,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), DSL.inline(wordInfixLower)));
 
 		Condition wsWhere = ws.field("crit").like(wordInfixCrit);
-		wsWhere = applyLangCompDatasetFilter(ws, dataFilter, wsWhere);
+		wsWhere = applyLangCompDatasetFilter(ws, searchContext, wsWhere);
 
 		Condition fWhere = f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordInfixLower));
-		fWhere = applyLangCompDatasetFilter(f, dataFilter, fWhere);
+		fWhere = applyLangCompDatasetFilter(f, searchContext, fWhere);
 
 		Table<Record3<String, String, Integer>> wfs = DSL
 				.select(
@@ -152,12 +152,13 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchGroups("sgroup", WordSearchElement.class);
 	}
 
-	public List<Word> getWords(String searchWord, DataFilter dataFilter) {
+	public List<Word> getWords(String searchWord, SearchContext searchContext) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
 		String searchWordLower = StringUtils.lowerCase(searchWord);
+		boolean fiCollationExists = searchContext.isFiCollationExists();
 
 		if (StringUtils.equals(searchWordLower, ILLEGAL_FORM_VALUE)) {
 			return Collections.emptyList();
@@ -180,12 +181,12 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 								.from(f)
 								.where(f.WORD_ID.eq(w.WORD_ID)
 										.and(DSL.lower(f.VALUE).eq(searchWordLower))
-										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE)))))
+										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
+										.and(f.MORPH_EXISTS.isTrue())
+										.and(f.IS_QUESTIONABLE.isFalse()))))
 				.asTable("w");
 
-		Condition where = applyLangCompDatasetFilter(w, dataFilter, DSL.noCondition());
-
-		boolean fiCollationExists = dataFilter.isFiCollationExists();
+		Condition where = applyLangCompDatasetFilter(w, searchContext, DSL.noCondition());
 
 		Field<String> wvobf;
 		if (fiCollationExists) {
@@ -206,11 +207,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 	}
 
 
-	public List<Lexeme> getLexemes(Long wordId, DataFilter dataFilter) {
+	public List<Lexeme> getLexemes(Long wordId, SearchContext searchContext) {
 
-		DatasetType datasetType = dataFilter.getDatasetType();
-		List<String> datasetCodes = dataFilter.getDatasetCodes();
-		Complexity lexComplexity = dataFilter.getLexComplexity();
+		DatasetType datasetType = searchContext.getDatasetType();
+		List<String> datasetCodes = searchContext.getDatasetCodes();
+		Complexity lexComplexity = searchContext.getLexComplexity();
 		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
@@ -228,7 +229,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				where = where.and(l.DATASET_CODE.in(datasetCodes));
 			}
 		}
-		where = applyLangCompDatasetFilter(l, dataFilter, where);
+		where = applyLangCompDatasetFilter(l, searchContext, where);
 
 		return getLexemes(l, lr, where);
 	}
@@ -288,11 +289,11 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		return Arrays.asList(Complexity.ANY.name(), lexComplexity.name());
 	}
 
-	private Condition applyLangCompDatasetFilter(Table<?> lcTable, DataFilter dataFilter, Condition where) {
+	private Condition applyLangCompDatasetFilter(Table<?> lcTable, SearchContext searchContext, Condition where) {
 
-		List<String> destinLangs = dataFilter.getDestinLangs();
-		List<String> datasetCodes = dataFilter.getDatasetCodes();
-		Complexity lexComplexity = dataFilter.getLexComplexity();
+		List<String> destinLangs = searchContext.getDestinLangs();
+		List<String> datasetCodes = searchContext.getDatasetCodes();
+		Complexity lexComplexity = searchContext.getLexComplexity();
 		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
 
 		Table<?> lc = DSL.unnest(lcTable.field("lang_complexities")).as("lc", "lang", "dataset_code", "lex_complexity", "data_complexity");
@@ -350,13 +351,16 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				});
 	}
 
-	public List<Form> getParadigmForms(Long paradigmId, Integer maxDisplayLevel) {
+	public List<Form> getParadigmForms(Long paradigmId, Integer maxDisplayLevel, boolean excludeQuestionable) {
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
 		Condition where = f.PARADIGM_ID.eq(paradigmId).and(f.MODE.in(FormMode.WORD.name(), FormMode.FORM.name()));
 		if (maxDisplayLevel != null) {
 			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
+		}
+		if (excludeQuestionable) {
+			where = where.and(f.IS_QUESTIONABLE.isFalse());
 		}
 
 		return create
@@ -366,7 +370,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(Form.class);
 	}
 
-	public List<Form> getWordForms(Long wordId, Integer maxDisplayLevel) {
+	public List<Form> getWordForms(Long wordId, SearchContext searchContext) {
+
+		Integer maxDisplayLevel = searchContext.getMaxDisplayLevel();
+		boolean excludeQuestionable = searchContext.isExcludeQuestionable();
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
@@ -374,7 +381,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		if (maxDisplayLevel != null) {
 			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
 		}
-
+		if (excludeQuestionable) {
+			where = where.and(f.IS_QUESTIONABLE.isFalse());
+		}
 		return create
 				.selectFrom(f)
 				.where(where)

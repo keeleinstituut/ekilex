@@ -20,7 +20,7 @@ import eki.wordweb.data.Collocation;
 import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationRelGroup;
 import eki.wordweb.data.CollocationTuple;
-import eki.wordweb.data.DataFilter;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.TypeCollocMember;
@@ -31,7 +31,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void compose(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, DataFilter dataFilter, String displayLang) {
+	public void compose(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, SearchContext searchContext, String displayLang) {
 
 		if (CollectionUtils.isEmpty(lexemes)) {
 			return;
@@ -40,7 +40,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			return;
 		}
 
-		Complexity lexComplexity = dataFilter.getLexComplexity();
+		Complexity lexComplexity = searchContext.getLexComplexity();
 		collocTuples = filter(collocTuples, lexComplexity);
 		collocTuples = filterCollocsByMostMembers(collocTuples);
 

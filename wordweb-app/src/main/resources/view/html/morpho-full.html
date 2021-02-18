@@ -5,8 +5,9 @@
   <th:block th:fragment="morpho-form-value(form, prefix)">
     <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
       <span th:text="${prefix}" th:if="${!#strings.isEmpty(prefix) && !#strings.equals(form.value, '-')}"></span>
-      <span class="form-display-form-field" th:utext="${form.displayForm}" style="display: none;"></span>
-      <span class="form-value-field" th:utext="${form.valuePrese}"></span>
+      <span th:if="${form.questionable}" class="text-muted">*</span>
+      <span th:utext="${form.displayForm}" class="form-display-form-field" style="display: none;"></span>
+      <span th:utext="${form.valuePrese}" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}"></span>
       <button type="button" aria-label="Kuula hääldust - lugemas" class="btn btn-speaker"
               th:if="${(form.audioFile != null) && #strings.isEmpty(prefix)}"
               th:data-url-to-audio="@{'/files/audio/' + ${form.audioFile}}"
