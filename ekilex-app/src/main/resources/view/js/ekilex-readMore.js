@@ -53,7 +53,7 @@ class ReadMore {
     $(window).on('resize', () => {
       clearTimeout(this.debounce);
       this.debounce = setTimeout(function() {
-        this.checkHeights();
+        // this.checkHeights();
       }, this.debounceTime);
     });
   }
