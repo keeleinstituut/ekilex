@@ -157,6 +157,15 @@ public class SourceLinkDbService {
 				.getId();
 	}
 
+	public void updateLexemeSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) {
+		create
+				.update(LEXEME_SOURCE_LINK)
+				.set(LEXEME_SOURCE_LINK.VALUE, sourceLinkValue)
+				.set(LEXEME_SOURCE_LINK.NAME, sourceLinkName)
+				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
+				.execute();
+	}
+
 	public void deleteLexemeSourceLink(Long sourceLinkId) {
 		create.delete(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -184,6 +193,15 @@ public class SourceLinkDbService {
 				.getId();
 	}
 
+	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) {
+		create
+				.update(FREEFORM_SOURCE_LINK)
+				.set(FREEFORM_SOURCE_LINK.VALUE, sourceLinkValue)
+				.set(FREEFORM_SOURCE_LINK.NAME, sourceLinkName)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
+				.execute();
+	}
+
 	public void deleteFreeformSourceLink(Long sourceLinkId) {
 		create.delete(FREEFORM_SOURCE_LINK)
 				.where(FREEFORM_SOURCE_LINK.ID.eq(sourceLinkId))
@@ -209,6 +227,15 @@ public class SourceLinkDbService {
 				.returning(DEFINITION_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public void updateDefinitionSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) {
+		create
+				.update(DEFINITION_SOURCE_LINK)
+				.set(DEFINITION_SOURCE_LINK.VALUE, sourceLinkValue)
+				.set(DEFINITION_SOURCE_LINK.NAME, sourceLinkName)
+				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId))
+				.execute();
 	}
 
 	public void deleteDefinitionSourceLink(Long sourceLinkId) {

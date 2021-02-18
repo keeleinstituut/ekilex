@@ -395,6 +395,36 @@ function initAddSourceLinkDlg(addDlg) {
 	});
 };
 
+function initEditSourceLinkDlg(editDlg) {
+	let sourceLinkContentKey = editDlg.find('input[name="opCode"]').val();
+	let sourceLinkId = editDlg.find('input[name="id"]').val();
+	let getSourceAndSourceLinkUrl = applicationUrl + 'source_and_source_link/' + sourceLinkContentKey + '/' + sourceLinkId;
+
+	$.get(getSourceAndSourceLinkUrl).done(function(data) {
+		editDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg('Viga!');
+	});
+}
+
+$.fn.updateSourceLink = function() {
+	var main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		let updateSourceLinkForm = main.closest('form[name="sourceLinkForm"]');
+		let updateSourceLinkModal = updateSourceLinkForm.closest('.modal');
+		let successCallbackName = updateSourceLinkModal.attr("data-callback");
+		let successCallbackFunc = undefined;
+		if (successCallbackName) {
+			successCallbackFunc = () => eval(successCallbackName);
+		}
+		submitForm(updateSourceLinkForm, 'Andmete muutmine ebaõnnestus.', successCallbackFunc).always(function() {
+			updateSourceLinkModal.modal('hide');
+		});
+	});
+};
+
 function initRelationDialogLogic(addDlg, idElementName) {
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
