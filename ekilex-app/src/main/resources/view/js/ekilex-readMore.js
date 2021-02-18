@@ -12,13 +12,21 @@ class ReadMore {
   appendDots() {
     const mainHeight = this.main.height();
     this.hidden = 0;
+    this.main.find('div:first').children("*").show();
+    this.main.find('div:first').children("*").find('.btn-custom').show();
+
     this.main.find('div:first').children("*").each((index, e) => {
       const obj = $(e);
       if (Math.ceil(obj.position().top) >= mainHeight){
         this.hidden = this.hidden + 1;
         obj.hide();
-      } else {
-        obj.show();
+      }
+    });
+    this.main.find('div:first').children("*").find('.btn-custom').each((index, e) => {
+      const obj = $(e);
+      if (Math.ceil(obj.position().top) >= mainHeight){
+        this.hidden = this.hidden + 1;
+        obj.hide();
       }
     });
     if (this.hidden > 0) {
