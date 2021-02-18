@@ -103,7 +103,7 @@
           <i class="fa fa-angle-up" aria-hidden="true"></i>
         </button>
         <div class="d-flex flex-row align-items-center flex-wrap">
-          <div class="d-flex flex-wrap w-100">
+          <div class="d-flex w-100">
             <span class="btn pl-1 pr-1" th:if="${lexeme.levels != null}"
                   th:data-id="${lexeme.lexemeId}"
                   th:data-level1="${lexeme.level1}"
@@ -120,11 +120,12 @@
                 <span th:text="${lexeme.levels}"></span>
               </span>
             </span>
-            <div class="w-100">
+            <div class="w-100" style="margin-top:5px;">
               <div th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" class="orderable d-flex flex-row mr-2 w-100">
-                <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 30px;">
+                <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 55px; white-space: nowrap;">
                   <span th:text="#{syn.abbreviation}"></span>
                   <button type="button" class="btn btn-secondary btn-compact btn-sm position-relative"
+                      style="margin-left: 5px;"
                       title="Lisa uus sünonüümi seos"
                       data-toggle="modal"
                       th:data-target="${'#addSynMeaningRelationDlg_' + lexeme.lexemeId}"

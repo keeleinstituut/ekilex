@@ -61,6 +61,24 @@ public class SourceLinkController implements WebConstant {
 		return handleSourceLink(sourceLinkId, ReferenceOwner.LEXEME, model);
 	}
 
+	@GetMapping(SOURCE_AND_SOURCE_LINK_URI + "/{sourceLinkContentKey}/{sourceLinkId}")
+	public String getSourceAndSourceLink(
+			@PathVariable("sourceLinkContentKey") String sourceLinkContentKey,
+			@PathVariable("sourceLinkId") Long sourceLinkId,
+			Model model) {
+
+		logger.debug("Requested {} type source link '{}' and source", sourceLinkContentKey, sourceLinkId);
+
+		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkId, sourceLinkContentKey);
+		Long sourceId = sourceLink.getSourceId();
+		Source source = sourceService.getSource(sourceId);
+
+		model.addAttribute("sourceLink", sourceLink);
+		model.addAttribute("source", source);
+
+		return COMMON_PAGE + PAGE_FRAGMENT_ELEM + "edit_source_link_dlg";
+	}
+
 	private String handleSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner, Model model) {
 
 		SourceLink sourceLink = sourceLinkService.getSourceLink(sourceLinkId, referenceOwner);
