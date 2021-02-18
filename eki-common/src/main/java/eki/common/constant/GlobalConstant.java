@@ -22,6 +22,8 @@ public interface GlobalConstant {
 
 	String DATASET_TYPE_TERM = DatasetType.TERM.name();
 
+	String UNKNOWN_FORM_CODE = "??";
+
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
 
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";
