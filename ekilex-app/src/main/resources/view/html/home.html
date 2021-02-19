@@ -113,7 +113,7 @@
             <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(freeformStatData) - 1, columns)}">
               <tr>
                 <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}" th:text="#{|enum.freeform.type.${freeformStatData[firstRowItemIndex + rowItemCount].name}|}">
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}" th:text="${freeformStatData[firstRowItemIndex + rowItemCount].name}">
                   </th>
                 </th:block>
               </tr>
