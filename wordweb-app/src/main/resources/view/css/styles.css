@@ -18505,8 +18505,7 @@ eki-link {
 }
 
 eki-form {
-  font-style: italic;
-  color: #004F87;
+  color: #28b463;
 }
 
 @media (max-width: 767.98px) {
@@ -18988,6 +18987,7 @@ eki-form {
 
 .paradigm-comment {
   margin: 13px 0;
+  font-size: smaller;
 }
 
 .morphology-paradigm hr {
