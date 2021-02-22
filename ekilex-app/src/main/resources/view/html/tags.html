@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title>Sildid</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'tags')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Siltide haldus</h5>
+        <div class="ml-auto pull-right">
+          <button class="btn btn-primary" title="Lisa uus silt" data-toggle="modal" data-target="#addTagDlg">Lisa uus</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="float-left mt-3 w-100">
+          <table class="table table-striped m-0 p-0 table-hover">
+            <tr>
+              <th class="m-1 p-1" style="width: 5%" th:text="#{tag.order}"></th>
+              <th class="m-1 p-1" style="width: 50%" th:text="#{tag.name}"></th>
+              <th class="m-1 p-1 text-center" style="width: 20%" th:text="#{tag.set.automatically}"></th>
+              <th class="m-1 p-1 text-center" style="width: 20%" th:text="#{tag.remove.to.complete}"></th>
+              <th class="m-1 p-1" style="width: 5%"></th>
+            </tr>
+            <th:block th:each="tag : ${tags}">
+              <tr>
+                <td class="m-1 p-1">
+                  <span th:text="${tag.order}"></span>
+                </td>
+                <td class="m-1 p-1">
+                  <span th:text="${tag.name}"></span>
+                </td>
+                <td class="m-1 p-1 text-center">
+                  <span class="text-secondary fa" th:classappend="${tag.setAutomatically ? 'fa-check-square-o' : 'fa-square-o'}"
+                        th:title="|#{tag.remove.to.complete} : ${tag.setAutomatically ? 'Jah' : 'Ei'}|">
+                  </span>
+                </td>
+                <td class="m-1 p-1 text-center">
+                  <span class="text-secondary fa" th:classappend="${tag.removeToComplete ? 'fa-check-square-o' : 'fa-square-o'}"
+                        th:title="|#{tag.remove.to.complete} : ${tag.removeToComplete ? 'Jah' : 'Ei'}|">
+                  </span>
+                </td>
+                <td class="m-1 p-1">
+                  <button type="button" class="btn badge badge-primary" title="Muuda" data-plugin="editTag"
+                          th:data-tag-name="${tag.name}"
+                          th:data-tag-order="${tag.order}"
+                          th:data-tag-set-automatically="${tag.setAutomatically}"
+                          th:data-tag-remove-to-complete="${tag.removeToComplete}">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                  <button type="button"
+                          class="btn badge badge-warning delete-dataset-confirm"
+                          data-plugin="tagDeleteConfirm"
+                          th:if="${!tag.used}"
+                          th:data-tag-name="${tag.name}">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            </th:block>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div th:replace="tagdialog :: add_tag_dlg"></div>
+    <div th:replace="tagdialog :: edit_tag_dlg"></div>
+  </div>
+  <div th:replace="common :: #alertDlg"></div>
+  <script th:inline="javascript">
+  </script>
+</body>
+</html>

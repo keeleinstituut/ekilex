@@ -242,6 +242,16 @@ public interface WebConstant {
 
 	String DELETE_CLASSIFIER_URI = "/delete_classifier";
 
+	String TAGS_URI = "/tags";
+
+	String TAGS_PAGE = "tags";
+
+	String CREATE_TAG_URI = "/create_tag";
+
+	String UPDATE_TAG_URI = "/update_tag";
+
+	String DELETE_TAG_URI = "/delete_tag";
+
 	String STAT_URI = "/stat";
 
 	String STAT_PAGE = "stat";
@@ -287,6 +297,8 @@ public interface WebConstant {
 	String RESPONSE_OK_VER1 = "OK";
 
 	String RESPONSE_OK_VER2 = "{}";
+
+	String RESPONSE_FAIL = "fail";
 
 	// mode flags
 
