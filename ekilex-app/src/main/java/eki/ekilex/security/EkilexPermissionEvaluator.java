@@ -110,6 +110,12 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (crudRole == null) {
 			return false;
 		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
+		}
+		if (crudRole.isSuperiorDataset()) {
+			return true;
+		}
 		boolean isGranted = permissionDbService.isGrantedForSource(userId, crudRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		return isGranted;
 	}
@@ -122,6 +128,12 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
+		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
+		}
+		if (crudRole.isSuperiorDataset()) {
+			return true;
 		}
 		SourceProperty sourceProperty = sourceDbService.getSourceProperty(sourcePropertyId);
 		if (sourceProperty == null) {
@@ -142,6 +154,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
+		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
 		}
 		ReferenceOwner sourceLinkOwner = sourceLink.getOwner();
 		Long ownerId = sourceLink.getOwnerId();
@@ -164,6 +179,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
 		if (crudRole == null) {
 			return false;
+		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
 		}
 		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
 			SourceLink sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);

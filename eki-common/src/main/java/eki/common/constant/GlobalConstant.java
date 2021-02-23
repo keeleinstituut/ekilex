@@ -8,6 +8,8 @@ public interface GlobalConstant {
 
 	String DATASET_LIMITED = "vrk";
 
+	String DATASET_XXX = "xxx";
+
 	boolean PUBLICITY_PUBLIC = true;
 
 	boolean PUBLICITY_PRIVATE = false;

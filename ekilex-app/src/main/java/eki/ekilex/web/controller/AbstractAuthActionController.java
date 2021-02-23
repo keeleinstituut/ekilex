@@ -123,6 +123,9 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		if (userRole == null) {
 			return Collections.emptyList();
 		}
+		if (userRole.isSuperiorPermission()) {
+			return commonDataService.getLanguages();
+		}
 		Long userId = user.getId();
 		String datasetCode = userRole.getDatasetCode();
 		String authLang = userRole.getAuthLang();

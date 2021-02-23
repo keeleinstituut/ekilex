@@ -18,6 +18,8 @@ public class DatasetPermission extends AbstractDataObject {
 
 	private boolean isSuperiorDataset;
 
+	private boolean isSuperiorPermission;
+
 	private AuthorityOperation authOperation;
 
 	private AuthorityItem authItem;
@@ -64,6 +66,14 @@ public class DatasetPermission extends AbstractDataObject {
 
 	public void setSuperiorDataset(boolean superiorDataset) {
 		isSuperiorDataset = superiorDataset;
+	}
+
+	public boolean isSuperiorPermission() {
+		return isSuperiorPermission;
+	}
+
+	public void setSuperiorPermission(boolean isSuperiorPermission) {
+		this.isSuperiorPermission = isSuperiorPermission;
 	}
 
 	public AuthorityOperation getAuthOperation() {

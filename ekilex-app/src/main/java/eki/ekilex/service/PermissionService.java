@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.AuthorityItem;
 import eki.common.constant.AuthorityOperation;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.OrderingField;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
@@ -24,7 +25,7 @@ import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
 
 @Component
-public class PermissionService implements SystemConstant {
+public class PermissionService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private UserDbService userDbService;
@@ -55,7 +56,9 @@ public class PermissionService implements SystemConstant {
 		if (userId == null) {
 			return Collections.emptyList();
 		}
-		return permissionDbService.getUserVisibleDatasets(userId);
+		List<Dataset> datasets = permissionDbService.getUserVisibleDatasets(userId);
+		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
+		return datasets;
 	}
 
 	@Transactional
@@ -63,9 +66,10 @@ public class PermissionService implements SystemConstant {
 		if (userId == null) {
 			return Collections.emptyList();
 		}
-		List<Dataset> userVisibleDatasets = permissionDbService.getUserVisibleDatasets(userId);
-		List<String> userVisibleDatasetCodes = userVisibleDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
-		return userVisibleDatasetCodes;
+		List<Dataset> datasets = permissionDbService.getUserVisibleDatasets(userId);
+		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
+		List<String> datasetCodes = datasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+		return datasetCodes;
 	}
 
 	//FIXME ambiguous - read or crud?
@@ -74,9 +78,10 @@ public class PermissionService implements SystemConstant {
 		if (userId == null) {
 			return Collections.emptyList();
 		}
-		List<Dataset> userPermDatasets = permissionDbService.getUserPermDatasets(userId);
-		List<String> userPermDatasetCodes = userPermDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
-		return userPermDatasetCodes;
+		List<Dataset> datasets = permissionDbService.getUserPermDatasets(userId);
+		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
+		List<String> datasetCodes = datasets.stream().map(Dataset::getCode).collect(Collectors.toList());
+		return datasetCodes;
 	}
 
 	@Transactional
@@ -84,7 +89,8 @@ public class PermissionService implements SystemConstant {
 		if (userId == null) {
 			return Collections.emptyList();
 		}
-		return permissionDbService.getUserOwnedDatasets(userId);
+		List<Dataset> datasets = permissionDbService.getUserOwnedDatasets(userId);
+		return datasets;
 	}
 
 	@Transactional

@@ -443,6 +443,9 @@ create type type_word_rel_meaning as (meaning_id bigint, definitions text array,
 -- terminivõrgustiku sõnakogu
 insert into dataset (code, type, name) values ('vrk', 'TERM', 'Terminivõrgustik');
 
+-- kõigi sõnakogude muutmise rolli sõnakogu
+insert into dataset (code, type, name, is_visible, is_public, order_by) values ('xxx', 'NONE', 'Kõik sõnakogud', false, false, 9999999);
+
 -- pildi failinimed URL-ideks
 update freeform
 set value_text = 'https://sonaveeb.ee/files/images/' || value_text

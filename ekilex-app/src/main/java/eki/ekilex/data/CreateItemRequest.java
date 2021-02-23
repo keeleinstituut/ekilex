@@ -19,6 +19,8 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	private String language;
 
+	private String dataset;
+
 	private String value;
 
 	private String value2;
@@ -73,6 +75,14 @@ public class CreateItemRequest extends AbstractDataObject {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public String getDataset() {
+		return dataset;
+	}
+
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
 	}
 
 	public String getValue() {

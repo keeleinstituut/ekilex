@@ -73,7 +73,7 @@ public class EditController extends AbstractMutableDataPageController {
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			datasetCode = getDatasetCodeFromRole();
+			datasetCode = itemData.getDataset();
 			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
 			break;
 		case "definition_note":
