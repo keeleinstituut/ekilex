@@ -856,30 +856,6 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeTagId;
 	}
 
-	public List<String> createLexemeAutomaticTags(Long lexemeId) {
-
-		LexemeTag lt = LEXEME_TAG.as("lt");
-		Tag t = TAG.as("t");
-
-		List<String> createdTagNames = create
-				.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
-				.select(DSL
-						.select(DSL.val(lexemeId), t.NAME)
-						.from(t)
-						.where(
-								t.SET_AUTOMATICALLY.isTrue()
-										.andNotExists(DSL
-												.select(lt.ID)
-												.from(lt)
-												.where(lt.LEXEME_ID.eq(lexemeId)
-														.and(lt.TAG_NAME.eq(t.NAME))))))
-				.returning(LEXEME_TAG.TAG_NAME)
-				.fetch()
-				.map(LexemeTagRecord::getTagName);
-
-		return createdTagNames;
-	}
-
 	public Long createLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = create
 				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)

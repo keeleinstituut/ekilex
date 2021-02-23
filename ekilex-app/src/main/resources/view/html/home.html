@@ -38,6 +38,9 @@
         <p>
           <a th:href="@{/classifiers}" sec:authorize="#vars.userRoleData.admin">Klassifikaatorite haldus</a>
         </p>
+        <p>
+          <a th:href="@{/tags}" sec:authorize="#vars.userRoleData.admin">Siltide haldus</a>
+        </p>
         <p sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">
           <a th:href="@{/permissions}">Õiguste haldus</a>
         </p>
@@ -113,7 +116,7 @@
             <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(freeformStatData) - 1, columns)}">
               <tr>
                 <th:block th:each="rowItemCount: ${#numbers.sequence(0, columns - 1)}">
-                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}" th:text="#{|enum.freeform.type.${freeformStatData[firstRowItemIndex + rowItemCount].name}|}">
+                  <th th:if="${firstRowItemIndex + rowItemCount < #arrays.length(freeformStatData)}" th:text="${freeformStatData[firstRowItemIndex + rowItemCount].name}">
                   </th>
                 </th:block>
               </tr>

@@ -12,6 +12,10 @@ public class Tag extends AbstractDataObject {
 
 	private boolean removeToComplete;
 
+	private boolean used;
+
+	private Long order;
+
 	public String getName() {
 		return name;
 	}
@@ -35,4 +39,21 @@ public class Tag extends AbstractDataObject {
 	public void setRemoveToComplete(boolean removeToComplete) {
 		this.removeToComplete = removeToComplete;
 	}
+
+	public boolean isUsed() {
+		return used;
+	}
+
+	public void setUsed(boolean used) {
+		this.used = used;
+	}
+
+	public Long getOrder() {
+		return order;
+	}
+
+	public void setOrder(Long order) {
+		this.order = order;
+	}
+
 }

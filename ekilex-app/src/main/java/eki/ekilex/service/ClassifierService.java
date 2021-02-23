@@ -298,6 +298,7 @@ public class ClassifierService implements GlobalConstant, SystemConstant {
 			} else {
 				classifierDbService.deleteClassifier(classifierName, classifierCode);
 			}
+			maintenanceService.clearClassifCache();
 			return true;
 		} catch (DataAccessException e) {
 			// classifier is in use. delete is not possible

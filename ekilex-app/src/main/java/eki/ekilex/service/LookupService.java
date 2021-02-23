@@ -18,8 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.FreeformType;
 import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
@@ -39,7 +39,6 @@ import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SourceLink;
-import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
@@ -351,11 +350,6 @@ public class LookupService extends AbstractWordSearchService {
 			oppositeRelations = lookupDbService.getMeaningOppositeRelations(relationTypeCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		}
 		return oppositeRelations;
-	}
-
-	@Transactional
-	public Tag getTag(String tagName) {
-		return lookupDbService.getTag(tagName);
 	}
 
 	private void composeMeaningSelectData(DatasetPermission userRole, Meaning meaning, List<ClassifierSelect> languagesOrder) {

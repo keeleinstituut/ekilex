@@ -34,6 +34,7 @@ import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
@@ -57,6 +58,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Autowired
 	private LookupDbService lookupDbService;
+
+	@Autowired
+	private TagDbService tagDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -664,7 +668,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
-		cudDbService.createLexemeAutomaticTags(lexemeId);
+		tagDbService.createLexemeAutomaticTags(lexemeId);
 		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD);
 		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME);
 
@@ -731,7 +735,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		if (lexemeId == null) {
 			return;
 		}
-		cudDbService.createLexemeAutomaticTags(lexemeId);
+		tagDbService.createLexemeAutomaticTags(lexemeId);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
@@ -1029,7 +1033,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 				.createWordAndLexeme(value, valuePrese, valueAsWord, language, datasetCode, PUBLICITY_PRIVATE, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();
-		cudDbService.createLexemeAutomaticTags(createdLexemeId);
+		tagDbService.createLexemeAutomaticTags(createdLexemeId);
 
 		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD);

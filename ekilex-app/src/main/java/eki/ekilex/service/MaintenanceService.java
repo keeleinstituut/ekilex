@@ -52,12 +52,11 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		cacheManager.getCache(CACHE_KEY_DATASET).clear();
 	}
 
+	public void clearTagCache() {
+		cacheManager.getCache(CACHE_KEY_TAG).clear();
+	}
 	private void clearUserCache() {
 		cacheManager.getCache(CACHE_KEY_USER).clear();
-	}
-
-	private void clearTagCache() {
-		cacheManager.getCache(CACHE_KEY_TAG).clear();
 	}
 
 	@CacheEvict(allEntries = true, value = {CACHE_KEY_CLASSIF, CACHE_KEY_DATASET})
