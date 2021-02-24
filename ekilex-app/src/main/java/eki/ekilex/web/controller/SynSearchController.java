@@ -52,6 +52,14 @@ public class SynSearchController extends AbstractPrivateSearchController {
 	@GetMapping(value = SYN_SEARCH_URI)
 	public String initPage(Model model) {
 
+		DatasetPermission userRole = userContext.getUserRole();
+		if (userRole == null) {
+			return "redirect:" + HOME_URI;
+		}
+		if (userRole.isSuperiorPermission()) {
+			return "redirect:" + HOME_URI;
+		}
+
 		initSearchForms(SYN_SEARCH_PAGE, model);
 
 		return SYN_SEARCH_PAGE;

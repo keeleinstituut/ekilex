@@ -102,7 +102,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			List<String> userVisibleDatasets = permissionService.getUserVisibleDatasetCodes(userId);
 			List<String> validDatasetSelection = new ArrayList<>(CollectionUtils.intersection(selectedDatasets, userVisibleDatasets));
 			Collection<String> datasetComparison = CollectionUtils.disjunction(validDatasetSelection, userVisibleDatasets);
-			if (CollectionUtils.isNotEmpty(datasetComparison)) {
+			if (CollectionUtils.isNotEmpty(validDatasetSelection) && CollectionUtils.isNotEmpty(datasetComparison)) {
 				List<String> encodedDatasets = validDatasetSelection.stream().map(dataset -> encode(dataset)).collect(Collectors.toList());
 				String encodedDatasetsStr = StringUtils.join(encodedDatasets, DATASETS_SEPARATOR);
 				uriBuf.append(PATH_SEPARATOR);

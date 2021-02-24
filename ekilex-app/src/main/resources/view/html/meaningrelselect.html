@@ -25,6 +25,7 @@
         <input type="hidden" name="backUri" th:value="${backUri}">
         <input type="hidden" name="importMeaningData" value="false">
         <input type="hidden" name="createRelation" value="false">
+        <input type="hidden" name="dataset" th:value="${dataset}">
         <div class="card-body">
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <div class="row mb-2">
@@ -34,7 +35,7 @@
               </div>
             </div>
             <hr/>
-            <div id="relationTypes" class="row">
+            <div id="relationTypes" class="row mb-2">
               <div class="col-md-2">
                 <label class="col-form-label">
                   tähenduse seose tüüp
@@ -44,7 +45,7 @@
                 </label>
               </div>
             </div>
-            <div id="oppositeRelationTypes" data-name="oppositeRelation" data-entity="MEANING" class="row" style="display: none">
+            <div id="oppositeRelationTypes" data-name="oppositeRelation" data-entity="MEANING" class="row mb-2" style="display: none">
               <div class="col-md-2">
                 <label class="col-form-label">
                   vastassuuna seose tüüp
