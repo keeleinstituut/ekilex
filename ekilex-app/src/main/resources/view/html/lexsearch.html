@@ -241,7 +241,7 @@
                         Sisu puudub...
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
-                        <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2 mb-2">
+                        <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}">
                           <div th:if="${paradigm.comment != null}">
                             <span th:utext="${paradigm.comment}"></span>
                           </div>
@@ -249,21 +249,21 @@
                             <div th:unless="${#lists.isEmpty(paradigm.forms)}">
                               <table>
                                 <tr th:each="form : ${paradigm.forms}">
-                                  <td style="width: 200px" class="text-right pr-1">
-                                    <span th:if="${form.displayMorphCode}" th:text="${form.morphCode + ' - ' + form.morphValue}" th:title="${form.morphFrequency}" style="font-size: 80%; color: #999"></span>
+                                  <td>
+                                    <span th:unless="${#strings.isEmpty(form.displayForm)}" th:text="${form.displayForm}" th:title="${form.formFrequency}"></span>
                                   </td>
-                                  <td class="pr-1">
-                                    <span th:utext="${form.valuePrese}" th:title="${form.formFrequency}"></span>
+                                  <td class="pl-2">
+                                    <span th:if="${form.displayMorphCode}" th:text="${form.morphCode + ' - ' + form.morphValue}" th:title="${form.morphFrequency}" class="text-secondary"></span>
                                   </td>
-                                  <td class="pr-1">
-                                    <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>
+                                </tr>
+                                <tr>
+                                  <td colspan="2" class="pt-2 border-bottom">
                                   </td>
                                 </tr>
                               </table>
                             </div>
                           </div>
                         </div>
-                        <hr/>
                       </div>
                     </div>
                   </div>
