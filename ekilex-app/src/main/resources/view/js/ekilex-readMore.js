@@ -50,10 +50,10 @@ class ReadMore {
   }
   bindEvents() {
     this.bindHandle();
-    $(window).on('resize', () => {
+    $(window).on('resize update:wordId', () => {
       clearTimeout(this.debounce);
-      this.debounce = setTimeout(function() {
-        this.checkHeights();
+      this.debounce = setTimeout(() =>{
+        this.detectChange()
       }, this.debounceTime);
     });
   }
@@ -61,14 +61,18 @@ class ReadMore {
   detectChange() {
     if (this.status) {
       this.main.find('div:first').children("*").show();
-      this.handle.remove();
-      this.handle = false;
+      if (this.handle) {
+        this.handle.remove();
+        this.handle = false;
+      }
       this.main.css('max-height', '99999px');
       this.appendLabel();
       this.bindHandle();
     } else {
-      this.handle.remove();
-      this.handle = false;
+      if (this.handle) {
+        this.handle.remove();
+        this.handle = false;
+      }
       this.main.removeAttr('style');
       this.appendDots();
       this.bindHandle();
