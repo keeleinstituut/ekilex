@@ -289,4 +289,10 @@ footer p {
   list-style: none;
   padding: 0;
   margin: 0;
+  .badge-warning {display: none;}
+  li:hover {
+    .badge-warning {
+      display: inline-block;
+    }
+  }
 }
