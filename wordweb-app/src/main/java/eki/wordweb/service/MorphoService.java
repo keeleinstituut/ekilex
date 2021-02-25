@@ -24,9 +24,9 @@ public class MorphoService implements WebConstant, SystemConstant {
 	protected ParadigmConversionUtil paradigmConversionUtil;
 
 	@Transactional
-	public Paradigm getParadigm(Long paradigmId, Integer maxDisplayLevel) {
+	public Paradigm getParadigm(Long paradigmId, Integer maxDisplayLevel, boolean excludeQuestionable) {
 
-		List<Form> forms = searchDbService.getParadigmForms(paradigmId, maxDisplayLevel);
+		List<Form> forms = searchDbService.getParadigmForms(paradigmId, maxDisplayLevel, excludeQuestionable);
 		paradigmConversionUtil.calcFreqScale(forms);
 		Paradigm paradigm = paradigmConversionUtil.composeParadigm(paradigmId, forms, DISPLAY_LANG);
 		return paradigm;

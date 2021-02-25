@@ -189,4 +189,16 @@ $(function() {
 		initGenericTextEditDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=editFreeformSourceLinkDlg_]", function() {
+		initEditSourceLinkDlg($(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editDefinitionSourceLinkDlg_]", function() {
+		initEditSourceLinkDlg($(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editLexemeSourceLinkDlg_]", function() {
+		initEditSourceLinkDlg($(this));
+	});
+
 });

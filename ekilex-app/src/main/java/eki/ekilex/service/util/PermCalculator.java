@@ -48,7 +48,9 @@ public class PermCalculator implements PermConstant {
 			boolean isCrudGrant = false;
 			boolean isAnyGrant = false;
 
-			if (crudEntity instanceof Definition) {
+			if (userRole.isSuperiorPermission()) {
+				isCrudGrant = isAnyGrant = true;
+			} else if (crudEntity instanceof Definition) {
 				Definition definition = (Definition) crudEntity;
 				Long definitionId = definition.getId();
 				isCrudGrant = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
@@ -59,7 +61,11 @@ public class PermCalculator implements PermConstant {
 			} else if (crudEntity instanceof Source) {
 				Source source = (Source) crudEntity;
 				Long sourceId = source.getId();
-				isCrudGrant = permissionDbService.isGrantedForSource(userId, userRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				if (userRole.isSuperiorDataset()) {
+					isCrudGrant = true;
+				} else {
+					isCrudGrant = permissionDbService.isGrantedForSource(userId, userRole, sourceId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+				}
 			} else if (crudEntity instanceof Meaning) {
 				Meaning meaning = (Meaning) crudEntity;
 				Long meaningId = meaning.getMeaningId();
@@ -84,7 +90,9 @@ public class PermCalculator implements PermConstant {
 		boolean isSubGrant = false;
 		boolean isAnyGrant = false;
 
-		if (crudEntity instanceof Word) {
+		if (userRole.isSuperiorPermission()) {
+			isReadGrant = isCrudGrant = isSubGrant = isAnyGrant = true;
+		} else if (crudEntity instanceof Word) {
 			Word word = (Word) crudEntity;
 			Long wordId = word.getWordId();
 			boolean isMasterUser = permissionDbService.isMasterUser(userId);
@@ -119,6 +127,9 @@ public class PermCalculator implements PermConstant {
 
 		if (userRole == null) {
 			publicEntities.removeIf(entity -> !entity.isPublic());
+			return;
+		}
+		if (userRole.isSuperiorPermission()) {
 			return;
 		}
 

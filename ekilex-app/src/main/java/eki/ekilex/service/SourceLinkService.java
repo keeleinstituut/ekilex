@@ -1,10 +1,10 @@
 package eki.ekilex.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.jooq.tools.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
@@ -33,6 +33,21 @@ public class SourceLinkService extends AbstractSourceService {
 		} else if (ReferenceOwner.DEFINITION.equals(referenceOwner)) {
 			sourceLink = sourceLinkDbService.getDefinitionSourceLink(sourceLinkId);
 		} else if (ReferenceOwner.LEXEME.equals(referenceOwner)) {
+			sourceLink = sourceLinkDbService.getLexemeSourceLink(sourceLinkId);
+		}
+		return sourceLink;
+	}
+
+	@Transactional
+	public SourceLink getSourceLink(Long sourceLinkId, String sourceLinkContentKey) {
+
+		SourceLink sourceLink = null;
+
+		if (StringUtils.equals(ContentKey.FREEFORM_SOURCE_LINK, sourceLinkContentKey)) {
+			sourceLink = sourceLinkDbService.getFreeformSourceLink(sourceLinkId);
+		} else if (StringUtils.equals(ContentKey.DEFINITION_SOURCE_LINK, sourceLinkContentKey)) {
+			sourceLink = sourceLinkDbService.getDefinitionSourceLink(sourceLinkId);
+		} else if (StringUtils.equals(ContentKey.LEXEME_SOURCE_LINK, sourceLinkContentKey)) {
 			sourceLink = sourceLinkDbService.getLexemeSourceLink(sourceLinkId);
 		}
 		return sourceLink;
@@ -70,14 +85,12 @@ public class SourceLinkService extends AbstractSourceService {
 		String sourceLinkValue = sourceProperties.get(0).getValueText();
 		ReferenceType sourceLinkRefType = ReferenceType.ANY;
         String sourceLinkName = null;
-		List<String> freeformSourceLinkOwnerCodes = Arrays.asList(
-				"usage_source_link", "lexeme_ff_source_link", "meaning_ff_source_link", "definition_ff_source_link");
 
 		if (ContentKey.DEFINITION_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
             createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
         } else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
         	createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
-		} else if (freeformSourceLinkOwnerCodes.contains(sourceLinkOwnerCode)) {
+		} else if (ContentKey.FREEFORM_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
 			createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
 		}
     }
@@ -123,6 +136,14 @@ public class SourceLinkService extends AbstractSourceService {
 	}
 
 	@Transactional
+	public void updateLexemeSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) throws Exception {
+		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeSourceLink", lexemeId, ActivityOwner.LEXEME);
+		sourceLinkDbService.updateLexemeSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
+	}
+
+	@Transactional
 	public void deleteLexemeSourceLink(Long sourceLinkId) throws Exception {
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeSourceLink", lexemeId, ActivityOwner.LEXEME);
@@ -141,6 +162,14 @@ public class SourceLinkService extends AbstractSourceService {
 	}
 
 	@Transactional
+	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) throws Exception {
+		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrBySourceLink(sourceLinkId);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
+		sourceLinkDbService.updateFreeformSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
+	}
+
+	@Transactional
 	public void deleteFreeformSourceLink(Long sourceLinkId) throws Exception {
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrBySourceLink(sourceLinkId);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
@@ -155,6 +184,14 @@ public class SourceLinkService extends AbstractSourceService {
 		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 		return sourceLinkId;
+	}
+
+	@Transactional
+	public void updateDefinitionSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) throws Exception {
+		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionSourceLink", meaningId, ActivityOwner.MEANING);
+		sourceLinkDbService.updateDefinitionSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 
 	@Transactional

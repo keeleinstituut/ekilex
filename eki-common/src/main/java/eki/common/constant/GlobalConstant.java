@@ -8,6 +8,8 @@ public interface GlobalConstant {
 
 	String DATASET_LIMITED = "vrk";
 
+	String DATASET_XXX = "xxx";
+
 	boolean PUBLICITY_PUBLIC = true;
 
 	boolean PUBLICITY_PRIVATE = false;
@@ -21,6 +23,8 @@ public interface GlobalConstant {
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
 
 	String DATASET_TYPE_TERM = DatasetType.TERM.name();
+
+	String UNKNOWN_FORM_CODE = "??";
 
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
 

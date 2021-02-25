@@ -29,7 +29,8 @@ public class MorphoController implements WebConstant, SystemConstant, GlobalCons
 			Model model) {
 
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		return getMorpho(paradigmId, lang, maxDisplayLevel, model);
+		boolean excludeQuestionable = true;
+		return getMorpho(paradigmId, lang, maxDisplayLevel, excludeQuestionable, model);
 	}
 
 	@GetMapping(MORPHO_URI + UNIF_URI + "/{paradigmId}/{lang}")
@@ -39,12 +40,13 @@ public class MorphoController implements WebConstant, SystemConstant, GlobalCons
 			Model model) {
 
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
-		return getMorpho(paradigmId, lang, maxDisplayLevel, model);
+		boolean excludeQuestionable = false;
+		return getMorpho(paradigmId, lang, maxDisplayLevel, excludeQuestionable, model);
 	}
 
-	private String getMorpho(Long paradigmId, String lang, Integer maxDisplayLevel, Model model) {
+	private String getMorpho(Long paradigmId, String lang, Integer maxDisplayLevel, boolean excludeQuestionable, Model model) {
 
-		Paradigm paradigm = morphoService.getParadigm(paradigmId, maxDisplayLevel);
+		Paradigm paradigm = morphoService.getParadigm(paradigmId, maxDisplayLevel, excludeQuestionable);
 		model.addAttribute("paradigm", paradigm);
 		String wordClass = paradigm.getWordClass();
 		String viewFragment = "morpho-" + wordClass + '_' + lang;

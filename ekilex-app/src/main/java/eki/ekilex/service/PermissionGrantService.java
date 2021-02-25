@@ -21,6 +21,9 @@ public class PermissionGrantService implements PermConstant {
 		if (userRole == null) {
 			return false;
 		}
+		if (userRole.isSuperiorPermission()) {
+			return true;
+		}
 		boolean isGrantedForMeaning1 = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId1, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		boolean isGrantedForMeaning2 = permissionDbService.isGrantedForMeaning(userId, userRole, meaningId2, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		if (isGrantedForMeaning1 && isGrantedForMeaning2) {
@@ -39,6 +42,9 @@ public class PermissionGrantService implements PermConstant {
 
 		if (userRole == null) {
 			return false;
+		}
+		if (userRole.isSuperiorPermission()) {
+			return true;
 		}
 		boolean isGrantedForWord1 = permissionDbService.isGrantedForWord(userId, userRole, wordId1, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		boolean isGrantedForWord2 = permissionDbService.isGrantedForWord(userId, userRole, wordId2, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);

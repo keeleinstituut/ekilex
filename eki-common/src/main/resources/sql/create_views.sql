@@ -197,7 +197,11 @@ from (
            and f.paradigm_id = p.id
            and p.word_id = w.id
            and w.lang = wl.code
+           and f.morph_code != '??'
            and f.value != w.value
+           and f.value != '-'
+           and f.morph_exists = true
+           and f.is_questionable = false
            and exists
              (select w.id
               from lexeme as l,
@@ -596,6 +600,7 @@ select w.id word_id,
        f.display_level,
        f.morph_code,
        f.morph_exists,
+       f.is_questionable,
        f.value,
        f.value_prese,
        f.components,

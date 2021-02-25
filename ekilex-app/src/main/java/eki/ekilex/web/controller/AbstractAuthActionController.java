@@ -34,6 +34,7 @@ import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.TagService;
 import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
 import eki.ekilex.web.bean.SessionBean;
@@ -58,6 +59,9 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	protected LookupService lookupService;
 
 	@Autowired
+	protected TagService tagService;
+
+	@Autowired
 	protected ValueUtil valueUtil;
 
 	protected String getDatasetCodeFromRole() {
@@ -80,7 +84,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		}
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		String activeTagName = userProfile.getActiveTagName();
-		Tag activeTag = lookupService.getTag(activeTagName);
+		Tag activeTag = tagService.getTag(activeTagName);
 		List<String> preferredTagNames = userProfile.getPreferredTagNames();
 		List<String> preferredDatasetCodes = userProfile.getPreferredDatasets();
 		List<String> synCandidateLangCodes = userProfile.getPreferredSynCandidateLangs();
@@ -122,6 +126,9 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			return Collections.emptyList();
+		}
+		if (userRole.isSuperiorPermission()) {
+			return commonDataService.getLanguages();
 		}
 		Long userId = user.getId();
 		String datasetCode = userRole.getDatasetCode();

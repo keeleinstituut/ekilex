@@ -675,21 +675,31 @@
               </div>
             </div>
             <div class="hidden-buttons">
-              <span th:each="sourceLink : ${definition.sourceLinks}" th:if="${not #lists.isEmpty(definition.sourceLinks)}">
-                [
-                <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
-                <button type="button" class="btn badge badge-warning"
-                        data-op-code="def_source_link"
-                        th:data-id="${sourceLink.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.definition.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-                ]
-              </span>
+              <th:block th:each="sourceLink : ${definition.sourceLinks}" th:if="${not #lists.isEmpty(definition.sourceLinks)}">
+                <div th:replace="lexdialog :: edit_definition_source_link_dlg"></div>
+                <span>
+                  [
+                  <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                  <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+                  <button type="button" class="btn badge badge-primary"
+                          th:title="Muuda"
+                          data-toggle="modal"
+                          th:data-target="${'#editDefinitionSourceLinkDlg_' + sourceLink.id}"
+                          sec:authorize="#vars.definition.crudGrant">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          data-op-code="def_source_link"
+                          th:data-id="${sourceLink.id}"
+                          th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                          data-toggle="delete-confirm"
+                          data-placement="right"
+                          sec:authorize="#vars.definition.crudGrant">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                  ]
+                </span>
+              </th:block>
               <button type="button" class="btn badge badge-success"
                       title="Lisa allikaviide"
                       data-toggle="modal"
@@ -740,23 +750,33 @@
                   </div>
                 </div>
                 <div class="small hidden-buttons ml-4">
-                  <span th:each="sourceLink : ${note.sourceLinks}">
-                    [
-                    <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-                    <span th:if="${sourceLink.name != null}">
-                      <span th:text="${sourceLink.name}"></span>
+                  <th:block th:each="sourceLink : ${note.sourceLinks}">
+                    <div th:replace="lexdialog :: edit_freeform_source_link_dlg"></div>
+                    <span>
+                      [
+                      <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                      <span th:if="${sourceLink.name != null}">
+                        <span th:text="${sourceLink.name}"></span>
+                      </span>
+                      <button type="button" class="btn badge badge-primary"
+                              th:title="Muuda"
+                              data-toggle="modal"
+                              th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                              sec:authorize="#vars.definition.crudGrant">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-id="${sourceLink.id}"
+                              data-op-code="ff_source_link"
+                              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                              data-toggle="delete-confirm"
+                              data-placement="right"
+                              sec:authorize="#vars.definition.crudGrant">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                      ]
                     </span>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-id="${sourceLink.id}"
-                            data-op-code="definition_ff_source_link"
-                            th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                            data-toggle="delete-confirm"
-                            data-placement="right"
-                            sec:authorize="#vars.definition.crudGrant">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                    ]
-                  </span>
+                  </th:block>
                   <button type="button" class="btn badge badge-success"
                           title="Lisa allikaviide"
                           data-toggle="modal"
@@ -831,23 +851,33 @@
       </button>
     </div>
     <div class="col pl-0">
-      <span th:each="sourceLink : ${lexeme.sourceLinks}" class="hidden-buttons">
-        [
-        <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-        <span th:if="${sourceLink.name != null}">
-          <span th:text="${sourceLink.name}"></span>
+      <th:block th:each="sourceLink : ${lexeme.sourceLinks}" class="hidden-buttons">
+        <div th:replace="lexdialog :: edit_lexeme_source_link_dlg"></div>
+        <span>
+          [
+          <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+          <span th:if="${sourceLink.name != null}">
+            <span th:text="${sourceLink.name}"></span>
+          </span>
+          <button type="button" class="btn badge badge-primary"
+                  th:title="Muuda"
+                  data-toggle="modal"
+                  th:data-target="${'#editLexemeSourceLinkDlg_' + sourceLink.id}"
+                  sec:authorize="#vars.lexeme.crudGrant">
+            <i class="fa fa-edit" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn badge badge-warning"
+                  data-op-code="lex_source_link"
+                  th:data-id="${sourceLink.id}"
+                  th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                  data-toggle="delete-confirm"
+                  data-placement="right"
+                  sec:authorize="#vars.lexeme.crudGrant">
+            <i class="fa fa-remove" aria-hidden="true"></i>
+          </button>
+          ]
         </span>
-        <button type="button" class="btn badge badge-warning"
-                data-op-code="lex_source_link"
-                th:data-id="${sourceLink.id}"
-                th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                data-toggle="delete-confirm"
-                data-placement="right"
-                sec:authorize="#vars.lexeme.crudGrant">
-          <i class="fa fa-remove" aria-hidden="true"></i>
-        </button>
-        ]
-      </span>
+      </th:block>
     </div>
   </div>
   <div class="row" th:if="${not #lists.isEmpty(lexeme.meaning.learnerComments)}" th:fragment="meaning_learner_comment">
@@ -948,14 +978,22 @@
           </span>
         </div>
         <div class="col pl-0" th:if="${#strings.isEmpty(image.title)}">
-          <span th:each="sourceLink : ${image.sourceLinks}" class="hidden-buttons">
+          <div th:each="sourceLink : ${image.sourceLinks}" class="hidden-buttons">
+            <div th:replace="lexdialog :: edit_freeform_source_link_dlg"></div>
             [
             <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
             <span th:if="${sourceLink.name != null}">
               <span th:text="${sourceLink.name}"></span>
             </span>
+            <button type="button" class="btn badge badge-primary"
+                    th:title="Muuda"
+                    data-toggle="modal"
+                    th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                    sec:authorize="#vars.lexeme.meaning.crudGrant">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
             <button type="button" class="btn badge badge-warning"
-                    data-op-code="meaning_ff_source_link"
+                    data-op-code="ff_source_link"
                     th:data-id="${sourceLink.id}"
                     th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                     data-toggle="delete-confirm"
@@ -964,7 +1002,7 @@
               <i class="fa fa-remove" aria-hidden="true"></i>
             </button>
             ]
-          </span>
+          </div>
         </div>
         <div th:unless="${#strings.isEmpty(image.title)}">
           <div class="invisible-buttons action-buttons-anchor mw-90">
@@ -1000,23 +1038,33 @@
             </div>
           </div>
           <div class="hidden-buttons">
-            <span th:each="sourceLink : ${image.sourceLinks}">
-              [
-              <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
-              <span th:if="${sourceLink.name != null}">
-                <span th:text="${sourceLink.name}"></span>
+            <th:block th:each="sourceLink : ${image.sourceLinks}">
+              <div th:replace="lexdialog :: edit_freeform_source_link_dlg"></div>
+              <span>
+                [
+                <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+                <span th:if="${sourceLink.name != null}">
+                  <span th:text="${sourceLink.name}"></span>
+                </span>
+                <button type="button" class="btn badge badge-primary"
+                        th:title="Muuda"
+                        data-toggle="modal"
+                        th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
+                        sec:authorize="#vars.lexeme.meaning.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        data-op-code="ff_source_link"
+                        th:data-id="${sourceLink.id}"
+                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                        data-toggle="delete-confirm"
+                        data-placement="right"
+                        sec:authorize="#vars.lexeme.meaning.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+                ]
               </span>
-              <button type="button" class="btn badge badge-warning"
-                      data-op-code="meaning_ff_source_link"
-                      th:data-id="${sourceLink.id}"
-                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                      data-toggle="delete-confirm"
-                      data-placement="right"
-                      sec:authorize="#vars.lexeme.meaning.crudGrant">
-                <i class="fa fa-remove" aria-hidden="true"></i>
-              </button>
-              ]
-            </span>
+            </th:block>
             <button type="button" class="btn badge badge-success"
                     title="Lisa allikaviide"
                     data-toggle="modal"
@@ -1294,7 +1342,7 @@
                         <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
                       </a>
                       <button type="button" class="btn badge badge-warning"
-                              data-op-code="usage_source_link"
+                              data-op-code="ff_source_link"
                               th:data-id="${sourceLink.id}"
                               th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                               data-toggle="delete-confirm"

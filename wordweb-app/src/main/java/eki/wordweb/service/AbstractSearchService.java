@@ -20,7 +20,7 @@ import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
-import eki.wordweb.data.DataFilter;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.SearchFilter;
@@ -69,15 +69,15 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	@Autowired
 	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
-	public abstract DataFilter getDataFilter(SearchFilter searchFilter);
+	public abstract SearchContext getSearchContext(SearchFilter searchFilter);
 
 	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang);
 
 	@Transactional
 	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, SearchFilter searchFilter, int limit) {
 
-		DataFilter dataFilter = getDataFilter(searchFilter);
-		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, dataFilter, limit);
+		SearchContext searchContext = getSearchContext(searchFilter);
+		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, searchContext, limit);
 		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
 		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
 		if (CollectionUtils.isEmpty(wordGroup)) {
@@ -107,11 +107,11 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		String searchWord = searchFilter.getSearchWord();
 		Integer homonymNr = searchFilter.getHomonymNr();
 
-		DataFilter dataFilter = getDataFilter(searchFilter);
-		List<Word> allWords = searchDbService.getWords(searchWord, dataFilter);
+		SearchContext searchContext = getSearchContext(searchFilter);
+		List<Word> allWords = searchDbService.getWords(searchWord, searchContext);
 		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
-		wordConversionUtil.composeHomonymWrapups(allWords, dataFilter);
+		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> fullMatchWords = allWords.stream()
 				.filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord) || StringUtils.equalsIgnoreCase(word.getAsWord(), searchWord))

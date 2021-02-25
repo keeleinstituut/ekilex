@@ -73,7 +73,7 @@ public class EditController extends AbstractMutableDataPageController {
 
 		switch (itemData.getOpCode()) {
 		case "definition":
-			datasetCode = getDatasetCodeFromRole();
+			datasetCode = itemData.getDataset();
 			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
 			break;
 		case "definition_note":
@@ -101,36 +101,22 @@ public class EditController extends AbstractMutableDataPageController {
 		case "government":
 			cudService.createLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity());
 			break;
-		case ContentKey.DEFINITION_SOURCE_LINK: {
+		case ContentKey.DEFINITION_SOURCE_LINK:
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
 			sourceLinkService.createDefinitionSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
-		}
-		case ContentKey.LEXEME_SOURCE_LINK: {
+		case ContentKey.LEXEME_SOURCE_LINK:
 			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
 			sourceLinkService.createLexemeSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
-		}
+		case ContentKey.FREEFORM_SOURCE_LINK:
+			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
+			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
+			break;
 		case "usage_author":
 			sourceLinkValue = getSourceNameValue(itemData.getId2());
 			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
 			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourceLinkValue, null);
-			break;
-		case "usage_source_link":
-			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
-			break;
-		case "lexeme_ff_source_link":
-			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
-			break;
-		case "meaning_ff_source_link":
-			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
-			break;
-		case "definition_ff_source_link":
-			sourceLinkValue = getSourcePropertyValue(itemData.getId3());
-			sourceLinkService.createFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceLinkValue, itemValue);
 			break;
 		case "lexeme_deriv":
 			cudService.createLexemeDeriv(itemData.getId(), itemValue);
@@ -341,6 +327,18 @@ public class EditController extends AbstractMutableDataPageController {
 		case "od_usage_alternative":
 			cudService.updateOdUsageAlternative(itemData.getId(), itemValue);
 			break;
+		case ContentKey.FREEFORM_SOURCE_LINK:
+			String ffSourceLinkValue = getSourcePropertyValue(itemData.getId2());
+			sourceLinkService.updateFreeformSourceLink(itemData.getId(), ffSourceLinkValue, itemValue);
+			break;
+		case ContentKey.LEXEME_SOURCE_LINK:
+			String lexSourceLinkValue = getSourcePropertyValue(itemData.getId2());
+			sourceLinkService.updateLexemeSourceLink(itemData.getId(), lexSourceLinkValue, itemValue);
+			break;
+		case ContentKey.DEFINITION_SOURCE_LINK:
+			String defSourceLinkValue = getSourcePropertyValue(itemData.getId2());
+			sourceLinkService.updateDefinitionSourceLink(itemData.getId(), defSourceLinkValue, itemValue);
+			break;
 		}
 		return RESPONSE_OK_VER2;
 	}
@@ -477,16 +475,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteUsageDefinition(id);
 			break;
 		case "usage_author":
-		case "usage_source_link":
-			sourceLinkService.deleteFreeformSourceLink(id);
-			break;
-		case "lexeme_ff_source_link":
-			sourceLinkService.deleteFreeformSourceLink(id);
-			break;
-		case "meaning_ff_source_link":
-			sourceLinkService.deleteFreeformSourceLink(id);
-			break;
-		case "definition_ff_source_link":
+		case ContentKey.FREEFORM_SOURCE_LINK:
 			sourceLinkService.deleteFreeformSourceLink(id);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:

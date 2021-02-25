@@ -68,6 +68,8 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'classifiers' ? 'active' : ''}" th:href="@{/classifiers}"
                  sec:authorize="#vars.userRoleData.admin">Klassifikaatorite haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'tags' ? 'active' : ''}" th:href="@{/tags}"
+                 sec:authorize="#vars.userRoleData.admin">Siltide haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}"
                  sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
@@ -78,10 +80,10 @@
         </div>
       </div>
       <button type="button" class="btn btn-primary rounded-0"
-        data-toggle="modal"
-        data-target="#newWordDlg"
-        sec:authorize="#vars.userRoleData.crudRoleSelected"
-        th:if="${activeItem == 'lex' || activeItem == 'term'}">
+              data-toggle="modal"
+              data-target="#newWordDlg"
+              sec:authorize="#vars.userRoleData.crudRoleSelected"
+              th:if="${activeItem == 'lex' || activeItem == 'term'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
         <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
       </button>
@@ -301,6 +303,59 @@
         </tr>
       </table>
     </div>
+  </div>
+  <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="edit_source_link_dlg">
+    <table>
+      <tr>
+        <td style="width: 70px;"></td>
+        <td>
+          <div class="row m-1">
+            <table style="background-color: #ececec; font-weight: bold">
+              <tr>
+                <td>source id &nbsp;</td>
+                <td th:text="${source.id}"></td>
+              </tr>
+              <tr>
+                <td>type</td>
+                <td th:text="${source.type}"></td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <th:block th:each="sourceProperty : ${source.sourceProperties}">
+            <div class="row">
+              <div class="mb-1">
+                <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" name="id2"
+                       th:checked="${sourceLink.value == sourceProperty.valueText}">
+                <span th:text="${sourceProperty.type}"></span>
+                -
+                <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+                <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+              </div>
+            </div>
+          </th:block>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group row">
+                <label class="col-auto col-form-label">Siseviide</label>
+                <div class="col-8">
+                  <input type="text" class="form-control" name="value" th:value="${sourceLink.name}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
   </div>
   <script th:inline="javascript" th:fragment="confirmations">
   	$('[data-toggle=confirmation]').confirmation({

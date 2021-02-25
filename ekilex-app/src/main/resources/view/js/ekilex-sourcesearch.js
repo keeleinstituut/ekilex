@@ -102,7 +102,8 @@ $.fn.addSourceAndSourceLinkPlugin = function() {
 		e.preventDefault();
 		$("#noSourcesFoundDiv").hide();
 		$("#addSourceDiv").show();
-		$(this).closest('.modal-content').find('div[name="sourceLinkDlgFooter"]').hide();
+		let duplicateCancelBtnFooter = main.closest('.modal-content').find('.modal-footer').last();
+		duplicateCancelBtnFooter.hide();
 		displayRemoveButtons();
 	});
 };
@@ -121,7 +122,7 @@ $.fn.removeSourcePropertyGroup = function() {
 	var main = $(this);
 	main.on('click', function(e) {
 		e.preventDefault();
-		$(this).closest('[name="sourcePropertyGroup"]').remove();
+		main.closest('[name="sourcePropertyGroup"]').remove();
 		displayRemoveButtons();
 	});
 };
@@ -162,17 +163,15 @@ function executeValidateSourceDelete() {
 };
 
 function deleteSourceAndUpdateSearch(deleteUrl) {
-	$.get(deleteUrl).done(function (data) {
-		$("#sourceSearchForm").submit();
+	$.get(deleteUrl).done(function () {
+		window.location = applicationUrl + 'sourcesearch';
 	}).fail(function (data) {
 		openAlertDlg("Allika eemaldamine ebaõnnestus.");
 		console.log(data);
 	});
 };
 
-function addSource() {
-	let addSourceForm = $("#addSourceForm");
-
+function addSource(addSourceForm) {
 	if (!checkRequiredFields(addSourceForm)) {
 		return;
 	}
@@ -191,19 +190,18 @@ function addSource() {
 	});
 }
 
-function addSourceAndSourceLink() {
-	let addSourceForm = $("#addSourceForm");
+function addSourceAndSourceLink(addSourceForm) {
 	if (!checkRequiredFields(addSourceForm)) {
 		return;
 	}
 
 	let sourceModal = addSourceForm.closest('.modal');
 	let addSourceLinkForm = addSourceForm.closest('form[name="sourceLinkForm"]');
-	let sourceLinkIdInput = addSourceLinkForm.find('input[name="id"]');
-	let sourceLinkOpCodeInput = addSourceLinkForm.find('input[name="opCode"]');
+	let sourceOwnerIdInput = addSourceLinkForm.find('input[name="id"]');
+	let sourceOwnerCodeInput = addSourceLinkForm.find('input[name="opCode"]');
 
-	addSourceForm.append(sourceLinkIdInput);
-	addSourceForm.append(sourceLinkOpCodeInput);
+	addSourceForm.append(sourceOwnerIdInput);
+	addSourceForm.append(sourceOwnerCodeInput);
 
 	var successCallbackName = sourceModal.attr("data-callback");
 	var successCallbackFunc = undefined;
@@ -242,10 +240,11 @@ $(function(){
 	});
 
 	$(document).on("click", "#addSourceSubmitBtn", function() {
+		let addSourceForm = $(this).closest('form');
 		if (viewType === 'source') {
-			addSource();
+			addSource(addSourceForm);
 		} else {
-			addSourceAndSourceLink();
+			addSourceAndSourceLink(addSourceForm);
 		}
 	});
 });

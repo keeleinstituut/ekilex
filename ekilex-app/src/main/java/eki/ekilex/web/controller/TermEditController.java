@@ -218,6 +218,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@GetMapping(MEANING_REL_SELECT_URI)
 	public String listMeaningRelationCandidates(
+			@ModelAttribute(name = "dataset") String dataset,
 			@ModelAttribute(name = "wordValue") String wordValue,
 			@ModelAttribute(name = "language") String language,
 			@ModelAttribute(name = "morphCode") String morphCode,
@@ -239,6 +240,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		Map<String, String> response = new HashMap<>();
 		String wordValue = wordMeaningRelationsDetails.getWordValue();
 		Long meaningId = wordMeaningRelationsDetails.getMeaningId();
+		String datasetCode = wordMeaningRelationsDetails.getDataset();
 		String backUri = wordMeaningRelationsDetails.getBackUri();
 		String searchUri;
 		if (StringUtils.isNotBlank(wordValue)) {
@@ -246,8 +248,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 			EkiUser user = userContext.getUser();
 			Long userId = user.getId();
 			String userName = user.getName();
-			DatasetPermission userRole = user.getRecentRole();
-			String datasetCode = userRole.getDatasetCode();
 			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
 
 			wordMeaningRelationsDetails.setDataset(datasetCode);

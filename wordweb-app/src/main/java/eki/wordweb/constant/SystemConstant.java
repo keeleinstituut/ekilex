@@ -46,8 +46,6 @@ public interface SystemConstant {
 
 	String CACHE_KEY_CORPORA = "corpora";
 
-	String UNKNOWN_FORM_CODE = "??";
-
 	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 
 	String DEFAULT_CLASSIF_VALUE_LANG = "est";

@@ -17,7 +17,7 @@ import eki.common.constant.DatasetType;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SynonymType;
 import eki.common.data.Classifier;
-import eki.wordweb.data.DataFilter;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.TypeDefinition;
@@ -81,15 +81,15 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap,
 			List<String> allRelatedWordValues,
 			Map<String, Long> langOrderByMap,
-			DataFilter dataFilter,
+			SearchContext searchContext,
 			String displayLang) {
 
 		if (CollectionUtils.isEmpty(lexemes)) {
 			return;
 		}
 
-		List<String> destinLangs = dataFilter.getDestinLangs();
-		Complexity lexComplexity = dataFilter.getLexComplexity();
+		List<String> destinLangs = searchContext.getDestinLangs();
+		Complexity lexComplexity = searchContext.getLexComplexity();
 
 		for (Lexeme lexeme : lexemes) {
 
@@ -301,7 +301,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Lexeme lexeme, String wordLang,
 			LexemeMeaningTuple tuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
-		final int definitionValueOversizeLimitForMarkupBuffering = new Float(DEFINITION_OVERSIZE_LIMIT * 1.5).intValue();
+		final int definitionValueOversizeLimitForMarkupBuffering = Double.valueOf(DEFINITION_OVERSIZE_LIMIT * 1.5).intValue();
 
 		List<TypeDefinition> definitions = tuple.getDefinitions();
 		List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();

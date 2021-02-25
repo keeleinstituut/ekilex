@@ -245,7 +245,12 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				Paradigm p1 = Paradigm.PARADIGM.as("p1");
 				Form f1 = Form.FORM.as("f1");
-				Condition where1 = p1.WORD_ID.eq(w1.ID).and(f1.PARADIGM_ID.eq(p1.ID)).and(f1.MODE.eq(FormMode.FORM.name()));
+				Condition where1 = p1.WORD_ID.eq(w1.ID)
+						.and(f1.PARADIGM_ID.eq(p1.ID))
+						.and(f1.MODE.eq(FormMode.FORM.name()))
+						.and(f1.MORPH_EXISTS.isTrue())
+						.and(f1.IS_QUESTIONABLE.isFalse())
+						.and(f1.MORPH_CODE.ne(UNKNOWN_FORM_CODE));
 
 				where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1, true);
 				where1 = searchFilterHelper.applyFormFrequencyFilters(searchCriteria, f1.ID, where1);

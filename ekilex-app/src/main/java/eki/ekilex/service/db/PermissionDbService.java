@@ -133,17 +133,17 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET.NAME.as("dataset_name"),
 						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
+						DSL.field(DATASET.CODE.eq(DATASET_XXX)).as("is_superior_permission"),
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG,
 						LANGUAGE_LABEL.VALUE.as("auth_lang_value"))
-				.from(DATASET, DATASET_PERMISSION.leftOuterJoin(LANGUAGE_LABEL)
-						.on(LANGUAGE_LABEL.CODE.eq(DATASET_PERMISSION.AUTH_LANG)
+				.from(DATASET_PERMISSION
+						.innerJoin(DATASET).on(DATASET.CODE.eq(DATASET_PERMISSION.DATASET_CODE))
+						.leftOuterJoin(LANGUAGE_LABEL).on(LANGUAGE_LABEL.CODE.eq(DATASET_PERMISSION.AUTH_LANG)
 								.and(LANGUAGE_LABEL.LANG.eq(CLASSIF_LABEL_LANG_EST))
 								.and(LANGUAGE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
-				.where(
-						DATASET_PERMISSION.USER_ID.eq(userId)
-								.and(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE)))
+				.where(DATASET_PERMISSION.USER_ID.eq(userId))
 				.orderBy(
 						DATASET.ORDER_BY,
 						DATASET_PERMISSION.AUTH_OPERATION,
@@ -160,12 +160,13 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						DATASET_PERMISSION.USER_ID,
 						DATASET.NAME.as("dataset_name"),
 						DATASET.IS_SUPERIOR.as("is_superior_dataset"),
+						DSL.field(DATASET.CODE.eq(DATASET_XXX)).as("is_superior_permission"),
 						DATASET_PERMISSION.AUTH_LANG,
 						DATASET_PERMISSION.DATASET_CODE,
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM)
-				.from(DATASET_PERMISSION)
-				.innerJoin(DATASET).on(DATASET_PERMISSION.DATASET_CODE.eq(DATASET.CODE))
+				.from(DATASET_PERMISSION
+						.innerJoin(DATASET).on(DATASET.CODE.eq(DATASET_PERMISSION.DATASET_CODE)))
 				.where(DATASET_PERMISSION.ID.eq(id))
 				.fetchSingleInto(eki.ekilex.data.DatasetPermission.class);
 
@@ -526,8 +527,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		Table<Record1<Integer>> la = DSL
 				.select(field(DSL.count(LEXEME.ID)).as("all_lex_count"))
 				.from(LEXEME)
-				.where(
-						LEXEME.MEANING_ID.eq(meaningId))
+				.where(LEXEME.MEANING_ID.eq(meaningId))
 				.groupBy(LEXEME.MEANING_ID)
 				.asTable("la");
 
@@ -751,11 +751,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		String providedAuthOp = userRole.getAuthOperation().name();
 		if (!requiredAuthItem.equals(providedAuthItem) || !requiredAuthOps.contains(providedAuthOp)) {
 			return false;
-		}
-
-		boolean isSuperiorDataset = userRole.isSuperiorDataset();
-		if (isSuperiorDataset) {
-			return true;
 		}
 
 		Table<Record1<String>> dffds = DSL

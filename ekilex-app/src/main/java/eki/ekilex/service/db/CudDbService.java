@@ -19,7 +19,6 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.TAG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -36,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -47,6 +47,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
@@ -54,7 +55,6 @@ import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeTag;
-import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
@@ -508,7 +508,11 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexeme(
-			String value, String valuePrese, String valueAsWord, String lang, String dataset, boolean isPublic, Long meaningId) {
+			String value, String valuePrese, String valueAsWord, String lang, String dataset, boolean isPublic, Long meaningId) throws Exception {
+
+		if (StringUtils.equals(dataset, DATASET_XXX)) {
+			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
+		}
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 
@@ -778,8 +782,11 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeCodeId;
 	}
 
-	public Long createLexeme(Long wordId, String datasetCode, Long meaningId, int lexemeLevel1) {
+	public Long createLexeme(Long wordId, String datasetCode, Long meaningId, int lexemeLevel1) throws Exception {
 
+		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
+			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
+		}
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		} else {
@@ -854,30 +861,6 @@ public class CudDbService extends AbstractDataDbService {
 					.getId();
 		}
 		return lexemeTagId;
-	}
-
-	public List<String> createLexemeAutomaticTags(Long lexemeId) {
-
-		LexemeTag lt = LEXEME_TAG.as("lt");
-		Tag t = TAG.as("t");
-
-		List<String> createdTagNames = create
-				.insertInto(LEXEME_TAG, LEXEME_TAG.LEXEME_ID, LEXEME_TAG.TAG_NAME)
-				.select(DSL
-						.select(DSL.val(lexemeId), t.NAME)
-						.from(t)
-						.where(
-								t.SET_AUTOMATICALLY.isTrue()
-										.andNotExists(DSL
-												.select(lt.ID)
-												.from(lt)
-												.where(lt.LEXEME_ID.eq(lexemeId)
-														.and(lt.TAG_NAME.eq(t.NAME))))))
-				.returning(LEXEME_TAG.TAG_NAME)
-				.fetch()
-				.map(LexemeTagRecord::getTagName);
-
-		return createdTagNames;
 	}
 
 	public Long createLexemeDeriv(Long lexemeId, String derivCode) {

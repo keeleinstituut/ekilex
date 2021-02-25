@@ -19,7 +19,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
-import eki.wordweb.data.DataFilter;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeMeaningWord;
@@ -33,9 +33,9 @@ import eki.wordweb.data.WordTypeData;
 @Component
 public class WordConversionUtil extends AbstractConversionUtil {
 
-	public void composeHomonymWrapups(List<Word> words, DataFilter dataFilter) {
+	public void composeHomonymWrapups(List<Word> words, SearchContext searchContext) {
 
-		Complexity lexComplexity = dataFilter.getLexComplexity();
+		Complexity lexComplexity = searchContext.getLexComplexity();
 
 		for (Word word : words) {
 			String wordLang = word.getLang();

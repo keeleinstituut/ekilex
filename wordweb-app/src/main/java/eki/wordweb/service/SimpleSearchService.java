@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
-import eki.wordweb.data.DataFilter;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
@@ -33,9 +33,8 @@ public class SimpleSearchService extends AbstractSearchService {
 	public WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang) {
 
 		// query params + common data
-		DataFilter dataFilter = getDataFilter(searchFilter);
-		Integer maxDisplayLevel = dataFilter.getMaxDisplayLevel();
-		Complexity lexComplexity = dataFilter.getLexComplexity();
+		SearchContext searchContext = getSearchContext(searchFilter);
+		Complexity lexComplexity = searchContext.getLexComplexity();
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
 
 		// word data
@@ -45,20 +44,20 @@ public class SimpleSearchService extends AbstractSearchService {
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
 		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
-		List<Form> forms = searchDbService.getWordForms(wordId, maxDisplayLevel);
+		List<Form> forms = searchDbService.getWordForms(wordId, searchContext);
 		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, DISPLAY_LANG);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
-		List<Lexeme> lexemes = searchDbService.getLexemes(wordId, dataFilter);
+		List<Lexeme> lexemes = searchDbService.getLexemes(wordId, searchContext);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = searchDbService.getLexemeMeaningTuples(wordId);
 		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
-		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, dataFilter, displayLang);
+		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
 
 		if (CollectionUtils.isNotEmpty(lexemes)) {
 			List<CollocationTuple> collocTuples = searchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
-			collocConversionUtil.compose(wordId, lexemes, collocTuples, dataFilter, displayLang);
+			collocConversionUtil.compose(wordId, lexemes, collocTuples, searchContext, displayLang);
 			lexemeConversionUtil.flagEmptyLexemes(lexemes);
 			lexemes = lexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
 			lexemeConversionUtil.sortLexemes(lexemes, DatasetType.LEX);
@@ -72,15 +71,16 @@ public class SimpleSearchService extends AbstractSearchService {
 	}
 
 	@Override
-	public DataFilter getDataFilter(SearchFilter searchFilter) {
+	public SearchContext getSearchContext(SearchFilter searchFilter) {
 		List<String> destinLangs = searchFilter.getDestinLangs();
 		List<String> datasetCodes = Arrays.asList(DATASET_SSS);
 		Complexity lexComplexity = Complexity.SIMPLE;
 		DatasetType datasetType = DatasetType.LEX;
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
 		List<String> destinLangsClean = destinLangs.stream().filter(destinLang -> !StringUtils.equals(destinLang, DESTIN_LANG_ALL)).collect(Collectors.toList());
+		boolean excludeQuestionable = true;
 		boolean fiCollationExists = commonDataDbService.fiCollationExists();
-		DataFilter dataFilter = new DataFilter(datasetType, destinLangsClean, datasetCodes, lexComplexity, maxDisplayLevel, fiCollationExists);
-		return dataFilter;
+		SearchContext searchContext = new SearchContext(datasetType, destinLangsClean, datasetCodes, lexComplexity, maxDisplayLevel, excludeQuestionable, fiCollationExists);
+		return searchContext;
 	}
 }

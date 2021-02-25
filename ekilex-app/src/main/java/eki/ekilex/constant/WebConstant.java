@@ -200,6 +200,8 @@ public interface WebConstant {
 
 	String CREATE_SOURCE_URI = "/create_source";
 
+	String SOURCE_AND_SOURCE_LINK_URI = "/source_and_source_link";
+
 	String CREATE_SOURCE_AND_SOURCE_LINK_URI = "/create_source_and_source_link";
 
 	String VALIDATE_DELETE_SOURCE_URI = "/validate_delete_source";
@@ -239,6 +241,16 @@ public interface WebConstant {
 	String UPDATE_CLASSIFIER_URI = "/update_classifier";
 
 	String DELETE_CLASSIFIER_URI = "/delete_classifier";
+
+	String TAGS_URI = "/tags";
+
+	String TAGS_PAGE = "tags";
+
+	String CREATE_TAG_URI = "/create_tag";
+
+	String UPDATE_TAG_URI = "/update_tag";
+
+	String DELETE_TAG_URI = "/delete_tag";
 
 	String STAT_URI = "/stat";
 
@@ -285,6 +297,8 @@ public interface WebConstant {
 	String RESPONSE_OK_VER1 = "OK";
 
 	String RESPONSE_OK_VER2 = "{}";
+
+	String RESPONSE_FAIL = "fail";
 
 	// mode flags
 

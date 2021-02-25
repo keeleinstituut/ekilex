@@ -31,6 +31,7 @@ import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
@@ -46,6 +47,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 	@Autowired
 	private LookupDbService lookupDbService;
+
+	@Autowired
+	private TagDbService tagDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -80,7 +84,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 					.createWordAndLexeme(wordValue, wordValue, null, language, dataset, PUBLICITY_PUBLIC, meaningId);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
-			cudDbService.createLexemeAutomaticTags(lexemeId);
+			tagDbService.createLexemeAutomaticTags(lexemeId);
 			activityLogService.createActivityLog("createWordAndMeaningAndRelations", wordId, ActivityOwner.WORD);
 			activityLogService.createActivityLog("createWordAndMeaningAndRelations", lexemeId, ActivityOwner.LEXEME);
 		}
@@ -507,7 +511,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				Long sourceLexemeId = lexemeIdPair.getId2();
 				updateLexemeLevels(sourceLexemeId, "delete");
 				compositionDbService.joinLexemes(targetLexemeId, sourceLexemeId);
-				cudDbService.createLexemeAutomaticTags(targetLexemeId);
+				tagDbService.createLexemeAutomaticTags(targetLexemeId);
 			}
 		}
 	}

@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = 337609115;
+    private static final long serialVersionUID = 1850234762;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -120,6 +120,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.morph_exists</code>.
      */
     public final TableField<MviewWwFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.is_questionable</code>.
+     */
+    public final TableField<MviewWwFormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.mview_ww_form.value</code>.

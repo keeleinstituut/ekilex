@@ -66,7 +66,7 @@ public class ClassifierController extends AbstractPrivatePageController {
 		if (isSuccessful) {
 			return RESPONSE_OK_VER1;
 		}
-		return "fail";
+		return RESPONSE_FAIL;
 	}
 
 	@PostMapping(UPDATE_CLASSIFIER_URI)
@@ -85,7 +85,7 @@ public class ClassifierController extends AbstractPrivatePageController {
 		if (isSuccessful) {
 			return RESPONSE_OK_VER1;
 		}
-		return "fail";
+		return RESPONSE_FAIL;
 	}
 
 	@GetMapping(OPPOSITE_RELATIONS_URI)

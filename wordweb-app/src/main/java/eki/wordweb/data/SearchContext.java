@@ -6,7 +6,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
 import eki.common.data.AbstractDataObject;
 
-public class DataFilter extends AbstractDataObject {
+public class SearchContext extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,20 +20,24 @@ public class DataFilter extends AbstractDataObject {
 
 	private Integer maxDisplayLevel;
 
+	private boolean excludeQuestionable;
+
 	private boolean fiCollationExists;
 
-	public DataFilter(
+	public SearchContext(
 			DatasetType datasetType,
 			List<String> destinLangs,
 			List<String> datasetCodes,
 			Complexity lexComplexity,
 			Integer maxDisplayLevel,
+			boolean excludeQuestionable,
 			boolean fiCollationExists) {
 		this.datasetType = datasetType;
 		this.destinLangs = destinLangs;
 		this.datasetCodes = datasetCodes;
 		this.lexComplexity = lexComplexity;
 		this.maxDisplayLevel = maxDisplayLevel;
+		this.excludeQuestionable = excludeQuestionable;
 		this.fiCollationExists = fiCollationExists;
 	}
 
@@ -55,6 +59,10 @@ public class DataFilter extends AbstractDataObject {
 
 	public Integer getMaxDisplayLevel() {
 		return maxDisplayLevel;
+	}
+
+	public boolean isExcludeQuestionable() {
+		return excludeQuestionable;
 	}
 
 	public boolean isFiCollationExists() {
