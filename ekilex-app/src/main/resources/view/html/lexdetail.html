@@ -162,7 +162,7 @@
                           <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                         </button><span th:unless="${synWordIter.last}">,</span>
                         <th:block th:if="${isMeaningWordSyn}">
-                          
+                          <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                           <div class="meaning_buttons">
                             <button type="button" class="btn badge badge-primary"
                                     title="Muuda vastet"
