@@ -508,7 +508,11 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexeme(
-			String value, String valuePrese, String valueAsWord, String lang, String dataset, boolean isPublic, Long meaningId) {
+			String value, String valuePrese, String valueAsWord, String lang, String dataset, boolean isPublic, Long meaningId) throws Exception {
+
+		if (StringUtils.equals(dataset, DATASET_XXX)) {
+			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
+		}
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 
