@@ -253,7 +253,7 @@
                                     <span th:unless="${#strings.isEmpty(form.displayForm)}" th:text="${form.displayForm}" th:title="${form.formFrequency}"></span>
                                   </td>
                                   <td class="pl-2">
-                                    <span th:if="${form.displayMorphCode}" th:text="${form.morphCode + ' - ' + form.morphValue}" th:title="${form.morphFrequency}" class="text-secondary"></span>
+                                    <span th:if="${form.displayMorphCode}" th:text="${form.morphCode + ' - ' + form.morphValue}" th:title="${form.morphFrequency}" class="text-secondary" style="white-space:nowrap; font-size:80%;"></span>
                                   </td>
                                 </tr>
                                 <tr>
