@@ -22,6 +22,12 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.api.FreeformOwner;
+import eki.ekilex.data.api.Word;
+import eki.ekilex.data.api.WordClassifier;
+import eki.ekilex.data.api.WordFreeform;
+import eki.ekilex.data.api.WordRelation;
+import eki.ekilex.service.db.ActivityLogDbService;
+import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.db.SourceLinkDbService;
@@ -37,6 +43,12 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 	@Autowired
 	private SourceLinkDbService sourceLinkDbService;
+
+	@Autowired
+	private LookupDbService lookupDbService;
+
+	@Autowired
+	private ActivityLogDbService activityLogDbService;
 
 	// page perm
 
@@ -211,6 +223,97 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			return permissionDbService.isGrantedForDefinition(userId, crudRole, entityId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		}
 		return false;
+	}
+
+	@Transactional
+	public boolean isWordCreateGranted(Principal principal, String crudRoleDataset, Word word) {
+
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
+		String lexemeDataset = word.getLexemeDataset();
+		if (StringUtils.equals(lexemeDataset, DATASET_XXX)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Transactional
+	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, Word word) {
+
+		Long wordId = word.getWordId();
+		return isWordCrudGranted(principal, crudRoleDataset, wordId);
+	}
+
+	@Transactional
+	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, WordFreeform wordFreeform) {
+
+		Long wordId = wordFreeform.getWordId();
+		return isWordCrudGranted(principal, crudRoleDataset, wordId);
+	}
+
+	@Transactional
+	public boolean isWordFreeformCrudGranted(Principal principal, String crudRoleDataset, WordFreeform wordFreeform) {
+
+		Long freeformId = wordFreeform.getFreeformId();
+		Long wordId = lookupDbService.getWordId(freeformId);
+		return isWordCrudGranted(principal, crudRoleDataset, wordId);
+	}
+
+	@Transactional
+	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, WordClassifier wordClassifier) {
+
+		Long wordId = wordClassifier.getWordId();
+		return isWordCrudGranted(principal, crudRoleDataset, wordId);
+	}
+
+	@Transactional
+	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, WordRelation wordRelation) {
+
+		Long wordId = wordRelation.getWordId();
+		return isWordCrudGranted(principal, crudRoleDataset, wordId);
+	}
+
+	@Transactional
+	public boolean isWordRelationCrudGranted(Principal principal, String crudRoleDataset, Long relationId) {
+
+		Long wordId = activityLogDbService.getWordRelationOwnerId(relationId);
+		return isWordCrudGranted(principal, crudRoleDataset, wordId);
+	}
+
+	@Transactional
+	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, Long wordId) {
+
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
+		}
+		boolean isGranted = permissionDbService.isGrantedForWord(userId, crudRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		return isGranted;
+	}
+
+	@Transactional
+	public boolean isLexemeCrudGranted(Principal principal, String crudRoleDataset, Long lexemeId) {
+
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
+		}
+		boolean isGranted = permissionDbService.isGrantedForLexeme(userId, crudRole, lexemeId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		return isGranted;
 	}
 
 	private DatasetPermission getCrudRole(Long userId, String crudRoleDataset) {

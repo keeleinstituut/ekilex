@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.api.ParadigmWrapper;
-import eki.ekilex.service.MorphologyService;
+import eki.ekilex.service.api.MorphologyService;
 
 @ConditionalOnWebApplication
 @Controller
