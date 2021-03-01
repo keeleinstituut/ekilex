@@ -46,10 +46,17 @@ $.fn.saveTag = function() {
 };
 
 $.fn.tagDeleteConfirm = function() {
+	let isUsed = $(this).data('tag-used');
+	let title;
+	if (isUsed) {
+		title = 'Ettevaatust, silt on kasutusel. Kas oled kindel, et soovid kustutada?';
+	} else {
+		title = 'Kinnita sildi kustutamine';
+	}
 	$(this).confirmation({
 		btnOkLabel : 'Jah',
 		btnCancelLabel : 'Ei',
-		title : 'Kinnita sildi kustutamine',
+		title : title,
 		onConfirm : function() {
 			let tagName = $(this).data('tag-name');
 			deleteTag(tagName);
