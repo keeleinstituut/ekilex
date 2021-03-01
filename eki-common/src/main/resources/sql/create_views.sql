@@ -373,6 +373,7 @@ from (select w.id as word_id,
   left outer join (select wt.word_id,
                           array_agg(wt.word_type_code order by wt.order_by) word_type_codes
                    from word_word_type wt
+                   where wt.word_type_code not in ('vv', 'yv')
                    group by wt.word_id) wt
                on wt.word_id = w.word_id
   left outer join (select mw.word_id,
