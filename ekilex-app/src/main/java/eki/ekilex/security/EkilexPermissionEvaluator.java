@@ -238,7 +238,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		if (StringUtils.equals(lexemeDataset, DATASET_XXX)) {
 			return false;
 		}
-		return true;
+		if (crudRole.isSuperiorPermission()) {
+			return true;
+		}
+		if (StringUtils.equals(lexemeDataset, crudRoleDataset)) {
+			return true;
+		}
+		return false;
 	}
 
 	@Transactional
