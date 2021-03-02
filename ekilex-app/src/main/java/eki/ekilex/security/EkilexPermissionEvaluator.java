@@ -270,6 +270,13 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	}
 
 	@Transactional
+	public boolean isWordFreeformCrudGranted(Principal principal, String crudRoleDataset, Long freeformId) {
+
+		Long wordId = lookupDbService.getWordId(freeformId);
+		return isWordCrudGranted(principal, crudRoleDataset, wordId);
+	}
+
+	@Transactional
 	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, WordClassifier wordClassifier) {
 
 		Long wordId = wordClassifier.getWordId();
