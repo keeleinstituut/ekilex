@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,7 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
@@ -415,16 +417,20 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
+		Meaning m = MEANING.as("m");
+		Field<Timestamp> mlaeof = getMeaningLastActivityEventOnField(m.ID);
+
 		return create
 				.select(
-						MEANING.ID.as("meaning_id"),
+						m.ID.as("meaning_id"),
+						mlaeof.as("last_activity_event_on"),
 						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
-				.from(MEANING, LEXEME)
+				.from(m, LEXEME)
 				.where(
-						MEANING.ID.eq(meaningId)
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+						m.ID.eq(meaningId)
+								.and(LEXEME.MEANING_ID.eq(m.ID))
 								.and(dsWhere))
-				.groupBy(MEANING.ID)
+				.groupBy(m.ID)
 				.fetchOptionalInto(eki.ekilex.data.Meaning.class)
 				.orElse(null);
 	}

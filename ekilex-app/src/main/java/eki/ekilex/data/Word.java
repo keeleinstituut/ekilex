@@ -1,5 +1,6 @@
 package eki.ekilex.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public class Word extends AbstractCrudEntity implements DecoratedWordType {
@@ -55,6 +56,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 	private List<WordEtym> etymology;
 
 	private List<FreeForm> odWordRecommendations;
+
+	private Timestamp lastActivityEventOn;
 
 	public Long getWordId() {
 		return wordId;
@@ -266,6 +269,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setOdWordRecommendations(List<FreeForm> odWordRecommendations) {
 		this.odWordRecommendations = odWordRecommendations;
+	}
+
+	public Timestamp getLastActivityEventOn() {
+		return lastActivityEventOn;
+	}
+
+	public void setLastActivityEventOn(Timestamp lastActivityEventOn) {
+		this.lastActivityEventOn = lastActivityEventOn;
 	}
 
 }

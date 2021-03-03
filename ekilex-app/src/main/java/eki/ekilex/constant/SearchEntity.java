@@ -10,7 +10,7 @@ public enum SearchEntity {
 			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.ASPECT, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME,
 			SearchKey.SECONDARY_MEANING_WORD, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT, SearchKey.LEXEME_POS,
 			SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_VALUE_STATE, SearchKey.COMPLEXITY, SearchKey.OD_RECOMMENDATION,
-			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.FREQUENCY, SearchKey.RANK}),
+			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON, SearchKey.FREQUENCY, SearchKey.RANK}),
 	WORD(new SearchKey[] {
 			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.ASPECT, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME,
 			SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT, SearchKey.LEXEME_POS,
@@ -27,7 +27,7 @@ public enum SearchEntity {
 	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.RELATION_TYPE, SearchKey.SEMANTIC_TYPE}),
 	CONCEPT(new SearchKey[] {
 			SearchKey.DOMAIN, SearchKey.ID, SearchKey.ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE,
-			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
+			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID}),

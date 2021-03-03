@@ -47,7 +47,9 @@ drop table if exists game_nonword;
 drop table if exists lifecycle_activity_log;--TODO remove later
 drop table if exists lexeme_activity_log;
 drop table if exists word_activity_log;
+drop table if exists word_last_activity_log;
 drop table if exists meaning_activity_log;
+drop table if exists meaning_last_activity_log;
 drop table if exists source_activity_log;
 drop table if exists word_freq;
 drop table if exists morph_freq;

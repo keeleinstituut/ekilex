@@ -77,7 +77,8 @@
               </div>
               <div class="ml-2">
                 <div class="date-modified" title="Viimati muudetud" data-toggle="tooltip" data-placement="bottom">
-                  <i class="fa fa-calendar"></i><span th:text="${#dates.format(details.lastChangedOn, 'dd.MM.yyyy')}"></span>
+                  <i class="fa fa-calendar"></i>
+                  <span th:text="${#dates.format(details.word.lastActivityEventOn, 'dd.MM.yyyy')}" class="ml-n1"></span>
                 </div><!--/date-modified-->
               </div><!--/ml-2-->
               <div class="ml-auto d-flex align-items-center flex-row">

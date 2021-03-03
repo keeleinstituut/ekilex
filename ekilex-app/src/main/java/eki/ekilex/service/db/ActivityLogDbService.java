@@ -15,6 +15,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
@@ -23,6 +24,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
@@ -30,17 +32,21 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.JSONB;
+import org.jooq.Record2;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import eki.common.constant.GlobalConstant;
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.db.tables.ActivityLog;
@@ -52,16 +58,16 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.udt.records.TypeActivityLogDiffRecord;
 
 @Component
 public class ActivityLogDbService implements GlobalConstant {
-
-	private static final String LOADER_USERNAME_PATTERN = "Ekilex %laadur";
 
 	@Autowired
 	private DSLContext create;
@@ -158,30 +164,6 @@ public class ActivityLogDbService implements GlobalConstant {
 				.fetchInto(eki.ekilex.data.ActivityLog.class);
 	}
 
-	public Timestamp getLatestLogTimeForWord(Long wordId) {
-
-		return create
-				.select(DSL.max(ACTIVITY_LOG.EVENT_ON))
-				.from(ACTIVITY_LOG, WORD_ACTIVITY_LOG)
-				.where(
-						WORD_ACTIVITY_LOG.WORD_ID.eq(wordId)
-								.and(WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID))
-								.andNot(ACTIVITY_LOG.EVENT_BY.like(LOADER_USERNAME_PATTERN)))
-				.fetchSingleInto(Timestamp.class);
-	}
-
-	public Timestamp getLatestLogTimeForMeaning(Long meaningId) {
-
-		return create
-				.select(DSL.max(ACTIVITY_LOG.EVENT_ON))
-				.from(ACTIVITY_LOG, MEANING_ACTIVITY_LOG)
-				.where(
-						MEANING_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
-								.and(MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID))
-								.andNot(ACTIVITY_LOG.EVENT_BY.like(LOADER_USERNAME_PATTERN)))
-				.fetchSingleInto(Timestamp.class);
-	}
-
 	public Long create(eki.ekilex.data.ActivityLog activityLog) {
 
 		return create.insertInto(
@@ -246,6 +228,115 @@ public class ActivityLogDbService implements GlobalConstant {
 							.whereExists(DSL.select(MEANING.ID).from(MEANING).where(MEANING.ID.eq(meaningId))))
 					.execute();
 		}
+	}
+
+	public void createOrUpdateWordLastActivityLog(Long wordId) {
+
+		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
+		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+
+		Long activityLogId = create
+				.select(al.ID)
+				.from(wal, al)
+				.where(
+						wal.WORD_ID.eq(wordId)
+						.and(wal.ACTIVITY_LOG_ID.eq(al.ID))
+						.and(al.OWNER_NAME.in(ActivityOwner.WORD.name(), ActivityOwner.LEXEME.name())))
+				.orderBy(al.EVENT_ON.desc())
+				.limit(1)
+				.fetchOptionalInto(Long.class).orElse(null);
+
+		if (activityLogId == null) {
+			return;
+		}
+
+		create
+				.update(wlal)
+				.set(wlal.ACTIVITY_LOG_ID, activityLogId)
+				.where(wlal.WORD_ID.eq(wordId))
+				.execute();
+
+		create
+				.insertInto(wlal, wlal.WORD_ID, wlal.ACTIVITY_LOG_ID)
+				.select(DSL
+						.select(DSL.val(wordId), DSL.val(activityLogId))
+						.whereNotExists(DSL
+								.select(wlal.ID)
+								.from(wlal)
+								.where(wlal.WORD_ID.eq(wordId))))
+				.execute();
+	}
+
+	public void createOrUpdateMeaningLastActivityLog(Long meaningId) {
+
+		final String[] conceptActivityWordFunctNamesOfInterest = new String[] {"createWord", "updateWordValue", "deleteWord"};
+		final String conceptActivityWordFunctNamesCrit = "(" + StringUtils.join(conceptActivityWordFunctNamesOfInterest, '|') + ")";
+
+		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
+		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+
+		Table<Record2<Long, Timestamp>> lmlwal = DSL
+				.select(al.ID, al.EVENT_ON)
+				.from(mal, al)
+				.where(
+						mal.MEANING_ID.eq(meaningId)
+						.and(mal.ACTIVITY_LOG_ID.eq(al.ID))
+						.and(al.OWNER_NAME.in(ActivityOwner.MEANING.name(), ActivityOwner.LEXEME.name())))
+				.orderBy(al.EVENT_ON.desc())
+				.limit(1)
+				.unionAll(DSL
+						.select(al.ID, al.EVENT_ON)
+						.from(mal, al)
+						.where(
+								mal.MEANING_ID.eq(meaningId)
+								.and(mal.ACTIVITY_LOG_ID.eq(al.ID))
+								.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
+								.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
+								.and(al.FUNCT_NAME.similarTo(conceptActivityWordFunctNamesCrit)))
+						.orderBy(al.EVENT_ON.desc())
+						.limit(1))
+				.asTable("lmlwal");
+
+		Long activityLogId = create
+				.select(lmlwal.field("id", Long.class))
+				.from(lmlwal)
+				.orderBy(lmlwal.field("event_on").desc())
+				.limit(1)
+				.fetchOptionalInto(Long.class).orElse(null);
+
+		if (activityLogId == null) {
+			activityLogId = create
+					.select(al.ID)
+					.from(mal, al)
+					.where(
+							mal.MEANING_ID.eq(meaningId)
+							.and(mal.ACTIVITY_LOG_ID.eq(al.ID)))
+					.orderBy(al.EVENT_ON.desc())
+					.limit(1)
+					.fetchOptionalInto(Long.class).orElse(null);
+		}
+
+		if (activityLogId == null) {
+			return;
+		}
+
+		create
+				.update(mlal)
+				.set(mlal.ACTIVITY_LOG_ID, activityLogId)
+				.where(mlal.MEANING_ID.eq(meaningId))
+				.execute();
+
+		create
+				.insertInto(mlal, mlal.MEANING_ID, mlal.ACTIVITY_LOG_ID)
+				.select(DSL
+						.select(DSL.val(meaningId), DSL.val(activityLogId))
+						.whereNotExists(DSL
+								.select(mlal.ID)
+								.from(mlal)
+								.where(mlal.MEANING_ID.eq(meaningId))))
+				.execute();
 	}
 
 	public void createSourceActivityLog(Long activityLogId, Long sourceId) {

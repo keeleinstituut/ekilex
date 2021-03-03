@@ -29,6 +29,7 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -329,6 +330,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
+	//TODO add last log time
 	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");
@@ -366,6 +368,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
 				.where(l.WORD_ID.eq(w.ID))
 				.groupBy(w.ID));
+		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.ID);
 
 		return create
 				.select(
@@ -384,7 +387,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
-						lxtnf.as("lexemes_tag_names"))
+						lxtnf.as("lexemes_tag_names"),
+						wlaeof.as("last_activity_event_on"))
 				.from(w)
 				.where(w.ID.eq(wordId)
 						.andExists(DSL

@@ -21,8 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flipkart.zjsonpatch.JsonDiff;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.FreeformType;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.FreeformType;
 import eki.common.exception.IllegalParamException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLog;
@@ -435,6 +435,13 @@ public class ActivityLogService implements SystemConstant {
 		activityLogDbService.createLexemesActivityLogs(activityLogId, lexemeIds);
 		activityLogDbService.createWordsActivityLogs(activityLogId, wordIds);
 		activityLogDbService.createMeaningsActivityLogs(activityLogId, meaningIds);
+
+		for (Long wordId : wordIds) {
+			activityLogDbService.createOrUpdateWordLastActivityLog(wordId);
+		}
+		for (Long meaningId : meaningIds) {
+			activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId);
+		}
 	}
 
 	private Long[] collect(Long[] ids1, Long[] ids2) {

@@ -71,7 +71,7 @@
                 sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
         <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
              data-original-title="Viimati muudetud">
-          <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
+          <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
         </div>
         <button class="btn btn-link" type="button"
                 th:data-id="${meaningId}"
@@ -119,7 +119,7 @@
                 sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
         <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
              data-original-title="Viimati muudetud">
-          <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastChangedOn, 'dd.MM.yyyy')}"></span>
+          <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
         </div>
         <button class="btn btn-link" type="button"
                 th:data-id="${meaningId}"

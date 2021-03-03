@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -7,14 +8,17 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.jooq.DSLContext;
@@ -29,10 +33,13 @@ import eki.common.constant.GlobalConstant;
 import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
+import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 
 public abstract class AbstractDataDbService implements SystemConstant, GlobalConstant {
@@ -138,6 +145,19 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.from(p, f)
 				.where(p.WORD_ID.eq(wordIdField).and(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
 				.groupBy(wordIdField));
+	}
+
+	protected Field<Timestamp> getWordLastActivityEventOnField(Field<Long> wordIdField) {
+		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		Field<Timestamp> wlaeof = DSL.field(DSL
+				.select(al.EVENT_ON)
+				.from(wlal, al)
+				.where(
+						wlal.WORD_ID.eq(wordIdField)
+						.and(wlal.ACTIVITY_LOG_ID.eq(al.ID)))
+				.limit(1));
+		return wlaeof;
 	}
 
 	protected Field<TypeClassifierRecord[]> getLexemePosField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -248,6 +268,19 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 								.and(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang))
 								.and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.asField();
+	}
+
+	protected Field<Timestamp> getMeaningLastActivityEventOnField(Field<Long> meaningIdField) {
+		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+		Field<Timestamp> wlaeof = DSL.field(DSL
+				.select(al.EVENT_ON)
+				.from(mlal, al)
+				.where(
+						mlal.MEANING_ID.eq(meaningIdField)
+						.and(mlal.ACTIVITY_LOG_ID.eq(al.ID)))
+				.limit(1));
+		return wlaeof;
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")

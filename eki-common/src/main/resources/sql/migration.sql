@@ -435,6 +435,124 @@ drop table lifecycle_activity_log;
 drop table lifecycle_log cascade;
 
 ------------------------------------------------
+----- viimase muutmise logikirje määramine -----
+------------------------------------------------
+
+create table meaning_last_activity_log
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  activity_log_id bigint references activity_log(id) on delete cascade not null,
+  unique(meaning_id)
+);
+alter sequence meaning_last_activity_log_id_seq restart with 10000;
+
+create table word_last_activity_log
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  activity_log_id bigint references activity_log(id) on delete cascade not null,
+  unique(word_id)
+);
+alter sequence word_last_activity_log_id_seq restart with 10000;
+
+create index activity_log_owner_name_idx on activity_log(owner_name);
+create index activity_log_event_on_desc_idx on activity_log(event_on desc);
+create index activity_log_event_on_desc_ms_idx on activity_log((date_part('epoch', event_on) * 1000) desc);
+create index word_last_activity_log_word_id_idx on word_last_activity_log(word_id);
+create index word_last_activity_log_log_id_idx on word_last_activity_log(activity_log_id);
+create index meaning_last_activity_log_meaning_id_idx on meaning_last_activity_log(meaning_id);
+create index meaning_last_activity_log_log_id_idx on meaning_last_activity_log(activity_log_id);
+
+do $$
+declare
+  m_row record;
+  w_row record;
+  al_id bigint;
+begin
+  -- meanings
+  for m_row in 
+    (select * from meaning m order by m.id)
+  loop
+    select
+      lmlwal.id
+    from (
+      (
+        select
+          al.id,
+          al.event_on
+        from
+          meaning_activity_log as mal,
+          activity_log as al
+        where (
+          mal.meaning_id = m_row.id
+          and mal.activity_log_id = al.id
+          and al.owner_name in (
+            'MEANING', 'LEXEME'
+          )
+        )
+        order by al.event_on desc limit 1
+      )
+      union all (
+        select
+          al.id,
+          al.event_on
+        from
+          meaning_activity_log as mal,
+          activity_log as al
+        where (
+          mal.meaning_id = m_row.id
+          and mal.activity_log_id = al.id
+          and al.owner_name = 'WORD'
+          and al.entity_name = 'WORD'
+          and al.funct_name similar to '(createWord|updateWordValue|deleteWord)'
+        )
+        order by al.event_on desc limit 1
+      )
+    ) as lmlwal
+    order by lmlwal.event_on desc limit 1
+    into al_id;
+    if al_id is null then
+      select
+        al.id
+      from
+        meaning_activity_log as mal,
+        activity_log as al
+      where (
+        mal.meaning_id = m_row.id
+        and mal.activity_log_id = al.id
+      )
+      order by al.event_on desc limit 1
+      into al_id;
+    end if;
+    if al_id is not null then
+      insert into meaning_last_activity_log (meaning_id, activity_log_id) values (m_row.id, al_id);
+    end if;
+  end loop;
+  -- words
+  for w_row in 
+    (select * from word w order by w.id)
+  loop
+    select
+       al.id
+    from
+      word_activity_log as wal,
+      activity_log as al
+    where (
+      wal.word_id = w_row.id
+      and wal.activity_log_id = al.id
+      and al.owner_name in (
+        'WORD', 'LEXEME'
+      )
+    )
+    order by al.event_on desc limit 1
+    into al_id;
+    insert into word_last_activity_log (word_id, activity_log_id) values (w_row.id, al_id);
+  end loop;
+  raise info 'All done!';
+end $$;
+
+------------------------------------------------
 ------------------ muu migra -------------------
 ------------------------------------------------
 

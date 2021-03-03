@@ -1047,6 +1047,15 @@ create table word_activity_log
 );
 alter sequence word_activity_log_id_seq restart with 10000;
 
+create table word_last_activity_log
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  activity_log_id bigint references activity_log(id) on delete cascade not null,
+  unique(word_id)
+);
+alter sequence word_last_activity_log_id_seq restart with 10000;
+
 create table meaning_activity_log
 (
   id bigserial primary key,
@@ -1055,6 +1064,15 @@ create table meaning_activity_log
   unique(meaning_id, activity_log_id)
 );
 alter sequence meaning_activity_log_id_seq restart with 10000;
+
+create table meaning_last_activity_log
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  activity_log_id bigint references activity_log(id) on delete cascade not null,
+  unique(meaning_id)
+);
+alter sequence meaning_last_activity_log_id_seq restart with 10000;
 
 create table source_activity_log
 (
@@ -1252,15 +1270,22 @@ create index lexeme_activity_log_lexeme_id_idx on lexeme_activity_log(lexeme_id)
 create index lexeme_activity_log_log_id_idx on lexeme_activity_log(activity_log_id);
 create index word_activity_log_word_id_idx on word_activity_log(word_id);
 create index word_activity_log_log_id_idx on word_activity_log(activity_log_id);
+create index word_last_activity_log_word_id_idx on word_last_activity_log(word_id);
+create index word_last_activity_log_log_id_idx on word_last_activity_log(activity_log_id);
 create index meaning_activity_log_meaning_id_idx on meaning_activity_log(meaning_id);
 create index meaning_activity_log_log_id_idx on meaning_activity_log(activity_log_id);
+create index meaning_last_activity_log_meaning_id_idx on meaning_last_activity_log(meaning_id);
+create index meaning_last_activity_log_log_id_idx on meaning_last_activity_log(activity_log_id);
 create index source_activity_log_source_id_idx on source_activity_log(source_id);
 create index source_activity_log_log_id_idx on source_activity_log(activity_log_id);
 create index activity_log_event_on_idx on activity_log(event_on);
+create index activity_log_event_on_desc_idx on activity_log(event_on desc);
 create index activity_log_event_on_ms_idx on activity_log((date_part('epoch', event_on) * 1000));
+create index activity_log_event_on_desc_ms_idx on activity_log((date_part('epoch', event_on) * 1000) desc);
 create index activity_log_event_by_idx on activity_log(event_by);
 create index activity_log_event_by_lower_idx on activity_log(lower(event_by));
 create index activity_log_owner_idx on activity_log(owner_name, owner_id);
+create index activity_log_owner_name_idx on activity_log(owner_name);
 create index activity_funct_name_idx on activity_log(funct_name);
 create index activity_entity_name_idx on activity_log(entity_name);
 create index activity_entity_name_owner_name_event_on_idx on activity_log(entity_name, owner_name, (date_part('epoch', event_on) * 1000));

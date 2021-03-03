@@ -2,7 +2,6 @@ package eki.ekilex.service;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -97,7 +96,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, wordNotes);
-		Timestamp latestLogEventTime = activityLogDbService.getLatestLogTimeForWord(wordId);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
 		for (WordLexeme lexeme : lexemes) {
@@ -116,7 +114,6 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
-		wordDetails.setLastChangedOn(latestLogEventTime);
 
 		return wordDetails;
 	}
