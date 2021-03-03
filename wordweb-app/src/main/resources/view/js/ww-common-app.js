@@ -159,17 +159,21 @@ $.fn.scrollableTable = function() {
 				var width = table.find('th:first span:first').outerWidth() + 24;
 
 				tableCloneParent.find('table').css({
-					width: table.width()
+					width: table.width(),
 				});
+
 				tableCloneParent.css({
 					width: width + 1,
 				});
-				tableCloneParent.find('tr:last td:first').css({
-					width: width
+
+				tableCloneParent.find('table:first > tbody > tr').children('td:first, th:first').css({
+					width: width,
 				});
+
 				overflowIndicatorLeft.css({
-					visibility : 'hidden',
+					visibility: 'hidden',
 				});
+
 			}
 			scroller.trigger('scroll');
 		}
