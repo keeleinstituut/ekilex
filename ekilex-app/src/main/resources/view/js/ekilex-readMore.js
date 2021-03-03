@@ -15,9 +15,11 @@ class ReadMore {
     this.main.find('div:first').children("*").show();
     this.main.find('div:first').children("*").find('.btn-custom').show();
 
+    const maxHeight = parseInt(this.main.css('max-height'));
+
     $(this.main.find('div:first').children("*").get().reverse()).each((index, e) => {
       const obj = $(e);
-      if (this.parent.parent().height() >= mainHeight){
+      if (this.parent.parent().height() >= mainHeight && mainHeight >= maxHeight){
         this.hidden = this.hidden + 1;
         obj.hide();
       }
@@ -25,7 +27,7 @@ class ReadMore {
 
     $(this.main.find('div:first').children("*").find('.btn-custom').get().reverse()).each((index, e) => {
       const obj = $(e);
-      if (this.parent.parent().height() >= mainHeight){
+      if (this.parent.parent().height() >= mainHeight && mainHeight >= maxHeight){
         this.hidden = this.hidden + 1;
         obj.hide();
       }
