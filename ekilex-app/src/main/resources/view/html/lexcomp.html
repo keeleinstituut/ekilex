@@ -411,7 +411,7 @@
     </th:block>
     <th:block th:unless="${#strings.isEmpty(details.word.lang)}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${viewUtil.getClassifierValue(details.word.lang, allLanguages)}" data-toggle="tooltip" title="Keel"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.lang, allLanguages)}" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Keel"></span>
         <div class="hover-actions">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
@@ -436,7 +436,7 @@
     </th:block>
     <th:block th:unless="${details.word.displayMorphCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="'[' + ${details.word.displayMorphCode} + ']'" data-toggle="tooltip" title="Vormikood"></span>
+        <span th:text="'[' + ${details.word.displayMorphCode} + ']'" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Vormikood"></span>
         <div class="hover-actions">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal" th:data-target="${'#editWordDisplayMorphDlg_' + wordId}" sec:authorize="#vars.details.word.crudGrant">
@@ -466,7 +466,7 @@
     </th:block>
     <th:block th:unless="${#strings.isEmpty(details.word.vocalForm)}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${details.word.vocalForm}" data-toggle="tooltip" title="Hääldus"></span>
+        <span th:text="${details.word.vocalForm}" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Hääldus"></span>
         <div class="hover-actions hover-actions-bottom-right">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
@@ -499,7 +499,7 @@
     </th:block>
     <th:block th:unless="${details.word.genderCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${viewUtil.getClassifierValue(details.word.genderCode, wordGenders)}" data-toggle="tooltip" title="Sugu"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.genderCode, wordGenders)}" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Sugu"></span>
         <div class="hover-actions hover-actions-bottom-right">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm"
@@ -532,7 +532,7 @@
       </button>
     </th:block>
     <th:block th:unless="${#lists.isEmpty(details.wordTypes)}">
-      <div th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" title="Keelendi tüüp" class="hover-actions-container hover-actions-container-outline">
+      <div th:each="classif,classifIter : ${details.wordTypes}" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Keelendi tüüp" class="hover-actions-container hover-actions-container-outline">
         <span th:replace="lexdialog :: edit_word_type_dlg"></span>
         <span th:text="${classif.code}"></span>
         <th:block th:unless="${classif.code == classif.value}">
@@ -579,7 +579,7 @@
     </th:block>
     <th:block th:unless="${details.word.aspectCode == null}">
       <div class="hover-actions-container hover-actions-container-outline">
-        <span th:text="${viewUtil.getClassifierValue(details.word.aspectCode, wordAspects)}" data-toggle="tooltip" title="Aspekt"></span>
+        <span th:text="${viewUtil.getClassifierValue(details.word.aspectCode, wordAspects)}" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Aspekt"></span>
         <div class="hover-actions">
           <div class="btn-group">
             <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal" th:data-target="${'#editWordAspectDlg_' + wordId}" sec:authorize="#vars.details.word.crudGrant">

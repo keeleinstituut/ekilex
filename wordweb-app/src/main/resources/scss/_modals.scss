@@ -307,6 +307,9 @@
       font-weight: 700;
       line-height: 120%;
       color: $gray-900;
+      span {
+        display: block;
+      }
       &[colspan="3"] {
         border: none;
         font-size: 18px;
