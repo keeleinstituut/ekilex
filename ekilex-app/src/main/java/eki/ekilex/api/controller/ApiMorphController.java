@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.Paradigm;
 import eki.ekilex.data.api.ParadigmWrapper;
-import eki.ekilex.service.MorphologyService;
+import eki.ekilex.service.api.MorphologyService;
 
 @ConditionalOnWebApplication
 @RestController

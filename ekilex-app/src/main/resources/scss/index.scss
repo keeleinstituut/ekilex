@@ -212,13 +212,13 @@ footer p {
     height: 17px !important;
   }
   .indicator {
-    margin-left: -11px;
+    margin-left: -7px;
     background: white;
-    width: 11px;
+    width: 7px;
     height: 25px;
     padding-top: 4px;
     z-index: 1;
-
+    position: relative;
 
     cursor: pointer;
     color:#687887;
@@ -240,7 +240,22 @@ footer p {
   }
   .sorter-more {
     max-height: 48px;
-    overflow: visible;
+    overflow: hidden;
+  }
+  .sorter-item {
+    position: relative;
+    padding-right: 10px;
+    margin-left: -2px;
+    &:after {
+      content: ' ';
+      display: block;
+      position: absolute;
+      width: 1px;
+      right: 5px;
+      top: 6px;
+      bottom: 3px;
+      background: #000;
+    }
   }
 }
 
@@ -268,4 +283,16 @@ footer p {
 
 .btn.btn-link sup {
   margin-left: -3px;
+}
+
+.relationSort {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  .badge-warning {display: none;}
+  li:hover {
+    .badge-warning {
+      display: inline-block;
+    }
+  }
 }

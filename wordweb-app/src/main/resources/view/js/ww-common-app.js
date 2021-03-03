@@ -156,18 +156,24 @@ $.fn.scrollableTable = function() {
 				overflowable = true;
 			}
 			if (fixColumn) {
+				var width = table.find('th:first span:first').outerWidth() + 24;
+
 				tableCloneParent.find('table').css({
-					width : table.width()
+					width: table.width(),
 				});
+
 				tableCloneParent.css({
-					width : table.find('tr:last td:first').outerWidth() + 1,
+					width: width + 1,
 				});
-				tableCloneParent.find('tr:last td:first').css({
-					width : table.find('tr:last td:first').width()
+
+				tableCloneParent.find('table:first > tbody > tr').children('td:first, th:first').css({
+					width: width,
 				});
+
 				overflowIndicatorLeft.css({
-					visibility : 'hidden',
+					visibility: 'hidden',
 				});
+
 			}
 			scroller.trigger('scroll');
 		}

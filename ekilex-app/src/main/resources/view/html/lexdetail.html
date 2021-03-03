@@ -20,6 +20,7 @@
                 <div class="sorter-more" data-plugin="readMore">
                   <div data-plugin="sorter" data-sorter:type="syn">
                     <span
+                          class="sorter-item"
                           style="display: inline-block;"
                           th:each="syn,synIter : ${synonymLangGroup.synonyms}"
                           th:with="isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
@@ -39,7 +40,6 @@
                           <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                         </button><span th:unless="${synWordIter.last}">,</span>
                       </span>
-                      <span class="mr-1" th:unless="${synIter.last}">|</span>
                     </span>
                   </div>
                 </div>
@@ -162,7 +162,7 @@
                           <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
                         </button><span th:unless="${synWordIter.last}">,</span>
                         <th:block th:if="${isMeaningWordSyn}">
-                          
+                          <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                           <div class="meaning_buttons">
                             <button type="button" class="btn badge badge-primary"
                                     title="Muuda vastet"

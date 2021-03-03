@@ -21,8 +21,9 @@
             <tr>
               <th class="m-1 p-1" style="width: 5%" th:text="#{tag.order}"></th>
               <th class="m-1 p-1" style="width: 50%" th:text="#{tag.name}"></th>
-              <th class="m-1 p-1 text-center" style="width: 20%" th:text="#{tag.set.automatically}"></th>
-              <th class="m-1 p-1 text-center" style="width: 20%" th:text="#{tag.remove.to.complete}"></th>
+              <th class="m-1 p-1 text-center" style="width: 15%" th:text="#{tag.set.automatically}"></th>
+              <th class="m-1 p-1 text-center" style="width: 15%" th:text="#{tag.remove.to.complete}"></th>
+              <th class="m-1 p-1 text-center" style="width: 10%" th:text="#{tag.used}"></th>
               <th class="m-1 p-1" style="width: 5%"></th>
             </tr>
             <th:block th:each="tag : ${tags}">
@@ -43,6 +44,11 @@
                         th:title="|#{tag.remove.to.complete} : ${tag.removeToComplete ? 'Jah' : 'Ei'}|">
                   </span>
                 </td>
+                <td class="m-1 p-1 text-center">
+                  <span class="text-secondary fa" th:classappend="${tag.used ? 'fa-check-square-o' : 'fa-square-o'}"
+                        th:title="|#{tag.used} : ${tag.used ? 'Jah' : 'Ei'}|">
+                  </span>
+                </td>
                 <td class="m-1 p-1">
                   <button type="button" class="btn badge badge-primary" title="Muuda" data-plugin="editTag"
                           th:data-tag-name="${tag.name}"
@@ -52,9 +58,10 @@
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
                   <button type="button"
-                          class="btn badge badge-warning delete-dataset-confirm"
                           data-plugin="tagDeleteConfirm"
-                          th:if="${!tag.used}"
+                          class="btn badge delete-dataset-confirm"
+                          th:classappend="${tag.used ? 'badge-danger' : 'badge-warning'}"
+                          th:data-tag-used="${tag.used}"
                           th:data-tag-name="${tag.name}">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>

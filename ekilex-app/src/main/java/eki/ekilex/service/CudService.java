@@ -103,9 +103,9 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
-	public void updateWordAspect(Long wordId, String typeCode) throws Exception {
+	public void updateWordAspect(Long wordId, String aspectCode) throws Exception {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordAspect", wordId, ActivityOwner.WORD);
-		cudDbService.updateWordAspect(wordId, typeCode);
+		cudDbService.updateWordAspect(wordId, aspectCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 

@@ -399,6 +399,7 @@ function loadFullLexemeDetails(lexemeId, lexemeLevels) {
 function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 	openWaitDlg();
 	let lexemeDetailsUrl = applicationUrl + 'lexemedetails/' + composition + '/' + lexemeId + '/' + lexemeLevels;
+	console.log(lexemeDetailsUrl);
 	$.get(lexemeDetailsUrl).done(function(data) {
 		let detailsDiv = $('#lexeme-details-' + lexemeId);
 		detailsDiv.html(data);

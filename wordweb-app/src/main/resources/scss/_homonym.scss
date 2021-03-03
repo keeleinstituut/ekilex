@@ -13,6 +13,10 @@
 
 .homonym-name{
   padding: 0 12px;
+  @media screen and (max-width: 768px) {
+    font-size: 16px;
+    padding-top:8px;
+  }
 }
 
 .homonym-nr {

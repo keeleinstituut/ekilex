@@ -15,16 +15,19 @@ class ReadMore {
     this.main.find('div:first').children("*").show();
     this.main.find('div:first').children("*").find('.btn-custom').show();
 
-    this.main.find('div:first').children("*").each((index, e) => {
+    const maxHeight = parseInt(this.main.css('max-height'));
+
+    $(this.main.find('div:first').children("*").get().reverse()).each((index, e) => {
       const obj = $(e);
-      if (Math.ceil(obj.position().top) >= mainHeight){
+      if (this.parent.parent().height() >= mainHeight && mainHeight >= maxHeight){
         this.hidden = this.hidden + 1;
         obj.hide();
       }
     });
-    this.main.find('div:first').children("*").find('.btn-custom').each((index, e) => {
+
+    $(this.main.find('div:first').children("*").find('.btn-custom').get().reverse()).each((index, e) => {
       const obj = $(e);
-      if (Math.ceil(obj.position().top) >= mainHeight){
+      if (this.parent.parent().height() >= mainHeight && mainHeight >= maxHeight){
         this.hidden = this.hidden + 1;
         obj.hide();
       }
@@ -50,10 +53,10 @@ class ReadMore {
   }
   bindEvents() {
     this.bindHandle();
-    $(window).on('resize', () => {
+    $(window).on('resize update:wordId', () => {
       clearTimeout(this.debounce);
-      this.debounce = setTimeout(function() {
-        // this.checkHeights();
+      this.debounce = setTimeout(() =>{
+        this.detectChange()
       }, this.debounceTime);
     });
   }
@@ -61,14 +64,18 @@ class ReadMore {
   detectChange() {
     if (this.status) {
       this.main.find('div:first').children("*").show();
-      this.handle.remove();
-      this.handle = false;
+      if (this.handle) {
+        this.handle.remove();
+        this.handle = false;
+      }
       this.main.css('max-height', '99999px');
       this.appendLabel();
       this.bindHandle();
     } else {
-      this.handle.remove();
-      this.handle = false;
+      if (this.handle) {
+        this.handle.remove();
+        this.handle = false;
+      }
       this.main.removeAttr('style');
       this.appendDots();
       this.bindHandle();
@@ -76,8 +83,10 @@ class ReadMore {
   }
 
   initialize() {
-    this.appendDots();
-    this.bindEvents();
+    setTimeout(() =>{
+      this.appendDots();
+      this.bindEvents();
+    }, 100);
   }
 }
 

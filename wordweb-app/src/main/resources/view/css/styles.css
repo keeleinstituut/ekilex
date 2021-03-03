@@ -16141,6 +16141,13 @@ body.hidden-scroll {
   padding: 0 12px;
 }
 
+@media screen and (max-width: 768px) {
+  .homonym-name {
+    font-size: 16px;
+    padding-top: 8px;
+  }
+}
+
 .homonym-nr {
   position: relative;
   top: -.1875rem;
@@ -18364,6 +18371,10 @@ body {
   color: #3f3f3f;
 }
 
+.wordmodal table th span {
+  display: block;
+}
+
 .wordmodal table th[colspan="3"] {
   border: none;
   font-size: 18px;
@@ -18999,11 +19010,11 @@ eki-form {
 }
 
 .morphology-paradigm table {
-  width: 100%;
+  min-width: 100%;
 }
 
 .morphology-paradigm table td {
-  width: 50%;
+  min-width: 50%;
 }
 
 .homonym-image {

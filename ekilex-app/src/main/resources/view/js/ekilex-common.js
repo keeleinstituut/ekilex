@@ -32,6 +32,7 @@ function doPostDelete(deleteUrl, callback) {
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
 			if (QueryParams.parseParams(deleteUrl).id) {
+				console.log($(`[id*="${QueryParams.parseParams(deleteUrl).id}"]:first, [data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`));
 				$(`[id*="${QueryParams.parseParams(deleteUrl).id}"]:first, [data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`).parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
 			} else {
 				callback();
