@@ -18,7 +18,7 @@ import eki.ekilex.data.api.FreqCorp;
 import eki.ekilex.data.api.FreqCorpId;
 import eki.ekilex.data.api.MorphFreq;
 import eki.ekilex.data.api.WordFreq;
-import eki.ekilex.service.CorpFrequencyService;
+import eki.ekilex.service.api.CorpFrequencyService;
 
 @ConditionalOnWebApplication
 @RestController

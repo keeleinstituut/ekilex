@@ -1,4 +1,4 @@
-package eki.ekilex.service;
+package eki.ekilex.service.api;
 
 import java.util.List;
 

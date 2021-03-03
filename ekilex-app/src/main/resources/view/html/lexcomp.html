@@ -850,8 +850,8 @@
         <i class="fa fa-external-link" aria-hidden="true"></i>
       </button>
     </div>
-    <div class="col pl-0">
-      <th:block th:each="sourceLink : ${lexeme.sourceLinks}" class="hidden-buttons">
+    <div class="col pl-0 hidden-buttons">
+      <th:block th:each="sourceLink : ${lexeme.sourceLinks}">
         <div th:replace="lexdialog :: edit_lexeme_source_link_dlg"></div>
         <span>
           [

@@ -16,6 +16,16 @@ public interface ApiConstant {
 
 	String WORD_URI = "/word";
 
+	String WORD_TYPE_URI = "/word_type";
+
+	String WORD_RELATION_URI = "/word_relation";
+
+	String WORD_NOTE_URI = "/word_note";
+
+	String OD_WORD_RECOMMENDATION = "/od_word_recommendation";
+
+	String LEXEME_URI = "/lexeme";
+
 	String MEANING_URI = "/meaning";
 
 	String SOURCE_URI = "/source";
