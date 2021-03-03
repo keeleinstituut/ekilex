@@ -15,16 +15,17 @@ class ReadMore {
     this.main.find('div:first').children("*").show();
     this.main.find('div:first').children("*").find('.btn-custom').show();
 
-    this.main.find('div:first').children("*").each((index, e) => {
+    $(this.main.find('div:first').children("*").get().reverse()).each((index, e) => {
       const obj = $(e);
-      if (Math.ceil(obj.position().top) >= mainHeight){
+      if (this.parent.parent().height() >= mainHeight){
         this.hidden = this.hidden + 1;
         obj.hide();
       }
     });
-    this.main.find('div:first').children("*").find('.btn-custom').each((index, e) => {
+
+    $(this.main.find('div:first').children("*").find('.btn-custom').get().reverse()).each((index, e) => {
       const obj = $(e);
-      if (Math.ceil(obj.position().top) >= mainHeight){
+      if (this.parent.parent().height() >= mainHeight){
         this.hidden = this.hidden + 1;
         obj.hide();
       }
@@ -80,8 +81,10 @@ class ReadMore {
   }
 
   initialize() {
-    this.appendDots();
-    this.bindEvents();
+    setTimeout(() =>{
+      this.appendDots();
+      this.bindEvents();
+    }, 100);
   }
 }
 
