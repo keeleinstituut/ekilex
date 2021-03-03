@@ -363,27 +363,6 @@
                         Sisu puudub...
                       </div>
                       
-                      <ul th:unless="${#lists.isEmpty(relationGroup.members)}" data-plugin="sorter">
-                        <li th:each="relation, itemIter : ${relationGroup.members}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                          <button type="button"
-                                  class="btn btn-link btn-text-wrap btn-xs"
-                                  th:data-id="${relation.wordId}"
-                                  data-plugin="contextmenu"
-                                  data-contextmenu:compare="Ava uues paneelis"
-                                  data-behaviour="replace"
-                                  name="details-btn">
-                            <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${relation.id}"
-                                  data-op-code="word_relation"
-                                  data-toggle="delete-confirm"
-                                  data-placement="left"
-                                  sec:authorize="#vars.details.word.crudGrant">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                        </li>
-                      </ul>
                       <table class="orderable" data-op-code="word_relation" th:unless="${#lists.isEmpty(relationGroup.members)}">
                           <tr th:each="relation, itemIter : ${relationGroup.members}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                             <td class="action-column">
