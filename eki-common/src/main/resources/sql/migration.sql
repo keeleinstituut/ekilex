@@ -531,7 +531,7 @@ begin
   end loop;
   -- words
   for w_row in 
-    (select * from word w order by w.id)
+    (select * from word w where exists (select l.id from lexeme l where l.word_id = w.id) order by w.id)
   loop
     select
        al.id
@@ -547,7 +547,9 @@ begin
     )
     order by al.event_on desc limit 1
     into al_id;
-    insert into word_last_activity_log (word_id, activity_log_id) values (w_row.id, al_id);
+    if al_id is not null then
+      insert into word_last_activity_log (word_id, activity_log_id) values (w_row.id, al_id);
+    end if;
   end loop;
   raise info 'All done!';
 end $$;
