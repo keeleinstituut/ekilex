@@ -314,7 +314,8 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 	public Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(
 			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, SearchResultMode resultMode) {
 
-		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
+		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_");
+		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Meaning m = MEANING.as("m");
 		Lexeme l1 = LEXEME.as("l");
@@ -324,9 +325,9 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 		Condition wherew;
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
-			wherew = DSL.or(DSL.lower(w1.VALUE).like(maskedSearchFilter), DSL.lower(w1.VALUE_AS_WORD).like(maskedSearchFilter));
+			wherew = DSL.or(DSL.lower(w1.VALUE).like(filterField), DSL.lower(w1.VALUE_AS_WORD).like(filterField));
 		} else {
-			wherew = DSL.or(DSL.lower(w1.VALUE).eq(maskedSearchFilter), DSL.lower(w1.VALUE_AS_WORD).eq(maskedSearchFilter));
+			wherew = DSL.or(DSL.lower(w1.VALUE).eq(filterField), DSL.lower(w1.VALUE_AS_WORD).eq(filterField));
 		}
 
 		Table<Record1<Long>> w = DSL

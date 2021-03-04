@@ -386,7 +386,8 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<eki.ekilex.data.Meaning> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, Long excludedMeaningId) {
 
-		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_").toLowerCase();
+		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_");
+		Field<String> filterField = DSL.lower(maskedSearchFilter);
 		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
 
 		Meaning m = MEANING.as("m");
@@ -395,9 +396,9 @@ public class LookupDbService extends AbstractDataDbService {
 
 		Condition whereFormValue;
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
-			whereFormValue = DSL.lower(w.VALUE).like(maskedSearchFilter);
+			whereFormValue = DSL.lower(w.VALUE).like(filterField);
 		} else {
-			whereFormValue = DSL.lower(w.VALUE).equal(maskedSearchFilter);
+			whereFormValue = DSL.lower(w.VALUE).equal(filterField);
 		}
 
 		Condition whereLexemeDataset = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
