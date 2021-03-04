@@ -14,7 +14,7 @@ create type type_term_meaning_word as (
   is_public boolean,
   dataset_codes varchar(10) array);
 create type type_word_rel_param as (name text, value numeric(5, 4));
-create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array);
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
 create type type_classifier as (name varchar(100), code varchar(100), value text);
 create type type_activity_log_diff as (
   op varchar(100),
@@ -1116,6 +1116,15 @@ create table feedback_log_comment
   created_on timestamp not null default statement_timestamp()
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
+
+create table terms_of_use
+(
+  id bigserial primary key,
+  version varchar(100),
+  value text not null,
+  is_active boolean default false not null
+);
+alter sequence terms_of_use_id_seq restart with 10000;
 
 create table temp_ds_import_pk_map
 (

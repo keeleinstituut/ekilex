@@ -17,6 +17,7 @@ import eki.common.constant.AuthorityItem;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
 import eki.common.constant.ReferenceOwner;
+import eki.common.exception.TermsNotAcceptedException;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.SourceLink;
@@ -109,6 +110,17 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 						&& AUTH_OPS_READ.contains(datasetPermission.getAuthOperation().name())
 						&& StringUtils.equals(datasetPermission.getDatasetCode(), DATASET_LIMITED));
 		return limitedAccessPermExists;
+	}
+
+	@Transactional
+	public boolean isActiveTermsAgreed(Authentication authentication) throws Exception {
+
+		EkiUser user = (EkiUser) authentication.getPrincipal();
+		boolean activeTermsAgreed = user.isActiveTermsAgreed();
+		if (!activeTermsAgreed) {
+			throw new TermsNotAcceptedException();
+		}
+		return true;
 	}
 
 	// source crud

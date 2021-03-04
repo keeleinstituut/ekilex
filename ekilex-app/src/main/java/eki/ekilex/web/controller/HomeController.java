@@ -164,4 +164,35 @@ public class HomeController extends AbstractPublicPageController {
 		return REDIRECT_PREF + HOME_URI;
 	}
 
+	@GetMapping(TERMS_PAGE_URI)
+	public String terms(Model model) {
+
+		EkiUser user = userContext.getUser();
+		boolean activeTermsAgreed = user.isActiveTermsAgreed();
+		if (activeTermsAgreed) {
+			return "redirect:" + HOME_URI;
+		}
+
+		String activeTerms = userService.getActiveTermsValue();
+		model.addAttribute("activeTerms", activeTerms);
+		return TERMS_PAGE;
+	}
+
+	@GetMapping(AGREE_TERMS_URI)
+	public String agreeTerms() {
+
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		userService.agreeActiveTerms(userId);
+		return "redirect:" + HOME_URI;
+	}
+
+	@GetMapping(REFUSE_TERMS_URI)
+	public String refuseTerms() {
+
+		EkiUser user = userContext.getUser();
+		userService.refuseTerms(user);
+		return "redirect:" + LOGOUT_URI;
+	}
+
 }

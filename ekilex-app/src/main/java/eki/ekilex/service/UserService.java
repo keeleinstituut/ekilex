@@ -218,13 +218,14 @@ public class UserService implements WebConstant, GlobalConstant {
 	}
 
 	@Transactional
-	public String createUser(String email, String name, String password, String termsVer) {
+	public String createUser(String email, String name, String password) {
 
 		email = email.toLowerCase();
 		String activationKey = generateUniqueKey();
 		String activationLink = ekilexAppUrl + REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/" + activationKey;
 		String encodedPassword = passwordEncoder.encode(password);
-		Long userId = userDbService.createUser(email, name, encodedPassword, activationKey, termsVer);
+		String activeTermsVersion = userDbService.getActiveTermsVersion();
+		Long userId = userDbService.createUser(email, name, encodedPassword, activationKey, activeTermsVersion);
 		userProfileDbService.createUserProfile(userId);
 		EkiUser user = userDbService.getUserByEmail(email);
 		emailService.sendUserActivationEmail(email, activationLink);
@@ -291,6 +292,23 @@ public class UserService implements WebConstant, GlobalConstant {
 
 	public boolean isValidPassword(String password, String password2) {
 		return StringUtils.length(password) >= MIN_PASSWORD_LENGTH && StringUtils.equals(password, password2);
+	}
+
+	@Transactional
+	public String getActiveTermsValue() {
+		return userDbService.getActiveTermsValue();
+	}
+
+	@Transactional
+	public void agreeActiveTerms(Long userId) {
+		userDbService.agreeActiveTerms(userId);
+		updateUserSecurityContext();
+	}
+
+	@Transactional
+	public void refuseTerms(EkiUser user) {
+		List<String> adminEmails = userDbService.getAdminEmails();
+		emailService.sendTermsRefuseEmail(user, adminEmails);
 	}
 
 	@Transactional

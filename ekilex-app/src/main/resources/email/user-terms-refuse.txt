@@ -1,0 +1,1 @@
+Ekilexi kasutaja "[(${userName})]", kelle e-post on "[(${userEmail})]" ei nõustunud kasutustingimustega.

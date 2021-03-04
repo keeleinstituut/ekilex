@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(_,~{::links})">
-  <th:block th:fragment="links">
-  </th:block>
+<th:block th:fragment="links">
+</th:block>
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
@@ -79,7 +79,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <th:block th:replace="terms :: terms_text"></th:block>
+          <div th:utext="${activeTerms}"></div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>

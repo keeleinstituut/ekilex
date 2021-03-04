@@ -17,6 +17,7 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record18;
 import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,11 +85,19 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(l2.ID)
 				.asField("lex_register_codes");
 
-		Table<Record3<Long, String[], String[]>> relmt = DSL
+		Field<String[]> lexPosCodes = DSL
+				.select(DSL.arrayAgg(lp.POS_CODE).orderBy(lp.ORDER_BY))
+				.from(lp)
+				.where(lp.LEXEME_ID.eq(l2.ID))
+				.groupBy(l2.ID)
+				.asField("lex_pos_codes");
+
+		Table<Record4<Long, String[], String[], String[]>> relmt = DSL
 				.select(
 						l2.MEANING_ID,
 						definitions,
-						lexRegisterCodes)
+						lexRegisterCodes,
+						lexPosCodes)
 				.from(l2)
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
@@ -97,7 +106,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.asTable("relmt");
 
 		Field<TypeWordRelMeaningRecord[]> relm = DSL
-				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions, relmt.lex_register_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions, relmt.lex_register_codes, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
 				.from(relmt)
 				.asField("relm");
 

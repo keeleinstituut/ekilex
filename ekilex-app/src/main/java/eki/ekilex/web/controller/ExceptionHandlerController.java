@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eki.common.data.AppData;
 import eki.common.exception.ApiException;
+import eki.common.exception.TermsNotAcceptedException;
 import eki.common.util.CodeGenerator;
 import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.ApiConstant;
@@ -44,6 +45,12 @@ public class ExceptionHandlerController implements WebConstant, ApiConstant {
 		if (exception instanceof HttpSessionRequiredException) {
 			modelAndView = new ModelAndView();
 			modelAndView.setViewName("redirect:/");
+			return modelAndView;
+		}
+
+		if (exception instanceof TermsNotAcceptedException) {
+			modelAndView = new ModelAndView();
+			modelAndView.setViewName("redirect:" + TERMS_PAGE_URI);
 			return modelAndView;
 		}
 

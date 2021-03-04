@@ -89,6 +89,7 @@ import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.TempPNames;
+import eki.ekilex.data.db.tables.TermsOfUse;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -167,7 +168,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1093749407;
+    private static final long serialVersionUID = -1860200816;
 
     /**
      * The reference instance of <code>public</code>
@@ -600,6 +601,11 @@ public class Public extends SchemaImpl {
     public final TempPNames TEMP_P_NAMES = TempPNames.TEMP_P_NAMES;
 
     /**
+     * The table <code>public.terms_of_use</code>.
+     */
+    public final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
+
+    /**
      * The table <code>public.usage_type</code>.
      */
     public final UsageType USAGE_TYPE = UsageType.USAGE_TYPE;
@@ -913,6 +919,7 @@ public class Public extends SchemaImpl {
             Sequences.TAG_ORDER_BY_SEQ,
             Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
             Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
+            Sequences.TERMS_OF_USE_ID_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
             Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
@@ -1028,6 +1035,7 @@ public class Public extends SchemaImpl {
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
             TempPNames.TEMP_P_NAMES,
+            TermsOfUse.TERMS_OF_USE,
             UsageType.USAGE_TYPE,
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,

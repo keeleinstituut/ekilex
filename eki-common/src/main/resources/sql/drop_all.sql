@@ -41,6 +41,7 @@ drop type if exists type_word_rel_meaning;
 drop type if exists type_classifier;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
+drop table if exists terms_of_use;
 drop table if exists feedback_log_comment;
 drop table if exists feedback_log;
 drop table if exists game_nonword;

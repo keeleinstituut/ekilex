@@ -89,6 +89,7 @@ import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
 import eki.ekilex.data.db.tables.TempPNames;
+import eki.ekilex.data.db.tables.TermsOfUse;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -197,6 +198,7 @@ import eki.ekilex.data.db.tables.records.TagRecord;
 import eki.ekilex.data.db.tables.records.TempDsImportPkMapRecord;
 import eki.ekilex.data.db.tables.records.TempDsImportQueueRecord;
 import eki.ekilex.data.db.tables.records.TempPNamesRecord;
+import eki.ekilex.data.db.tables.records.TermsOfUseRecord;
 import eki.ekilex.data.db.tables.records.UsageTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.UsageTypeRecord;
 import eki.ekilex.data.db.tables.records.ValueStateLabelRecord;
@@ -304,6 +306,7 @@ public class Keys {
     public static final Identity<TagRecord, Long> IDENTITY_TAG = Identities0.IDENTITY_TAG;
     public static final Identity<TempDsImportPkMapRecord, Long> IDENTITY_TEMP_DS_IMPORT_PK_MAP = Identities0.IDENTITY_TEMP_DS_IMPORT_PK_MAP;
     public static final Identity<TempDsImportQueueRecord, Long> IDENTITY_TEMP_DS_IMPORT_QUEUE = Identities0.IDENTITY_TEMP_DS_IMPORT_QUEUE;
+    public static final Identity<TermsOfUseRecord, Long> IDENTITY_TERMS_OF_USE = Identities0.IDENTITY_TERMS_OF_USE;
     public static final Identity<UsageTypeRecord, Long> IDENTITY_USAGE_TYPE = Identities0.IDENTITY_USAGE_TYPE;
     public static final Identity<ValueStateRecord, Long> IDENTITY_VALUE_STATE = Identities0.IDENTITY_VALUE_STATE;
     public static final Identity<WordRecord, Long> IDENTITY_WORD = Identities0.IDENTITY_WORD;
@@ -439,6 +442,7 @@ public class Keys {
     public static final UniqueKey<TempDsImportPkMapRecord> TEMP_DS_IMPORT_PK_MAP_PKEY = UniqueKeys0.TEMP_DS_IMPORT_PK_MAP_PKEY;
     public static final UniqueKey<TempDsImportQueueRecord> TEMP_DS_IMPORT_QUEUE_PKEY = UniqueKeys0.TEMP_DS_IMPORT_QUEUE_PKEY;
     public static final UniqueKey<TempPNamesRecord> TEMP_P_NAMES_PKEY = UniqueKeys0.TEMP_P_NAMES_PKEY;
+    public static final UniqueKey<TermsOfUseRecord> TERMS_OF_USE_PKEY = UniqueKeys0.TERMS_OF_USE_PKEY;
     public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = UniqueKeys0.USAGE_TYPE_PKEY;
     public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<ValueStateRecord> VALUE_STATE_PKEY = UniqueKeys0.VALUE_STATE_PKEY;
@@ -719,6 +723,7 @@ public class Keys {
         public static Identity<TagRecord, Long> IDENTITY_TAG = Internal.createIdentity(Tag.TAG, Tag.TAG.ORDER_BY);
         public static Identity<TempDsImportPkMapRecord, Long> IDENTITY_TEMP_DS_IMPORT_PK_MAP = Internal.createIdentity(TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP, TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP.ID);
         public static Identity<TempDsImportQueueRecord, Long> IDENTITY_TEMP_DS_IMPORT_QUEUE = Internal.createIdentity(TempDsImportQueue.TEMP_DS_IMPORT_QUEUE, TempDsImportQueue.TEMP_DS_IMPORT_QUEUE.ID);
+        public static Identity<TermsOfUseRecord, Long> IDENTITY_TERMS_OF_USE = Internal.createIdentity(TermsOfUse.TERMS_OF_USE, TermsOfUse.TERMS_OF_USE.ID);
         public static Identity<UsageTypeRecord, Long> IDENTITY_USAGE_TYPE = Internal.createIdentity(UsageType.USAGE_TYPE, UsageType.USAGE_TYPE.ORDER_BY);
         public static Identity<ValueStateRecord, Long> IDENTITY_VALUE_STATE = Internal.createIdentity(ValueState.VALUE_STATE, ValueState.VALUE_STATE.ORDER_BY);
         public static Identity<WordRecord, Long> IDENTITY_WORD = Internal.createIdentity(Word.WORD, Word.WORD.ID);
@@ -852,6 +857,7 @@ public class Keys {
         public static final UniqueKey<TempDsImportPkMapRecord> TEMP_DS_IMPORT_PK_MAP_PKEY = Internal.createUniqueKey(TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP, "temp_ds_import_pk_map_pkey", new TableField[] { TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP.ID }, true);
         public static final UniqueKey<TempDsImportQueueRecord> TEMP_DS_IMPORT_QUEUE_PKEY = Internal.createUniqueKey(TempDsImportQueue.TEMP_DS_IMPORT_QUEUE, "temp_ds_import_queue_pkey", new TableField[] { TempDsImportQueue.TEMP_DS_IMPORT_QUEUE.ID }, true);
         public static final UniqueKey<TempPNamesRecord> TEMP_P_NAMES_PKEY = Internal.createUniqueKey(TempPNames.TEMP_P_NAMES, "temp_p_names_pkey", new TableField[] { TempPNames.TEMP_P_NAMES.NAME }, true);
+        public static final UniqueKey<TermsOfUseRecord> TERMS_OF_USE_PKEY = Internal.createUniqueKey(TermsOfUse.TERMS_OF_USE, "terms_of_use_pkey", new TableField[] { TermsOfUse.TERMS_OF_USE.ID }, true);
         public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = Internal.createUniqueKey(UsageType.USAGE_TYPE, "usage_type_pkey", new TableField[] { UsageType.USAGE_TYPE.CODE }, true);
         public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label_code_lang_type_key", new TableField[] { UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE }, true);
         public static final UniqueKey<ValueStateRecord> VALUE_STATE_PKEY = Internal.createUniqueKey(ValueState.VALUE_STATE, "value_state_pkey", new TableField[] { ValueState.VALUE_STATE.CODE }, true);

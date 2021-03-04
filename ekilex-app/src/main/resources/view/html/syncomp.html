@@ -91,6 +91,11 @@
             </span>
             <span class="small">Tähenduse id: </span>
             <span class="small" th:text="${meaning.meaningId}"></span>
+            <span class="pr-2 small" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
+              <span th:each="posCode : ${meaning.lexPosCodes}">
+                <span class="font-italic" th:text="${posCode}"></span>
+              </span>
+            </span>
           </div>
           <div class="d-flex flex-row" th:each="definition : ${meaning.definitions}">
             <span class="small" th:text="${definition}"></span>

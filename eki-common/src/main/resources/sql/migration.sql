@@ -585,3 +585,15 @@ where value_prese is null
 select setval('meaning_relation_order_by_seq', (select max(order_by) + 1 from meaning_relation));
   
 alter table dataset add column contact text;
+
+create table terms_of_use
+(
+  id bigserial primary key,
+  version varchar(100),
+  value text not null,
+  is_active boolean default false not null
+);
+alter sequence terms_of_use_id_seq restart with 10000;
+
+drop type if exists type_word_rel_meaning;
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
