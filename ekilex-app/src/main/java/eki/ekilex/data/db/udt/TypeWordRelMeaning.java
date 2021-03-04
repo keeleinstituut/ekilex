@@ -20,7 +20,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelMeaning extends UDTImpl<TypeWordRelMeaningRecord> {
 
-    private static final long serialVersionUID = -2069900828;
+    private static final long serialVersionUID = -876947444;
 
     /**
      * The reference instance of <code>public.type_word_rel_meaning</code>
@@ -49,6 +49,11 @@ public class TypeWordRelMeaning extends UDTImpl<TypeWordRelMeaningRecord> {
      * The attribute <code>public.type_word_rel_meaning.lex_register_codes</code>.
      */
     public static final UDTField<TypeWordRelMeaningRecord, String[]> LEX_REGISTER_CODES = createField(DSL.name("lex_register_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
+
+    /**
+     * The attribute <code>public.type_word_rel_meaning.lex_pos_codes</code>.
+     */
+    public static final UDTField<TypeWordRelMeaningRecord, String[]> LEX_POS_CODES = createField(DSL.name("lex_pos_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
 
     /**
      * No further instances allowed

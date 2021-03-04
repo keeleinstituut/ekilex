@@ -594,3 +594,6 @@ create table terms_of_use
   is_active boolean default false not null
 );
 alter sequence terms_of_use_id_seq restart with 10000;
+
+drop type if exists type_word_rel_meaning;
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
