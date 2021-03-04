@@ -6,7 +6,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,9 +27,6 @@ public class RegisterController extends AbstractPublicPageController {
 
 	private static final String BOT_PROTECTION_CODE = "botProtectionCode";
 
-	@Value("${terms.version}")
-	private String termsVer;
-
 	@Autowired
 	private EmailService emailService;
 
@@ -40,6 +36,8 @@ public class RegisterController extends AbstractPublicPageController {
 		if (isAuthenticatedUser) {
 			return "redirect:" + HOME_URI;
 		}
+		String activeTerms = userService.getActiveTermsValue();
+		model.addAttribute("activeTerms", activeTerms);
 		setBotProtectionCode(model, request);
 		return REGISTER_PAGE;
 	}
@@ -60,6 +58,9 @@ public class RegisterController extends AbstractPublicPageController {
 		if (isBotProtectionTriggered) {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
+
+		String activeTerms = userService.getActiveTermsValue();
+		model.addAttribute("activeTerms", activeTerms);
 
 		if (!agreement) {
 			model.addAttribute("userName", name);
@@ -83,7 +84,7 @@ public class RegisterController extends AbstractPublicPageController {
 		}
 
 		if (userService.isValidUser(email)) {
-			String activationLink = userService.createUser(email, name, password, termsVer);
+			String activationLink = userService.createUser(email, name, password);
 			if (emailService.isEnabled()) {
 				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile: " + email);
 			} else {
@@ -109,6 +110,8 @@ public class RegisterController extends AbstractPublicPageController {
 	public String activate(@PathVariable(name = "activationKey") String activationKey, Model model, RedirectAttributes attributes) {
 		EkiUser ekiUser = userService.activateUser(activationKey);
 		if (ekiUser == null) {
+			String activeTerms = userService.getActiveTermsValue();
+			model.addAttribute("activeTerms", activeTerms);
 			model.addAttribute("error_message", "Tundmatu aktiveerimise võti");
 			return REGISTER_PAGE;
 		} else {

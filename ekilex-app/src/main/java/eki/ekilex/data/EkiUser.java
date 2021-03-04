@@ -37,6 +37,8 @@ public class EkiUser implements Principal, Serializable {
 
 	private Boolean enabled;
 
+	private boolean activeTermsAgreed;
+
 	private List<DatasetPermission> datasetPermissions;
 
 	private boolean datasetPermissionsExist;
@@ -135,6 +137,14 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public boolean isActiveTermsAgreed() {
+		return activeTermsAgreed;
+	}
+
+	public void setActiveTermsAgreed(boolean activeTermsAgreed) {
+		this.activeTermsAgreed = activeTermsAgreed;
 	}
 
 	public List<DatasetPermission> getDatasetPermissions() {

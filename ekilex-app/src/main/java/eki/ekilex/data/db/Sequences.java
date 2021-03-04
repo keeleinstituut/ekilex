@@ -430,6 +430,11 @@ public class Sequences {
     public static final Sequence<Long> TEMP_DS_IMPORT_QUEUE_ID_SEQ = Internal.createSequence("temp_ds_import_queue_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.terms_of_use_id_seq</code>
+     */
+    public static final Sequence<Long> TERMS_OF_USE_ID_SEQ = Internal.createSequence("terms_of_use_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.usage_type_order_by_seq</code>
      */
     public static final Sequence<Long> USAGE_TYPE_ORDER_BY_SEQ = Internal.createSequence("usage_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

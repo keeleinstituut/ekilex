@@ -47,6 +47,9 @@ public class EmailService {
 	private static final String USER_PERMISSIONS_SUBJECT = "Ekilexi kasutaja õiguste nimekiri";
 	private static final String USER_PERMISSIONS_TEMPLATE = "user-permissions";
 
+	private static final String USER_TERMS_REFUSE_SUBJECT = "Ekilexi kasutaja ei nõustunud kasutustingimustega";
+	private static final String USER_TERMS_REFUSE_TEMPLATE = "user-terms-refuse";
+
 	@Value("${email.from.address}")
 	private String fromAddress;
 
@@ -95,9 +98,9 @@ public class EmailService {
 		context.setVariable("datasets", joinedDatasets);
 		context.setVariable("comment", comment);
 		if (isAdditionalApplication) {
-			sendTextEmail(emails, Collections.emptyList(), ADDITIONAL_APPLICATION_SUBMIT_SUBJECT, ADDITIONAL_APPLICATION_SUBMIT_TEMPLATE, context);
+			sendTextEmail(emails, ADDITIONAL_APPLICATION_SUBMIT_SUBJECT, ADDITIONAL_APPLICATION_SUBMIT_TEMPLATE, context);
 		} else {
-			sendTextEmail(emails, Collections.emptyList(), APPLICATION_SUBMIT_SUBJECT, APPLICATION_SUBMIT_TEMPLATE, context);
+			sendTextEmail(emails, APPLICATION_SUBMIT_SUBJECT, APPLICATION_SUBMIT_TEMPLATE, context);
 		}
 	}
 
@@ -120,11 +123,19 @@ public class EmailService {
 		sendTextEmail(email, USER_PERMISSIONS_SUBJECT, USER_PERMISSIONS_TEMPLATE, context);
 	}
 
-	private void sendTextEmail(String to, String subject, String template, Context context) {
-		sendTextEmail(Collections.singletonList(to), Collections.emptyList(), subject, template, context);
+	public void sendTermsRefuseEmail(EkiUser user, List<String> emails) {
+
+		Context context = new Context(locale);
+		context.setVariable("userName", user.getName());
+		context.setVariable("userEmail", user.getEmail());
+		sendTextEmail(emails, USER_TERMS_REFUSE_SUBJECT, USER_TERMS_REFUSE_TEMPLATE, context);
 	}
 
-	private void sendTextEmail(List<String> toList, List<String> ccList, String subject, String template, Context context) {
+	private void sendTextEmail(String to, String subject, String template, Context context) {
+		sendTextEmail(Collections.singletonList(to), subject, template, context);
+	}
+
+	private void sendTextEmail(List<String> toList, String subject, String template, Context context) {
 
 		if (CollectionUtils.isEmpty(toList)) {
 			return;
@@ -136,9 +147,6 @@ public class EmailService {
 			helper.setSubject(subject);
 			helper.setFrom(fromAddress, fromName);
 			helper.setTo(toList.toArray(new String[0]));
-			if (CollectionUtils.isNotEmpty(ccList)) {
-				helper.setCc(ccList.toArray(new String[0]));
-			}
 
 			String textContent = textTemplateEngine.process(template, context);
 			helper.setText(textContent);

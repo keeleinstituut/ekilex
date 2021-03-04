@@ -1117,6 +1117,15 @@ create table feedback_log_comment
 );
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
+create table terms_of_use
+(
+  id bigserial primary key,
+  version varchar(100),
+  value text not null,
+  is_active boolean default false not null
+);
+alter sequence terms_of_use_id_seq restart with 10000;
+
 create table temp_ds_import_pk_map
 (
   id bigserial primary key,

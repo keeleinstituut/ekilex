@@ -40,7 +40,7 @@ import eki.ekilex.service.UserProfileService;
 import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated() && @permEval.isActiveTermsAgreed(authentication)")
 public abstract class AbstractAuthActionController implements WebConstant, SystemConstant, GlobalConstant {
 
 	@Autowired
