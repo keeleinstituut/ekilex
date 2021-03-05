@@ -38,7 +38,7 @@ create table eki_user
   name text not null,
   email text not null,
   password text not null,
-  terms_ver varchar(100) null references terms_of_use(version) on delete cascade,
+  terms_ver varchar(100) null references terms_of_use(version),
   activation_key varchar(60) null,
   recovery_key varchar(60) null,
   api_key varchar(100) null,

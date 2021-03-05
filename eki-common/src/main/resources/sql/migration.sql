@@ -612,11 +612,7 @@ EKI sõnastiku- ja terminibaasile Ekilex ning kirjeldama omapoolseid muudatusi.<
 <p>3. Annan loa, et EKI-l on õigus minu sõnakogu andmeid muuta või täiendada: ühendada sõnakogude vahel samakujulisi keelendeid,
 ühendada sõnakogude vahel samasisulisi mõisteid, parandada tekstis ilmseid näpuvigu.<br>');
 
-alter table eki_user
-  add constraint eki_user_terms_ver_fkey foreign key (terms_ver)
-    references terms_of_use(version)
-    on update no action
-    on delete cascade;
+alter table eki_user add constraint eki_user_terms_ver_fkey foreign key (terms_ver) references terms_of_use(version);
 
 drop type if exists type_word_rel_meaning;
 create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
