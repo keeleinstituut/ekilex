@@ -591,9 +591,28 @@ create table terms_of_use
   id bigserial primary key,
   version varchar(100),
   value text not null,
-  is_active boolean default false not null
+  is_active boolean default false not null,
+  unique(version)
 );
 alter sequence terms_of_use_id_seq restart with 10000;
+
+insert into terms_of_use (version, is_active, value)
+values ('1.0', true,
+'<p>Ekilexi kasutustingimused<br>
+
+<p>1. Sõnakogu looja loovutab sõnakogu loomisel loodud autoriõigusega kaitstavate teoste varalised õigused Eesti Keele Instituudile (EKI)
+selle eest eraldi tasu saamata. Õiguste osas, millised seaduse kohaselt ei ole loovutatavad (isiklikud õigused), annab sõnakogu looja
+EKI-le tähtajatu ja tagasivõtmatu ainulitsentsi kogu maailmas selle eest eraldi tasu saamata.<br>
+
+<p>2. Ekilexi sõnakogude tüüplitsentsiks on Creative Commons BY 4.0, mis tähendab, et materjali on lubatud töödelda ja esitada mistahes
+vajalikul moel, näiteks liitsõnaraamatuks, õppematerjaliks, äpiks, spelleri lähtematerjaliks jne. Kommertskasutust ei piirata,
+kuid ressursi kasutaja peab oma rakenduse juures säilitama viite sõnakogu autorile, Eesti Keele Instituudile ja
+EKI sõnastiku- ja terminibaasile Ekilex ning kirjeldama omapoolseid muudatusi.<br>
+
+<p>3. Annan loa, et EKI-l on õigus minu sõnakogu andmeid muuta või täiendada: ühendada sõnakogude vahel samakujulisi keelendeid,
+ühendada sõnakogude vahel samasisulisi mõisteid, parandada tekstis ilmseid näpuvigu.<br>');
+
+alter table eki_user add constraint eki_user_terms_ver_fkey foreign key (terms_ver) references terms_of_use(version);
 
 drop type if exists type_word_rel_meaning;
 create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
