@@ -591,12 +591,10 @@ create table terms_of_use
   id bigserial primary key,
   version varchar(100),
   value text not null,
-  is_active boolean default false not null
+  is_active boolean default false not null,
+  unique(version)
 );
 alter sequence terms_of_use_id_seq restart with 10000;
-
-drop type if exists type_word_rel_meaning;
-create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
 
 insert into terms_of_use (version, is_active, value)
 values ('1.0', true,
@@ -613,3 +611,12 @@ EKI sõnastiku- ja terminibaasile Ekilex ning kirjeldama omapoolseid muudatusi.<
 
 <p>3. Annan loa, et EKI-l on õigus minu sõnakogu andmeid muuta või täiendada: ühendada sõnakogude vahel samakujulisi keelendeid,
 ühendada sõnakogude vahel samasisulisi mõisteid, parandada tekstis ilmseid näpuvigu.<br>');
+
+alter table eki_user
+  add constraint eki_user_terms_ver_fkey foreign key (terms_ver)
+    references terms_of_use(version)
+    on update no action
+    on delete cascade;
+
+drop type if exists type_word_rel_meaning;
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
