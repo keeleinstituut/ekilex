@@ -173,8 +173,16 @@
                   </span>
                 </div>
               </th:block>
+              <th:block th:if="${not #lists.isEmpty(resultRow.meaningDomains)}">
+                <div class="row ml-0 mt-1">
+                  <small th:each="domain,itemIter : ${resultRow.meaningDomains}">
+                    <span th:text="${domain.code}" th:title="${domain.value}"></span>
+                    <span th:unless="${itemIter.last}" class="ml-n1">,&nbsp;</span>
+                  </small>
+                </div>
+              </th:block>
             </th:block>
-            <th:block th:if="${!resultRow.meaningWordsExist}">
+            <th:block th:unless="${resultRow.meaningWordsExist}">
               <div class="row">
                 <span class="stxt pl-1">tähendusel ei ole valitud keeles vasteid</span>
               </div>

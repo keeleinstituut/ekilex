@@ -138,12 +138,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 						lo.ORDER_BY.as("lex_order_by"))
 				.from(m
 						.innerJoin(wm).on(wm.ID.eq(m.field("word_id", Long.class)))
-						.innerJoin(lo).on(
-								lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
-										.and(wherelods))
+						.innerJoin(lo).on(lo.MEANING_ID.eq(m.field("meaning_id", Long.class)).and(wherelods))
 						.innerJoin(wo).on(wherewo)
 						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
 				.asTable("m");
+
+		Field<TypeClassifierRecord[]> mdf = getMeaningDomainsField(mm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array_agg(row ("
@@ -186,6 +186,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		return create
 				.select(
 						mm.field("meaning_id", Long.class),
+						mdf.as("meaning_domains"),
 						mw.as("meaning_words"))
 				.from(mm)
 				.groupBy(
@@ -321,6 +322,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wm.ID)
 				.asTable("wm");
 
+		Field<TypeClassifierRecord[]> mdf = getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
 						+ "wm.word_id,"
@@ -355,6 +358,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		return create
 				.select(
 						wmm.field("meaning_id", Long.class),
+						mdf.as("meaning_domains"),
 						mw.as("meaning_words"))
 				.from(wmm)
 				.orderBy(

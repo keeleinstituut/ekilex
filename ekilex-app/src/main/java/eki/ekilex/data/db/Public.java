@@ -88,7 +88,6 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
-import eki.ekilex.data.db.tables.TempPNames;
 import eki.ekilex.data.db.tables.TermsOfUse;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
@@ -168,7 +167,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1860200816;
+    private static final long serialVersionUID = -464947578;
 
     /**
      * The reference instance of <code>public</code>
@@ -594,11 +593,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.temp_ds_import_queue</code>.
      */
     public final TempDsImportQueue TEMP_DS_IMPORT_QUEUE = TempDsImportQueue.TEMP_DS_IMPORT_QUEUE;
-
-    /**
-     * The table <code>public.temp_p_names</code>.
-     */
-    public final TempPNames TEMP_P_NAMES = TempPNames.TEMP_P_NAMES;
 
     /**
      * The table <code>public.terms_of_use</code>.
@@ -1034,7 +1028,6 @@ public class Public extends SchemaImpl {
             Tag.TAG,
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
-            TempPNames.TEMP_P_NAMES,
             TermsOfUse.TERMS_OF_USE,
             UsageType.USAGE_TYPE,
             UsageTypeLabel.USAGE_TYPE_LABEL,

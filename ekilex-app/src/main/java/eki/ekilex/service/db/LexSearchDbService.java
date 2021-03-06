@@ -330,7 +330,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	//TODO add last log time
 	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");

@@ -2,12 +2,14 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
+import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
@@ -268,6 +270,30 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 								.and(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang))
 								.and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.asField();
+	}
+
+	protected Field<TypeClassifierRecord[]> getMeaningDomainsField(Field<Long> meaningIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.DOMAIN.name())), DOMAIN_LABEL.CODE, DOMAIN_LABEL.VALUE).toString();
+		Field<TypeClassifierRecord[]> claggf = DSL.field(
+				"array_agg("
+						+ clrowsql
+						+ "::type_classifier "
+						+ "order by " + TableName.MEANING_DOMAIN + ".order_by)",
+				TypeClassifierRecord[].class);
+
+		Field<TypeClassifierRecord[]> clf = DSL
+				.select(claggf)
+				.from(MEANING_DOMAIN, DOMAIN_LABEL)
+				.where(
+						MEANING_DOMAIN.MEANING_ID.eq(meaningIdField)
+								.and(DOMAIN_LABEL.ORIGIN.eq(MEANING_DOMAIN.DOMAIN_ORIGIN))
+								.and(DOMAIN_LABEL.CODE.eq(MEANING_DOMAIN.DOMAIN_CODE))
+								.and(DOMAIN_LABEL.LANG.eq(classifierLabelLang))
+								.and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.groupBy(meaningIdField)
+				.asField();
+		return clf;
 	}
 
 	protected Field<Timestamp> getMeaningLastActivityEventOnField(Field<Long> meaningIdField) {

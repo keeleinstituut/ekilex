@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TermsOfUse extends TableImpl<TermsOfUseRecord> {
 
-    private static final long serialVersionUID = 1344167835;
+    private static final long serialVersionUID = -1656769565;
 
     /**
      * The reference instance of <code>public.terms_of_use</code>
@@ -117,7 +117,7 @@ public class TermsOfUse extends TableImpl<TermsOfUseRecord> {
 
     @Override
     public List<UniqueKey<TermsOfUseRecord>> getKeys() {
-        return Arrays.<UniqueKey<TermsOfUseRecord>>asList(Keys.TERMS_OF_USE_PKEY);
+        return Arrays.<UniqueKey<TermsOfUseRecord>>asList(Keys.TERMS_OF_USE_PKEY, Keys.TERMS_OF_USE_VERSION_KEY);
     }
 
     @Override

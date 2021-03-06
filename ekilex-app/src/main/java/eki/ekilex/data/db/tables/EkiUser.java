@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = -41923200;
+    private static final long serialVersionUID = 1140051243;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -181,6 +181,15 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     @Override
     public List<UniqueKey<EkiUserRecord>> getKeys() {
         return Arrays.<UniqueKey<EkiUserRecord>>asList(Keys.EKI_USER_PKEY, Keys.EKI_USER_EMAIL_KEY);
+    }
+
+    @Override
+    public List<ForeignKey<EkiUserRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<EkiUserRecord, ?>>asList(Keys.EKI_USER__EKI_USER_TERMS_VER_FKEY);
+    }
+
+    public TermsOfUse termsOfUse() {
+        return new TermsOfUse(this, Keys.EKI_USER__EKI_USER_TERMS_VER_FKEY);
     }
 
     @Override

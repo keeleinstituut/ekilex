@@ -4,7 +4,7 @@ create type type_term_meaning_word as (
   word_value_prese text,
   homonym_nr integer,
   lang char(3),
-  word_type_codes varchar(100) array,
+  word_type_codes varchar(100) array,  
   prefixoid boolean,
   suffixoid boolean,
   "foreign" boolean,
@@ -13,9 +13,18 @@ create type type_term_meaning_word as (
   least_preferred boolean,
   is_public boolean,
   dataset_codes varchar(10) array);
-create type type_word_rel_param as (name text, value numeric(5, 4));
-create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
-create type type_classifier as (name varchar(100), code varchar(100), value text);
+create type type_word_rel_param as (
+  name text,
+  value numeric(5, 4));
+create type type_word_rel_meaning as (
+  meaning_id bigint,
+  definitions text array,
+  lex_register_codes varchar(100) array,
+  lex_pos_codes varchar(100) array);
+create type type_classifier as (
+  name varchar(100),
+  code varchar(100),
+  value text);
 create type type_activity_log_diff as (
   op varchar(100),
   path text,
