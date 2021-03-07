@@ -124,6 +124,19 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		symbolSimplificationMap.put('ß', "ss");
 		symbolSimplificationMap.put('Ə', Character.toString('Ä'));
 		symbolSimplificationMap.put('ə', Character.toString('ä'));
+		symbolSimplificationMap.put('Æ', "AE");
+		symbolSimplificationMap.put('æ', "ae");
+		symbolSimplificationMap.put('Œ', "OE");
+		symbolSimplificationMap.put('œ', "oe");
+		symbolSimplificationMap.put('Þ', "TH");
+		symbolSimplificationMap.put('þ', "th");
+		symbolSimplificationMap.put('Ð', "DH");
+		symbolSimplificationMap.put('ð', "dh");
+		symbolSimplificationMap.put('Ł', Character.toString('L'));
+		symbolSimplificationMap.put('ł', Character.toString('l'));
+		symbolSimplificationMap.put('ŋ', Character.toString('n'));
+		symbolSimplificationMap.put('Ø', Character.toString('O'));
+		symbolSimplificationMap.put('ø', Character.toString('o'));
 	}
 
 	public String removeEkiElementMarkup(String originalText) {
