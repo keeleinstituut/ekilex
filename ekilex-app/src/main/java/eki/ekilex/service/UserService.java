@@ -263,6 +263,14 @@ public class UserService implements WebConstant, GlobalConstant {
 	}
 
 	@Transactional
+	public void enableUserWithTestDatasetPerm(Long userId) {
+		userDbService.enableUser(userId, true);
+		Long permissionId = permissionDbService.createDatasetPermission(userId, DATASET_TEST, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
+		userProfileDbService.setRecentDatasetPermission(userId, permissionId);
+		updateUserSecurityContext();
+	}
+
+	@Transactional
 	public void enableLimitedUser(Long userId) {
 		userDbService.enableUser(userId, true);
 		permissionDbService.createDatasetPermission(userId, DATASET_LIMITED, AuthorityItem.DATASET, AuthorityOperation.CRUD, null);
