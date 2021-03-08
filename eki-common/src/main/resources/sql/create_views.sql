@@ -322,6 +322,7 @@ select w.word_id,
        w.display_morph_code,
        w.aspect_code,
        w.vocal_form,
+       w.last_activity_event_on,
        lc.lang_complexities,
        mw.meaning_words,
        wd.definitions,
@@ -344,6 +345,11 @@ from (select w.id as word_id,
              w.display_morph_code,
              w.aspect_code,
              w.vocal_form,
+             (select al.event_on
+              from word_last_activity_log wlal,
+                   activity_log al
+              where wlal.word_id = w.id
+              and   wlal.activity_log_id = al.id) last_activity_event_on,
              (select count(f.id) > 0
               from paradigm p,
                    form f
@@ -662,6 +668,7 @@ order by w.id,
 create view view_ww_meaning 
 as
 select m.id meaning_id,
+       m.last_activity_event_on,
        m_dom.domain_codes,
        m_img.image_files,
        m_media.media_files,
@@ -670,7 +677,12 @@ select m.id meaning_id,
        m_lcm.learner_comments,
        m_pnt.notes,
        d.definitions
-from (select m.id
+from (select m.id,
+            (select al.event_on
+             from meaning_last_activity_log mlal,
+                  activity_log al
+             where mlal.meaning_id = m.id
+             and   mlal.activity_log_id = al.id) last_activity_event_on
       from meaning m
       where exists (select l.id
                     from lexeme as l,

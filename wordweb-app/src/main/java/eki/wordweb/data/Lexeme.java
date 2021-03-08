@@ -1,5 +1,6 @@
 package eki.wordweb.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	private Long lexemeId;
 
 	private Long meaningId;
+
+	private Timestamp meaningLastActivityEventOn;
 
 	private String datasetCode;
 
@@ -153,6 +156,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public Timestamp getMeaningLastActivityEventOn() {
+		return meaningLastActivityEventOn;
+	}
+
+	public void setMeaningLastActivityEventOn(Timestamp meaningLastActivityEventOn) {
+		this.meaningLastActivityEventOn = meaningLastActivityEventOn;
 	}
 
 	@Override

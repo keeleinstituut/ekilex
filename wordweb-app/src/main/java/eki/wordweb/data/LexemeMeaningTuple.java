@@ -1,5 +1,6 @@
 package eki.wordweb.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
@@ -11,6 +12,8 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 	private Long lexemeId;
 
 	private Long meaningId;
+
+	private Timestamp meaningLastActivityEventOn;
 
 	private List<TypeDomain> domainCodes;
 
@@ -48,6 +51,14 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public Timestamp getMeaningLastActivityEventOn() {
+		return meaningLastActivityEventOn;
+	}
+
+	public void setMeaningLastActivityEventOn(Timestamp meaningLastActivityEventOn) {
+		this.meaningLastActivityEventOn = meaningLastActivityEventOn;
 	}
 
 	public List<TypeDomain> getDomainCodes() {

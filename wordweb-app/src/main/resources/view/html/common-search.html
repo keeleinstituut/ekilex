@@ -104,6 +104,10 @@
       <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
         <span class="tag my-1" th:text="${summarisedPos.value}"></span>
       </th:block>
+      <div class="ml-2 float-right">
+        <i class="fa fa-calendar"></i>
+        <span th:text="${#dates.format(wordData.word.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
+      </div>
     </div>
   </th:block>
   <th:block th:fragment="no-lexemes-exist">

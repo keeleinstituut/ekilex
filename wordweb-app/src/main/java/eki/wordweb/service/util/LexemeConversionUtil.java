@@ -347,6 +347,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		applySourceLinks(filteredImageFiles, meaningFreeformSourceLinks);
 		List<TypeMediaFile> mediaFiles = tuple.getMediaFiles();
 		List<TypeMediaFile> filteredMediaFiles = filter(mediaFiles, lexComplexity);
+
+		lexeme.setMeaningLastActivityEventOn(tuple.getMeaningLastActivityEventOn());
 		lexeme.setMeaningNotes(notes);
 		lexeme.setMeaningNotesByLang(notesByLangOrdered);
 		lexeme.setImageFiles(filteredImageFiles);
