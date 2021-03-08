@@ -434,10 +434,15 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 	private void setValueStateFlags(Lexeme lexeme, String wordLang) {
 
+		String valueStateCode = lexeme.getValueStateCode();
+		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
 		DatasetType datasetType = lexeme.getDatasetType();
+
+		if (StringUtils.equals(valueStateCode, VALUE_STATE_INCORRECT) && CollectionUtils.isNotEmpty(meaningWords)) {
+			lexeme.setCorrectMeaningWord(meaningWords.get(0));
+		}
+
 		if (DatasetType.TERM.equals(datasetType)) {
-			List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
-			String valueStateCode = lexeme.getValueStateCode();
 			if (StringUtils.equals(valueStateCode, VALUE_STATE_LEAST_PREFERRED)) {
 				TypeMeaningWord preferredTermMeaningWord = meaningWords.stream()
 						.filter(meaningWord -> StringUtils.equals(VALUE_STATE_MOST_PREFERRED, meaningWord.getMwLexValueStateCode()) && StringUtils.equals(wordLang, meaningWord.getLang()))

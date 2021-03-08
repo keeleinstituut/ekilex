@@ -128,15 +128,29 @@
             isLimTerm = ${viewUtil.isLimTermData(lexeme)}">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-4 pl-3': ''">
       <h6 class="font-weight-bold" th:if="${isProTerm}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
+      <th:block th:if="${lexeme.correctMeaningWord != null}">
+        <div>
+          <span th:text="#{label.word.incorrect}"></span>
+          <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, lexeme.correctMeaningWord.word, lexeme.correctMeaningWord.homonymNr)}}" class="synonym">
+            <span th:utext="${viewUtil.getWordValueMarkup(lexeme.correctMeaningWord)}">tee</span>
+          </a>
+        </div>
+        <div th:replace=":: lexeme-notes"></div>
+      </th:block>
       <th:block th:if="${isAnyTerm && (lexeme.preferredTermMeaningWord != null)}">
+        <div class="mb-3">
+          <span>ID:</span>
+          <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
+        </div>
         <div>
           <span th:utext="#{|label.term.suggest|(${viewUtil.getWordValueMarkup(wordData.word)})}"></span>
           <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, lexeme.preferredTermMeaningWord.word, lexeme.preferredTermMeaningWord.homonymNr)}}" class="synonym">
             <span th:utext="${viewUtil.getWordValueMarkup(lexeme.preferredTermMeaningWord)}">tee</span>
           </a>
         </div>
+        <div th:replace=":: lexeme-notes"></div>
       </th:block>
-      <th:block th:if="${isLex || (isAnyTerm && (lexeme.preferredTermMeaningWord == null))}">
+      <th:block th:if="${lexeme.correctMeaningWord == null && (isLex || (isAnyTerm && (lexeme.preferredTermMeaningWord == null)))}">
         <div class="d-flex flex-row">
           <th:block th:if="${isLex && wordData.multipleLexLexemesExist}">
             <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
@@ -753,5 +767,18 @@
 		$('.corp-panel [data-toggle="tooltip"]').tooltip();
 	</script>
   </section>
+  <div class="row" th:if="${not #maps.isEmpty(lexeme.lexemeNotesByLang)}" th:fragment="lexeme-notes">
+    <div class="col-6">
+      <b th:text="#{label.public.note}">Hea teada</b>
+    </div>
+    <div class="col-12">
+      <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
+        <span class="lang-code lang-code-sm mr-2 align-self-start"
+              th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
+              th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+        <div><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value}"></p></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -20,6 +20,8 @@ public interface GlobalConstant {
 
 	String VALUE_STATE_LEAST_PREFERRED = "väldi";
 
+	String VALUE_STATE_INCORRECT = "vigane";
+
 	String DEFINITION_TYPE_UNDEFINED = "määramata";
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();

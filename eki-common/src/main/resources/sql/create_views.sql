@@ -439,7 +439,8 @@ from (select w.id as word_id,
                          where l1.is_public = true
                          and   l1ds.is_public = true
                          and   l2.is_public = true
-                         and   l2ds.is_public = true) mw
+                         and   l2ds.is_public = true
+                         and   coalesce (l2.value_state_code, 'anything') != 'vigane') mw
                    group by mw.word_id) mw
                on mw.word_id = w.word_id
   inner join (select lc.word_id,
@@ -986,7 +987,8 @@ from lexeme l
                          where l1.is_public = true
                          and   l1ds.is_public = true
                          and   l2.is_public = true
-                         and   l2ds.is_public = true) mw
+                         and   l2ds.is_public = true
+                         and   coalesce (l2.value_state_code, 'anything') != 'vigane') mw
                    group by mw.lexeme_id) mw
                on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
