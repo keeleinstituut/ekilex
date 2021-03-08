@@ -24,6 +24,8 @@ public interface WebConstant {
 
 	String REAPPLY_URI = "/reapply";
 
+	String APPLY_READ = "/apply_read";
+
 	String APPLY_LIMITED_URI = "/apply_limited";
 
 	String PERMISSIONS_PAGE = "permissions";

@@ -10,6 +10,8 @@ public interface GlobalConstant {
 
 	String DATASET_XXX = "xxx";
 
+	String DATASET_TEST = "kce";
+
 	boolean PUBLICITY_PUBLIC = true;
 
 	boolean PUBLICITY_PRIVATE = false;
