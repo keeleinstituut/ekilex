@@ -243,6 +243,10 @@
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
                         <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}">
+                          <div class="text-secondary ml-1">
+                            <span th:if="${paradigm.inflectionType != null}" th:utext="${paradigm.inflectionType}"></span>
+                            <span th:if="${paradigm.wordClass}" th:text="${paradigm.wordClass}"></span>
+                          </div>
                           <div th:if="${paradigm.comment != null}">
                             <span th:utext="${paradigm.comment}"></span>
                           </div>
@@ -251,10 +255,18 @@
                               <table>
                                 <tr th:each="form : ${paradigm.forms}">
                                   <td>
-                                    <span th:unless="${#strings.isEmpty(form.displayForm)}" th:text="${form.displayForm}" th:title="${form.formFrequency}"></span>
+                                    <span th:unless="${#strings.isEmpty(form.displayForm)}">
+                                      <span th:unless="${form.displayMorphCode}">~</span>
+                                      <span th:text="${form.displayForm}" th:title="${form.formFrequency}"></span>
+                                    </span>
                                   </td>
                                   <td class="pl-2">
-                                    <span th:if="${form.displayMorphCode}" th:text="${form.morphCode + ' - ' + form.morphValue}" th:title="${form.morphFrequency}" class="text-secondary" style="white-space:nowrap; font-size:80%;"></span>
+                                    <span
+                                        th:if="${form.displayMorphCode}"
+                                        th:text="${form.morphCode + ' - ' + form.morphValue}"
+                                        th:title="${form.morphFrequency}"
+                                        class="text-secondary"
+                                        style="white-space:nowrap; font-size:80%;"></span>
                                   </td>
                                 </tr>
                                 <tr>

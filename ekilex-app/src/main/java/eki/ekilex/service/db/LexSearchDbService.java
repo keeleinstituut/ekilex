@@ -192,7 +192,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.select(
 						p.ID.as("paradigm_id"),
 						p.COMMENT.as("paradigm_comment"),
+						p.INFLECTION_TYPE,
 						p.INFLECTION_TYPE_NR,
+						p.WORD_CLASS,
 						f.ID.as("form_id"),
 						f.VALUE.as("form_value"),
 						f.VALUE_PRESE.as("form_value_prese"),
