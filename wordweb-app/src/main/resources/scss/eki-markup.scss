@@ -53,4 +53,7 @@ eki-form {
 eki-shy::before {
   content: "­";
 }
-
+/* textual content not shown, but needed to keep markup dialog simple */
+eki-shy {
+  display: none;
+}
