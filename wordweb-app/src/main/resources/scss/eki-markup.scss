@@ -49,3 +49,8 @@ eki-link {
 eki-form { 
   color: #28b463;
 }
+
+eki-shy::before {
+  content: "­";
+}
+
