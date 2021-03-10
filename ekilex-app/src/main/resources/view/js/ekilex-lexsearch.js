@@ -72,6 +72,13 @@ function initializeSearch(type) {
 		loadDetails(wordId, behaviour, lastWordId);
 	});
 
+	$(document).on("click", "#refresh-open", function(e) {
+		e.preventDefault();
+		const lexemeId = $(this).data('id');
+		const lexemeLevels = $(this).data('lex-levels');
+		loadLexemeDetails(lexemeId, lexemeLevels, 'full');
+	});
+
 	$(document).on("click", ":button[name='lexeme-details-btn']", function() {
 		let lexemeId = $(this).data('id');
 		let lexemeLevels = $(this).data('lex-levels');
