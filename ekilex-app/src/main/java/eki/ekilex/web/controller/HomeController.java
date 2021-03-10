@@ -53,7 +53,11 @@ public class HomeController extends AbstractPublicPageController {
 	}
 
 	@GetMapping(HOME_URI)
-	public String home(Authentication authentication, Model model) {
+	public String home(Authentication authentication, Model model) throws Exception {
+		boolean isActiveTermsAgreed = permissionEvaluator.isActiveTermsAgreed(authentication);
+		if (!isActiveTermsAgreed) {
+			return "redirect:" + TERMS_PAGE_URI;
+		}
 		boolean isPrivatePageAccessPermitted = permissionEvaluator.isPrivatePageAccessPermitted(authentication);
 		if (isPrivatePageAccessPermitted) {
 			populateStatData(model);
@@ -97,6 +101,19 @@ public class HomeController extends AbstractPublicPageController {
 		userService.submitUserApplication(user, selectedDatasets, applicationComment);
 		populateUserApplicationData(user, model);
 		return APPLY_PAGE;
+	}
+
+	@PostMapping(APPLY_READ)
+	public String applyRead(Model model) {
+
+		EkiUser user = userContext.getUser();
+		if (Boolean.TRUE.equals(user.getEnabled())) {
+			populateStatData(model);
+			return HOME_PAGE;
+		}
+		Long userId = user.getId();
+		userService.enableUserWithTestDatasetPerm(userId);
+		return "redirect:" + HOME_PAGE;
 	}
 
 	@PostMapping(APPLY_LIMITED_URI)
@@ -162,6 +179,37 @@ public class HomeController extends AbstractPublicPageController {
 		userService.updateUserSecurityContext();
 
 		return REDIRECT_PREF + HOME_URI;
+	}
+
+	@GetMapping(TERMS_PAGE_URI)
+	public String terms(Model model) {
+
+		EkiUser user = userContext.getUser();
+		boolean activeTermsAgreed = user.isActiveTermsAgreed();
+		if (activeTermsAgreed) {
+			return "redirect:" + HOME_URI;
+		}
+
+		String activeTerms = userService.getActiveTermsValue();
+		model.addAttribute("activeTerms", activeTerms);
+		return TERMS_PAGE;
+	}
+
+	@PostMapping(AGREE_TERMS_URI)
+	public String agreeTerms() {
+
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
+		userService.agreeActiveTerms(userId);
+		return "redirect:" + HOME_URI;
+	}
+
+	@PostMapping(REFUSE_TERMS_URI)
+	public String refuseTerms() {
+
+		EkiUser user = userContext.getUser();
+		userService.refuseTerms(user);
+		return "redirect:" + LOGOUT_URI;
 	}
 
 }

@@ -77,7 +77,8 @@
               </div>
               <div class="ml-2">
                 <div class="date-modified" title="Viimati muudetud" data-toggle="tooltip" data-placement="bottom">
-                  <i class="fa fa-calendar"></i><span th:text="${#dates.format(details.lastChangedOn, 'dd.MM.yyyy')}"></span>
+                  <i class="fa fa-calendar"></i>
+                  <span th:text="${#dates.format(details.word.lastActivityEventOn, 'dd.MM.yyyy')}" class="ml-n1"></span>
                 </div><!--/date-modified-->
               </div><!--/ml-2-->
               <div class="ml-auto d-flex align-items-center flex-row">
@@ -242,6 +243,10 @@
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
                         <div th:each="paradigm,paradigmIter : ${details.paradigms}" th:if="${paradigm.formsExist}">
+                          <div class="text-secondary ml-1">
+                            <span th:if="${paradigm.inflectionType != null}" th:utext="${paradigm.inflectionType}"></span>
+                            <span th:if="${paradigm.wordClass}" th:text="${paradigm.wordClass}"></span>
+                          </div>
                           <div th:if="${paradigm.comment != null}">
                             <span th:utext="${paradigm.comment}"></span>
                           </div>
@@ -250,10 +255,18 @@
                               <table>
                                 <tr th:each="form : ${paradigm.forms}">
                                   <td>
-                                    <span th:unless="${#strings.isEmpty(form.displayForm)}" th:text="${form.displayForm}" th:title="${form.formFrequency}"></span>
+                                    <span th:unless="${#strings.isEmpty(form.displayForm)}">
+                                      <span th:unless="${form.displayMorphCode}">~</span>
+                                      <span th:text="${form.displayForm}" th:title="${form.formFrequency}"></span>
+                                    </span>
                                   </td>
                                   <td class="pl-2">
-                                    <span th:if="${form.displayMorphCode}" th:text="${form.morphCode + ' - ' + form.morphValue}" th:title="${form.morphFrequency}" class="text-secondary" style="white-space:nowrap; font-size:80%;"></span>
+                                    <span
+                                        th:if="${form.displayMorphCode}"
+                                        th:text="${form.morphCode + ' - ' + form.morphValue}"
+                                        th:title="${form.morphFrequency}"
+                                        class="text-secondary"
+                                        style="white-space:nowrap; font-size:80%;"></span>
                                   </td>
                                 </tr>
                                 <tr>

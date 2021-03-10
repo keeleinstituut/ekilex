@@ -24,6 +24,8 @@ public interface WebConstant {
 
 	String REAPPLY_URI = "/reapply";
 
+	String APPLY_READ = "/apply_read";
+
 	String APPLY_LIMITED_URI = "/apply_limited";
 
 	String PERMISSIONS_PAGE = "permissions";
@@ -129,6 +131,14 @@ public interface WebConstant {
 	String REGISTER_PAGE_URI = "/register";
 
 	String REGISTER_PAGE = "register";
+
+	String TERMS_PAGE_URI = "/terms";
+
+	String TERMS_PAGE = "terms";
+
+	String AGREE_TERMS_URI = "/agree_terms";
+
+	String REFUSE_TERMS_URI = "/refuse_terms";
 
 	String ACTIVATE_PAGE_URI = "/activate";
 

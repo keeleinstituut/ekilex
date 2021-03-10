@@ -1,23 +1,28 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head></head>
-<body>
-  <th:block th:fragment="terms_text">
-
-    <p>Ekilexi kasutustingimused<br>
-
-    <p>1. Sõnakogu looja loovutab sõnakogu loomisel loodud autoriõigusega kaitstavate teoste varalised õigused Eesti Keele Instituudile (EKI)
-      selle eest eraldi tasu saamata. Õiguste osas, millised seaduse kohaselt ei ole loovutatavad (isiklikud õigused), annab sõnakogu looja
-      EKI-le tähtajatu ja tagasivõtmatu ainulitsentsi kogu maailmas selle eest eraldi tasu saamata.<br>
-
-    <p>2. Ekilexi sõnakogude tüüplitsentsiks on Creative Commons BY 4.0, mis tähendab, et materjali on lubatud töödelda ja esitada mistahes
-      vajalikul moel, näiteks liitsõnaraamatuks, õppematerjaliks, äpiks, spelleri lähtematerjaliks jne. Kommertskasutust ei piirata,
-      kuid ressursi kasutaja peab oma rakenduse juures säilitama viite sõnakogu autorile, Eesti Keele Instituudile ja
-      EKI sõnastiku- ja terminibaasile Ekilex ning kirjeldama omapoolseid muudatusi.<br>
-
-    <p>3. Annan loa, et EKI-l on õigus minu sõnakogu andmeid muuta või täiendada: ühendada sõnakogude vahel samakujulisi keelendeid,
-      ühendada sõnakogude vahel samasisulisi mõisteid, parandada tekstis ilmseid näpuvigu.<br>
-
-  </th:block>
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(_,~{::links})">
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Tingimused</h5>
+      </div>
+      <div class="card-body" th:utext="${activeTerms}"></div>
+      <div class="form-group row">
+        <div class="col-md-auto ml-4">
+          <form class="d-inline" th:action="@{/agree_terms}" method="post">
+            <button type="submit" class="btn btn-primary">Kinnitan tingimustega nõusoleku</button>
+          </form>
+          <form class="d-inline" th:action="@{/refuse_terms}" method="post">
+            <button type="submit" class="btn btn-primary ml-3">Keeldun</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -17,7 +17,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = 1685329798;
+    private static final long serialVersionUID = 1480479056;
 
     /**
      * Setter for <code>public.view_ww_form.word_id</code>.
@@ -230,171 +230,185 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> {
     }
 
     /**
+     * Setter for <code>public.view_ww_form.is_questionable</code>.
+     */
+    public void setIsQuestionable(Boolean value) {
+        set(15, value);
+    }
+
+    /**
+     * Getter for <code>public.view_ww_form.is_questionable</code>.
+     */
+    public Boolean getIsQuestionable() {
+        return (Boolean) get(15);
+    }
+
+    /**
      * Setter for <code>public.view_ww_form.value</code>.
      */
     public void setValue(String value) {
-        set(15, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.value</code>.
      */
     public String getValue() {
-        return (String) get(15);
+        return (String) get(16);
     }
 
     /**
      * Setter for <code>public.view_ww_form.value_prese</code>.
      */
     public void setValuePrese(String value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.value_prese</code>.
      */
     public String getValuePrese() {
-        return (String) get(16);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>public.view_ww_form.components</code>.
      */
     public void setComponents(String[] value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.components</code>.
      */
     public String[] getComponents() {
-        return (String[]) get(17);
+        return (String[]) get(18);
     }
 
     /**
      * Setter for <code>public.view_ww_form.display_form</code>.
      */
     public void setDisplayForm(String value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.display_form</code>.
      */
     public String getDisplayForm() {
-        return (String) get(18);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>public.view_ww_form.audio_file</code>.
      */
     public void setAudioFile(String value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.audio_file</code>.
      */
     public String getAudioFile() {
-        return (String) get(19);
+        return (String) get(20);
     }
 
     /**
      * Setter for <code>public.view_ww_form.order_by</code>.
      */
     public void setOrderBy(Long value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.order_by</code>.
      */
     public Long getOrderBy() {
-        return (Long) get(20);
+        return (Long) get(21);
     }
 
     /**
      * Setter for <code>public.view_ww_form.form_freq_value</code>.
      */
     public void setFormFreqValue(BigDecimal value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.form_freq_value</code>.
      */
     public BigDecimal getFormFreqValue() {
-        return (BigDecimal) get(21);
+        return (BigDecimal) get(22);
     }
 
     /**
      * Setter for <code>public.view_ww_form.form_freq_rank</code>.
      */
     public void setFormFreqRank(Long value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.form_freq_rank</code>.
      */
     public Long getFormFreqRank() {
-        return (Long) get(22);
+        return (Long) get(23);
     }
 
     /**
      * Setter for <code>public.view_ww_form.form_freq_rank_max</code>.
      */
     public void setFormFreqRankMax(Long value) {
-        set(23, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.form_freq_rank_max</code>.
      */
     public Long getFormFreqRankMax() {
-        return (Long) get(23);
+        return (Long) get(24);
     }
 
     /**
      * Setter for <code>public.view_ww_form.morph_freq_value</code>.
      */
     public void setMorphFreqValue(BigDecimal value) {
-        set(24, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.morph_freq_value</code>.
      */
     public BigDecimal getMorphFreqValue() {
-        return (BigDecimal) get(24);
+        return (BigDecimal) get(25);
     }
 
     /**
      * Setter for <code>public.view_ww_form.morph_freq_rank</code>.
      */
     public void setMorphFreqRank(Long value) {
-        set(25, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.morph_freq_rank</code>.
      */
     public Long getMorphFreqRank() {
-        return (Long) get(25);
+        return (Long) get(26);
     }
 
     /**
      * Setter for <code>public.view_ww_form.morph_freq_rank_max</code>.
      */
     public void setMorphFreqRankMax(Long value) {
-        set(26, value);
+        set(27, value);
     }
 
     /**
      * Getter for <code>public.view_ww_form.morph_freq_rank_max</code>.
      */
     public Long getMorphFreqRankMax() {
-        return (Long) get(26);
+        return (Long) get(27);
     }
 
     // -------------------------------------------------------------------------
@@ -411,7 +425,7 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> {
     /**
      * Create a detached, initialised ViewWwFormRecord
      */
-    public ViewWwFormRecord(Long wordId, String wordClass, String word, String lang, Long paradigmId, String paradigmComment, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String value, String valuePrese, String[] components, String displayForm, String audioFile, Long orderBy, BigDecimal formFreqValue, Long formFreqRank, Long formFreqRankMax, BigDecimal morphFreqValue, Long morphFreqRank, Long morphFreqRankMax) {
+    public ViewWwFormRecord(Long wordId, String wordClass, String word, String lang, Long paradigmId, String paradigmComment, String inflectionType, Long formId, String mode, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, Boolean isQuestionable, String value, String valuePrese, String[] components, String displayForm, String audioFile, Long orderBy, BigDecimal formFreqValue, Long formFreqRank, Long formFreqRankMax, BigDecimal morphFreqValue, Long morphFreqRank, Long morphFreqRankMax) {
         super(ViewWwForm.VIEW_WW_FORM);
 
         set(0, wordId);
@@ -429,17 +443,18 @@ public class ViewWwFormRecord extends TableRecordImpl<ViewWwFormRecord> {
         set(12, displayLevel);
         set(13, morphCode);
         set(14, morphExists);
-        set(15, value);
-        set(16, valuePrese);
-        set(17, components);
-        set(18, displayForm);
-        set(19, audioFile);
-        set(20, orderBy);
-        set(21, formFreqValue);
-        set(22, formFreqRank);
-        set(23, formFreqRankMax);
-        set(24, morphFreqValue);
-        set(25, morphFreqRank);
-        set(26, morphFreqRankMax);
+        set(15, isQuestionable);
+        set(16, value);
+        set(17, valuePrese);
+        set(18, components);
+        set(19, displayForm);
+        set(20, audioFile);
+        set(21, orderBy);
+        set(22, formFreqValue);
+        set(23, formFreqRank);
+        set(24, formFreqRankMax);
+        set(25, morphFreqValue);
+        set(26, morphFreqRank);
+        set(27, morphFreqRankMax);
     }
 }

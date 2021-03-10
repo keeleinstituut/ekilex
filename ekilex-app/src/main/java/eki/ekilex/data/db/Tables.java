@@ -62,6 +62,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
@@ -87,7 +88,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
-import eki.ekilex.data.db.tables.TempPNames;
+import eki.ekilex.data.db.tables.TermsOfUse;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -122,6 +123,7 @@ import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -429,6 +431,11 @@ public class Tables {
     public static final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
 
     /**
+     * The table <code>public.meaning_last_activity_log</code>.
+     */
+    public static final MeaningLastActivityLog MEANING_LAST_ACTIVITY_LOG = MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.meaning_nr</code>.
      */
     public static final MeaningNr MEANING_NR = MeaningNr.MEANING_NR;
@@ -554,9 +561,9 @@ public class Tables {
     public static final TempDsImportQueue TEMP_DS_IMPORT_QUEUE = TempDsImportQueue.TEMP_DS_IMPORT_QUEUE;
 
     /**
-     * The table <code>public.temp_p_names</code>.
+     * The table <code>public.terms_of_use</code>.
      */
-    public static final TempPNames TEMP_P_NAMES = TempPNames.TEMP_P_NAMES;
+    public static final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
 
     /**
      * The table <code>public.usage_type</code>.
@@ -727,6 +734,11 @@ public class Tables {
      * The table <code>public.word_guid</code>.
      */
     public static final WordGuid WORD_GUID = WordGuid.WORD_GUID;
+
+    /**
+     * The table <code>public.word_last_activity_log</code>.
+     */
+    public static final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
 
     /**
      * The table <code>public.word_rel_mapping</code>.

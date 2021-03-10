@@ -10,6 +10,8 @@ public class TermMeaning extends AbstractDataObject {
 
 	private Long meaningId;
 
+	private List<Classifier> meaningDomains;
+
 	private List<TypeTermMeaningWord> meaningWords;
 
 	private boolean meaningWordsExist;
@@ -20,6 +22,14 @@ public class TermMeaning extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public List<Classifier> getMeaningDomains() {
+		return meaningDomains;
+	}
+
+	public void setMeaningDomains(List<Classifier> meaningDomains) {
+		this.meaningDomains = meaningDomains;
 	}
 
 	public List<TypeTermMeaningWord> getMeaningWords() {

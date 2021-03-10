@@ -49,3 +49,11 @@ eki-link {
 eki-form { 
   color: #28b463;
 }
+
+eki-shy::before {
+  content: "­";
+}
+/* textual content not shown, but needed to keep markup dialog simple */
+eki-shy {
+  display: none;
+}

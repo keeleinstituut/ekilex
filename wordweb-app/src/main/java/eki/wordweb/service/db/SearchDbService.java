@@ -336,6 +336,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.DISPLAY_MORPH_CODE,
 						w.ASPECT_CODE,
 						w.VOCAL_FORM,
+						w.LAST_ACTIVITY_EVENT_ON,
 						w.MEANING_WORDS,
 						w.DEFINITIONS,
 						wesl.SOURCE_LINKS.as("word_etym_source_links"),
@@ -421,6 +422,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.select(
 						l.LEXEME_ID,
 						m.MEANING_ID,
+						m.LAST_ACTIVITY_EVENT_ON.as("meaning_last_activity_event_on"),
 						m.DOMAIN_CODES,
 						m.IMAGE_FILES,
 						m.MEDIA_FILES,

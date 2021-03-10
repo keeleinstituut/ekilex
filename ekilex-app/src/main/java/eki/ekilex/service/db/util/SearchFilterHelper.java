@@ -981,27 +981,28 @@ public class SearchFilterHelper implements GlobalConstant {
 
 	public Condition applyValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition, boolean isOnLowerValue) throws Exception {
 
+		Field<String> searchValueField = DSL.lower(searchValueStr);
 		searchValueStr = StringUtils.lowerCase(searchValueStr);
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			condition = condition.and(textTypeSearchFieldCase.equal(searchValueStr));
+			condition = condition.and(textTypeSearchFieldCase.eq(searchValueField));
 		} else if (SearchOperand.NOT_EQUALS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			condition = condition.and(textTypeSearchFieldCase.notEqual(searchValueStr));
+			condition = condition.and(textTypeSearchFieldCase.notEqual(searchValueField));
 		} else if (SearchOperand.NOT_CONTAINS.equals(searchOperand)) {
 			//by value comparison it is exactly the same operation as equals
 			//the not contains operand rather translates into join condition elsewhere
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			condition = condition.and(textTypeSearchFieldCase.equal(searchValueStr));
+			condition = condition.and(textTypeSearchFieldCase.eq(searchValueField));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			condition = condition.and(textTypeSearchFieldCase.startsWith(searchValueStr));
+			condition = condition.and(textTypeSearchFieldCase.startsWith(searchValueField));
 		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			condition = condition.and(textTypeSearchFieldCase.endsWith(searchValueStr));
+			condition = condition.and(textTypeSearchFieldCase.endsWith(searchValueField));
 		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			condition = condition.and(textTypeSearchFieldCase.contains(searchValueStr));
+			condition = condition.and(textTypeSearchFieldCase.contains(searchValueField));
 		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
 			condition = condition.and(DSL.field(
 					"to_tsvector('simple', {0}) @@ to_tsquery('simple', {1})",

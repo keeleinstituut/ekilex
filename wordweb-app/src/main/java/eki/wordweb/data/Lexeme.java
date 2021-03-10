@@ -1,5 +1,6 @@
 package eki.wordweb.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	private Long lexemeId;
 
 	private Long meaningId;
+
+	private Timestamp meaningLastActivityEventOn;
 
 	private String datasetCode;
 
@@ -93,6 +96,8 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private Map<String, List<TypeDefinition>> definitionsByLang;
 
+	private TypeMeaningWord correctMeaningWord;
+
 	private TypeMeaningWord preferredTermMeaningWord;
 
 	private List<TypeMeaningWord> meaningWords;
@@ -153,6 +158,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public Timestamp getMeaningLastActivityEventOn() {
+		return meaningLastActivityEventOn;
+	}
+
+	public void setMeaningLastActivityEventOn(Timestamp meaningLastActivityEventOn) {
+		this.meaningLastActivityEventOn = meaningLastActivityEventOn;
 	}
 
 	@Override
@@ -455,6 +468,14 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	public void setDefinitionsByLang(Map<String, List<TypeDefinition>> definitionsByLang) {
 		this.definitionsByLang = definitionsByLang;
+	}
+
+	public TypeMeaningWord getCorrectMeaningWord() {
+		return correctMeaningWord;
+	}
+
+	public void setCorrectMeaningWord(TypeMeaningWord correctMeaningWord) {
+		this.correctMeaningWord = correctMeaningWord;
 	}
 
 	public TypeMeaningWord getPreferredTermMeaningWord() {

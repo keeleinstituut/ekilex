@@ -10,6 +10,8 @@ public interface GlobalConstant {
 
 	String DATASET_XXX = "xxx";
 
+	String DATASET_TEST = "kce";
+
 	boolean PUBLICITY_PUBLIC = true;
 
 	boolean PUBLICITY_PRIVATE = false;
@@ -17,6 +19,8 @@ public interface GlobalConstant {
 	String VALUE_STATE_MOST_PREFERRED = "eelistatud";
 
 	String VALUE_STATE_LEAST_PREFERRED = "väldi";
+
+	String VALUE_STATE_INCORRECT = "vigane";
 
 	String DEFINITION_TYPE_UNDEFINED = "määramata";
 

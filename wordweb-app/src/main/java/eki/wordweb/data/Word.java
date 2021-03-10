@@ -1,5 +1,6 @@
 package eki.wordweb.data;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.data.Classifier;
@@ -15,6 +16,8 @@ public class Word extends WordTypeData {
 	private String displayMorphCode;
 
 	private Classifier displayMorph;
+
+	private Timestamp lastActivityEventOn;
 
 	private List<TypeMeaningWord> meaningWords;
 
@@ -78,6 +81,14 @@ public class Word extends WordTypeData {
 
 	public void setDisplayMorph(Classifier displayMorph) {
 		this.displayMorph = displayMorph;
+	}
+
+	public Timestamp getLastActivityEventOn() {
+		return lastActivityEventOn;
+	}
+
+	public void setLastActivityEventOn(Timestamp lastActivityEventOn) {
+		this.lastActivityEventOn = lastActivityEventOn;
 	}
 
 	public List<TypeMeaningWord> getMeaningWords() {

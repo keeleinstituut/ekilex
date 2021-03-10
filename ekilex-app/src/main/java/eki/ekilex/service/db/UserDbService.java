@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.EKI_USER;
 import static eki.ekilex.data.db.Tables.EKI_USER_APPLICATION;
+import static eki.ekilex.data.db.Tables.TERMS_OF_USE;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,12 @@ public class UserDbService extends AbstractDbService {
 
 	private EkiUser getUser(Condition where) {
 
+		Field<Boolean> termsAgreed = DSL
+				.select(DSL.field(DSL.count(TERMS_OF_USE.ID).eq(1)))
+				.from(TERMS_OF_USE)
+				.where(TERMS_OF_USE.VERSION.eq(EKI_USER.TERMS_VER).and(TERMS_OF_USE.IS_ACTIVE.isTrue()))
+				.asField();
+
 		return create
 				.select(
 						EKI_USER.ID,
@@ -61,7 +68,8 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER.IS_API_CRUD.as("api_crud"),
 						EKI_USER.IS_ADMIN.as("admin"),
 						EKI_USER.IS_MASTER.as("master"),
-						EKI_USER.IS_ENABLED.as("enabled"))
+						EKI_USER.IS_ENABLED.as("enabled"),
+						termsAgreed.as("active_terms_agreed"))
 				.from(EKI_USER)
 				.where(where)
 				.fetchOptionalInto(EkiUser.class)
@@ -86,6 +94,36 @@ public class UserDbService extends AbstractDbService {
 				.where(EKI_USER.RECOVERY_KEY.eq(recoveryKey))
 				.fetchOptionalInto(String.class)
 				.orElse(null);
+	}
+
+	public String getActiveTermsValue() {
+
+		return create
+				.select(TERMS_OF_USE.VALUE)
+				.from(TERMS_OF_USE)
+				.where(TERMS_OF_USE.IS_ACTIVE.isTrue())
+				.fetchSingleInto(String.class);
+	}
+
+	public String getActiveTermsVersion() {
+
+		return create
+				.select(TERMS_OF_USE.VERSION)
+				.from(TERMS_OF_USE)
+				.where(TERMS_OF_USE.IS_ACTIVE.isTrue())
+				.fetchSingleInto(String.class);
+	}
+
+	public void agreeActiveTerms(Long userId) {
+
+		create
+				.update(EKI_USER)
+				.set(EKI_USER.TERMS_VER, TERMS_OF_USE.VERSION)
+				.from(TERMS_OF_USE)
+				.where(
+						EKI_USER.ID.eq(userId)
+								.and(TERMS_OF_USE.IS_ACTIVE.isTrue()))
+				.execute();
 	}
 
 	public void setUserRecoveryKey(Long userId, String recoveryKey) {

@@ -133,7 +133,9 @@ public class ConversionUtil implements GlobalConstant {
 				paradigm = new Paradigm();
 				paradigm.setParadigmId(paradigmId);
 				paradigm.setComment(tuple.getParadigmComment());
+				paradigm.setInflectionType(tuple.getInflectionType());
 				paradigm.setInflectionTypeNr(tuple.getInflectionTypeNr());
+				paradigm.setWordClass(tuple.getWordClass());
 				paradigm.setForms(forms);
 				paradigmsMap.put(paradigmId, paradigm);
 				paradigms.add(paradigm);

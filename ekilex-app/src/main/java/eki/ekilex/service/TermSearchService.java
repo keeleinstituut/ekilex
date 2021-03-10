@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -113,13 +112,6 @@ public class TermSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
-	public String getMeaningFirstWordValue(Long meaningId, List<String> datasets) {
-
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
-		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction);
-	}
-
-	@Transactional
 	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile,
 			EkiUser user, Tag activeTag) throws Exception {
 
@@ -161,7 +153,6 @@ public class TermSearchService extends AbstractSearchService {
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<Relation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
-		Timestamp latestLogEventTime = activityLogDbService.getLatestLogTimeForMeaning(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
@@ -228,9 +219,15 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setRelations(meaningRelations);
 		meaning.setViewRelations(viewRelations);
 		meaning.setActiveTagComplete(isActiveTagComplete);
-		meaning.setLastChangedOn(latestLogEventTime);
 
 		return meaning;
+	}
+
+	@Transactional
+	public String getMeaningFirstWordValue(Long meaningId, List<String> datasets) {
+	
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
+		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction);
 	}
 
 }

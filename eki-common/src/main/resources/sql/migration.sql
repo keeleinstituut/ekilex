@@ -435,6 +435,126 @@ drop table lifecycle_activity_log;
 drop table lifecycle_log cascade;
 
 ------------------------------------------------
+----- viimase muutmise logikirje määramine -----
+------------------------------------------------
+
+create table meaning_last_activity_log
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  activity_log_id bigint references activity_log(id) on delete cascade not null,
+  unique(meaning_id)
+);
+alter sequence meaning_last_activity_log_id_seq restart with 10000;
+
+create table word_last_activity_log
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  activity_log_id bigint references activity_log(id) on delete cascade not null,
+  unique(word_id)
+);
+alter sequence word_last_activity_log_id_seq restart with 10000;
+
+create index activity_log_owner_name_idx on activity_log(owner_name);
+create index activity_log_event_on_desc_idx on activity_log(event_on desc);
+create index activity_log_event_on_desc_ms_idx on activity_log((date_part('epoch', event_on) * 1000) desc);
+create index word_last_activity_log_word_id_idx on word_last_activity_log(word_id);
+create index word_last_activity_log_log_id_idx on word_last_activity_log(activity_log_id);
+create index meaning_last_activity_log_meaning_id_idx on meaning_last_activity_log(meaning_id);
+create index meaning_last_activity_log_log_id_idx on meaning_last_activity_log(activity_log_id);
+
+do $$
+declare
+  m_row record;
+  w_row record;
+  al_id bigint;
+begin
+  -- meanings
+  for m_row in 
+    (select * from meaning m order by m.id)
+  loop
+    select
+      lmlwal.id
+    from (
+      (
+        select
+          al.id,
+          al.event_on
+        from
+          meaning_activity_log as mal,
+          activity_log as al
+        where (
+          mal.meaning_id = m_row.id
+          and mal.activity_log_id = al.id
+          and al.owner_name in (
+            'MEANING', 'LEXEME'
+          )
+        )
+        order by al.event_on desc limit 1
+      )
+      union all (
+        select
+          al.id,
+          al.event_on
+        from
+          meaning_activity_log as mal,
+          activity_log as al
+        where (
+          mal.meaning_id = m_row.id
+          and mal.activity_log_id = al.id
+          and al.owner_name = 'WORD'
+          and al.entity_name = 'WORD'
+          and al.funct_name similar to '(createWord|updateWordValue|deleteWord)'
+        )
+        order by al.event_on desc limit 1
+      )
+    ) as lmlwal
+    order by lmlwal.event_on desc limit 1
+    into al_id;
+    if al_id is null then
+      select
+        al.id
+      from
+        meaning_activity_log as mal,
+        activity_log as al
+      where (
+        mal.meaning_id = m_row.id
+        and mal.activity_log_id = al.id
+      )
+      order by al.event_on desc limit 1
+      into al_id;
+    end if;
+    if al_id is not null then
+      insert into meaning_last_activity_log (meaning_id, activity_log_id) values (m_row.id, al_id);
+    end if;
+  end loop;
+  -- words
+  for w_row in 
+    (select * from word w where exists (select l.id from lexeme l where l.word_id = w.id) order by w.id)
+  loop
+    select
+       al.id
+    from
+      word_activity_log as wal,
+      activity_log as al
+    where (
+      wal.word_id = w_row.id
+      and wal.activity_log_id = al.id
+      and al.owner_name in (
+        'WORD', 'LEXEME'
+      )
+    )
+    order by al.event_on desc limit 1
+    into al_id;
+    if al_id is not null then
+      insert into word_last_activity_log (word_id, activity_log_id) values (w_row.id, al_id);
+    end if;
+  end loop;
+  raise info 'All done!';
+end $$;
+
+------------------------------------------------
 ------------------ muu migra -------------------
 ------------------------------------------------
 
@@ -465,3 +585,37 @@ where value_prese is null
 select setval('meaning_relation_order_by_seq', (select max(order_by) + 1 from meaning_relation));
   
 alter table dataset add column contact text;
+
+create table terms_of_use
+(
+  id bigserial primary key,
+  version varchar(100),
+  value text not null,
+  is_active boolean default false not null,
+  unique(version)
+);
+alter sequence terms_of_use_id_seq restart with 10000;
+
+insert into terms_of_use (version, is_active, value)
+values ('1.0', true,
+'<p>Ekilexi kasutustingimused<br>
+
+<p>1. Sõnakogu looja loovutab sõnakogu loomisel loodud autoriõigusega kaitstavate teoste varalised õigused Eesti Keele Instituudile (EKI)
+selle eest eraldi tasu saamata. Õiguste osas, millised seaduse kohaselt ei ole loovutatavad (isiklikud õigused), annab sõnakogu looja
+EKI-le tähtajatu ja tagasivõtmatu ainulitsentsi kogu maailmas selle eest eraldi tasu saamata.<br>
+
+<p>2. Ekilexi sõnakogude tüüplitsentsiks on Creative Commons BY 4.0, mis tähendab, et materjali on lubatud töödelda ja esitada mistahes
+vajalikul moel, näiteks liitsõnaraamatuks, õppematerjaliks, äpiks, spelleri lähtematerjaliks jne. Kommertskasutust ei piirata,
+kuid ressursi kasutaja peab oma rakenduse juures säilitama viite sõnakogu autorile, Eesti Keele Instituudile ja
+EKI sõnastiku- ja terminibaasile Ekilex ning kirjeldama omapoolseid muudatusi.<br>
+
+<p>3. Annan loa, et EKI-l on õigus minu sõnakogu andmeid muuta või täiendada: ühendada sõnakogude vahel samakujulisi keelendeid,
+ühendada sõnakogude vahel samasisulisi mõisteid, parandada tekstis ilmseid näpuvigu.<br>');
+
+alter table eki_user add constraint eki_user_terms_ver_fkey foreign key (terms_ver) references terms_of_use(version);
+
+drop type if exists type_word_rel_meaning;
+create type type_word_rel_meaning as (meaning_id bigint, definitions text array, lex_register_codes varchar(100) array, lex_pos_codes varchar(100) array);
+
+insert into value_state (code, datasets) values ('vigane', '{}');
+insert into value_state_label (code, value, lang, type) values ('vigane', 'vigane', 'est', 'descrip');

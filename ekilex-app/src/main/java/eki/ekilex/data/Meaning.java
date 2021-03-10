@@ -39,7 +39,7 @@ public class Meaning extends AbstractCrudEntity {
 
 	private boolean activeTagComplete;
 
-	private Timestamp lastChangedOn;
+	private Timestamp lastActivityEventOn;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -169,11 +169,11 @@ public class Meaning extends AbstractCrudEntity {
 		this.activeTagComplete = activeTagComplete;
 	}
 
-	public Timestamp getLastChangedOn() {
-		return lastChangedOn;
+	public Timestamp getLastActivityEventOn() {
+		return lastActivityEventOn;
 	}
 
-	public void setLastChangedOn(Timestamp lastChangedOn) {
-		this.lastChangedOn = lastChangedOn;
+	public void setLastActivityEventOn(Timestamp lastActivityEventOn) {
+		this.lastActivityEventOn = lastActivityEventOn;
 	}
 }

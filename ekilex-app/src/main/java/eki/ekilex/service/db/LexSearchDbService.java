@@ -29,6 +29,7 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -191,7 +192,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.select(
 						p.ID.as("paradigm_id"),
 						p.COMMENT.as("paradigm_comment"),
+						p.INFLECTION_TYPE,
 						p.INFLECTION_TYPE_NR,
+						p.WORD_CLASS,
 						f.ID.as("form_id"),
 						f.VALUE.as("form_value"),
 						f.VALUE_PRESE.as("form_value_prese"),
@@ -366,6 +369,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.from(l.leftOuterJoin(lt).on(lt.LEXEME_ID.eq(l.ID)))
 				.where(l.WORD_ID.eq(w.ID))
 				.groupBy(w.ID));
+		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.ID);
 
 		return create
 				.select(
@@ -384,7 +388,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),
 						wtz.as("foreign"),
-						lxtnf.as("lexemes_tag_names"))
+						lxtnf.as("lexemes_tag_names"),
+						wlaeof.as("last_activity_event_on"))
 				.from(w)
 				.where(w.ID.eq(wordId)
 						.andExists(DSL

@@ -12,7 +12,11 @@ public class Paradigm extends AbstractDataObject {
 
 	private String comment;
 
+	private String inflectionType;
+
 	private String inflectionTypeNr;
+
+	private String wordClass;
 
 	private List<Form> forms;
 
@@ -34,12 +38,28 @@ public class Paradigm extends AbstractDataObject {
 		this.comment = comment;
 	}
 
+	public String getInflectionType() {
+		return inflectionType;
+	}
+
+	public void setInflectionType(String inflectionType) {
+		this.inflectionType = inflectionType;
+	}
+
 	public String getInflectionTypeNr() {
 		return inflectionTypeNr;
 	}
 
 	public void setInflectionTypeNr(String inflectionTypeNr) {
 		this.inflectionTypeNr = inflectionTypeNr;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
 	}
 
 	public List<Form> getForms() {

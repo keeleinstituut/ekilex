@@ -62,6 +62,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelType;
@@ -87,7 +88,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
-import eki.ekilex.data.db.tables.TempPNames;
+import eki.ekilex.data.db.tables.TermsOfUse;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
@@ -122,6 +123,7 @@ import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.tables.WordRelMapping;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
@@ -165,7 +167,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1776876120;
+    private static final long serialVersionUID = -464947578;
 
     /**
      * The reference instance of <code>public</code>
@@ -463,6 +465,11 @@ public class Public extends SchemaImpl {
     public final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
 
     /**
+     * The table <code>public.meaning_last_activity_log</code>.
+     */
+    public final MeaningLastActivityLog MEANING_LAST_ACTIVITY_LOG = MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.meaning_nr</code>.
      */
     public final MeaningNr MEANING_NR = MeaningNr.MEANING_NR;
@@ -588,9 +595,9 @@ public class Public extends SchemaImpl {
     public final TempDsImportQueue TEMP_DS_IMPORT_QUEUE = TempDsImportQueue.TEMP_DS_IMPORT_QUEUE;
 
     /**
-     * The table <code>public.temp_p_names</code>.
+     * The table <code>public.terms_of_use</code>.
      */
-    public final TempPNames TEMP_P_NAMES = TempPNames.TEMP_P_NAMES;
+    public final TermsOfUse TERMS_OF_USE = TermsOfUse.TERMS_OF_USE;
 
     /**
      * The table <code>public.usage_type</code>.
@@ -763,6 +770,11 @@ public class Public extends SchemaImpl {
     public final WordGuid WORD_GUID = WordGuid.WORD_GUID;
 
     /**
+     * The table <code>public.word_last_activity_log</code>.
+     */
+    public final WordLastActivityLog WORD_LAST_ACTIVITY_LOG = WordLastActivityLog.WORD_LAST_ACTIVITY_LOG;
+
+    /**
      * The table <code>public.word_rel_mapping</code>.
      */
     public final WordRelMapping WORD_REL_MAPPING = WordRelMapping.WORD_REL_MAPPING;
@@ -880,6 +892,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
+            Sequences.MEANING_LAST_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_NR_ID_SEQ,
             Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
@@ -900,6 +913,7 @@ public class Public extends SchemaImpl {
             Sequences.TAG_ORDER_BY_SEQ,
             Sequences.TEMP_DS_IMPORT_PK_MAP_ID_SEQ,
             Sequences.TEMP_DS_IMPORT_QUEUE_ID_SEQ,
+            Sequences.TERMS_OF_USE_ID_SEQ,
             Sequences.USAGE_TYPE_ORDER_BY_SEQ,
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
             Sequences.WORD_ACTIVITY_LOG_ID_SEQ,
@@ -917,6 +931,7 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GROUP_MEMBER_ORDER_BY_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
+            Sequences.WORD_LAST_ACTIVITY_LOG_ID_SEQ,
             Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ,
@@ -987,6 +1002,7 @@ public class Public extends SchemaImpl {
             MeaningActivityLog.MEANING_ACTIVITY_LOG,
             MeaningDomain.MEANING_DOMAIN,
             MeaningFreeform.MEANING_FREEFORM,
+            MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG,
             MeaningNr.MEANING_NR,
             MeaningRelMapping.MEANING_REL_MAPPING,
             MeaningRelType.MEANING_REL_TYPE,
@@ -1012,7 +1028,7 @@ public class Public extends SchemaImpl {
             Tag.TAG,
             TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP,
             TempDsImportQueue.TEMP_DS_IMPORT_QUEUE,
-            TempPNames.TEMP_P_NAMES,
+            TermsOfUse.TERMS_OF_USE,
             UsageType.USAGE_TYPE,
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,
@@ -1047,6 +1063,7 @@ public class Public extends SchemaImpl {
             WordGroup.WORD_GROUP,
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
+            WordLastActivityLog.WORD_LAST_ACTIVITY_LOG,
             WordRelMapping.WORD_REL_MAPPING,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,

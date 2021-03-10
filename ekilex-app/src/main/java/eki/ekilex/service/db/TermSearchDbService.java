@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +32,7 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Language;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
@@ -136,12 +138,12 @@ public class TermSearchDbService extends AbstractDataDbService {
 						lo.ORDER_BY.as("lex_order_by"))
 				.from(m
 						.innerJoin(wm).on(wm.ID.eq(m.field("word_id", Long.class)))
-						.innerJoin(lo).on(
-								lo.MEANING_ID.eq(m.field("meaning_id", Long.class))
-										.and(wherelods))
+						.innerJoin(lo).on(lo.MEANING_ID.eq(m.field("meaning_id", Long.class)).and(wherelods))
 						.innerJoin(wo).on(wherewo)
 						.innerJoin(wol).on(wol.CODE.eq(wo.LANG)))
 				.asTable("m");
+
+		Field<TypeClassifierRecord[]> mdf = getMeaningDomainsField(mm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array_agg(row ("
@@ -184,6 +186,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		return create
 				.select(
 						mm.field("meaning_id", Long.class),
+						mdf.as("meaning_domains"),
 						mw.as("meaning_words"))
 				.from(mm)
 				.groupBy(
@@ -319,6 +322,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 						wm.ID)
 				.asTable("wm");
 
+		Field<TypeClassifierRecord[]> mdf = getMeaningDomainsField(wmm.field("meaning_id", Long.class), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+
 		Field<TypeTermMeaningWordRecord[]> mw = DSL
 				.field("array(select row ("
 						+ "wm.word_id,"
@@ -353,6 +358,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		return create
 				.select(
 						wmm.field("meaning_id", Long.class),
+						mdf.as("meaning_domains"),
 						mw.as("meaning_words"))
 				.from(wmm)
 				.orderBy(
@@ -415,16 +421,20 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
+		Meaning m = MEANING.as("m");
+		Field<Timestamp> mlaeof = getMeaningLastActivityEventOnField(m.ID);
+
 		return create
 				.select(
-						MEANING.ID.as("meaning_id"),
+						m.ID.as("meaning_id"),
+						mlaeof.as("last_activity_event_on"),
 						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
-				.from(MEANING, LEXEME)
+				.from(m, LEXEME)
 				.where(
-						MEANING.ID.eq(meaningId)
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+						m.ID.eq(meaningId)
+								.and(LEXEME.MEANING_ID.eq(m.ID))
 								.and(dsWhere))
-				.groupBy(MEANING.ID)
+				.groupBy(m.ID)
 				.fetchOptionalInto(eki.ekilex.data.Meaning.class)
 				.orElse(null);
 	}

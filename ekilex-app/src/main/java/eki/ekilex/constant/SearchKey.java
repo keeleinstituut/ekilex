@@ -22,6 +22,7 @@ public enum SearchKey {
 	CREATED_BY(OperandSets.USER_NAME_OPERANDS, SearchValueType.TEXTUAL),
 	UPDATED_ON(OperandSets.DATUM_OPERANDS, SearchValueType.TEXTUAL),
 	UPDATED_BY(OperandSets.USER_NAME_OPERANDS, SearchValueType.TEXTUAL),
+	LAST_UPDATE_ON(OperandSets.DATUM_OPERANDS, SearchValueType.TEXTUAL),
 	DATASET_USAGE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	SECONDARY_MEANING_WORD(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	PUBLICITY(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.BOOLEAN),

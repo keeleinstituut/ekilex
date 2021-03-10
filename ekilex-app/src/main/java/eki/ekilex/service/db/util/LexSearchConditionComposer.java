@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
+import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -35,10 +36,10 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.ActivityOwner;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -62,6 +63,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordFreeform;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 
 @Component
 public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct {
@@ -71,13 +73,14 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 	public Condition createSearchCondition(Word word, String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction) {
 
-		String theFilter = searchWordCrit.replace("*", "%").replace("?", "_").toLowerCase();
+		String maskedSearchFilter = searchWordCrit.replace("*", "%").replace("?", "_");
+		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);
-		if (StringUtils.containsAny(theFilter, '%', '_')) {
-			where = where.and(DSL.or(DSL.lower(word.VALUE).like(theFilter), DSL.lower(word.VALUE_AS_WORD).like(theFilter)));
+		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
+			where = where.and(DSL.or(DSL.lower(word.VALUE).like(filterField), DSL.lower(word.VALUE_AS_WORD).like(filterField)));
 		} else {
-			where = where.and(DSL.or(DSL.lower(word.VALUE).eq(theFilter), DSL.lower(word.VALUE_AS_WORD).eq(theFilter)));
+			where = where.and(DSL.or(DSL.lower(word.VALUE).eq(filterField), DSL.lower(word.VALUE_AS_WORD).eq(filterField)));
 		}
 		return where;
 	}
@@ -683,34 +686,65 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 	private Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition wherew) throws Exception {
 
-		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return wherew;
-		}
-
 		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
+		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
-		Condition where1 = wal.WORD_ID.eq(wordIdField).and(wal.ACTIVITY_LOG_ID.eq(al.ID));
 
-		for (SearchCriterion criterion : filteredCriteria) {
-			String critValue = criterion.getSearchValue().toString();
-			if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
-			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
-				where1 = where1
-						.andNot(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()).and(al.FUNCT_NAME.like(LIKE_CREATE)));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
-			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
-				where1 = where1
-						.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
-						.and(al.OWNER_ID.eq(wordIdField))
-						.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
-						.and(al.FUNCT_NAME.like(LIKE_CREATE));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+		// by all logs
+		boolean isFilterByAllLogs = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
+
+		if (isFilterByAllLogs) {
+
+			List<SearchCriterion> filteredCriteriaByAllLogs = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
+
+			if (CollectionUtils.isNotEmpty(filteredCriteriaByAllLogs)) {
+
+				Condition where1 = wal.WORD_ID.eq(wordIdField).and(wal.ACTIVITY_LOG_ID.eq(al.ID));
+
+				for (SearchCriterion criterion : filteredCriteriaByAllLogs) {
+					String critValue = criterion.getSearchValue().toString();
+					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+					} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
+						where1 = where1
+								.andNot(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()).and(al.FUNCT_NAME.like(LIKE_CREATE)));
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+					} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
+						where1 = where1
+								.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
+								.and(al.OWNER_ID.eq(wordIdField))
+								.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
+								.and(al.FUNCT_NAME.like(LIKE_CREATE));
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+					}
+				}
+				wherew = wherew.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
 			}
 		}
-		wherew = wherew.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
+
+		// by last logs
+		boolean isFilterByLastLogs = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.LAST_UPDATE_ON);
+
+		if (isFilterByLastLogs) {
+
+			List<SearchCriterion> filteredCriteriaByLastLogs = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.LAST_UPDATE_ON);
+
+			if (CollectionUtils.isNotEmpty(filteredCriteriaByLastLogs)) {
+
+				Condition where1 = wlal.WORD_ID.eq(wordIdField).and(wlal.ACTIVITY_LOG_ID.eq(al.ID));
+
+				for (SearchCriterion criterion : filteredCriteriaByLastLogs) {
+					String critValue = criterion.getSearchValue().toString();
+					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+					} else if (SearchKey.LAST_UPDATE_ON.equals(criterion.getSearchKey())) {
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+					}
+				}
+				wherew = wherew.andExists(DSL.select(wlal.ID).from(wlal, al).where(where1));
+			}
+		}
+
 		return wherew;
 	}
 }

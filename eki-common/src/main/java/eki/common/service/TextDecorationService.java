@@ -2,7 +2,9 @@ package eki.common.service;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,6 +52,8 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 	private List<TextDecorationDescriptor> allEkiMarkupDescriptors;
 
 	private List<TextDecorationDescriptor> uniLangEkiMarkupDescriptors;
+
+	private Map<Character, String> symbolSimplificationMap;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -114,6 +118,25 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		postDecoration = asXmlElemEnd(STRESS);
 		textDecorationDescriptor = new TextDecorationDescriptor(entityMatchPattern, preDecoration, postDecoration, SURROUND_CHAR_BY_MARKUP);
 		allEkiMarkupDescriptors.add(textDecorationDescriptor);
+
+		symbolSimplificationMap = new HashMap<>();
+		symbolSimplificationMap.put('ı', Character.toString('i'));
+		symbolSimplificationMap.put('ß', "ss");
+		symbolSimplificationMap.put('Ə', Character.toString('Ä'));
+		symbolSimplificationMap.put('ə', Character.toString('ä'));
+		symbolSimplificationMap.put('Æ', "AE");
+		symbolSimplificationMap.put('æ', "ae");
+		symbolSimplificationMap.put('Œ', "OE");
+		symbolSimplificationMap.put('œ', "oe");
+		symbolSimplificationMap.put('Þ', "TH");
+		symbolSimplificationMap.put('þ', "th");
+		symbolSimplificationMap.put('Ð', "DH");
+		symbolSimplificationMap.put('ð', "dh");
+		symbolSimplificationMap.put('Ł', Character.toString('L'));
+		symbolSimplificationMap.put('ł', Character.toString('l'));
+		symbolSimplificationMap.put('ŋ', Character.toString('n'));
+		symbolSimplificationMap.put('Ø', Character.toString('O'));
+		symbolSimplificationMap.put('ø', Character.toString('o'));
 	}
 
 	public String removeEkiElementMarkup(String originalText) {
@@ -242,14 +265,16 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		if (ArrayUtils.contains(DISCLOSED_DIACRITIC_LANGS, lang)) {
 			return null;
 		}
-		boolean isAlreadyClean = Normalizer.isNormalized(value, Normalizer.Form.NFD);
-		if (isAlreadyClean) {
+		boolean needsSimplification = StringUtils.containsAny(value, StringUtils.join(symbolSimplificationMap.keySet()));
+		boolean isAlreadyNormalized = Normalizer.isNormalized(value, Normalizer.Form.NFD);
+		if (isAlreadyNormalized && !needsSimplification) {
 			return null;
 		}
 		StringBuffer cleanValueBuf = new StringBuffer();
 		char[] chars = value.toCharArray();
 		String decomposedChars;
 		String charAsStr;
+		String simpleStr;
 		char primaryChar;
 		for (char c : chars) {
 			boolean isReservedChar = ArrayUtils.contains(RESERVED_DIACRITIC_CHARS, c);
@@ -262,7 +287,12 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 					primaryChar = decomposedChars.charAt(0);
 					cleanValueBuf.append(primaryChar);
 				} else {
-					cleanValueBuf.append(c);
+					simpleStr = symbolSimplificationMap.get(c);
+					if (simpleStr == null) {
+						cleanValueBuf.append(c);						
+					} else {
+						cleanValueBuf.append(simpleStr);
+					}
 				}
 			}
 		}

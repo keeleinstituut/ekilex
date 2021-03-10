@@ -86,16 +86,17 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 		return getSources(searchFilterWithMetaCharacters, sourceType, null);
 	}
 
-	public List<SourcePropertyTuple> getSources(String searchFilterWithMetaCharacters, SourceType sourceType, Long sourceIdToExclude) {
+	public List<SourcePropertyTuple> getSources(String searchFilter, SourceType sourceType, Long sourceIdToExclude) {
 
-		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
+		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_");
+		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Source s = SOURCE.as("s");
 		SourceFreeform spff = SOURCE_FREEFORM.as("spff");
 		Freeform sp = FREEFORM.as("sp");
 		SourceFreeform spcff = SOURCE_FREEFORM.as("spcff");
 		Freeform spc = FREEFORM.as("spc");
-		Field<Boolean> spmf = DSL.field(DSL.lower(sp.VALUE_TEXT).like(searchFilter));
+		Field<Boolean> spmf = DSL.field(DSL.lower(sp.VALUE_TEXT).like(filterField));
 
 		Condition where1 = spcff.SOURCE_ID.eq(s.ID)
 				.and(spcff.FREEFORM_ID.eq(spc.ID))
@@ -329,11 +330,12 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 	public List<String> getSourceNames(String nameSearchFilter, int limit) {
 
+		String nameSearchFilterCrit = '%' + StringUtils.lowerCase(nameSearchFilter) + '%';
 		return create
 				.selectDistinct(FREEFORM.VALUE_TEXT)
 				.from(FREEFORM)
 				.where(FREEFORM.TYPE.eq(FreeformType.SOURCE_NAME.name())
-						.and(DSL.lower(FREEFORM.VALUE_TEXT).like('%' + StringUtils.lowerCase(nameSearchFilter) + '%')))
+						.and(DSL.lower(FREEFORM.VALUE_TEXT).like(nameSearchFilterCrit)))
 				.orderBy(FREEFORM.VALUE_TEXT)
 				.limit(limit)
 				.fetchInto(String.class);
