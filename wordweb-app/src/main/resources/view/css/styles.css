@@ -16223,18 +16223,25 @@ body.hidden-scroll {
   margin-bottom: 24px;
   background: #fff;
   border: 3px solid #8a98a5;
+  height: 100%;
   border-radius: 10px;
 }
 
 .homonym-list-toggle::after {
   position: absolute;
-  top: 50%;
-  right: 16px;
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
-  color: #8a98a5;
+  color: #ecf0f2;
+  background: #8a98a5;
+  height: 100%;
   content: "\f0d7";
-  transform: translateY(-50%);
+  top: 0;
+  right: 0;
+  width: 44px;
+  background: #8a98a5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .homonym-list-toggle .homonym-item-wrap {
@@ -16242,6 +16249,7 @@ body.hidden-scroll {
   align-items: center;
   width: 100%;
   overflow: hidden;
+  padding-right: 16px;
 }
 
 .homonym-list-toggle:focus {
@@ -16665,6 +16673,17 @@ body.hidden-scroll {
   padding-bottom: 12px;
 }
 
+.definition-sources {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7885;
+}
+
+.definition-sources button {
+  font-size: 14px;
+  color: #6b7885;
+}
+
 .dependence .dependence-unit {
   position: relative;
   padding-bottom: .1875rem;
@@ -16781,6 +16800,16 @@ body.hidden-scroll {
   border-bottom: 1px solid #ccd9e0;
 }
 
+.content-title-date {
+  font-size: 14px;
+  font-weight: 400;
+  color: #5d606e;
+}
+
+.content-title-date i {
+  margin-right: 5px;
+}
+
 @media (min-width: 768px) {
   .meaning-panel {
     padding: 5px;
@@ -16792,7 +16821,7 @@ body.hidden-scroll {
   padding: 10px 16px;
   margin-bottom: 0;
   text-transform: uppercase;
-  background: #ecf0f2;
+  background: #ccd9e0;
   border-bottom: 1px solid #ccd9e0;
 }
 
@@ -18517,6 +18546,15 @@ eki-link {
 
 eki-form {
   color: #28b463;
+}
+
+eki-shy::before {
+  content: "­";
+}
+
+/* textual content not shown, but needed to keep markup dialog simple */
+eki-shy {
+  display: none;
 }
 
 @media (max-width: 767.98px) {

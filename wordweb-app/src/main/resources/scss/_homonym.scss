@@ -103,17 +103,26 @@
   margin-bottom: 24px;
   background: $white;
   border: 3px solid $gray-300;
+  height: 100%;
+  
   @include border-radius(10px);
 
   &::after{
     position: absolute;
-    top: 50%;
-    right: 16px;
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
-    color: $gray-300;
+    color: $gray-100;
+    background: $gray-300;
+    height: 100%;
     content: "\f0d7";
-    transform: translateY(-50%);
+    top: 0;
+    right: 0;
+    width: 44px;
+    background: #8a98a5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
   }
 
   .homonym-item-wrap {
@@ -121,6 +130,7 @@
     align-items: center;
     width: 100%;
     overflow: hidden;
+    padding-right: 16px;
   }
   @include form-control-focus();
 }
