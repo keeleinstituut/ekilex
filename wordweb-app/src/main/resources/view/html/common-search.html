@@ -225,14 +225,21 @@
               <div class="meaning-meta" th:if="${not #lists.isEmpty(lexeme.sourceLangSynonyms)}">
                 <div class="synonyms">
                   <div th:id="${'synonym-collapse-panel-' + lexeme.lexemeId}" class="additional-meta d-flex flex-wrap">
-                    <span th:text="#{label.same.as}" class="mr-2 font-weight-bold">sama mis</span>
+                    <span th:text="#{label.same.as}" class="mr-2 font-weight-bold" >sama mis</span>
                     <th:block th:each="syn,synIter : ${lexeme.sourceLangSynonyms}"
                               th:with="
                               isCollapsable=${synIter.count > T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT},
                               isLimit=${synIter.count == T(eki.wordweb.constant.WebConstant).SYN_WORDS_DISPLAY_LIMIT}">
                       <span class="text-nowrap mr-1" th:classappend="${isCollapsable ? 'collapse' : ''}" >
                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, searchMode, syn.word, syn.homonymNr)}}" class="synonym">
-                          <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
+                          <span
+                            data-toggle="tooltip" th:title="#{label.tooltip.synonym.full}"
+                            th:if="${syn.mwLexWeight == 1}"
+                            th:utext="${viewUtil.getWordValueMarkup(syn)}"
+                            class="font-weight-bold">tee</span>
+                          <span
+                            th:if="${syn.mwLexWeight != 1}"
+                            th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                         </a>
                         <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
                           <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
