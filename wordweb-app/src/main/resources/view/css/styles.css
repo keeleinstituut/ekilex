@@ -16141,13 +16141,6 @@ body.hidden-scroll {
   padding: 0 12px;
 }
 
-@media screen and (max-width: 768px) {
-  .homonym-name {
-    font-size: 16px;
-    padding-top: 8px;
-  }
-}
-
 .homonym-nr {
   position: relative;
   top: -.1875rem;
@@ -16491,12 +16484,20 @@ body.hidden-scroll {
   font-size: 0.75rem !important;
 }
 
+.text-medium {
+  font-size: 14px;
+}
+
 .tex-weight-medium {
   font-weight: 500;
 }
 
 .text-gray {
   color: #3f3f3f;
+}
+
+.text-gray-350 {
+  color: #687887;
 }
 
 .dropdown-menu {
@@ -16713,10 +16714,6 @@ body.hidden-scroll {
   background-color: #ccd9e0;
 }
 
-.example-text {
-  font-style: italic;
-}
-
 .example-text .example-text-value {
   white-space: normal;
 }
@@ -16761,6 +16758,11 @@ body.hidden-scroll {
 .colloc-inner-section {
   padding-left: 16px;
   margin-bottom: 4px;
+}
+
+.colloc-heading {
+  font-size: 14px;
+  color: #687887;
 }
 
 .colloc-member {

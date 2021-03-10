@@ -256,6 +256,9 @@ footer p {
       bottom: 3px;
       background: #000;
     }
+    &:last-child:after {
+      display: none;
+    }
   }
 }
 
