@@ -127,7 +127,11 @@
             isProTerm = ${viewUtil.isProTermData(lexeme)},
             isLimTerm = ${viewUtil.isLimTermData(lexeme)}">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-4 pl-3': ''">
-      <h6 class="font-weight-bold" th:if="${isProTerm}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
+      <th:block th:if="${isProTerm}">
+        <h6 class="font-weight-bold">
+          <a th:href="@{'/ds/' + ${lexeme.datasetCode}}" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
+        </h6>
+      </th:block>
       <th:block th:if="${lexeme.correctMeaningWord != null}">
         <div>
           <span th:text="#{label.word.incorrect}"></span>

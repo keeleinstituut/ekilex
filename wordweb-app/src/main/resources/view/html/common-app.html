@@ -280,12 +280,14 @@
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="d-flex justify-content-center justify-content-md-start mb-4">
-              <th:block th:if="${pageContext != 'simpleSearch'}">
-              <img th:src="@{'/view/images/sonaveeb-logo-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
-              </th:block>
-              <th:block th:if="${pageContext == 'simpleSearch'}">
-                <img th:src="@{'/view/images/sonaveeb-logo-light-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
-              </th:block>
+              <a th:href="@{/}">
+                <th:block th:if="${pageContext != 'simpleSearch'}">
+                  <img th:src="@{'/view/images/sonaveeb-logo-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
+                </th:block>
+                <th:block th:if="${pageContext == 'simpleSearch'}">
+                  <img th:src="@{'/view/images/sonaveeb-logo-light-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
+                </th:block>
+              </a>
             </div>
           </div>
           <div class="col-12 col-md-4">
