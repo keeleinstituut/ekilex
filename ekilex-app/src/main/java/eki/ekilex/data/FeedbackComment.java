@@ -1,27 +1,21 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
-import javax.persistence.Column;
 import java.sql.Timestamp;
+
+import eki.common.data.AbstractDataObject;
 
 public class FeedbackComment extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "feedback_log_id")
-	private Long feedbackId;
+	private Long feedbackLogId;
 
-	@Column(name = "created_on")
 	private Timestamp createdOn;
 
-	@Column(name = "comment")
 	private String comment;
 
-	@Column(name = "user_name")
 	private String userName;
 
 	public Long getId() {
@@ -32,12 +26,12 @@ public class FeedbackComment extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public Long getFeedbackId() {
-		return feedbackId;
+	public Long getFeedbackLogId() {
+		return feedbackLogId;
 	}
 
-	public void setFeedbackId(Long feedbackId) {
-		this.feedbackId = feedbackId;
+	public void setFeedbackLogId(Long feedbackLogId) {
+		this.feedbackLogId = feedbackLogId;
 	}
 
 	public Timestamp getCreatedOn() {
@@ -63,4 +57,5 @@ public class FeedbackComment extends AbstractDataObject {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 }

@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -14,57 +15,66 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.Feedback;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.FeedbackComment;
+import eki.ekilex.data.FeedbackLog;
+import eki.ekilex.data.FeedbackLogResult;
 import eki.ekilex.service.db.FeedbackDbService;
 
 @Component
-public class FeedbackService {
+public class FeedbackService implements SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(FeedbackService.class);
 
+	private static final int MAX_RESULTS_LIMIT = 20;
+
 	private static final String FEEDBACK_TYPE_NEW_WORD = "new_word";
+
 	private static final String FEEDBACK_TYPE_COMMENT = "comment";
 
 	@Autowired
 	private FeedbackDbService feedbackDbService;
 
 	@Transactional
-	public List<Feedback> getFeedbackLog() {
-		List<Feedback> feedbacks = feedbackDbService.getFeedback();
-		List<FeedbackComment> feedbackComments = feedbackDbService.getAllFeedbackComments();
-		feedbacks.forEach(fb ->
-				fb.setFeedbackComments(feedbackComments.stream()
-						.filter(fc -> fc.getFeedbackId().equals(fb.getId()))
-						.collect(Collectors.toList())
-				)
-		);
-		return feedbacks;
+	public FeedbackLogResult getFeedbackLog(String senderEmailFilter, Boolean notCommentedFilter, int pageNum) {
+		int limit = MAX_RESULTS_LIMIT;
+		int offset = (pageNum - 1) * limit;
+		long feedbackLogCount = feedbackDbService.getFeedbackLogCount(senderEmailFilter, notCommentedFilter);
+		List<FeedbackLog> feedbackLogs = feedbackDbService.getFeedbackLogs(senderEmailFilter, notCommentedFilter, offset, limit);
+		List<FeedbackComment> feedbackLogComments = feedbackDbService.getFeedbackLogComments();
+		Map<Long, List<FeedbackComment>> feedbackLogCommentsMap = feedbackLogComments.stream().collect(Collectors.groupingBy(FeedbackComment::getFeedbackLogId));
+		feedbackLogs.forEach(feedbackLog -> feedbackLog.setFeedbackComments(feedbackLogCommentsMap.get(feedbackLog.getId())));
+		int pageCount = (int) Math.ceil((float) feedbackLogCount / (float) limit);
+		FeedbackLogResult feedbackLogResult = new FeedbackLogResult();
+		feedbackLogResult.setFeedbackLogs(feedbackLogs);
+		feedbackLogResult.setPageNum(pageNum);
+		feedbackLogResult.setPageCount(pageCount);
+		return feedbackLogResult;
 	}
 
 	@Transactional
-	public List<FeedbackComment> getFeedbackComments(Long feedbackId) {
-		return feedbackDbService.getFeedbackComments(feedbackId);
+	public List<FeedbackComment> getFeedbackLogComments(Long feedbackLogId) {
+		return feedbackDbService.getFeedbackLogComments(feedbackLogId);
 	}
 
 	@Transactional
-	public void createFeedbackComment(Long feedbackId, String comment, String userName) {
-		feedbackDbService.createFeedbackComment(feedbackId, comment, userName);
+	public void createFeedbackLogComment(Long feedbackId, String comment, String userName) {
+		feedbackDbService.createFeedbackLogComment(feedbackId, comment, userName);
 	}
 
-	public boolean isValidFeedback(Feedback newFeedback) {
+	public boolean isValidFeedbackLog(FeedbackLog newFeedback) {
 		return newFeedback != null &&
 				StringUtils.equalsAny(newFeedback.getFeedbackType(), FEEDBACK_TYPE_NEW_WORD, FEEDBACK_TYPE_COMMENT)
-				&& isNotBlank(newFeedback.getSender())
-				&& isNotBlank(newFeedback.getEmail())
+				&& isNotBlank(newFeedback.getSenderName())
+				&& isNotBlank(newFeedback.getSenderEmail())
 				&& isNotBlank(newFeedback.getWord());
 	}
 
 	@Transactional
-	public String createFeedback(Feedback newFeedback) {
+	public String createFeedbackLog(FeedbackLog feedbackLog) {
 		String retMessage = "ok";
 		try {
-			feedbackDbService.createFeedback(newFeedback);
+			feedbackDbService.createFeedbackLog(feedbackLog);
 		} catch (DataAccessException e) {
 			logger.error("Add new feedback", e);
 			retMessage = "error";
@@ -73,7 +83,7 @@ public class FeedbackService {
 	}
 
 	@Transactional
-	public void deleteFeedback(Long id) {
-		feedbackDbService.deleteFeedback(id);
+	public void deleteFeedbackLog(Long feedbackLogId) {
+		feedbackDbService.deleteFeedbackLog(feedbackLogId);
 	}
 }

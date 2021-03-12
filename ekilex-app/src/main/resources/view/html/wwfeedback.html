@@ -16,67 +16,110 @@
         <h5 class="card-title">Sõnaveebi tagasiside</h5>
       </div>
       <div class="card-body">
+        <div>
+          <form th:action="@{/wwfeedback/search}" method="post">
+            <div class="form-group row">
+              <div class="col-2">
+                <input type="text" class="form-control" name="senderEmailFilter" th:value="${wwFeedbackSearchBean.senderEmailFilter}" placeholder="Epost või selle osa">
+              </div>
+              <div class="col-2">
+                <div class="form-control">
+                  <input type="checkbox" class="ml-1 form-check-input" name="notCommentedFilter" th:checked="${wwFeedbackSearchBean.notCommentedFilter}">
+                  <label class="ml-4 form-check-label">Kommenteerimata</label>
+                </div>
+              </div>
+              <div class="col-2">
+                <button type="submit" class="btn btn-primary">Otsi</button>
+                <a th:href="@{/wwfeedback}" class="btn btn-secondary ml-2">Tühjenda</a>
+              </div>
+            </div>
+          </form>
+        </div>
+        <hr />
+        <div class="d-flex justify-content-center mb-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" title="Eelmine lehekülg" class="btn badge mr-2">
+            <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
+          </a>
+          <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" title="Järgmine lehekülg" class="btn badge ml-2">
+            <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
+          </a>
+        </div>
         <table class="table table-striped table-condensed table-hover"
                th:with="isDatasetCrudOwnerOrAdmin=${userRoleData.datasetCrudOwnerOrAdmin}">
           <thead class="thead-light">
             <tr>
               <th>Saadetud</th>
-              <th>Tagasiside tüüp</th>
               <th>Saatja</th>
-              <th>E-post</th>
-              <th>Sõna</th>
+              <th>Sõna/Viimane otsing</th>
               <th>Teade</th>
-              <th>Viimane otsing</th>
-              <th>EKI kommentaarid</th>
+              <th></th>
+              <th style="min-width: 300px">EKI kommentaarid</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            <tr th:each="fbItem : ${feedbackLog}">
-              <td class="text-nowrap" th:text="${#dates.format(fbItem.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
-              <td th:text="${fbItem.feedbackType}"></td>
-              <td th:text="${fbItem.sender}"></td>
-              <td th:text="${fbItem.email}" class="breakWords" style="min-width:100px"></td>
-              <td th:text="${fbItem.word}"></td>
-              <td class="breakWords" style="min-width: 200px">
-                <div class="row ml-1" th:if="${fbItem.definition != null}">
-                  <span class="lbl pr-2">Tähendus</span>
-                  <span th:text="${fbItem.definition}"></span>
+            <tr th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
+              <td>
+                <span class="text-nowrap font-weight-light" th:text="${#dates.format(feedbackLog.createdOn, 'dd.MM.yyyy HH:mm')}"></span>
+                <span class="badge badge-info" th:text="#{'wwfeedback.type.' + ${feedbackLog.feedbackType}}"></span>
+              </td>
+              <td>
+                <div class="text-primary" th:text="${feedbackLog.senderEmail}"></div>
+                <em th:text="${feedbackLog.senderName}"></em>
+              </td>
+              <td>
+                <div>
+                  <strong th:text="${feedbackLog.word}"></strong>
                 </div>
-                <div class="row ml-1" th:if="${fbItem.usages != null}">
-                  <span class="lbl pr-2">Kasutusnäited</span>
-                  <span th:text="${fbItem.usages}"></span>
-                </div>
-                <div class="row ml-1" th:if="${fbItem.comments != null}">
-                  <span class="lbl pr-2">Kommentaar</span>
-                  <span th:text="${fbItem.comments}"></span>
-                </div>
-                <div class="row ml-1" th:if="${fbItem.otherInfo != null}">
-                  <span class="lbl pr-2">Muu info</span>
-                  <span th:text="${fbItem.otherInfo}"></span>
+                <div>
+                  <span th:text="${feedbackLog.lastSearch}"></span>
                 </div>
               </td>
-              <td th:text="${fbItem.lastSearch}"></td>
-              <td style="min-width: 250px">
+              <td class="breakWords pr-3">
+                <div class="row ml-1" th:if="${feedbackLog.definition != null}">
+                  <span class="lbl pr-2">Tähendus</span>
+                  <span th:text="${feedbackLog.definition}"></span>
+                </div>
+                <div class="row ml-1" th:if="${feedbackLog.usages != null}">
+                  <span class="lbl pr-2">Kasutusnäited</span>
+                  <span th:text="${feedbackLog.usages}"></span>
+                </div>
+                <div class="row ml-1" th:if="${feedbackLog.comments != null}">
+                  <span class="lbl pr-2">Kommentaar</span>
+                  <span th:text="${feedbackLog.comments}"></span>
+                </div>
+                <div class="row ml-1" th:if="${feedbackLog.otherInfo != null}">
+                  <span class="lbl pr-2">Muu info</span>
+                  <span th:text="${feedbackLog.otherInfo}"></span>
+                </div>
+              </td>
+              <td>
                 <div th:replace="wwfeedbackdialog :: add_feedback_comment_dlg"></div>
                 <button type="button" class="btn badge badge-success"
                         title="Lisa uus"
                         data-toggle="modal"
-                        th:data-target="${'#addFeedbackCommentDlg_' + fbItem.id}"
+                        th:data-target="${'#addFeedbackCommentDlg_' + feedbackLog.id}"
                         sec:authorize="${#vars.isDatasetCrudOwnerOrAdmin}">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                <table th:id="${'ekiCommentsArea_' + fbItem.id}" th:fragment="eki_comments">
-                  <tr th:each="ekiComment : ${fbItem.feedbackComments}">
-                    <td th:text="${#dates.format(ekiComment.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
-                    <td th:text="${ekiComment.userName}"></td>
+              </td>
+              <td>
+                <table th:id="${'ekiCommentsArea_' + feedbackLog.id}" th:fragment="eki_comments">
+                  <tr th:each="ekiComment : ${feedbackLog.feedbackComments}">
+                    <td class="text-nowrap">
+                      <div class="font-weight-light" th:text="${#dates.format(ekiComment.createdOn, 'dd.MM.yyyy HH:mm')}"></div>
+                      <div>
+                        <em th:text="${ekiComment.userName}"></em>
+                      </div>
+                    </td>
                     <td th:utext="${ekiComment.comment}" class="breakWords"></td>
                   </tr>
                 </table>
               </td>
               <td>
                 <form th:action="@{/wwfeedback/deletefeedback}">
-                  <input type="hidden" name="feedbackId" th:value="${fbItem.id}"/>
+                  <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}"/>
                   <button type="button" class="btn badge badge-warning"
                           data-toggle="delete-confirm"
                           data-placement="left"
@@ -88,6 +131,16 @@
             </tr>
           </tbody>
         </table>
+        <hr />
+        <div class="d-flex justify-content-center mb-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" title="Eelmine lehekülg" class="btn badge mr-2">
+            <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
+          </a>
+          <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" title="Järgmine lehekülg" class="btn badge ml-2">
+            <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>
