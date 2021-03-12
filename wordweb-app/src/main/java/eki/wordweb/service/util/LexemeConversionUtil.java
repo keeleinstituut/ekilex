@@ -271,8 +271,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 				if (DatasetType.LEX.equals(lexeme.getDatasetType()) && StringUtils.equals(wordLang, meaningRelSyn.getLang())) {
 					lexeme.getSourceLangSynonyms().add(meaningRelSyn);
-				} else {
-					lexeme.getDestinLangSynonyms().add(meaningRelSyn);
 				}
 			}
 		}
