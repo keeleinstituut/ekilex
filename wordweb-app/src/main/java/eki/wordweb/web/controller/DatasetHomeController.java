@@ -1,6 +1,5 @@
 package eki.wordweb.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +17,6 @@ import eki.wordweb.data.DatasetHomeData;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.DatasetContentService;
-import eki.wordweb.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller

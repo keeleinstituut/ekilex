@@ -5,9 +5,9 @@ import java.util.List;
 
 public class WordsData {
 
-	private final List<Word> fullMatchWords;
+	private final List<Word> wordMatchWords;
 
-	private final List<String> formMatchWords;
+	private final List<String> formMatchWordValues;
 
 	private final int resultCount;
 
@@ -16,27 +16,27 @@ public class WordsData {
 	private final boolean singleResult;
 
 	public WordsData() {
-		this.fullMatchWords = Collections.emptyList();
-		this.formMatchWords = Collections.emptyList();
+		this.wordMatchWords = Collections.emptyList();
+		this.formMatchWordValues = Collections.emptyList();
 		this.resultCount = 0;
 		this.resultsExist = false;
 		this.singleResult = false;
 	}
 
-	public WordsData(List<Word> fullMatchWords, List<String> formMatchWords, int resultCount, boolean resultsExist, boolean singleResult) {
-		this.fullMatchWords = fullMatchWords;
-		this.formMatchWords = formMatchWords;
+	public WordsData(List<Word> wordMatchWords, List<String> formMatchWordValues, int resultCount, boolean resultsExist, boolean singleResult) {
+		this.wordMatchWords = wordMatchWords;
+		this.formMatchWordValues = formMatchWordValues;
 		this.resultCount = resultCount;
 		this.resultsExist = resultsExist;
 		this.singleResult = singleResult;
 	}
 
-	public List<Word> getFullMatchWords() {
-		return fullMatchWords;
+	public List<Word> getWordMatchWords() {
+		return wordMatchWords;
 	}
 
-	public List<String> getFormMatchWords() {
-		return formMatchWords;
+	public List<String> getFormMatchWordValues() {
+		return formMatchWordValues;
 	}
 
 	public int getResultCount() {

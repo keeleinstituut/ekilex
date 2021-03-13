@@ -30,9 +30,9 @@
     </div>
   </th:block>
   <th:block th:fragment="form-match">
-    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWordValues)}">
       <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-      <button class="btn btn-link px-0 ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+      <button class="btn btn-link px-0 ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWordValues}" th:text="${word}" th:data-word="${word}"></button>
     </div>
   </th:block>
   <th:block th:fragment="lang-filter">
@@ -61,7 +61,7 @@
     <div th:if="${(wordsData.resultsExist)}" class="row overflow-hidden homonym-panel" th:class="${wordsData.singleResult ? 'd-none border-0' : 'row overflow-hidden homonym-panel'}">
       <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
       <ul class="homonym-list list-unstyled w-100">
-        <li class="homonym-list-item" th:each="word : ${wordsData.fullMatchWords}">
+        <li class="homonym-list-item" th:each="word : ${wordsData.wordMatchWords}">
           <form class="h-100">
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />

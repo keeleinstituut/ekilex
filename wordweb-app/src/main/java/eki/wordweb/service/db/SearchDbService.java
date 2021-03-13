@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Record5;
 import org.jooq.Table;
@@ -40,10 +41,10 @@ import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
-import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordForm;
@@ -65,7 +66,6 @@ import eki.wordweb.data.db.tables.MviewWwWordEtymSourceLink;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
-import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.service.util.JooqBugCompensator;
 
@@ -164,23 +164,23 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 			return Collections.emptyList();
 		}
 
-		Table<MviewWwWordRecord> ww = DSL
-				.selectFrom(w)
-				.where(DSL.or(DSL.lower(w.WORD).eq(searchWordLower), DSL.lower(w.AS_WORD).eq(searchWordLower)) 
-						.andNotExists(DSL
-								.select(f.FORM_ID)
-								.from(f)
-								.where(
-										f.WORD_ID.eq(w.WORD_ID)
-										.and(f.MODE.eq(FormMode.WORD.name()))
-										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE)))))
+		Table<Record> ww = DSL
+				.select(w.fields())
+				.select(DSL.field(DSL.val(true)).as("word_match"))
+				.select(DSL.field(DSL.val(false)).as("form_match"))
+				.from(w)
+				.where(DSL.or(DSL.lower(w.WORD).eq(searchWordLower), DSL.lower(w.AS_WORD).eq(searchWordLower)))
 				.unionAll(DSL
-						.selectFrom(w)
+						.select(w.fields())
+						.select(DSL.field(DSL.val(false)).as("word_match"))
+						.select(DSL.field(DSL.val(true)).as("form_match"))
+						.from(w)
 						.whereExists(DSL
 								.select(f.WORD_ID)
 								.from(f)
 								.where(f.WORD_ID.eq(w.WORD_ID)
 										.and(DSL.lower(f.VALUE).eq(searchWordLower))
+										.and(f.VALUE.ne(f.WORD))
 										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
 										.and(f.MORPH_EXISTS.isTrue())
 										.and(f.IS_QUESTIONABLE.isFalse()))))
@@ -197,7 +197,12 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		return create
 				.selectFrom(ww)
 				.where(where)
-				.orderBy(ww.field("min_ds_order_by"), ww.field("lang_order_by"), wvobf, ww.field("word_type_order_by"), ww.field("homonym_nr"))
+				.orderBy(
+						ww.field("min_ds_order_by"),
+						ww.field("lang_order_by"),
+						wvobf,
+						ww.field("word_type_order_by"),
+						ww.field("homonym_nr"))
 				.fetch(record -> {
 					Word pojo = record.into(Word.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());

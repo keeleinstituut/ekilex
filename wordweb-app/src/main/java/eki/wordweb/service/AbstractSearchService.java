@@ -2,7 +2,6 @@ package eki.wordweb.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,11 +19,11 @@ import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
-import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.SearchContext;
+import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
@@ -113,18 +112,11 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonym(allWords, homonymNr);
-		List<Word> fullMatchWords = allWords.stream()
-				.filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord) || StringUtils.equalsIgnoreCase(word.getAsWord(), searchWord))
-				.collect(Collectors.toList());
-		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
-			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(Word::getWord).distinct().collect(Collectors.toList());
-			int resultCount = CollectionUtils.size(fullMatchWords);
-			boolean isSingleResult = resultCount == 1;
-			return new WordsData(fullMatchWords, formMatchWords, resultCount, resultsExist, isSingleResult);
-		}
-		int resultCount = CollectionUtils.size(allWords);
+		List<Word> wordMatchWords = allWords.stream().filter(word -> word.isWordMatch()).collect(Collectors.toList());
+		List<String> formMatchWordValues = allWords.stream().filter(word -> word.isFormMatch()).map(Word::getWord).distinct().collect(Collectors.toList());
+		int resultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = resultCount == 1;
-		return new WordsData(allWords, Collections.emptyList(), resultCount, resultsExist, isSingleResult);
+		return new WordsData(wordMatchWords, formMatchWordValues, resultCount, resultsExist, isSingleResult);
 	}
 
 	protected void compensateNullWords(Long wordId, List<CollocationTuple> collocTuples) {
