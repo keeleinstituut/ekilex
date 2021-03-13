@@ -73,7 +73,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		String lang = originalWord.getLang();
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue, lang);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue);
 		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
 			valueAsWord = cleanValue;
 		}
@@ -659,7 +659,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue, language);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue);
 		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
 			valueAsWord = cleanValue;
 		}
@@ -1025,7 +1025,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue, language);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue);
 		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
 			valueAsWord = cleanValue;
 		}

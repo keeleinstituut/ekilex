@@ -33,8 +33,7 @@ public class WordService extends AbstractService {
 	public Long createWord(Word word) throws Exception {
 
 		String value = word.getValue();
-		String lang = word.getLang();
-		String valueAsWord = getValueAsWord(value, lang);
+		String valueAsWord = getValueAsWord(value);
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(word, valueAsWord);
 		Long wordId = wordLexemeMeaningId.getWordId();
@@ -53,7 +52,7 @@ public class WordService extends AbstractService {
 		Long wordId = word.getWordId();
 		String value = word.getValue();
 		String lang = word.getLang();
-		String valueAsWord = getValueAsWord(value, lang);
+		String valueAsWord = getValueAsWord(value);
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWord", wordId, ActivityOwner.WORD);
 
@@ -67,12 +66,12 @@ public class WordService extends AbstractService {
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
-	private String getValueAsWord(String value, String lang) {
+	private String getValueAsWord(String value) {
 
 		String valueAsWord;
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		valueAsWord = textDecorationService.removeAccents(cleanValue, lang);
+		valueAsWord = textDecorationService.removeAccents(cleanValue);
 		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
 			valueAsWord = cleanValue;
 		}

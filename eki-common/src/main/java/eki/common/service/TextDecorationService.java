@@ -41,9 +41,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 
 	private static final int SURROUND_CHAR_BY_MARKUP = 2;
 
-	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
-
-	private static final String[] DISCLOSED_DIACRITIC_LANGS = new String[] {"rus"};
+	private static final char[] IGNORED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'й', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž', 'Й'};
 
 	private static final char[] ACCENT_APOSTROPHES = new char[] {'´', '`', '‘', '’'};
 
@@ -258,11 +256,8 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		return cleanValueBuf.toString();
 	}
 
-	public String removeAccents(String value, String lang) {
+	public String removeAccents(String value) {
 		if (StringUtils.isBlank(value)) {
-			return null;
-		}
-		if (ArrayUtils.contains(DISCLOSED_DIACRITIC_LANGS, lang)) {
 			return null;
 		}
 		boolean needsSimplification = StringUtils.containsAny(value, StringUtils.join(symbolSimplificationMap.keySet()));
@@ -277,8 +272,8 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		String simpleStr;
 		char primaryChar;
 		for (char c : chars) {
-			boolean isReservedChar = ArrayUtils.contains(RESERVED_DIACRITIC_CHARS, c);
-			if (isReservedChar) {
+			boolean isIgnoredChar = ArrayUtils.contains(IGNORED_DIACRITIC_CHARS, c);
+			if (isIgnoredChar) {
 				cleanValueBuf.append(c);
 			} else {
 				charAsStr = Character.toString(c);
