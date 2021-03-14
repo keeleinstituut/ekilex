@@ -1420,14 +1420,6 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix-rus">я / ma</span> <span class="highlight"> 1. лицо ед. ч.</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,incl', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
                       <span class="word-sufix-rus">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
@@ -1435,9 +1427,14 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>
+                    <td rowspan="2">
                       <span class="word-sufix-rus">мы / me</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,incl', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,incl', '')"></th:block>
                     </td>
