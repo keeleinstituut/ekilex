@@ -375,6 +375,17 @@
     }
   }
 
+  .legend-sign {
+    font-size: 14px;
+    font-weight: bold;
+    min-width: 32px;
+    text-align: center;
+  }
+  .legend-text {
+    font-size: 14px;
+  }
+  
+  
   @media (max-width: 767px) {
     .modal-title span {
       display: block;
