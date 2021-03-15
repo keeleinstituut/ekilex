@@ -62,7 +62,7 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 		return wwFeedbackSearchBean;
 	}
 
-	@PreAuthorize("principal.admin")
+	@PreAuthorize("principal.datasetCrudPermissionsExist")
 	@GetMapping(WW_FEEDBACK_URI)
 	public String init(Model model) {
 
@@ -75,7 +75,7 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PreAuthorize("principal.admin")
+	@PreAuthorize("principal.datasetCrudPermissionsExist")
 	@GetMapping(WW_FEEDBACK_URI + "/page/{pageNum}")
 	public String page(@PathVariable("pageNum") int pageNum, Model model) {
 
@@ -110,7 +110,7 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE;
 	}
 
-	@PreAuthorize("principal.admin")
+	@PreAuthorize("principal.datasetCrudPermissionsExist")
 	@PostMapping(WW_FEEDBACK_URI + "/addcomment")
 	public String addFeedbackComment(
 			@RequestBody Map<String, String> requestBody,
@@ -132,7 +132,7 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 		return WW_FEEDBACK_PAGE + PAGE_FRAGMENT_ELEM + "eki_comments";
 	}
 
-	@PreAuthorize("principal.admin")
+	@PreAuthorize("principal.datasetCrudPermissionsExist")
 	@GetMapping(WW_FEEDBACK_URI + "/deletefeedback")
 	public String deleteDatasetPerm(@RequestParam("feedbackId") Long feedbackId, Model model) {
 
