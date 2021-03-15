@@ -55,6 +55,58 @@
       </table>
     </th:block>
   </th:block>
+  <th:block th:fragment="table-legend_est">
+	<table>
+	  <tr class="form-display-form-field" style="display: none;">
+	    <td class="legend-sign">`</td>
+		<td class="legend-text">
+		  graavis märgib III-vältelist silpi (silbi 1. täishääliku ees): auton`oomia, k`indel, k`onts`ert, all`ergia, esse`ist
+		</td>
+	  </tr>
+	  <tr class="form-display-form-field" style="display: none;">
+	    <td class="legend-sign">´</td>
+		<td class="legend-text">
+		  akuut märgib rõhusilpi (silbi 1. täishääliku ees; III välte puhul piisab vältemärgist; ei märgita esisilbil): ekl´ektika, de´ontika, all´ergik, abrakad´abra
+		</td>
+	  </tr>
+	  <tr class="form-display-form-field" style="display: none;">
+	    <td class="legend-sign">[</td>
+		<td class="legend-text">
+		  nurksulg märgib sõnatüve ja muutelõpu vahelist piiri sõnavormis: õpiku[d, õpiku[tega; k`oeri ~ k`oera[sid; s`aat[ma, saada[n, s`aat[sin, saade[tud
+		</td>
+	  </tr>
+	  <tr class="form-display-form-field" style="display: none;">
+	    <td class="legend-sign">+</td>
+		<td class="legend-text">
+		  pluss märgib sõnaosapiiri: l`iit+sõna
+		</td>
+	  </tr>
+	  <tr>
+	    <td class="legend-sign">-</td>
+		<td class="legend-text">
+		  sidekriips märgib sõnaosapiiri, mis esineb ka kirjas: `aed-lepa+l`ind (aed-lepalind); tähistab vormi, mida ei saa moodustada: ise+enda nimetav kääne
+		</td>
+	  </tr>
+	  <tr>
+	    <td class="legend-sign">*</td>
+		<td class="legend-text">
+		  tärn märgib moodustatavat, kuid otseses tähenduses võimatut muutevormi: *Helsingid, *ol`ümpia+mängus
+		</td>
+	  </tr>
+	  <tr style="display: none;">
+	    <td class="legend-sign">.</td>
+		<td class="legend-text">
+		  punkt märgib kriitilist (ebatavalist) silbipiiri: ava.us, tri.o
+		</td>
+	  </tr>
+	  <tr class="form-display-form-field" style="display: none;">
+	    <td class="legend-sign">'</td>
+		<td class="legend-text">
+		  sirge ülakoma märgib peenendust (kaashääliku järel): kul'u, not'su
+		</td>
+	  </tr>
+	</table>
+  </th:block>
   <th:block th:fragment="morpho-muutumatu_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1170,6 +1222,7 @@
               <i class="fa fa-star"></i> Eeldatav kasutussagedus võrreldes teiste sõnadega
             </div>
           </div>
+          <th:block th:replace=" :: table-legend_est"></th:block>
         </div>
       </div>
     </div>
@@ -1420,14 +1473,6 @@
                   </tr>
                   <tr>
                     <td>
-                      <span class="word-sufix-rus">я / ma</span> <span class="highlight"> 1. лицо ед. ч.</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,incl', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
                       <span class="word-sufix-rus">ты / sa</span> <span class="highlight">2. лицо ед. ч.</span>
                     </td>
                     <td>
@@ -1435,9 +1480,14 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>
+                    <td rowspan="2">
                       <span class="word-sufix-rus">мы / me</span> <span class="highlight">1. лицо мн. ч.</span>
                     </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,incl', '')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,incl', '')"></th:block>
                     </td>
