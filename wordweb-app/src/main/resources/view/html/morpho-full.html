@@ -107,6 +107,17 @@
 	  </tr>
 	</table>
   </th:block>
+  <th:block th:fragment="table-legend_rus">
+	<table>
+	  <tr>
+	    <td class="legend-sign">*</td>
+		<td class="legend-text">
+		(tärn) märgib oletatavat või harvakasutatavat muutevormi
+		</td>
+	  </tr>
+	</table>
+  </th:block>
+  
   <th:block th:fragment="morpho-muutumatu_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1627,6 +1638,7 @@
               </div>
             </div>
           </div>
+          <th:block th:replace=" :: table-legend_rus"></th:block>
         </div>
       </div>
     </div>
@@ -1736,6 +1748,7 @@
               </div>
             </div>
           </div>
+          <th:block th:replace=" :: table-legend_rus"></th:block>
         </div>
       </div>
     </div>
@@ -2061,7 +2074,7 @@
       </div>
     </div>
   </th:block>
-   <th:block th:fragment="morpho-adjective_rus">
+  <th:block th:fragment="morpho-adjective_rus">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -2078,6 +2091,7 @@
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
+          <th:block th:replace=" :: table-legend_rus"></th:block>
         </div>
       </div>
     </div>
@@ -2179,6 +2193,7 @@
               </div>
             </div>
           </div>
+          <th:block th:replace=" :: table-legend_rus"></th:block>
         </div>
       </div>
     </div>
@@ -2201,6 +2216,7 @@
             <h2>Превосходная степень / Ülivõrre</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
           </div>
+          <th:block th:replace=" :: table-legend_rus"></th:block>
         </div>
       </div>
     </div>
