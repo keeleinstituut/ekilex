@@ -39,7 +39,7 @@
         <div class="pb-4">
           <h3 class="mt-4 mb-2 text-left">Sõnakogud</h3>
           <br>
-          <h5 id="dataset-sss" class="colored-bold">EKI ühendsõnastik 2021</h5>
+          <h5 id="dataset-sss" class="highlighted">EKI ühendsõnastik 2021</h5>
           <p>
             <strong>Bibliograafiline kirje (veebisõnaraamat Sõnaveebis):</strong>
           </p>
@@ -92,12 +92,12 @@
           </p>
           <p>Andmebaas on genereeritud <a href="https://pymorphy2.readthedocs.io/en/latest/misc/citing.html#citing">pymorphy2</a> morfoanalüsaatori abil <a href="http://opencorpora.org/">Open Corpora</a> XML-sõnastiku alusel.
           </p>
-          <h5 class="colored-bold">Oskussõnastikud ja terminibaasid</h5>
+          <h5 class="highlighted">Oskussõnastikud ja terminibaasid</h5>
           <th:block th:each="dataset : ${termDatasets}">
-            <h6 class="colored-bold" th:id="${'dataset-' + dataset.code}" th:text="${dataset.name}">Terminibaas</h6>
+            <h6 class="highlighted" th:id="${'dataset-' + dataset.code}" th:text="${dataset.name}">Terminibaas</h6>
             <p style="white-space: pre-wrap;" th:text="${dataset.description}">(info lisandub)</p>
           </th:block>
-          <h5 id="wordweb" class="colored-bold">Sõnaveeb 2021</h5>
+          <h5 id="wordweb" class="highlighted">Sõnaveeb 2021</h5>
           <p>
             Sõnaveeb on Eesti Keele Instituudi keeleportaal, mis kuvab andmeid Eesti Keele Instituudi sõnastiku- ja 
             terminibaasisüsteemist Ekilex. Sõnaveebi versioon luuakse kord aastas (versiooni näitab aastaarv) ning see 
@@ -117,7 +117,7 @@
             pakkumise arendamise meetme</a> projektist <a href="http://portaal.eki.ee/keeleteaduse-ja-tehnoloogia-osakond/2981-eki-ria-teavitus.html">"Sõnastiku- 
             ja terminibaasisüsteemi Ekilex väliskasu tajaliidesed ja API"</a> (2014–2020).<br>
           </p>
-          <h5 id="ekilex" class="colored-bold">Ekilex 2021</h5>
+          <h5 id="ekilex" class="highlighted">Ekilex 2021</h5>
           <p>
             Ekilex on Eesti Keele Instituudi sõnastiku- ja terminibaasisüsteem, mille andmeid kuvatakse keeleportaalis Sõnaveeb. 
             Ekilexi versioon luuakse kord aastas (versiooni näitab aastaarv) ning see registreeritakse METASHARE’is ja 
