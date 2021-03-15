@@ -58,6 +58,7 @@ $.fn.tagDeleteConfirm = function() {
 		btnCancelLabel : 'Ei',
 		title : title,
 		onConfirm : function() {
+			openWaitDlg();
 			let tagName = $(this).data('tag-name');
 			deleteTag(tagName);
 		}
