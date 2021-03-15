@@ -236,7 +236,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		List<TypeMeaningRelation> meaningRelations = lexemeMeaningTuple.getRelatedMeanings();
 		if (CollectionUtils.isNotEmpty(meaningRelations)) {
-			meaningRelations.removeIf(relation -> !StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getMeaningRelTypeCode()));
+			meaningRelations = meaningRelations.stream().filter(relation -> StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getMeaningRelTypeCode())).collect(Collectors.toList());
 			meaningRelations = filter(meaningRelations, wordLang, destinLangs);
 			meaningRelations = filter(meaningRelations, lexComplexity);
 		}
@@ -367,7 +367,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 		List<TypeMeaningRelation> relatedMeanings = tuple.getRelatedMeanings();
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
-			relatedMeanings.removeIf(relation -> StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getMeaningRelTypeCode()));
+			relatedMeanings = relatedMeanings.stream().filter(relation -> !StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getMeaningRelTypeCode())).collect(Collectors.toList());
 		}
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			relatedMeanings = filter(relatedMeanings, lexComplexity);
