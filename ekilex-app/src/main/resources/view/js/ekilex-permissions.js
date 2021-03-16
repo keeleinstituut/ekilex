@@ -104,18 +104,18 @@ $(function() {
 		});
 	}
 
-	$.fn.userReviewedCheck = function() {
+	$.fn.applicationReviewedCheck = function() {
 		var main = $(this);
 		main.on('click', function(e) {
 			e.preventDefault();
 			openWaitDlg();
-			var userId = main.data('id');
+			var applicationId = main.data('application-id');
 			var checked = main.is(':checked');
 			var setReviewedUrl;
 			if (checked == true) {
-				setReviewedUrl = applicationUrl + 'permissions/setreviewed/' + userId;
+				setReviewedUrl = applicationUrl + 'permissions/setapplicationreviewed/' + applicationId;
 			} else {
-				setReviewedUrl = applicationUrl + 'permissions/remreviewed/' + userId;
+				setReviewedUrl = applicationUrl + 'permissions/remapplicationreviewed/' + applicationId;
 			}
 			$.get(setReviewedUrl).done(function(data) {
 				var permissionsArea = $('#permissionsArea');

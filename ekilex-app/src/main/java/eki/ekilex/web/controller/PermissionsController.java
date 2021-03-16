@@ -205,19 +205,19 @@ public class PermissionsController extends AbstractPrivatePageController {
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/setreviewed/{userId}")
-	public String setReviewed(@PathVariable("userId") Long userId, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/setapplicationreviewed/{applicationId}")
+	public String setApplicationReviewed(@PathVariable("applicationId") Long applicationId, Model model) {
 
-		userService.setReviewed(userId, true);
+		userService.setApplicationReviewed(applicationId, true);
 		populateUserPermDataModel(model);
 
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
 	}
 
-	@GetMapping(PERMISSIONS_URI + "/remreviewed/{userId}")
-	public String remReviewed(@PathVariable("userId") Long userId, Model model) {
+	@GetMapping(PERMISSIONS_URI + "/remapplicationreviewed/{applicationId}")
+	public String remApplicationReviewed(@PathVariable("applicationId") Long applicationId, Model model) {
 
-		userService.setReviewed(userId, false);
+		userService.setApplicationReviewed(applicationId, false);
 		populateUserPermDataModel(model);
 
 		return PERMISSIONS_PAGE + PAGE_FRAGMENT_ELEM + "permissions";
@@ -230,7 +230,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 			@RequestParam(value = "authItem", required = false) AuthorityItem authItem,
 			@RequestParam(value = "authOp", required = false) AuthorityOperation authOp,
 			@RequestParam(value = "authLang", required = false) String authLang,
-			Model model, RedirectAttributes redirectAttributes) {
+			Model model) {
 
 		permissionService.createDatasetPermission(userId, datasetCode, authItem, authOp, authLang);
 		populateUserPermDataModel(model);
@@ -253,7 +253,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 	public String updateReviewComment(
 			@RequestParam("userId") Long userId,
 			@RequestParam("reviewComment") String reviewComment,
-			Model model, RedirectAttributes redirectAttributes) {
+			Model model) {
 
 		userService.updateReviewComment(userId, reviewComment);
 		populateUserPermDataModel(model);
@@ -264,7 +264,7 @@ public class PermissionsController extends AbstractPrivatePageController {
 	@GetMapping(PERMISSIONS_URI + "/deletereviewcomment/{userId}")
 	public String deleteReviewComment(
 			@PathVariable("userId") Long userId,
-			Model model, RedirectAttributes redirectAttributes) {
+			Model model) {
 
 		userService.updateReviewComment(userId, null);
 		populateUserPermDataModel(model);

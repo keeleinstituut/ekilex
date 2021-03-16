@@ -619,3 +619,7 @@ create type type_word_rel_meaning as (meaning_id bigint, definitions text array,
 
 insert into value_state (code, datasets) values ('vigane', '{}');
 insert into value_state_label (code, value, lang, type) values ('vigane', 'vigane', 'est', 'descrip');
+
+alter table eki_user_application add column is_reviewed boolean default false not null;
+update eki_user_application set is_reviewed = true;
+alter table eki_user drop column is_reviewed;

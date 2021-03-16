@@ -88,6 +88,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Tag;
 import eki.ekilex.data.db.tables.TempDsImportPkMap;
 import eki.ekilex.data.db.tables.TempDsImportQueue;
+import eki.ekilex.data.db.tables.TempPNames;
 import eki.ekilex.data.db.tables.TermsOfUse;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
@@ -559,6 +560,11 @@ public class Tables {
      * The table <code>public.temp_ds_import_queue</code>.
      */
     public static final TempDsImportQueue TEMP_DS_IMPORT_QUEUE = TempDsImportQueue.TEMP_DS_IMPORT_QUEUE;
+
+    /**
+     * The table <code>public.temp_p_names</code>.
+     */
+    public static final TempPNames TEMP_P_NAMES = TempPNames.TEMP_P_NAMES;
 
     /**
      * The table <code>public.terms_of_use</code>.

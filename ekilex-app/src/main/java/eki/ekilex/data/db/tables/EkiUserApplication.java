@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row6;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
 
-    private static final long serialVersionUID = -1329141724;
+    private static final long serialVersionUID = -1570701333;
 
     /**
      * The reference instance of <code>public.eki_user_application</code>
@@ -72,6 +72,11 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
      * The column <code>public.eki_user_application.created</code>.
      */
     public final TableField<EkiUserApplicationRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.eki_user_application.is_reviewed</code>.
+     */
+    public final TableField<EkiUserApplicationRecord, Boolean> IS_REVIEWED = createField(DSL.name("is_reviewed"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.eki_user_application</code> table reference
@@ -162,11 +167,11 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Long, Long, String[], String, Timestamp> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, Long, String[], String, Timestamp, Boolean> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
