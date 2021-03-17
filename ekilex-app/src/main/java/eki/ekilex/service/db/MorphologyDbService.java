@@ -46,7 +46,6 @@ public class MorphologyDbService {
 		return create
 				.insertInto(FORM,
 						FORM.PARADIGM_ID,
-						FORM.MODE,
 						FORM.MORPH_GROUP1,
 						FORM.MORPH_GROUP2,
 						FORM.MORPH_GROUP3,
@@ -61,7 +60,6 @@ public class MorphologyDbService {
 						FORM.AUDIO_FILE)
 				.values(
 						form.getParadigmId(),
-						form.getMode().name(),
 						form.getMorphGroup1(),
 						form.getMorphGroup2(),
 						form.getMorphGroup3(),

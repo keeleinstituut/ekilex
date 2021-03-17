@@ -2,7 +2,6 @@ package eki.ekilex.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
 @JsonIgnoreProperties({"displayMorphCode"})
@@ -15,8 +14,6 @@ public class Form extends AbstractDataObject {
 	private String value;
 
 	private String valuePrese;
-
-	private FormMode mode;
 
 	private String[] components;
 
@@ -57,14 +54,6 @@ public class Form extends AbstractDataObject {
 
 	public void setValuePrese(String valuePrese) {
 		this.valuePrese = valuePrese;
-	}
-
-	public FormMode getMode() {
-		return mode;
-	}
-
-	public void setMode(FormMode mode) {
-		this.mode = mode;
 	}
 
 	public String[] getComponents() {

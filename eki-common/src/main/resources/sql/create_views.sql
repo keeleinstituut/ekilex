@@ -193,8 +193,7 @@ from (
               paradigm p,
               word w,
               language wl
-         where f.mode = 'FORM'
-           and f.paradigm_id = p.id
+         where f.paradigm_id = p.id
            and p.word_id = w.id
            and w.lang = wl.code
            and f.morph_code != '??'
@@ -354,8 +353,7 @@ from (select w.id as word_id,
               from paradigm p,
                    form f
               where p.word_id = w.id
-              and   f.paradigm_id = p.id
-              and   f.mode = 'FORM') forms_exist,
+              and   f.paradigm_id = p.id) forms_exist,
              (select min(ds.order_by)
               from lexeme l,
                    dataset ds
@@ -602,7 +600,6 @@ select w.id word_id,
        p.comment paradigm_comment,
        p.inflection_type,
        f.id form_id,
-       f.mode,
        f.morph_group1,
        f.morph_group2,
        f.morph_group3,
@@ -1253,16 +1250,6 @@ from collocation as c
           on lc1.rel_group_id = rgr1.id
   inner join lex_colloc_pos_group as pgr1
           on pgr1.id = rgr1.pos_group_id
-where not exists (select lc.id
-                  from lex_colloc lc,
-                       lexeme l,
-                       paradigm p,
-                       form f
-                  where lc.collocation_id = c.id
-                  and   lc.lexeme_id = l.id
-                  and   p.word_id = l.word_id
-                  and   f.paradigm_id = p.id
-                  and   f.mode = 'UNKNOWN')
 group by l1.id,
          c.id,
          pgr1.id,

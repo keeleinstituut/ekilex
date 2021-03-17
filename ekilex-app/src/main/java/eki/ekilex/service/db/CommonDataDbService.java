@@ -715,7 +715,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
-		Field<String> fmcf = getFormMorphCodeField(w2.ID);
 		Field<String[]> lrc = DSL.field(DSL.select(DSL.arrayAgg(lr.REGISTER_CODE)).from(lr).where(lr.LEXEME_ID.eq(l2.ID)));
 
 		Field<Boolean> whe = DSL
@@ -748,7 +747,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						w2.ID.as("word_id"),
 						w2.VALUE.as("word_value"),
 						w2.VALUE_PRESE.as("word_value_prese"),
-						fmcf.as("morph_code"),
 						w2.HOMONYM_NR,
 						whe.as("homonyms_exist"),
 						w2.LANG,

@@ -1,6 +1,5 @@
 package eki.ekilex.data.api;
 
-import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
 public class Form extends AbstractDataObject {
@@ -10,8 +9,6 @@ public class Form extends AbstractDataObject {
 	private Long id;
 
 	private Long paradigmId;
-
-	private FormMode mode;
 
 	private String morphGroup1;
 
@@ -53,14 +50,6 @@ public class Form extends AbstractDataObject {
 
 	public void setParadigmId(Long paradigmId) {
 		this.paradigmId = paradigmId;
-	}
-
-	public FormMode getMode() {
-		return mode;
-	}
-
-	public void setMode(FormMode mode) {
-		this.mode = mode;
 	}
 
 	public String getMorphGroup1() {

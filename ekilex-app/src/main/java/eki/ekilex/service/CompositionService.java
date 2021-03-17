@@ -15,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
-import eki.common.constant.GlobalConstant;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.GlobalConstant;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.IdPair;
@@ -24,7 +24,6 @@ import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordMeaningRelationsDetails;
-import eki.ekilex.data.WordStress;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
@@ -369,30 +368,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 	private void joinWordStressAndMarkupData(Long targetWordId, Long sourceWordId) {
 
-		Map<Long, WordStress> wordStressData = lookupDbService.getWordStressData(sourceWordId, targetWordId, DISPLAY_FORM_STRESS_SYMBOL);
-		WordStress sourceWordStress = wordStressData.get(sourceWordId);
-		WordStress targetWordStress = wordStressData.get(targetWordId);
-
-		String sourceDisplayForm = sourceWordStress.getDisplayForm();
-		String sourceValuePrese = sourceWordStress.getValuePrese();
-		boolean isSourceDisplayFormStressExists = sourceWordStress.isStressExists();
-		String targetDisplayForm = targetWordStress.getDisplayForm();
-		String targetValuePrese = targetWordStress.getValuePrese();
-		boolean isTargetDisplayFormStressExists = targetWordStress.isStressExists();
-
-		if (sourceDisplayForm != null) {
-			if (targetDisplayForm == null) {
-				cudDbService.updateWordDisplayForm(targetWordId, sourceDisplayForm);
-			} else {
-				if (isSourceDisplayFormStressExists && !isTargetDisplayFormStressExists) {
-					cudDbService.updateWordDisplayForm(targetWordId, sourceDisplayForm);
-				} else if (!isSourceDisplayFormStressExists && isTargetDisplayFormStressExists) {
-					// do nothing
-				} else if (sourceDisplayForm.length() > targetDisplayForm.length()) {
-					cudDbService.updateWordDisplayForm(targetWordId, sourceDisplayForm);
-				}
-			}
-		}
+		String sourceValuePrese = lookupDbService.getWordValuePrese(sourceWordId);
+		String targetValuePrese = lookupDbService.getWordValuePrese(targetWordId);
 
 		if (!StringUtils.equals(targetValuePrese, sourceValuePrese)) {
 			boolean isTargetWordDecorated = textDecorationService.isDecorated(targetValuePrese);

@@ -16,7 +16,6 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record18;
-import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -254,7 +253,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w.ID);
-		Field<String> fmcf = getFormMorphCodeField(w.ID);
 
 		return create
 				.select(
@@ -262,7 +260,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 						w.VALUE.as("word_value"),
 						w.VALUE_PRESE.as("word_value_prese"),
 						w.LANG,
-						fmcf.as("morph_code"),
 						wtf.as("word_type_codes"),
 						wtpf.as("prefixoid"),
 						wtsf.as("suffixoid"),

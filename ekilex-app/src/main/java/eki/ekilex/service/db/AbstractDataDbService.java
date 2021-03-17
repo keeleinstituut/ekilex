@@ -3,7 +3,6 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -11,7 +10,6 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGION;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
-import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
@@ -30,16 +28,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.db.tables.ActivityLog;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.MeaningLastActivityLog;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
@@ -127,26 +122,6 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 						WORD_WORD_TYPE.WORD_ID.eq(wordIdField)
 								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.in(WORD_TYPE_CODES_FOREIGN)))));
 		return wtz;
-	}
-
-	protected Field<String> getFormMorphCodeField(Field<Long> wordIdField) {
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
-		return DSL.field(DSL
-				.select(DSL.field("array_to_string(array_agg(distinct f.morph_code), ',')").cast(String.class))
-				.from(p, f)
-				.where(p.WORD_ID.eq(wordIdField).and(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
-				.groupBy(wordIdField));
-	}
-
-	protected Field<String> getFormDisplayFormField(Field<Long> wordIdField) {
-		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
-		return DSL.field(DSL
-				.select(DSL.field("array_to_string(array_agg(distinct f.display_form), ',')").cast(String.class))
-				.from(p, f)
-				.where(p.WORD_ID.eq(wordIdField).and(f.PARADIGM_ID.eq(p.ID).and(f.MODE.eq(FormMode.WORD.name()))))
-				.groupBy(wordIdField));
 	}
 
 	protected Field<Timestamp> getWordLastActivityEventOnField(Field<Long> wordIdField) {
