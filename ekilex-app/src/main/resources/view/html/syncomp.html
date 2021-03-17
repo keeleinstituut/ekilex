@@ -228,7 +228,7 @@
     <div class="orderable d-flex flex-row" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" >
       <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
       <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
-      <div data-plugin="sorter" data-sorter:type="syn">
+      <div data-plugin="sorter" data-sorter:type="syn" data-sorter:handle=".syn-handle">
         <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
               class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
               th:data-lexeme-id="${lexeme.lexemeId}"

@@ -391,18 +391,24 @@ function loadDetails(wordId, task, lastWordId) {
 			}
 		});
 
-		if (Cookies.get('details-open')) {
-			console.log('asd');
-			const block = $('#'+Cookies.get('details-open'));
-			if (block.children('.details-open').length) {
-				block.find('[name="lexeme-details-btn"]').click();
-			}
-			Cookies.delete('details-open');
-		}
 		$wpm.bindObjects();
+
+		setTimeout(() => {
+
+			if (Cookies.get('details-open')) {
+				
+				const block = $('#'+Cookies.get('details-open'));
+				if (block.children('.details-open').length == 0) {
+					block.find('[name="lexeme-details-btn"]').trigger('click');
+				}
+				Cookies.delete('details-open');
+			} else {
+				closeWaitDlg();
+			}
+		}, 60);
+
 	}).fail(function(data) {
 		alert('Keelendi detailide päring ebaõnnestus');
-	}).always(function() {
 		closeWaitDlg();
 	});
 };
@@ -414,7 +420,6 @@ function loadFullLexemeDetails(lexemeId, lexemeLevels) {
 function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 	openWaitDlg();
 	let lexemeDetailsUrl = applicationUrl + 'lexemedetails/' + composition + '/' + lexemeId + '/' + lexemeLevels;
-	console.log(lexemeDetailsUrl);
 	$.get(lexemeDetailsUrl).done(function(data) {
 		let detailsDiv = $('#lexeme-details-' + lexemeId);
 		detailsDiv.html(data);
