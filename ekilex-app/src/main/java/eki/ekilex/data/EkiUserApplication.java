@@ -9,6 +9,8 @@ public class EkiUserApplication extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long id;
+
 	private Long userId;
 
 	private List<String> datasetCodes;
@@ -17,9 +19,17 @@ public class EkiUserApplication extends AbstractDataObject {
 
 	private String comment;
 
+	private boolean reviewed;
+
 	private Timestamp created;
 
-	private boolean basicApplication;
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -53,20 +63,20 @@ public class EkiUserApplication extends AbstractDataObject {
 		this.comment = comment;
 	}
 
+	public boolean isReviewed() {
+		return reviewed;
+	}
+
+	public void setReviewed(boolean reviewed) {
+		this.reviewed = reviewed;
+	}
+
 	public Timestamp getCreated() {
 		return created;
 	}
 
 	public void setCreated(Timestamp created) {
 		this.created = created;
-	}
-
-	public boolean isBasicApplication() {
-		return basicApplication;
-	}
-
-	public void setBasicApplication(boolean basicApplication) {
-		this.basicApplication = basicApplication;
 	}
 
 }

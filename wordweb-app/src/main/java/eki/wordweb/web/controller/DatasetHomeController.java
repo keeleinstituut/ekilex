@@ -1,6 +1,5 @@
 package eki.wordweb.web.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +17,6 @@ import eki.wordweb.data.DatasetHomeData;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.DatasetContentService;
-import eki.wordweb.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -65,15 +63,10 @@ public class DatasetHomeController extends AbstractController {
 
 	private void populateSearchModel(DatasetHomeData datasetHomeData, Model model) {
 
-		List<String> destinLangs = new ArrayList<>();
-		destinLangs.add(DESTIN_LANG_ALL);
 		Dataset dataset = datasetHomeData.getDataset();
 		String datasetCode = dataset.getCode();
-		List<String> datasetCodes = new ArrayList<>();
-		datasetCodes.add(datasetCode);
-		SessionBean sessionBean = populateCommonModel(model);
-		sessionBean.setDestinLangs(destinLangs);
-		sessionBean.setDatasetCodes(datasetCodes);
+
+		populateCommonModel(model);
 
 		model.addAttribute("searchUri", SEARCH_URI + UNIF_URI);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);

@@ -43,6 +43,10 @@ public class Word extends WordTypeData {
 
 	private List<String> odWordRecommendations;
 
+	private boolean wordMatch;
+
+	private boolean formMatch;
+
 	private boolean formsExist;
 
 	private boolean singlePos;
@@ -185,6 +189,22 @@ public class Word extends WordTypeData {
 
 	public void setOdWordRecommendations(List<String> odWordRecommendations) {
 		this.odWordRecommendations = odWordRecommendations;
+	}
+
+	public boolean isWordMatch() {
+		return wordMatch;
+	}
+
+	public void setWordMatch(boolean wordMatch) {
+		this.wordMatch = wordMatch;
+	}
+
+	public boolean isFormMatch() {
+		return formMatch;
+	}
+
+	public void setFormMatch(boolean formMatch) {
+		this.formMatch = formMatch;
 	}
 
 	public boolean isFormsExist() {

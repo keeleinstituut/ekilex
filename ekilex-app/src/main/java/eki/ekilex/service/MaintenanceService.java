@@ -99,7 +99,6 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		for (WordRecord wordRecord : wordRecords) {
 			String value = wordRecord.getValue();
 			String valueAsWordSrc = wordRecord.getValueAsWord();
-			String lang = wordRecord.getLang();
 			String valueClean = textDecorationService.unifyToApostrophe(value);
 			updateExists = false;
 			if (!StringUtils.equals(value, valueClean)) {
@@ -107,7 +106,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 				unifiedApostropheWordCount.increment();
 				updateExists = true;
 			}
-			String valueAsWordTrgt = textDecorationService.removeAccents(valueClean, lang);
+			String valueAsWordTrgt = textDecorationService.removeAccents(valueClean);
 			if (StringUtils.isNotBlank(valueAsWordTrgt) && !StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
 				wordRecord.setValueAsWord(valueAsWordTrgt);
 				accentRecalcWordCount.increment();

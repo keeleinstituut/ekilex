@@ -68,12 +68,11 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		EkiUserApplication eua = EKI_USER_APPLICATION.as("eua");
 		DatasetPermission dsp = DATASET_PERMISSION.as("dsp");
 
-		Condition enablePendingCond = eu.IS_ENABLED.isNull()
-				.and(eu.IS_REVIEWED.isFalse().or(eu.IS_REVIEWED.isNull()))
-				.andExists(DSL
-						.select(eua.ID)
-						.from(eua)
-						.where(eua.USER_ID.eq(eu.ID)));
+		Condition enablePendingCond = DSL.exists(DSL
+				.select(eua.ID)
+				.from(eua)
+				.where(eua.USER_ID.eq(eu.ID)
+						.and(eua.IS_REVIEWED.isFalse())));
 
 		Condition where = DSL.noCondition();
 		if (StringUtils.isNotBlank(userNameFilter)) {
@@ -114,7 +113,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 						eu.IS_ADMIN.as("admin"),
 						eu.IS_MASTER.as("master"),
 						eu.IS_ENABLED.as("enabled"),
-						eu.IS_REVIEWED.as("reviewed"),
 						eu.REVIEW_COMMENT,
 						eu.CREATED.as("created_on"),
 						epf.as("enable_pending"))

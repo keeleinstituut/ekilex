@@ -25,8 +25,6 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	private Boolean enabled;
 
-	private Boolean reviewed;
-
 	private String reviewComment;
 
 	private Timestamp createdOn;
@@ -99,14 +97,6 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
-	}
-
-	public Boolean getReviewed() {
-		return reviewed;
-	}
-
-	public void setReviewed(Boolean reviewed) {
-		this.reviewed = reviewed;
 	}
 
 	public String getReviewComment() {

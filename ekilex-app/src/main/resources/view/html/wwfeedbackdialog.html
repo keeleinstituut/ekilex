@@ -2,16 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-  <div th:id="${'addFeedbackCommentDlg_' + fbItem.id}" class="modal" role="dialog" th:fragment="add_feedback_comment_dlg">
+  <div th:id="${'addFeedbackCommentDlg_' + feedbackLog.id}" class="modal" role="dialog" th:fragment="add_feedback_comment_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/wwfeedback/addcomment}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="feedbackId" th:value="${fbItem.id}">
+            <input type="hidden" name="feedbackId" th:value="${feedbackLog.id}">
             <textarea class="form-control" rows="2" name="comment"></textarea>
           </div>
           <div class="modal-footer">
-            <button type="submit" name="addCommentBtn" class="btn btn-primary" data-dismiss="modal">Lisa</button>
+            <button type="submit" data-plugin="addFeedbackCommentBtn" class="btn btn-primary" data-dismiss="modal">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

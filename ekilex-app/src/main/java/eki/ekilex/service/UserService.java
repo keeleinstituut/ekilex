@@ -281,8 +281,8 @@ public class UserService implements WebConstant, GlobalConstant {
 	}
 
 	@Transactional
-	public void setReviewed(Long userId, boolean isReviewed) {
-		userDbService.setReviewed(userId, isReviewed);
+	public void setApplicationReviewed(Long applicationId, boolean isReviewed) {
+		userDbService.setApplicationReviewed(applicationId, isReviewed);
 	}
 
 	@Transactional

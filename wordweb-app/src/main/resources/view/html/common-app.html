@@ -280,12 +280,14 @@
         <div class="row">
           <div class="col-12 col-md-4">
             <div class="d-flex justify-content-center justify-content-md-start mb-4">
-              <th:block th:if="${pageContext != 'simpleSearch'}">
-              <img th:src="@{'/view/images/sonaveeb-logo-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
-              </th:block>
-              <th:block th:if="${pageContext == 'simpleSearch'}">
-                <img th:src="@{'/view/images/sonaveeb-logo-light-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
-              </th:block>
+              <a th:href="@{/}">
+                <th:block th:if="${pageContext != 'simpleSearch'}">
+                  <img th:src="@{'/view/images/sonaveeb-logo-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
+                </th:block>
+                <th:block th:if="${pageContext == 'simpleSearch'}">
+                  <img th:src="@{'/view/images/sonaveeb-logo-light-inverted-lg.svg'}" alt="Sõnaveeb Logo" class="logo">
+                </th:block>
+              </a>
             </div>
           </div>
           <div class="col-12 col-md-4">
@@ -310,7 +312,7 @@
         <div class="row row-muted mt-0">
           <div class="col-12 col-md-4">
             <div class="d-flex flex-column d-md-block text-center text-md-left mb-2">
-              <span th:text="#{general.lastupdate}">Sõnaveeb 2020</span>
+              <span th:text="#{general.lastupdate}">Sõnaveeb 2021</span>
               <span th:if="${appData != null}" th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}"></span>
             </div>
           </div>
@@ -368,13 +370,13 @@
         <div class="form-group col-12 col-md-6">
           <label for="nameInput2" class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
           <span>*</span>
-          <input id="nameInput2" type="text" class="form-control" name="sender" required>
+          <input id="nameInput2" type="text" class="form-control" name="senderName" required>
           <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
         </div>
         <div class="form-group col-12 col-md-6">
           <label for="emailInput2" class="col-form-label" th:text="#{label.fb.email}">E-post</label>
           <span>*</span>
-          <input id="emailInput2" type="email" class="form-control form-email" name="email" required>
+          <input id="emailInput2" type="email" class="form-control form-email" name="senderEmail" required>
           <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
         </div>
       </div>
@@ -429,13 +431,13 @@
         <div class="form-group col-12 col-md-6">
           <label for="nameInput" class="col-form-label" th:text="#{label.fb.name}">Ees- ja perekonnanimi</label>
           <span>*</span>
-          <input id="nameInput" type="text" class="form-control" name="sender" required>
+          <input id="nameInput" type="text" class="form-control" name="senderName" required>
           <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
         </div>
         <div class="form-group col-12 col-md-6">
           <label for="emailInput" class="col-form-label" th:text="#{label.fb.email}">E-post</label>
           <span>*</span>
-          <input id="emailInput" type="email" class="form-control form-email" name="email" required>
+          <input id="emailInput" type="email" class="form-control form-email" name="senderEmail" required>
           <div class="invalid-feedback" th:text="#{label.fb.required}">Väli on kohustuslik</div>
         </div>
       </div>
@@ -473,7 +475,7 @@
   <th:block th:fragment="update-msg-example">
     <div class="alert   alert-dismissible fade show bg-warning text-black px-3 py-1 d-flex align-items-center update-alert" role="alert">
       <i class="fa fa-exclamation-triangle small mr-2" aria-hidden="true"></i>
-      <span th:text="#{warning.underconstruction.everything}">Sõnaveeb uueneb. Uut versiooni tutvustame ... 2020</span>
+      <span th:text="#{warning.underconstruction.everything}">Sõnaveeb uueneb. Uut versiooni tutvustame ... 2021</span>
       <button type="button" class="close btn bg-transparent ml-auto py-1" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>

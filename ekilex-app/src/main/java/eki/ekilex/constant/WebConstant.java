@@ -322,6 +322,8 @@ public interface WebConstant {
 
 	String PERM_SEARCH_BEAN = "permSearchBean";
 
+	String WW_FEEDBACK_SEARCH_BEAN = "wwFeedbackSearchBean";
+
 	String APP_DATA_MODEL_KEY = "appData";
 
 	String VIEW_UTIL_KEY = "viewUtil";

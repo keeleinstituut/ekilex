@@ -55,7 +55,6 @@ create table eki_user
   is_admin boolean default false,
   is_master boolean default false,
   is_enabled boolean,
-  is_reviewed boolean,
   review_comment text,
   created timestamp not null default statement_timestamp(),
   unique(email)
@@ -68,6 +67,7 @@ create table eki_user_application
   user_id bigint references eki_user(id) on delete cascade not null,
   datasets varchar(10) array null,
   comment text null,
+  is_reviewed boolean default false not null,
   created timestamp not null default statement_timestamp()
 );
 alter sequence eki_user_application_id_seq restart with 10000;

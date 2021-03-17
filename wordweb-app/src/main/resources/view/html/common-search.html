@@ -30,9 +30,9 @@
     </div>
   </th:block>
   <th:block th:fragment="form-match">
-    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+    <div class="mr-4 homonym-innerwrap show-with-details d-flex align-items-center" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWordValues)}">
       <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-      <button class="btn btn-link px-0 ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+      <button class="btn btn-link px-0 ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWordValues}" th:text="${word}" th:data-word="${word}"></button>
     </div>
   </th:block>
   <th:block th:fragment="lang-filter">
@@ -61,7 +61,7 @@
     <div th:if="${(wordsData.resultsExist)}" class="row overflow-hidden homonym-panel" th:class="${wordsData.singleResult ? 'd-none border-0' : 'row overflow-hidden homonym-panel'}">
       <button type="button" class="homonym-list-toggle d-flex d-md-none" id="homonymListToggleButton">Nupu sisu</button>
       <ul class="homonym-list list-unstyled w-100">
-        <li class="homonym-list-item" th:each="word : ${wordsData.fullMatchWords}">
+        <li class="homonym-list-item" th:each="word : ${wordsData.wordMatchWords}">
           <form class="h-100">
             <input type="hidden" name="word-id" th:value="${word.wordId}" />
             <input type="hidden" name="word-selected" th:value="${word.selected}" />
@@ -127,7 +127,11 @@
             isProTerm = ${viewUtil.isProTermData(lexeme)},
             isLimTerm = ${viewUtil.isLimTermData(lexeme)}">
     <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-4 pl-3': ''">
-      <h6 class="font-weight-bold" th:if="${isProTerm}" th:text="${lexeme.datasetName}">Eesti keele sõnaraamat 2019</h6>
+      <th:block th:if="${isProTerm}">
+        <h6 class="font-weight-bold">
+          <a th:href="@{'/ds/' + ${lexeme.datasetCode}}" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
+        </h6>
+      </th:block>
       <th:block th:if="${lexeme.correctMeaningWord != null}">
         <div>
           <span th:text="#{label.word.incorrect}"></span>

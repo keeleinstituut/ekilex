@@ -1,46 +1,34 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
-import javax.persistence.Column;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class Feedback extends AbstractDataObject {
+import eki.common.data.AbstractDataObject;
+
+public class FeedbackLog extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "feedback_type")
 	private String feedbackType;
 
-	@Column(name = "created_on")
 	private Timestamp createdOn;
 
-	@Column(name = "sender_name")
-	private String sender;
+	private String senderName;
 
-	@Column(name = "sender_email")
-	private String email;
+	private String senderEmail;
 
-	@Column(name = "word")
 	private String word;
 
-	@Column(name = "definition")
 	private String definition;
 
-	@Column(name = "comments")
 	private String comments;
 
-	@Column(name = "usages")
 	private String usages;
 
-	@Column(name = "other_info")
 	private String otherInfo;
 
-	@Column(name = "last_search")
 	private String lastSearch;
 
 	private List<FeedbackComment> feedbackComments;
@@ -69,20 +57,20 @@ public class Feedback extends AbstractDataObject {
 		this.createdOn = createdOn;
 	}
 
-	public String getSender() {
-		return sender;
+	public String getSenderName() {
+		return senderName;
 	}
 
-	public void setSender(String sender) {
-		this.sender = sender;
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getSenderEmail() {
+		return senderEmail;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setSenderEmail(String senderEmail) {
+		this.senderEmail = senderEmail;
 	}
 
 	public String getWord() {
