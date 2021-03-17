@@ -440,7 +440,7 @@
                 <span class="tag mb-1 d-inline-block" th:each="government,iter : ${lexeme.governments}" th:text="${government.value}"> </span>
               </div>
               <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
-                <b class="text-medium text-gray-350">Näited</b>
+                <b class="text-medium text-gray-350" th:text="#{button.label.usages}">Näited</b>
                 <th:block th:each="usage,usageIter : ${lexeme.usages}"
                           th:with="isCollapsable=${usageIter.count > T(eki.wordweb.constant.WebConstant).TYPICAL_COLLECTIONS_DISPLAY_LIMIT}">
                   <div class="usage-item" th:if="${!isCollapsable}">

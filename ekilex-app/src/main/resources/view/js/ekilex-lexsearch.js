@@ -391,6 +391,14 @@ function loadDetails(wordId, task, lastWordId) {
 			}
 		});
 
+		if (Cookies.get('details-open')) {
+			console.log('asd');
+			const block = $('#'+Cookies.get('details-open'));
+			if (block.children('.details-open').length) {
+				block.find('[name="lexeme-details-btn"]').click();
+			}
+			Cookies.delete('details-open');
+		}
 		$wpm.bindObjects();
 	}).fail(function(data) {
 		alert('Keelendi detailide päring ebaõnnestus');
@@ -474,6 +482,9 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 };
 
 function refreshDetailsSearch(id) {
+	if ($('.details-open').length) {
+		Cookies.set('details-open', $('.details-open').parent().attr('id'));
+	}
 	if (typeof id === 'object') {
 		var obj = id;
 		if (obj.attr('[data-rel]') === 'details-area') {
