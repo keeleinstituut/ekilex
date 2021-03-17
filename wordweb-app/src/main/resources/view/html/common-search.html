@@ -374,7 +374,7 @@
               </div>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.learnerComments)}">
                 <div class="col-6">
-                  <b th:text="#{label.learner.comment}" class="text-gray-350">Õppekommentaar</b>
+                  <b th:text="#{label.learner.comment}" class="text-gray-350 text-medium">Õppekommentaar</b>
                 </div>
                 <div class="col-12">
                   <div th:each="note : ${lexeme.learnerComments}" th:utext="${note}"></div>

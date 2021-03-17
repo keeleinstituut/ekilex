@@ -18478,6 +18478,18 @@ body {
   margin-right: 0;
 }
 
+.wordmodal .legend-sign {
+  font-size: 14px;
+  font-weight: bold;
+  min-width: 32px;
+  text-align: center;
+}
+
+.wordmodal .legend-text {
+  font-size: 14px;
+  white-space: normal;
+}
+
 @media (max-width: 767px) {
   .wordmodal .modal-title span {
     display: block;
@@ -19055,6 +19067,7 @@ eki-shy {
 
 .morphology-paradigm table td {
   min-width: 50%;
+  white-space: nowrap;
 }
 
 .homonym-image {

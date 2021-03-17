@@ -480,6 +480,8 @@ function initMultiselectRelationDlg(dlg) {
 	let selectElem = dlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 
+	console.log('woop');
+
 	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
 		let searchBtn = $(this);
