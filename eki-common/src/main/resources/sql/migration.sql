@@ -423,6 +423,7 @@ alter table word drop column word_class cascade;
 
 delete from form where mode in ('UNKNOWN', 'AS_WORD');
 delete from form where mode = 'WORD' and morph_code = '??' and audio_file is null;
+alter table form drop column mode cascade;
 
 delete from lexeme where type = 'SECONDARY';
 alter table lexeme drop column type cascade;
