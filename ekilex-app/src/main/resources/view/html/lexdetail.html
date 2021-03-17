@@ -135,7 +135,7 @@
                   </button>
                 </span>
                 <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2 flex-shrink-0" style="width: 30px;"></span>
-                <div data-plugin="sorter" data-sorter:type="syn" class="w-100">
+                <div data-plugin="sorter" data-sorter:type="syn" class="w-100" data-sorter:handle=".hidden-buttons">
                   <div th:each="syn,synIter : ${synonymLangGroup.synonyms}"
                        class="draggable-syn-rel do-refresh"
                        th:data-lexeme-id="${lexeme.lexemeId}"
@@ -146,6 +146,13 @@
                        th:with="
                          isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
                          isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
+
+
+                    <th:block th:each="synWord, synWordIter : ${syn.words}">
+                      <th:block th:if="${isMeaningWordSyn}">
+                        <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
+                      </th:block>
+                    </th:block>
                     <div class="hidden-buttons">
                       <th:block th:each="synWord, synWordIter : ${syn.words}">
                         <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>

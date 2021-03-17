@@ -4,6 +4,7 @@ class Sorter {
     this.main = element;
     this.draggable = $(this.main.attr('data-dropper:draggable'));
     this.type = this.main.attr('data-sorter:type');
+    this.handle = this.main.attr('data-sorter:handle') || false;
   }
 
   /* Unified sunctionality */
@@ -13,6 +14,7 @@ class Sorter {
         items: '.sortable-main-group',
         placeholder: "ui-state-highlight",
         cancel: '',
+        handle: this.handle,
         tolerance: 'pointer',
         start: function(event, ui) {
           ui.placeholder.css({
@@ -26,6 +28,7 @@ class Sorter {
         items: '.sortable-child-group',
         placeholder: "ui-state-highlight",
         cancel: '',
+        handle: this.handle,
         tolerance: 'pointer',
         start: function(event, ui) {
           ui.placeholder.css({
@@ -40,6 +43,7 @@ class Sorter {
       this.main.sortable({
         items: '> .sortable-main-group',
         placeholder: "ui-state-highlight",
+        handle: this.handle,
         tolerance: 'pointer',
         start: function(event, ui){
           if (this.type === 'lex-details') {

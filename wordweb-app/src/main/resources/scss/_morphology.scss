@@ -41,7 +41,6 @@
 }
 
 .morphology-paradigm {
-
   hr {
     margin: 10px -10px 0;
   }
@@ -52,6 +51,7 @@
     min-width: 100%;
     td {
       min-width: 50%;
+      white-space: nowrap;
     }
   }
 }

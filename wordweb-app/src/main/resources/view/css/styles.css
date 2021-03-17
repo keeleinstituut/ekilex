@@ -19055,6 +19055,7 @@ eki-shy {
 
 .morphology-paradigm table td {
   min-width: 50%;
+  white-space: nowrap;
 }
 
 .homonym-image {
