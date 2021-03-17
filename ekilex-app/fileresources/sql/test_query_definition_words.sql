@@ -9,19 +9,14 @@ from (select count(l.word_id) word_count,
       where d.meaning_id = m.id
       and   l.meaning_id = m.id
       group by d.id) d_w_cnt,
-     (select f.value word,
+     (select w.value word,
              d.id definition_id,
              d.value definition
       from word w,
-           paradigm p,
-           form f,
            meaning m,
            definition d,
            lexeme l
-      where f.paradigm_id = p.id
-      and   p.word_id = w.id
-      and   f.mode = 'WORD'
-      and   l.word_id = w.id
+      where l.word_id = w.id
       and   l.meaning_id = m.id
       and   d.meaning_id = m.id) d_w
 where d_w.definition_id = d_w_cnt.definition_id

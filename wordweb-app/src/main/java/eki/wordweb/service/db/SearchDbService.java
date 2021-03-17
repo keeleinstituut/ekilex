@@ -37,7 +37,6 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
-import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
@@ -361,7 +360,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
-		Condition where = f.PARADIGM_ID.eq(paradigmId).and(f.MODE.in(FormMode.WORD.name(), FormMode.FORM.name()));
+		Condition where = f.PARADIGM_ID.eq(paradigmId);
 		if (maxDisplayLevel != null) {
 			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
 		}
@@ -383,7 +382,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
-		Condition where = f.WORD_ID.eq(wordId).and(f.MODE.in(FormMode.WORD.name(), FormMode.FORM.name()));
+		Condition where = f.WORD_ID.eq(wordId);
 		if (maxDisplayLevel != null) {
 			where = where.and(f.DISPLAY_LEVEL.le(maxDisplayLevel));
 		}

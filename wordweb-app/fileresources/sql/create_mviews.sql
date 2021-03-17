@@ -217,7 +217,6 @@ dblink(
 	paradigm_comment text,
 	inflection_type varchar(100),
 	form_id bigint,
-	mode varchar(100),
 	morph_group1 text,
 	morph_group2 text,
 	morph_group3 text,
@@ -451,7 +450,6 @@ create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));
 create index mview_ww_form_paradigm_id_idx on mview_ww_form (paradigm_id);
 create index mview_ww_form_value_idx on mview_ww_form (value);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(value));
-create index mview_ww_form_mode_idx on mview_ww_form (mode);
 create index mview_ww_form_lang_idx on mview_ww_form (lang);
 create index mview_ww_form_display_level_idx on mview_ww_form (display_level);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);

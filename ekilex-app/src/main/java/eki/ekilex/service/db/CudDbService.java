@@ -3,7 +3,6 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
@@ -18,7 +17,6 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
-import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -45,7 +43,6 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.Classifier;
@@ -316,27 +313,12 @@ public class CudDbService extends AbstractDataDbService {
 				.set(WORD.VALUE_PRESE, valuePrese)
 				.where(WORD.ID.eq(wordId))
 				.execute();
-		create.update(FORM)
-				.set(FORM.VALUE, value)
-				.set(FORM.VALUE_PRESE, valuePrese)
-				.from(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
-				.execute();
 	}
 
 	public void updateWordValuePrese(Long wordId, String valuePrese) {
 		create.update(WORD)
 				.set(WORD.VALUE_PRESE, valuePrese)
 				.where(WORD.ID.eq(wordId))
-				.execute();
-		create.update(FORM)
-				.set(FORM.VALUE_PRESE, valuePrese)
-				.from(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.execute();
 	}
 
@@ -411,16 +393,6 @@ public class CudDbService extends AbstractDataDbService {
 		create.update(WORD)
 				.set(WORD.LANG, langCode)
 				.where(WORD.ID.eq(wordId))
-				.execute();
-	}
-
-	public void updateWordDisplayForm(Long wordId, String displayForm) {
-		create.update(FORM)
-				.set(FORM.DISPLAY_FORM, displayForm)
-				.from(PARADIGM)
-				.where(PARADIGM.WORD_ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.execute();
 	}
 

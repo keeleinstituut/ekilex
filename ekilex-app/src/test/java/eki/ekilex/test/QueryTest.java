@@ -61,31 +61,6 @@ public class QueryTest {
 	}
 
 	@Test
-	public void testQueryByWordComponents() throws Exception {
-
-		final String sqlScriptFilePath = "./fileresources/sql/test_query_by_word_comp.sql";
-		final String compPrefix = "hall%";
-
-		Map<String, String> paramMap = new HashMap<>();
-		paramMap.put("compPrefix", compPrefix);
-
-		String sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath);
-		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
-
-		List<String> resultWords = new ArrayList<>();
-		String word;
-		for (Map<String, Object> result : results) {
-			word = result.get("word").toString();
-			resultWords.add(word);
-		}
-
-		assertTrue("Incorrect query result", resultWords.contains("hall"));
-		assertTrue("Incorrect query result", resultWords.contains("hallasääsk"));
-		assertTrue("Incorrect query result", resultWords.contains("linnahall"));
-		assertTrue("Incorrect query result", resultWords.contains("tumehall"));
-	}
-
-	@Test
 	public void testQueryWordDefinitions() throws Exception {
 
 		final String sqlScriptFilePath = "./fileresources/sql/test_query_word_definitions.sql";

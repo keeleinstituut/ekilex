@@ -1,6 +1,5 @@
 package eki.ekilex.data;
 
-import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
 public class ParadigmFormTuple extends AbstractDataObject {
@@ -22,8 +21,6 @@ public class ParadigmFormTuple extends AbstractDataObject {
 	private String formValue;
 
 	private String formValuePrese;
-
-	private FormMode mode;
 
 	private String[] components;
 
@@ -99,14 +96,6 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	public void setFormValuePrese(String formValuePrese) {
 		this.formValuePrese = formValuePrese;
-	}
-
-	public FormMode getMode() {
-		return mode;
-	}
-
-	public void setMode(FormMode mode) {
-		this.mode = mode;
 	}
 
 	public String[] getComponents() {

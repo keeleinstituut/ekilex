@@ -2,7 +2,6 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -19,8 +18,6 @@ public class Form extends AbstractDataObject {
 	private String paradigmComment;
 
 	private String inflectionType;
-
-	private FormMode mode;
 
 	private String morphGroup1;
 
@@ -108,14 +105,6 @@ public class Form extends AbstractDataObject {
 
 	public void setInflectionType(String inflectionType) {
 		this.inflectionType = inflectionType;
-	}
-
-	public FormMode getMode() {
-		return mode;
-	}
-
-	public void setMode(FormMode mode) {
-		this.mode = mode;
 	}
 
 	public String getMorphGroup1() {

@@ -47,7 +47,6 @@ import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordStress;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -101,27 +100,8 @@ public class LookupService extends AbstractWordSearchService {
 	@Transactional
 	public boolean isValidWordStressAndMarkup(Long sourceWordId, Long targetWordId) {
 
-		Map<Long, WordStress> wordStressData = lookupDbService.getWordStressData(sourceWordId, targetWordId, DISPLAY_FORM_STRESS_SYMBOL);
-		WordStress sourceWordStress = wordStressData.get(sourceWordId);
-		WordStress targetWordStress = wordStressData.get(targetWordId);
-
-		if (sourceWordStress.isMorphExists() && targetWordStress.isMorphExists()) {
-			String sourceDisplayForm = sourceWordStress.getDisplayForm();
-			boolean isSourceDisplayFormStressExists = sourceWordStress.isStressExists();
-			String targetDisplayForm = targetWordStress.getDisplayForm();
-			boolean isTargetDisplayFormStressExists = targetWordStress.isStressExists();
-			boolean isDisplayFormMatch = isDisplayFormMatch(targetDisplayForm, sourceDisplayForm);
-			if (!isDisplayFormMatch) {
-				if (isSourceDisplayFormStressExists && isTargetDisplayFormStressExists) {
-					return false;
-				} else if (!isSourceDisplayFormStressExists && !isTargetDisplayFormStressExists) {
-					return false;
-				}
-			}
-		}
-
-		String sourceValuePrese = sourceWordStress.getValuePrese();
-		String targetValuePrese = targetWordStress.getValuePrese();
+		String sourceValuePrese = lookupDbService.getWordValuePrese(sourceWordId);
+		String targetValuePrese = lookupDbService.getWordValuePrese(targetWordId);
 		if (StringUtils.equals(sourceValuePrese, targetValuePrese)) {
 			return true;
 		}
@@ -132,19 +112,6 @@ public class LookupService extends AbstractWordSearchService {
 			return false;
 		}
 		return true;
-	}
-
-	private boolean isDisplayFormMatch(String targetDisplayForm, String sourceDisplayForm) {
-
-		String cleanedTargetDisplayForm = targetDisplayForm;
-		String cleanedSourceDisplayForm = sourceDisplayForm;
-
-		for (String ignoreSymbol : DISPLAY_FORM_IGNORE_SYMBOLS) {
-			cleanedTargetDisplayForm = StringUtils.remove(cleanedTargetDisplayForm, ignoreSymbol);
-			cleanedSourceDisplayForm = StringUtils.remove(cleanedSourceDisplayForm, ignoreSymbol);
-		}
-
-		return StringUtils.equals(cleanedTargetDisplayForm, cleanedSourceDisplayForm);
 	}
 
 	@Transactional

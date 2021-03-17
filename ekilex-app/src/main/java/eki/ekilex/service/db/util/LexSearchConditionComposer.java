@@ -37,7 +37,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityFunct;
 import eki.common.constant.ActivityOwner;
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchEntity;
@@ -250,7 +249,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Form f1 = Form.FORM.as("f1");
 				Condition where1 = p1.WORD_ID.eq(w1.ID)
 						.and(f1.PARADIGM_ID.eq(p1.ID))
-						.and(f1.MODE.eq(FormMode.FORM.name()))
 						.and(f1.MORPH_EXISTS.isTrue())
 						.and(f1.IS_QUESTIONABLE.isFalse())
 						.and(f1.MORPH_CODE.ne(UNKNOWN_FORM_CODE));
@@ -266,8 +264,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Lexeme l1 = LEXEME.as("l1");
 				Meaning m1 = MEANING.as("m1");
 
-				Condition where1 = l1.WORD_ID.eq(w1.ID)
-						.and(l1.MEANING_ID.eq(m1.ID));
+				Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.MEANING_ID.eq(m1.ID));
 
 				where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 				where1 = searchFilterHelper.applyDomainValueFilters(searchCriteria, m1.ID, where1);

@@ -14,8 +14,6 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 
 	private String wordValuePrese;
 
-	private String morphCode;
-
 	private Integer homonymNr;
 
 	private boolean homonymsExist;
@@ -64,14 +62,6 @@ public class MeaningWord extends AbstractDataObject implements DecoratedWordType
 	@Override
 	public void setWordValuePrese(String wordValuePrese) {
 		this.wordValuePrese = wordValuePrese;
-	}
-
-	public String getMorphCode() {
-		return morphCode;
-	}
-
-	public void setMorphCode(String morphCode) {
-		this.morphCode = morphCode;
 	}
 
 	public Integer getHomonymNr() {

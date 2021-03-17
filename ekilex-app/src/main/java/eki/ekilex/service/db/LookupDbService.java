@@ -29,7 +29,6 @@ import static org.jooq.impl.DSL.field;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -43,18 +42,14 @@ import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FormMode;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.WordStress;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
@@ -72,6 +67,10 @@ public class LookupDbService extends AbstractDataDbService {
 
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
+
+	public String getWordValuePrese(Long wordId) {
+		return create.select(WORD.VALUE_PRESE).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
+	}
 
 	public Long getWordWordTypeId(Long wordId, String typeCode) {
 		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
@@ -197,57 +196,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
 				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetchInto(Relation.class);
-	}
-
-	public Map<Long, WordStress> getWordStressData(Long wordId1, Long wordId2, char displayFormStressSym) {
-
-		Word w = WORD.as("w");
-		Form fm = FORM.as("fm");
-		Paradigm pm = PARADIGM.as("pm");
-
-		String displayFormStressCrit = new StringBuilder().append('%').append(displayFormStressSym).append('%').toString();
-		Field<Boolean> dfsf = DSL.field(DSL.exists(DSL
-				.select(fm.ID)
-				.from(pm, fm)
-				.where(
-						pm.WORD_ID.eq(w.ID)
-								.and(fm.PARADIGM_ID.eq(pm.ID))
-								.and(fm.MODE.eq(FormMode.WORD.name()))
-								.and(fm.DISPLAY_FORM.like(displayFormStressCrit)))));
-		Field<Boolean> wmef = DSL.field(DSL.exists(DSL
-				.select(fm.ID)
-				.from(pm, fm)
-				.where(
-						pm.WORD_ID.eq(w.ID)
-								.and(fm.PARADIGM_ID.eq(pm.ID))
-								.and(fm.MODE.eq(FormMode.FORM.name())))));
-		Field<String> fdff = getFormDisplayFormField(w.ID);
-
-		Map<Long, List<WordStress>> wordStressFullDataMap = create
-				.select(
-						w.ID.as("word_id"),
-						w.VALUE_PRESE,
-						fdff.as("display_form"),
-						dfsf.as("stress_exists"),
-						wmef.as("morph_exists"))
-				.from(w)
-				.where(w.ID.in(wordId1, wordId2))
-				.fetchGroups(DSL.field("word_id", Long.class), WordStress.class);
-
-		Map<Long, WordStress> wordStressSingleDataMap = wordStressFullDataMap.entrySet().stream()
-				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> {
-					List<WordStress> wordStressCandidates = entry.getValue();
-					if (wordStressCandidates.size() == 1) {
-						return wordStressCandidates.get(0);
-					}
-					List<WordStress> wordStressWithMorphCandidates = wordStressCandidates.stream().filter(WordStress::isMorphExists).collect(Collectors.toList());
-					if (wordStressWithMorphCandidates.size() == 1) {
-						return wordStressWithMorphCandidates.get(0);
-					}
-					return wordStressCandidates.get(0);
-				}));
-
-		return wordStressSingleDataMap;
 	}
 
 	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {
@@ -559,10 +507,7 @@ public class LookupDbService extends AbstractDataDbService {
 		return create
 				.select(field(DSL.count(FORM.ID).gt(0)).as("forms_exist"))
 				.from(PARADIGM, FORM)
-				.where(
-						PARADIGM.WORD_ID.eq(wordId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.FORM.name())))
+				.where(PARADIGM.WORD_ID.eq(wordId).and(FORM.PARADIGM_ID.eq(PARADIGM.ID)))
 				.fetchSingleInto(Boolean.class);
 	}
 

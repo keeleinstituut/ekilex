@@ -677,7 +677,6 @@ create table form
 (
   id bigserial primary key,
   paradigm_id bigint references paradigm(id) on delete cascade not null,
-  mode varchar(100) not null,
   morph_group1 text null,
   morph_group2 text null,
   morph_group3 text null,
@@ -1171,8 +1170,6 @@ create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
 create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops);
 create index form_morph_code_idx on form(morph_code);
-create index form_mode_idx on form(mode);
-create index form_value_mode_idx on form(value, mode);
 create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);

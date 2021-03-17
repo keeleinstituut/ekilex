@@ -13,7 +13,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import eki.common.constant.FormMode;
 import eki.common.constant.GlobalConstant;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
@@ -156,7 +155,7 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		if (CollectionUtils.isNotEmpty(forms)) {
 			Form firstAvailableWordForm = forms.stream()
-					.filter(form -> form.getMode().equals(FormMode.WORD))
+					.filter(form -> !form.isQuestionable() && StringUtils.equals(word.getWord(), form.getValue()))
 					.findFirst().orElse(null);
 			if (firstAvailableWordForm != null) {
 				firstAvailableAudioFile = firstAvailableWordForm.getAudioFile();
