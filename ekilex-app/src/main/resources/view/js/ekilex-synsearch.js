@@ -3,8 +3,10 @@ var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
 var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
+
 function initializeSynSearch() {
 	let activeSearchResultID;
+	var sidebarScrollPosition = {};
 
 	//Enter keyboard edit mode
 	$(document).on("click", "#keyboardEditBtn", function() {
@@ -49,6 +51,11 @@ function initializeSynSearch() {
 			detailsUrl += '?markedSynMeaningId=' + markedSynMeaningId;
 		}
 
+		sidebarScrollPosition = {
+			id: $('#syn-details-area').attr('data-id'),
+			pos: $("#synCandidatesListDiv").scrollTop(),
+		}
+
 		$.get(detailsUrl).done(function(data) {
 			let detailsDiv = $('#syn-details-area');
 			detailsDiv.replaceWith(data);
@@ -58,6 +65,11 @@ function initializeSynSearch() {
 			$('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
 
 			$wpm.bindObjects();
+
+			if ($('#syn-details-area').attr('data-id') === sidebarScrollPosition.id) {
+				$('#synCandidatesListDiv').scrollTop(sidebarScrollPosition.pos);
+			}
+
 			$('.syn-stats-popover').popover({
 				template: '<div class="popover popover-inverted synonym-statistics-popover" role="tooltip"><div class="arrow"></div><div class="popover-head"><h3 class="popover-header"></h3></div><div class="popover-body"></div></div>',
 				placement: 'top',
