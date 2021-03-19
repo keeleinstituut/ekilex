@@ -1,6 +1,49 @@
 Märkused ver 1.21.0 tarne kohta:
 
-sõnaveebis võrgustiku sisseviskamise lingi määrang:
+1. Käivita andmebaasi migratsiooni skript:
 
-ekilex.limterm.details.url=https://(ekilex)/limtermsearch?id={meaningId}
+   ekilex/eki-common/src/main/resources/sql/delivery.sql
+   
+   Olulisemad peatükid:
+   - tühjade ilmikute kustutamine
+   - korduvate keelendite harvendamine
+   - terminivõrgustiku loomine
+   - osasünonüümide konverteerimine tähendusseosteks
+   - keelendite ja paradigmade struktuuride muudatused
+   - viimaste muutmiste logikirjete tähistamine
+   - aegunud struktuuride ja andmete kustutamine
+   - ekilexi kasutustingimuste kirjeldamine andmebaasis
+   - kõikide pildifailide viidete konverteerimine URL-põhiseks
+   - muud muudatused ja täiendused
+
+2. Keelendi muutmise API
+
+   Täiendatud: https://github.com/tripledev/ekilex/wiki/Ekilex-API
+
+3. Likvideeritud on lootusetult aegunud ekilex-etl ja ekilex-rus-morph moodulid
+
+4. Terminivõrgustik.
+   Algselt on terminivõrgustiku baas tühi.
+   Täiendused terminivõrgustikku ilmuvad sõnaveebi koos kõigi teiste (avalike) sõnakogudega tavapärasel viisil.
+   Sõnaveebi rakenduse määrangute failis application*.properties seadista terminivõrgustiku sisseviskamise link:
+
+   ekilex.limterm.details.url=https://(ekilex)/limtermsearch?id={meaningId}
+
+   * asenda "(ekilex)" korrektse aadressiga vastavas keskkonnas
+
+5. Enne sõnaveebi andmete taaslaadimist käivita ekilexis järgmised andmeparandusfunktsioonid:
+
+   https://(ekilex)/maintenance/mergehomonyms
+
+   https://(ekilex)/maintenance/recalcaccents
+
+   * asenda "(ekilex)" korrektse aadressiga vastavas keskkonnas
+
+6. Tee värske sõnaveebi laadimine.
+
+   Kustuta ekilexis kõik sõnaveebiga seotud vaated ja andmetüübid:
+   ekilex/eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
+
+   Taasloo sõnaveebi materjaliseeritud vaated:
+   ekilex/wordweb-app/fileresources/sql/create_mviews.sql
 

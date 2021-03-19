@@ -11,7 +11,7 @@
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>eki-root</artifactId>
-	<version>1.21-SNAPSHOT</version>
+	<version>1.21.0</version>
 	<packaging>pom</packaging>
 
 	<name>Eki apps root project</name>
@@ -28,6 +28,12 @@
 			<id>martin</id>
 			<name>Martin Laubre</name>
 			<email>martin.laubre@tripledev.ee</email>
+			<organization>TripleDev</organization>
+		</developer>
+		<developer>
+			<id>yogesh</id>
+			<name>Yogesh Sharma</name>
+			<email>yogesh.sharma@tripledev.ee</email>
 			<organization>TripleDev</organization>
 		</developer>
 	</developers>
@@ -122,7 +128,7 @@
 				<groupId>eki.common</groupId>
 				<artifactId>eki-common</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
-				<version>1.21-SNAPSHOT</version>
+				<version>1.21.0</version>
 			</dependency>
 			<!-- commons -->
 			<dependency>
