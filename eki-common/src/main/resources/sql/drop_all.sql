@@ -41,7 +41,6 @@ drop type if exists type_word_rel_meaning;
 drop type if exists type_classifier;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
-drop table if exists terms_of_use;
 drop table if exists feedback_log_comment;
 drop table if exists feedback_log;
 drop table if exists game_nonword;
@@ -151,6 +150,7 @@ drop table if exists label_type;
 drop table if exists lifecycle_log;--TODO remove later
 drop table if exists eki_user_application;
 drop table if exists eki_user;
+drop table if exists terms_of_use;
 drop table if exists tag;
 drop table if exists activity_log;
 drop table if exists source;
