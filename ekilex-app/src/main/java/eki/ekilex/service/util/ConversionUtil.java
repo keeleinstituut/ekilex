@@ -848,7 +848,12 @@ public class ConversionUtil implements GlobalConstant {
 
 		for (MeaningWord meaningWord : meaningWords) {
 			Synonym meaningWordSyn = new Synonym();
-			meaningWordSyn.setType(SynonymType.MEANING_WORD);
+			Integer directMatchLexRelCount = meaningWord.getDirectMatchLexRelCount();
+			if (directMatchLexRelCount > 0) {
+				meaningWordSyn.setType(SynonymType.MEANING_WORD_DIRECT_MATCH);
+			} else {
+				meaningWordSyn.setType(SynonymType.MEANING_WORD);
+			}
 			meaningWordSyn.setWordLang(meaningWord.getLang());
 			meaningWordSyn.setWeight(meaningWord.getLexemeWeight());
 			meaningWordSyn.setOrderBy(meaningWord.getOrderBy());
@@ -872,6 +877,7 @@ public class ConversionUtil implements GlobalConstant {
 		}
 
 		if (CollectionUtils.isNotEmpty(synMeaningRelations)) {
+			List<Synonym> meaningRelSyns = new ArrayList<>();
 			boolean showFirstWordOnly = false;
 			boolean showSourceLangWords = false;
 			if (userProfile != null) {
@@ -926,9 +932,11 @@ public class ConversionUtil implements GlobalConstant {
 						isFirstWord = false;
 					}
 					meaningRelSyn.setWords(synWords);
-					synonyms.add(meaningRelSyn);
+					meaningRelSyns.add(meaningRelSyn);
 				}
 			}
+			meaningRelSyns.sort(Comparator.comparing(Synonym::getOrderBy));
+			synonyms.addAll(meaningRelSyns);
 		}
 
 		if (CollectionUtils.isEmpty(synonyms)) {
@@ -947,8 +955,6 @@ public class ConversionUtil implements GlobalConstant {
 			langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
 			selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
 		}
-
-		synonyms.sort(Comparator.comparing(Synonym::getType).thenComparingLong(Synonym::getOrderBy));
 
 		for (Synonym synonym : synonyms) {
 			String lang = synonym.getWordLang();

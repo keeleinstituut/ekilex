@@ -97,6 +97,7 @@ import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -699,15 +700,20 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<MeaningWord> getMeaningWords(Long lexemeId) {
-		return getMeaningWords(lexemeId, null);
+
+		SearchLangsRestriction meaningWordLangsRestriction = new SearchLangsRestriction();
+		meaningWordLangsRestriction.setNoLangsFiltering(true);
+		return getMeaningWords(lexemeId, meaningWordLangsRestriction);
 	}
 
-	public List<MeaningWord> getMeaningWords(Long lexemeId, List<String> meaningWordLangs) {
+	public List<MeaningWord> getMeaningWords(Long lexemeId, SearchLangsRestriction meaningWordLangsRestriction) {
 
+		boolean noLangsFiltering = meaningWordLangsRestriction.isNoLangsFiltering();
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
-		LexemeRegister lr = LEXEME_REGISTER.as("lr");
+		LexemeRegister lreg = LEXEME_REGISTER.as("lreg");
+		LexRelation lrel = LEX_RELATION.as("lrel");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 
@@ -715,7 +721,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
-		Field<String[]> lrc = DSL.field(DSL.select(DSL.arrayAgg(lr.REGISTER_CODE)).from(lr).where(lr.LEXEME_ID.eq(l2.ID)));
+		Field<String[]> lrc = DSL.field(DSL.select(DSL.arrayAgg(lreg.REGISTER_CODE)).from(lreg).where(lreg.LEXEME_ID.eq(l2.ID)));
 
 		Field<Boolean> whe = DSL
 				.select(DSL.field(DSL.countDistinct(wh.HOMONYM_NR).gt(1)))
@@ -731,6 +737,14 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
+		Field<Integer> dlrelc = DSL.field(DSL.select(DSL.count(lrel.ID))
+				.from(lrel)
+				.where(
+						lrel.LEXEME1_ID.eq(l1.ID)
+								.and(lrel.LEXEME2_ID.eq(l2.ID))
+								.and(lrel.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_CODE_DIRECT_MATCH))))
+				.as("direct_match_lex_rel_count");
+
 		Condition where =
 				l1.ID.eq(lexemeId)
 						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
@@ -738,8 +752,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
 						.and(l2.WORD_ID.eq(w2.ID));
 
-		if (CollectionUtils.isNotEmpty(meaningWordLangs)) {
-			where = where.and(w2.LANG.in(meaningWordLangs));
+		if (!noLangsFiltering) {
+			List<String> filteringLangs = meaningWordLangsRestriction.getFilteringLangs();
+			where = where.and(w2.LANG.in(filteringLangs));
 		}
 
 		return create
@@ -757,11 +772,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 						l2.ID.as("lexeme_id"),
 						l2.WEIGHT.as("lexeme_weight"),
 						lrc.as("lex_register_codes"),
+						dlrelc,
 						l2.ORDER_BY)
 				.from(l1, l2, w2)
 				.where(where)
-				.groupBy(w2.ID, l2.ID)
-				.orderBy(w2.LANG, l2.ORDER_BY)
+				.orderBy(w2.LANG, dlrelc.desc(), l2.ORDER_BY)
 				.fetchInto(MeaningWord.class);
 	}
 

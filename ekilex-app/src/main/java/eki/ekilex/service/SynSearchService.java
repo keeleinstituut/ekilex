@@ -31,6 +31,7 @@ import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
@@ -111,11 +112,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		Long lexemeId = lexeme.getLexemeId();
 		Long meaningId = lexeme.getMeaningId();
 		String datasetCode = lexeme.getDatasetCode();
+		SearchLangsRestriction meaningWordLangsRestriction = composeLangsRestriction(meaningWordLangs);
 
 		permCalculator.applyCrud(userRole, lexeme);
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
-		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangs);
+		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
