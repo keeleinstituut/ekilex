@@ -123,6 +123,8 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherew = applyWordActivityLogFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordRelationValueFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordRelationExistsFilters(searchCriteria, w1.ID, wherew);
 
 				wherel = searchFilterHelper.applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
@@ -137,6 +139,8 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherem = searchFilterHelper.applyDomainExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningAttributeFilters(searchCriteria, m1.ID, wherem);
+				wherem = searchFilterHelper.applyMeaningRelationValueFilters(searchCriteria, m1.ID, wherem);
+				wherem = searchFilterHelper.applyMeaningRelationExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = applyMeaningActivityLogFilters(searchCriteria, m1.ID, wherem);
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
@@ -601,10 +605,13 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
+		List<SearchCriterion> filteredCriteriaByCreatedOrUpdatedByOnly = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY);
+		boolean isFilterByCreatedOrUpdatedByOnly  = CollectionUtils.isNotEmpty(filteredCriteriaByCreatedOrUpdatedByOnly);
+
 		// by all logs
 		boolean isFilterByAllLogs = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
 
-		if (isFilterByAllLogs) {
+		if (isFilterByAllLogs || isFilterByCreatedOrUpdatedByOnly) {
 
 			List<SearchCriterion> filteredCriteriaByAllLogs = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
 

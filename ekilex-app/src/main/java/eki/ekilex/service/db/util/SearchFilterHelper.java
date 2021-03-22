@@ -19,6 +19,7 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_FREQ;
+import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -77,6 +78,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordFreq;
+import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
@@ -874,26 +876,106 @@ public class SearchFilterHelper implements GlobalConstant {
 		return condition;
 	}
 
-	public Condition applyMeaningRelationFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
+	public Condition applyMeaningRelationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
 
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(SearchKey.RELATION_TYPE)
-						&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
-						&& (crit.getSearchValue() != null))
-				.collect(toList());
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.MEANING_RELATION, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.MEANING_RELATION, SearchOperand.NOT_EQUALS);
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+
+		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
+			Condition where1 = mr.MEANING1_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : positiveValueCriteria) {
+				String relTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(mr.MEANING_REL_TYPE_CODE.eq(relTypeCode));
+			}
+			condition = condition.and(DSL.exists(DSL.select(mr.ID).from(mr).where(where1)));
+		}
+
+		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
+			Condition where1 = mr.MEANING1_ID.eq(meaningIdField);
+			for (SearchCriterion criterion : negativeValueCriteria) {
+				String relTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(mr.MEANING_REL_TYPE_CODE.eq(relTypeCode));
+			}
+			condition = condition.and(DSL.notExists(DSL.select(mr.ID).from(mr).where(where1)));
+		}
+
+		return condition;
+	}
+
+	public Condition applyMeaningRelationExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.MEANING_RELATION);
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
 			return condition;
 		}
 
 		MeaningRelation mr = MEANING_RELATION.as("mr");
-		Condition where1 = mr.MEANING1_ID.eq(meaningIdField);
-
+		final String countFieldName = "cnt";
+		Table<Record1<Integer>> cntTbl = DSL
+				.select(DSL.count(mr.ID).as(countFieldName))
+				.from(mr)
+				.where(mr.MEANING1_ID.eq(meaningIdField)
+						.and(mr.MEANING_REL_TYPE_CODE.ne(MEANING_REL_TYPE_CODE_SIMILAR)))
+				.asTable("mrcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
-			String relTypeCode = criterion.getSearchValue().toString();
-			where1 = where1.and(mr.MEANING_REL_TYPE_CODE.eq(relTypeCode));
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
+			condition = condition.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
 		}
-		condition = condition.and(DSL.exists(DSL.select(mr.ID).from(mr).where(where1)));
+		return condition;
+	}
+
+	public Condition applyWordRelationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition condition) {
+
+		List<SearchCriterion> positiveValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.WORD_RELATION, SearchOperand.EQUALS);
+		List<SearchCriterion> negativeValueCriteria = filterCriteriaBySearchKeyAndOperands(searchCriteria, SearchKey.WORD_RELATION, SearchOperand.NOT_EQUALS);
+
+		WordRelation wr = WORD_RELATION.as("wr");
+
+		if (CollectionUtils.isNotEmpty(positiveValueCriteria)) {
+			Condition where1 = wr.WORD1_ID.eq(wordIdField);
+			for (SearchCriterion criterion : positiveValueCriteria) {
+				String relTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(wr.WORD_REL_TYPE_CODE.eq(relTypeCode));
+			}
+			condition = condition.and(DSL.exists(DSL.select(wr.ID).from(wr).where(where1)));
+		}
+
+		if (CollectionUtils.isNotEmpty(negativeValueCriteria)) {
+			Condition where1 = wr.WORD1_ID.eq(wordIdField);
+			for (SearchCriterion criterion : negativeValueCriteria) {
+				String relTypeCode = criterion.getSearchValue().toString();
+				where1 = where1.and(wr.WORD_REL_TYPE_CODE.eq(relTypeCode));
+			}
+			condition = condition.and(DSL.notExists(DSL.select(wr.ID).from(wr).where(where1)));
+		}
+
+		return condition;
+	}
+
+	public Condition applyWordRelationExistsFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = filterExistsSearchCriteria(searchCriteria, SearchKey.WORD_RELATION);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return condition;
+		}
+
+		WordRelation wr = WORD_RELATION.as("wr");
+		final String countFieldName = "cnt";
+		Table<Record1<Integer>> cntTbl = DSL
+				.select(DSL.count(wr.ID).as(countFieldName))
+				.from(wr)
+				.where(wr.WORD1_ID.eq(wordIdField))
+				.asTable("wrcnt");
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
+			condition = condition.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+		}
 		return condition;
 	}
 

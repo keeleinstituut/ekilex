@@ -32,7 +32,8 @@ public enum SearchKey {
 	LEXEME_REGISTER(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_VALUE_STATE(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_EQUALS, SearchOperand.EXISTS, SearchOperand.NOT_EXISTS}, SearchValueType.TEXTUAL),
 	OD_RECOMMENDATION(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
-	RELATION_TYPE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
+	WORD_RELATION(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL), // TODO kas üks ja mitu ka jätta või teha nagu LEXEME_VALUE_STATE?
+	MEANING_RELATION(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	COMPLEXITY(OperandSets.CLASSIFIER_OPERANDS, SearchValueType.TEXTUAL),
 	FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	RANK(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),

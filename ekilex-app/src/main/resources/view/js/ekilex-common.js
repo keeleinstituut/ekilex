@@ -31,20 +31,30 @@ function doPostDelete(deleteUrl, callback) {
 	
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
-			if (QueryParams.parseParams(deleteUrl).id) {
-				let elem = $(`[data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
-				if (!elem.length) {
-					elem = $(`[id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
-				}
-				let parent = elem.parents('.details-open:first');
-				if (!parent.length) {
-					parent = elem.parents('[data-rel="details-area"]:first');
-					parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
-				} else {
-					parent.find('#refresh-open:first').trigger('click');
-				}
 
-				console.log(parent);
+			if (QueryParams.parseParams(deleteUrl).id) {
+				if ($(`#lexeme-details-${QueryParams.parseParams(deleteUrl).id}`).length) {
+					let elem = $(`#lexeme-details-${QueryParams.parseParams(deleteUrl).id}`);
+					let parent = elem.parents('[data-rel="details-area"]');
+					parent.find('[name="details-btn"]:first').trigger('click');
+				} else {
+
+					let elem = $(`#resultColumn [data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
+					if (!elem.length) {
+						elem = $(`#resultColumn [id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
+					}
+					let parent = elem.parents('.details-open:first');
+
+					if (elem.is('[data-rel="details-area"]')) {
+						elem.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
+					}
+					else if (!parent.length) {
+						parent = elem.parents('[data-rel="details-area"]:first');
+						parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
+					} else {
+						parent.find('#refresh-open:first').trigger('click');
+					}
+				}
 
 			} else {
 				callback();
@@ -480,8 +490,6 @@ function initMultiselectRelationDlg(dlg) {
 	let selectElem = dlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 
-	console.log('woop');
-
 	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
 		let searchBtn = $(this);
@@ -510,8 +518,19 @@ function initMultiselectRelationDlg(dlg) {
 						data: selectRelationsForm.serialize(),
 						method: 'POST',
 					}).done(function(data) {
+						var successCallbackName = dlg.attr("data-callback");
+						if (successCallbackName) {
+							var successCallbackFunc = undefined;
+							if (successCallbackName) {
+								successCallbackFunc = () => eval(successCallbackName);
+								successCallbackFunc();
+							}
+						}else{
+							refreshDetailsSearch(id);
+						}
 						dlg.modal('hide');
-						refreshDetailsSearch(id);
+
+
 					}).fail(function(data) {
 						dlg.modal('hide');
 						console.log(data);

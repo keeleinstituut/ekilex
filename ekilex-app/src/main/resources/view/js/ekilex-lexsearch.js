@@ -392,9 +392,23 @@ function loadDetails(wordId, task, lastWordId) {
 		});
 
 		$wpm.bindObjects();
+
+		setTimeout(() => {
+
+			if (Cookies.get('details-open')) {
+				
+				const block = $('#'+Cookies.get('details-open'));
+				if (block.children('.details-open').length == 0) {
+					block.find('[name="lexeme-details-btn"]').trigger('click');
+				}
+				Cookies.delete('details-open');
+			} else {
+				closeWaitDlg();
+			}
+		}, 60);
+
 	}).fail(function(data) {
 		alert('Keelendi detailide päring ebaõnnestus');
-	}).always(function() {
 		closeWaitDlg();
 	});
 };
@@ -405,8 +419,8 @@ function loadFullLexemeDetails(lexemeId, lexemeLevels) {
 
 function loadLexemeDetails(lexemeId, lexemeLevels, composition) {
 	openWaitDlg();
+
 	let lexemeDetailsUrl = applicationUrl + 'lexemedetails/' + composition + '/' + lexemeId + '/' + lexemeLevels;
-	console.log(lexemeDetailsUrl);
 	$.get(lexemeDetailsUrl).done(function(data) {
 		let detailsDiv = $('#lexeme-details-' + lexemeId);
 		detailsDiv.html(data);
@@ -474,6 +488,9 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 };
 
 function refreshDetailsSearch(id) {
+	if ($('.details-open').length) {
+		Cookies.set('details-open', $('.details-open').parent().attr('id'));
+	}
 	if (typeof id === 'object') {
 		var obj = id;
 		if (obj.attr('[data-rel]') === 'details-area') {
