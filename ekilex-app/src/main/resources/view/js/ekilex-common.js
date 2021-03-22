@@ -38,12 +38,17 @@ function doPostDelete(deleteUrl, callback) {
 					let parent = elem.parents('[data-rel="details-area"]');
 					parent.find('[name="details-btn"]:first').trigger('click');
 				} else {
-					let elem = $(`[data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
+
+					let elem = $(`#resultColumn [data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
 					if (!elem.length) {
-						elem = $(`[id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
+						elem = $(`#resultColumn [id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
 					}
 					let parent = elem.parents('.details-open:first');
-					if (!parent.length) {
+
+					if (elem.is('[data-rel="details-area"]')) {
+						elem.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
+					}
+					else if (!parent.length) {
 						parent = elem.parents('[data-rel="details-area"]:first');
 						parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
 					} else {
