@@ -130,7 +130,7 @@ function initialiseDetailSearch() {
 		const textTypeSearchKeys = [
 			"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "OD_RECOMMENDATION", "ATTRIBUTE_VALUE"];
 		const selectTypeSearchKeys = [
-			"DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "LEXEME_VALUE_STATE", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE", "ATTRIBUTE_NAME"];
+			"DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "LEXEME_VALUE_STATE", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE", "ATTRIBUTE_NAME", "WORD_RELATION", "MEANING_RELATION"];
 		const nonValueSearchOperands = ["NOT_EXISTS", "EXISTS", "SINGLE", "MULTIPLE"];
 
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');

@@ -162,6 +162,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordFrequencyFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordRelationValueFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordRelationExistsFilters(searchCriteria, w1.ID, where);
 				where = applyWordActivityLogFilters(searchCriteria, w1.ID, where);
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
@@ -272,7 +274,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where1 = searchFilterHelper.applyMeaningSemanticTypeValueFilters(searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyMeaningSemanticTypeExistsFilters(searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, where1);
-				where1 = searchFilterHelper.applyMeaningRelationFilters(searchCriteria, m1.ID, where1);
+				where1 = searchFilterHelper.applyMeaningRelationValueFilters(searchCriteria, m1.ID, where1);
+				where1 = searchFilterHelper.applyMeaningRelationExistsFilters(searchCriteria, m1.ID, where1);
 				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {

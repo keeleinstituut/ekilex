@@ -123,6 +123,8 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherew = applyWordActivityLogFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordRelationValueFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordRelationExistsFilters(searchCriteria, w1.ID, wherew);
 
 				wherel = searchFilterHelper.applyLexemeSourceNameFilter(searchCriteria, l1.ID, wherel);
 				wherel = searchFilterHelper.applyLexemeSourceRefFilter(searchCriteria, l1.ID, wherel);
@@ -137,6 +139,8 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherem = searchFilterHelper.applyDomainExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningAttributeFilters(searchCriteria, m1.ID, wherem);
+				wherem = searchFilterHelper.applyMeaningRelationValueFilters(searchCriteria, m1.ID, wherem);
+				wherem = searchFilterHelper.applyMeaningRelationExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = applyMeaningActivityLogFilters(searchCriteria, m1.ID, wherem);
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
