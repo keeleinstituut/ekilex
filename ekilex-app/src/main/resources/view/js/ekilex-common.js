@@ -514,7 +514,6 @@ function initMultiselectRelationDlg(dlg) {
 						method: 'POST',
 					}).done(function(data) {
 						var successCallbackName = dlg.attr("data-callback");
-						console.log(successCallbackName);
 						if (successCallbackName) {
 							var successCallbackFunc = undefined;
 							if (successCallbackName) {
