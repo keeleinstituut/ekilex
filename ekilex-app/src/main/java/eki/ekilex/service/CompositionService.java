@@ -298,6 +298,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinMeanings", sourceMeaningId, ActivityOwner.MEANING);
 		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinMeanings", targetMeaningId, ActivityOwner.MEANING);
 
+		activityLogService.joinApproveMeaning(targetMeaningId, sourceMeaningId);
 		joinMeaningsCommonWordsLexemes(targetMeaningId, sourceMeaningId);
 		compositionDbService.joinMeanings(targetMeaningId, sourceMeaningId);
 		updateMeaningLexemesPublicity(targetMeaningId);
@@ -500,5 +501,11 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		long distinctWordIdCount = meaningLexemes.stream().map(LexemeRecord::getWordId).distinct().count();
 		long meaningLexemesCount = meaningLexemes.size();
 		return meaningLexemesCount == distinctWordIdCount;
+	}
+
+	@Transactional
+	public void approveMeaning(Long meaningId) throws Exception {
+
+		activityLogService.createActivityLog(FUNCT_NAME_APPROVE_MEANING, meaningId, ActivityOwner.MEANING);
 	}
 }

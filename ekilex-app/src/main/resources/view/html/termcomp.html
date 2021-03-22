@@ -69,9 +69,28 @@
                 class="btn btn-secondary mr-1"
                 th:data-meaning-id="${meaningId}"
                 sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
-        <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
-             data-original-title="Viimati muudetud">
-          <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
+        <div style="display:inline-block">
+          <span class="ml-1 date-modified" data-toggle="tooltip" data-placement="bottom" data-original-title="Viimati muudetud">
+            <i class="fa fa-calendar"></i>
+            <span class="ml-n1" th:text="${#dates.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
+          </span>
+        </div>
+        <div style="display:inline-block" class="p-1 ml-2" th:classappend="${meaning.lastApproveEventOn != null ? 'border rounded' : ''}">
+          <form th:action="@{/approve_meaning}" method="post">
+            <input type="hidden" name="meaningId" th:value="${meaningId}">
+            <span class="ml-1 date-modified" data-toggle="tooltip" data-placement="bottom" data-original-title="Viimati kinnitatud" th:if="${meaning.lastApproveEventOn}">
+              <i class="fa fa-calendar"></i>
+              <span class="ml-n1" th:text="${#dates.format(meaning.lastApproveEventOn, 'dd.MM.yyyy')}"></span>
+            </span>
+            <button type="button"
+                    title="Kinnita mõiste"
+                    class="btn btn-secondary ml-1 mr-1"
+                    data-plugin="approveMeaning"
+                    th:data-meaning-id="${meaningId}"
+                    sec:authorize="#vars.meaning.crudGrant">
+                    Kinnita
+            </button>
+          </form>
         </div>
         <button class="btn btn-link" type="button"
                 th:data-id="${meaningId}"

@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row3;
+import org.jooq.Row4;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningLastActivityLog extends TableImpl<MeaningLastActivityLogRecord> {
 
-    private static final long serialVersionUID = 218427330;
+    private static final long serialVersionUID = 1496943818;
 
     /**
      * The reference instance of <code>public.meaning_last_activity_log</code>
@@ -63,6 +63,11 @@ public class MeaningLastActivityLog extends TableImpl<MeaningLastActivityLogReco
      * The column <code>public.meaning_last_activity_log.activity_log_id</code>.
      */
     public final TableField<MeaningLastActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.meaning_last_activity_log.type</code>.
+     */
+    public final TableField<MeaningLastActivityLogRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * Create a <code>public.meaning_last_activity_log</code> table reference
@@ -119,7 +124,7 @@ public class MeaningLastActivityLog extends TableImpl<MeaningLastActivityLogReco
 
     @Override
     public List<UniqueKey<MeaningLastActivityLogRecord>> getKeys() {
-        return Arrays.<UniqueKey<MeaningLastActivityLogRecord>>asList(Keys.MEANING_LAST_ACTIVITY_LOG_PKEY, Keys.MEANING_LAST_ACTIVITY_LOG_MEANING_ID_KEY);
+        return Arrays.<UniqueKey<MeaningLastActivityLogRecord>>asList(Keys.MEANING_LAST_ACTIVITY_LOG_PKEY, Keys.MEANING_LAST_ACTIVITY_LOG_MEANING_ID_TYPE_KEY);
     }
 
     @Override
@@ -162,11 +167,11 @@ public class MeaningLastActivityLog extends TableImpl<MeaningLastActivityLogReco
     }
 
     // -------------------------------------------------------------------------
-    // Row3 type methods
+    // Row4 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, Long, Long> fieldsRow() {
-        return (Row3) super.fieldsRow();
+    public Row4<Long, Long, Long, String> fieldsRow() {
+        return (Row4) super.fieldsRow();
     }
 }

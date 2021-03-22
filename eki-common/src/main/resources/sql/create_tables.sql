@@ -1088,7 +1088,8 @@ create table meaning_last_activity_log
   id bigserial primary key,
   meaning_id bigint references meaning(id) on delete cascade not null,
   activity_log_id bigint references activity_log(id) on delete cascade not null,
-  unique(meaning_id)
+  type varchar(100) not null,
+  unique(meaning_id, type)
 );
 alter sequence meaning_last_activity_log_id_seq restart with 10000;
 

@@ -527,7 +527,7 @@ begin
       into al_id;
     end if;
     if al_id is not null then
-      insert into meaning_last_activity_log (meaning_id, activity_log_id) values (m_row.id, al_id);
+      insert into meaning_last_activity_log (meaning_id, activity_log_id) values (m_row.id, al_id) on conflict do nothing;
     end if;
   end loop;
   -- words
@@ -549,7 +549,7 @@ begin
     order by al.event_on desc limit 1
     into al_id;
     if al_id is not null then
-      insert into word_last_activity_log (word_id, activity_log_id) values (w_row.id, al_id);
+      insert into word_last_activity_log (word_id, activity_log_id) values (w_row.id, al_id) on conflict do nothing;
     end if;
   end loop;
   raise info 'All done!';
@@ -624,3 +624,12 @@ insert into value_state_label (code, value, lang, type) values ('vigane', 'vigan
 alter table eki_user_application add column is_reviewed boolean default false not null;
 update eki_user_application set is_reviewed = true;
 alter table eki_user drop column is_reviewed;
+
+
+-- mõiste viimane muutmise ja kinnitamise kuupäev 
+alter table meaning_last_activity_log add column type varchar(100);
+update meaning_last_activity_log set type = 'EDIT';
+alter table meaning_last_activity_log alter column type set not null;
+alter table meaning_last_activity_log drop constraint meaning_last_activity_log_meaning_id_key;
+alter table meaning_last_activity_log add constraint meaning_last_activity_log_meaning_id_type_key unique (meaning_id, type);
+
