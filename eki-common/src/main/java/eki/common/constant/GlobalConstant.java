@@ -50,6 +50,8 @@ public interface GlobalConstant {
 
 	String[] PRIMARY_WORD_REL_TYPE_CODES = new String[] {WORD_REL_TYPE_CODE_COMP, WORD_REL_TYPE_CODE_RAW};
 
+	String LEX_REL_TYPE_CODE_DIRECT_MATCH = "otse";
+
 	String MEANING_REL_TYPE_CODE_SIMILAR = "sarnane";
 
 	String[] MEANING_ATTRIBUTES = new String[] {

@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.PagingResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 
@@ -61,6 +63,25 @@ public abstract class AbstractSearchService extends AbstractService implements S
 		searchDatasetsRestriction.setSinglePermDataset(singlePermDataset);
 
 		return searchDatasetsRestriction;
+	}
+
+	protected SearchLangsRestriction composeLangsRestriction(List<String> preferredLangs) {
+
+		SearchLangsRestriction searchLangsRestriction = new SearchLangsRestriction();
+		List<Classifier> allLangs = commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		int allLangsCount = allLangs.size();
+		int preferredLangsCount = preferredLangs.size();
+		boolean noLangsFiltering = preferredLangs.isEmpty() || preferredLangsCount == allLangsCount;
+		List<String> filteringLangs;
+		if (noLangsFiltering) {
+			filteringLangs = Collections.emptyList();
+		} else {
+			filteringLangs = new ArrayList<>(preferredLangs);
+		}
+
+		searchLangsRestriction.setFilteringLangs(filteringLangs);
+		searchLangsRestriction.setNoLangsFiltering(noLangsFiltering);
+		return searchLangsRestriction;
 	}
 
 	protected void setPagingData(int offset, int maxResultsLimit, int wordCount, PagingResult result) {

@@ -399,6 +399,7 @@ from (select w.id as word_id,
                                 mw.mw_aspect_code
                                 )::type_meaning_word
                                 order by
+                                mw.direct_match_lex_rel_cnt desc,
                                 mw.hw_lex_level1,
                                 mw.hw_lex_level2,
                                 mw.hw_lex_order_by,
@@ -423,6 +424,11 @@ from (select w.id as word_id,
                                    and wt.word_type_code not in ('vv', 'yv')
                                  group by wt.word_id) mw_word_type_codes,
                                 w2.aspect_code mw_aspect_code,
+                                (select count(lrel.id)
+                                 from lex_relation as lrel
+                                 where lrel.lexeme1_id = l1.id
+                                   and lrel.lexeme2_id = l2.id
+                                   and lrel.lex_rel_type_code = 'otse') direct_match_lex_rel_cnt,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
                            inner join dataset l1ds
@@ -926,6 +932,7 @@ from lexeme l
                                 mw.mw_aspect_code
                                 )::type_meaning_word
                                 order by
+                                mw.direct_match_lex_rel_cnt desc,
                                 mw.hw_lex_level1,
                                 mw.hw_lex_level2,
                                 mw.hw_lex_order_by,
@@ -971,6 +978,11 @@ from lexeme l
                                    and wt.word_type_code not in ('vv', 'yv')
                                  group by wt.word_id) mw_word_type_codes,
                                 w2.aspect_code mw_aspect_code,
+                                (select count(lrel.id)
+                                 from lex_relation as lrel
+                                 where lrel.lexeme1_id = l1.id
+                                   and lrel.lexeme2_id = l2.id
+                                   and lrel.lex_rel_type_code = 'otse') direct_match_lex_rel_cnt,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1
                            inner join dataset l1ds
