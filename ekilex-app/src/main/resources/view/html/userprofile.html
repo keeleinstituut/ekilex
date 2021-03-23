@@ -19,6 +19,14 @@
         <div class="mt-3">
           <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectTagPrefsDlg">Muuda siltide seadeid</button>
         </div>
+        <div class="mt-3">
+          <form th:action="@{/enable_approve_meaning}" method="post">
+            <label>
+              <input type="checkbox" name="approveMeaningEnabled" onchange="submit()" value="true" th:checked="${userProfile.approveMeaningEnabled}">
+              <span class="ml-2">Mõiste kinnitamine </span>            
+            </label>
+          </form>
+        </div>
       </div>
     </div>
     <div class="card mt-4 shadow">

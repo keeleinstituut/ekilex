@@ -87,7 +87,8 @@
                     class="btn btn-secondary ml-1 mr-1"
                     data-plugin="approveMeaning"
                     th:data-meaning-id="${meaningId}"
-                    sec:authorize="#vars.meaning.crudGrant">
+                    sec:authorize="#vars.meaning.crudGrant"
+                    th:if="${userProfile.approveMeaningEnabled}">
                     Kinnita
             </button>
           </form>

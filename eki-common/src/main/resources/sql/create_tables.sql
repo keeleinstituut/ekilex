@@ -498,7 +498,8 @@ create table eki_user_profile
   show_lex_meaning_relation_source_lang_words boolean default true,
   show_meaning_relation_first_word_only boolean default true,
   show_meaning_relation_meaning_id boolean default true,
-  show_meaning_relation_word_datasets boolean default true
+  show_meaning_relation_word_datasets boolean default true,
+  is_approve_meaning_enabled boolean default false
 );
 alter sequence eki_user_profile_id_seq restart with 10000;
 

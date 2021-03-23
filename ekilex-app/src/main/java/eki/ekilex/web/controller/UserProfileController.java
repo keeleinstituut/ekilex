@@ -2,6 +2,7 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -45,6 +46,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 
 		EkiUser user = userContext.getUser();
 		userService.submitAdditionalUserApplication(user, selectedDatasets, applicationComment);
+
 		return "redirect:" + USER_PROFILE_URI;
 	}
 
@@ -68,6 +70,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 		userProfile.setPreferredSynLexMeaningWordLangs(meaningWordLanguages);
 		userProfile.setPreferredSynCandidateLangs(synCandidateLanguages);
 		userProfileService.updateUserProfile(userProfile);
+
 		return "redirect:" + USER_PROFILE_URI;
 	}
 
@@ -81,6 +84,17 @@ public class UserProfileController extends AbstractPrivatePageController {
 		userProfile.setPreferredTagNames(preferredTagNames);
 		userProfile.setActiveTagName(activeTagName);
 		userProfileService.updateUserProfile(userProfile);
+
+		return "redirect:" + USER_PROFILE_URI;
+	}
+
+	@PostMapping("/enable_approve_meaning")
+	public String enableApproveMeaning(@RequestParam(name = "approveMeaningEnabled", required = false) String approveMeaningEnabledStr) {
+
+		boolean approveMeaningEnabled = StringUtils.equals(approveMeaningEnabledStr, "true");
+		Long userId = userContext.getUserId();
+		userProfileService.updateApproveMeaningEnabled(userId, approveMeaningEnabled);
+
 		return "redirect:" + USER_PROFILE_URI;
 	}
 
@@ -89,6 +103,7 @@ public class UserProfileController extends AbstractPrivatePageController {
 
 		EkiUser user = userContext.getUser();
 		userService.generateApiKey(user);
+
 		return "redirect:" + USER_PROFILE_URI;
 	}
 }
