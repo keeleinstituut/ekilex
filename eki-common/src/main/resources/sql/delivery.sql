@@ -623,3 +623,8 @@ insert into value_state_label (code, value, lang, type) values ('vigane', 'vigan
 alter table eki_user_application add column is_reviewed boolean default false not null;
 update eki_user_application set is_reviewed = true;
 alter table eki_user drop column is_reviewed;
+
+-- kustutab seosed iseendaga
+delete from word_relation where word1_id = word2_id;
+delete from lex_relation where lexeme1_id = lexeme2_id;
+delete from meaning_relation where meaning1_id = meaning2_id;
