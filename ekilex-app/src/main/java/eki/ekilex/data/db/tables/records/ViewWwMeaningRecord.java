@@ -24,7 +24,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> implements Record10<Long, Timestamp, TypeDomainRecord[], TypeMediaFileRecord[], TypeMediaFileRecord[], String[], String[], String[], TypeFreeformRecord[], TypeDefinitionRecord[]> {
 
-    private static final long serialVersionUID = 1110632215;
+    private static final long serialVersionUID = -145845225;
 
     /**
      * Setter for <code>public.view_ww_meaning.meaning_id</code>.
@@ -41,16 +41,16 @@ public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> im
     }
 
     /**
-     * Setter for <code>public.view_ww_meaning.last_activity_event_on</code>.
+     * Setter for <code>public.view_ww_meaning.last_approve_or_edit_event_on</code>.
      */
-    public void setLastActivityEventOn(Timestamp value) {
+    public void setLastApproveOrEditEventOn(Timestamp value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.view_ww_meaning.last_activity_event_on</code>.
+     * Getter for <code>public.view_ww_meaning.last_approve_or_edit_event_on</code>.
      */
-    public Timestamp getLastActivityEventOn() {
+    public Timestamp getLastApproveOrEditEventOn() {
         return (Timestamp) get(1);
     }
 
@@ -187,7 +187,7 @@ public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> im
 
     @Override
     public Field<Timestamp> field2() {
-        return ViewWwMeaning.VIEW_WW_MEANING.LAST_ACTIVITY_EVENT_ON;
+        return ViewWwMeaning.VIEW_WW_MEANING.LAST_APPROVE_OR_EDIT_EVENT_ON;
     }
 
     @Override
@@ -237,7 +237,7 @@ public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> im
 
     @Override
     public Timestamp component2() {
-        return getLastActivityEventOn();
+        return getLastApproveOrEditEventOn();
     }
 
     @Override
@@ -287,7 +287,7 @@ public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> im
 
     @Override
     public Timestamp value2() {
-        return getLastActivityEventOn();
+        return getLastApproveOrEditEventOn();
     }
 
     @Override
@@ -338,7 +338,7 @@ public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> im
 
     @Override
     public ViewWwMeaningRecord value2(Timestamp value) {
-        setLastActivityEventOn(value);
+        setLastApproveOrEditEventOn(value);
         return this;
     }
 
@@ -419,11 +419,11 @@ public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> im
     /**
      * Create a detached, initialised ViewWwMeaningRecord
      */
-    public ViewWwMeaningRecord(Long meaningId, Timestamp lastActivityEventOn, TypeDomainRecord[] domainCodes, TypeMediaFileRecord[] imageFiles, TypeMediaFileRecord[] mediaFiles, String[] systematicPolysemyPatterns, String[] semanticTypes, String[] learnerComments, TypeFreeformRecord[] notes, TypeDefinitionRecord[] definitions) {
+    public ViewWwMeaningRecord(Long meaningId, Timestamp lastApproveOrEditEventOn, TypeDomainRecord[] domainCodes, TypeMediaFileRecord[] imageFiles, TypeMediaFileRecord[] mediaFiles, String[] systematicPolysemyPatterns, String[] semanticTypes, String[] learnerComments, TypeFreeformRecord[] notes, TypeDefinitionRecord[] definitions) {
         super(ViewWwMeaning.VIEW_WW_MEANING);
 
         set(0, meaningId);
-        set(1, lastActivityEventOn);
+        set(1, lastApproveOrEditEventOn);
         set(2, domainCodes);
         set(3, imageFiles);
         set(4, mediaFiles);

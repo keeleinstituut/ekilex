@@ -173,6 +173,10 @@
                     <th:block th:if="${isProTerm}">
                       <span class="mr-2" th:aria-label="${wordData.word.word}" th:text="${lexeme.meaningId}"></span>
                     </th:block>
+                    <span th:title="#{label.tooltip.last_modified}" class="ml-auto content-title-date" data-toggle="tooltip" >
+                      <i class="fa fa-edit"></i>
+                      <span th:text="${#dates.format(lexeme.meaningLastActivityEventOn, 'dd.MM.yyyy')}"></span>
+                    </span>
                   </th:block>
                   <th:block th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
                     <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>

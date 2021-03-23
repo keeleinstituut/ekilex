@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = 1462405901;
+    private static final long serialVersionUID = 2084927164;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -57,9 +57,9 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.last_activity_event_on</code>.
+     * The column <code>public.mview_ww_meaning.last_approve_or_edit_event_on</code>.
      */
-    public final TableField<MviewWwMeaningRecord, Timestamp> LAST_ACTIVITY_EVENT_ON = createField(DSL.name("last_activity_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MviewWwMeaningRecord, Timestamp> LAST_APPROVE_OR_EDIT_EVENT_ON = createField(DSL.name("last_approve_or_edit_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.domain_codes</code>.

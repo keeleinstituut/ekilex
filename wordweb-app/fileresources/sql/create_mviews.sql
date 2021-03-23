@@ -244,7 +244,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning') as meaning(
 	meaning_id bigint,
-	last_activity_event_on timestamp,
+	last_approve_or_edit_event_on timestamp,
 	domain_codes type_domain array,
 	image_files type_media_file array,
 	media_files type_media_file array,
