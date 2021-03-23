@@ -364,7 +364,9 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		create.update(lr1)
 				.set(lr1.LEXEME1_ID, lexemeId)
-				.where(lr1.LEXEME1_ID.eq(sourceLexemeId))
+				.where(
+						lr1.LEXEME1_ID.eq(sourceLexemeId)
+								.and(lr1.LEXEME2_ID.ne(lexemeId)))
 				.andNotExists(DSL
 						.select(lr2.ID)
 						.from(lr2)
@@ -376,7 +378,9 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		create.update(lr1)
 				.set(lr1.LEXEME2_ID, lexemeId)
-				.where(lr1.LEXEME2_ID.eq(sourceLexemeId))
+				.where(
+						lr1.LEXEME2_ID.eq(sourceLexemeId)
+								.and(lr1.LEXEME1_ID.ne(lexemeId)))
 				.andNotExists(DSL
 						.select(lr2.ID)
 						.from(lr2)
@@ -483,7 +487,9 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		create.update(mr1)
 				.set(mr1.MEANING1_ID, meaningId)
-				.where(mr1.MEANING1_ID.eq(sourceMeaningId))
+				.where(
+						mr1.MEANING1_ID.eq(sourceMeaningId)
+								.and(mr1.MEANING2_ID.ne(meaningId)))
 				.andNotExists(DSL
 						.select(mr2.ID)
 						.from(mr2)
@@ -495,7 +501,9 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 		create.update(mr1)
 				.set(mr1.MEANING2_ID, meaningId)
-				.where(mr1.MEANING2_ID.eq(sourceMeaningId))
+				.where(
+						mr1.MEANING2_ID.eq(sourceMeaningId)
+								.and(mr1.MEANING1_ID.ne(meaningId)))
 				.andNotExists(DSL
 						.select(mr2.ID)
 						.from(mr2)
@@ -1212,7 +1220,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		create.update(wr1)
 				.set(wr1.WORD1_ID, targetWordId)
 				.where(
-						wr1.WORD1_ID.eq(sourceWordId))
+						wr1.WORD1_ID.eq(sourceWordId)
+								.and(wr1.WORD2_ID.ne(targetWordId)))
 				.andNotExists(DSL
 						.select(wr2.ID)
 						.from(wr2)
@@ -1225,7 +1234,8 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		create.update(wr1)
 				.set(wr1.WORD2_ID, targetWordId)
 				.where(
-						wr1.WORD2_ID.eq(sourceWordId))
+						wr1.WORD2_ID.eq(sourceWordId)
+								.and(wr1.WORD1_ID.ne(targetWordId)))
 				.andNotExists(DSL
 						.select(wr2.ID)
 						.from(wr2)
