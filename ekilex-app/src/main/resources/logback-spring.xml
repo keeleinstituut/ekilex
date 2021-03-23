@@ -3,27 +3,38 @@
 
 	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
-	<appender name="ekilexFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	<appender name="fileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<append>true</append>
-		<encoder>
+		<encoder name="enc" class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
 			<charset>UTF-8</charset>
-			<pattern>${FILE_LOG_PATTERN}</pattern>
+			<layout class="eki.ekilex.log.EkiUserLogPatternLayout">
+				<Pattern>${FILE_LOG_PATTERN}</Pattern>
+			</layout>
 		</encoder>
-		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${LOG_FILE}_%d{yyyy-MM-dd}.log</fileNamePattern>
 		</rollingPolicy>
 	</appender>
 
+	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder name="enc" class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<charset>UTF-8</charset>
+			<layout class="eki.ekilex.log.EkiUserLogPatternLayout">
+				<Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+			</layout>
+		</encoder>
+	</appender>
+
 	<springProfile name="prod,test">
 		<root level="info">
-			<appender-ref ref="ekilexFileAppender" />
+			<appender-ref ref="fileAppender" />
 		</root>
 	</springProfile>
 
 	<springProfile name="dev,local">
-		<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 		<root level="info">
-			<appender-ref ref="CONSOLE" />
+			<appender-ref ref="consoleAppender" />
 		</root>
 	</springProfile>
 
