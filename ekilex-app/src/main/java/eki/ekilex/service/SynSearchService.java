@@ -44,6 +44,7 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.CudDbService;
+import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -62,6 +63,9 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private CudDbService cudDbService;
+
+	@Autowired
+	private LookupDbService lookupDbService;
 
 	@Autowired
 	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
@@ -179,6 +183,11 @@ public class SynSearchService extends AbstractWordSearchService {
 		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, ActivityOwner.MEANING);
 		meaningRelationId = cudDbService.createMeaningRelation(targetMeaningId, sourceMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
+
+		boolean oppositeRelationExists = lookupDbService.meaningRelationExists(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR);
+		if (oppositeRelationExists) {
+			return;
+		}
 
 		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, ActivityOwner.MEANING);
 		meaningRelationId = cudDbService.createMeaningRelation(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
