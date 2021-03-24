@@ -26,27 +26,6 @@ class DefinitionDialog {
   }
 
   initEditor() {
-    $('#ckedit').ckeditor(function( textarea ) {
-      // Callback function code.
-    }, {
-      enterMode: CKEDITOR.ENTER_BR,
-      extraPlugins: 'ekiStyles,ekiLink',
-      toolbarGroups: [
-        {
-          name: "eki-styles",
-          groups: ["ekiStyles"],
-        },
-        {
-          name: 'ekiLink',
-          groups: ['ekiLink'],
-        },
-        {
-          name: 'eki-tools',
-          groups: ['cleanup', 'undo'],
-        }
-      ],
-      removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
-    });
     
   }
 
