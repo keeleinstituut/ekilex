@@ -107,12 +107,12 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		SearchContext searchContext = getSearchContext(searchFilter);
 		List<Word> allWords = searchDbService.getWords(searchWord, searchContext);
-		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> wordMatchWords = allWords.stream().filter(word -> word.isWordMatch()).collect(Collectors.toList());
 		List<String> formMatchWordValues = allWords.stream().filter(word -> word.isFormMatch()).map(Word::getWord).distinct().collect(Collectors.toList());
+		boolean resultsExist = CollectionUtils.isNotEmpty(wordMatchWords);
 		int resultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = resultCount == 1;
 		return new WordsData(wordMatchWords, formMatchWordValues, resultCount, resultsExist, isSingleResult);
