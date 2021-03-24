@@ -308,4 +308,12 @@ public class TermEditController extends AbstractMutableDataPageController {
 		return RESPONSE_OK_VER2;
 	}
 
+	@PostMapping(APPROVE_MEANING)
+	@ResponseBody
+	public String approveMeaning(@RequestParam("meaningId") Long meaningId, Model model) throws Exception {
+
+		compositionService.approveMeaning(meaningId);
+
+		return RESPONSE_OK_VER2;
+	}
 }

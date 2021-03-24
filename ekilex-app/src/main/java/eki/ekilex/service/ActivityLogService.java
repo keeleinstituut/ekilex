@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +24,8 @@ import com.flipkart.zjsonpatch.JsonDiff;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
+import eki.common.constant.LastActivityType;
 import eki.common.exception.IllegalParamException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLog;
@@ -67,7 +70,7 @@ import eki.ekilex.service.db.SourceDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Component
-public class ActivityLogService implements SystemConstant {
+public class ActivityLogService implements SystemConstant, GlobalConstant {
 
 	private static final String ACTIVITY_LOG_DIFF_FIELD_NAME = "diff";
 
@@ -299,12 +302,7 @@ public class ActivityLogService implements SystemConstant {
 
 	public ActivityLogData prepareActivityLog(String functName, Long ownerId, ActivityOwner ownerName) throws Exception {
 
-		String userName = userContext.getUserName();
-		ActivityLogData activityLogData = new ActivityLogData();
-		activityLogData.setEventBy(userName);
-		activityLogData.setFunctName(functName);
-		activityLogData.setOwnerId(ownerId);
-		activityLogData.setOwnerName(ownerName);
+		ActivityLogData activityLogData = initCore(functName, ownerId, ownerName);
 
 		WordLexemeMeaningIds prevWlmIds;
 		String prevData;
@@ -356,12 +354,7 @@ public class ActivityLogService implements SystemConstant {
 				handleSourceActivityLog(activityLogData);
 			}
 		} else {
-			String userName = userContext.getUserName();
-			activityLogData = new ActivityLogData();
-			activityLogData.setEventBy(userName);
-			activityLogData.setFunctName(functName);
-			activityLogData.setOwnerId(ownerId);
-			activityLogData.setOwnerName(ownerName);
+			activityLogData = initCore(functName, ownerId, ownerName);
 			activityLogData.setPrevData(EMPTY_CONTENT_JSON);
 			activityLogData.setPrevWlmIds(new WordLexemeMeaningIds());
 			createActivityLog(activityLogData, entityId, entityName);
@@ -420,6 +413,36 @@ public class ActivityLogService implements SystemConstant {
 		}
 	}
 
+	public void joinApproveMeaning(Long targetMeaningId, Long sourceMeaningId) {
+
+		final Timestamp targetMeaningLastActivityEventOn = activityLogDbService.getMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
+		final Timestamp sourceMeaningLastActivityEventOn = activityLogDbService.getMeaningLastActivityLog(sourceMeaningId, LastActivityType.APPROVE);
+		if (targetMeaningLastActivityEventOn == null) {
+			return;
+		}
+		if (sourceMeaningLastActivityEventOn == null) {
+			activityLogDbService.deleteMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
+			return;
+		}
+		if (targetMeaningLastActivityEventOn.before(sourceMeaningLastActivityEventOn)) {
+			return;
+		}
+		if (targetMeaningLastActivityEventOn.after(sourceMeaningLastActivityEventOn)) {
+			activityLogDbService.deleteMeaningLastActivityLog(targetMeaningId, LastActivityType.APPROVE);
+			activityLogDbService.moveMeaningLastActivityLog(targetMeaningId, sourceMeaningId, LastActivityType.APPROVE);
+		}
+	}
+
+	private ActivityLogData initCore(String functName, Long ownerId, ActivityOwner ownerName) {
+		String userName = userContext.getUserName();
+		ActivityLogData activityLogData = new ActivityLogData();
+		activityLogData.setEventBy(userName);
+		activityLogData.setFunctName(functName);
+		activityLogData.setOwnerId(ownerId);
+		activityLogData.setOwnerName(ownerName);
+		return activityLogData;
+	}
+
 	private void handleWlmActivityLog(ActivityLogData activityLogData) throws Exception {
 
 		calcDiffs(activityLogData);
@@ -440,8 +463,10 @@ public class ActivityLogService implements SystemConstant {
 			activityLogDbService.createOrUpdateWordLastActivityLog(wordId);
 		}
 		for (Long meaningId : meaningIds) {
-			activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId);
+			activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.EDIT);
 		}
+
+		handleApproveMeaningEvent(activityLogData);
 	}
 
 	private Long[] collect(Long[] ids1, Long[] ids2) {
@@ -457,6 +482,18 @@ public class ActivityLogService implements SystemConstant {
 		Long[] ids = ArrayUtils.addAll(ids1, ids2);
 		ids = Arrays.stream(ids).distinct().toArray(Long[]::new);
 		return ids;
+	}
+
+	private void handleApproveMeaningEvent(ActivityLogData activityLogData) {
+		final ActivityOwner ownerName = activityLogData.getOwnerName();
+		final Long ownerId = activityLogData.getOwnerId();
+		final String functName = activityLogData.getFunctName();
+		if (ActivityOwner.MEANING.equals(ownerName)) {
+			Long meaningId = Long.valueOf(ownerId);
+			if (StringUtils.equals(functName, FUNCT_NAME_APPROVE_MEANING)) {
+				activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.APPROVE);				
+			}
+		}
 	}
 
 	private void handleSourceActivityLog(ActivityLogData activityLogData) throws Exception {

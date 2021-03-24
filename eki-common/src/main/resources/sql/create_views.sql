@@ -672,7 +672,7 @@ order by w.id,
 create view view_ww_meaning 
 as
 select m.id meaning_id,
-       m.last_activity_event_on,
+       m.last_approve_or_edit_event_on,
        m_dom.domain_codes,
        m_img.image_files,
        m_media.media_files,
@@ -686,7 +686,9 @@ from (select m.id,
              from meaning_last_activity_log mlal,
                   activity_log al
              where mlal.meaning_id = m.id
-             and   mlal.activity_log_id = al.id) last_activity_event_on
+             and   mlal.activity_log_id = al.id
+             order by mlal.type
+             limit 1) last_approve_or_edit_event_on
       from meaning m
       where exists (select l.id
                     from lexeme as l,

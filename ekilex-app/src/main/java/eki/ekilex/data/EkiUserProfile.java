@@ -14,6 +14,10 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private List<String> preferredDatasets;
 
+	private List<String> preferredTagNames;
+
+	private String activeTagName;
+
 	private List<String> preferredSynCandidateLangs;
 
 	private List<String> preferredSynLexMeaningWordLangs;
@@ -28,9 +32,7 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private boolean showMeaningRelationWordDatasets;
 
-	private List<String> preferredTagNames;
-
-	private String activeTagName;
+	private boolean isApproveMeaningEnabled;
 
 	public Long getUserId() {
 		return userId;
@@ -54,6 +56,22 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	public void setPreferredDatasets(List<String> preferredDatasets) {
 		this.preferredDatasets = preferredDatasets;
+	}
+
+	public List<String> getPreferredTagNames() {
+		return preferredTagNames;
+	}
+
+	public void setPreferredTagNames(List<String> preferredTagNames) {
+		this.preferredTagNames = preferredTagNames;
+	}
+
+	public String getActiveTagName() {
+		return activeTagName;
+	}
+
+	public void setActiveTagName(String activeTagName) {
+		this.activeTagName = activeTagName;
 	}
 
 	public List<String> getPreferredSynCandidateLangs() {
@@ -112,19 +130,12 @@ public class EkiUserProfile extends AbstractDataObject {
 		this.showMeaningRelationWordDatasets = showMeaningRelationWordDatasets;
 	}
 
-	public List<String> getPreferredTagNames() {
-		return preferredTagNames;
+	public boolean isApproveMeaningEnabled() {
+		return isApproveMeaningEnabled;
 	}
 
-	public void setPreferredTagNames(List<String> preferredTagNames) {
-		this.preferredTagNames = preferredTagNames;
+	public void setApproveMeaningEnabled(boolean isApproveMeaningEnabled) {
+		this.isApproveMeaningEnabled = isApproveMeaningEnabled;
 	}
 
-	public String getActiveTagName() {
-		return activeTagName;
-	}
-
-	public void setActiveTagName(String activeTagName) {
-		this.activeTagName = activeTagName;
-	}
 }

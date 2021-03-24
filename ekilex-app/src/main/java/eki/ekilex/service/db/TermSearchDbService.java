@@ -23,6 +23,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.LastActivityType;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -422,12 +423,14 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(LEXEME, searchDatasetsRestriction, null);
 
 		Meaning m = MEANING.as("m");
-		Field<Timestamp> mlaeof = getMeaningLastActivityEventOnField(m.ID);
+		Field<Timestamp> mlacteof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.EDIT);
+		Field<Timestamp> mlappeof = getMeaningLastActivityEventOnField(m.ID, LastActivityType.APPROVE);
 
 		return create
 				.select(
 						m.ID.as("meaning_id"),
-						mlaeof.as("last_activity_event_on"),
+						mlacteof.as("last_activity_event_on"),
+						mlappeof.as("last_approve_event_on"),
 						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
 				.from(m, LEXEME)
 				.where(

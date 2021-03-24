@@ -4,6 +4,14 @@ public interface GlobalConstant {
 
 	String UTF_8 = "UTF-8";
 
+	String LANGUAGE_CODE_EST = "est";
+
+	String LANGUAGE_CODE_RUS = "rus";
+
+	String LANGUAGE_CODE_ENG = "eng";
+
+	String LANGUAGE_CODE_LAT = "lat";
+
 	String DATASET_SSS = "sss";
 
 	String DATASET_LIMITED = "vrk";
@@ -62,17 +70,11 @@ public interface GlobalConstant {
 
 	String[] DISPLAY_FORM_IGNORE_SYMBOLS = new String[] {"[", "]", "*"};
 
+	String FUNCT_NAME_APPROVE_MEANING = "approveMeaning";
+
 	String IGNORE_QUERY_LOG = "'ignore query log'";
 
 	String FORCE_QUERY_LOG = "'force query log'";
-
-	String LANGUAGE_CODE_EST = "est";
-
-	String LANGUAGE_CODE_RUS = "rus";
-
-	String LANGUAGE_CODE_ENG = "eng";
-
-	String LANGUAGE_CODE_LAT = "lat";
 
 	String STAT_API_KEY_HEADER_NAME = "stat-api-key";
 

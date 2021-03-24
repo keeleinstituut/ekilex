@@ -426,7 +426,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.select(
 						l.LEXEME_ID,
 						m.MEANING_ID,
-						m.LAST_ACTIVITY_EVENT_ON.as("meaning_last_activity_event_on"),
+						m.LAST_APPROVE_OR_EDIT_EVENT_ON.as("meaning_last_activity_event_on"),
 						m.DOMAIN_CODES,
 						m.IMAGE_FILES,
 						m.MEDIA_FILES,

@@ -46,6 +46,15 @@ public class UserProfileDbService {
 				.execute();
 	}
 
+	public void updateApproveMeaningEnabled(Long userId, boolean approveMeaningEnabled) {
+
+		create
+				.update(EKI_USER_PROFILE)
+				.set(EKI_USER_PROFILE.IS_APPROVE_MEANING_ENABLED, approveMeaningEnabled)
+				.where(EKI_USER_PROFILE.USER_ID.eq(userId))
+				.execute();
+	}
+
 	public void updateUserProfile(EkiUserProfile userProfile) {
 
 		Long userId = userProfile.getUserId();

@@ -47,6 +47,7 @@ import org.springframework.util.CollectionUtils;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.LastActivityType;
 import eki.ekilex.data.TypeActivityLogDiff;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.db.tables.ActivityLog;
@@ -268,51 +269,70 @@ public class ActivityLogDbService implements GlobalConstant {
 				.execute();
 	}
 
-	public void createOrUpdateMeaningLastActivityLog(Long meaningId) {
-
-		final String[] conceptActivityWordFunctNamesOfInterest = new String[] {"createWord", "updateWordValue", "deleteWord"};
-		final String conceptActivityWordFunctNamesCrit = "(" + StringUtils.join(conceptActivityWordFunctNamesOfInterest, '|') + ")";
+	public void createOrUpdateMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
 
 		MeaningActivityLog mal = MEANING_ACTIVITY_LOG.as("mal");
 		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
+		Long activityLogId = null;
 
-		Table<Record2<Long, Timestamp>> lmlwal = DSL
-				.select(al.ID, al.EVENT_ON)
-				.from(mal, al)
-				.where(
-						mal.MEANING_ID.eq(meaningId)
-						.and(mal.ACTIVITY_LOG_ID.eq(al.ID))
-						.and(al.OWNER_NAME.in(ActivityOwner.MEANING.name(), ActivityOwner.LEXEME.name())))
-				.orderBy(al.EVENT_ON.desc())
-				.limit(1)
-				.unionAll(DSL
-						.select(al.ID, al.EVENT_ON)
+		if (LastActivityType.EDIT.equals(lastActivityType)) {
+
+			final String[] conceptActivityWordFunctNamesOfInterest = new String[] {"createWord", "updateWordValue", "deleteWord"};
+			final String conceptActivityWordFunctNamesCrit = "(" + StringUtils.join(conceptActivityWordFunctNamesOfInterest, '|') + ")";
+
+			Table<Record2<Long, Timestamp>> lmlwal = DSL
+					.select(al.ID, al.EVENT_ON)
+					.from(mal, al)
+					.where(
+							mal.MEANING_ID.eq(meaningId)
+							.and(mal.ACTIVITY_LOG_ID.eq(al.ID))
+							.and(al.OWNER_NAME.in(ActivityOwner.MEANING.name(), ActivityOwner.LEXEME.name()))
+							.and(al.FUNCT_NAME.ne(FUNCT_NAME_APPROVE_MEANING)))
+					.orderBy(al.EVENT_ON.desc())
+					.limit(1)
+					.unionAll(DSL
+							.select(al.ID, al.EVENT_ON)
+							.from(mal, al)
+							.where(
+									mal.MEANING_ID.eq(meaningId)
+									.and(mal.ACTIVITY_LOG_ID.eq(al.ID))
+									.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
+									.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
+									.and(al.FUNCT_NAME.similarTo(conceptActivityWordFunctNamesCrit)))
+							.orderBy(al.EVENT_ON.desc())
+							.limit(1))
+					.asTable("lmlwal");
+
+			activityLogId = create
+					.select(lmlwal.field("id", Long.class))
+					.from(lmlwal)
+					.orderBy(lmlwal.field("event_on").desc())
+					.limit(1)
+					.fetchOptionalInto(Long.class).orElse(null);
+
+			// fallback compensation
+			if (activityLogId == null) {
+				activityLogId = create
+						.select(al.ID)
 						.from(mal, al)
 						.where(
 								mal.MEANING_ID.eq(meaningId)
-								.and(mal.ACTIVITY_LOG_ID.eq(al.ID))
-								.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
-								.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
-								.and(al.FUNCT_NAME.similarTo(conceptActivityWordFunctNamesCrit)))
+								.and(mal.ACTIVITY_LOG_ID.eq(al.ID)))
 						.orderBy(al.EVENT_ON.desc())
-						.limit(1))
-				.asTable("lmlwal");
+						.limit(1)
+						.fetchOptionalInto(Long.class).orElse(null);
+			}
 
-		Long activityLogId = create
-				.select(lmlwal.field("id", Long.class))
-				.from(lmlwal)
-				.orderBy(lmlwal.field("event_on").desc())
-				.limit(1)
-				.fetchOptionalInto(Long.class).orElse(null);
+		} else if (LastActivityType.APPROVE.equals(lastActivityType)) {
 
-		if (activityLogId == null) {
 			activityLogId = create
 					.select(al.ID)
 					.from(mal, al)
 					.where(
 							mal.MEANING_ID.eq(meaningId)
-							.and(mal.ACTIVITY_LOG_ID.eq(al.ID)))
+							.and(mal.ACTIVITY_LOG_ID.eq(al.ID))
+							.and(al.FUNCT_NAME.eq(FUNCT_NAME_APPROVE_MEANING)))
 					.orderBy(al.EVENT_ON.desc())
 					.limit(1)
 					.fetchOptionalInto(Long.class).orElse(null);
@@ -325,17 +345,17 @@ public class ActivityLogDbService implements GlobalConstant {
 		create
 				.update(mlal)
 				.set(mlal.ACTIVITY_LOG_ID, activityLogId)
-				.where(mlal.MEANING_ID.eq(meaningId))
+				.where(mlal.MEANING_ID.eq(meaningId).and(mlal.TYPE.eq(lastActivityType.name())))
 				.execute();
 
 		create
-				.insertInto(mlal, mlal.MEANING_ID, mlal.ACTIVITY_LOG_ID)
+				.insertInto(mlal, mlal.MEANING_ID, mlal.ACTIVITY_LOG_ID, mlal.TYPE)
 				.select(DSL
-						.select(DSL.val(meaningId), DSL.val(activityLogId))
+						.select(DSL.val(meaningId), DSL.val(activityLogId), DSL.val(lastActivityType.name()))
 						.whereNotExists(DSL
 								.select(mlal.ID)
 								.from(mlal)
-								.where(mlal.MEANING_ID.eq(meaningId))))
+								.where(mlal.MEANING_ID.eq(meaningId).and(mlal.TYPE.eq(lastActivityType.name())))))
 				.execute();
 	}
 
@@ -508,4 +528,34 @@ public class ActivityLogDbService implements GlobalConstant {
 				.fetchOptionalInto(Long.class).orElse(null);
 	}
 
+	public Timestamp getMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
+		return create
+				.select(ACTIVITY_LOG.EVENT_ON)
+				.from(MEANING_LAST_ACTIVITY_LOG, ACTIVITY_LOG)
+				.where(
+						MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
+						.and(MEANING_LAST_ACTIVITY_LOG.ACTIVITY_LOG_ID.eq(ACTIVITY_LOG.ID))
+						.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
+				.fetchOptionalInto(Timestamp.class)
+				.orElse(null);
+	}
+
+	public void deleteMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
+		create
+			.deleteFrom(MEANING_LAST_ACTIVITY_LOG)
+			.where(
+					MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(meaningId)
+					.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
+			.execute();
+	}
+
+	public void moveMeaningLastActivityLog(Long targetMeaningId, Long sourceMeaningId, LastActivityType lastActivityType) {
+		create
+			.update(MEANING_LAST_ACTIVITY_LOG)
+			.set(MEANING_LAST_ACTIVITY_LOG.MEANING_ID, targetMeaningId)
+			.where(
+					MEANING_LAST_ACTIVITY_LOG.MEANING_ID.eq(sourceMeaningId)
+					.and(MEANING_LAST_ACTIVITY_LOG.TYPE.eq(lastActivityType.name())))
+			.execute();
+	}
 }

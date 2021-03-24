@@ -100,7 +100,7 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 		Condition where1 = spcff.SOURCE_ID.eq(s.ID)
 				.and(spcff.FREEFORM_ID.eq(spc.ID))
-				.and(DSL.lower(spc.VALUE_TEXT).like(searchFilter));
+				.and(DSL.lower(spc.VALUE_TEXT).like(filterField));
 
 		if (sourceType != null) {
 			where1 = where1.and(s.TYPE.eq(sourceType.name()));

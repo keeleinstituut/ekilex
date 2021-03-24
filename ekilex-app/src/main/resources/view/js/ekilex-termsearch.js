@@ -2,7 +2,6 @@
 // add on click handlers to details buttons in search result table
 function initializeTermSearch() {
 
-
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
 		let lang = $(this).attr("data-lang");
 		let itemData = {
@@ -100,6 +99,25 @@ function initializeTermSearch() {
 	initNewWordDlg();
 	initClassifierAutocomplete();
 };
+
+$.fn.approveMeaning = function() {
+	var main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		var form = main.closest('form');
+		var meaningId = main.data("meaning-id");
+		$.ajax({
+			url: form.attr('action'),
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function() {
+			loadDetails(meaningId, 'replace', meaningId);			
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg('Viga!');
+		});
+	});
+}
 
 // TODO not in use?
 // function loadMeaningDetails(meaningId) {

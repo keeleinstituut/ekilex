@@ -29,6 +29,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.LastActivityType;
 import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SimpleWord;
@@ -271,7 +272,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 		return clf;
 	}
 
-	protected Field<Timestamp> getMeaningLastActivityEventOnField(Field<Long> meaningIdField) {
+	protected Field<Timestamp> getMeaningLastActivityEventOnField(Field<Long> meaningIdField, LastActivityType lastActivityType) {
 		MeaningLastActivityLog mlal = MEANING_LAST_ACTIVITY_LOG.as("mlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
 		Field<Timestamp> wlaeof = DSL.field(DSL
@@ -279,6 +280,7 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.from(mlal, al)
 				.where(
 						mlal.MEANING_ID.eq(meaningIdField)
+						.and(mlal.TYPE.eq(lastActivityType.name()))
 						.and(mlal.ACTIVITY_LOG_ID.eq(al.ID)))
 				.limit(1));
 		return wlaeof;

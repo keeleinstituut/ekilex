@@ -80,6 +80,8 @@ public interface WebConstant {
 
 	String UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI = "/update_meaning_active_tag_complete";
 
+	String APPROVE_MEANING = "/approve_meaning";
+
 	String GENERATE_API_KEY = "/generate_api_key";
 
 	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";

@@ -66,11 +66,6 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 	}
 
 	@Transactional
-	public void updateUserProfile(EkiUserProfile userProfile) {
-		userProfileDbService.updateUserProfile(userProfile);
-	}
-
-	@Transactional
 	public void setRecentDatasetPermission(Long permissionId, Long userId) {
 
 		if (permissionId == null) {
@@ -85,4 +80,14 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		}
 	}
 
+	@Transactional
+	public void updateApproveMeaningEnabled(Long userId, boolean approveMeaningEnabled) {
+
+		userProfileDbService.updateApproveMeaningEnabled(userId, approveMeaningEnabled);
+	}
+
+	@Transactional
+	public void updateUserProfile(EkiUserProfile userProfile) {
+		userProfileDbService.updateUserProfile(userProfile);
+	}
 }
