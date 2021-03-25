@@ -294,7 +294,8 @@ public class LookupDbService extends AbstractDataDbService {
 						mr1.ID.eq(relationId)
 								.and(mr1.MEANING1_ID.eq(mr2.MEANING2_ID))
 								.and(mr1.MEANING2_ID.eq(mr2.MEANING1_ID))
-								.and(mr1.MEANING_REL_TYPE_CODE.eq(mr2.MEANING_REL_TYPE_CODE)))
+								.and(mr1.MEANING_REL_TYPE_CODE.eq(mr2.MEANING_REL_TYPE_CODE))
+								.and(mr2.ID.ne(mr1.ID)))
 				.fetchOneInto(Long.class);
 	}
 
