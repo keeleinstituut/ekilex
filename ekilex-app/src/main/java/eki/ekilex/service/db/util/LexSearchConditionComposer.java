@@ -144,8 +144,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 					where1 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where1);
 					where1 = searchFilterHelper.applyDatasetRestrictions(l2, searchDatasetsRestriction, where1);
 
-					boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.SECONDARY_MEANING_WORD, searchCriteria);
-					if (isNotExistsSearch) {
+					boolean isNegativeExistsSearch = searchFilterHelper.isNegativeExistsSearch(SearchKey.SECONDARY_MEANING_WORD, searchCriteria);
+					if (isNegativeExistsSearch) {
 						where = where.andNotExists(DSL.select(l1.ID).from(l1, l2, w2, mr).where(where1));
 					} else {
 						Condition where2 = searchFilterHelper.applyValueFilters(SearchKey.SECONDARY_MEANING_WORD, searchCriteria, w2.VALUE, DSL.noCondition(), true);
@@ -289,8 +289,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where2 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
 				Condition where1;
 
-				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
-				if (isNotExistsSearch) {
+				boolean isNegativeExistsSearch = searchFilterHelper.isNegativeExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
+				if (isNegativeExistsSearch) {
 					where = where.andNotExists(DSL.select(d1.ID).from(l1, m1, d1).where(where2));
 				} else {
 					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, d1.VALUE, where2, true);
@@ -332,8 +332,8 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where2 = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, where2);
 				Condition where1;
 
-				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
-				if (isNotExistsSearch) {
+				boolean isNegativeExistsSearch = searchFilterHelper.isNegativeExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
+				if (isNegativeExistsSearch) {
 					where = where.andNotExists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where2));
 				} else {
 					where1 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, u1.VALUE_TEXT, where2, true);
@@ -367,12 +367,11 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				Freeform nff3 = FREEFORM.as("nff3");
 				Condition where3 = nff3.TYPE.eq(FreeformType.NOTE.name());
 
-				boolean isNotExistsSearch = searchFilterHelper.isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
-				if (!isNotExistsSearch) {
-					where3 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, nff3.VALUE_TEXT, where3, true);
-					where3 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, nff3.ID, where3);
-					where3 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
-				}
+				boolean isNegativeExistsSearch = searchFilterHelper.isNegativeExistsSearch(SearchKey.VALUE_AND_EXISTS, searchCriteria);
+
+				where3 = searchFilterHelper.applyValueFilters(SearchKey.VALUE_AND_EXISTS, searchCriteria, nff3.VALUE_TEXT, where3, true);
+				where3 = searchFilterHelper.applyFreeformSourceNameFilter(searchCriteria, nff3.ID, where3);
+				where3 = searchFilterHelper.applyFreeformSourceRefFilter(searchCriteria, nff3.ID, where3);
 
 				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
 
@@ -428,7 +427,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 								.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class))))
 						.asTable("n1");
 
-				if (isNotExistsSearch) {
+				if (isNegativeExistsSearch) {
 					where = where.andNotExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
 				} else {
 					where = where.andExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
@@ -704,18 +703,18 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				for (SearchCriterion criterion : filteredCriteriaByAllLogs) {
 					String critValue = criterion.getSearchValue().toString();
 					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNegative(), true);
 					} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
 						where1 = where1
 								.andNot(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()).and(al.FUNCT_NAME.like(LIKE_CREATE)));
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNegative(), false);
 					} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
 						where1 = where1
 								.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
 								.and(al.OWNER_ID.eq(wordIdField))
 								.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
 								.and(al.FUNCT_NAME.like(LIKE_CREATE));
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNegative(), false);
 					}
 				}
 				wherew = wherew.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
@@ -736,9 +735,9 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				for (SearchCriterion criterion : filteredCriteriaByLastLogs) {
 					String critValue = criterion.getSearchValue().toString();
 					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNegative(), true);
 					} else if (SearchKey.LAST_UPDATE_ON.equals(criterion.getSearchKey())) {
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNegative(), false);
 					}
 				}
 				wherew = wherew.andExists(DSL.select(wlal.ID).from(wlal, al).where(where1));
