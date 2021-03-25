@@ -16,3 +16,6 @@ insert into lex_rel_mapping (code1, code2) values ('otse', 'otse');
 delete from word_relation where word1_id = word2_id;
 delete from lex_relation where lexeme1_id = lexeme2_id;
 delete from meaning_relation where meaning1_id = meaning2_id;
+
+alter table lexeme alter column level1 set not null;
+alter table lexeme alter column level2 set not null;
