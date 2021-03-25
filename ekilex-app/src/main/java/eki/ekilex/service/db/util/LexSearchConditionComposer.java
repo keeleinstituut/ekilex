@@ -689,10 +689,13 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
 		ActivityLog al = ACTIVITY_LOG.as("al");
 
+		List<SearchCriterion> filteredCriteriaByCreatedOrUpdatedByOnly = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY);
+		boolean isFilterByCreatedOrUpdatedByOnly  = CollectionUtils.isNotEmpty(filteredCriteriaByCreatedOrUpdatedByOnly);
+
 		// by all logs
 		boolean isFilterByAllLogs = searchFilterHelper.containsSearchKeys(searchCriteria, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
 
-		if (isFilterByAllLogs) {
+		if (isFilterByAllLogs || isFilterByCreatedOrUpdatedByOnly) {
 
 			List<SearchCriterion> filteredCriteriaByAllLogs = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
 
