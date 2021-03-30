@@ -624,6 +624,9 @@ alter table eki_user_application add column is_reviewed boolean default false no
 update eki_user_application set is_reviewed = true;
 alter table eki_user drop column is_reviewed;
 
+-- fix 20210330 (paradigmasid ei saa üleslaadida)
+alter table form drop column mode cascade;
+
 -- kustutab seosed iseendaga
 delete from word_relation where word1_id = word2_id;
 delete from lex_relation where lexeme1_id = lexeme2_id;
