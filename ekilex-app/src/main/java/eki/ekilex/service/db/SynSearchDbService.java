@@ -72,8 +72,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<String[]> definitions = DSL
 				.select(DSL.arrayAgg(d.VALUE).orderBy(d.ORDER_BY))
 				.from(d)
-				.where(d.MEANING_ID.eq(l2.MEANING_ID)
-						.and(DSL.or(d.COMPLEXITY.like(Complexity.DETAIL.name() + "%"), d.COMPLEXITY.like(Complexity.SIMPLE.name() + "%"))))
+				.where(d.MEANING_ID.eq(l2.MEANING_ID))
 				.groupBy(l2.MEANING_ID)
 				.asField("definitions");
 
