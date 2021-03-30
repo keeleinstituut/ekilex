@@ -156,7 +156,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.where(
 						r.WORD1_ID.eq(wordId)
 								.and(r.WORD_REL_TYPE_CODE.eq(relationType))
-								.and(w2.LANG.in(wordLangs)))
+								.and(w2.LANG.in(wordLangs))
+								.andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID).and(l2.DATASET_CODE.eq(datasetCode)))))
 				.groupBy(r.ID, rtl.VALUE, w2.ID, oppr.RELATION_STATUS)
 				.asTable("r");
 
