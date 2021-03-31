@@ -354,3 +354,35 @@ footer p {
     }
   }
 }
+
+.sidebar-ordering {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  &__item {
+    display: inline-block;
+    position: relative;
+    &:hover {
+      .sidebar-ordering__buttons {
+        display: block;
+      }
+    }
+  }
+  &__buttons {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    display: none;
+  }
+  .sorter-handle {
+    width: 11px;
+    height: 16px;
+    color: $gray-400;
+    display: inline-block;
+    cursor: move;
+    padding-top: 0.1875rem;
+    vertical-align: top;
+    margin-right: -8px;
+    position: relative;
+  }
+}

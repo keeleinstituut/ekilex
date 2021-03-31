@@ -109,7 +109,7 @@
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
             <div class="col-8 h-100 d-flex flex-column" id="contentColumn">
-              <div class="overflow-auto pt-2 h-100">
+              <div class="overflow-auto pt-2 h-100" data-plugin="sorter" data-sorter:type="lex-details">
                 <th:block th:each="lexeme : ${details.lexemes}">
                   <div th:id="${'lexeme-details-' + lexeme.lexemeId}">
                     <th:block th:if="${#lists.size(details.lexemes) > 1}">
@@ -376,32 +376,41 @@
                         Sisu puudub...
                       </div>
                       
-                      <table class="orderable" data-op-code="word_relation" th:unless="${#lists.isEmpty(relationGroup.members)}">
-                          <tr th:each="relation, itemIter : ${relationGroup.members}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                            <td class="action-column">
-                              <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.details.word.crudGrant"></th:block>
-                            </td>
-                            <td class="invisible-buttons">
-                              <button type="button"
-                                      class="btn btn-link btn-text-wrap btn-xs"
-                                      th:data-id="${relation.wordId}"
-                                      data-plugin="contextmenu"
-                                      data-contextmenu:compare="Ava uues paneelis"
-                                      data-behaviour="replace"
-                                      name="details-btn">
-                                <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
-                              </button>
+                      <ul
+                        th:unless="${#lists.isEmpty(relationGroup.members)}"
+                        class="sidebar-ordering"
+                        data-plugin="sorter"
+                        data-sorter:type="relations"
+                        data-sorter:handle=".sorter-handle">
+                        <li 
+                          th:each="relation, itemIter : ${relationGroup.members}"
+                          th:data-id="${relation.id}"
+                          th:data-orderby="${relation.orderBy}">
+                          <div class="sidebar-ordering__item">
+                            <span sec:authorize="#vars.details.word.crudGrant" class="sorter-handle"><i class="fa fa-ellipsis-v"></i></span>
+                            <button type="button"
+                              class="btn btn-link btn-text-wrap btn-xs"
+                              th:data-id="${relation.wordId}"
+                              data-plugin="contextmenu"
+                              data-contextmenu:compare="Ava uues paneelis"
+                              data-behaviour="replace"
+                              name="details-btn">
+                              <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
+                            </button>
+                            <div class="sidebar-ordering__buttons">
                               <button type="button" class="btn badge badge-warning"
-                                      th:data-id="${relation.id}"
-                                      data-op-code="word_relation"
-                                      data-toggle="delete-confirm"
-                                      data-placement="left"
-                                      sec:authorize="#vars.details.word.crudGrant">
+                                th:data-id="${relation.id}"
+                                data-op-code="word_relation"
+                                data-toggle="delete-confirm"
+                                data-placement="left"
+                                sec:authorize="#vars.details.word.crudGrant">
                                 <i class="fa fa-remove" aria-hidden="true"></i>
                               </button>
-                            </td>
-                          </tr>
-                        </table>
+                            </div><!--/sidebar-ordering__buttons-->
+                          </div><!--/sidebar-ordering__item-->
+                        </li>
+                      </ul>
+
                     </div>
                   </div>
                   <div class="ekiAccordion__instance" th:unless="${#lists.isEmpty(details.wordEtymology)}">

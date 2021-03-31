@@ -1,18 +1,13 @@
 module.exports = function (grunt) {
 
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-contrib-connect');
-	grunt.loadNpmTasks('grunt-px-to-rem');
-	grunt.loadNpmTasks('grunt-autoprefixer');
-	grunt.loadNpmTasks('grunt-contrib-sass');
-	grunt.loadNpmTasks('grunt-babel');
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-copy');
-
 	const browserList = ['opera >= 27', 'ff >= 45', 'chrome >= 45', 'ie >= 11'];
 
-	grunt.initConfig({
+	var concatFile = 'src/main/resources/view/js/main.js';
+	grunt.task.registerTask("configureBabel", "configures babel options", function() {
+		config.babel.options.inputSourceMap = grunt.file.readJSON(concatFile+".map");
+	});
+
+	var config = {
 
 		clean: {
 			html: ['target/classes/view/html'],
@@ -75,13 +70,16 @@ module.exports = function (grunt) {
 
 		concat: {
 			components: {
+				options: {
+					sourceMap: true,
+				},
 				src: [
 					'src/main/resources/view/js/*.js',
 					'!src/main/resources/view/js/_jquery-3.2.1.js',
 					'!src/main/resources/view/js/main.js',
 					
 				],
-				dest: 'src/main/resources/view/js/main.js'
+				dest: concatFile
 			},
 		},
 
@@ -101,11 +99,14 @@ module.exports = function (grunt) {
 				presets: ['@babel/preset-env'],
 				comments: false,
 				compact: true,
+				sourceMap: true,
+				inputSourceMap: grunt.file.readJSON('src/main/resources/view/js/main.js.map')
 			},
 			dist: {
-				files: {
-					'src/main/resources/view/js/main.js': 'src/main/resources/view/js/main.js',
-				}
+				files: [{
+					src: [concatFile],
+					dest: 'src/main/resources/view/js/main.js',
+				}]
 			}
 		},
 		watch: {
@@ -115,25 +116,20 @@ module.exports = function (grunt) {
 			},
 			js: {
 				files: ['src/main/resources/view/js/**/**.js', '!src/main/resources/view/js/main.js'],
-				tasks: ['concat', 'babel', 'clean:js', 'copy:js'],
-				options: {
-					nospawn: true
-				}
+				tasks: ['concat', 'configureBabel', 'babel', 'clean:js', 'copy:js'],
 			},
 			html: {
 				files: ['src/main/resources/view/html/*.html'],
 				tasks: ['clean:html', 'copy:html'],
-				options: {
-					nospawn: true
-				}
 			}
 		}
 
-	});
+	};
 
 	var tasks = {
 		'clean:assets': true,
 		concat: true,
+		configureBabel: true,
 		sass: true,
 		px_to_rem: true,
 		autoprefixer: true,
@@ -161,6 +157,9 @@ module.exports = function (grunt) {
 		}
 	}
 
+
+	grunt.initConfig(config);
+	require('load-grunt-tasks')(grunt);
 
 	grunt.registerTask('default', tasksArray);
 	grunt.registerTask('deploy', deployTasksArray);
