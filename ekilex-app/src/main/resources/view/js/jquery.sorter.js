@@ -113,9 +113,15 @@ class Sorter {
         lexemeId: id,
         position: order,
       };
-
-      postJson(applicationUrl + 'update_lexeme_levels', data).done(function() {
-        main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+      $.ajax({
+        url: applicationUrl + 'update_lexeme_levels',
+        data: JSON.stringify(data),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        complete: function(){
+          main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+        },
       });
       
     });
