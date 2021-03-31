@@ -122,10 +122,12 @@ function initializeSynSearch() {
 				accept: function(draggableDiv) {
 					if ($(this).is('.canAccept')) {
 						if (draggableDiv.hasClass("draggable-synonym")) {
-							let meaningId = draggableDiv.data('meaning-id');
-							let existingMeaning = $(this).find("input.relation-meaning-id[value='" + meaningId + "']");
+							let draggableMeaningId = draggableDiv.data('meaning-id');
+							let droppableMeaningId = $(this).data('meaning-id');
+							let isSameMeaning = draggableMeaningId === droppableMeaningId;
+							let existingMeaning = $(this).find("input.relation-meaning-id[value='" + draggableMeaningId + "']");
 
-							if (!existingMeaning.length) {
+							if (!existingMeaning.length && !isSameMeaning) {
 								return true;
 							}
 						}

@@ -3,7 +3,6 @@ package eki.ekilex.constant;
 public enum SearchOperand {
 
 	EQUALS,
-	NOT_EQUALS, // TODO remove?
 	STARTS_WITH,
 	ENDS_WITH,
 	CONTAINS,
@@ -12,7 +11,6 @@ public enum SearchOperand {
 	LESS_THAN,
 	CONTAINS_WORD,
 	EXISTS,
-	NOT_EXISTS, // TODO remove?
 	SINGLE,
 	MULTIPLE,
 	EARLIER_THAN,
