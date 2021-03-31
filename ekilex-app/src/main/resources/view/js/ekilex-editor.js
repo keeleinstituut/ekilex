@@ -34,11 +34,14 @@ function initUsageMemberDlg(theDlg) {
 };
 
 function initEkiEditorDlg(editDlg) {
-	let modifyFld = editDlg.find('[data-name=editFld]');
-	modifyFld.html(editDlg.find('[name=value]').val());
+	let modifyFld = editDlg.find('[data-id="editFld"]');
+	modifyFld.val(editDlg.find('[name=value]').val());
+
+	initCkEditor(modifyFld);
+
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		if (modifyFld.html()) {
-			let content = modifyFld.html();
+		if (modifyFld.val()) {
+			let content = modifyFld.val();
 			content = content.replace("<br>", "").replaceAll("&nbsp;", "")
 			editDlg.find('[name=value]').val(content);
 			modifyFld.removeClass('is-invalid');
@@ -48,8 +51,10 @@ function initEkiEditorDlg(editDlg) {
 			modifyFld.addClass('is-invalid');
 		}
 	});
+	/*
 	let ekiEditorElem = editDlg.find('.eki-editor');
 	initEkiEditor(ekiEditorElem);
+	*/
 };
 
 function initEkiEditor(ekiEditorElem) {

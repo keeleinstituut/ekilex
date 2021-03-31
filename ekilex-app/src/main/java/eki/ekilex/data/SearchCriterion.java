@@ -14,6 +14,8 @@ public class SearchCriterion extends AbstractDataObject {
 
 	private Object searchValue;
 
+	private boolean notCondition;
+
 	public SearchKey getSearchKey() {
 		return searchKey;
 	}
@@ -38,4 +40,11 @@ public class SearchCriterion extends AbstractDataObject {
 		this.searchValue = searchValue;
 	}
 
+	public boolean isNotCondition() {
+		return notCondition;
+	}
+
+	public void setNotCondition(boolean notCondition) {
+		this.notCondition = notCondition;
+	}
 }

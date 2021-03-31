@@ -1526,6 +1526,7 @@ where exists (select l1.id
               and   l1.is_public = true
               and   l1ds.code = l1.dataset_code
               and   l1ds.is_public = true)
+  and r.lex_rel_type_code != 'otse'
 group by r.lexeme1_id;
 
 

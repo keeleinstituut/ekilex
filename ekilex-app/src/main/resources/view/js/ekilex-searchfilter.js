@@ -29,6 +29,28 @@ function displayDetailSearch() {
 	$('#searchMode').val('DETAIL');
 };
 
+function displayNotConditionChk() {
+	const disabledSearchEntities = ["TAG", "CLUELESS"];
+	const disabledSearchKeys = [
+		"ID", "FREQUENCY", "RANK", "CREATED_OR_UPDATED_BY", "CREATED_OR_UPDATED_ON", "CREATED_BY", "CREATED_ON", "UPDATED_BY", "UPDATED_ON", "LAST_UPDATE_ON",
+		"ATTRIBUTE_NAME"];
+
+	let notChks = $('#detail_search_filter').find('[name$="notCondition"]');
+	notChks.each(function () {
+		let notChk = $(this);
+		let searchEntity = notChk.closest('.detail-search-group').find('[name$="entity"]').val();
+		let searchKey = notChk.closest('.detail-search-sub-row').find('[name$="searchKey"]').val();
+
+		let disable = disabledSearchEntities.includes(searchEntity) || disabledSearchKeys.includes(searchKey);
+		if (disable) {
+			notChk.attr('disabled', true);
+			notChk.prop('checked', false);
+		} else {
+			notChk.removeAttr('disabled');
+		}
+	});
+}
+
 function initialiseSearchForm() {
 	$('#simpleSearchModeBtn').on('click',displaySimpleSearch);
 	$('#detailSearchModeBtn').on('click',displayDetailSearch);
@@ -75,6 +97,7 @@ function validateAndSubmitSimpleSearch() {
 function initialiseDetailSearch() {
 	displayDetailConditionButtons();
 	displayDetailGroupButtons();
+	displayNotConditionChk();
 
 	$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
 		$(this).closest('[name="detailCondition"]').remove();
@@ -100,6 +123,7 @@ function initialiseDetailSearch() {
 		searchKeyElement.append(keyTemplate.html());
 		searchKeyElement.val(searchKeyElement.find('option').first().val());
 		initCondition(conditionElement);
+		displayNotConditionChk();
 	});
 
 	$(document).on("change", "select[name$='searchKey']", function() {
@@ -109,12 +133,9 @@ function initialiseDetailSearch() {
 		let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
 		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
 		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
-		// NOT_EXISTS, NOT_EQUALS and NOT_CONTAINS is not implemented everywhere
+		// NOT_CONTAINS is not implemented everywhere
 		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
 			operandTemplate.find('option[value="NOT_CONTAINS"]').remove();
-		}
-		if (pageName == 'lex_search' && searchEntity == 'WORD' && searchKey == 'SOURCE_REF') {
-			operandTemplate.find('option[value="NOT_EXISTS"]').remove();
 		}
 		searchOperandElement.find('option').remove();
 		searchOperandElement.append(operandTemplate.html());
@@ -123,6 +144,7 @@ function initialiseDetailSearch() {
 		// should lookup by search key + operand
 		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
 		replaceSearchValueElement(searchKey, searchValueElement);
+		displayNotConditionChk();
 	});
 
 	$(document).on("change", "select[name$='searchOperand']", function() {
@@ -131,7 +153,7 @@ function initialiseDetailSearch() {
 			"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "OD_RECOMMENDATION", "ATTRIBUTE_VALUE"];
 		const selectTypeSearchKeys = [
 			"DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "LEXEME_VALUE_STATE", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE", "ATTRIBUTE_NAME", "WORD_RELATION", "MEANING_RELATION"];
-		const nonValueSearchOperands = ["NOT_EXISTS", "EXISTS", "SINGLE", "MULTIPLE"];
+		const nonValueSearchOperands = ["EXISTS", "SINGLE", "MULTIPLE"];
 
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');
 		let searchOperand = $(this).val();
@@ -193,6 +215,7 @@ function initialiseDetailSearch() {
 		let detailGroupElement = $(this).closest('[name="detailGroup"]');
 		let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
 		initCondition(addedConditionElement);
+		displayNotConditionChk();
 	});
 
 	$(document).on("click", ":button[name='addDetailGroupBtn']", function() {
@@ -200,6 +223,7 @@ function initialiseDetailSearch() {
 		let detailSearchElement = $("#detail_search_filter");
 		let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
 		initConditionGroup(addedGroupElement);
+		displayNotConditionChk();
 	});
 
 	$('[data-live-search="true"]:not(:hidden)').each(function () {
@@ -219,7 +243,11 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 	copyOfLastElement.find('[name*="' + indexName + '["]').each(function(i, v) {
 		$(this).attr('name', $(this).attr('name').replace(oldIndexVal, newIndexVal))
 	});
-	copyOfLastElement.find('input').val(null);
+	let inputCopy = copyOfLastElement.find('input');
+	let isCheckbox = inputCopy.is(':checkbox');
+	if (!isCheckbox) {
+		inputCopy.val(null);
+	}
 	lastElement.after(copyOfLastElement);
 	return parentElement.find('[name="' + itemName + '"]').last();
 };

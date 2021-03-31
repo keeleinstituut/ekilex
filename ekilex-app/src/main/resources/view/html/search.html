@@ -68,10 +68,14 @@
                    name="detailCondition"
                    th:data-index="${critStat.index}"
                    th:data-page="${searchPageName}"
-                   th:with="isExistsOperand = ${criteria.searchOperand.name() == 'NOT_EXISTS'
-                                                    || criteria.searchOperand.name() == 'EXISTS'
+                   th:with="isExistsOperand = ${criteria.searchOperand.name() == 'EXISTS'
                                                     || criteria.searchOperand.name() == 'SINGLE'
                                                     || criteria.searchOperand.name() == 'MULTIPLE'}">
+                <div th:if="${searchPageName == 'lex_search' || searchPageName == 'term_search'}">
+                  <input type="checkbox" class="m-2" title="Negatiivne" value="true"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].notCondition'"
+                         th:checked="${criteria.notCondition}"/>
+                </div>
                 <div class="col-2">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
                     <option th:each="key : ${group.entity.keys}" th:value="${key}" th:selected="${criteria.searchKey == key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>

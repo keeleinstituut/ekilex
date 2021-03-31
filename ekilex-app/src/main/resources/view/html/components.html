@@ -163,19 +163,12 @@
     </tr>
   </table>
   <div class="form-group row eki-editor" th:fragment="eki_editor_elem(showButtons)">
-    <div class="col-md-12 pb-3" th:if="${showButtons}">
-      <div class="float-right">
-        <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgendus</button>
-        <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgendus</button>
-      </div>
-    </div>
     <div class="col-md-12">
-      <div contenteditable="true" data-name="editFld" class="edit-area-lg form-control"></div>
-      <div class="eki-editor-menu">
-        <select class="eki-tag-select" size="6">
-          <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
-        </select>
-      </div>
+      <div class="formItem">
+        <div class="formItem__element">
+          <textarea data-id="editFld"></textarea>
+        </div><!--/formItem__element-->
+      </div><!--/formItem-->
     </div>
   </div>
   <th:block th:fragment="change_role">

@@ -31,3 +31,38 @@
     height: 8em;
     overflow: auto;
 }
+
+
+.cke_button__ekisub_icon, .cke_button__ekisup_icon{
+    background-size: 16px !important;
+}
+.cke_button__stress, .cke_button__foreign, .cke_button__meta, .cke_button__highlight {
+    .cke_button_icon {
+        background-size: 32px !important;
+        width: 32px;
+    }
+}
+.cke_button__stress_icon {
+    background-image: url('../img/ckeditor/stress.png') !important;
+}
+.cke_button__ekisub_icon {
+    background-image: url('../img/ckeditor/ekisub.png') !important;
+}
+
+.cke_button__ekisup_icon {
+    background-image: url('../img/ckeditor/ekisup.png') !important;
+}
+
+.cke_button__foreign_icon {
+    background-image: url('../img/ckeditor/foreign.png') !important;
+}
+
+.cke_button__highlight_icon {
+    background-image: url('../img/ckeditor/highlight.png') !important;
+}
+
+.cke_button__meta_icon {
+    background-image: url('../img/ckeditor/meta.png') !important;
+}
+
+a.cke_path_item:first-child{display: none !important;}

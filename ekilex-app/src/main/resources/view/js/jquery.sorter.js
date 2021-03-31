@@ -75,6 +75,10 @@ class Sorter {
       });
     }
 
+    if (this.type === 'relations') {
+      this.bindRelations();
+    }
+
     if (this.type === 'lex-details') {
       this.bindLexDetails();
       this.checkRequirements();
@@ -92,6 +96,59 @@ class Sorter {
             height: ui.item.outerHeight(),
           })
         }
+      });
+    });
+
+    const main = this.main;
+    this.main.on('sortstop', function(event, ui){
+      const items = main.find('[data-level1]');
+      items.each(function(index){
+        $(this).attr('data-order', index);
+      });
+      const activeItem = $(ui.item).find('[data-level1]');
+      const id = activeItem.attr('data-id');
+      const order = activeItem.attr('data-order');
+
+      const data = {
+        lexemeId: id,
+        position: order,
+      };
+      $.ajax({
+        url: applicationUrl + 'update_lexeme_levels',
+        data: JSON.stringify(data),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        complete: function(){
+          main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+        },
+      });
+      
+    });
+  }
+
+  bindRelations() {
+    const main = this.main;
+    const originalOrder = [];
+    
+    main.find('.sortable-main-group').each(function(){
+      originalOrder.push($(this).attr('data-orderby'));
+    });
+
+    main.on('sortstop', function(event, ui) {
+      const data = {
+        opCode: 'word_relation',
+        items: [],
+      }
+      main.find('.sortable-main-group').each(function(index){
+        data.items.push({
+          id: $(this).attr('data-id'),
+          orderby: originalOrder[index],
+        })
+      });
+
+      postJson(applicationUrl + 'update_ordering', data).done(function() {
+        main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
       });
     });
   }

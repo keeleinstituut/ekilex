@@ -26,6 +26,7 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.UpdateItemRequest;
+import eki.ekilex.data.UpdateLexemeLevelsRequest;
 import eki.ekilex.data.UpdateListRequest;
 import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
@@ -408,8 +409,10 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@ResponseBody
 	@PostMapping(UPDATE_LEXEME_LEVELS_URI)
-	public String updateLexemeLevels(@RequestParam("lexemeId") Long lexemeId, @RequestParam("position") int position) throws Exception {
+	public String updateLexemeLevels(@RequestBody UpdateLexemeLevelsRequest updateLexemeLevelsRequest) throws Exception {
 
+		Long lexemeId = updateLexemeLevelsRequest.getLexemeId();
+		Integer position = updateLexemeLevelsRequest.getPosition();
 		logger.debug("Change lexeme levels for id {}, new position {}", lexemeId, position);
 
 		cudService.updateLexemeLevels(lexemeId, position);

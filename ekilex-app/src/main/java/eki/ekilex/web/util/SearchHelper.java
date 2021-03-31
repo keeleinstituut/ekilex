@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,6 +46,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 	private static final String CRITERION = "crit";
 	private static final String CRITERION_VALUE = "val";
 	private static final String CRITERION_CLASSIFIER = "cla";
+	private static final String CRITERION_NOT = "not";
 	private static final String CRITERION_VAL_ANTI_TRUNC_MASK = "¤";
 
 	@Autowired
@@ -181,6 +183,10 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 								uriBuf.append(critValue);
 							}
 						}
+						uriBuf.append(PATH_SEPARATOR);
+						uriBuf.append(CRITERION_NOT);
+						uriBuf.append(PATH_SEPARATOR);
+						uriBuf.append(searchCriterion.isNotCondition());
 					}
 				}
 			}
@@ -264,6 +270,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				// crit value
 				Object searchValueObj = null;
 				String searchValueType = uriParts[uriPartIndex + 3];
+				boolean isNot = false;
 				if (StringUtils.equals(CRITERION_VALUE, searchValueType)) {
 					String searchValueStr = uriParts[uriPartIndex + 4];
 					searchValueStr = decode(searchValueStr);
@@ -274,6 +281,13 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 						searchValueObj = null;
 					} else {
 						searchValueObj = searchValueStr;
+					}
+					if (uriPartIndex + 5 < uriParts.length) {
+						String notPart = uriParts[uriPartIndex + 5];
+						if (StringUtils.equals(CRITERION_NOT, notPart)) {
+							String isNotString = uriParts[uriPartIndex + 6];
+							isNot = BooleanUtils.toBoolean(isNotString);
+						}
 					}
 				} else if (StringUtils.equals(CRITERION_CLASSIFIER, searchValueType)) {
 					if (uriPartIndex > uriParts.length - 7) {
@@ -290,11 +304,19 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 					classif.setOrigin(classifOrigin);
 					classif.setCode(classifCode);
 					searchValueObj = classif;
+					if (uriPartIndex + 7 < uriParts.length) {
+						String notPart = uriParts[uriPartIndex + 7];
+						if (StringUtils.equals(CRITERION_NOT, notPart)) {
+							String isNotString = uriParts[uriPartIndex + 8];
+							isNot = BooleanUtils.toBoolean(isNotString);
+						}
+					}
 				}
 				SearchCriterion criterion = new SearchCriterion();
 				criterion.setSearchKey(searchKey);
 				criterion.setSearchOperand(searchOperand);
 				criterion.setSearchValue(searchValueObj);
+				criterion.setNotCondition(isNot);
 				List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
 				SearchCriterionGroup criterionGroup = criteriaGroups.get(criteriaGroups.size() - 1);
 				criterionGroup.getSearchCriteria().add(criterion);
@@ -387,8 +409,6 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 			for (SearchCriterionGroup criteriaGroup : criteriaGroups) {
 				for (SearchCriterion criteria : criteriaGroup.getSearchCriteria()) {
 					if (criteria.getSearchValue() != null) {
-						return true;
-					} else if (SearchOperand.NOT_EXISTS.equals(criteria.getSearchOperand())) {
 						return true;
 					} else if (SearchOperand.EXISTS.equals(criteria.getSearchOperand())) {
 						return true;

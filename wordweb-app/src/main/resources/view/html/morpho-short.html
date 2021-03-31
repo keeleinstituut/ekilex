@@ -5,6 +5,7 @@
     <td>
       <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
         <th:block th:if="${form.morphExists && !#strings.isEmpty(form.value)}">
+          <span th:unless="${formIter.first}">~</span>
           <span th:if="${form.questionable}" class="text-muted">*</span>
           <span th:utext="${form.valuePrese}" th:title="${form.morph.value + ' - ' + form.displayForm}"
                 data-toggle="tooltip" class="form-value-field" th:classappend="${form.questionable ? 'text-muted ml-n1' : ''}">
@@ -14,7 +15,6 @@
             <span class="icon icon-speaker"></span>
           </button>
         </th:block>
-        <span th:unless="${formIter.last}">~</span>
       </th:block>
     </td>
   </th:block>

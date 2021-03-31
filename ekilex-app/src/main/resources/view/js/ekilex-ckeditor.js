@@ -42,13 +42,6 @@ var buttons = [
 		element: 'eki-sup',
 		styles: 'vertical-align: super; font-size: 70%;',
 	},
-  {
-		id: 'asdfdsf',
-		label: 'Hardi margendus',
-		command: 'asdfdsf',
-		element: 'eki-hardi',
-		styles: 'color: green; font-size: 21px;',
-	},
 ];
 
 var icons = Array(buttons.length).fill('.').join(',');
@@ -118,4 +111,23 @@ CKEDITOR.plugins.add('ekiLink', {
 	}
 });
 
+function initCkEditor(elem) {
+	elem.ckeditor(function( textarea ) {
+		// Callback function code.
+	}, {
+		enterMode: CKEDITOR.ENTER_BR,
+		extraPlugins: 'ekiStyles,ekiLink',
+		toolbarGroups: [
+			{
+				name: "eki-styles",
+				groups: ["ekiStyles"],
+			},
+			{
+				name: 'eki-tools',
+				groups: ['cleanup', 'undo'],
+			}
+		],
+		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
+	});
+}
 
