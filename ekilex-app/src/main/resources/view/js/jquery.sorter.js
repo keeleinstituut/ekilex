@@ -110,8 +110,8 @@ class Sorter {
       const order = activeItem.attr('data-order');
 
       const data = {
-        lexemeId: parseInt(id),
-        position: parseInt(order),
+        lexemeId: id,
+        position: order,
       };
 
       postJson(applicationUrl + 'update_lexeme_levels', data).done(function() {
