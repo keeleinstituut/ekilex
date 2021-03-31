@@ -4,6 +4,10 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.data.Classifier;
+import eki.wordweb.data.type.TypeDefinition;
+import eki.wordweb.data.type.TypeMeaningWord;
+import eki.wordweb.data.type.TypeSourceLink;
+import eki.wordweb.data.type.TypeWordRelation;
 
 public class Word extends WordTypeData {
 
@@ -12,10 +16,6 @@ public class Word extends WordTypeData {
 	private String vocalForm;
 
 	private String alternativeWord;
-
-	private String displayMorphCode;
-
-	private Classifier displayMorph;
 
 	private Timestamp lastActivityEventOn;
 
@@ -69,22 +69,6 @@ public class Word extends WordTypeData {
 
 	public void setAlternativeWord(String alternativeWord) {
 		this.alternativeWord = alternativeWord;
-	}
-
-	public String getDisplayMorphCode() {
-		return displayMorphCode;
-	}
-
-	public void setDisplayMorphCode(String displayMorphCode) {
-		this.displayMorphCode = displayMorphCode;
-	}
-
-	public Classifier getDisplayMorph() {
-		return displayMorph;
-	}
-
-	public void setDisplayMorph(Classifier displayMorph) {
-		this.displayMorph = displayMorph;
 	}
 
 	public Timestamp getLastActivityEventOn() {

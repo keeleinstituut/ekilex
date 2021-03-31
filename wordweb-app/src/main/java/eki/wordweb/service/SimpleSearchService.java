@@ -17,8 +17,8 @@ import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
@@ -49,25 +49,26 @@ public class SimpleSearchService extends AbstractSearchService {
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
-		List<Lexeme> lexemes = searchDbService.getLexemes(wordId, searchContext);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = searchDbService.getLexemeMeaningTuples(wordId);
-		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
-		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
+		List<LexemeWord> lexemeWords = searchDbService.getWordLexemes(wordId, searchContext);
+		lexemeConversionUtil.composeLexemes(wordLang, lexemeWords, langOrderByMap, searchContext, displayLang);
+		List<Meaning> meanings = searchDbService.getMeanings(wordId);
+		Map<Long, Meaning> lexemeMeaningMap = meanings.stream().collect(Collectors.toMap(Meaning::getLexemeId, meaning -> meaning));
+		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, lexemeMeaningMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
 
-		if (CollectionUtils.isNotEmpty(lexemes)) {
+		if (CollectionUtils.isNotEmpty(lexemeWords)) {
 			List<CollocationTuple> collocTuples = searchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
-			collocConversionUtil.compose(wordId, lexemes, collocTuples, searchContext, displayLang);
-			lexemeConversionUtil.flagEmptyLexemes(lexemes);
-			lexemes = lexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
-			lexemeConversionUtil.sortLexemes(lexemes, DatasetType.LEX);
-			lexemeLevelPreseUtil.combineLevels(lexemes);
+			collocConversionUtil.compose(wordId, lexemeWords, collocTuples, searchContext, displayLang);
+			lexemeConversionUtil.flagEmptyLexemes(lexemeWords);
+			lexemeWords = lexemeWords.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
+			lexemeConversionUtil.sortLexemes(lexemeWords, DatasetType.LEX);
+			lexemeLevelPreseUtil.combineLevels(lexemeWords);
 		}
 
 		// word common
-		wordConversionUtil.composeCommon(word, lexemes);
+		wordConversionUtil.composeCommon(word, lexemeWords);
 
-		return composeWordData(word, forms, paradigms, lexemes, Collections.emptyList(), Collections.emptyList());
+		return composeWordData(word, forms, paradigms, lexemeWords, Collections.emptyList(), Collections.emptyList());
 	}
 
 	@Override

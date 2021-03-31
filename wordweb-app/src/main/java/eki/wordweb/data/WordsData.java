@@ -3,7 +3,11 @@ package eki.wordweb.data;
 import java.util.Collections;
 import java.util.List;
 
-public class WordsData {
+import eki.common.data.AbstractDataObject;
+
+public class WordsData extends AbstractDataObject {
+
+	private static final long serialVersionUID = 1L;
 
 	private final List<Word> wordMatchWords;
 

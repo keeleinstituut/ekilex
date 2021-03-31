@@ -23,8 +23,8 @@ import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
-import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
+import eki.wordweb.data.type.TypeDomain;
 
 @Component
 public class CommonDataDbService implements SystemConstant {

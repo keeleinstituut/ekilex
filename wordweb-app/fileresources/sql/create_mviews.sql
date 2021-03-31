@@ -105,8 +105,8 @@ create type type_meaning_word as (
 				word_prese text,
 				homonym_nr integer,
 				lang char(3),
-				word_type_codes varchar(100) array,
-				aspect_code varchar(100));
+				aspect_code varchar(100),
+				word_type_codes varchar(100) array);
 create type type_word_etym_relation as (
 				word_etym_rel_id bigint,
 				comment text,
@@ -147,7 +147,7 @@ create type type_meaning_relation as (
 				aspect_code varchar(100),
 				word_type_codes varchar(100) array,
 				complexity varchar(100),
-        weight numeric(5,4),
+				weight numeric(5,4),
 				lex_value_state_codes varchar(100) array,
 				lex_register_codes varchar(100) array,
 				lex_government_values text array,
@@ -190,6 +190,7 @@ dblink(
 	homonym_nr integer,
 	word_type_codes varchar(100) array,
 	display_morph_code varchar(100),
+	gender_code varchar(100),
 	aspect_code varchar(100),
 	vocal_form text,
 	last_activity_event_on timestamp,
@@ -277,6 +278,7 @@ dblink(
 	lang_complexities type_lang_complexity array,
 	register_codes varchar(100) array,
 	pos_codes varchar(100) array,
+	region_codes varchar(100) array,
 	deriv_codes varchar(100) array,
 	meaning_words type_meaning_word array,
 	advice_notes text array,

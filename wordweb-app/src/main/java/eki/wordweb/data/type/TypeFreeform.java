@@ -1,4 +1,4 @@
-package eki.wordweb.data;
+package eki.wordweb.data.type;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
+import eki.wordweb.data.ComplexityType;
+import eki.wordweb.data.SourceLinkType;
 
 public class TypeFreeform extends AbstractDataObject implements ComplexityType, SourceLinkType {
 

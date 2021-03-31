@@ -16,16 +16,16 @@ import eki.common.data.Classifier;
 import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.TypeDomain;
-import eki.wordweb.data.TypeLexemeRelation;
-import eki.wordweb.data.TypeMeaningRelation;
-import eki.wordweb.data.TypeMeaningWord;
-import eki.wordweb.data.TypeUsage;
-import eki.wordweb.data.TypeWordRelation;
-import eki.wordweb.data.Word;
+import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.Meaning;
 import eki.wordweb.data.WordEtymTuple;
+import eki.wordweb.data.WordTypeData;
+import eki.wordweb.data.type.TypeDomain;
+import eki.wordweb.data.type.TypeLexemeRelation;
+import eki.wordweb.data.type.TypeMeaningRelation;
+import eki.wordweb.data.type.TypeMeaningWord;
+import eki.wordweb.data.type.TypeUsage;
+import eki.wordweb.data.type.TypeWordRelation;
 import eki.wordweb.service.db.CommonDataDbService;
 
 @Component
@@ -43,7 +43,7 @@ public class ClassifierUtil {
 		return copy;
 	}
 
-	public void applyClassifiers(Word word, String displayLang) {
+	public void applyClassifiers(WordTypeData word, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
 		List<Classifier> classifiers;
@@ -54,6 +54,9 @@ public class ClassifierUtil {
 		classifierCodes = word.getWordTypeCodes();
 		classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
 		word.setWordTypes(classifiers);
+		classifierCode = word.getGenderCode();
+		classifier = getClassifier(ClassifierName.GENDER, classifierCode, displayLang);
+		word.setGender(classifier);
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		if (classifier == null) {
@@ -71,23 +74,26 @@ public class ClassifierUtil {
 		return classifierCode;
 	}
 
-	public void applyClassifiers(Lexeme lexeme, String displayLang) {
+	public void applyClassifiers(LexemeWord lexemeWord, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
 		List<Classifier> classifiers;
 		List<String> classifierCodes;
-		classifierCode = lexeme.getValueStateCode();
+		classifierCode = lexemeWord.getValueStateCode();
 		classifier = getClassifier(ClassifierName.VALUE_STATE, classifierCode, displayLang);
-		lexeme.setValueState(classifier);
-		classifierCodes = lexeme.getRegisterCodes();
+		lexemeWord.setValueState(classifier);
+		classifierCodes = lexemeWord.getRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
-		lexeme.setRegisters(classifiers);
-		classifierCodes = lexeme.getPosCodes();
+		lexemeWord.setRegisters(classifiers);
+		classifierCodes = lexemeWord.getPosCodes();
 		classifiers = getClassifiers(ClassifierName.POS, classifierCodes, displayLang);
-		lexeme.setPoses(classifiers);
-		classifierCodes = lexeme.getDerivCodes();
+		lexemeWord.setPoses(classifiers);
+		classifierCodes = lexemeWord.getRegionCodes();
+		classifiers = getClassifiers(ClassifierName.REGION, classifierCodes, displayLang);
+		lexemeWord.setRegions(classifiers);
+		classifierCodes = lexemeWord.getDerivCodes();
 		classifiers = getClassifiers(ClassifierName.DERIV, classifierCodes, displayLang);
-		lexeme.setDerivs(classifiers);
+		lexemeWord.setDerivs(classifiers);
 	}
 
 	public void applyClassifiers(TypeMeaningWord meaningWord, String displayLang) {
@@ -106,11 +112,11 @@ public class ClassifierUtil {
 		meaningWord.setMwLexValueState(classifier);
 	}
 
-	public void applyClassifiers(LexemeMeaningTuple tuple, Lexeme lexeme, String displayLang) {
+	public void applyClassifiers(Meaning tuple, LexemeWord lexemeWord, String displayLang) {
 		List<Classifier> classifiers;
 		List<TypeDomain> domainCodes = tuple.getDomainCodes();
 		classifiers = getClassifiersWithOrigin(ClassifierName.DOMAIN, domainCodes, displayLang);
-		lexeme.setDomains(classifiers);
+		lexemeWord.setDomains(classifiers);
 	}
 
 	public void applyClassifiers(TypeUsage usage, String displayLang) {

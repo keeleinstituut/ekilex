@@ -4,6 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
+import eki.wordweb.data.type.TypeWordEtymRelation;
 
 public class WordEtymTuple extends AbstractDataObject {
 

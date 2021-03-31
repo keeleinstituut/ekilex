@@ -5,6 +5,7 @@ import java.util.Map;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
+import eki.wordweb.data.type.TypeWordRelation;
 
 public class WordRelationGroup extends AbstractDataObject {
 

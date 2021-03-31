@@ -4,6 +4,7 @@ import java.util.List;
 
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
+import eki.wordweb.data.type.TypeCollocMember;
 
 public class CollocationTuple extends AbstractDataObject implements ComplexityType {
 

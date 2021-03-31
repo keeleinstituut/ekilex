@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -871137259;
+    private static final long serialVersionUID = -213173570;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -134,6 +134,11 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.pos_codes</code>.
      */
     public final TableField<MviewWwLexemeRecord, String[]> POS_CODES = createField(DSL.name("pos_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.region_codes</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String[]> REGION_CODES = createField(DSL.name("region_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.deriv_codes</code>.

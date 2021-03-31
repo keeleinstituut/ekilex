@@ -4,8 +4,14 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.wordweb.data.type.TypeDefinition;
+import eki.wordweb.data.type.TypeDomain;
+import eki.wordweb.data.type.TypeFreeform;
+import eki.wordweb.data.type.TypeMeaningRelation;
+import eki.wordweb.data.type.TypeMediaFile;
+import eki.wordweb.data.type.TypeSourceLink;
 
-public class LexemeMeaningTuple extends AbstractDataObject {
+public class Meaning extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

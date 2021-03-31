@@ -1,7 +1,11 @@
-package eki.wordweb.data;
+package eki.wordweb.data.type;
 
 import eki.common.constant.Complexity;
 import eki.common.data.Classifier;
+import eki.wordweb.data.ComplexityType;
+import eki.wordweb.data.DecoratedWordType;
+import eki.wordweb.data.LangType;
+import eki.wordweb.data.WordTypeData;
 
 public class TypeLexemeRelation extends WordTypeData implements ComplexityType, LangType, DecoratedWordType {
 

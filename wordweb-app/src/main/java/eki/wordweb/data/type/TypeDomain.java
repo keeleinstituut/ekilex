@@ -1,4 +1,4 @@
-package eki.wordweb.data;
+package eki.wordweb.data.type;
 
 import eki.common.data.AbstractDataObject;
 

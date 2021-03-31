@@ -20,10 +20,10 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.LangType;
 import eki.wordweb.data.SourceLinkType;
-import eki.wordweb.data.TypeMeaningWord;
-import eki.wordweb.data.TypeSourceLink;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordTypeData;
+import eki.wordweb.data.type.TypeMeaningWord;
+import eki.wordweb.data.type.TypeSourceLink;
 
 public abstract class AbstractConversionUtil implements WebConstant, SystemConstant, GlobalConstant {
 

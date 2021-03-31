@@ -19,16 +19,16 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.Lexeme;
+import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.SearchFilter;
-import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
+import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
@@ -107,12 +107,12 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 
 		SearchContext searchContext = getSearchContext(searchFilter);
 		List<Word> allWords = searchDbService.getWords(searchWord, searchContext);
-		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		wordConversionUtil.setAffixoidFlags(allWords);
 		wordConversionUtil.composeHomonymWrapups(allWords, searchContext);
 		wordConversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> wordMatchWords = allWords.stream().filter(word -> word.isWordMatch()).collect(Collectors.toList());
 		List<String> formMatchWordValues = allWords.stream().filter(word -> word.isFormMatch()).map(Word::getWord).distinct().collect(Collectors.toList());
+		boolean resultsExist = CollectionUtils.isNotEmpty(wordMatchWords);
 		int resultCount = CollectionUtils.size(wordMatchWords);
 		boolean isSingleResult = resultCount == 1;
 		return new WordsData(wordMatchWords, formMatchWordValues, resultCount, resultsExist, isSingleResult);
@@ -143,9 +143,9 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			Word word,
 			List<Form> forms,
 			List<Paradigm> paradigms,
-			List<Lexeme> lexLexemes,
-			List<Lexeme> termLexemes,
-			List<Lexeme> limTermLexemes) {
+			List<LexemeWord> lexLexemes,
+			List<LexemeWord> termLexemes,
+			List<LexemeWord> limTermLexemes) {
 
 		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes) || CollectionUtils.isNotEmpty(limTermLexemes);
 		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(word.getRelatedWords());

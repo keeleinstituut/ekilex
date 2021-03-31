@@ -1,10 +1,12 @@
-package eki.wordweb.data;
+package eki.wordweb.data.type;
 
 import java.util.List;
 
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
+import eki.wordweb.data.ComplexityType;
+import eki.wordweb.data.LangType;
 
 public class TypeUsage extends AbstractDataObject implements ComplexityType, LangType {
 

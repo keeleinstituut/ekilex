@@ -1,10 +1,11 @@
-package eki.wordweb.data;
+package eki.wordweb.data.type;
 
 import java.util.List;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
+import eki.wordweb.data.WordTypeData;
 
 public class TypeWordRelation extends WordTypeData {
 
