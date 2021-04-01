@@ -32,6 +32,8 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 
 	private Long lexemeId;
 
+	private String lexemeLevels;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -140,4 +142,11 @@ public class SynWord extends AbstractDataObject implements DecoratedWordType {
 		this.lexemeId = lexemeId;
 	}
 
+	public String getLexemeLevels() {
+		return lexemeLevels;
+	}
+
+	public void setLexemeLevels(String lexemeLevels) {
+		this.lexemeLevels = lexemeLevels;
+	}
 }

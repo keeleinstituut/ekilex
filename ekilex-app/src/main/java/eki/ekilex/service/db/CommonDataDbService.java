@@ -73,7 +73,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.Record10;
+import org.jooq.Record11;
 import org.jooq.Record3;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -797,10 +797,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.groupBy(l2.ID)
 				.asField("lexeme_register_codes");
 
-		Table<Record10<Long, Long, Long, String, String, String, Integer, String[], BigDecimal, Long>> mrel = DSL
+		Table<Record11<Long, Long, Long, Long, String, String, String, Integer, String[], BigDecimal, Long>> mrel = DSL
 				.select(
 						mr.ID.as("id"),
 						m2.ID.as("meaning_id"),
+						l2.ID.as("lexeme_id"),
 						w2.ID.as("word_id"),
 						w2.VALUE.as("word_value"),
 						w2.VALUE_PRESE.as("word_value_prese"),
@@ -837,6 +838,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.select(
 						mrel.field("id"),
 						mrel.field("meaning_id"),
+						mrel.field("lexeme_id"),
 						mrel.field("word_id"),
 						mrel.field("word_value"),
 						mrel.field("word_value_prese"),
