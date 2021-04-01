@@ -34,8 +34,6 @@ public interface GlobalConstant {
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
 
-	String DATASET_TYPE_TERM = DatasetType.TERM.name();
-
 	String UNKNOWN_FORM_CODE = "??";
 
 	String WORD_TYPE_CODE_PREFIXOID = "pf";
