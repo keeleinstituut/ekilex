@@ -1,3 +1,4 @@
+drop materialized view if exists mview_ww_counts;
 drop materialized view if exists mview_ww_dataset_word_menu;
 drop materialized view if exists mview_ww_word_search;
 drop materialized view if exists mview_ww_word;
@@ -16,7 +17,6 @@ drop materialized view if exists mview_ww_lexeme_source_link;
 drop materialized view if exists mview_ww_lexeme_freeform_source_link;
 drop materialized view if exists mview_ww_meaning_freeform_source_link;
 drop materialized view if exists mview_ww_definition_source_link;
-drop materialized view if exists mview_ww_counts;
 
 drop type if exists type_meaning_word;
 drop type if exists type_freeform;
