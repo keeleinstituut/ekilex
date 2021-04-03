@@ -20,7 +20,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.RelationStatus;
-import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
@@ -66,9 +65,6 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private LookupDbService lookupDbService;
-
-	@Autowired
-	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -121,6 +117,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		permCalculator.applyCrud(userRole, lexeme);
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
+		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
 

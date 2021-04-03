@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
 import eki.common.service.TextDecorationService;
-import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
@@ -48,8 +47,6 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.db.CommonDataDbService;
-import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TermSearchDbService;
@@ -62,19 +59,10 @@ public class LookupService extends AbstractWordSearchService {
 	private LookupDbService lookupDbService;
 
 	@Autowired
-	private CommonDataDbService commonDataDbService;
-
-	@Autowired
 	private PermissionDbService permissionDbService;
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
-
-	@Autowired
 	private TermSearchDbService termSearchDbService;
-
-	@Autowired
-	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
 	private TextDecorationService textDecorationService;

@@ -23,6 +23,8 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private List<String> lexemeGovernmentValues;
 
+	private String lexemeLevels;
+
 	private Long meaningId;
 
 	private Long wordId;
@@ -121,6 +123,14 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	public void setLexemeGovernmentValues(List<String> lexemeGovernmentValues) {
 		this.lexemeGovernmentValues = lexemeGovernmentValues;
+	}
+
+	public String getLexemeLevels() {
+		return lexemeLevels;
+	}
+
+	public void setLexemeLevels(String lexemeLevels) {
+		this.lexemeLevels = lexemeLevels;
 	}
 
 	public Long getMeaningId() {

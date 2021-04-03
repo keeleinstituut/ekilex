@@ -1,7 +1,13 @@
 package eki.ekilex.service;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -10,10 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
 
@@ -22,6 +31,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Autowired
 	protected LexSearchDbService lexSearchDbService;
+
+	@Autowired
+	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Transactional
 	public WordsResult getWords(
@@ -89,5 +101,33 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 		int count = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 		return count;
+	}
+
+	public void appendLexemeLevels(List<Relation> synMeaningRelations) {
+
+		Map<Long, List<WordLexeme>> wordLexemesMap = new HashMap<>();
+
+		Set<Long> repetitiveWordIds = synMeaningRelations.stream()
+				.collect(groupingBy(Relation::getWordId, Collectors.counting()))
+				.entrySet().stream()
+				.filter(wordIdCountEntry -> !wordIdCountEntry.getValue().equals(1L))
+				.map(Map.Entry::getKey)
+				.collect(Collectors.toSet());
+
+		synMeaningRelations.forEach(relation -> {
+			Long relWordId = relation.getWordId();
+			Long relLexemeId = relation.getLexemeId();
+			if (repetitiveWordIds.contains(relWordId)) {
+				List<WordLexeme> wordLexemes = wordLexemesMap.get(relWordId);
+				if (wordLexemes == null) {
+					wordLexemes = lexSearchDbService.getWordLexemesLevels(relWordId);
+					lexemeLevelPreseUtil.combineLevels(wordLexemes);
+					wordLexemesMap.put(relWordId, wordLexemes);
+				}
+
+				String relLexemeLevels = wordLexemes.stream().filter(lexeme -> lexeme.getLexemeId().equals(relLexemeId)).findFirst().get().getLevels();
+				relation.setLexemeLevels(relLexemeLevels);
+			}
+		});
 	}
 }

@@ -928,6 +928,7 @@ public class ConversionUtil implements GlobalConstant {
 						synWord.setHomonymsExist(groupedByLangRelation.isHomonymsExist());
 						synWord.setLang(groupedByLangRelation.getWordLang());
 						synWord.setLexemeRegisterCodes(groupedByLangRelation.getLexemeRegisterCodes());
+						synWord.setLexemeLevels(groupedByLangRelation.getLexemeLevels());
 						synWords.add(synWord);
 						isFirstWord = false;
 					}
