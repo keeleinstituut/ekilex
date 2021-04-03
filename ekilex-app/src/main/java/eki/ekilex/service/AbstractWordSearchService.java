@@ -124,7 +124,6 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
 					wordLexemesMap.put(relWordId, wordLexemes);
 				}
-
 				String relLexemeLevels = wordLexemes.stream().filter(lexeme -> lexeme.getLexemeId().equals(relLexemeId)).findFirst().get().getLevels();
 				relation.setLexemeLevels(relLexemeLevels);
 			}
