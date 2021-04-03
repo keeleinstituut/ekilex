@@ -8,6 +8,7 @@ import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
@@ -56,7 +57,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -13460399;
+    private static final long serialVersionUID = -1976549217;
 
     /**
      * The reference instance of <code>public</code>
@@ -82,6 +83,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_collocation</code>.
      */
     public final MviewWwCollocation MVIEW_WW_COLLOCATION = MviewWwCollocation.MVIEW_WW_COLLOCATION;
+
+    /**
+     * The table <code>public.mview_ww_counts</code>.
+     */
+    public final MviewWwCounts MVIEW_WW_COUNTS = MviewWwCounts.MVIEW_WW_COUNTS;
 
     /**
      * The table <code>public.mview_ww_dataset</code>.
@@ -202,6 +208,7 @@ public class Public extends SchemaImpl {
             LexicalDecisionResult.LEXICAL_DECISION_RESULT,
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
             MviewWwCollocation.MVIEW_WW_COLLOCATION,
+            MviewWwCounts.MVIEW_WW_COUNTS,
             MviewWwDataset.MVIEW_WW_DATASET,
             MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU,
             MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK,

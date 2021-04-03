@@ -72,6 +72,11 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang);
 
 	@Transactional
+	public String getRandomWord() {
+		return searchDbService.getRandomWord(LANGUAGE_CODE_EST);
+	}
+
+	@Transactional
 	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, SearchFilter searchFilter, int limit) {
 
 		SearchContext searchContext = getSearchContext(searchFilter);

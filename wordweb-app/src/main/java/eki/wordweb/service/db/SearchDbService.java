@@ -1,6 +1,7 @@
 package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_COUNTS;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DEFINITION_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
@@ -16,6 +17,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,10 +29,13 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -51,6 +56,7 @@ import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
@@ -76,6 +82,30 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private JooqBugCompensator jooqBugCompensator;
+
+	public String getRandomWord(String lang) {
+
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		MviewWwCounts c = MVIEW_WW_COUNTS.as("c");
+
+		Table<Record2<String, Integer>> ww = DSL
+				.select(w.WORD, DSL.rowNumber().over().as("rownum"))
+				.from(w)
+				.where(w.LANG.eq(lang))
+				.asTable("w");
+		Table<Record1<BigDecimal>> cc = DSL
+				.select(DSL.round(PostgresDSL.rand().multiply(c.WORD_VALUE_COUNT)).as("rndrownum"))
+				.from(c)
+				.where(
+						c.LANG.eq(lang)
+						.and(c.DATASET_CODE.eq(DATASET_ALL)))
+				.asTable("c");
+		return create
+				.select(ww.field("word", String.class))
+				.from(ww, cc)
+				.where(ww.field("rownum", Integer.class).eq(cc.field("rndrownum", Integer.class)))
+				.fetchOneInto(String.class);
+	}
 
 	@SuppressWarnings("unchecked")
 	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, SearchContext searchContext, int maxWordCount) {

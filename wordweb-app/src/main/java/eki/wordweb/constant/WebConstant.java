@@ -59,6 +59,8 @@ public interface WebConstant {
 
 	String WORD_DETAILS_URI = "/worddetails";
 
+	String FEELING_LUCKY_URI = "/feelinglucky";
+
 	String MORPHO_URI = "/morpho";
 
 	String LEARN_URI = "/learn";

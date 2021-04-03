@@ -8,6 +8,7 @@ import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
@@ -48,6 +49,8 @@ public class Indexes {
     public static final Index MVIEW_WW_COLLOCATION_COMPLEXITY_IDX = Indexes0.MVIEW_WW_COLLOCATION_COMPLEXITY_IDX;
     public static final Index MVIEW_WW_COLLOCATION_LEXEME_ID_IDX = Indexes0.MVIEW_WW_COLLOCATION_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_COLLOCATION_WORD_ID_IDX = Indexes0.MVIEW_WW_COLLOCATION_WORD_ID_IDX;
+    public static final Index MVIEW_WW_COUNTS_DATASET_CODE_IDX = Indexes0.MVIEW_WW_COUNTS_DATASET_CODE_IDX;
+    public static final Index MVIEW_WW_COUNTS_LANG_IDX = Indexes0.MVIEW_WW_COUNTS_LANG_IDX;
     public static final Index MVIEW_WW_DATASET_WORD_MENU_DATASET_FLETTER_IDX = Indexes0.MVIEW_WW_DATASET_WORD_MENU_DATASET_FLETTER_IDX;
     public static final Index MVIEW_WW_DEFINITION_SOURCE_LINK_MEANING_ID_IDX = Indexes0.MVIEW_WW_DEFINITION_SOURCE_LINK_MEANING_ID_IDX;
     public static final Index MVIEW_WW_FORM_DISPLAY_LEVEL_IDX = Indexes0.MVIEW_WW_FORM_DISPLAY_LEVEL_IDX;
@@ -102,6 +105,8 @@ public class Indexes {
         public static Index MVIEW_WW_COLLOCATION_COMPLEXITY_IDX = Internal.createIndex("mview_ww_collocation_complexity_idx", MviewWwCollocation.MVIEW_WW_COLLOCATION, new OrderField[] { MviewWwCollocation.MVIEW_WW_COLLOCATION.COMPLEXITY }, false);
         public static Index MVIEW_WW_COLLOCATION_LEXEME_ID_IDX = Internal.createIndex("mview_ww_collocation_lexeme_id_idx", MviewWwCollocation.MVIEW_WW_COLLOCATION, new OrderField[] { MviewWwCollocation.MVIEW_WW_COLLOCATION.LEXEME_ID }, false);
         public static Index MVIEW_WW_COLLOCATION_WORD_ID_IDX = Internal.createIndex("mview_ww_collocation_word_id_idx", MviewWwCollocation.MVIEW_WW_COLLOCATION, new OrderField[] { MviewWwCollocation.MVIEW_WW_COLLOCATION.WORD_ID }, false);
+        public static Index MVIEW_WW_COUNTS_DATASET_CODE_IDX = Internal.createIndex("mview_ww_counts_dataset_code_idx", MviewWwCounts.MVIEW_WW_COUNTS, new OrderField[] { MviewWwCounts.MVIEW_WW_COUNTS.DATASET_CODE }, false);
+        public static Index MVIEW_WW_COUNTS_LANG_IDX = Internal.createIndex("mview_ww_counts_lang_idx", MviewWwCounts.MVIEW_WW_COUNTS, new OrderField[] { MviewWwCounts.MVIEW_WW_COUNTS.LANG }, false);
         public static Index MVIEW_WW_DATASET_WORD_MENU_DATASET_FLETTER_IDX = Internal.createIndex("mview_ww_dataset_word_menu_dataset_fletter_idx", MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU, new OrderField[] { MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU.DATASET_CODE, MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU.FIRST_LETTER }, false);
         public static Index MVIEW_WW_DEFINITION_SOURCE_LINK_MEANING_ID_IDX = Internal.createIndex("mview_ww_definition_source_link_meaning_id_idx", MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK, new OrderField[] { MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK.MEANING_ID }, false);
         public static Index MVIEW_WW_FORM_DISPLAY_LEVEL_IDX = Internal.createIndex("mview_ww_form_display_level_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.DISPLAY_LEVEL }, false);

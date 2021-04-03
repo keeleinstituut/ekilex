@@ -8,6 +8,7 @@ import eki.wordweb.data.db.tables.LexicalDecisionData;
 import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
@@ -53,6 +54,11 @@ public class Tables {
      * The table <code>public.mview_ww_collocation</code>.
      */
     public static final MviewWwCollocation MVIEW_WW_COLLOCATION = MviewWwCollocation.MVIEW_WW_COLLOCATION;
+
+    /**
+     * The table <code>public.mview_ww_counts</code>.
+     */
+    public static final MviewWwCounts MVIEW_WW_COUNTS = MviewWwCounts.MVIEW_WW_COUNTS;
 
     /**
      * The table <code>public.mview_ww_dataset</code>.

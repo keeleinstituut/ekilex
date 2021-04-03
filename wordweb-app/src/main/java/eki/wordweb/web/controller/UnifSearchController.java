@@ -55,7 +55,7 @@ public class UnifSearchController extends AbstractController {
 
 	@PostMapping(SEARCH_URI + UNIF_URI)
 	public String searchWords(
-			@RequestParam(name = "destinLangsStr") String destinLangStr,
+			@RequestParam(name = "destinLangsStr") String destinLangsStr,
 			@RequestParam(name = "datasetCodesStr") String datasetCodesStr,
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
@@ -68,7 +68,7 @@ public class UnifSearchController extends AbstractController {
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		searchWord = textDecorationService.unifyToApostrophe(searchWord);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
-		String searchUri = webUtil.composeDetailSearchUri(destinLangStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;
 	}
 
@@ -151,6 +151,14 @@ public class UnifSearchController extends AbstractController {
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 
 		return UNIF_SEARCH_PAGE + " :: worddetails";
+	}
+
+	@GetMapping(FEELING_LUCKY_URI)
+	public String feelingLucky() {
+
+		String randomWord = unifSearchService.getRandomWord();
+		String searchUri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, randomWord, null);
+		return "redirect:" + searchUri;
 	}
 
 	private SearchValidation validateAndCorrectSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr) {

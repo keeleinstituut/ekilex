@@ -16,11 +16,10 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.Complexity;
-import eki.common.constant.DatasetType;
 import eki.common.constant.RelationStatus;
 import eki.common.data.Classifier;
-import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationGroup;
