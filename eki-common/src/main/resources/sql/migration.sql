@@ -56,6 +56,8 @@ alter table lexeme
     on update cascade
     on delete no action;
 
+update dataset set code = 'eki' where code = 'sss';
+
 update eki_user_application set datasets = array_replace(datasets, 'sss', 'eki');
 update eki_user_profile set preferred_datasets = array_replace(preferred_datasets, 'sss', 'eki');
 update language set datasets = array_replace(datasets, 'sss', 'eki');
