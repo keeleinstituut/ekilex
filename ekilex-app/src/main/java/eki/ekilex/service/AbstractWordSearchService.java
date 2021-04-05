@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -25,12 +24,16 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
+import eki.ekilex.service.db.LookupDbService;
 
 @Component
 public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Autowired
 	protected LexSearchDbService lexSearchDbService;
+
+	@Autowired
+	protected LookupDbService lookupDbService;
 
 	@Autowired
 	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
@@ -107,12 +110,12 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 		Map<Long, List<WordLexeme>> wordLexemesMap = new HashMap<>();
 
-		Set<Long> repetitiveWordIds = synMeaningRelations.stream()
+		List<Long> repetitiveWordIds = synMeaningRelations.stream()
 				.collect(groupingBy(Relation::getWordId, Collectors.counting()))
 				.entrySet().stream()
-				.filter(wordIdCountEntry -> !wordIdCountEntry.getValue().equals(1L))
+				.filter(wordIdCountEntry -> wordIdCountEntry.getValue() > 1L)
 				.map(Map.Entry::getKey)
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 
 		synMeaningRelations.forEach(relation -> {
 			Long relWordId = relation.getWordId();
@@ -120,7 +123,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			if (repetitiveWordIds.contains(relWordId)) {
 				List<WordLexeme> wordLexemes = wordLexemesMap.get(relWordId);
 				if (wordLexemes == null) {
-					wordLexemes = lexSearchDbService.getWordLexemesLevels(relWordId);
+					wordLexemes = lookupDbService.getWordLexemesLevels(relWordId);
 					lexemeLevelPreseUtil.combineLevels(wordLexemes);
 					wordLexemesMap.put(relWordId, wordLexemes);
 				}

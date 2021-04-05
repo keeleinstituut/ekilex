@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,6 +17,7 @@ import eki.common.constant.DatasetType;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SynonymType;
 import eki.common.data.Classifier;
+import eki.common.data.OrderedMap;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchContext;
@@ -294,7 +294,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			meaningRelations = filter(meaningRelations, lexComplexity);
 		}
 		if (CollectionUtils.isNotEmpty(meaningRelations)) {
-			Map<String, TypeMeaningWord> meaningRelSynsMap = new LinkedHashMap<>();
+			Map<String, TypeMeaningWord> meaningRelSynsMap = new OrderedMap<>();
 
 			for (TypeMeaningRelation meaningRelation : meaningRelations) {
 				String wordValue = meaningRelation.getWord();

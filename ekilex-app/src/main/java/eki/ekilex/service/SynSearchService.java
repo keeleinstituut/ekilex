@@ -43,7 +43,6 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.CudDbService;
-import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -62,9 +61,6 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private CudDbService cudDbService;
-
-	@Autowired
-	private LookupDbService lookupDbService;
 
 	@Autowired
 	private PermCalculator permCalculator;

@@ -23,7 +23,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
 
-    private static final long serialVersionUID = -1203394267;
+    private static final long serialVersionUID = 1372389413;
 
     /**
      * The reference instance of <code>public.type_meaning_word</code>
@@ -104,14 +104,14 @@ public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
     public static final UDTField<TypeMeaningWordRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_MEANING_WORD, "");
 
     /**
-     * The attribute <code>public.type_meaning_word.word_type_codes</code>.
-     */
-    public static final UDTField<TypeMeaningWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_MEANING_WORD, "");
-
-    /**
      * The attribute <code>public.type_meaning_word.aspect_code</code>.
      */
     public static final UDTField<TypeMeaningWordRecord, String> ASPECT_CODE = createField(DSL.name("aspect_code"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEANING_WORD, "");
+
+    /**
+     * The attribute <code>public.type_meaning_word.word_type_codes</code>.
+     */
+    public static final UDTField<TypeMeaningWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_MEANING_WORD, "");
 
     /**
      * No further instances allowed

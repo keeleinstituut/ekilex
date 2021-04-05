@@ -80,7 +80,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 
 		logger.info("Starting homonyms merge procedure...");
 		String[] includedLangs = new String[] {LANGUAGE_CODE_EST, LANGUAGE_CODE_LAT, LANGUAGE_CODE_RUS};
-		maintenanceDbService.mergeHomonymsToSss(includedLangs);
+		maintenanceDbService.mergeHomonymsToEki(includedLangs);
 	}
 
 	@Transactional

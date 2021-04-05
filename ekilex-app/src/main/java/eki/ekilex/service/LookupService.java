@@ -47,16 +47,12 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class LookupService extends AbstractWordSearchService {
-
-	@Autowired
-	private LookupDbService lookupDbService;
 
 	@Autowired
 	private PermissionDbService permissionDbService;

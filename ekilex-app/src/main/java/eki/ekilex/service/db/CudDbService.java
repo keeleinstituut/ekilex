@@ -463,7 +463,7 @@ public class CudDbService extends AbstractDataDbService {
 				.from(l)
 				.where(
 						l.WORD_ID.eq(w.ID)
-						.and(l.DATASET_CODE.eq(DATASET_SSS)))
+						.and(l.DATASET_CODE.eq(DATASET_EKI)))
 				.asField();
 
 		Table<Record3<Long, Integer, Integer>> ww = DSL

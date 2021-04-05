@@ -12,7 +12,7 @@ public interface GlobalConstant {
 
 	String LANGUAGE_CODE_LAT = "lat";
 
-	String DATASET_SSS = "sss";
+	String DATASET_EKI = "eki";
 
 	String DATASET_LIMITED = "vrk";
 

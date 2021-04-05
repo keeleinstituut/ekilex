@@ -134,7 +134,7 @@ from (select left (w.value, 1) first_letter,
       and   l.is_public = true
       and   l.dataset_code = ds.code
       and   ds.is_public = true
-      and   ds.code not in ('ety', 'sss')) w
+      and   ds.code not in ('ety', 'eki')) w
 group by w.dataset_code,
          w.first_letter
 order by w.dataset_code,
@@ -1868,7 +1868,7 @@ from ((select w.word,
                                 dataset as ds
                            where l.word_id = w.id
                            and   l.complexity = 'SIMPLE'
-                           and   l.dataset_code = 'sss'
+                           and   l.dataset_code = 'eki'
                            and   l.is_public = true
                            and   ds.code = l.dataset_code
                            and   ds.is_public = true)

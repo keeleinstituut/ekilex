@@ -4,7 +4,7 @@
 package eki.ekilex.data.db;
 
 
-import eki.ekilex.data.db.routines.MergeHomonymsToSss;
+import eki.ekilex.data.db.routines.MergeHomonymsToEki;
 import eki.ekilex.data.db.routines.Unaccent1;
 import eki.ekilex.data.db.routines.Unaccent2;
 import eki.ekilex.data.db.routines.UnaccentInit;
@@ -21,10 +21,10 @@ import org.jooq.Field;
 public class Routines {
 
     /**
-     * Call <code>public.merge_homonyms_to_sss</code>
+     * Call <code>public.merge_homonyms_to_eki</code>
      */
-    public static void mergeHomonymsToSss(Configuration configuration, String[] includedLangs) {
-        MergeHomonymsToSss p = new MergeHomonymsToSss();
+    public static void mergeHomonymsToEki(Configuration configuration, String[] includedLangs) {
+        MergeHomonymsToEki p = new MergeHomonymsToEki();
         p.setIncludedLangs(includedLangs);
 
         p.execute(configuration);
