@@ -81,7 +81,7 @@ update etymology_type set datasets = array_replace(datasets, 'sss', 'eki');
 update definition_type set datasets = array_replace(datasets, 'sss', 'eki');
 update region set datasets = array_replace(datasets, 'sss', 'eki');
 
-drop function if exists merge_homonyms_to_sss;
+drop function if exists merge_homonyms_to_sss(char(3) array);
 create or replace function merge_homonyms_to_eki(included_langs char(3) array)
   returns void
   language plpgsql
