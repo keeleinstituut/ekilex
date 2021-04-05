@@ -77,12 +77,14 @@ public class PermissionsController extends AbstractPrivatePageController {
 			@RequestParam(name = "userEnablePendingFilter", required = false) Boolean userEnablePendingFilter,
 			Model model) {
 
+		final int minUserNameLength = 2;
+
 		if (StringUtils.isBlank(userNameFilter)
 				&& StringUtils.isBlank(userPermDatasetCodeFilter)
 				&& (userEnablePendingFilter == null)) {
 			return "redirect:" + PERMISSIONS_URI;
 		}
-		if (StringUtils.length(userNameFilter) == 1) {
+		if (StringUtils.length(userNameFilter) < minUserNameLength) {
 			return "redirect:" + PERMISSIONS_URI;
 		}
 
