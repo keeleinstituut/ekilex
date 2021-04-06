@@ -77,7 +77,7 @@ public class SimpleSearchService extends AbstractSearchService {
 	@Override
 	public SearchContext getSearchContext(SearchFilter searchFilter) {
 		List<String> destinLangs = searchFilter.getDestinLangs();
-		List<String> datasetCodes = Arrays.asList(DATASET_SSS);
+		List<String> datasetCodes = Arrays.asList(DATASET_EKI);
 		Complexity lexComplexity = Complexity.SIMPLE;
 		DatasetType datasetType = DatasetType.LEX;
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;

@@ -173,7 +173,7 @@ public class SimpleSearchController extends AbstractSearchController {
 		}
 
 		// dataset
-		List<String> datasetCodes = Arrays.asList(DATASET_SSS);
+		List<String> datasetCodes = Arrays.asList(DATASET_EKI);
 
 		// homonym nr
 		Integer homonymNr = nullSafe(homonymNrStr);

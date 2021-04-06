@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row16;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = -927448163;
+    private static final long serialVersionUID = -1426845462;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -58,6 +58,11 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.paradigm_id</code>.
      */
     public final TableField<FormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.form.mode</code>.
+     */
+    public final TableField<FormRecord, String> MODE = createField(DSL.name("mode"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.form.morph_group1</code>.
@@ -164,7 +169,7 @@ public class Form extends TableImpl<FormRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FORM_MORPH_CODE_IDX, Indexes.FORM_PARADIGM_ID_IDX, Indexes.FORM_VALUE_IDX);
+        return Arrays.<Index>asList(Indexes.FORM_MODE_IDX, Indexes.FORM_MORPH_CODE_IDX, Indexes.FORM_PARADIGM_ID_IDX, Indexes.FORM_VALUE_IDX, Indexes.FORM_VALUE_MODE_IDX);
     }
 
     @Override
@@ -222,11 +227,11 @@ public class Form extends TableImpl<FormRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row16 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, Long, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Long, Boolean> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row16<Long, Long, String, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Long, Boolean> fieldsRow() {
+        return (Row16) super.fieldsRow();
     }
 }

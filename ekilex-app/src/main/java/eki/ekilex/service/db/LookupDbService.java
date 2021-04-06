@@ -210,6 +210,17 @@ public class LookupDbService extends AbstractDataDbService {
 				.orElse(0);
 	}
 
+	public List<WordLexeme> getWordLexemesLevels(Long wordId) {
+
+		Lexeme l = LEXEME.as("l");
+		return create
+				.select(l.ID.as("lexeme_id"), l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
+				.from(l)
+				.where(l.WORD_ID.eq(wordId))
+				.orderBy(l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
+				.fetchInto(WordLexeme.class);
+	}
+
 	public String getLexemeDatasetCode(Long lexemeId) {
 
 		return create

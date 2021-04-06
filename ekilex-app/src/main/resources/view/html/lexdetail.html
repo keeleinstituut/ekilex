@@ -28,14 +28,13 @@
                         <button
                           type="button"
                           class="btn btn-link p-0"
-                          th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"
                           th:data-id="${synWord.wordId}"
                           name="details-btn"
                           data-behaviour="replace"
                           data-plugin="contextmenu"
                           data-contextmenu:compare="Ava uues paneelis">
-                          <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
-                          <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
+                          <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
+                          <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
                           <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                           <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
@@ -158,14 +157,13 @@
                         <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
                         <button type="button"
                                 class="btn btn-link p-0 syn-handle"
-                                th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"
                                 th:data-id="${synWord.wordId}"
                                 name="details-btn"
                                 data-behaviour="replace"
                                 data-plugin="contextmenu"
                                 data-contextmenu:compare="Ava uues paneelis">
-                          <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
-                          <span th:utext="${viewUtil.getWordValueMarkup(synWord)}"></span>
+                          <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
+                          <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
                           <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
                           <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                           <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>

@@ -331,17 +331,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	public List<WordLexeme> getWordLexemesLevels(Long wordId) {
-
-		Lexeme l = LEXEME.as("l");
-		return create
-				.select(l.ID.as("lexeme_id"), l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
-				.from(l)
-				.where(l.WORD_ID.eq(wordId))
-				.orderBy(l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
-				.fetchInto(WordLexeme.class);
-	}
-
 	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");

@@ -112,9 +112,11 @@ public class Indexes {
     public static final Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Indexes0.EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX;
     public static final Index EKI_USER_PROFILE_USER_ID_IDX = Indexes0.EKI_USER_PROFILE_USER_ID_IDX;
     public static final Index FEEDBACK_LOG_COMMENT_LOG_ID_IDX = Indexes0.FEEDBACK_LOG_COMMENT_LOG_ID_IDX;
+    public static final Index FORM_MODE_IDX = Indexes0.FORM_MODE_IDX;
     public static final Index FORM_MORPH_CODE_IDX = Indexes0.FORM_MORPH_CODE_IDX;
     public static final Index FORM_PARADIGM_ID_IDX = Indexes0.FORM_PARADIGM_ID_IDX;
     public static final Index FORM_VALUE_IDX = Indexes0.FORM_VALUE_IDX;
+    public static final Index FORM_VALUE_MODE_IDX = Indexes0.FORM_VALUE_MODE_IDX;
     public static final Index FORM_FREQ_CORP_ID_IDX = Indexes0.FORM_FREQ_CORP_ID_IDX;
     public static final Index FORM_FREQ_FORM_ID_IDX = Indexes0.FORM_FREQ_FORM_ID_IDX;
     public static final Index FORM_FREQ_RANK_IDX = Indexes0.FORM_FREQ_RANK_IDX;
@@ -260,9 +262,11 @@ public class Indexes {
         public static Index EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX = Internal.createIndex("eki_user_profile_recent_dataset_permission_id_idx", EkiUserProfile.EKI_USER_PROFILE, new OrderField[] { EkiUserProfile.EKI_USER_PROFILE.RECENT_DATASET_PERMISSION_ID }, false);
         public static Index EKI_USER_PROFILE_USER_ID_IDX = Internal.createIndex("eki_user_profile_user_id_idx", EkiUserProfile.EKI_USER_PROFILE, new OrderField[] { EkiUserProfile.EKI_USER_PROFILE.USER_ID }, false);
         public static Index FEEDBACK_LOG_COMMENT_LOG_ID_IDX = Internal.createIndex("feedback_log_comment_log_id_idx", FeedbackLogComment.FEEDBACK_LOG_COMMENT, new OrderField[] { FeedbackLogComment.FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID }, false);
+        public static Index FORM_MODE_IDX = Internal.createIndex("form_mode_idx", Form.FORM, new OrderField[] { Form.FORM.MODE }, false);
         public static Index FORM_MORPH_CODE_IDX = Internal.createIndex("form_morph_code_idx", Form.FORM, new OrderField[] { Form.FORM.MORPH_CODE }, false);
         public static Index FORM_PARADIGM_ID_IDX = Internal.createIndex("form_paradigm_id_idx", Form.FORM, new OrderField[] { Form.FORM.PARADIGM_ID }, false);
         public static Index FORM_VALUE_IDX = Internal.createIndex("form_value_idx", Form.FORM, new OrderField[] { Form.FORM.VALUE }, false);
+        public static Index FORM_VALUE_MODE_IDX = Internal.createIndex("form_value_mode_idx", Form.FORM, new OrderField[] { Form.FORM.VALUE, Form.FORM.MODE }, false);
         public static Index FORM_FREQ_CORP_ID_IDX = Internal.createIndex("form_freq_corp_id_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.FREQ_CORP_ID }, false);
         public static Index FORM_FREQ_FORM_ID_IDX = Internal.createIndex("form_freq_form_id_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.FORM_ID }, false);
         public static Index FORM_FREQ_RANK_IDX = Internal.createIndex("form_freq_rank_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.RANK }, false);

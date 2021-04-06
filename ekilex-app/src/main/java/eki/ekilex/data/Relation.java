@@ -5,6 +5,7 @@ import java.util.List;
 import eki.common.constant.RelationStatus;
 import eki.common.data.AbstractDataObject;
 
+// TODO possible to refactor? - yogesh
 public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
