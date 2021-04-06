@@ -95,6 +95,7 @@ import eki.ekilex.data.db.tables.ValueState;
 import eki.ekilex.data.db.tables.ValueStateLabel;
 import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
+import eki.ekilex.data.db.tables.ViewWwCounts;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink;
@@ -167,7 +168,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -464947578;
+    private static final long serialVersionUID = 81144820;
 
     /**
      * The reference instance of <code>public</code>
@@ -630,6 +631,11 @@ public class Public extends SchemaImpl {
     public final ViewWwCollocation VIEW_WW_COLLOCATION = ViewWwCollocation.VIEW_WW_COLLOCATION;
 
     /**
+     * The table <code>public.view_ww_counts</code>.
+     */
+    public final ViewWwCounts VIEW_WW_COUNTS = ViewWwCounts.VIEW_WW_COUNTS;
+
+    /**
      * The table <code>public.view_ww_dataset</code>.
      */
     public final ViewWwDataset VIEW_WW_DATASET = ViewWwDataset.VIEW_WW_DATASET;
@@ -1035,6 +1041,7 @@ public class Public extends SchemaImpl {
             ValueStateLabel.VALUE_STATE_LABEL,
             ViewWwClassifier.VIEW_WW_CLASSIFIER,
             ViewWwCollocation.VIEW_WW_COLLOCATION,
+            ViewWwCounts.VIEW_WW_COUNTS,
             ViewWwDataset.VIEW_WW_DATASET,
             ViewWwDatasetWordMenu.VIEW_WW_DATASET_WORD_MENU,
             ViewWwDefinitionSourceLink.VIEW_WW_DEFINITION_SOURCE_LINK,

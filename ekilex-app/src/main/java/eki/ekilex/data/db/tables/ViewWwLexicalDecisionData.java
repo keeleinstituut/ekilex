@@ -26,7 +26,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexicalDecisionData extends TableImpl<ViewWwLexicalDecisionDataRecord> {
 
-    private static final long serialVersionUID = -637640820;
+    private static final long serialVersionUID = -997032164;
 
     /**
      * The reference instance of <code>public.view_ww_lexical_decision_data</code>
@@ -82,7 +82,7 @@ public class ViewWwLexicalDecisionData extends TableImpl<ViewWwLexicalDecisionDa
     }
 
     private ViewWwLexicalDecisionData(Name alias, Table<ViewWwLexicalDecisionDataRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_lexical_decision_data\" as  SELECT w.word,\n    w.lang,\n    w.is_word\n   FROM (( SELECT w_1.word,\n            w_1.lang,\n            true AS is_word\n           FROM ( SELECT DISTINCT w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2\n                  WHERE ((EXISTS ( SELECT l.id\n                           FROM lexeme l,\n                            dataset ds\n                          WHERE ((l.word_id = w_2.id) AND ((l.complexity)::text = 'SIMPLE'::text) AND ((l.dataset_code)::text = 'sss'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))) AND (w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2))) w_1\n          ORDER BY (random()))\n        UNION ALL\n        ( SELECT nw.word,\n            nw.lang,\n            false AS is_word\n           FROM game_nonword nw\n          ORDER BY (random()))) w\n  ORDER BY (random());"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_lexical_decision_data\" as  SELECT w.word,\n    w.lang,\n    w.is_word\n   FROM (( SELECT w_1.word,\n            w_1.lang,\n            true AS is_word\n           FROM ( SELECT DISTINCT w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2\n                  WHERE ((EXISTS ( SELECT l.id\n                           FROM lexeme l,\n                            dataset ds\n                          WHERE ((l.word_id = w_2.id) AND ((l.complexity)::text = 'SIMPLE'::text) AND ((l.dataset_code)::text = 'eki'::text) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))) AND (w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2))) w_1\n          ORDER BY (random()))\n        UNION ALL\n        ( SELECT nw.word,\n            nw.lang,\n            false AS is_word\n           FROM game_nonword nw\n          ORDER BY (random()))) w\n  ORDER BY (random());"));
     }
 
     public <O extends Record> ViewWwLexicalDecisionData(Table<O> child, ForeignKey<O, ViewWwLexicalDecisionDataRecord> key) {
