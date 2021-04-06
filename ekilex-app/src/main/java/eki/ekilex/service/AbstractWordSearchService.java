@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.exception.OperationDeniedException;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Relation;
@@ -67,13 +68,15 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
+			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) throws Exception {
 
 		List<Word> words;
 		int wordCount;
 		if (StringUtils.isBlank(searchFilter)) {
 			words = Collections.emptyList();
 			wordCount = 0;
+		} else if (StringUtils.equals(searchFilter, QUERY_MULTIPLE_CHARACTERS_SYM)) {
+			throw new OperationDeniedException("Please be more specific. Use other means to dump data");
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);

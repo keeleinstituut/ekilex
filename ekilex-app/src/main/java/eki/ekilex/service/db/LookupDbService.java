@@ -335,7 +335,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<eki.ekilex.data.Meaning> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, Long excludedMeaningId) {
 
-		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_");
+		String maskedSearchFilter = searchFilter.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "%").replace(QUERY_SINGLE_CHARACTER_SYM, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
 

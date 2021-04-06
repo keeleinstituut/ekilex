@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 
+import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.LexicalDecisionGameRow;
 import eki.wordweb.data.GameStat;
 import eki.wordweb.service.GameDataService;
 
 @Controller
-public class LexicalDecisionGameController implements WebConstant {
+public class LexicalDecisionGameController implements WebConstant, GlobalConstant {
 
 	@Autowired
 	private GameDataService gameDataService;
@@ -36,7 +37,7 @@ public class LexicalDecisionGameController implements WebConstant {
 	@GetMapping(GAMES_LEXICDECIS_URI + GAMES_GETGAMEBATCH_URI)
 	public @ResponseBody List<LexicalDecisionGameRow> getLexicDecisGameBatch() {
 
-		List<LexicalDecisionGameRow> gameRows = gameDataService.getLexicDecisGameBatch(DISPLAY_LANG);
+		List<LexicalDecisionGameRow> gameRows = gameDataService.getLexicDecisGameBatch(LANGUAGE_CODE_EST);
 
 		return gameRows;
 	}

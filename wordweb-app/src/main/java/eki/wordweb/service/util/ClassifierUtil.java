@@ -2,13 +2,12 @@ package eki.wordweb.service.util;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Locale;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
@@ -37,8 +36,8 @@ public class ClassifierUtil {
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
-	public Classifier reValue(Classifier classifier, String messageKey) {
-		String newValue = messageSource.getMessage(messageKey, new Object[0], LocaleContextHolder.getLocale());
+	public Classifier reValue(Classifier classifier, String messageKey, Locale displayLocale) {
+		String newValue = messageSource.getMessage(messageKey, new Object[0], displayLocale);
 		Classifier copy = new Classifier(classifier.getName(), classifier.getOrigin(), classifier.getParent(), classifier.getCode(), newValue, classifier.getLang());
 		return copy;
 	}
@@ -59,9 +58,6 @@ public class ClassifierUtil {
 		word.setGender(classifier);
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
-		if (classifier == null) {
-			classifier = new Classifier();
-		}
 		word.setAspect(classifier);
 	}
 
@@ -162,9 +158,6 @@ public class ClassifierUtil {
 		wordRelation.setWordRelType(classifier);
 		classifierCode = wordRelation.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
-		if (classifier == null) {
-			classifier = new Classifier();
-		}
 		wordRelation.setAspect(classifier);
 	}
 
@@ -190,9 +183,6 @@ public class ClassifierUtil {
 			return null;
 		}
 		Classifier classifier = commonDataDbService.getClassifier(name, code, lang);
-		if (classifier == null) {
-			classifier = new Classifier(name.name(), null, null, code, code, lang);
-		}
 		return classifier;
 	}
 
@@ -206,11 +196,6 @@ public class ClassifierUtil {
 			return Collections.emptyList();
 		}
 		List<Classifier> classifiers = commonDataDbService.getClassifiers(name, codes, lang);
-		if (CollectionUtils.isEmpty(classifiers) || (classifiers.size() != codes.size())) {
-			classifiers = codes.stream()
-					.map(code -> new Classifier(name.name(), null, null, code, code, lang))
-					.collect(Collectors.toList());
-		}
 		return classifiers;
 	}
 
@@ -219,11 +204,6 @@ public class ClassifierUtil {
 			return Collections.emptyList();
 		}
 		List<Classifier> classifiers = commonDataDbService.getClassifiersWithOrigin(name, codes, lang);
-		if (CollectionUtils.isEmpty(classifiers) || (classifiers.size() != codes.size())) {
-			classifiers = codes.stream()
-					.map(code -> new Classifier(name.name(), code.getOrigin(), null, code.getCode(), code.getCode(), lang))
-					.collect(Collectors.toList());
-		}
 		return classifiers;
 	}
 }

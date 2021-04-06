@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -112,7 +113,13 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	public void composeWordRelations(Word word, WordRelationsTuple wordRelationsTuple, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
+	public void composeWordRelations(
+			Word word,
+			WordRelationsTuple wordRelationsTuple,
+			Map<String, Long> langOrderByMap,
+			Complexity lexComplexity,
+			Locale displayLocale,
+			String displayLang) {
 
 		if (wordRelationsTuple == null) {
 			return;
@@ -163,10 +170,10 @@ public class WordConversionUtil extends AbstractConversionUtil {
 			List<WordRelationGroup> wordRelationGroups;
 			if (ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, wordRelTypeCode)) {
 				wordRelationGroups = word.getPrimaryRelatedWordTypeGroups();
-				handleWordRelType(word, wordRelType, relatedWordsOfType, wordRelationGroups, langOrderByMap);
+				handleWordRelType(word, wordRelType, relatedWordsOfType, wordRelationGroups, langOrderByMap, displayLocale);
 			} else if (CollectionUtils.isNotEmpty(relatedWordsOfType)) {
 				wordRelationGroups = word.getSecondaryRelatedWordTypeGroups();
-				handleWordRelType(word, wordRelType, relatedWordsOfType, wordRelationGroups, langOrderByMap);
+				handleWordRelType(word, wordRelType, relatedWordsOfType, wordRelationGroups, langOrderByMap, displayLocale);
 			}
 		}
 
@@ -190,7 +197,7 @@ public class WordConversionUtil extends AbstractConversionUtil {
 					String groupWordRelTypeCode = firstWordGroupMember.getWordRelTypeCode();
 					Classifier groupWordRelType = firstWordGroupMember.getWordRelType();
 					if (StringUtils.equals(WORD_REL_TYPE_CODE_ASCPECTS, groupWordRelTypeCode)) {
-						groupWordRelType = classifierUtil.reValue(groupWordRelType, "classifier.word_rel_type.aspect");
+						groupWordRelType = classifierUtil.reValue(groupWordRelType, "classifier.word_rel_type.aspect", displayLocale);
 						wordGroupMembers.sort((TypeWordRelation rel1, TypeWordRelation rel2) -> {
 							String aspectCode1 = rel1.getAspectCode();
 							String aspectCode2 = rel2.getAspectCode();
@@ -217,7 +224,12 @@ public class WordConversionUtil extends AbstractConversionUtil {
 	}
 
 	private void handleWordRelType(
-			Word word, Classifier wordRelType, List<TypeWordRelation> wordRelations, List<WordRelationGroup> wordRelationGroups, Map<String, Long> langOrderByMap) {
+			Word word,
+			Classifier wordRelType,
+			List<TypeWordRelation> wordRelations,
+			List<WordRelationGroup> wordRelationGroups,
+			Map<String, Long> langOrderByMap,
+			Locale displayLocale) {
 
 		WordRelationGroup wordRelationGroup;
 		if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, wordRelType.getCode())) {
@@ -230,13 +242,13 @@ public class WordConversionUtil extends AbstractConversionUtil {
 				wordRelationMatches = wordRelationSynOrMatchMap.get(Boolean.FALSE);
 			}
 			// raw rel syn group
-			Classifier wordRelTypeSyn = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.syn");
+			Classifier wordRelTypeSyn = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.syn", displayLocale);
 			wordRelationGroup = new WordRelationGroup();
 			wordRelationGroup.setWordRelType(wordRelTypeSyn);
 			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelationSyns, null);
 
 			// raw rel match group w lang grouping
-			Classifier wordRelTypeMatch = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.match");
+			Classifier wordRelTypeMatch = classifierUtil.reValue(wordRelType, "classifier.word_rel_type.raw.match", displayLocale);
 			wordRelationGroup = new WordRelationGroup();
 			wordRelationGroup.setWordRelType(wordRelTypeMatch);
 			appendRelatedWordTypeGroup(wordRelationGroup, wordRelationGroups, wordRelationMatches, langOrderByMap);

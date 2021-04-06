@@ -128,7 +128,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<WordLexeme> getWordLexemesWithDefinitionsData(
-			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames) {
+			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();

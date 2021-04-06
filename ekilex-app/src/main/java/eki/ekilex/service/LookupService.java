@@ -103,7 +103,8 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public MeaningWordCandidates getMeaningWordCandidates(DatasetPermission userRole, String wordValue, String language, Long sourceMeaningId, List<String> tagNames) {
+	public MeaningWordCandidates getMeaningWordCandidates(
+			DatasetPermission userRole, String wordValue, String language, Long sourceMeaningId, List<String> tagNames) throws Exception {
 
 		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
@@ -197,12 +198,12 @@ public class LookupService extends AbstractWordSearchService {
 	@Transactional
 	public List<WordLexeme> getWordLexemesOfJoinCandidates(
 			DatasetPermission userRole, List<String> userPrefDatasetCodes,
-			String searchWord, Integer wordHomonymNumber, Long excludedMeaningId, List<String> tagNames) {
+			String searchWord, Integer wordHomonymNumber, Long excludedMeaningId, List<String> tagNames) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
-			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
+			String cleanedUpFilter = searchWord.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "").replace(QUERY_SINGLE_CHARACTER_SYM, "").replace("%", "").replace("_", "");
 			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, tagNames, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();

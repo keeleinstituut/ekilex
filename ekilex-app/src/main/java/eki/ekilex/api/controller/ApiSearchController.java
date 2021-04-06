@@ -153,7 +153,8 @@ public class ApiSearchController extends AbstractApiController {
 			API_SERVICES_URI + WORD_URI + SEARCH_URI + "/{word}/{datasets}"
 	})
 	@ResponseBody
-	public WordsResult lexSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
+	public WordsResult lexSearch(
+			@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
 		boolean fetchAll = true;
 		List<String> datasets = parseDatasets(datasetsStr);
@@ -184,7 +185,8 @@ public class ApiSearchController extends AbstractApiController {
 			API_SERVICES_URI + MEANING_URI + SEARCH_URI + "/{word}/{datasets}"
 	})
 	@ResponseBody
-	public TermSearchResult termSearch(@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) {
+	public TermSearchResult termSearch(
+			@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
 		boolean fetchAll = true;
 		List<String> datasets = parseDatasets(datasetsStr);
@@ -245,13 +247,14 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	private List<ClassifierSelect> convert(List<Classifier> allLanguages) {
-		List<ClassifierSelect> languagesOrder = allLanguages.stream().map(language -> {
-			ClassifierSelect languageSelect = new ClassifierSelect();
-			languageSelect.setCode(language.getCode());
-			languageSelect.setValue(language.getValue());
-			languageSelect.setSelected(true);
-			return languageSelect;
-		}).collect(Collectors.toList());
+		List<ClassifierSelect> languagesOrder = allLanguages.stream()
+				.map(language -> {
+					ClassifierSelect languageSelect = new ClassifierSelect();
+					languageSelect.setCode(language.getCode());
+					languageSelect.setValue(language.getValue());
+					languageSelect.setSelected(true);
+					return languageSelect;
+				}).collect(Collectors.toList());
 		return languagesOrder;
 	}
 

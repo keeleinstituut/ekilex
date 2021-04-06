@@ -230,7 +230,7 @@ public class SynSearchController extends AbstractPrivateSearchController {
 			@RequestParam(required = false) List<Long> excludedIds,
 			@RequestParam(required = false) String language,
 			@RequestParam(required = false) String morphCode,
-			Model model) {
+			Model model) throws Exception {
 
 		logger.debug("word search {}", searchFilter);
 

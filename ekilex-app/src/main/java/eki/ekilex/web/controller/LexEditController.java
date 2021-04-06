@@ -312,7 +312,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	public String meaningWordCandidates(
 			@ModelAttribute("wordDetails") WordLexemeMeaningDetails wordDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+			Model model) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 

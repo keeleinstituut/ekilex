@@ -34,6 +34,7 @@ import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.CollocConversionUtil;
 import eki.wordweb.service.util.EtymConversionUtil;
+import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.service.util.LexemeConversionUtil;
 import eki.wordweb.service.util.ParadigmConversionUtil;
 import eki.wordweb.service.util.WordConversionUtil;
@@ -67,9 +68,12 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	@Autowired
 	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
+	@Autowired
+	protected LanguageContext languageContext;
+
 	public abstract SearchContext getSearchContext(SearchFilter searchFilter);
 
-	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang);
+	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter);
 
 	@Transactional
 	public String getRandomWord() {

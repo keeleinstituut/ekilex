@@ -175,7 +175,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 	}
 
 	@GetMapping("/wordsearch")
-	public String searchWord(@RequestParam String searchFilter, Model model) {
+	public String searchWord(@RequestParam String searchFilter, Model model) throws Exception {
 
 		logger.debug("word search {}", searchFilter);
 

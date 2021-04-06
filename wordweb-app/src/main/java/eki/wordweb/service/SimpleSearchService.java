@@ -3,6 +3,7 @@ package eki.wordweb.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,12 +31,14 @@ public class SimpleSearchService extends AbstractSearchService {
 
 	@Transactional
 	@Override
-	public WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang) {
+	public WordData getWordData(Long wordId, SearchFilter searchFilter) {
 
 		// query params + common data
 		SearchContext searchContext = getSearchContext(searchFilter);
 		Complexity lexComplexity = searchContext.getLexComplexity();
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
+		Locale displayLocale = languageContext.getDisplayLocale();
+		String displayLang = languageContext.getDisplayLang();
 
 		// word data
 		Word word = searchDbService.getWord(wordId);
@@ -43,9 +46,9 @@ public class SimpleSearchService extends AbstractSearchService {
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLocale, displayLang);
 		List<Form> forms = searchDbService.getWordForms(wordId, searchContext);
-		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, DISPLAY_LANG);
+		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data

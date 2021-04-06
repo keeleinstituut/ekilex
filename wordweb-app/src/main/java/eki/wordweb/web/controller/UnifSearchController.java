@@ -36,7 +36,7 @@ import eki.wordweb.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class UnifSearchController extends AbstractController {
+public class UnifSearchController extends AbstractSearchController {
 
 	@Autowired
 	private UnifSearchService unifSearchService;
@@ -140,7 +140,7 @@ public class UnifSearchController extends AbstractController {
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
-		WordData wordData = unifSearchService.getWordData(wordId, searchFilter, DISPLAY_LANG);
+		WordData wordData = unifSearchService.getWordData(wordId, searchFilter);
 
 		String wordValue = wordData.getWord().getWord();
 		sessionBean.setRecentWord(wordValue);
@@ -225,8 +225,8 @@ public class UnifSearchController extends AbstractController {
 
 	private void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
+		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter();
 		SessionBean sessionBean = populateCommonModel(model);
-		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter(DISPLAY_LANG);
 		populateLangFilter(langFilter, sessionBean, model);
 		populateDatasetFilter(sessionBean, model);
 

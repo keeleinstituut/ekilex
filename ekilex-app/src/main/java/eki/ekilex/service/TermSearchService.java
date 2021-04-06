@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.SearchResultMode;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -57,7 +58,8 @@ public class TermSearchService extends AbstractSearchService {
 	private PermCalculator permCalculator;
 
 	@Transactional
-	public TermSearchResult getTermSearchResult(String searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) {
+	public TermSearchResult getTermSearchResult(
+			String searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.isBlank(searchFilter)) {
@@ -66,6 +68,8 @@ public class TermSearchService extends AbstractSearchService {
 			termSearchResult.setMeaningCount(0);
 			termSearchResult.setWordCount(0);
 			termSearchResult.setResultCount(0);
+		} else if (StringUtils.equals(searchFilter, QUERY_MULTIPLE_CHARACTERS_SYM)) {
+			throw new OperationDeniedException("Please be more specific. Use other means to dump data");
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
 			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);

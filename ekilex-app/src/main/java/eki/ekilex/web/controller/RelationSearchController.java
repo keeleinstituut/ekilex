@@ -57,7 +57,7 @@ public class RelationSearchController extends AbstractMutableDataPageController 
 	}
 
 	@GetMapping("/meaningsearch")
-	public String searchMeaning(@RequestParam String searchFilter, Model model) {
+	public String searchMeaning(@RequestParam String searchFilter, Model model) throws Exception {
 
 		logger.debug("meaning search {}", searchFilter);
 

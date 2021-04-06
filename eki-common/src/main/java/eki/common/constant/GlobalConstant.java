@@ -74,6 +74,10 @@ public interface GlobalConstant {
 
 	String FORCE_QUERY_LOG = "'force query log'";
 
+	String QUERY_MULTIPLE_CHARACTERS_SYM = "*";
+
+	String QUERY_SINGLE_CHARACTER_SYM = "?";
+
 	String STAT_API_KEY_HEADER_NAME = "stat-api-key";
 
 	String EMPTY_API_KEY = "empty-api-key";
