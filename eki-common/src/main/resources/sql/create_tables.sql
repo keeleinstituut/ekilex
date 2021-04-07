@@ -474,7 +474,7 @@ create table dataset
 create table dataset_permission
 (
   id bigserial primary key,
-  dataset_code varchar(10) references dataset(code) on delete cascade not null,
+  dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null,
   user_id bigint references eki_user(id) on delete cascade not null,
   auth_operation varchar(100) not null,
   auth_item varchar(100) not null,
@@ -576,7 +576,7 @@ create table word_guid
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
   guid varchar(100) not null,
-  dataset_code varchar(10) references dataset(code) not null,
+  dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null,
   unique(word_id, guid, dataset_code)
 );
 alter sequence word_guid_id_seq restart with 10000;
@@ -706,7 +706,7 @@ create table meaning_nr
   id bigserial primary key,
   meaning_id bigint references meaning(id) on delete cascade not null,
   mnr varchar(100) not null,
-  dataset_code varchar(10) references dataset(code) not null,
+  dataset_code varchar(10) references dataset(code) on update cascade on delete cascade not null,
   unique(meaning_id, mnr, dataset_code)
 );
 alter sequence meaning_nr_id_seq restart with 10000;
@@ -1317,7 +1317,7 @@ create index temp_ds_import_queue_table_name_idx on temp_ds_import_queue(table_n
 create index domain_code_origin_idx on domain(code, origin);
 create index domain_parent_code_origin_idx on domain(parent_code, parent_origin);
 create index domain_label_code_origin_idx on domain_label(code, origin);
-create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin); 
+create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domain_origin);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));

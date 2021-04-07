@@ -36,7 +36,7 @@ import eki.wordweb.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SimpleSearchController extends AbstractController {
+public class SimpleSearchController extends AbstractSearchController {
 
 	@Autowired
 	private SimpleSearchService simpleSearchService;
@@ -136,7 +136,7 @@ public class SimpleSearchController extends AbstractController {
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
-		WordData wordData = simpleSearchService.getWordData(wordId, searchFilter, DISPLAY_LANG);
+		WordData wordData = simpleSearchService.getWordData(wordId, searchFilter);
 
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
@@ -173,7 +173,7 @@ public class SimpleSearchController extends AbstractController {
 		}
 
 		// dataset
-		List<String> datasetCodes = Arrays.asList(DATASET_SSS);
+		List<String> datasetCodes = Arrays.asList(DATASET_EKI);
 
 		// homonym nr
 		Integer homonymNr = nullSafe(homonymNrStr);
@@ -198,8 +198,8 @@ public class SimpleSearchController extends AbstractController {
 
 	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
+		List<UiFilterElement> langFilter = commonDataService.getSimpleLangFilter();
 		SessionBean sessionBean = populateCommonModel(model);
-		List<UiFilterElement> langFilter = commonDataService.getSimpleLangFilter(DISPLAY_LANG);
 		populateLangFilter(langFilter, sessionBean, model);
 
 		model.addAttribute("searchUri", SEARCH_URI + LITE_URI);

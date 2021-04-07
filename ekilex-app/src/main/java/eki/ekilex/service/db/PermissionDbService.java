@@ -77,7 +77,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		Condition where = DSL.noCondition();
 		if (StringUtils.isNotBlank(userNameFilter)) {
 			String userNameFilterLike = "%" + StringUtils.lowerCase(userNameFilter) + "%";
-			where = where.and(DSL.lower(eu.NAME).like(userNameFilterLike));
+			where = where.and(DSL.or(DSL.lower(eu.NAME).like(userNameFilterLike), DSL.lower(eu.EMAIL).like(userNameFilterLike)));
 		}
 		if (StringUtils.isNotBlank(userPermDatasetCodeFilter)) {
 			where = where.andExists(DSL

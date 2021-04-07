@@ -36,7 +36,7 @@ import eki.wordweb.web.bean.SessionBean;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class UnifSearchController extends AbstractController {
+public class UnifSearchController extends AbstractSearchController {
 
 	@Autowired
 	private UnifSearchService unifSearchService;
@@ -55,7 +55,7 @@ public class UnifSearchController extends AbstractController {
 
 	@PostMapping(SEARCH_URI + UNIF_URI)
 	public String searchWords(
-			@RequestParam(name = "destinLangsStr") String destinLangStr,
+			@RequestParam(name = "destinLangsStr") String destinLangsStr,
 			@RequestParam(name = "datasetCodesStr") String datasetCodesStr,
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "selectedWordHomonymNr", required = false) String selectedWordHomonymNrStr,
@@ -68,7 +68,7 @@ public class UnifSearchController extends AbstractController {
 		setSearchFormAttribute(redirectAttributes, Boolean.TRUE);
 		searchWord = textDecorationService.unifyToApostrophe(searchWord);
 		Integer selectedWordHomonymNr = nullSafe(selectedWordHomonymNrStr);
-		String searchUri = webUtil.composeDetailSearchUri(destinLangStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, searchWord, selectedWordHomonymNr);
 		return "redirect:" + searchUri;
 	}
 
@@ -140,7 +140,7 @@ public class UnifSearchController extends AbstractController {
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
-		WordData wordData = unifSearchService.getWordData(wordId, searchFilter, DISPLAY_LANG);
+		WordData wordData = unifSearchService.getWordData(wordId, searchFilter);
 
 		String wordValue = wordData.getWord().getWord();
 		sessionBean.setRecentWord(wordValue);
@@ -151,6 +151,14 @@ public class UnifSearchController extends AbstractController {
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
 
 		return UNIF_SEARCH_PAGE + " :: worddetails";
+	}
+
+	@GetMapping(FEELING_LUCKY_URI)
+	public String feelingLucky() {
+
+		String randomWord = unifSearchService.getRandomWord();
+		String searchUri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, randomWord, null);
+		return "redirect:" + searchUri;
 	}
 
 	private SearchValidation validateAndCorrectSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr) {
@@ -217,8 +225,8 @@ public class UnifSearchController extends AbstractController {
 
 	private void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
+		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter();
 		SessionBean sessionBean = populateCommonModel(model);
-		List<UiFilterElement> langFilter = commonDataService.getUnifLangFilter(DISPLAY_LANG);
 		populateLangFilter(langFilter, sessionBean, model);
 		populateDatasetFilter(sessionBean, model);
 

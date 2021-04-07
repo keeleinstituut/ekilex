@@ -21,7 +21,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 217780192;
+    private static final long serialVersionUID = -96604520;
 
     /**
      * Setter for <code>public.mview_ww_lexeme.lexeme_id</code>.
@@ -262,115 +262,129 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     }
 
     /**
+     * Setter for <code>public.mview_ww_lexeme.region_codes</code>.
+     */
+    public void setRegionCodes(String[] value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>public.mview_ww_lexeme.region_codes</code>.
+     */
+    public String[] getRegionCodes() {
+        return (String[]) get(17);
+    }
+
+    /**
      * Setter for <code>public.mview_ww_lexeme.deriv_codes</code>.
      */
     public void setDerivCodes(String[] value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.deriv_codes</code>.
      */
     public String[] getDerivCodes() {
-        return (String[]) get(17);
+        return (String[]) get(18);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.meaning_words</code>.
      */
     public void setMeaningWords(TypeMeaningWordRecord[] value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.meaning_words</code>.
      */
     public TypeMeaningWordRecord[] getMeaningWords() {
-        return (TypeMeaningWordRecord[]) get(18);
+        return (TypeMeaningWordRecord[]) get(19);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.advice_notes</code>.
      */
     public void setAdviceNotes(String[] value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.advice_notes</code>.
      */
     public String[] getAdviceNotes() {
-        return (String[]) get(19);
+        return (String[]) get(20);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.notes</code>.
      */
     public void setNotes(TypeFreeformRecord[] value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.notes</code>.
      */
     public TypeFreeformRecord[] getNotes() {
-        return (TypeFreeformRecord[]) get(20);
+        return (TypeFreeformRecord[]) get(21);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.grammars</code>.
      */
     public void setGrammars(TypeFreeformRecord[] value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.grammars</code>.
      */
     public TypeFreeformRecord[] getGrammars() {
-        return (TypeFreeformRecord[]) get(21);
+        return (TypeFreeformRecord[]) get(22);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.governments</code>.
      */
     public void setGovernments(TypeFreeformRecord[] value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.governments</code>.
      */
     public TypeFreeformRecord[] getGovernments() {
-        return (TypeFreeformRecord[]) get(22);
+        return (TypeFreeformRecord[]) get(23);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.usages</code>.
      */
     public void setUsages(TypeUsageRecord[] value) {
-        set(23, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.usages</code>.
      */
     public TypeUsageRecord[] getUsages() {
-        return (TypeUsageRecord[]) get(23);
+        return (TypeUsageRecord[]) get(24);
     }
 
     /**
      * Setter for <code>public.mview_ww_lexeme.od_lexeme_recommendations</code>.
      */
     public void setOdLexemeRecommendations(String[] value) {
-        set(24, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_lexeme.od_lexeme_recommendations</code>.
      */
     public String[] getOdLexemeRecommendations() {
-        return (String[]) get(24);
+        return (String[]) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -387,7 +401,7 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     /**
      * Create a detached, initialised MviewWwLexemeRecord
      */
-    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, Long valueStateOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages, String[] odLexemeRecommendations) {
+    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, Long valueStateOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages, String[] odLexemeRecommendations) {
         super(MviewWwLexeme.MVIEW_WW_LEXEME);
 
         set(0, lexemeId);
@@ -407,13 +421,14 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
         set(14, langComplexities);
         set(15, registerCodes);
         set(16, posCodes);
-        set(17, derivCodes);
-        set(18, meaningWords);
-        set(19, adviceNotes);
-        set(20, notes);
-        set(21, grammars);
-        set(22, governments);
-        set(23, usages);
-        set(24, odLexemeRecommendations);
+        set(17, regionCodes);
+        set(18, derivCodes);
+        set(19, meaningWords);
+        set(20, adviceNotes);
+        set(21, notes);
+        set(22, grammars);
+        set(23, governments);
+        set(24, usages);
+        set(25, odLexemeRecommendations);
     }
 }

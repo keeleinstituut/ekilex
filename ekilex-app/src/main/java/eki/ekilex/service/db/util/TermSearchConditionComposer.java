@@ -320,7 +320,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 	public Table<Record3<Long, Long, Long[]>> composeFilteredMeaning(
 			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, SearchResultMode resultMode) {
 
-		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_");
+		String maskedSearchFilter = searchFilter.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "%").replace(QUERY_SINGLE_CHARACTER_SYM, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Meaning m = MEANING.as("m");
@@ -556,14 +556,14 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		for (SearchCriterion criterion : filteredCriteria) {
 			String critValue = criterion.getSearchValue().toString();
 			if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNotCondition(), true);
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1
 						.and(al.OWNER_NAME.in(ActivityOwner.WORD.name(), ActivityOwner.LEXEME.name()))
 						.andNot(al.ENTITY_NAME.eq(ActivityEntity.GRAMMAR.name()))
 						.andNot(al.FUNCT_NAME.eq(JOIN).and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name())))
 						.andNot(al.FUNCT_NAME.eq(JOIN_WORDS));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNotCondition(), false);
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			}
 		}
 		wherew = wherew.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
@@ -593,21 +593,21 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				for (SearchCriterion criterion : filteredCriteriaByAllLogs) {
 					String critValue = criterion.getSearchValue().toString();
 					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNotCondition(), true);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 					} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
 						where1 = where1
 								.andNot(al.ENTITY_NAME.eq(ActivityEntity.GRAMMAR.name()))
 								.andNot(al.FUNCT_NAME.eq(JOIN).and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name())))
 								.andNot(al.FUNCT_NAME.eq(JOIN_WORDS))
 								.andNot(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()).and(al.FUNCT_NAME.like(LIKE_CREATE)));
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNotCondition(), false);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 					} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
 						where1 = where1
 								.and(al.OWNER_NAME.eq(ActivityOwner.MEANING.name()))
 								.and(al.OWNER_ID.eq(meaningIdField))
 								.and(al.ENTITY_NAME.eq(ActivityEntity.MEANING.name()))
 								.and(al.FUNCT_NAME.like(LIKE_CREATE));
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNotCondition(), false);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 					}
 				}
 				wherem = wherem.andExists(DSL.select(mal.ID).from(mal, al).where(where1));				
@@ -628,9 +628,9 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				for (SearchCriterion criterion : filteredCriteriaByLastLogs) {
 					String critValue = criterion.getSearchValue().toString();
 					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNotCondition(), true);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 					} else if (SearchKey.LAST_UPDATE_ON.equals(criterion.getSearchKey())) {
-						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNotCondition(), false);
+						where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 					}
 				}
 				wherem = wherem.andExists(DSL.select(mlal.ID).from(mlal, al).where(where1));		

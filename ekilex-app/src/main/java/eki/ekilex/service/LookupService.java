@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
 import eki.common.service.TextDecorationService;
-import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
@@ -48,9 +47,6 @@ import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.db.CommonDataDbService;
-import eki.ekilex.service.db.LexSearchDbService;
-import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
@@ -59,22 +55,10 @@ import eki.ekilex.service.util.PermCalculator;
 public class LookupService extends AbstractWordSearchService {
 
 	@Autowired
-	private LookupDbService lookupDbService;
-
-	@Autowired
-	private CommonDataDbService commonDataDbService;
-
-	@Autowired
 	private PermissionDbService permissionDbService;
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
-
-	@Autowired
 	private TermSearchDbService termSearchDbService;
-
-	@Autowired
-	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
 	private TextDecorationService textDecorationService;
@@ -115,7 +99,8 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public MeaningWordCandidates getMeaningWordCandidates(DatasetPermission userRole, String wordValue, String language, Long sourceMeaningId, List<String> tagNames) {
+	public MeaningWordCandidates getMeaningWordCandidates(
+			DatasetPermission userRole, String wordValue, String language, Long sourceMeaningId, List<String> tagNames) throws Exception {
 
 		boolean meaningHasWord = lookupDbService.meaningHasWord(sourceMeaningId, wordValue, language);
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
@@ -209,12 +194,12 @@ public class LookupService extends AbstractWordSearchService {
 	@Transactional
 	public List<WordLexeme> getWordLexemesOfJoinCandidates(
 			DatasetPermission userRole, List<String> userPrefDatasetCodes,
-			String searchWord, Integer wordHomonymNumber, Long excludedMeaningId, List<String> tagNames) {
+			String searchWord, Integer wordHomonymNumber, Long excludedMeaningId, List<String> tagNames) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchWord)) {
-			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
+			String cleanedUpFilter = searchWord.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "").replace(QUERY_SINGLE_CHARACTER_SYM, "").replace("%", "").replace("_", "");
 			WordsResult words = getWords(cleanedUpFilter, userPrefDatasetCodes, userRole, tagNames, true, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();

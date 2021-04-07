@@ -17,135 +17,176 @@ import eki.common.constant.DatasetType;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SynonymType;
 import eki.common.data.Classifier;
+import eki.common.data.OrderedMap;
+import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchContext;
-import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.LexemeMeaningTuple;
-import eki.wordweb.data.TypeDefinition;
-import eki.wordweb.data.TypeFreeform;
-import eki.wordweb.data.TypeLexemeRelation;
-import eki.wordweb.data.TypeMeaningRelation;
-import eki.wordweb.data.TypeMeaningWord;
-import eki.wordweb.data.TypeMediaFile;
-import eki.wordweb.data.TypeSourceLink;
-import eki.wordweb.data.TypeUsage;
+import eki.wordweb.data.WordTypeData;
+import eki.wordweb.data.type.TypeDefinition;
+import eki.wordweb.data.type.TypeFreeform;
+import eki.wordweb.data.type.TypeLexemeRelation;
+import eki.wordweb.data.type.TypeMeaningRelation;
+import eki.wordweb.data.type.TypeMeaningWord;
+import eki.wordweb.data.type.TypeMediaFile;
+import eki.wordweb.data.type.TypeSourceLink;
+import eki.wordweb.data.type.TypeUsage;
 
 @Component
 public class LexemeConversionUtil extends AbstractConversionUtil {
 
-	public void sortLexemes(List<Lexeme> lexemes, DatasetType datasetType) {
-		if (CollectionUtils.isEmpty(lexemes)) {
+	public void sortLexemes(List<LexemeWord> lexemeWords, DatasetType datasetType) {
+		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
 		if (datasetType == null) {
 			return;
 		}
 		if (DatasetType.LEX.equals(datasetType)) {
-			Collections.sort(lexemes, Comparator
-					.comparing(Lexeme::getDatasetOrderBy)
-					.thenComparing(Lexeme::getLevel1)
-					.thenComparing(Lexeme::getLevel2));
+			Collections.sort(lexemeWords, Comparator
+					.comparing(LexemeWord::getDatasetOrderBy)
+					.thenComparing(LexemeWord::getLevel1)
+					.thenComparing(LexemeWord::getLevel2));
 		} else if (DatasetType.TERM.equals(datasetType)) {
-			Collections.sort(lexemes, Comparator
-					.comparing(Lexeme::getDatasetOrderBy)
-					.thenComparing(Lexeme::getValueStateOrderBy, Comparator.nullsLast(Comparator.naturalOrder()))
-					.thenComparing(Lexeme::getLexemeOrderBy));
+			Collections.sort(lexemeWords, Comparator
+					.comparing(LexemeWord::getDatasetOrderBy)
+					.thenComparing(LexemeWord::getValueStateOrderBy, Comparator.nullsLast(Comparator.naturalOrder()))
+					.thenComparing(LexemeWord::getLexemeOrderBy));
 		}
 	}
 
-	public void flagEmptyLexemes(List<Lexeme> lexemes) {
-		if (CollectionUtils.isEmpty(lexemes)) {
+	public void flagEmptyLexemes(List<LexemeWord> lexemeWords) {
+		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
-		lexemes.forEach(lexeme -> {
+		lexemeWords.forEach(lexeme -> {
 			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
 			lexeme.setEmptyLexeme(isEmptyLexeme);
 		});
 	}
 
-	private boolean isEmptyLexeme(Lexeme lexeme) {
-		return CollectionUtils.isEmpty(lexeme.getDefinitions())
-				&& CollectionUtils.isEmpty(lexeme.getUsages())
-				&& CollectionUtils.isEmpty(lexeme.getSourceLangSynonyms())
-				&& CollectionUtils.isEmpty(lexeme.getDestinLangSynonyms())
-				&& CollectionUtils.isEmpty(lexeme.getRelatedLexemes())
-				&& CollectionUtils.isEmpty(lexeme.getDomains())
-				&& CollectionUtils.isEmpty(lexeme.getCollocationPosGroups());
+	private boolean isEmptyLexeme(LexemeWord lexemeWord) {
+		return CollectionUtils.isEmpty(lexemeWord.getDefinitions())
+				&& CollectionUtils.isEmpty(lexemeWord.getUsages())
+				&& CollectionUtils.isEmpty(lexemeWord.getSourceLangSynonyms())
+				&& CollectionUtils.isEmpty(lexemeWord.getDestinLangSynonyms())
+				&& CollectionUtils.isEmpty(lexemeWord.getRelatedLexemes())
+				&& CollectionUtils.isEmpty(lexemeWord.getDomains())
+				&& CollectionUtils.isEmpty(lexemeWord.getCollocationPosGroups());
 		//not much of a content?
-		//&& CollectionUtils.isEmpty(lexeme.getRegisters()) 
+		//&& CollectionUtils.isEmpty(lexeme.getRegisters())
 		//&& CollectionUtils.isEmpty(lexeme.getGovernments())
 	}
 
-	public void compose(
+	public List<LexemeWord> arrangeHierarchy(Long wordId, List<LexemeWord> allLexemes) {
+
+		List<LexemeWord> lexemeWords = allLexemes.stream().filter(lexeme -> lexeme.getWordId().equals(wordId)).collect(Collectors.toList());
+		Map<Long, List<LexemeWord>> lexemesByMeanings = allLexemes.stream().collect(Collectors.groupingBy(LexemeWord::getMeaningId));
+		for (LexemeWord lexemeWord : lexemeWords) {
+			Long meaningId = lexemeWord.getMeaningId();
+			List<LexemeWord> meaningLexemes = lexemesByMeanings.get(meaningId);
+			lexemeWord.setMeaningLexemes(meaningLexemes);
+		}
+		return lexemeWords;
+	}
+
+	public void composeLexemes(
 			String wordLang,
-			List<Lexeme> lexemes,
-			Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap,
-			List<String> allRelatedWordValues,
+			List<LexemeWord> lexemeWords,
 			Map<String, Long> langOrderByMap,
 			SearchContext searchContext,
 			String displayLang) {
 
-		if (CollectionUtils.isEmpty(lexemes)) {
+		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
 
 		List<String> destinLangs = searchContext.getDestinLangs();
 		Complexity lexComplexity = searchContext.getLexComplexity();
 
-		for (Lexeme lexeme : lexemes) {
-
-			Long lexemeId = lexeme.getLexemeId();
-			populateLexeme(lexeme, langOrderByMap, lexComplexity, displayLang);
-			populateUsages(lexeme, wordLang, destinLangs, lexComplexity, displayLang);
-			populateRelatedLexemes(lexeme, lexComplexity, displayLang);
-			LexemeMeaningTuple lexemeMeaningTuple = lexemeMeaningTupleMap.get(lexemeId);
-			populateMeaningWordsAndSynonyms(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
-			filterMeaningWords(lexeme, allRelatedWordValues);
-			populateMeaning(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, destinLangs, lexComplexity, displayLang);
-			populateRelatedMeanings(lexeme, wordLang, lexemeMeaningTuple, langOrderByMap, lexComplexity, displayLang);
-			setValueStateFlags(lexeme, wordLang);
+		for (LexemeWord lexemeWord : lexemeWords) {
+			populateLexeme(lexemeWord, langOrderByMap, lexComplexity, displayLang);
+			populateNotes(lexemeWord, langOrderByMap, lexComplexity);
+			populateUsages(lexemeWord, wordLang, destinLangs, lexComplexity, displayLang);
+			populateRelatedLexemes(lexemeWord, lexComplexity, displayLang);
 		}
 	}
 
-	private void populateLexeme(Lexeme lexeme, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
+	public void composeMeanings(
+			String wordLang,
+			List<LexemeWord> lexemeWords,
+			Map<Long, Meaning> lexemeMeaningMap,
+			List<String> allRelatedWordValues,
+			Map<String, Long> langOrderByMap,
+			SearchContext searchContext,
+			String displayLang) {
 
-		lexeme.setSourceLangSynonyms(new ArrayList<>());
-		lexeme.setDestinLangSynonyms(new ArrayList<>());
-		lexeme.setCollocationPosGroups(new ArrayList<>());
-
-		List<TypeFreeform> notes = lexeme.getLexemeNotes();
-		List<TypeFreeform> grammars = lexeme.getGrammars();
-		List<TypeFreeform> governments = lexeme.getGovernments();
-
-		List<TypeFreeform> filteredNotes = filter(notes, lexComplexity);
-		Map<String, List<TypeFreeform>> notesByLangOrdered = null;
-		if (CollectionUtils.isNotEmpty(filteredNotes)) {
-			Map<String, List<TypeFreeform>> notesByLangUnordered = filteredNotes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
-			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
+		if (CollectionUtils.isEmpty(lexemeWords)) {
+			return;
 		}
 
-		lexeme.setLexemeNotes(filteredNotes);
-		lexeme.setLexemeNotesByLang(notesByLangOrdered);
-		lexeme.setGrammars(filter(grammars, lexComplexity));
-		lexeme.setGovernments(filter(governments, lexComplexity));
+		List<String> destinLangs = searchContext.getDestinLangs();
+		Complexity lexComplexity = searchContext.getLexComplexity();
 
-		convertUrlsToHrefs(lexeme.getLexemeSourceLinks());
+		for (LexemeWord lexemeWord : lexemeWords) {
+			Long lexemeId = lexemeWord.getLexemeId();
+			Meaning meaning = lexemeMeaningMap.get(lexemeId);
+			populateMeaningWordsAndSynonyms(lexemeWord, wordLang, meaning, langOrderByMap, destinLangs, lexComplexity, displayLang);
+			filterMeaningWords(lexemeWord, allRelatedWordValues);
+			populateMeaning(lexemeWord, wordLang, meaning, langOrderByMap, destinLangs, lexComplexity, displayLang);
+			populateRelatedMeanings(lexemeWord, wordLang, meaning, langOrderByMap, lexComplexity, displayLang);
+			setValueStateFlags(lexemeWord, wordLang);
+			populateMeaningLexemes(lexemeWord, langOrderByMap);
+		}
+	}
 
-		classifierUtil.applyClassifiers(lexeme, displayLang);
+	private void populateLexeme(LexemeWord lexemeWord, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
+
+		lexemeWord.setSourceLangSynonyms(new ArrayList<>());
+		lexemeWord.setDestinLangSynonyms(new ArrayList<>());
+		lexemeWord.setCollocationPosGroups(new ArrayList<>());
+
+		List<TypeFreeform> notes = lexemeWord.getLexemeNotes();
+		List<TypeFreeform> grammars = lexemeWord.getGrammars();
+		List<TypeFreeform> governments = lexemeWord.getGovernments();
+
+		lexemeWord.setLexemeNotes(filter(notes, lexComplexity));
+		lexemeWord.setGrammars(filter(grammars, lexComplexity));
+		lexemeWord.setGovernments(filter(governments, lexComplexity));
+
+		convertUrlsToHrefs(lexemeWord.getLexemeSourceLinks());
+
+		classifierUtil.applyClassifiers(lexemeWord, displayLang);
+		classifierUtil.applyClassifiers((WordTypeData) lexemeWord, displayLang);
+	}
+
+	private void populateNotes(LexemeWord lexemeWord, Map<String, Long> langOrderByMap, Complexity lexComplexity) {
+
+		List<TypeFreeform> notes = lexemeWord.getLexemeNotes();
+		if (CollectionUtils.isEmpty(notes)) {
+			return;
+		}
+
+		Map<String, List<TypeFreeform>> notesByLangOrdered = null;
+		if (CollectionUtils.isNotEmpty(notes)) {
+			Map<String, List<TypeFreeform>> notesByLangUnordered = notes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
+		}
+		lexemeWord.setLexemeNotesByLang(notesByLangOrdered);
 	}
 
 	private void populateUsages(
-			Lexeme lexeme,
+			LexemeWord lexemeWord,
 			String wordLang,
 			List<String> destinLangs,
 			Complexity lexComplexity,
 			String displayLang) {
 
-		List<TypeUsage> usages = lexeme.getUsages();
+		List<TypeUsage> usages = lexemeWord.getUsages();
 		if (CollectionUtils.isEmpty(usages)) {
 			return;
 		}
 
-		List<TypeSourceLink> lexemeFreeformSourceLinks = lexeme.getLexemeFreeformSourceLinks();
+		List<TypeSourceLink> lexemeFreeformSourceLinks = lexemeWord.getLexemeFreeformSourceLinks();
 		convertUrlsToHrefs(lexemeFreeformSourceLinks);
 		Map<Long, List<TypeSourceLink>> lexemeFreeformSourceLinkMap = new HashMap<>();
 		if (CollectionUtils.isNotEmpty(lexemeFreeformSourceLinks)) {
@@ -154,7 +195,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 
 		usages = filter(usages, wordLang, destinLangs);
 		usages = filter(usages, lexComplexity);
-		lexeme.setUsages(usages);
+		lexemeWord.setUsages(usages);
 
 		for (TypeUsage usage : usages) {
 			// TODO based on reasonable expectation that all translations are in fact in rus
@@ -175,7 +216,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			usage.setPutOnSpeaker(isPutOnSpeaker);
 		}
 		boolean isMoreUsages = CollectionUtils.size(usages) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
-		lexeme.setMoreUsages(isMoreUsages);
+		lexemeWord.setMoreUsages(isMoreUsages);
 	}
 
 	private boolean isDestinLangAlsoRus(List<String> destinLangs) {
@@ -188,27 +229,39 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		return destinLangs.contains(DESTIN_LANG_RUS);
 	}
 
-	private void populateRelatedLexemes(Lexeme lexeme, Complexity lexComplexity, String displayLang) {
-		List<TypeLexemeRelation> relatedLexemes = lexeme.getRelatedLexemes();
+	private void populateRelatedLexemes(LexemeWord lexemeWord, Complexity lexComplexity, String displayLang) {
+		List<TypeLexemeRelation> relatedLexemes = lexemeWord.getRelatedLexemes();
 		if (CollectionUtils.isEmpty(relatedLexemes)) {
 			return;
 		}
 		relatedLexemes = filter(relatedLexemes, lexComplexity);
-		lexeme.setRelatedLexemes(relatedLexemes);
+		lexemeWord.setRelatedLexemes(relatedLexemes);
 		for (TypeLexemeRelation lexemeRelation : relatedLexemes) {
 			classifierUtil.applyClassifiers(lexemeRelation, displayLang);
 			setWordTypeFlags(lexemeRelation);
 		}
 		Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType = relatedLexemes.stream().collect(Collectors.groupingBy(TypeLexemeRelation::getLexRelType));
-		lexeme.setRelatedLexemesByType(relatedLexemesByType);
+		lexemeWord.setRelatedLexemesByType(relatedLexemesByType);
 	}
 
-	private void populateMeaningWordsAndSynonyms(Lexeme lexeme, String wordLang, LexemeMeaningTuple lexemeMeaningTuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
+	private void populateMeaningLexemes(LexemeWord lexemeWord, Map<String, Long> langOrderByMap) {
 
-		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
+		Map<String, List<LexemeWord>> meaningLexemesByLangOrdered = new HashMap<>();
+		List<LexemeWord> meaningLexemes = lexemeWord.getMeaningLexemes();
+		if (CollectionUtils.isNotEmpty(meaningLexemes)) {
+			sortLexemes(meaningLexemes, DatasetType.TERM);
+			Map<String, List<LexemeWord>> meaningLexemesByLangUnordered = meaningLexemes.stream().collect(Collectors.groupingBy(LexemeWord::getLang));
+			meaningLexemesByLangOrdered = composeOrderedMap(meaningLexemesByLangUnordered, langOrderByMap);
+		}
+		lexemeWord.setMeaningLexemesByLang(meaningLexemesByLangOrdered);
+	}
+
+	private void populateMeaningWordsAndSynonyms(LexemeWord lexemeWord, String wordLang, Meaning meaning, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
+
+		List<TypeMeaningWord> meaningWords = lexemeWord.getMeaningWords();
 		if (CollectionUtils.isNotEmpty(meaningWords)) {
-			if (DatasetType.LEX.equals(lexeme.getDatasetType())) {
-				meaningWords = meaningWords.stream().filter(meaningWord -> !meaningWord.getWordId().equals(lexeme.getWordId())).collect(Collectors.toList());
+			if (DatasetType.LEX.equals(lexemeWord.getDatasetType())) {
+				meaningWords = meaningWords.stream().filter(meaningWord -> !meaningWord.getWordId().equals(lexemeWord.getWordId())).collect(Collectors.toList());
 			}
 			meaningWords = filter(meaningWords, wordLang, destinLangs);
 			meaningWords = filter(meaningWords, lexComplexity);
@@ -225,63 +278,92 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 						|| CollectionUtils.isNotEmpty(meaningWord.getMwLexGovernments());
 				meaningWord.setAdditionalDataExists(additionalDataExists);
 
-				if (DatasetType.LEX.equals(lexeme.getDatasetType()) && StringUtils.equals(wordLang, meaningWord.getLang())) {
-					lexeme.getSourceLangSynonyms().add(meaningWord);
+				if (DatasetType.LEX.equals(lexemeWord.getDatasetType()) && StringUtils.equals(wordLang, meaningWord.getLang())) {
+					lexemeWord.getSourceLangSynonyms().add(meaningWord);
 				} else {
-					lexeme.getDestinLangSynonyms().add(meaningWord);
+					lexemeWord.getDestinLangSynonyms().add(meaningWord);
 				}
 			}
-			lexeme.setMeaningWords(meaningWords);
+			lexemeWord.setMeaningWords(meaningWords);
 		}
 
-		List<TypeMeaningRelation> meaningRelations = lexemeMeaningTuple.getRelatedMeanings();
+		List<TypeMeaningRelation> meaningRelations = meaning.getRelatedMeanings();
 		if (CollectionUtils.isNotEmpty(meaningRelations)) {
 			meaningRelations = meaningRelations.stream().filter(relation -> StringUtils.equals(MEANING_REL_TYPE_CODE_SIMILAR, relation.getMeaningRelTypeCode())).collect(Collectors.toList());
 			meaningRelations = filter(meaningRelations, wordLang, destinLangs);
 			meaningRelations = filter(meaningRelations, lexComplexity);
 		}
 		if (CollectionUtils.isNotEmpty(meaningRelations)) {
+			Map<String, TypeMeaningWord> meaningRelSynsMap = new OrderedMap<>();
+
 			for (TypeMeaningRelation meaningRelation : meaningRelations) {
-				TypeMeaningWord meaningRelSyn = new TypeMeaningWord();
-				meaningRelSyn.setType(SynonymType.MEANING_REL);
-				meaningRelSyn.setMeaningId(meaningRelation.getMeaningId());
-				meaningRelSyn.setMwLexWeight(meaningRelation.getWeight());
-				meaningRelSyn.setWordId(meaningRelation.getWordId());
-				meaningRelSyn.setWord(meaningRelation.getWord());
-				meaningRelSyn.setWordPrese(meaningRelation.getWordPrese());
-				meaningRelSyn.setHomonymNr(meaningRelation.getHomonymNr());
-				meaningRelSyn.setLang(meaningRelation.getLang());
-				meaningRelSyn.setWordTypeCodes(meaningRelation.getWordTypeCodes());
-				meaningRelSyn.setMwLexRegisterCodes(meaningRelation.getLexRegisterCodes());
-				meaningRelSyn.setMwLexGovernmentValues(meaningRelation.getLexGovernmentValues());
-				meaningRelSyn.setMwLexComplexity(meaningRelation.getComplexity());
-				if (CollectionUtils.isNotEmpty(meaningRelation.getLexValueStateCodes())){
-					meaningRelSyn.setMwLexValueStateCode(meaningRelation.getLexValueStateCodes().get(0));
+				String wordValue = meaningRelation.getWord();
+				TypeMeaningWord meaningRelSyn = meaningRelSynsMap.get(wordValue);
+				if (meaningRelSyn == null) {
+					meaningRelSyn = new TypeMeaningWord();
+					meaningRelSyn.setType(SynonymType.MEANING_REL);
+					meaningRelSyn.setMeaningId(meaningRelation.getMeaningId());
+					meaningRelSyn.setMwLexWeight(meaningRelation.getWeight());
+					meaningRelSyn.setWordId(meaningRelation.getWordId());
+					meaningRelSyn.setWord(wordValue);
+					meaningRelSyn.setWordPrese(meaningRelation.getWordPrese());
+					meaningRelSyn.setHomonymNr(meaningRelation.getHomonymNr());
+					meaningRelSyn.setLang(meaningRelation.getLang());
+					meaningRelSyn.setWordTypeCodes(meaningRelation.getWordTypeCodes());
+					meaningRelSyn.setAspectCode(meaningRelation.getAspectCode());
+					setWordTypeFlags(meaningRelSyn);
+					meaningRelSyn.setMwLexComplexity(meaningRelation.getComplexity());
+					if (CollectionUtils.isNotEmpty(meaningRelation.getLexValueStateCodes())){
+						meaningRelSyn.setMwLexValueStateCode(meaningRelation.getLexValueStateCodes().get(0));
+					}
+					meaningRelSyn.setMwLexRegisterCodes(new ArrayList<>());
+					meaningRelSyn.setMwLexGovernmentValues(new ArrayList<>());
+					meaningRelSynsMap.put(wordValue, meaningRelSyn);
 				}
-				meaningRelSyn.setAspectCode(meaningRelation.getAspectCode());
+
+				List<String> lexRegisterCodes = meaningRelation.getLexRegisterCodes();
+				List<String> existingLexRegisterCodes = meaningRelSyn.getMwLexRegisterCodes();
+				if (lexRegisterCodes != null) {
+					lexRegisterCodes.forEach(regCode -> {
+						if (!existingLexRegisterCodes.contains(regCode)) {
+							existingLexRegisterCodes.add(regCode);
+						}
+					});
+				}
+
+				List<String> lexGovernmentValues = meaningRelation.getLexGovernmentValues();
+				List<String> existingLexGovernmentValues = meaningRelSyn.getMwLexGovernmentValues();
+				if (lexGovernmentValues != null) {
+					lexGovernmentValues.forEach(govValue -> {
+						if (!existingLexGovernmentValues.contains(govValue)) {
+							existingLexGovernmentValues.add(govValue);
+						}
+					});
+				}
 
 				cleanEscapeSym(meaningRelSyn.getMwLexGovernments());
 				classifierUtil.applyClassifiers(meaningRelSyn, displayLang);
-				setWordTypeFlags(meaningRelSyn);
 				boolean additionalDataExists = (meaningRelSyn.getAspect() != null)
 						|| (meaningRelSyn.getMwLexValueState() != null)
 						|| CollectionUtils.isNotEmpty(meaningRelSyn.getMwLexRegisters())
 						|| CollectionUtils.isNotEmpty(meaningRelSyn.getMwLexGovernments());
 				meaningRelSyn.setAdditionalDataExists(additionalDataExists);
+			}
 
-				if (DatasetType.LEX.equals(lexeme.getDatasetType()) && StringUtils.equals(wordLang, meaningRelSyn.getLang())) {
-					lexeme.getSourceLangSynonyms().add(meaningRelSyn);
+			for (TypeMeaningWord meaningRelSyn : meaningRelSynsMap.values()) {
+				if (DatasetType.LEX.equals(lexemeWord.getDatasetType()) && StringUtils.equals(wordLang, meaningRelSyn.getLang())) {
+					lexemeWord.getSourceLangSynonyms().add(meaningRelSyn);
 				}
 			}
 		}
 
 		Map<String, List<TypeMeaningWord>> destinLangSynonymsByLangOrdered = new HashMap<>();
-		List<TypeMeaningWord> destinLangSynonyms = lexeme.getDestinLangSynonyms();
+		List<TypeMeaningWord> destinLangSynonyms = lexemeWord.getDestinLangSynonyms();
 		if (CollectionUtils.isNotEmpty(destinLangSynonyms)) {
 			Map<String, List<TypeMeaningWord>> destinLangSynonymsByLangUnordered = destinLangSynonyms.stream().collect(Collectors.groupingBy(TypeMeaningWord::getLang));
 			destinLangSynonymsByLangOrdered = composeOrderedMap(destinLangSynonymsByLangUnordered, langOrderByMap);
 		}
-		lexeme.setDestinLangSynonymsByLang(destinLangSynonymsByLangOrdered);
+		lexemeWord.setDestinLangSynonymsByLang(destinLangSynonymsByLangOrdered);
 	}
 
 	//masking syms added at aggregation because nested complex type array masking fail by postgres
@@ -296,8 +378,8 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 	}
 
 	private void populateMeaning(
-			Lexeme lexeme, String wordLang,
-			LexemeMeaningTuple tuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
+			LexemeWord lexemeWord, String wordLang,
+			Meaning tuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		final int definitionValueOversizeLimitForMarkupBuffering = Double.valueOf(DEFINITION_OVERSIZE_LIMIT * 1.5).intValue();
 
@@ -309,10 +391,10 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			definitions = filter(definitions, wordLang, destinLangs);
 			definitions = filter(definitions, lexComplexity);
 			applySourceLinks(definitions, allDefinitionSourceLinks);
-			lexeme.setDefinitions(definitions);
+			lexemeWord.setDefinitions(definitions);
 			Map<String, List<TypeDefinition>> definitionsByLangUnordered = definitions.stream().collect(Collectors.groupingBy(TypeDefinition::getLang));
 			Map<String, List<TypeDefinition>> definitionsByLangOrdered = composeOrderedMap(definitionsByLangUnordered, langOrderByMap);
-			lexeme.setDefinitionsByLang(definitionsByLangOrdered);
+			lexemeWord.setDefinitionsByLang(definitionsByLangOrdered);
 			definitions.forEach(definition -> {
 				String definitionValue = definition.getValue();
 				String definitionValuePrese = definition.getValuePrese();
@@ -346,23 +428,23 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		List<TypeMediaFile> mediaFiles = tuple.getMediaFiles();
 		List<TypeMediaFile> filteredMediaFiles = filter(mediaFiles, lexComplexity);
 
-		lexeme.setMeaningLastActivityEventOn(tuple.getMeaningLastActivityEventOn());
-		lexeme.setMeaningNotes(notes);
-		lexeme.setMeaningNotesByLang(notesByLangOrdered);
-		lexeme.setImageFiles(filteredImageFiles);
-		lexeme.setMediaFiles(filteredMediaFiles);
-		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
-		lexeme.setSemanticTypes(tuple.getSemanticTypes());
+		lexemeWord.setMeaningLastActivityEventOn(tuple.getMeaningLastActivityEventOn());
+		lexemeWord.setMeaningNotes(notes);
+		lexemeWord.setMeaningNotesByLang(notesByLangOrdered);
+		lexemeWord.setImageFiles(filteredImageFiles);
+		lexemeWord.setMediaFiles(filteredMediaFiles);
+		lexemeWord.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
+		lexemeWord.setSemanticTypes(tuple.getSemanticTypes());
 
 		if (Complexity.SIMPLE.equals(lexComplexity)) {
-			lexeme.setLearnerComments(tuple.getLearnerComments());
+			lexemeWord.setLearnerComments(tuple.getLearnerComments());
 		}
-		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
+		classifierUtil.applyClassifiers(tuple, lexemeWord, displayLang);
 	}
 
-	private void populateRelatedMeanings(Lexeme lexeme, String wordLang, LexemeMeaningTuple tuple, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
+	private void populateRelatedMeanings(LexemeWord lexemeWord, String wordLang, Meaning tuple, Map<String, Long> langOrderByMap, Complexity lexComplexity, String displayLang) {
 
-		if (CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())) {
+		if (CollectionUtils.isNotEmpty(lexemeWord.getRelatedMeanings())) {
 			return;
 		}
 		List<TypeMeaningRelation> relatedMeanings = tuple.getRelatedMeanings();
@@ -378,7 +460,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				setWordTypeFlags(meaningRelation);
 			}
 		}
-		lexeme.setRelatedMeanings(relatedMeanings);
+		lexemeWord.setRelatedMeanings(relatedMeanings);
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType = relatedMeanings.stream()
 					.sorted((relation1, relation2) -> compareLangOrderby(relation1, relation2, wordLang, langOrderByMap))
@@ -390,7 +472,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 						entry.getValue().values().forEach(list -> meaningRelations.add(list.get(0)));
 						return meaningRelations;
 					}));
-			lexeme.setRelatedMeaningsByType(relatedMeaningsByType);
+			lexemeWord.setRelatedMeaningsByType(relatedMeaningsByType);
 		}
 	}
 
@@ -413,31 +495,31 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		return (int) (lang1OrderBy - lang2OrderBy);
 	}
 
-	private void filterMeaningWords(Lexeme lexeme, List<String> allRelatedWordValues) {
+	private void filterMeaningWords(LexemeWord lexemeWord, List<String> allRelatedWordValues) {
 
-		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
+		List<TypeMeaningWord> meaningWords = lexemeWord.getMeaningWords();
 		if (CollectionUtils.isEmpty(meaningWords)) {
 			return;
 		}
 		if (CollectionUtils.isNotEmpty(allRelatedWordValues)) {
 			meaningWords = meaningWords.stream().filter(meaningWord -> !allRelatedWordValues.contains(meaningWord.getWord())).collect(Collectors.toList());
 		}
-		List<TypeLexemeRelation> relatedLexemes = lexeme.getRelatedLexemes();
+		List<TypeLexemeRelation> relatedLexemes = lexemeWord.getRelatedLexemes();
 		if (CollectionUtils.isNotEmpty(relatedLexemes)) {
 			List<String> relatedLexemeWordValues = relatedLexemes.stream().map(TypeLexemeRelation::getWord).distinct().collect(Collectors.toList());
 			meaningWords = meaningWords.stream().filter(meaningWord -> !relatedLexemeWordValues.contains(meaningWord.getWord())).collect(Collectors.toList());
 		}
-		lexeme.setMeaningWords(meaningWords);
+		lexemeWord.setMeaningWords(meaningWords);
 	}
 
-	private void setValueStateFlags(Lexeme lexeme, String wordLang) {
+	private void setValueStateFlags(LexemeWord lexemeWord, String wordLang) {
 
-		String valueStateCode = lexeme.getValueStateCode();
-		List<TypeMeaningWord> meaningWords = lexeme.getMeaningWords();
-		DatasetType datasetType = lexeme.getDatasetType();
+		String valueStateCode = lexemeWord.getValueStateCode();
+		List<TypeMeaningWord> meaningWords = lexemeWord.getMeaningWords();
+		DatasetType datasetType = lexemeWord.getDatasetType();
 
 		if (StringUtils.equals(valueStateCode, VALUE_STATE_INCORRECT) && CollectionUtils.isNotEmpty(meaningWords)) {
-			lexeme.setCorrectMeaningWord(meaningWords.get(0));
+			lexemeWord.setCorrectMeaningWord(meaningWords.get(0));
 		}
 
 		if (DatasetType.TERM.equals(datasetType)) {
@@ -445,7 +527,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 				TypeMeaningWord preferredTermMeaningWord = meaningWords.stream()
 						.filter(meaningWord -> StringUtils.equals(VALUE_STATE_MOST_PREFERRED, meaningWord.getMwLexValueStateCode()) && StringUtils.equals(wordLang, meaningWord.getLang()))
 						.findFirst().orElse(null);
-				lexeme.setPreferredTermMeaningWord(preferredTermMeaningWord);
+				lexemeWord.setPreferredTermMeaningWord(preferredTermMeaningWord);
 			}
 		}
 	}

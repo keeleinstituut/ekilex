@@ -12,7 +12,7 @@ public interface GlobalConstant {
 
 	String LANGUAGE_CODE_LAT = "lat";
 
-	String DATASET_SSS = "sss";
+	String DATASET_EKI = "eki";
 
 	String DATASET_LIMITED = "vrk";
 
@@ -33,8 +33,6 @@ public interface GlobalConstant {
 	String DEFINITION_TYPE_UNDEFINED = "määramata";
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
-
-	String DATASET_TYPE_TERM = DatasetType.TERM.name();
 
 	String UNKNOWN_FORM_CODE = "??";
 
@@ -75,6 +73,10 @@ public interface GlobalConstant {
 	String IGNORE_QUERY_LOG = "'ignore query log'";
 
 	String FORCE_QUERY_LOG = "'force query log'";
+
+	String QUERY_MULTIPLE_CHARACTERS_SYM = "*";
+
+	String QUERY_SINGLE_CHARACTER_SYM = "?";
 
 	String STAT_API_KEY_HEADER_NAME = "stat-api-key";
 

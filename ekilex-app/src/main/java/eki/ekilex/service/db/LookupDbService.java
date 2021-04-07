@@ -210,6 +210,17 @@ public class LookupDbService extends AbstractDataDbService {
 				.orElse(0);
 	}
 
+	public List<WordLexeme> getWordLexemesLevels(Long wordId) {
+
+		Lexeme l = LEXEME.as("l");
+		return create
+				.select(l.ID.as("lexeme_id"), l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
+				.from(l)
+				.where(l.WORD_ID.eq(wordId))
+				.orderBy(l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
+				.fetchInto(WordLexeme.class);
+	}
+
 	public String getLexemeDatasetCode(Long lexemeId) {
 
 		return create
@@ -335,7 +346,7 @@ public class LookupDbService extends AbstractDataDbService {
 
 	public List<eki.ekilex.data.Meaning> getMeanings(String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, Long excludedMeaningId) {
 
-		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_");
+		String maskedSearchFilter = searchFilter.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "%").replace(QUERY_SINGLE_CHARACTER_SYM, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 		List<String> userPermDatasetCodes = searchDatasetsRestriction.getUserPermDatasetCodes();
 

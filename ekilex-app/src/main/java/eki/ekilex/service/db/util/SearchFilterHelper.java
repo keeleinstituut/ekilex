@@ -218,8 +218,8 @@ public class SearchFilterHelper implements GlobalConstant {
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
 			String searchValueStr = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
-			condition = applyValueFilter(searchValueStr, searchOperand, valueField, condition, isNotCondition, isOnLowerValue);
+			boolean isNot = criterion.isNot();
+			condition = applyValueFilter(searchValueStr, isNot, searchOperand, valueField, condition, isOnLowerValue);
 		}
 		return condition;
 	}
@@ -255,13 +255,15 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
-				where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, criterion.isNotCondition(), false);
+				String searchValueStr = criterion.getSearchValue().toString();
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
 			}
 			where = where.andExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
-				where1 = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lt.TAG_NAME, where1, criterion.isNotCondition(), false);
+				String searchValueStr = criterion.getSearchValue().toString();
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
 			}
 			where = where.andNotExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
@@ -321,9 +323,9 @@ public class SearchFilterHelper implements GlobalConstant {
 			}
 			String critValue = critValueObj.toString();
 			if (SearchKey.CREATED_OR_UPDATED_ON.equals(criterion.getSearchKey())) {
-				where1 = applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNotCondition(), false);
+				where1 = applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			} else if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-				where1 = applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNotCondition(), true);
+				where1 = applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 			} else if (SearchOperand.HAS_BEEN.equals(criterion.getSearchOperand())) {
 				Table<?> alcdun = DSL.unnest(al.CURR_DIFFS).as("alcd", "op", "path", "value");
 				Table<?> alpdun = DSL.unnest(al.PREV_DIFFS).as("alpd", "op", "path", "value");
@@ -350,12 +352,12 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			String complexity = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(entityComplexityField.ne(complexity));
-			} else {
-				condition = condition.and(entityComplexityField.eq(complexity));
+			boolean isNot = criterion.isNot();
+			Condition critWhere = entityComplexityField.eq(complexity);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		}
 		return condition;
 	}
@@ -373,12 +375,12 @@ public class SearchFilterHelper implements GlobalConstant {
 		Condition where1 = wwt.WORD_ID.eq(wordIdField);
 		for (SearchCriterion criterion : filteredCriteria) {
 			String wordTypeCode = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				where1 = where1.and(wwt.WORD_TYPE_CODE.ne(wordTypeCode));
-			} else {
-				where1 = where1.and(wwt.WORD_TYPE_CODE.eq(wordTypeCode));
+			boolean isNot = criterion.isNot();
+			Condition critWhere = wwt.WORD_TYPE_CODE.eq(wordTypeCode);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where1 = where1.and(critWhere);
 		}
 		condition = condition.andExists(DSL.select(wwt.ID).from(wwt).where(where1));
 		return condition;
@@ -401,13 +403,13 @@ public class SearchFilterHelper implements GlobalConstant {
 				.asTable("wwtcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
-			if (isNotCondition) {
-				where = where.andNotExists(DSL.selectFrom(cntTbl).where(cntWhere));
-			} else {
-				where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where = where.and(critWhere);
 		}
 		return where;
 	}
@@ -509,12 +511,12 @@ public class SearchFilterHelper implements GlobalConstant {
 		Condition where1 = lpos.LEXEME_ID.eq(lexemeIdField);
 		for (SearchCriterion criterion : filteredCriteria) {
 			String lexemePosCode = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				where1 = where1.and(lpos.POS_CODE.ne(lexemePosCode));
-			} else {
-				where1 = where1.and(lpos.POS_CODE.eq(lexemePosCode));
+			boolean isNot = criterion.isNot();
+			Condition critWhere = lpos.POS_CODE.eq(lexemePosCode);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where1 = where1.and(critWhere);
 		}
 		condition = condition.and(DSL.exists(DSL.select(lpos.ID).from(lpos).where(where1)));
 		return condition;
@@ -537,13 +539,13 @@ public class SearchFilterHelper implements GlobalConstant {
 				.asTable("lposcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
-			if (isNotCondition) {
-				where = where.andNotExists(DSL.selectFrom(cntTbl).where(cntWhere));
-			} else {
-				where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where = where.and(critWhere);
 		}
 		return where;
 	}
@@ -561,12 +563,12 @@ public class SearchFilterHelper implements GlobalConstant {
 		Condition where1 = lreg.LEXEME_ID.eq(lexemeIdField);
 		for (SearchCriterion criterion : filteredCriteria) {
 			String lexemeRegisterCode = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				where1 = where1.and(lreg.REGISTER_CODE.ne(lexemeRegisterCode));
-			} else {
-				where1 = where1.and(lreg.REGISTER_CODE.eq(lexemeRegisterCode));
+			boolean isNot = criterion.isNot();
+			Condition critWhere = lreg.REGISTER_CODE.eq(lexemeRegisterCode);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where1 = where1.and(critWhere);
 		}
 		condition = condition.and(DSL.exists(DSL.select(lreg.ID).from(lreg).where(where1)));
 		return condition;
@@ -589,13 +591,13 @@ public class SearchFilterHelper implements GlobalConstant {
 				.asTable("lregcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
-			if (isNotCondition) {
-				where = where.andNotExists(DSL.selectFrom(cntTbl).where(cntWhere));
-			} else {
-				where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where = where.and(critWhere);
 		}
 		return where;
 	}
@@ -611,29 +613,26 @@ public class SearchFilterHelper implements GlobalConstant {
 		}
 
 		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNotCondition = existsCriteria.get(0).isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(lexemeValueStateField.isNull());
-			} else {
-				condition = condition.and(lexemeValueStateField.isNotNull());
-			}
-			return condition;
-		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			if (criterion.getSearchValue() != null) {
-				String valueStateCode = criterion.getSearchValue().toString();
-				boolean isNotCondition = criterion.isNotCondition();
-				if (isNotCondition) {
-					condition = condition.and(lexemeValueStateField.ne(valueStateCode));
-				} else {
-					condition = condition.and(lexemeValueStateField.eq(valueStateCode));
-
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String valueStateCode = criterion.getSearchValue().toString();
+					boolean isNot = criterion.isNot();
+					Condition critWhere = lexemeValueStateField.eq(valueStateCode);
+					if (isNot) {
+						critWhere = DSL.not(critWhere);
+					}
+					condition = condition.and(critWhere);
 				}
 			}
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = lexemeValueStateField.isNotNull();
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			condition = condition.and(critWhere);
 		}
-
 		return condition;
 	}
 
@@ -654,13 +653,13 @@ public class SearchFilterHelper implements GlobalConstant {
 				.asTable("mstcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
-			if (isNotCondition) {
-				where = where.andNotExists(DSL.selectFrom(cntTbl).where(cntWhere));
-			} else {
-				where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where = where.and(critWhere);
 		}
 		return where;
 	}
@@ -678,12 +677,13 @@ public class SearchFilterHelper implements GlobalConstant {
 		Condition where1 = md.MEANING_ID.eq(meaningIdField);
 		for (SearchCriterion criterion : filteredCriteria) {
 			Classifier domain = (Classifier) criterion.getSearchValue();
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				where1 = where1.and(md.DOMAIN_CODE.ne(domain.getCode()).or(md.DOMAIN_ORIGIN.ne(domain.getOrigin())));
-			} else {
-				where1 = where1.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+			boolean isNot = criterion.isNot();
+
+			Condition critWhere = md.DOMAIN_CODE.eq(domain.getCode()).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where1 = where1.and(critWhere);
 		}
 		where = where.and(DSL.exists(DSL.select(md.ID).from(md).where(where1)));
 		return where;
@@ -706,13 +706,13 @@ public class SearchFilterHelper implements GlobalConstant {
 				.asTable("mdcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
-			if (isNotCondition) {
-				where = where.andNotExists(DSL.selectFrom(cntTbl).where(cntWhere));
-			} else {
-				where = where.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where = where.and(critWhere);
 		}
 		return where;
 	}
@@ -730,12 +730,12 @@ public class SearchFilterHelper implements GlobalConstant {
 		Condition where1 = mst.MEANING_ID.eq(meaningIdField);
 		for (SearchCriterion criterion : filteredCriteria) {
 			String semanticTypeCode = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.ne(semanticTypeCode));
-			} else {
-				where1 = where1.and(mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode));
+			boolean isNot = criterion.isNot();
+			Condition critWhere = mst.SEMANTIC_TYPE_CODE.eq(semanticTypeCode);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where1 = where1.and(critWhere);
 		}
 		condition = condition.and(DSL.exists(DSL.select(mst.ID).from(mst).where(where1)));
 		return condition;
@@ -758,7 +758,8 @@ public class SearchFilterHelper implements GlobalConstant {
 		List<String> meaningAttributes = new ArrayList<>();
 		if (CollectionUtils.isNotEmpty(filteredNameCriteria)) {
 			for (SearchCriterion criterion : filteredNameCriteria) {
-				meaningAttributes.add(criterion.getSearchValue().toString());
+				String searchValueStr = criterion.getSearchValue().toString();
+				meaningAttributes.add(searchValueStr);
 			}
 		} else {
 			meaningAttributes = Arrays.asList(MEANING_ATTRIBUTES);
@@ -774,31 +775,16 @@ public class SearchFilterHelper implements GlobalConstant {
 		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.ATTRIBUTE_VALUE, filteredValueCriteria);
 		if (isNotExistsSearch) {
 			condition = condition.and(DSL.notExists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
-			return condition;
-		}
-
-		for (SearchCriterion criterion : filteredValueCriteria) {
-			if (criterion.getSearchValue() != null) {
-				meaningFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, meaningFreeformCondition, criterion.isNotCondition(), true);
-			}
-		}
-		condition = condition.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
-		return condition;
-	}
-
-	private Condition createCountCondition(SearchOperand searchOperand, Table<Record1<Integer>> idAndCount, String countFieldName) {
-
-		Condition whereItemCount;
-		if (searchOperand.equals(SearchOperand.EXISTS)) {
-			whereItemCount = idAndCount.field(countFieldName, Integer.class).gt(0);
-		} else if (searchOperand.equals(SearchOperand.SINGLE)) {
-			whereItemCount = idAndCount.field(countFieldName, Integer.class).eq(1);
-		} else if (searchOperand.equals(SearchOperand.MULTIPLE)) {
-			whereItemCount = idAndCount.field(countFieldName, Integer.class).gt(1);
 		} else {
-			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
+			for (SearchCriterion criterion : filteredValueCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					meaningFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, meaningFreeformCondition, true);
+				}
+			}
+			condition = condition.and(DSL.exists(DSL.select(mff.ID).from(mff, ff).where(meaningFreeformCondition)));
 		}
-		return whereItemCount;
+		return condition;
 	}
 
 	public Condition applyLexemeGrammarFilters(List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) throws Exception {
@@ -819,22 +805,23 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(lff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.GRAMMAR.name()));
 
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNotCondition = existsCriteria.get(0).isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(DSL.notExists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
-			} else {
-				condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					lexFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, lexFreeformCondition, true);
+				}
 			}
+			condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			condition = condition.and(critWhere);
 			return condition;
 		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			if (criterion.getSearchValue() != null) {
-				lexFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, lexFreeformCondition, criterion.isNotCondition(), true);
-			}
-		}
-		condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
 		return condition;
 	}
 
@@ -856,22 +843,22 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(lff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.GOVERNMENT.name()));
 
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNotCondition = existsCriteria.get(0).isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(DSL.notExists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
-			} else {
-				condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					lexFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, lexFreeformCondition, true);
+				}
 			}
-			return condition;
-		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			if (criterion.getSearchValue() != null) {
-				lexFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, lexFreeformCondition, criterion.isNotCondition(), true);
+			condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		}
-		condition = condition.and(DSL.exists(DSL.select(lff.ID).from(lff, ff).where(lexFreeformCondition)));
 		return condition;
 	}
 
@@ -889,12 +876,12 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			boolean isPublic = BooleanUtils.toBoolean(criterion.getSearchValue().toString());
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				condition = condition.andNot(entityIsPublicField.eq(isPublic));
-			} else {
-				condition = condition.and(entityIsPublicField.eq(isPublic));
+			boolean isNot = criterion.isNot();
+			Condition critWhere = entityIsPublicField.eq(isPublic);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		}
 		return condition;
 	}
@@ -912,12 +899,12 @@ public class SearchFilterHelper implements GlobalConstant {
 		Condition where1 = mr.MEANING1_ID.eq(meaningIdField);
 		for (SearchCriterion criterion : filteredCriteria) {
 			String relTypeCode = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
-			if (isNotCondition) {
-				where1 = where1.and(mr.MEANING_REL_TYPE_CODE.ne(relTypeCode));
-			} else {
-				where1 = where1.and(mr.MEANING_REL_TYPE_CODE.eq(relTypeCode));
+			boolean isNot = criterion.isNot();
+			Condition critWhere = mr.MEANING_REL_TYPE_CODE.eq(relTypeCode);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			where1 = where1.and(critWhere);
 		}
 		condition = condition.and(DSL.exists(DSL.select(mr.ID).from(mr).where(where1)));
 		return condition;
@@ -941,13 +928,13 @@ public class SearchFilterHelper implements GlobalConstant {
 				.asTable("mrcnt");
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
-			if (isNotCondition) {
-				condition = condition.andNotExists(DSL.selectFrom(cntTbl).where(cntWhere));
-			} else {
-				condition = condition.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		}
 		return condition;
 	}
@@ -966,7 +953,7 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			String relTypeCode = criterion.getSearchValue().toString();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 
 			SelectJoinStep<Record2<Long, String>> selectWr = DSL
 					.select(wr.WORD1_ID.as("word_id"), wr.WORD_REL_TYPE_CODE)
@@ -981,19 +968,16 @@ public class SearchFilterHelper implements GlobalConstant {
 					.unionAll(selectWg)
 					.asTable("union");
 
-			if (isNotCondition) {
-				condition = condition.and(DSL.exists(DSL
-						.select(union.field("word_id"))
-						.from(union)
-						.where(union.field("word_id", Long.class).eq(wordIdField)
-								.and(union.field("word_rel_type_code", String.class).ne(relTypeCode)))));
-			} else {
-				condition = condition.and(DSL.exists(DSL
-						.select(union.field("word_id"))
-						.from(union)
-						.where(union.field("word_id", Long.class).eq(wordIdField)
-								.and(union.field("word_rel_type_code", String.class).eq(relTypeCode)))));
+			Condition critRelType = union.field("word_rel_type_code", String.class).eq(relTypeCode);
+			if (isNot) {
+				critRelType = DSL.not(critRelType);
 			}
+
+			condition = condition.and(DSL.exists(DSL
+					.select(union.field("word_id"))
+					.from(union)
+					.where(union.field("word_id", Long.class).eq(wordIdField)
+							.and(critRelType))));
 		}
 		return condition;
 	}
@@ -1032,13 +1016,13 @@ public class SearchFilterHelper implements GlobalConstant {
 
 		for (SearchCriterion criterion : filteredCriteria) {
 			SearchOperand searchOperand = criterion.getSearchOperand();
-			boolean isNotCondition = criterion.isNotCondition();
+			boolean isNot = criterion.isNot();
 			Condition cntWhere = createCountCondition(searchOperand, cntTbl, countFieldName);
-			if (isNotCondition) {
-				condition = condition.andNotExists(DSL.selectFrom(cntTbl).where(cntWhere));
-			} else {
-				condition = condition.andExists(DSL.selectFrom(cntTbl).where(cntWhere));
+			Condition critWhere = DSL.exists(DSL.selectFrom(cntTbl).where(cntWhere));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		}
 		return condition;
 	}
@@ -1062,15 +1046,15 @@ public class SearchFilterHelper implements GlobalConstant {
 		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.OD_RECOMMENDATION, filteredCriteria);
 		if (isNotExistsSearch) {
 			condition = condition.and(DSL.notExists(DSL.select(wff.ID).from(wff, ff).where(wordFreeformCondition)));
-			return condition;
-		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			if (criterion.getSearchValue() != null) {
-				wordFreeformCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, wordFreeformCondition,  criterion.isNotCondition(), true);
+		} else {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, wordFreeformCondition, true);
+				}
 			}
+			condition = condition.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
 		}
-		condition = condition.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
 		return condition;
 	}
 
@@ -1085,29 +1069,26 @@ public class SearchFilterHelper implements GlobalConstant {
 		}
 
 		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNotCondition = existsCriteria.get(0).isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(wordAspectField.isNull());
-			} else {
-				condition = condition.and(wordAspectField.isNotNull());
-			}
-			return condition;
-		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			if (criterion.getSearchValue() != null) {
-				String aspectCode = criterion.getSearchValue().toString();
-				boolean isNotCondition = criterion.isNotCondition();
-				if (isNotCondition) {
-					condition = condition.and(wordAspectField.ne(aspectCode));
-				} else {
-					condition = condition.and(wordAspectField.eq(aspectCode));
-
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String aspectCode = criterion.getSearchValue().toString();
+					boolean isNot = criterion.isNot();
+					Condition critWhere = wordAspectField.eq(aspectCode);
+					if (isNot) {
+						critWhere = DSL.not(critWhere);
+					}
+					condition = condition.and(critWhere);
 				}
 			}
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = wordAspectField.isNotNull();
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			condition = condition.and(critWhere);
 		}
-
 		return condition;
 	}
 
@@ -1122,17 +1103,17 @@ public class SearchFilterHelper implements GlobalConstant {
 	}
 
 	public Condition applyValueFilter(
-			String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition, boolean isNotCondition, boolean isOnLowerValue) throws Exception {
+			String searchValueStr, boolean isNot, SearchOperand searchOperand, Field<?> searchField, Condition condition, boolean isOnLowerValue) throws Exception {
 
 		Field<String> searchValueField = DSL.lower(searchValueStr);
 		searchValueStr = StringUtils.lowerCase(searchValueStr);
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			if (isNotCondition) {
-				condition = condition.andNot(textTypeSearchFieldCase.eq(searchValueField));
-			} else {
-				condition = condition.and(textTypeSearchFieldCase.eq(searchValueField));
+			Condition critWhere = textTypeSearchFieldCase.eq(searchValueField);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		} else if (SearchOperand.NOT_CONTAINS.equals(searchOperand)) {
 			//by value comparison it is exactly the same operation as equals
 			//the not contains operand rather translates into join condition elsewhere
@@ -1140,52 +1121,49 @@ public class SearchFilterHelper implements GlobalConstant {
 			condition = condition.and(textTypeSearchFieldCase.eq(searchValueField));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			if (isNotCondition) {
-				condition = condition.andNot(textTypeSearchFieldCase.startsWith(searchValueField));
-			} else {
-				condition = condition.and(textTypeSearchFieldCase.startsWith(searchValueField));
+			Condition critWhere = textTypeSearchFieldCase.startsWith(searchValueField);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			if (isNotCondition) {
-				condition = condition.andNot(textTypeSearchFieldCase.endsWith(searchValueField));
-			} else {
-				condition = condition.and(textTypeSearchFieldCase.endsWith(searchValueField));
+			Condition critWhere = textTypeSearchFieldCase.endsWith(searchValueField);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			if (isNotCondition) {
-				condition = condition.andNot(textTypeSearchFieldCase.contains(searchValueField));
-			} else {
-				condition = condition.and(textTypeSearchFieldCase.contains(searchValueField));
+			Condition critWhere = textTypeSearchFieldCase.contains(searchValueField);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
 			}
+			condition = condition.and(critWhere);
 		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
 			Field<Boolean> containsWord = DSL.field("to_tsvector('simple', {0}) @@ to_tsquery('simple', {1})", Boolean.class, searchField, DSL.inline(searchValueStr));
-			if (isNotCondition) {
-				condition = condition.andNot(containsWord);
-			} else {
-				condition = condition.and(containsWord);
+			if (isNot) {
+				containsWord = DSL.not(containsWord);
 			}
+			condition = condition.and(containsWord);
 		} else if (SearchOperand.EARLIER_THAN.equals(searchOperand)) {
 			Date date = dateFormat.parse(searchValueStr);
 			@SuppressWarnings("unchecked")
 			Field<Timestamp> tsSearchField = (Field<Timestamp>) searchField;
 			Field<Boolean> earlierThan = DSL.field("(date_part('epoch', {0}) * 1000) <= {1}", Boolean.class, tsSearchField, DSL.inline(date.getTime()));
-			if (isNotCondition) {
-				condition = condition.andNot(earlierThan);
-			} else {
-				condition = condition.and(earlierThan);
+			if (isNot) {
+				earlierThan = DSL.not(earlierThan);
 			}
+			condition = condition.and(earlierThan);
 		} else if (SearchOperand.LATER_THAN.equals(searchOperand)) {
 			Date date = dateFormat.parse(searchValueStr);
 			@SuppressWarnings("unchecked")
 			Field<Timestamp> tsSearchField = (Field<Timestamp>) searchField;
 			Field<Boolean> laterThan = DSL.field("(date_part('epoch', {0}) * 1000) >= {1}", Boolean.class, tsSearchField, DSL.inline(date.getTime()));
-			if (isNotCondition) {
-				condition = condition.andNot(laterThan);
-			} else {
-				condition = condition.and(laterThan);
+			if (isNot) {
+				laterThan = DSL.not(laterThan);
 			}
+			condition = condition.and(laterThan);
 		} else {
 			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
 		}
@@ -1205,20 +1183,20 @@ public class SearchFilterHelper implements GlobalConstant {
 		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
 		Condition sourceCondition = lsl.LEXEME_ID.eq(lexemeIdField);
 
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNotCondition = existsCriteria.get(0).isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(DSL.notExists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
-			} else {
-				condition = condition.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				String searchValueStr = criterion.getSearchValue().toString();
+				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition, true);
 			}
-			return condition;
+			condition = condition.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			condition = condition.and(critWhere);
 		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), lsl.VALUE, sourceCondition, criterion.isNotCondition(), true);
-		}
-		condition = condition.and(DSL.exists(DSL.select(lsl.ID).from(lsl).where(sourceCondition)));
 		return condition;
 	}
 
@@ -1242,9 +1220,11 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, criterion.isNotCondition(), true);
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
+		condition = condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
+		return condition;
 	}
 
 	public Condition applyFreeformSourceRefFilter(List<SearchCriterion> searchCriteria, Field<Long> freeformIdField, Condition condition) throws Exception {
@@ -1260,20 +1240,20 @@ public class SearchFilterHelper implements GlobalConstant {
 		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
 		Condition sourceCondition = ffsl.FREEFORM_ID.eq(freeformIdField);
 
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNotCondition = existsCriteria.get(0).isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(DSL.notExists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
-			} else {
-				condition = condition.and(DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				String searchValueStr = criterion.getSearchValue().toString();
+				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ffsl.VALUE, sourceCondition, true);
 			}
-			return condition;
+			condition = condition.and(DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			condition = condition.and(critWhere);
 		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ffsl.VALUE, sourceCondition, criterion.isNotCondition(), true);
-		}
-		condition = condition.and(DSL.exists(DSL.select(ffsl.ID).from(ffsl).where(sourceCondition)));
 		return condition;
 	}
 
@@ -1297,8 +1277,9 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			boolean isNotCondition = criterion.isNotCondition();
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, isNotCondition, true);
+			boolean isNot = criterion.isNot();
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, isNot, criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(usl, s, sff, ff).where(sourceCondition)));
 	}
@@ -1316,20 +1297,20 @@ public class SearchFilterHelper implements GlobalConstant {
 		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
 		Condition sourceCondition = dsl.DEFINITION_ID.eq(definitionIdField);
 
-		if (CollectionUtils.isNotEmpty(existsCriteria)) {
-			boolean isNotCondition = existsCriteria.get(0).isNotCondition();
-			if (isNotCondition) {
-				condition = condition.and(DSL.notExists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
-			} else {
-				condition = condition.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				String searchValueStr = criterion.getSearchValue().toString();
+				sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition, true);
 			}
-			return condition;
+			condition = condition.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			condition = condition.and(critWhere);
 		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), dsl.VALUE, sourceCondition, criterion.isNotCondition(), true);
-		}
-		condition = condition.and(DSL.exists(DSL.select(dsl.ID).from(dsl).where(sourceCondition)));
 		return condition;
 	}
 
@@ -1353,7 +1334,8 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(ff.TYPE.eq(FreeformType.SOURCE_NAME.name()));
 
 		for (SearchCriterion criterion : filteredCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, criterion.isNotCondition(), true);
+			String searchValueStr = criterion.getSearchValue().toString();
+			sourceCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition, true);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
 	}
@@ -1429,6 +1411,21 @@ public class SearchFilterHelper implements GlobalConstant {
 				.anyMatch(crit -> crit.getSearchKey().equals(searchKey)
 						&& crit.getSearchOperand().equals(SearchOperand.EXISTS)
 						&& crit.getSearchValue() == null
-						&& crit.isNotCondition());
+						&& crit.isNot());
+	}
+
+	private Condition createCountCondition(SearchOperand searchOperand, Table<Record1<Integer>> idAndCount, String countFieldName) {
+
+		Condition whereItemCount;
+		if (searchOperand.equals(SearchOperand.EXISTS)) {
+			whereItemCount = idAndCount.field(countFieldName, Integer.class).gt(0);
+		} else if (searchOperand.equals(SearchOperand.SINGLE)) {
+			whereItemCount = idAndCount.field(countFieldName, Integer.class).eq(1);
+		} else if (searchOperand.equals(SearchOperand.MULTIPLE)) {
+			whereItemCount = idAndCount.field(countFieldName, Integer.class).gt(1);
+		} else {
+			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
+		}
+		return whereItemCount;
 	}
 }

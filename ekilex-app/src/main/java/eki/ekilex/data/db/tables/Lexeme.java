@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 304210819;
+    private static final long serialVersionUID = 1581310405;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -73,12 +73,12 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     /**
      * The column <code>public.lexeme.level1</code>.
      */
-    public final TableField<LexemeRecord, Integer> LEVEL1 = createField(DSL.name("level1"), org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LexemeRecord, Integer> LEVEL1 = createField(DSL.name("level1"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.lexeme.level2</code>.
      */
-    public final TableField<LexemeRecord, Integer> LEVEL2 = createField(DSL.name("level2"), org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LexemeRecord, Integer> LEVEL2 = createField(DSL.name("level2"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.lexeme.value_state_code</code>.

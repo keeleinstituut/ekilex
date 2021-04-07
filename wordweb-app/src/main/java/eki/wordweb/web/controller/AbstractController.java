@@ -1,21 +1,13 @@
 package eki.wordweb.web.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.service.TextDecorationService;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.web.bean.SessionBean;
@@ -61,32 +53,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		return sessionBean;
 	}
 
-	protected void populateLangFilter(List<UiFilterElement> langFilter, SessionBean sessionBean, Model model) {
-
-		List<String> destinLangs = sessionBean.getDestinLangs();
-		List<String> selectedLangs = new ArrayList<>();
-		if (CollectionUtils.isEmpty(destinLangs)) {
-			destinLangs = new ArrayList<>();
-			destinLangs.add(DESTIN_LANG_ALL);
-			sessionBean.setDestinLangs(destinLangs);
-		}
-		for (UiFilterElement langFilterElement : langFilter) {
-			boolean isSelected = destinLangs.contains(langFilterElement.getCode());
-			langFilterElement.setSelected(isSelected);
-			if (isSelected) {
-				selectedLangs.add(langFilterElement.getValue());
-			}
-		}
-		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
-		String selectedLangsStr = StringUtils.join(selectedLangs, ", ");
-		boolean isLangFiltered = !StringUtils.equals(destinLangsStr, DESTIN_LANG_ALL);
-
-		model.addAttribute("langFilter", langFilter);
-		model.addAttribute("destinLangsStr", destinLangsStr);
-		model.addAttribute("selectedLangsStr", selectedLangsStr);
-		model.addAttribute("isLangFiltered", isLangFiltered);
-	}
-
 	protected boolean sessionBeanNotPresent(Model model) {
 		return !model.asMap().containsKey(SESSION_BEAN);
 	}
@@ -102,22 +68,4 @@ public abstract class AbstractController implements WebConstant, SystemConstant,
 		return sessionBean;
 	}
 
-	protected boolean isSearchForm(Model model) {
-		Boolean isSearchForm = (Boolean) model.asMap().get(SEARCH_FORM);
-		return BooleanUtils.toBoolean(isSearchForm);
-	}
-
-	protected void setSearchFormAttribute(RedirectAttributes redirectAttributes, boolean isSearchForm) {
-		redirectAttributes.addFlashAttribute(SEARCH_FORM, isSearchForm);
-	}
-
-	protected Integer nullSafe(String value) {
-		if (StringUtils.isBlank(value)) {
-			return null;
-		}
-		if (!StringUtils.isNumeric(value)) {
-			return null;
-		}
-		return Integer.valueOf(value);
-	}
 }

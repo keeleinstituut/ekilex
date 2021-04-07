@@ -8,12 +8,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -508,7 +506,7 @@ public class ConversionUtil implements GlobalConstant {
 	public void composeMeaningDefinitions(List<Definition> definitions, List<DefSourceAndNoteSourceTuple> definitionsDataTuples) {
 
 		Map<Long, Definition> definitionMap = definitions.stream().collect(Collectors.toMap(Definition::getId, definition -> definition));
-		Set<Long> handledSourceLinkIds = new HashSet<>();
+		List<Long> handledSourceLinkIds = new ArrayList<>();
 		Map<Long, DefinitionNote> noteMap = new HashMap<>();
 
 		for (DefSourceAndNoteSourceTuple definitionData : definitionsDataTuples) {
@@ -928,6 +926,7 @@ public class ConversionUtil implements GlobalConstant {
 						synWord.setHomonymsExist(groupedByLangRelation.isHomonymsExist());
 						synWord.setLang(groupedByLangRelation.getWordLang());
 						synWord.setLexemeRegisterCodes(groupedByLangRelation.getLexemeRegisterCodes());
+						synWord.setLexemeLevels(groupedByLangRelation.getLexemeLevels());
 						synWords.add(synWord);
 						isFirstWord = false;
 					}
@@ -1030,7 +1029,7 @@ public class ConversionUtil implements GlobalConstant {
 
 		if (showFirstWordOnly) {
 			Iterator<Relation> relationIterator = meaningRelations.iterator();
-			Set<String> occurredLangs = new HashSet<>();
+			List<String> occurredLangs = new ArrayList<>();
 			while (relationIterator.hasNext()) {
 				String iteratorLang = relationIterator.next().getWordLang();
 				if (occurredLangs.contains(iteratorLang)) {

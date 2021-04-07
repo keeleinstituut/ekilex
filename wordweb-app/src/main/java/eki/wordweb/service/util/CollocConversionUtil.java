@@ -21,9 +21,9 @@ import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationRelGroup;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.SearchContext;
+import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.data.DisplayColloc;
-import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.TypeCollocMember;
+import eki.wordweb.data.LexemeWord;
 
 @Component
 public class CollocConversionUtil extends AbstractConversionUtil {
@@ -31,9 +31,9 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void compose(Long wordId, List<Lexeme> lexemes, List<CollocationTuple> collocTuples, SearchContext searchContext, String displayLang) {
+	public void compose(Long wordId, List<LexemeWord> lexemeWords, List<CollocationTuple> collocTuples, SearchContext searchContext, String displayLang) {
 
-		if (CollectionUtils.isEmpty(lexemes)) {
+		if (CollectionUtils.isEmpty(lexemeWords)) {
 			return;
 		}
 		if (CollectionUtils.isEmpty(collocTuples)) {
@@ -44,19 +44,19 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		collocTuples = filter(collocTuples, lexComplexity);
 		collocTuples = filterCollocsByMostMembers(collocTuples);
 
-		Map<Long, Lexeme> lexemeMap = lexemes.stream().collect(Collectors.toMap(Lexeme::getLexemeId, lexeme -> lexeme));
+		Map<Long, LexemeWord> lexemeMap = lexemeWords.stream().collect(Collectors.toMap(LexemeWord::getLexemeId, lexeme -> lexeme));
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
 		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
 
 		for (CollocationTuple tuple : collocTuples) {
 
 			Long lexemeId = tuple.getLexemeId();
-			Lexeme lexeme = lexemeMap.get(lexemeId);
-			if (lexeme == null) {
+			LexemeWord lexemeWord = lexemeMap.get(lexemeId);
+			if (lexemeWord == null) {
 				continue;
 			}
 
-			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexeme, tuple, collocPosGroupMap, displayLang);
+			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexemeWord, tuple, collocPosGroupMap, displayLang);
 			CollocationRelGroup collocRelGroup = populateCollocRelGroup(collocPosGroup, tuple, collocRelGroupMap);
 			Collocation collocation = populateCollocation(tuple);
 
@@ -65,12 +65,12 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			}
 		}
 
-		for (Lexeme lexeme : lexemes) {
-			if (CollectionUtils.isEmpty(lexeme.getCollocationPosGroups())) {
+		for (LexemeWord lexemeWord : lexemeWords) {
+			if (CollectionUtils.isEmpty(lexemeWord.getCollocationPosGroups())) {
 				continue;
 			}
-			divideCollocationRelGroupsByCollocMemberForms(wordId, lexeme);
-			transformCollocationPosGroupsForDisplay(wordId, lexeme);
+			divideCollocationRelGroupsByCollocMemberForms(wordId, lexemeWord);
+			transformCollocationPosGroupsForDisplay(wordId, lexemeWord);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		return collocTuples;
 	}
 
-	public CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {
+	public CollocationPosGroup populateCollocPosGroup(LexemeWord lexemeWord, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {
 		CollocationPosGroup collocPosGroup = null;
 		Long posGroupId = tuple.getPosGroupId();
 		if (posGroupId != null) {
@@ -103,7 +103,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 				collocPosGroup.setRelationGroups(new ArrayList<>());
 				classifierUtil.applyClassifiers(tuple, collocPosGroup, displayLang);
 				collocPosGroupMap.put(posGroupId, collocPosGroup);
-				lexeme.getCollocationPosGroups().add(collocPosGroup);
+				lexemeWord.getCollocationPosGroups().add(collocPosGroup);
 			}
 		}
 		return collocPosGroup;
@@ -135,9 +135,9 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		return collocation;
 	}
 
-	public void divideCollocationRelGroupsByCollocMemberForms(Long wordId, Lexeme lexeme) {
+	public void divideCollocationRelGroupsByCollocMemberForms(Long wordId, LexemeWord lexemeWord) {
 
-		List<CollocationPosGroup> collocationPosGroups = lexeme.getCollocationPosGroups();
+		List<CollocationPosGroup> collocationPosGroups = lexemeWord.getCollocationPosGroups();
 		for (CollocationPosGroup collocPosGroup : collocationPosGroups) {
 			List<CollocationRelGroup> collocRelGroups = collocPosGroup.getRelationGroups();
 			List<CollocationRelGroup> dividedCollocRelGroups = new ArrayList<>();
@@ -163,12 +163,12 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		}
 	}
 
-	public void transformCollocationPosGroupsForDisplay(Long wordId, Lexeme lexeme) {
+	public void transformCollocationPosGroupsForDisplay(Long wordId, LexemeWord lexemeWord) {
 
 		List<Collocation> collocations;
 		List<DisplayColloc> displayCollocs;
 		List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>();
-		List<CollocationPosGroup> collocationPosGroups = lexeme.getCollocationPosGroups();
+		List<CollocationPosGroup> collocationPosGroups = lexemeWord.getCollocationPosGroups();
 		List<String> existingCollocationValues = new ArrayList<>();
 		for (CollocationPosGroup collocationPosGroup : collocationPosGroups) {
 			List<CollocationRelGroup> collocationRelGroups = collocationPosGroup.getRelationGroups();
@@ -189,7 +189,7 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 		if (needsToLimit) {
 			limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs.subList(0, TYPICAL_COLLECTIONS_DISPLAY_LIMIT);
 		}
-		lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
+		lexemeWord.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
 	}
 
 	private void transformCollocationsForDisplay(

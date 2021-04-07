@@ -20,7 +20,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.RelationStatus;
-import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
@@ -44,7 +43,6 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.CudDbService;
-import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -63,12 +61,6 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Autowired
 	private CudDbService cudDbService;
-
-	@Autowired
-	private LookupDbService lookupDbService;
-
-	@Autowired
-	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -121,6 +113,7 @@ public class SynSearchService extends AbstractWordSearchService {
 		permCalculator.applyCrud(userRole, lexeme);
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
+		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
 

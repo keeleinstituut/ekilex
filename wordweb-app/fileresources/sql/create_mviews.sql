@@ -1,3 +1,4 @@
+drop materialized view if exists mview_ww_counts;
 drop materialized view if exists mview_ww_dataset_word_menu;
 drop materialized view if exists mview_ww_word_search;
 drop materialized view if exists mview_ww_word;
@@ -105,8 +106,8 @@ create type type_meaning_word as (
 				word_prese text,
 				homonym_nr integer,
 				lang char(3),
-				word_type_codes varchar(100) array,
-				aspect_code varchar(100));
+				aspect_code varchar(100),
+				word_type_codes varchar(100) array);
 create type type_word_etym_relation as (
 				word_etym_rel_id bigint,
 				comment text,
@@ -147,7 +148,7 @@ create type type_meaning_relation as (
 				aspect_code varchar(100),
 				word_type_codes varchar(100) array,
 				complexity varchar(100),
-        weight numeric(5,4),
+				weight numeric(5,4),
 				lex_value_state_codes varchar(100) array,
 				lex_register_codes varchar(100) array,
 				lex_government_values text array,
@@ -190,6 +191,7 @@ dblink(
 	homonym_nr integer,
 	word_type_codes varchar(100) array,
 	display_morph_code varchar(100),
+	gender_code varchar(100),
 	aspect_code varchar(100),
 	vocal_form text,
 	last_activity_event_on timestamp,
@@ -277,6 +279,7 @@ dblink(
 	lang_complexities type_lang_complexity array,
 	register_codes varchar(100) array,
 	pos_codes varchar(100) array,
+	region_codes varchar(100) array,
 	deriv_codes varchar(100) array,
 	meaning_words type_meaning_word array,
 	advice_notes text array,
@@ -429,6 +432,33 @@ dblink(
 	order_by bigint
 );
 
+create materialized view mview_ww_counts as
+(select 'dsall' as dataset_code,
+       w.lang,
+       count(w.word_id) word_record_count,
+       count(distinct w.word) word_value_count,
+       count(distinct l.meaning_id) meaning_record_count
+from mview_ww_lexeme l,
+     mview_ww_word w
+where l.word_id = w.word_id
+and   l.dataset_code != 'ety'
+group by w.lang
+order by w.lang)
+union all 
+(select l.dataset_code,
+       w.lang,
+       count(w.word_id) word_record_count,
+       count(distinct w.word) word_value_count,
+       count(distinct l.meaning_id) meaning_record_count
+from mview_ww_lexeme l,
+     mview_ww_word w
+where l.word_id = w.word_id
+and   l.dataset_code != 'ety'
+group by l.dataset_code,
+         w.lang
+order by l.dataset_code,
+         w.lang);
+
 create index mview_ww_dataset_word_menu_dataset_fletter_idx on mview_ww_dataset_word_menu (dataset_code, first_letter);
 create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
 create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
@@ -473,3 +503,5 @@ create index mview_ww_meaning_freeform_source_link_word_id_idx on mview_ww_meani
 create index mview_ww_definition_source_link_meaning_id_idx on mview_ww_definition_source_link (meaning_id);
 create index mview_ww_classifier_name_code_lang_type_idx on mview_ww_classifier (name, code, lang, type);
 create index mview_ww_classifier_name_origin_code_lang_type_idx on mview_ww_classifier (name, origin, code, lang, type);
+create index mview_ww_counts_dataset_code_idx on mview_ww_counts (dataset_code);
+create index mview_ww_counts_lang_idx on mview_ww_counts (lang);

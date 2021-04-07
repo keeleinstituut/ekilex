@@ -88,7 +88,7 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 
 	public List<SourcePropertyTuple> getSources(String searchFilter, SourceType sourceType, Long sourceIdToExclude) {
 
-		String maskedSearchFilter = searchFilter.replace("*", "%").replace("?", "_");
+		String maskedSearchFilter = searchFilter.replace(QUERY_MULTIPLE_CHARACTERS_SYM, "%").replace(QUERY_SINGLE_CHARACTER_SYM, "_");
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Source s = SOURCE.as("s");
@@ -273,16 +273,16 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 			String critValue = criterion.getSearchValue().toString();
 			if (SearchKey.CREATED_BY.equals(criterion.getSearchKey())) {
 				where1 = where1.and(al.ENTITY_NAME.eq(ActivityEntity.SOURCE.name())).and(al.FUNCT_NAME.like(LIKE_CREATE));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNotCondition(), true);
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 			} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1.and(al.ENTITY_NAME.eq(ActivityEntity.SOURCE.name())).and(al.FUNCT_NAME.like(LIKE_CREATE));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNotCondition(), false);
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			} else if (SearchKey.UPDATED_BY.equals(criterion.getSearchKey())) {
 				where1 = where1.and(al.FUNCT_NAME.like(LIKE_UPDATE));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_BY, where1, criterion.isNotCondition(), true);
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
 			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
 				where1 = where1.and(al.FUNCT_NAME.like(LIKE_UPDATE));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.getSearchOperand(), al.EVENT_ON, where1, criterion.isNotCondition(), false);
+				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
 			}
 		}
 		where = where.andExists(DSL.select(sal.ID).from(sal, al).where(where1));

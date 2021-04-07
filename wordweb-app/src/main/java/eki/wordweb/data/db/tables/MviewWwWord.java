@@ -21,7 +21,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row21;
+import org.jooq.Row22;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 1523385113;
+    private static final long serialVersionUID = -1226292441;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -95,6 +95,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.display_morph_code</code>.
      */
     public final TableField<MviewWwWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.gender_code</code>.
+     */
+    public final TableField<MviewWwWordRecord, String> GENDER_CODE = createField(DSL.name("gender_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_word.aspect_code</code>.
@@ -226,11 +231,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row21 type methods
+    // Row22 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row21<Long, String, String, String, String, Long, Integer, String[], String, String, String, Timestamp, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], BigDecimal, Long, Boolean, Long, Integer> fieldsRow() {
-        return (Row21) super.fieldsRow();
+    public Row22<Long, String, String, String, String, Long, Integer, String[], String, String, String, String, Timestamp, TypeLangComplexityRecord[], TypeMeaningWordRecord[], TypeDefinitionRecord[], String[], BigDecimal, Long, Boolean, Long, Integer> fieldsRow() {
+        return (Row22) super.fieldsRow();
     }
 }

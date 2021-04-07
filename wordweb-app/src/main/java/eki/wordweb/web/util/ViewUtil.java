@@ -21,9 +21,9 @@ import eki.wordweb.data.DecoratedWordType;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LanguageData;
-import eki.wordweb.data.Lexeme;
+import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Paradigm;
-import eki.wordweb.data.TypeCollocMember;
+import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.service.CommonDataService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -44,20 +44,20 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		ekilexMarkupPattern = Pattern.compile("<[/]?eki-[^>]*>");
 	}
 
-	public boolean isLexData(Lexeme lexeme) {
-		return DatasetType.LEX.equals(lexeme.getDatasetType());
+	public boolean isLexData(LexemeWord lexemeWord) {
+		return DatasetType.LEX.equals(lexemeWord.getDatasetType());
 	}
 
-	public boolean isAnyTermData(Lexeme lexeme) {
-		return DatasetType.TERM.equals(lexeme.getDatasetType());
+	public boolean isAnyTermData(LexemeWord lexemeWord) {
+		return DatasetType.TERM.equals(lexemeWord.getDatasetType());
 	}
 
-	public boolean isProTermData(Lexeme lexeme) {
-		return DatasetType.TERM.equals(lexeme.getDatasetType()) && !StringUtils.equals(DATASET_LIMITED, lexeme.getDatasetCode());
+	public boolean isProTermData(LexemeWord lexemeWord) {
+		return DatasetType.TERM.equals(lexemeWord.getDatasetType()) && !StringUtils.equals(DATASET_LIMITED, lexemeWord.getDatasetCode());
 	}
 
-	public boolean isLimTermData(Lexeme lexeme) {
-		return DatasetType.TERM.equals(lexeme.getDatasetType()) && StringUtils.equals(DATASET_LIMITED, lexeme.getDatasetCode());
+	public boolean isLimTermData(LexemeWord lexemeWord) {
+		return DatasetType.TERM.equals(lexemeWord.getDatasetType()) && StringUtils.equals(DATASET_LIMITED, lexemeWord.getDatasetCode());
 	}
 
 	public LanguageData getLangData(String langIso3) {

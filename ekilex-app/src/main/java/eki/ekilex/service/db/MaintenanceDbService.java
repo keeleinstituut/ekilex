@@ -36,9 +36,9 @@ public class MaintenanceDbService implements GlobalConstant {
 		return create.selectFrom(WORD).fetchInto(WordRecord.class);
 	}
 
-	public void mergeHomonymsToSss(String[] includedLangs) {
+	public void mergeHomonymsToEki(String[] includedLangs) {
 
-		Routines.mergeHomonymsToSss(create.configuration(), includedLangs);
+		Routines.mergeHomonymsToEki(create.configuration(), includedLangs);
 	}
 
 	public int deleteFloatingFreeforms() {

@@ -42,6 +42,11 @@
                 </div>
               </div>
             </div>
+            <div>
+              <a th:href="@{/feelinglucky}" class="link ml-3 d-none d-md-block">
+                <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
+              </a>
+            </div>
           </div>
         </div>
         <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details" role="button" type="button"
@@ -93,7 +98,7 @@
                     <span th:text="#{warning.eki.rus}">See ei ole valmis sõnastik.</span>
                   </div>
                   <section class="level-3-panel meaning-panel d-flex flex-row" th:each="lexeme : ${wordData.lexLexemes}">
-                    <div th:replace="common-search :: lexeme-data"></div>
+                    <div th:replace="lex-details :: lexeme-data"></div>
                   </section>
                 </th:block>
                 <th:block th:if="${not #lists.isEmpty(wordData.termLexemes)}">
@@ -102,7 +107,7 @@
                     <span th:text="#{termdata.title}">Oskussõnastikes</span>
                   </h5>
                   <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.termLexemes}">
-                    <div th:replace="common-search :: lexeme-data"></div>
+                    <div th:replace="term-details :: meaning-data"></div>
                   </section>
                 </th:block>
                 <h5 class="meaning-sub-heading">
@@ -113,7 +118,7 @@
                 </h5>
                 <th:block th:if="${not #lists.isEmpty(wordData.limTermLexemes)}">
                   <section class="level-3-panel meaning-panel d-block" th:each="lexeme : ${wordData.limTermLexemes}">
-                    <div th:replace="common-search :: lexeme-data"></div>
+                    <div th:replace="term-details :: meaning-data"></div>
                   </section>
                 </th:block>
               </th:block>

@@ -243,6 +243,7 @@
               <input type="hidden" class="relation-meaning-id" th:value="${syn.meaningId}"/>
               <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
               <span class="syn-handle">
+                <small class="font-weight-bold" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
                 <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : 'color: #005aa9'}"></span>
                 <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
                 <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>

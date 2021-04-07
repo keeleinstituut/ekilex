@@ -29,13 +29,13 @@ function displayDetailSearch() {
 	$('#searchMode').val('DETAIL');
 };
 
-function displayNotConditionChk() {
+function displayNotOperandChk() {
 	const disabledSearchEntities = ["TAG", "CLUELESS"];
 	const disabledSearchKeys = [
 		"ID", "FREQUENCY", "RANK", "CREATED_OR_UPDATED_BY", "CREATED_OR_UPDATED_ON", "CREATED_BY", "CREATED_ON", "UPDATED_BY", "UPDATED_ON", "LAST_UPDATE_ON",
 		"ATTRIBUTE_NAME"];
 
-	let notChks = $('#detail_search_filter').find('[name$="notCondition"]');
+	let notChks = $('#detail_search_filter').find('[name$="not"]');
 	notChks.each(function () {
 		let notChk = $(this);
 		let searchEntity = notChk.closest('.detail-search-group').find('[name$="entity"]').val();
@@ -97,7 +97,7 @@ function validateAndSubmitSimpleSearch() {
 function initialiseDetailSearch() {
 	displayDetailConditionButtons();
 	displayDetailGroupButtons();
-	displayNotConditionChk();
+	displayNotOperandChk();
 
 	$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
 		$(this).closest('[name="detailCondition"]').remove();
@@ -123,7 +123,7 @@ function initialiseDetailSearch() {
 		searchKeyElement.append(keyTemplate.html());
 		searchKeyElement.val(searchKeyElement.find('option').first().val());
 		initCondition(conditionElement);
-		displayNotConditionChk();
+		displayNotOperandChk();
 	});
 
 	$(document).on("change", "select[name$='searchKey']", function() {
@@ -144,7 +144,7 @@ function initialiseDetailSearch() {
 		// should lookup by search key + operand
 		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
 		replaceSearchValueElement(searchKey, searchValueElement);
-		displayNotConditionChk();
+		displayNotOperandChk();
 	});
 
 	$(document).on("change", "select[name$='searchOperand']", function() {
@@ -215,7 +215,7 @@ function initialiseDetailSearch() {
 		let detailGroupElement = $(this).closest('[name="detailGroup"]');
 		let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
 		initCondition(addedConditionElement);
-		displayNotConditionChk();
+		displayNotOperandChk();
 	});
 
 	$(document).on("click", ":button[name='addDetailGroupBtn']", function() {
@@ -223,7 +223,7 @@ function initialiseDetailSearch() {
 		let detailSearchElement = $("#detail_search_filter");
 		let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
 		initConditionGroup(addedGroupElement);
-		displayNotConditionChk();
+		displayNotOperandChk();
 	});
 
 	$('[data-live-search="true"]:not(:hidden)').each(function () {

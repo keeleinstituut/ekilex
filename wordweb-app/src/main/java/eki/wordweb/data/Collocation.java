@@ -3,6 +3,7 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.wordweb.data.type.TypeCollocMember;
 
 public class Collocation extends AbstractDataObject {
 

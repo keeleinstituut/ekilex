@@ -186,7 +186,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 						uriBuf.append(PATH_SEPARATOR);
 						uriBuf.append(CRITERION_NOT);
 						uriBuf.append(PATH_SEPARATOR);
-						uriBuf.append(searchCriterion.isNotCondition());
+						uriBuf.append(searchCriterion.isNot());
 					}
 				}
 			}
@@ -316,7 +316,7 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				criterion.setSearchKey(searchKey);
 				criterion.setSearchOperand(searchOperand);
 				criterion.setSearchValue(searchValueObj);
-				criterion.setNotCondition(isNot);
+				criterion.setNot(isNot);
 				List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
 				SearchCriterionGroup criterionGroup = criteriaGroups.get(criteriaGroups.size() - 1);
 				criterionGroup.getSearchCriteria().add(criterion);

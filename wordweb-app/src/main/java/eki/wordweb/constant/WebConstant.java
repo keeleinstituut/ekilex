@@ -2,9 +2,6 @@ package eki.wordweb.constant;
 
 public interface WebConstant {
 
-	//TODO should be set by defaults and/or ui
-	String DISPLAY_LANG = "est";
-
 	String DATASET_HOME_PAGE = "dataset-home";
 
 	String UNIF_HOME_PAGE = "unif-home";
@@ -58,6 +55,8 @@ public interface WebConstant {
 	String SEARCH_WORD_FRAG_URI = "/searchwordfrag";
 
 	String WORD_DETAILS_URI = "/worddetails";
+
+	String FEELING_LUCKY_URI = "/feelinglucky";
 
 	String MORPHO_URI = "/morpho";
 

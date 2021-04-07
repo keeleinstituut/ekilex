@@ -12,23 +12,28 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.service.db.SearchDbService;
+import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.service.util.ParadigmConversionUtil;
 
 @Component
 public class MorphoService implements WebConstant, SystemConstant {
 
 	@Autowired
-	protected SearchDbService searchDbService;
+	private SearchDbService searchDbService;
 
 	@Autowired
-	protected ParadigmConversionUtil paradigmConversionUtil;
+	private ParadigmConversionUtil paradigmConversionUtil;
+
+	@Autowired
+	private LanguageContext languageContext;
 
 	@Transactional
 	public Paradigm getParadigm(Long paradigmId, Integer maxDisplayLevel, boolean excludeQuestionable) {
 
 		List<Form> forms = searchDbService.getParadigmForms(paradigmId, maxDisplayLevel, excludeQuestionable);
 		paradigmConversionUtil.calcFreqScale(forms);
-		Paradigm paradigm = paradigmConversionUtil.composeParadigm(paradigmId, forms, DISPLAY_LANG);
+		String displayLang = languageContext.getDisplayLang();
+		Paradigm paradigm = paradigmConversionUtil.composeParadigm(paradigmId, forms, displayLang);
 		return paradigm;
 	}
 }

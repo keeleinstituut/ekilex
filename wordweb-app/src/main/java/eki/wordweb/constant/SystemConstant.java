@@ -16,7 +16,7 @@ public interface SystemConstant {
 
 	String DATASET_ALL = "dsall";
 
-	String[] SUPPORTED_SIMPLE_DATASETS = new String[] {DATASET_ALL, GlobalConstant.DATASET_SSS};
+	String[] SUPPORTED_SIMPLE_DATASETS = new String[] {DATASET_ALL, GlobalConstant.DATASET_EKI};
 
 	String[] SUPPORTED_DESTIN_LANGS = new String[] {DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS};
 

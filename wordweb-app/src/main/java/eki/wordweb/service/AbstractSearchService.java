@@ -19,21 +19,22 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.Lexeme;
+import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.SearchFilter;
-import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordForm;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
+import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.service.db.CommonDataDbService;
 import eki.wordweb.service.db.SearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.CollocConversionUtil;
 import eki.wordweb.service.util.EtymConversionUtil;
+import eki.wordweb.service.util.LanguageContext;
 import eki.wordweb.service.util.LexemeConversionUtil;
 import eki.wordweb.service.util.ParadigmConversionUtil;
 import eki.wordweb.service.util.WordConversionUtil;
@@ -67,9 +68,17 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	@Autowired
 	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
+	@Autowired
+	protected LanguageContext languageContext;
+
 	public abstract SearchContext getSearchContext(SearchFilter searchFilter);
 
-	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang);
+	public abstract WordData getWordData(Long wordId, SearchFilter searchFilter);
+
+	@Transactional
+	public String getRandomWord() {
+		return searchDbService.getRandomWord(LANGUAGE_CODE_EST);
+	}
 
 	@Transactional
 	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, SearchFilter searchFilter, int limit) {
@@ -143,9 +152,9 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 			Word word,
 			List<Form> forms,
 			List<Paradigm> paradigms,
-			List<Lexeme> lexLexemes,
-			List<Lexeme> termLexemes,
-			List<Lexeme> limTermLexemes) {
+			List<LexemeWord> lexLexemes,
+			List<LexemeWord> termLexemes,
+			List<LexemeWord> limTermLexemes) {
 
 		boolean lexemesExist = CollectionUtils.isNotEmpty(lexLexemes) || CollectionUtils.isNotEmpty(termLexemes) || CollectionUtils.isNotEmpty(limTermLexemes);
 		boolean relevantDataExists = lexemesExist || CollectionUtils.isNotEmpty(word.getRelatedWords());

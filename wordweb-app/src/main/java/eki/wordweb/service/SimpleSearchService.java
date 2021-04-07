@@ -3,6 +3,7 @@ package eki.wordweb.service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -17,8 +18,8 @@ import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
@@ -30,12 +31,14 @@ public class SimpleSearchService extends AbstractSearchService {
 
 	@Transactional
 	@Override
-	public WordData getWordData(Long wordId, SearchFilter searchFilter, String displayLang) {
+	public WordData getWordData(Long wordId, SearchFilter searchFilter) {
 
 		// query params + common data
 		SearchContext searchContext = getSearchContext(searchFilter);
 		Complexity lexComplexity = searchContext.getLexComplexity();
 		Map<String, Long> langOrderByMap = commonDataDbService.getLangOrderByMap();
+		Locale displayLocale = languageContext.getDisplayLocale();
+		String displayLang = languageContext.getDisplayLang();
 
 		// word data
 		Word word = searchDbService.getWord(wordId);
@@ -43,37 +46,38 @@ public class SimpleSearchService extends AbstractSearchService {
 		classifierUtil.applyClassifiers(word, displayLang);
 		wordConversionUtil.setWordTypeFlags(word);
 		WordRelationsTuple wordRelationsTuple = searchDbService.getWordRelationsTuple(wordId);
-		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLang);
+		wordConversionUtil.composeWordRelations(word, wordRelationsTuple, langOrderByMap, lexComplexity, displayLocale, displayLang);
 		List<Form> forms = searchDbService.getWordForms(wordId, searchContext);
-		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, DISPLAY_LANG);
+		List<Paradigm> paradigms = paradigmConversionUtil.composeParadigms(forms, displayLang);
 		List<String> allRelatedWords = wordConversionUtil.collectAllRelatedWords(word);
 
 		// lexeme data
-		List<Lexeme> lexemes = searchDbService.getLexemes(wordId, searchContext);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = searchDbService.getLexemeMeaningTuples(wordId);
-		Map<Long, LexemeMeaningTuple> lexemeMeaningTupleMap = lexemeMeaningTuples.stream().collect(Collectors.toMap(LexemeMeaningTuple::getLexemeId, lexemeMeaningTuple -> lexemeMeaningTuple));
-		lexemeConversionUtil.compose(wordLang, lexemes, lexemeMeaningTupleMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
+		List<LexemeWord> lexemeWords = searchDbService.getWordLexemes(wordId, searchContext);
+		lexemeConversionUtil.composeLexemes(wordLang, lexemeWords, langOrderByMap, searchContext, displayLang);
+		List<Meaning> meanings = searchDbService.getMeanings(wordId);
+		Map<Long, Meaning> lexemeMeaningMap = meanings.stream().collect(Collectors.toMap(Meaning::getLexemeId, meaning -> meaning));
+		lexemeConversionUtil.composeMeanings(wordLang, lexemeWords, lexemeMeaningMap, allRelatedWords, langOrderByMap, searchContext, displayLang);
 
-		if (CollectionUtils.isNotEmpty(lexemes)) {
+		if (CollectionUtils.isNotEmpty(lexemeWords)) {
 			List<CollocationTuple> collocTuples = searchDbService.getCollocations(wordId);
 			compensateNullWords(wordId, collocTuples);
-			collocConversionUtil.compose(wordId, lexemes, collocTuples, searchContext, displayLang);
-			lexemeConversionUtil.flagEmptyLexemes(lexemes);
-			lexemes = lexemes.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
-			lexemeConversionUtil.sortLexemes(lexemes, DatasetType.LEX);
-			lexemeLevelPreseUtil.combineLevels(lexemes);
+			collocConversionUtil.compose(wordId, lexemeWords, collocTuples, searchContext, displayLang);
+			lexemeConversionUtil.flagEmptyLexemes(lexemeWords);
+			lexemeWords = lexemeWords.stream().filter(lexeme -> !lexeme.isEmptyLexeme()).collect(Collectors.toList());
+			lexemeConversionUtil.sortLexemes(lexemeWords, DatasetType.LEX);
+			lexemeLevelPreseUtil.combineLevels(lexemeWords);
 		}
 
 		// word common
-		wordConversionUtil.composeCommon(word, lexemes);
+		wordConversionUtil.composeCommon(word, lexemeWords);
 
-		return composeWordData(word, forms, paradigms, lexemes, Collections.emptyList(), Collections.emptyList());
+		return composeWordData(word, forms, paradigms, lexemeWords, Collections.emptyList(), Collections.emptyList());
 	}
 
 	@Override
 	public SearchContext getSearchContext(SearchFilter searchFilter) {
 		List<String> destinLangs = searchFilter.getDestinLangs();
-		List<String> datasetCodes = Arrays.asList(DATASET_SSS);
+		List<String> datasetCodes = Arrays.asList(DATASET_EKI);
 		Complexity lexComplexity = Complexity.SIMPLE;
 		DatasetType datasetType = DatasetType.LEX;
 		Integer maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;

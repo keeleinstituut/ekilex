@@ -6,11 +6,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import eki.wordweb.data.TypeCollocMember;
-import eki.wordweb.data.TypeDefinition;
-import eki.wordweb.data.TypeFreeform;
-import eki.wordweb.data.TypeUsage;
 import eki.wordweb.data.WordTypeData;
+import eki.wordweb.data.type.TypeCollocMember;
+import eki.wordweb.data.type.TypeDefinition;
+import eki.wordweb.data.type.TypeFreeform;
+import eki.wordweb.data.type.TypeUsage;
 
 @Component
 public class JooqBugCompensator {

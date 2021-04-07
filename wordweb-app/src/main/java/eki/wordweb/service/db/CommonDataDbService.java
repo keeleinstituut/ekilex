@@ -4,15 +4,14 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_CLASSIFIER;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Record5;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,8 +22,9 @@ import eki.common.data.Classifier;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.Dataset;
 import eki.wordweb.data.LanguageData;
-import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
+import eki.wordweb.data.db.tables.MviewWwDataset;
+import eki.wordweb.data.type.TypeDomain;
 
 @Component
 public class CommonDataDbService implements SystemConstant {
@@ -32,91 +32,118 @@ public class CommonDataDbService implements SystemConstant {
 	@Autowired
 	private DSLContext create;
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #code, #lang}")
+	public Classifier getClassifier(ClassifierName name, String code, String lang) {
+
+		if (StringUtils.isBlank(code)) {
+			return null;
+		}
+		MviewWwClassifier clc = MVIEW_WW_CLASSIFIER.as("clc");
+		MviewWwClassifier clv = MVIEW_WW_CLASSIFIER.as("clv");
+		return create
+				.select(
+						clc.NAME,
+						clc.CODE,
+						DSL.coalesce(clv.VALUE, clc.CODE).as("value"),
+						clv.LANG)
+				.from(clc.leftOuterJoin(clv).on(
+						clv.NAME.eq(clc.NAME)
+						.and(clv.CODE.eq(clc.CODE))
+						.and(clv.TYPE.eq(clc.TYPE))
+						.and(clv.LANG.eq(lang))))
+				.where(clc.NAME.eq(name.name())
+						.and(clc.CODE.eq(code))
+						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.limit(1)
+				.fetchOptionalInto(Classifier.class)
+				.orElse(null);
+	}
+
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #origin, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String origin, String code, String lang) {
 
 		if (StringUtils.isBlank(code)) {
 			return null;
 		}
-		Condition where = MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
-				.and(MVIEW_WW_CLASSIFIER.CODE.eq(code))
-				.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang))
-				.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
-		if (StringUtils.isNotBlank(origin)) {
-			where = where.and(MVIEW_WW_CLASSIFIER.ORIGIN.eq(origin));
-		}
-		Record5<String, String, String, String, String> result = create
+		MviewWwClassifier clc = MVIEW_WW_CLASSIFIER.as("clc");
+		MviewWwClassifier clv = MVIEW_WW_CLASSIFIER.as("clv");
+		return create
 				.select(
-						MVIEW_WW_CLASSIFIER.NAME,
-						MVIEW_WW_CLASSIFIER.ORIGIN,
-						MVIEW_WW_CLASSIFIER.CODE,
-						MVIEW_WW_CLASSIFIER.VALUE,
-						MVIEW_WW_CLASSIFIER.LANG)
-				.from(MVIEW_WW_CLASSIFIER)
-				.where(where)
-				.fetchOne();
-		if (result == null) {
-			return null;
-		}
-		return result.into(Classifier.class);
+						clc.NAME,
+						clc.ORIGIN,
+						clc.CODE,
+						DSL.coalesce(clv.VALUE, clc.CODE).as("value"),
+						clv.LANG)
+				.from(clc.leftOuterJoin(clv).on(
+						clv.NAME.eq(clc.NAME)
+						.and(clv.CODE.eq(clc.CODE))
+						.and(clv.ORIGIN.eq(clc.ORIGIN))
+						.and(clv.TYPE.eq(clc.TYPE))
+						.and(clv.LANG.eq(lang))))
+				.where(clc.NAME.eq(name.name())
+						.and(clc.CODE.eq(code))
+						.and(clc.ORIGIN.eq(origin))
+						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.limit(1)
+				.fetchOptionalInto(Classifier.class)
+				.orElse(null);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #lang}")
 	public List<Classifier> getClassifiers(ClassifierName name, String lang) {
 
-		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
+		MviewWwClassifier clc = MVIEW_WW_CLASSIFIER.as("clc");
+		MviewWwClassifier clv = MVIEW_WW_CLASSIFIER.as("clv");
 		return create
 				.select(
-						cl.NAME,
-						cl.ORIGIN,
-						cl.CODE,
-						cl.VALUE,
-						cl.LANG)
-				.from(cl)
-				.where(cl.NAME.eq(name.name())
-						.and(cl.LANG.eq(lang))
-						.and(cl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
-				.orderBy(cl.ORDER_BY)
-				.fetch().into(Classifier.class);
-	}
-
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #code, #lang}")
-	public Classifier getClassifier(ClassifierName name, String code, String lang) {
-		return getClassifier(name, null, code, lang);
-	}
-
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #origin, #codes, #lang}")
-	public List<Classifier> getClassifiers(ClassifierName name, String origin, List<String> codes, String lang) {
-
-		if (CollectionUtils.isEmpty(codes)) {
-			return Collections.emptyList();
-		}
-		String[] codesArr = new String[codes.size()];
-		codesArr = codes.toArray(codesArr);
-		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
-		Condition where = cl.NAME.eq(name.name())
-				.and(cl.CODE.in(codes))
-				.and(cl.LANG.eq(lang))
-				.and(cl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE));
-		if (StringUtils.isNotBlank(origin)) {
-			where = where.and(cl.ORIGIN.eq(origin));
-		}
-		return create
-				.select(
-						cl.NAME,
-						cl.ORIGIN,
-						cl.CODE,
-						cl.VALUE,
-						cl.LANG)
-				.from(cl)
-				.where(where)
-				.orderBy(DSL.field("array_position({0}, cl.code)", Integer.class, DSL.val(codesArr)))
-				.fetch().into(Classifier.class);
+						clc.NAME,
+						clc.CODE,
+						DSL.coalesce(clv.VALUE, clc.CODE).as("value"),
+						clv.LANG)
+				.from(clc.leftOuterJoin(clv).on(
+						clv.NAME.eq(clc.NAME)
+						.and(clv.CODE.eq(clc.CODE))
+						.and(clv.TYPE.eq(clc.TYPE))
+						.and(clv.LANG.eq(lang))))
+				.where(clc.NAME.eq(name.name())
+						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.groupBy(clc.NAME, clc.CODE, clc.ORDER_BY, clv.VALUE, clv.LANG)
+				.orderBy(clc.ORDER_BY)
+				.fetchInto(Classifier.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
 	public List<Classifier> getClassifiers(ClassifierName name, List<String> codes, String lang) {
-		return getClassifiers(name, null, codes, lang);
+
+		if (CollectionUtils.isEmpty(codes)) {
+			return Collections.emptyList();
+		}
+		if (codes.size() == 1) {
+			String code = codes.get(0);
+			Classifier classifier = getClassifier(name, code, lang);
+			return Arrays.asList(classifier);
+		}
+		String[] codesArr = new String[codes.size()];
+		codesArr = codes.toArray(codesArr);
+		MviewWwClassifier clc = MVIEW_WW_CLASSIFIER.as("clc");
+		MviewWwClassifier clv = MVIEW_WW_CLASSIFIER.as("clv");
+		return create
+				.select(
+						clc.NAME,
+						clc.CODE,
+						DSL.coalesce(clv.VALUE, clc.CODE).as("value"),
+						clv.LANG)
+				.from(clc.leftOuterJoin(clv).on(
+						clv.NAME.eq(clc.NAME)
+						.and(clv.CODE.eq(clc.CODE))
+						.and(clv.TYPE.eq(clc.TYPE))
+						.and(clv.LANG.eq(lang))))
+				.where(clc.NAME.eq(name.name())
+						.and(clc.CODE.in(codes))
+						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.groupBy(clc.NAME, clc.CODE, clc.ORDER_BY, clv.VALUE, clv.LANG)
+				.orderBy(DSL.field("array_position({0}, clc.code)", Integer.class, DSL.val(codesArr)))
+				.fetchInto(Classifier.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
@@ -136,14 +163,15 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public Map<String, Long> getLangOrderByMap() {
+		MviewWwClassifier cl = MVIEW_WW_CLASSIFIER.as("cl");
 		return create
-				.select(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.ORDER_BY)
-				.from(MVIEW_WW_CLASSIFIER)
+				.select(cl.CODE, cl.ORDER_BY)
+				.from(cl)
 				.where(
-						MVIEW_WW_CLASSIFIER.NAME.eq(ClassifierName.LANGUAGE.name())
-								.and(MVIEW_WW_CLASSIFIER.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
-								.and(MVIEW_WW_CLASSIFIER.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
-				.fetchMap(MVIEW_WW_CLASSIFIER.CODE, MVIEW_WW_CLASSIFIER.ORDER_BY);
+						cl.NAME.eq(ClassifierName.LANGUAGE.name())
+								.and(cl.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+								.and(cl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
+				.fetchMap(cl.CODE, cl.ORDER_BY);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
@@ -166,39 +194,42 @@ public class CommonDataDbService implements SystemConstant {
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #datasetCode}")
 	public Dataset getDataset(String datasetCode) {
+		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
 		return create
 				.select(
-						MVIEW_WW_DATASET.CODE,
-						MVIEW_WW_DATASET.TYPE,
-						MVIEW_WW_DATASET.NAME,
-						MVIEW_WW_DATASET.DESCRIPTION,
-						MVIEW_WW_DATASET.IS_SUPERIOR)
-				.from(MVIEW_WW_DATASET)
-				.where(MVIEW_WW_DATASET.CODE.eq(datasetCode))
+						ds.CODE,
+						ds.TYPE,
+						ds.NAME,
+						ds.DESCRIPTION,
+						ds.IS_SUPERIOR)
+				.from(ds)
+				.where(ds.CODE.eq(datasetCode))
 				.fetchOptionalInto(Dataset.class)
 				.orElse(null);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<Dataset> getDatasets() {
+		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
 		return create
 				.select(
-						MVIEW_WW_DATASET.CODE,
-						MVIEW_WW_DATASET.TYPE,
-						MVIEW_WW_DATASET.NAME,
-						MVIEW_WW_DATASET.DESCRIPTION,
-						MVIEW_WW_DATASET.IS_SUPERIOR)
-				.from(MVIEW_WW_DATASET)
-				.orderBy(MVIEW_WW_DATASET.ORDER_BY)
+						ds.CODE,
+						ds.TYPE,
+						ds.NAME,
+						ds.DESCRIPTION,
+						ds.IS_SUPERIOR)
+				.from(ds)
+				.orderBy(ds.ORDER_BY)
 				.fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
 	public List<String> getDatasetCodes() {
+		MviewWwDataset ds = MVIEW_WW_DATASET.as("ds");
 		return create
-				.select(MVIEW_WW_DATASET.CODE)
-				.from(MVIEW_WW_DATASET)
-				.orderBy(MVIEW_WW_DATASET.ORDER_BY)
+				.select(ds.CODE)
+				.from(ds)
+				.orderBy(ds.ORDER_BY)
 				.fetchInto(String.class);
 	}
 

@@ -1,6 +1,7 @@
 package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_COUNTS;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_DEFINITION_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
@@ -16,6 +17,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYM_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_SEARCH;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,10 +29,13 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import org.jooq.util.postgres.PostgresDSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -41,8 +46,8 @@ import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.Lexeme;
-import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymTuple;
@@ -51,6 +56,7 @@ import eki.wordweb.data.WordRelationsTuple;
 import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
+import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
@@ -76,6 +82,30 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private JooqBugCompensator jooqBugCompensator;
+
+	public String getRandomWord(String lang) {
+
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		MviewWwCounts c = MVIEW_WW_COUNTS.as("c");
+
+		Table<Record2<String, Integer>> ww = DSL
+				.select(w.WORD, DSL.rowNumber().over().as("rownum"))
+				.from(w)
+				.where(w.LANG.eq(lang))
+				.asTable("w");
+		Table<Record1<BigDecimal>> cc = DSL
+				.select(DSL.round(PostgresDSL.rand().multiply(c.WORD_VALUE_COUNT)).as("rndrownum"))
+				.from(c)
+				.where(
+						c.LANG.eq(lang)
+						.and(c.DATASET_CODE.eq(DATASET_ALL)))
+				.asTable("c");
+		return create
+				.select(ww.field("word", String.class))
+				.from(ww, cc)
+				.where(ww.field("rownum", Integer.class).eq(cc.field("rndrownum", Integer.class)))
+				.fetchOneInto(String.class);
+	}
 
 	@SuppressWarnings("unchecked")
 	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, SearchContext searchContext, int maxWordCount) {
@@ -210,38 +240,14 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				});
 	}
 
-
-	public List<Lexeme> getLexemes(Long wordId, SearchContext searchContext) {
-
-		DatasetType datasetType = searchContext.getDatasetType();
-		List<String> datasetCodes = searchContext.getDatasetCodes();
-		Complexity lexComplexity = searchContext.getLexComplexity();
-		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
+	public List<LexemeWord> getWordLexemes(Long wordId, SearchContext searchContext) {
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
-
-		Condition where = l.WORD_ID.eq(wordId).and(l.COMPLEXITY.in(complexityNames));
-		if (datasetType != null) {
-			where = where.and(l.DATASET_TYPE.eq(datasetType.name()));
-		}
-		if (CollectionUtils.isNotEmpty(datasetCodes)) {
-			if (datasetCodes.size() == 1) {
-				String datasetCode = datasetCodes.get(0);
-				where = where.and(l.DATASET_CODE.eq(datasetCode));
-			} else {
-				where = where.and(l.DATASET_CODE.in(datasetCodes));
-			}
-		}
-		where = applyLangCompDatasetFilter(l, searchContext, where);
-
-		return getLexemes(l, lr, where);
-	}
-
-	private List<Lexeme> getLexemes(MviewWwLexeme l, MviewWwLexemeRelation lr, Condition where) {
-
 		MviewWwLexemeSourceLink lsl = MVIEW_WW_LEXEME_SOURCE_LINK.as("lsl");
 		MviewWwLexemeFreeformSourceLink ffsl = MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK.as("ffsl");
+
+		Condition where = composeLexemeJoinCond(l, searchContext).and(l.WORD_ID.eq(wordId));
 
 		return create
 				.select(
@@ -278,7 +284,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
 				.fetch(record -> {
-					Lexeme pojo = record.into(Lexeme.class);
+					LexemeWord pojo = record.into(LexemeWord.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
 					jooqBugCompensator.trimFreeforms(pojo.getLexemeNotes());
 					jooqBugCompensator.trimFreeforms(pojo.getGrammars());
@@ -287,6 +293,98 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
 					return pojo;
 				});
+	}
+
+	public List<LexemeWord> getMeaningsLexemes(Long wordId, SearchContext searchContext) {
+
+		MviewWwLexeme l1 = MVIEW_WW_LEXEME.as("l1");
+		MviewWwLexeme l2 = MVIEW_WW_LEXEME.as("l2");
+		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
+		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
+		MviewWwLexemeSourceLink lsl = MVIEW_WW_LEXEME_SOURCE_LINK.as("lsl");
+		MviewWwLexemeFreeformSourceLink ffsl = MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK.as("ffsl");
+
+		Condition whereL1 = composeLexemeJoinCond(l1, searchContext).and(l1.WORD_ID.eq(wordId));
+		Condition whereL2 = composeLexemeJoinCond(l2, searchContext);
+
+		return create
+				.select(
+						l2.WORD_ID,
+						l2.LEXEME_ID,
+						l2.MEANING_ID,
+						l2.DATASET_CODE,
+						l2.DATASET_TYPE,
+						l2.DATASET_NAME,
+						l2.VALUE_STATE_CODE,
+						l2.LEVEL1,
+						l2.LEVEL2,
+						l2.COMPLEXITY,
+						l2.WEIGHT,
+						l2.DATASET_ORDER_BY,
+						l2.LEXEME_ORDER_BY,
+						l2.VALUE_STATE_ORDER_BY,
+						l2.REGISTER_CODES,
+						l2.POS_CODES,
+						l2.REGION_CODES,
+						l2.DERIV_CODES,
+						l2.MEANING_WORDS,
+						l2.ADVICE_NOTES,
+						l2.NOTES.as("lexeme_notes"),
+						l2.GRAMMARS,
+						l2.GOVERNMENTS,
+						l2.USAGES,
+						l2.OD_LEXEME_RECOMMENDATIONS,
+						w2.WORD,
+						w2.WORD_PRESE,
+						w2.AS_WORD,
+						w2.HOMONYM_NR,
+						w2.LANG,
+						w2.GENDER_CODE,
+						w2.ASPECT_CODE,
+						w2.WORD_TYPE_CODES,
+						lsl.SOURCE_LINKS.as("lexeme_source_links"),
+						ffsl.SOURCE_LINKS.as("lexeme_freeform_source_links"),
+						lr.RELATED_LEXEMES)
+				.from(l1
+						.innerJoin(l2).on(l2.MEANING_ID.eq(l1.MEANING_ID).and(whereL2))
+						.innerJoin(w2).on(w2.WORD_ID.eq(l2.WORD_ID))
+						.leftOuterJoin(lsl).on(lsl.LEXEME_ID.eq(l2.LEXEME_ID))
+						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l2.LEXEME_ID))
+						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l2.LEXEME_ID)))
+				.where(whereL1)
+				.fetch(record -> {
+					LexemeWord pojo = record.into(LexemeWord.class);
+					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
+					jooqBugCompensator.trimFreeforms(pojo.getLexemeNotes());
+					jooqBugCompensator.trimFreeforms(pojo.getGrammars());
+					jooqBugCompensator.trimFreeforms(pojo.getGovernments());
+					jooqBugCompensator.trimUsages(pojo.getUsages());
+					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
+					return pojo;
+				});
+	}
+
+	private Condition composeLexemeJoinCond(MviewWwLexeme l, SearchContext searchContext) {
+
+		DatasetType datasetType = searchContext.getDatasetType();
+		List<String> datasetCodes = searchContext.getDatasetCodes();
+		Complexity lexComplexity = searchContext.getLexComplexity();
+		List<String> complexityNames = composeFilteringComplexityNames(lexComplexity);
+
+		Condition where = l.COMPLEXITY.in(complexityNames);
+		if (datasetType != null) {
+			where = where.and(l.DATASET_TYPE.eq(datasetType.name()));
+		}
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			if (datasetCodes.size() == 1) {
+				String datasetCode = datasetCodes.get(0);
+				where = where.and(l.DATASET_CODE.eq(datasetCode));
+			} else {
+				where = where.and(l.DATASET_CODE.in(datasetCodes));
+			}
+		}
+		where = applyLangCompDatasetFilter(l, searchContext, where);
+		return where;
 	}
 
 	private List<String> composeFilteringComplexityNames(Complexity lexComplexity) {
@@ -338,6 +436,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.LANG,
 						w.WORD_TYPE_CODES,
 						w.DISPLAY_MORPH_CODE,
+						w.GENDER_CODE,
 						w.ASPECT_CODE,
 						w.VOCAL_FORM,
 						w.LAST_ACTIVITY_EVENT_ON,
@@ -412,7 +511,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchInto(WordForm.class);
 	}
 
-	public List<LexemeMeaningTuple> getLexemeMeaningTuples(Long wordId) {
+	public List<Meaning> getMeanings(Long wordId) {
 
 		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
@@ -446,7 +545,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
 				.fetch(record -> {
-					LexemeMeaningTuple pojo = record.into(LexemeMeaningTuple.class);
+					Meaning pojo = record.into(Meaning.class);
 					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
 					jooqBugCompensator.trimFreeforms(pojo.getNotes());
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedMeanings());

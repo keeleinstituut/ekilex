@@ -21,6 +21,14 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 
 	private String lang;
 
+	private String displayMorphCode;
+
+	private Classifier displayMorph;
+
+	private String genderCode;
+
+	private Classifier gender;
+
 	private String aspectCode;
 
 	private Classifier aspect;
@@ -86,6 +94,38 @@ public abstract class WordTypeData extends AbstractDataObject implements LangTyp
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public String getDisplayMorphCode() {
+		return displayMorphCode;
+	}
+
+	public void setDisplayMorphCode(String displayMorphCode) {
+		this.displayMorphCode = displayMorphCode;
+	}
+
+	public Classifier getDisplayMorph() {
+		return displayMorph;
+	}
+
+	public void setDisplayMorph(Classifier displayMorph) {
+		this.displayMorph = displayMorph;
+	}
+
+	public String getGenderCode() {
+		return genderCode;
+	}
+
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
+	}
+
+	public Classifier getGender() {
+		return gender;
+	}
+
+	public void setGender(Classifier gender) {
+		this.gender = gender;
 	}
 
 	public String getAspectCode() {

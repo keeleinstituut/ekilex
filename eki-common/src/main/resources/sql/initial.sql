@@ -19,7 +19,7 @@ values
 ('ev2',10001,'CRUD','DATASET'),
 ('kol',10001,'CRUD','DATASET'),
 ('mab',10001,'CRUD','DATASET'),
-('sss',10001,'CRUD','DATASET'),
+('eki',10001,'CRUD','DATASET'),
 ('est',10001,'CRUD','DATASET'),
 ('mil',10001,'CRUD','DATASET'),
 ('aia',10001,'CRUD','DATASET'),
@@ -191,7 +191,7 @@ set order_by = l.ev_qq_order_by
 from (select l1.id lexeme_id, (array_agg(l2.order_by order by l2.dataset_code))[1] ev_qq_order_by
       from lexeme l1,
            lexeme l2
-      where l1.dataset_code = 'sss'
+      where l1.dataset_code = 'eki'
         and l2.dataset_code in ('ev2', 'qq2')
         and l1.word_id = l2.word_id
         and l1.meaning_id = l2.meaning_id

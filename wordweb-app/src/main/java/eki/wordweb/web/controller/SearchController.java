@@ -12,7 +12,7 @@ import eki.wordweb.constant.WebConstant;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class SearchController extends AbstractController {
+public class SearchController extends AbstractSearchController {
 
 	//backward compatibility support
 	@SuppressWarnings("deprecation")

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Collocation;
@@ -61,9 +60,6 @@ import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class LexSearchService extends AbstractWordSearchService {
-
-	@Autowired
-	private LexemeLevelPreseUtil lexemeLevelPreseUtil;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -132,7 +128,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<WordLexeme> getWordLexemesWithDefinitionsData(
-			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames) {
+			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
@@ -191,6 +187,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
 
 		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
+		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> synMeaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, synMeaningWords, userProfile, wordLang, languagesOrder);
 

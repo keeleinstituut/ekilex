@@ -10,11 +10,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.wordweb.data.TypeSourceLink;
-import eki.wordweb.data.TypeWordEtymRelation;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordEtymLevel;
 import eki.wordweb.data.WordEtymTuple;
+import eki.wordweb.data.type.TypeSourceLink;
+import eki.wordweb.data.type.TypeWordEtymRelation;
 
 @Component
 public class EtymConversionUtil {

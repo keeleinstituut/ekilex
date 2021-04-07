@@ -4,6 +4,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 import eki.wordweb.constant.CollocMemberGroup;
+import eki.wordweb.data.type.TypeCollocMember;
 
 public class DisplayColloc extends AbstractDataObject {
 

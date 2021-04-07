@@ -6,15 +6,20 @@ import java.util.Map;
 
 import eki.common.constant.Complexity;
 import eki.common.constant.DatasetType;
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 import eki.common.data.LexemeLevel;
+import eki.wordweb.data.type.TypeDefinition;
+import eki.wordweb.data.type.TypeFreeform;
+import eki.wordweb.data.type.TypeLexemeRelation;
+import eki.wordweb.data.type.TypeMeaningRelation;
+import eki.wordweb.data.type.TypeMeaningWord;
+import eki.wordweb.data.type.TypeMediaFile;
+import eki.wordweb.data.type.TypeSourceLink;
+import eki.wordweb.data.type.TypeUsage;
 
-public class Lexeme extends AbstractDataObject implements LexemeLevel, ComplexityType {
+public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityType {
 
 	private static final long serialVersionUID = 1L;
-
-	private Long wordId;
 
 	private Long lexemeId;
 
@@ -74,6 +79,10 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<Classifier> poses;
 
+	private List<String> regionCodes;
+
+	private List<Classifier> regions;
+
 	private List<String> derivCodes;
 
 	private List<Classifier> derivs;
@@ -124,9 +133,11 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 
 	private List<TypeSourceLink> lexemeFreeformSourceLinks;
 
-	private boolean missingMatchWords;
+	private List<LexemeWord> meaningLexemes;
 
-	private boolean moreSecondaryCollocs;
+	private Map<String, List<LexemeWord>> meaningLexemesByLang;
+
+	private boolean missingMatchWords;
 
 	private boolean emptyLexeme;
 
@@ -135,14 +146,6 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 	private boolean showSection2;
 
 	private boolean showSection3;
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
-	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -382,6 +385,22 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.poses = poses;
 	}
 
+	public List<String> getRegionCodes() {
+		return regionCodes;
+	}
+
+	public void setRegionCodes(List<String> regionCodes) {
+		this.regionCodes = regionCodes;
+	}
+
+	public List<Classifier> getRegions() {
+		return regions;
+	}
+
+	public void setRegions(List<Classifier> regions) {
+		this.regions = regions;
+	}
+
 	public List<String> getDerivCodes() {
 		return derivCodes;
 	}
@@ -582,20 +601,28 @@ public class Lexeme extends AbstractDataObject implements LexemeLevel, Complexit
 		this.lexemeFreeformSourceLinks = lexemeFreeformSourceLinks;
 	}
 
+	public List<LexemeWord> getMeaningLexemes() {
+		return meaningLexemes;
+	}
+
+	public void setMeaningLexemes(List<LexemeWord> meaningLexemes) {
+		this.meaningLexemes = meaningLexemes;
+	}
+
+	public Map<String, List<LexemeWord>> getMeaningLexemesByLang() {
+		return meaningLexemesByLang;
+	}
+
+	public void setMeaningLexemesByLang(Map<String, List<LexemeWord>> meaningLexemesByLang) {
+		this.meaningLexemesByLang = meaningLexemesByLang;
+	}
+
 	public boolean isMissingMatchWords() {
 		return missingMatchWords;
 	}
 
 	public void setMissingMatchWords(boolean missingMatchWords) {
 		this.missingMatchWords = missingMatchWords;
-	}
-
-	public boolean isMoreSecondaryCollocs() {
-		return moreSecondaryCollocs;
-	}
-
-	public void setMoreSecondaryCollocs(boolean moreSecondaryCollocs) {
-		this.moreSecondaryCollocs = moreSecondaryCollocs;
 	}
 
 	public boolean isEmptyLexeme() {

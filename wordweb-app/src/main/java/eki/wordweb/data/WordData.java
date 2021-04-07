@@ -10,11 +10,11 @@ public class WordData extends AbstractDataObject {
 
 	private Word word;
 
-	private List<Lexeme> lexLexemes;
+	private List<LexemeWord> lexLexemes;
 
-	private List<Lexeme> termLexemes;
+	private List<LexemeWord> termLexemes;
 
-	private List<Lexeme> limTermLexemes;
+	private List<LexemeWord> limTermLexemes;
 
 	private List<Paradigm> paradigms;
 
@@ -36,27 +36,27 @@ public class WordData extends AbstractDataObject {
 		this.word = word;
 	}
 
-	public List<Lexeme> getLexLexemes() {
+	public List<LexemeWord> getLexLexemes() {
 		return lexLexemes;
 	}
 
-	public void setLexLexemes(List<Lexeme> lexLexemes) {
+	public void setLexLexemes(List<LexemeWord> lexLexemes) {
 		this.lexLexemes = lexLexemes;
 	}
 
-	public List<Lexeme> getTermLexemes() {
+	public List<LexemeWord> getTermLexemes() {
 		return termLexemes;
 	}
 
-	public void setTermLexemes(List<Lexeme> termLexemes) {
+	public void setTermLexemes(List<LexemeWord> termLexemes) {
 		this.termLexemes = termLexemes;
 	}
 
-	public List<Lexeme> getLimTermLexemes() {
+	public List<LexemeWord> getLimTermLexemes() {
 		return limTermLexemes;
 	}
 
-	public void setLimTermLexemes(List<Lexeme> limTermLexemes) {
+	public void setLimTermLexemes(List<LexemeWord> limTermLexemes) {
 		this.limTermLexemes = limTermLexemes;
 	}
 

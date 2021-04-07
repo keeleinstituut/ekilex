@@ -5,6 +5,7 @@ import java.util.List;
 import eki.common.constant.RelationStatus;
 import eki.common.data.AbstractDataObject;
 
+// TODO possible to refactor? - yogesh
 public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
@@ -22,6 +23,8 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 	private List<String> lexemeRegisterCodes;
 
 	private List<String> lexemeGovernmentValues;
+
+	private String lexemeLevels;
 
 	private Long meaningId;
 
@@ -121,6 +124,14 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	public void setLexemeGovernmentValues(List<String> lexemeGovernmentValues) {
 		this.lexemeGovernmentValues = lexemeGovernmentValues;
+	}
+
+	public String getLexemeLevels() {
+		return lexemeLevels;
+	}
+
+	public void setLexemeLevels(String lexemeLevels) {
+		this.lexemeLevels = lexemeLevels;
 	}
 
 	public Long getMeaningId() {
