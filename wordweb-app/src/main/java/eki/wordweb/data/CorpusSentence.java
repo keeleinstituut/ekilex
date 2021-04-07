@@ -2,7 +2,7 @@ package eki.wordweb.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class CorporaSentence extends AbstractDataObject {
+public class CorpusSentence extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
