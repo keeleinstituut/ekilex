@@ -5,6 +5,7 @@ class Sorter {
     this.draggable = $(this.main.attr('data-dropper:draggable'));
     this.type = this.main.attr('data-sorter:type');
     this.handle = this.main.attr('data-sorter:handle') || false;
+    this.id = Math.random().toString().substr(2);
   }
 
   /* Unified sunctionality */
@@ -99,8 +100,14 @@ class Sorter {
       });
     });
 
+
     const main = this.main;
     this.main.on('sortstop', function(event, ui){
+
+      if (this.main.find('.details-open').length) {
+        return false;
+      }
+
       const items = main.find('[data-level1]');
       items.each(function(index){
         $(this).attr('data-order', index);
@@ -297,16 +304,22 @@ class Sorter {
 
   initialize() {
     if (this.type === 'lex-details') {
-      this.differentiateLexDetails();
-      $(window).on('update:sorter', () => {
-        this.checkRequirements();
-      });
+      if (this.main.parents('.scrollable-area:first').find('.details-open').length === 0) {
+        this.differentiateLexDetails();
+        $(window).on(`sorter.${this.id}`, () => {
+          if (this.main.is('.ui-sortable')) {
+            this.checkRequirements();
+          }
+        });
+        this.bindSortable();
+      }
     } else if (this.type === 'syn') {
       this.differentiateSynType();
+      this.bindSortable();
     } else {
       this.main.children().addClass('sortable-main-group');
+      this.bindSortable();
     }
-    this.bindSortable();
   }
 }
 
