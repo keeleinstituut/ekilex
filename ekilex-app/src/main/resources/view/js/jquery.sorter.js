@@ -104,7 +104,7 @@ class Sorter {
     const main = this.main;
     this.main.on('sortstop', function(event, ui){
 
-      if (this.main && this.main.find('.details-open').length) {
+      if (!this.main || this.main.find('.details-open').length) {
         return false;
       }
 
