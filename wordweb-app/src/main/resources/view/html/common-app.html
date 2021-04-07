@@ -28,6 +28,13 @@
 		'fb_service_error' : /*[[#{label.fb.missing.sevice}]]*/'Tagasiside teenus ei ole seadistatud.'
 	}
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-134441495-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-134441495-1');
+</script>
 </head>
 <body>
   <!-- Default favicon -->
@@ -145,9 +152,6 @@
         </a>
         <a th:href="@{/teacher-tools}" class="nav-link menu-item" data-item-name="ttools">
           <span th:text="#{menu.ttools}">Õpetaja tööriistad</span>
-        </a>
-        <a th:href="@{/pronunciation-exercises}" class="nav-link menu-item" data-item-name="pronunciation.exercises">
-          <span th:text="#{menu.pronunciation.exercises}">E-hääldusharjutused</span>
         </a>
         <a th:href="@{/learn}" class="nav-link menu-item" data-item-name="learn">
           <span th:text="#{menu.learn}">Õpi eesti keelt</span>
