@@ -301,7 +301,7 @@ function initNewWordDlg() {
 		});
 		let searchValue = $("input[name='simpleSearchFilter']").val() || '';
 		if (!searchValue.includes('*') && !searchValue.includes('?')) {
-			newWordDlg.find('[name=wordValue]').val(searchValue);
+			newWordDlg.find('[name=wordValue]').val();
 		} else {
 			newWordDlg.find('[name=wordValue]').val(null);
 		}
@@ -796,4 +796,3 @@ function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 		openAlertDlg(failMessage);
 	});
 };
-
