@@ -143,7 +143,7 @@
               type="button"
               aria-expanded="false"
               data-dynamic-text="true"
-              th:unless="${#lists.isEmpty(sentences)}">
+              th:if="${#lists.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
         <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
         </span>
@@ -175,7 +175,7 @@
               type="button"
               aria-expanded="false"
               data-dynamic-text="true"
-              th:unless="${#maps.isEmpty(sentences)}">
+              th:if="${#maps.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
         <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
         </span>
