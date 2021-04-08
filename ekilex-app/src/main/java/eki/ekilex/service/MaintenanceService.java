@@ -100,14 +100,26 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 			String valueClean = textDecorationService.unifyToApostrophe(value);
 			String valueAsWordTrgt = textDecorationService.removeAccents(valueClean);
 			updateExists = false;
-			if (StringUtils.isBlank(valueAsWordTrgt)) {
-				if (!StringUtils.equals(valueAsWordSrc, valueClean)) {
+			if (StringUtils.isBlank(valueAsWordSrc)) {
+				// initial valuation
+				if (StringUtils.isNotBlank(valueAsWordTrgt)) {
+					wordRecord.setValueAsWord(valueAsWordTrgt);
+					updateExists = true;
+				} else if (!StringUtils.equals(value, valueClean)) {
 					wordRecord.setValueAsWord(valueClean);
 					updateExists = true;
 				}
-			} else if (!StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
-				wordRecord.setValueAsWord(valueAsWordTrgt);
-				updateExists = true;
+			} else {
+				// compare with existing value
+				if (StringUtils.isNotBlank(valueAsWordTrgt)) {
+					if (!StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
+						wordRecord.setValueAsWord(valueAsWordTrgt);
+						updateExists = true;
+					}
+				} else if (!StringUtils.equals(valueAsWordSrc, valueClean)) {
+					wordRecord.setValueAsWord(valueClean);
+					updateExists = true;
+				}
 			}
 			if (updateExists) {
 				wordRecord.update();
