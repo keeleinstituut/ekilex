@@ -51,6 +51,7 @@ import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeTag;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.MeaningNote;
+import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.Note;
@@ -61,7 +62,6 @@ import eki.ekilex.data.OdUsageDefinition;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceProperty;
@@ -83,6 +83,7 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 
 @Component
@@ -625,7 +626,7 @@ public class ConversionUtil implements GlobalConstant {
 		return definitionLangGroups;
 	}
 
-	public List<WordGroup> composeWordGroups(List<Relation> groupsMembers, List<Classifier> allAspects) {
+	public List<WordGroup> composeWordGroups(List<WordRelation> groupsMembers, List<Classifier> allAspects) {
 
 		List<String> aspectCodeOrder;
 		if (CollectionUtils.isEmpty(allAspects)) {
@@ -635,13 +636,13 @@ public class ConversionUtil implements GlobalConstant {
 		}
 
 		List<WordGroup> groups = new ArrayList<>();
-		Map<Long, List<Relation>> memberGroups = groupsMembers.stream().collect(groupingBy(Relation::getGroupId));
+		Map<Long, List<WordRelation>> memberGroups = groupsMembers.stream().collect(groupingBy(WordRelation::getGroupId));
 		for (Long groupId : memberGroups.keySet()) {
-			List<Relation> groupMembers = memberGroups.get(groupId);
-			Relation firstGroupMember = groupMembers.get(0);
+			List<WordRelation> groupMembers = memberGroups.get(groupId);
+			WordRelation firstGroupMember = groupMembers.get(0);
 			String groupWordRelTypeCode = firstGroupMember.getGroupWordRelTypeCode();
 			if (StringUtils.equals(WORD_REL_TYPE_CODE_ASCPECTS, groupWordRelTypeCode)) {
-				groupMembers.sort((Relation rel1, Relation rel2) -> {
+				groupMembers.sort((WordRelation rel1, WordRelation rel2) -> {
 					String aspectCode1 = rel1.getWordAspectCode();
 					String aspectCode2 = rel2.getWordAspectCode();
 					if (StringUtils.isBlank(aspectCode1) || StringUtils.isBlank(aspectCode2)) {
@@ -661,19 +662,19 @@ public class ConversionUtil implements GlobalConstant {
 		return groups;
 	}
 
-	public WordRelationDetails composeWordRelationDetails(List<Relation> wordRelations, List<WordGroup> wordGroups, String wordLang, List<Classifier> allWordRelationTypes) {
+	public WordRelationDetails composeWordRelationDetails(List<WordRelation> wordRelations, List<WordGroup> wordGroups, String wordLang, List<Classifier> allWordRelationTypes) {
 
 		WordRelationDetails wordRelationDetails = new WordRelationDetails();
 		wordRelationDetails.setWordGroups(wordGroups);
 		wordRelationDetails.setPrimaryWordRelationGroups(new ArrayList<>());
 		wordRelationDetails.setSecondaryWordRelationGroups(new ArrayList<>());
 
-		Map<String, List<Relation>> wordRelationsMap = wordRelations.stream().collect(groupingBy(Relation::getRelTypeCode));
+		Map<String, List<WordRelation>> wordRelationsMap = wordRelations.stream().collect(groupingBy(WordRelation::getRelTypeCode));
 
 		for (Classifier wordRelationType : allWordRelationTypes) {
 			String relTypeCode = wordRelationType.getCode();
 			String relTypeLabel = wordRelationType.getValue();
-			List<Relation> relatedWordsOfType = wordRelationsMap.get(relTypeCode);
+			List<WordRelation> relatedWordsOfType = wordRelationsMap.get(relTypeCode);
 			List<WordGroup> wordRelationGroups;
 			if (ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, relTypeCode)) {
 				wordRelationGroups = wordRelationDetails.getPrimaryWordRelationGroups();
@@ -691,17 +692,17 @@ public class ConversionUtil implements GlobalConstant {
 		return wordRelationDetails;
 	}
 
-	private void handleWordRelType(String relTypeCode, String relTypeLabel, List<Relation> wordRelations, List<WordGroup> wordRelationGroups, String wordLang) {
+	private void handleWordRelType(String relTypeCode, String relTypeLabel, List<WordRelation> wordRelations, List<WordGroup> wordRelationGroups, String wordLang) {
 
 		WordGroup wordRelationGroup;
 		Locale locale = LocaleContextHolder.getLocale();
 		if (StringUtils.equals(WORD_REL_TYPE_CODE_RAW, relTypeCode)) {
 			String synLabel = messageSource.getMessage("classifier.word_rel_type.raw.syn", new Object[0], locale);
 			String matchLabel = messageSource.getMessage("classifier.word_rel_type.raw.match", new Object[0], locale);
-			List<Relation> wordRelationSyns = null;
-			List<Relation> wordRelationMatches = null;
+			List<WordRelation> wordRelationSyns = null;
+			List<WordRelation> wordRelationMatches = null;
 			if (CollectionUtils.isNotEmpty(wordRelations)) {
-				Map<Boolean, List<Relation>> wordRelationSynOrMatchMap = wordRelations.stream()
+				Map<Boolean, List<WordRelation>> wordRelationSynOrMatchMap = wordRelations.stream()
 						.collect(Collectors.groupingBy(wordRelation -> StringUtils.equals(wordLang, wordRelation.getWordLang())));
 				wordRelationSyns = wordRelationSynOrMatchMap.get(Boolean.TRUE);
 				wordRelationMatches = wordRelationSynOrMatchMap.get(Boolean.FALSE);
@@ -840,7 +841,7 @@ public class ConversionUtil implements GlobalConstant {
 	}
 
 	public List<SynonymLangGroup> composeSynonymLangGroups(
-			List<Relation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang, List<ClassifierSelect> languagesOrder) {
+			List<MeaningRelation> synMeaningRelations, List<MeaningWord> meaningWords, EkiUserProfile userProfile, String wordLang, List<ClassifierSelect> languagesOrder) {
 
 		List<Synonym> synonyms = new ArrayList<>();
 
@@ -890,11 +891,11 @@ public class ConversionUtil implements GlobalConstant {
 				prefWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 			}
 
-			Map<Long, List<Relation>> groupedByIdRelationsMap = synMeaningRelations.stream().collect(groupingBy(Relation::getId));
-			for (List<Relation> groupedByIdRelations : groupedByIdRelationsMap.values()) {
+			Map<Long, List<MeaningRelation>> groupedByIdRelationsMap = synMeaningRelations.stream().collect(groupingBy(MeaningRelation::getId));
+			for (List<MeaningRelation> groupedByIdRelations : groupedByIdRelationsMap.values()) {
 
-				Map<String, List<Relation>> groupedByLangRelationsMap = groupedByIdRelations.stream().collect(groupingBy(Relation::getWordLang));
-				for (List<Relation> groupedByLangRelations : groupedByLangRelationsMap.values()) {
+				Map<String, List<MeaningRelation>> groupedByLangRelationsMap = groupedByIdRelations.stream().collect(groupingBy(MeaningRelation::getWordLang));
+				for (List<MeaningRelation> groupedByLangRelations : groupedByLangRelationsMap.values()) {
 
 					String groupWordLang = groupedByLangRelations.get(0).getWordLang();
 					if (CollectionUtils.isNotEmpty(prefWordLangs) && !prefWordLangs.contains(groupWordLang)) {
@@ -904,7 +905,7 @@ public class ConversionUtil implements GlobalConstant {
 					Synonym meaningRelSyn = null;
 					boolean isFirstWord = true;
 					List<SynWord> synWords = new ArrayList<>();
-					for (Relation groupedByLangRelation : groupedByLangRelations) {
+					for (MeaningRelation groupedByLangRelation : groupedByLangRelations) {
 						if (meaningRelSyn == null) {
 							meaningRelSyn = new Synonym();
 							meaningRelSyn.setType(SynonymType.MEANING_REL);
@@ -981,11 +982,11 @@ public class ConversionUtil implements GlobalConstant {
 		return synonymLangGroups;
 	}
 
-	public List<List<Relation>> composeViewMeaningRelations(List<Relation> relations, EkiUserProfile userProfile, String sourceLang, List<ClassifierSelect> languagesOrder) {
+	public List<List<MeaningRelation>> composeViewMeaningRelations(List<MeaningRelation> relations, EkiUserProfile userProfile, String sourceLang, List<ClassifierSelect> languagesOrder) {
 
-		List<Long> relationIds = relations.stream().map(Relation::getId).distinct().collect(Collectors.toList());
-		Map<Long, List<Relation>> groupedRelationsMap = relations.stream().collect(groupingBy(Relation::getId));
-		List<List<Relation>> groupedRelationsList = relationIds.stream().map(relationId -> groupedRelationsMap.get(relationId)).collect(Collectors.toList());
+		List<Long> relationIds = relations.stream().map(MeaningRelation::getId).distinct().collect(Collectors.toList());
+		Map<Long, List<MeaningRelation>> groupedRelationsMap = relations.stream().collect(groupingBy(MeaningRelation::getId));
+		List<List<MeaningRelation>> groupedRelationsList = relationIds.stream().map(relationId -> groupedRelationsMap.get(relationId)).collect(Collectors.toList());
 		if (userProfile == null) {
 			return groupedRelationsList;
 		}
@@ -1012,7 +1013,7 @@ public class ConversionUtil implements GlobalConstant {
 		return groupedRelationsList;
 	}
 
-	private void filterMeaningRelations(List<String> wordLangs, List<String> allLangs, List<Relation> meaningRelations, boolean showFirstWordOnly) {
+	private void filterMeaningRelations(List<String> wordLangs, List<String> allLangs, List<MeaningRelation> meaningRelations, boolean showFirstWordOnly) {
 
 		boolean relationLangIsInWordLangs = meaningRelations.stream().anyMatch(relation -> wordLangs.contains(relation.getWordLang()));
 		if (relationLangIsInWordLangs) {
@@ -1028,7 +1029,7 @@ public class ConversionUtil implements GlobalConstant {
 		}
 
 		if (showFirstWordOnly) {
-			Iterator<Relation> relationIterator = meaningRelations.iterator();
+			Iterator<MeaningRelation> relationIterator = meaningRelations.iterator();
 			List<String> occurredLangs = new ArrayList<>();
 			while (relationIterator.hasNext()) {
 				String iteratorLang = relationIterator.next().getWordLang();

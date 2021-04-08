@@ -31,9 +31,9 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<NoteLangGroup> noteLangGroups;
 
-	private List<Relation> relations;
+	private List<MeaningRelation> relations;
 
-	private List<List<Relation>> viewRelations;
+	private List<List<MeaningRelation>> viewRelations;
 
 	private List<SynonymLangGroup> synonymLangGroups;
 
@@ -139,19 +139,19 @@ public class Meaning extends AbstractCrudEntity {
 		this.noteLangGroups = noteLangGroups;
 	}
 
-	public List<Relation> getRelations() {
+	public List<MeaningRelation> getRelations() {
 		return relations;
 	}
 
-	public void setRelations(List<Relation> relations) {
+	public void setRelations(List<MeaningRelation> relations) {
 		this.relations = relations;
 	}
 
-	public List<List<Relation>> getViewRelations() {
+	public List<List<MeaningRelation>> getViewRelations() {
 		return viewRelations;
 	}
 
-	public void setViewRelations(List<List<Relation>> viewRelations) {
+	public void setViewRelations(List<List<MeaningRelation>> viewRelations) {
 		this.viewRelations = viewRelations;
 	}
 

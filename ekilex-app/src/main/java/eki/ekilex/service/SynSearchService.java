@@ -26,9 +26,9 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.NoteSourceTuple;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SynRelation;
@@ -41,6 +41,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.SynSearchDbService;
@@ -112,7 +113,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		permCalculator.applyCrud(userRole, lexeme);
 
-		List<Relation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
+		List<MeaningRelation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		appendLexemeLevels(synMeaningRelations);
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId, meaningWordLangsRestriction);
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
@@ -188,11 +189,11 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {
-		List<Relation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, RAW_RELATION_CODE);
+		List<WordRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, RAW_RELATION_CODE);
 
 		if (existingRelations.size() > 1) {
-			Relation lastRelation = existingRelations.get(existingRelations.size() - 1);
-			List<Long> existingOrderByValues = existingRelations.stream().map(Relation::getOrderBy).collect(Collectors.toList());
+			WordRelation lastRelation = existingRelations.get(existingRelations.size() - 1);
+			List<Long> existingOrderByValues = existingRelations.stream().map(WordRelation::getOrderBy).collect(Collectors.toList());
 
 			cudDbService.updateWordRelationOrderBy(relationId, lastRelation.getOrderBy());
 			existingRelations.remove(0);
@@ -200,7 +201,7 @@ public class SynSearchService extends AbstractWordSearchService {
 			existingOrderByValues.remove(existingOrderByValues.size() - 1);
 
 			int relIdx = 0;
-			for (Relation relation : existingRelations) {
+			for (WordRelation relation : existingRelations) {
 				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
 				relIdx++;
 			}
