@@ -145,7 +145,6 @@ as
 select ws.sgroup,
        ws.word,
        ws.crit,
-       unaccent(ws.crit) unacrit,
        ws.lang_order_by,
        wlc.lang_complexities
 from (

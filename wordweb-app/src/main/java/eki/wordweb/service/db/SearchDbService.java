@@ -108,11 +108,16 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, SearchContext searchContext, int maxWordCount) {
+	public Map<String, List<WordSearchElement>> getWordsByInfixLev(String wordInfix, String wordInfixUnaccent, SearchContext searchContext, int maxWordCount) {
 
-		String wordInfixLower = StringUtils.lowerCase(wordInfix);
-		String wordInfixCrit = '%' + wordInfixLower + '%';
-		String wordInfixCritUnaccent = '%' + StringUtils.stripAccents(wordInfixLower) + '%';
+		Field<String> wordInfixLowerField = DSL.lower(wordInfix);
+		Field<String> wordInfixLowerLikeField = DSL.lower('%' + wordInfix + '%');
+		Field<String> wordInfixLowerUnaccentLikeField;
+		if (StringUtils.isBlank(wordInfixUnaccent)) {
+			wordInfixLowerUnaccentLikeField = wordInfixLowerLikeField;
+		} else {
+			wordInfixLowerUnaccentLikeField = DSL.lower('%' + wordInfixUnaccent + '%');
+		}
 
 		MviewWwWordSearch w = MVIEW_WW_WORD_SEARCH.as("w");
 		MviewWwWordSearch aw = MVIEW_WW_WORD_SEARCH.as("aw");
@@ -129,7 +134,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.from(w)
 				.where(
 						w.SGROUP.eq(WORD_SEARCH_GROUP_WORD)
-								.and(w.UNACRIT.like(wordInfixCritUnaccent)))
+								.and(w.CRIT.like(wordInfixLowerLikeField)))
 				.unionAll(DSL
 						.select(
 								wgf.as("sgroup"),
@@ -140,15 +145,13 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						.from(aw)
 						.where(
 								aw.SGROUP.eq(WORD_SEARCH_GROUP_AS_WORD)
-										.and(aw.UNACRIT.like(wordInfixCritUnaccent))))
+										.and(aw.CRIT.like(wordInfixLowerUnaccentLikeField))))
 				.asTable("ws");
 
-		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), DSL.inline(wordInfixLower)));
+		Field<Integer> wlf = DSL.field(Routines.levenshtein1(ws.field("word", String.class), wordInfixLowerField));
 
-		Condition wsWhere = ws.field("crit").like(wordInfixCrit);
-		wsWhere = applyLangCompDatasetFilter(ws, searchContext, wsWhere);
-
-		Condition fWhere = f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordInfixLower));
+		Condition wsWhere = applyLangCompDatasetFilter(ws, searchContext, DSL.noCondition());
+		Condition fWhere = f.SGROUP.eq(WORD_SEARCH_GROUP_FORM).and(f.CRIT.eq(wordInfixLowerField));
 		fWhere = applyLangCompDatasetFilter(f, searchContext, fWhere);
 
 		Table<Record3<String, String, Integer>> wfs = DSL
@@ -183,22 +186,22 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 
 	public List<Word> getWords(String searchWord, SearchContext searchContext) {
 
-		MviewWwWord w = MVIEW_WW_WORD.as("w");
-		MviewWwForm f = MVIEW_WW_FORM.as("f");
-
-		String searchWordLower = StringUtils.lowerCase(searchWord);
-		boolean fiCollationExists = searchContext.isFiCollationExists();
-
-		if (StringUtils.equals(searchWordLower, ILLEGAL_FORM_VALUE)) {
+		if (StringUtils.equals(searchWord, ILLEGAL_FORM_VALUE)) {
 			return Collections.emptyList();
 		}
+
+		Field<String> searchWordLowerField = DSL.lower(searchWord);
+		boolean fiCollationExists = searchContext.isFiCollationExists();
+
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		MviewWwForm f = MVIEW_WW_FORM.as("f");
 
 		Table<Record> ww = DSL
 				.select(w.fields())
 				.select(DSL.field(DSL.val(true)).as("word_match"))
 				.select(DSL.field(DSL.val(false)).as("form_match"))
 				.from(w)
-				.where(DSL.or(DSL.lower(w.WORD).eq(searchWordLower), DSL.lower(w.AS_WORD).eq(searchWordLower)))
+				.where(DSL.or(DSL.lower(w.WORD).eq(searchWordLowerField), DSL.lower(w.AS_WORD).eq(searchWordLowerField)))
 				.unionAll(DSL
 						.select(w.fields())
 						.select(DSL.field(DSL.val(false)).as("word_match"))
@@ -208,7 +211,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 								.select(f.WORD_ID)
 								.from(f)
 								.where(f.WORD_ID.eq(w.WORD_ID)
-										.and(DSL.lower(f.VALUE).eq(searchWordLower))
+										.and(DSL.lower(f.VALUE).eq(searchWordLowerField))
 										.and(f.VALUE.ne(f.WORD))
 										.and(f.MORPH_CODE.ne(UNKNOWN_FORM_CODE))
 										.and(f.MORPH_EXISTS.isTrue())

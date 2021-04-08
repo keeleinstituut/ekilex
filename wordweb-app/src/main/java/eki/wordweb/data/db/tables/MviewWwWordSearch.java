@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row6;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
 
-    private static final long serialVersionUID = 1258741389;
+    private static final long serialVersionUID = 287718948;
 
     /**
      * The reference instance of <code>public.mview_ww_word_search</code>
@@ -61,11 +61,6 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
      * The column <code>public.mview_ww_word_search.crit</code>.
      */
     public final TableField<MviewWwWordSearchRecord, String> CRIT = createField(DSL.name("crit"), org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_search.unacrit</code>.
-     */
-    public final TableField<MviewWwWordSearchRecord, String> UNACRIT = createField(DSL.name("unacrit"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.lang_order_by</code>.
@@ -117,7 +112,7 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SGROUP_IDX, Indexes.MVIEW_WW_WORD_SEARCH_UNACRIT_TRI_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_TRI_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SGROUP_IDX);
     }
 
     @Override
@@ -147,11 +142,11 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row6 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row6<String, String, String, String, Long, TypeLangComplexityRecord[]> fieldsRow() {
-        return (Row6) super.fieldsRow();
+    public Row5<String, String, String, Long, TypeLangComplexityRecord[]> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }
