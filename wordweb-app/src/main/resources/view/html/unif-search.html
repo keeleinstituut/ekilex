@@ -132,6 +132,7 @@
             <th:block th:replace="common-search-sidebar :: etymology_new"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
             <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
+            <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
           </div>
         </div>
       </div>
@@ -149,6 +150,7 @@
   	var wordDetailsUrl = /*[[@{/worddetails/unif}]]*/"/worddetails/unif";
   	var morphoUrl = /*[[@{/morpho/unif}]]*/"/morpho/unif";
   	var corpUrl = /*[[@{/corp/detail}]]*/"/corp/detail";
+  	var corpTransUrl = /*[[@{/corptrans}]]*/"/corptrans";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search-unif');
   </script>

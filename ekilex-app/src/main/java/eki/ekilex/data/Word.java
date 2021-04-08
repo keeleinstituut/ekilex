@@ -47,7 +47,7 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private List<WordNote> notes;
 
-	private List<Relation> relations;
+	private List<WordRelation> relations;
 
 	private List<WordGroup> groups;
 
@@ -229,11 +229,11 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.notes = notes;
 	}
 
-	public List<Relation> getRelations() {
+	public List<WordRelation> getRelations() {
 		return relations;
 	}
 
-	public void setRelations(List<Relation> relations) {
+	public void setRelations(List<WordRelation> relations) {
 		this.relations = relations;
 	}
 

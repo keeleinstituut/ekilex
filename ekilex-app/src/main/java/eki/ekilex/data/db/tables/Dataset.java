@@ -18,7 +18,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row9;
+import org.jooq.Row10;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dataset extends TableImpl<DatasetRecord> {
 
-    private static final long serialVersionUID = 1180947782;
+    private static final long serialVersionUID = -1305876387;
 
     /**
      * The reference instance of <code>public.dataset</code>
@@ -93,6 +93,11 @@ public class Dataset extends TableImpl<DatasetRecord> {
      * The column <code>public.dataset.contact</code>.
      */
     public final TableField<DatasetRecord, String> CONTACT = createField(DSL.name("contact"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.dataset.image_url</code>.
+     */
+    public final TableField<DatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.dataset</code> table reference
@@ -179,11 +184,11 @@ public class Dataset extends TableImpl<DatasetRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row9 type methods
+    // Row10 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row9<String, String, String, String, Boolean, Boolean, Long, Boolean, String> fieldsRow() {
-        return (Row9) super.fieldsRow();
+    public Row10<String, String, String, String, Boolean, Boolean, Long, Boolean, String, String> fieldsRow() {
+        return (Row10) super.fieldsRow();
     }
 }

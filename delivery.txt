@@ -1,1 +1,3 @@
 Märkused ver 1.22.0 tarne kohta:
+
+Uuendada sõnaveebi properties faile, lisandus Indreku korpuse teenus ja olemasolevate korpuste parameetite nimetused muutusid

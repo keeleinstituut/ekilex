@@ -42,14 +42,15 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeNote;
+import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningNote;
+import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourcePropertyTuple;
@@ -63,6 +64,7 @@ import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIds;
 import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -583,7 +585,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
 		List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
-		List<Relation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.getPrimaryCollocationTuples(lexemeId);
 		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
@@ -616,8 +618,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			return EMPTY_CONTENT_JSON;
 		}
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Relation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Relation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<WordRelation> wordRelations = lexSearchDbService.getWordRelations(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<WordRelation> wordGroupMembers = lexSearchDbService.getWordGroupMembers(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
@@ -661,7 +663,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 		List<NoteLangGroup> meaningNoteLangGroups = conversionUtil.composeNoteLangGroups(meaningNotes, null);
 		List<Classifier> meaningSemanticTypes = commonDataDbService.getMeaningSemanticTypes(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<Relation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, null, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, null, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, null);
 
 		meaning.setMeaningId(meaningId);

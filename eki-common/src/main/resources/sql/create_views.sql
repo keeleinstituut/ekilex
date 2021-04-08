@@ -1953,6 +1953,7 @@ create view view_ww_dataset
        name,
        description,
        contact,
+       image_url,
        is_superior,
        order_by
      from dataset

@@ -15,6 +15,8 @@ public class Dataset extends AbstractDataObject {
 
 	private String description;
 
+	private String imageUrl;
+
 	private boolean isSuperior;
 
 	public String getCode() {
@@ -47,6 +49,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public boolean isSuperior() {

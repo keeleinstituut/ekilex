@@ -104,33 +104,30 @@ class Sorter {
     const main = this.main;
     this.main.on('sortstop', function(event, ui){
 
-      if (main.find('.details-open').length) {
-        return false;
+      if (!main.find('.details-open').length) {      
+        const items = main.find('[data-level1]');
+        items.each(function(index){
+          $(this).attr('data-order', index);
+        });
+        const activeItem = $(ui.item).find('[data-level1]');
+        const id = activeItem.attr('data-id');
+        const order = activeItem.attr('data-order');
+
+        const data = {
+          lexemeId: id,
+          position: order,
+        };
+        $.ajax({
+          url: applicationUrl + 'update_lexeme_levels',
+          data: JSON.stringify(data),
+          method: 'POST',
+          dataType: 'json',
+          contentType: 'application/json',
+          complete: function(){
+            main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+          },
+        });
       }
-
-      const items = main.find('[data-level1]');
-      items.each(function(index){
-        $(this).attr('data-order', index);
-      });
-      const activeItem = $(ui.item).find('[data-level1]');
-      const id = activeItem.attr('data-id');
-      const order = activeItem.attr('data-order');
-
-      const data = {
-        lexemeId: id,
-        position: order,
-      };
-      $.ajax({
-        url: applicationUrl + 'update_lexeme_levels',
-        data: JSON.stringify(data),
-        method: 'POST',
-        dataType: 'json',
-        contentType: 'application/json',
-        complete: function(){
-          main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
-        },
-      });
-      
     });
   }
 

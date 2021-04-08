@@ -1,30 +1,14 @@
 package eki.ekilex.data;
 
-import java.util.List;
-
-import eki.common.constant.RelationStatus;
 import eki.common.data.AbstractDataObject;
 
-// TODO possible to refactor? - yogesh
-public class Relation extends AbstractDataObject implements DecoratedWordType {
+public class AbstractRelation extends AbstractDataObject implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 
-	private Long groupId;
-
-	private String groupWordRelTypeCode;
-
 	private Long lexemeId;
-
-	private List<String> lexemeValueStateCodes;
-
-	private List<String> lexemeRegisterCodes;
-
-	private List<String> lexemeGovernmentValues;
-
-	private String lexemeLevels;
 
 	private Long meaningId;
 
@@ -50,23 +34,9 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	private boolean homonymsExist;
 
-	private List<String> wordDefinitions;
-
-	private List<String> wordLexemesPoses;
-
-	private List<String> datasetCodes;
-
 	private String relTypeCode;
 
 	private String relTypeLabel;
-
-	private RelationStatus relationStatus;
-
-	private RelationStatus oppositeRelationStatus;
-
-	private List<TypeWordRelParam> relationParams;
-
-	private Float weight;
 
 	private Long orderBy;
 
@@ -78,60 +48,12 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 		this.id = id;
 	}
 
-	public Long getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
-	}
-
-	public String getGroupWordRelTypeCode() {
-		return groupWordRelTypeCode;
-	}
-
-	public void setGroupWordRelTypeCode(String groupWordRelTypeCode) {
-		this.groupWordRelTypeCode = groupWordRelTypeCode;
-	}
-
 	public Long getLexemeId() {
 		return lexemeId;
 	}
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
-	}
-
-	public List<String> getLexemeValueStateCodes() {
-		return lexemeValueStateCodes;
-	}
-
-	public void setLexemeValueStateCodes(List<String> lexemeValueStateCodes) {
-		this.lexemeValueStateCodes = lexemeValueStateCodes;
-	}
-
-	public List<String> getLexemeRegisterCodes() {
-		return lexemeRegisterCodes;
-	}
-
-	public void setLexemeRegisterCodes(List<String> lexemeRegisterCodes) {
-		this.lexemeRegisterCodes = lexemeRegisterCodes;
-	}
-
-	public List<String> getLexemeGovernmentValues() {
-		return lexemeGovernmentValues;
-	}
-
-	public void setLexemeGovernmentValues(List<String> lexemeGovernmentValues) {
-		this.lexemeGovernmentValues = lexemeGovernmentValues;
-	}
-
-	public String getLexemeLevels() {
-		return lexemeLevels;
-	}
-
-	public void setLexemeLevels(String lexemeLevels) {
-		this.lexemeLevels = lexemeLevels;
 	}
 
 	public Long getMeaningId() {
@@ -242,30 +164,6 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 		this.homonymsExist = homonymsExist;
 	}
 
-	public List<String> getWordDefinitions() {
-		return wordDefinitions;
-	}
-
-	public void setWordDefinitions(List<String> wordDefinitions) {
-		this.wordDefinitions = wordDefinitions;
-	}
-
-	public List<String> getWordLexemesPoses() {
-		return wordLexemesPoses;
-	}
-
-	public void setWordLexemesPoses(List<String> wordLexemesPoses) {
-		this.wordLexemesPoses = wordLexemesPoses;
-	}
-
-	public List<String> getDatasetCodes() {
-		return datasetCodes;
-	}
-
-	public void setDatasetCodes(List<String> datasetCodes) {
-		this.datasetCodes = datasetCodes;
-	}
-
 	public String getRelTypeCode() {
 		return relTypeCode;
 	}
@@ -280,38 +178,6 @@ public class Relation extends AbstractDataObject implements DecoratedWordType {
 
 	public void setRelTypeLabel(String relTypeLabel) {
 		this.relTypeLabel = relTypeLabel;
-	}
-
-	public RelationStatus getRelationStatus() {
-		return relationStatus;
-	}
-
-	public void setRelationStatus(RelationStatus relationStatus) {
-		this.relationStatus = relationStatus;
-	}
-
-	public RelationStatus getOppositeRelationStatus() {
-		return oppositeRelationStatus;
-	}
-
-	public void setOppositeRelationStatus(RelationStatus oppositeRelationStatus) {
-		this.oppositeRelationStatus = oppositeRelationStatus;
-	}
-
-	public List<TypeWordRelParam> getRelationParams() {
-		return relationParams;
-	}
-
-	public void setRelationParams(List<TypeWordRelParam> relationParams) {
-		this.relationParams = relationParams;
-	}
-
-	public Float getWeight() {
-		return weight;
-	}
-
-	public void setWeight(Float weight) {
-		this.weight = weight;
 	}
 
 	public Long getOrderBy() {

@@ -20,18 +20,18 @@ import org.springframework.web.client.RestTemplate;
 import eki.common.constant.GlobalConstant;
 import eki.wordweb.constant.SystemConstant;
 
-public abstract class AbstractCorporaService implements SystemConstant, GlobalConstant {
+public abstract class AbstractCorpusService implements SystemConstant, GlobalConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractCorporaService.class);
+	private static final Logger logger = LoggerFactory.getLogger(AbstractCorpusService.class);
 
-	protected Map<String, Object> requestSentences(URI corporaUrl) {
+	protected Map<String, Object> requestSentences(URI corpusUrl) {
 
 		Map<String, Object> response = Collections.emptyMap();
-		if (isNotEnabled(corporaUrl)) {
+		if (isNotEnabled(corpusUrl)) {
 			return response;
 		}
 
-		String responseAsString = doGetRequest(corporaUrl);
+		String responseAsString = doGetRequest(corpusUrl);
 		if (responseAsString != null) {
 			JsonParser jsonParser = JsonParserFactory.getJsonParser();
 			response = jsonParser.parseMap(responseAsString);
@@ -39,9 +39,9 @@ public abstract class AbstractCorporaService implements SystemConstant, GlobalCo
 		return response;
 	}
 
-	protected String parseSentenceToQueryString(String sentence, String wordQueryKey, boolean isPosQuery) {
+	protected String parseWordValueToQueryString(String wordValue, String wordQueryKey, boolean isPosQuery) {
 
-		String[] words = StringUtils.split(sentence, " ");
+		String[] words = StringUtils.split(wordValue, " ");
 		List<String> wordQuerys = new ArrayList<>();
 		for (String word : words) {
 			String wordQuery = createWordQueryString(word, wordQueryKey, isPosQuery);
@@ -78,8 +78,8 @@ public abstract class AbstractCorporaService implements SystemConstant, GlobalCo
 		}
 	}
 
-	private boolean isNotEnabled(URI corporaUrl) {
-		return corporaUrl == null;
+	private boolean isNotEnabled(URI corpusUrl) {
+		return corpusUrl == null;
 	}
 
 }

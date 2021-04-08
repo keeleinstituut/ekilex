@@ -16,42 +16,42 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import eki.wordweb.data.CorporaSentence;
+import eki.wordweb.data.CorpusSentence;
 
 @Component
-public class CorporaServiceEst extends AbstractCorporaService {
+public class CorpusEstService extends AbstractCorpusService {
 
-	@Value("${corpora.service.est.url:}")
+	@Value("${corpus.service.est.url:}")
 	private String serviceUrl;
 
-	@Value("${corpora.service.est.corpname.detail:}")
+	@Value("${corpus.service.est.corpname.detail:}")
 	private String corpNameDetail;
 
-	@Value("${corpora.service.est.corpname.simple:}")
+	@Value("${corpus.service.est.corpname.simple:}")
 	private String corpNameSimple;
 
-	@Value("${corpora.service.est.word.key.detail:}")
+	@Value("${corpus.service.est.word.key.detail:}")
 	private String wordKeyDetail;
 
-	@Value("${corpora.service.est.word.key.simple:}")
+	@Value("${corpus.service.est.word.key.simple:}")
 	private String wordKeySimple;
 
-	@Value("#{${corpora.service.est.parameters}}")
+	@Value("#{${corpus.service.est.parameters}}")
 	private MultiValueMap<String, String> queryParametersMap;
 
 	private final String[] POS_PUNCTUATIONS = new String[] {"Z", "_Z_"};
 
 	private final String QUOTATION_MARK = "\"";
 
-	@Cacheable(value = CACHE_KEY_CORPORA)
-	public List<CorporaSentence> getSentences(String sentence, String searchMode) {
+	@Cacheable(value = CACHE_KEY_CORPUS, key = "{#root.methodName, #wordValue, #searchMode}")
+	public List<CorpusSentence> getSentences(String wordValue, String searchMode) {
 
-		URI corporaUrl = composeCorporaUrl(sentence, searchMode);
-		Map<String, Object> response = requestSentences(corporaUrl);
+		URI corpusUrl = composeCorpusUrl(wordValue, searchMode);
+		Map<String, Object> response = requestSentences(corpusUrl);
 		return parseResponse(response);
 	}
 
-	private URI composeCorporaUrl(String sentence, String searchMode) {
+	private URI composeCorpusUrl(String wordValue, String searchMode) {
 
 		if (isBlank(serviceUrl)) {
 			return null;
@@ -65,12 +65,11 @@ public class CorporaServiceEst extends AbstractCorporaService {
 			corpName = corpNameDetail;
 			wordKey = wordKeyDetail;
 		} else if (StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
-			isPosQuery = false;
 			corpName = corpNameSimple;
 			wordKey = wordKeySimple;
 		}
 
-		String querySentence = parseSentenceToQueryString(sentence, wordKey, isPosQuery);
+		String querySentence = parseWordValueToQueryString(wordValue, wordKey, isPosQuery);
 
 		return UriComponentsBuilder.fromUriString(serviceUrl)
 				.queryParam("corpus", corpName)
@@ -81,9 +80,9 @@ public class CorporaServiceEst extends AbstractCorporaService {
 				.toUri();
 	}
 
-	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
+	private List<CorpusSentence> parseResponse(Map<String, Object> response) {
 
-		List<CorporaSentence> sentences = new ArrayList<>();
+		List<CorpusSentence> sentences = new ArrayList<>();
 		if (response.isEmpty() || (response.containsKey("hits") && (int) response.get("hits") == 0) || !response.containsKey("kwic")) {
 			return sentences;
 		}
@@ -93,7 +92,7 @@ public class CorporaServiceEst extends AbstractCorporaService {
 			int middlePartEndPos = (int) match.get("end");
 			int currentWordPos = 0;
 			boolean skipSpaceBeforeWord = false;
-			CorporaSentence sentence = new CorporaSentence();
+			CorpusSentence sentence = new CorpusSentence();
 			for (Map<String, Object> token : (List<Map<String, Object>>) kwic.get("tokens")) {
 				String word = parseWord(token, skipSpaceBeforeWord);
 				if (currentWordPos < middlePartStartPos) {

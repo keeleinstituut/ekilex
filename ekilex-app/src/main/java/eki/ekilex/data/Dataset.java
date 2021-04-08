@@ -23,6 +23,8 @@ public class Dataset extends AbstractDataObject {
 
 	private String contact;
 
+	private String imageUrl;
+
 	private boolean isVisible;
 
 	private boolean isPublic;
@@ -73,6 +75,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setContact(String contact) {
 		this.contact = contact;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public boolean isVisible() {

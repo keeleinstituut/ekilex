@@ -76,6 +76,8 @@ public interface WebConstant {
 
 	String CORP_URI = "/corp";
 
+	String CORP_TRANS_URI = "/corptrans";
+
 	String FILES_URI = "/files";
 
 	String GAMES_LEXICDECIS_URI = GAMES_URI + "/lexicdecis";
@@ -111,6 +113,8 @@ public interface WebConstant {
 	int SYN_WORDS_DISPLAY_LIMIT = 5;
 
 	int WORD_RELATIONS_DISPLAY_LIMIT = 5;
+
+	int CORPUS_SENTENCES_DISPLAY_LIMIT = 3;
 
 	Integer DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL = 3;
 

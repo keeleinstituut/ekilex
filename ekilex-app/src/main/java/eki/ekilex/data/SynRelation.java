@@ -4,13 +4,9 @@ import java.util.List;
 
 import eki.common.constant.RelationStatus;
 
-public class SynRelation extends Relation {
+public class SynRelation extends AbstractRelation {
 
 	private static final long serialVersionUID = 1L;
-
-	private boolean homonymsExist;
-
-	private Integer wordHomonymNr;
 
 	private List<String> wordLexemesPoses;
 
@@ -23,22 +19,6 @@ public class SynRelation extends Relation {
 	private List<TypeWordRelParam> relationParams;
 
 	private List<TypeWordRelMeaning> wordMeanings;
-
-	public boolean isHomonymsExist() {
-		return homonymsExist;
-	}
-
-	public void setHomonymsExist(boolean homonymsExist) {
-		this.homonymsExist = homonymsExist;
-	}
-
-	public Integer getWordHomonymNr() {
-		return wordHomonymNr;
-	}
-
-	public void setWordHomonymNr(Integer wordHomonymNr) {
-		this.wordHomonymNr = wordHomonymNr;
-	}
 
 	public List<String> getWordLexemesPoses() {
 		return wordLexemesPoses;
