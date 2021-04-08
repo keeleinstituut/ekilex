@@ -172,7 +172,6 @@ dblink(
 	sgroup varchar(10),
 	word text,
 	crit text,
-	unacrit text,
 	lang_order_by bigint,
 	lang_complexities type_lang_complexity array
 );
