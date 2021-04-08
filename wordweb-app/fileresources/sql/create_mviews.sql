@@ -414,6 +414,7 @@ dblink(
 	name text,
 	description text,
 	contact text,
+  image_url text,
 	is_superior boolean,
 	order_by bigint
 );

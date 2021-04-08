@@ -226,3 +226,6 @@ begin
   raise info 'Moved log relations: %', log_rec_cnt;
   raise info 'Moved lexemes: %', lex_rec_cnt;
 end $$;
+
+-- sõnakogu pilt
+alter table dataset add column image_url text;

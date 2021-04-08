@@ -465,6 +465,7 @@ create table dataset
   name text not null,
   description text,
   contact text,
+  image_url text,
   is_visible boolean default true,
   is_public boolean default true,
   is_superior boolean default false,

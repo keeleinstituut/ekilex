@@ -201,6 +201,7 @@ public class CommonDataDbService implements SystemConstant {
 						ds.TYPE,
 						ds.NAME,
 						ds.DESCRIPTION,
+						ds.IMAGE_URL,
 						ds.IS_SUPERIOR)
 				.from(ds)
 				.where(ds.CODE.eq(datasetCode))
