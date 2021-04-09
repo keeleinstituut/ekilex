@@ -73,7 +73,7 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}"
                  sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}">Statistika</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>
             </div>
           </div>
