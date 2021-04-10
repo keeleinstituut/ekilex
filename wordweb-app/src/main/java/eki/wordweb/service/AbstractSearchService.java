@@ -99,8 +99,8 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		if (CollectionUtils.isEmpty(formGroup)) {
 			formGroup = new ArrayList<>();
 		}
-		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
-		List<String> formWords = formGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
+		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).distinct().collect(Collectors.toList());
+		List<String> formWords = formGroup.stream().map(WordSearchElement::getWord).distinct().collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(prefWords)) {
 			prefWords.forEach(formWords::remove);
 			int prefWordsCount = prefWords.size();
