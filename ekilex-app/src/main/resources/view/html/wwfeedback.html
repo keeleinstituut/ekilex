@@ -77,21 +77,41 @@
                 </div>
               </td>
               <td class="breakWords pr-3">
-                <div class="row ml-1" th:if="${feedbackLog.definition != null}">
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.description)}">
+                  <span class="lbl pr-2">Kirjeldus</span>
+                  <span th:text="${feedbackLog.description}"></span>
+                </div>
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.domain)}">
+                  <span class="lbl pr-2">Valdkond</span>
+                  <span th:text="${feedbackLog.domain}"></span>
+                </div>
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.definition)}">
                   <span class="lbl pr-2">Tähendus</span>
                   <span th:text="${feedbackLog.definition}"></span>
                 </div>
-                <div class="row ml-1" th:if="${feedbackLog.usages != null}">
-                  <span class="lbl pr-2">Kasutusnäited</span>
-                  <span th:text="${feedbackLog.usages}"></span>
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.definitionSource)}">
+                  <span class="lbl pr-2">Tähenduse allikas</span>
+                  <span th:text="${feedbackLog.definitionSource}"></span>
                 </div>
-                <div class="row ml-1" th:if="${feedbackLog.comments != null}">
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.usage)}">
+                  <span class="lbl pr-2">Kasutusnäide</span>
+                  <span th:text="${feedbackLog.usage}"></span>
+                </div>
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.usageSource)}">
+                  <span class="lbl pr-2">Kasutusnäite allikas</span>
+                  <span th:text="${feedbackLog.usageSource}"></span>
+                </div>
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.comments)}">
                   <span class="lbl pr-2">Kommentaar</span>
                   <span th:text="${feedbackLog.comments}"></span>
                 </div>
-                <div class="row ml-1" th:if="${feedbackLog.otherInfo != null}">
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.otherInfo)}">
                   <span class="lbl pr-2">Muu info</span>
                   <span th:text="${feedbackLog.otherInfo}"></span>
+                </div>
+                <div class="row ml-1" th:unless="${#strings.isEmpty(feedbackLog.company)}">
+                  <span class="lbl pr-2">Asutus</span>
+                  <span th:text="${feedbackLog.company}"></span>
                 </div>
               </td>
               <td>
