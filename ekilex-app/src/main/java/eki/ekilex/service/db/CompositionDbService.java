@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -187,8 +188,13 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.fetch();
 	}
 
-	public List<DefinitionRecord> getMeaningDefinitions(Long meaningId) {
-		return create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).fetch();
+	public List<Long> getMeaningDefinitionIds(Long meaningId, boolean publicDataOnly) {
+
+		Condition where = DEFINITION.MEANING_ID.eq(meaningId);
+		if (publicDataOnly) {
+			where = where.and(DEFINITION.IS_PUBLIC.isTrue());
+		}
+		return create.select(DEFINITION.ID).from(DEFINITION).where(where).orderBy(DEFINITION.ORDER_BY).fetchInto(Long.class);
 	}
 
 	public List<IdPair> getMeaningsCommonWordsLexemeIdPairs(Long meaningId, Long sourceMeaningId) {
@@ -606,14 +612,15 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
-	public void cloneLexemeFreeforms(Long lexemeId, Long clonedLexemeId) {
+	public void cloneLexemeFreeforms(Long lexemeId, Long clonedLexemeId, boolean publicDataOnly) {
 
-		Result<LexemeFreeformRecord> lexemeFreeforms = create.selectFrom(LEXEME_FREEFORM)
-				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))
-				.orderBy(LEXEME_FREEFORM.ID)
-				.fetch();
-		lexemeFreeforms.forEach(lexemeFreeform -> {
-			Long clonedFreeformId = cloneFreeform(lexemeFreeform.getFreeformId(), null);
+		Condition where = LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(LEXEME_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
+		if (publicDataOnly) {
+			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
+		}
+		List<Long> lexemeFreeformIds = create.select(FREEFORM.ID).from(FREEFORM, LEXEME_FREEFORM).where(where).orderBy(LEXEME_FREEFORM.ID).fetchInto(Long.class);
+		lexemeFreeformIds.forEach(lexemeFreeformId -> {
+			Long clonedFreeformId = cloneFreeform(lexemeFreeformId, null);
 			LexemeFreeformRecord clonedLexemeFreeform = create.newRecord(LEXEME_FREEFORM);
 			clonedLexemeFreeform.setLexemeId(clonedLexemeId);
 			clonedLexemeFreeform.setFreeformId(clonedFreeformId);
@@ -884,14 +891,15 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		});
 	}
 
-	public void cloneMeaningFreeforms(Long meaningId, Long clonedMeaningId) {
+	public void cloneMeaningFreeforms(Long meaningId, Long clonedMeaningId, boolean publicDataOnly) {
 
-		Result<MeaningFreeformRecord> meaningFreeforms = create.selectFrom(MEANING_FREEFORM)
-				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))
-				.orderBy(MEANING_FREEFORM.ID)
-				.fetch();
-		for (MeaningFreeformRecord meaningFreeform : meaningFreeforms) {
-			Long clonedFreeformId = cloneFreeform(meaningFreeform.getFreeformId(), null);
+		Condition where = MEANING_FREEFORM.MEANING_ID.eq(meaningId).and(MEANING_FREEFORM.FREEFORM_ID.eq(FREEFORM.ID));
+		if (publicDataOnly) {
+			where = where.and(FREEFORM.IS_PUBLIC.isTrue());
+		}
+		List<Long> meaningFreeformIds = create.select(FREEFORM.ID).from(FREEFORM, MEANING_FREEFORM).where(where).orderBy(MEANING_FREEFORM.ID).fetchInto(Long.class);
+		for (Long meaningFreeformId : meaningFreeformIds) {
+			Long clonedFreeformId = cloneFreeform(meaningFreeformId, null);
 			MeaningFreeformRecord clonedMeaningFreeform = create.newRecord(MEANING_FREEFORM);
 			clonedMeaningFreeform.setMeaningId(clonedMeaningId);
 			clonedMeaningFreeform.setFreeformId(clonedFreeformId);

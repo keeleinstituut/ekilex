@@ -24,7 +24,6 @@ import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordMeaningRelationsDetails;
-import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.service.db.CompositionDbService;
@@ -69,9 +68,8 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 		if (meaningId == null) {
 			if (importMeaningData) {
-				String userName = wordMeaningRelationsDetails.getUserName();
 				List<String> userPermDatasetCodes = wordMeaningRelationsDetails.getUserPermDatasetCodes();
-				meaningId = duplicateMeaningWithLexemesAndUpdateDataset(relatedMeaningId, userName, dataset, userPermDatasetCodes);
+				meaningId = duplicateMeaningWithLexemesAndUpdateDataset(relatedMeaningId, dataset, userPermDatasetCodes);
 			} else {
 				meaningId = cudDbService.createMeaning();
 				activityLogService.createActivityLog("createWordAndMeaningAndRelations", meaningId, ActivityOwner.MEANING);
@@ -108,18 +106,19 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, String userName) throws Exception {
-		return Optional.of(duplicateMeaningWithLexemes(meaningId, userName));
+	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId) throws Exception {
+		return Optional.of(duplicateMeaningWithLexemes(meaningId));
 	}
 
-	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String userName, String dataset, List<String> userPermDatasetCodes) throws Exception {
+	private Long duplicateMeaningWithLexemesAndUpdateDataset(Long meaningId, String dataset, List<String> userPermDatasetCodes) throws Exception {
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
-		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
+		boolean publicDataOnly = true;
+		Long duplicateMeaningId = duplicateMeaningData(meaningId, publicDataOnly);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, userPermDatasetCodes);
 		for (LexemeRecord meaningLexeme : meaningLexemes) {
 			Long meaningLexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, userName);
+			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, publicDataOnly);
 			lexemeIdAndDuplicateLexemeIdMap.put(meaningLexemeId, duplicateLexemeId);
 		}
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
@@ -137,18 +136,19 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId, String userName) throws Exception {
+	public List<Long> duplicateLexemeAndMeaningWithSameDatasetLexemes(Long lexemeId) throws Exception {
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
+		boolean publicDataOnly = false;
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		String datasetCode = lexeme.getDatasetCode();
 		Long meaningId = lexeme.getMeaningId();
-		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
+		Long duplicateMeaningId = duplicateMeaningData(meaningId, publicDataOnly);
 
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId, datasetCode);
 		for (LexemeRecord meaningLexeme : meaningLexemes) {
 			Long meaningLexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, userName);
+			Long duplicateLexemeId = duplicateLexemeData(meaningLexemeId, duplicateMeaningId, null, publicDataOnly);
 			lexemeIdAndDuplicateLexemeIdMap.put(meaningLexemeId, duplicateLexemeId);
 		}
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
@@ -157,7 +157,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId, String userName) throws Exception {
+	public Long duplicateEmptyLexemeAndMeaning(Long lexemeId) throws Exception {
 		Long duplicateMeaningId = cudDbService.createMeaning();
 		activityLogService.createActivityLog("duplicateEmptyLexemeAndMeaning", duplicateMeaningId, ActivityOwner.MEANING);
 		Long duplicateLexemeId = compositionDbService.cloneEmptyLexeme(lexemeId, duplicateMeaningId);
@@ -167,22 +167,23 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	}
 
 	@Transactional
-	public void duplicateLexemeAndWord(Long lexemeId, String userName) throws Exception {
+	public void duplicateLexemeAndWord(Long lexemeId) throws Exception {
 
 		LexemeRecord lexeme = compositionDbService.getLexeme(lexemeId);
 		Long wordId = lexeme.getWordId();
-		Long duplicateWordId = duplicateWordData(wordId, userName);
-		duplicateLexemeData(lexemeId, null, duplicateWordId, userName);
+		Long duplicateWordId = duplicateWordData(wordId);
+		duplicateLexemeData(lexemeId, null, duplicateWordId, false);
 	}
 
-	private Long duplicateMeaningWithLexemes(Long meaningId, String userName) throws Exception {
+	private Long duplicateMeaningWithLexemes(Long meaningId) throws Exception {
 
 		Map<Long, Long> lexemeIdAndDuplicateLexemeIdMap = new HashMap<>();
-		Long duplicateMeaningId = duplicateMeaningData(meaningId, userName);
+		boolean publicDataOnly = false;
+		Long duplicateMeaningId = duplicateMeaningData(meaningId, publicDataOnly);
 		List<LexemeRecord> meaningLexemes = compositionDbService.getMeaningLexemes(meaningId);
 		for (LexemeRecord meaningLexeme : meaningLexemes) {
 			Long lexemeId = meaningLexeme.getId();
-			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, userName);
+			Long duplicateLexemeId = duplicateLexemeData(lexemeId, duplicateMeaningId, null, publicDataOnly);
 			lexemeIdAndDuplicateLexemeIdMap.put(lexemeId, duplicateLexemeId);
 		}
 		duplicateLexemeRelations(lexemeIdAndDuplicateLexemeIdMap);
@@ -190,12 +191,12 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		return duplicateMeaningId;
 	}
 
-	private Long duplicateLexemeData(Long lexemeId, Long meaningId, Long wordId, String userName) throws Exception {
+	private Long duplicateLexemeData(Long lexemeId, Long meaningId, Long wordId, boolean publicDataOnly) throws Exception {
 
 		Long duplicateLexemeId = compositionDbService.cloneLexeme(lexemeId, meaningId, wordId);
 		updateLexemeLevelsAfterDuplication(duplicateLexemeId);
 		compositionDbService.cloneLexemeDerivs(lexemeId, duplicateLexemeId);
-		compositionDbService.cloneLexemeFreeforms(lexemeId, duplicateLexemeId);
+		compositionDbService.cloneLexemeFreeforms(lexemeId, duplicateLexemeId, publicDataOnly);
 		compositionDbService.cloneLexemePoses(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
 		compositionDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
@@ -205,7 +206,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		return duplicateLexemeId;
 	}
 
-	private Long duplicateWordData(Long wordId, String userName) throws Exception {
+	private Long duplicateWordData(Long wordId) throws Exception {
 
 		SimpleWord simpleWord = compositionDbService.getSimpleWord(wordId);
 		Long duplicateWordId = compositionDbService.cloneWord(simpleWord);
@@ -220,26 +221,26 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		return duplicateWordId;
 	}
 
-	private Long duplicateMeaningData(Long meaningId, String userName) throws Exception {
+	private Long duplicateMeaningData(Long meaningId, boolean publicDataOnly) throws Exception {
 
 		Long duplicateMeaningId = compositionDbService.cloneMeaning(meaningId);
 		compositionDbService.cloneMeaningDomains(meaningId, duplicateMeaningId);
 		compositionDbService.cloneMeaningRelations(meaningId, duplicateMeaningId);
-		compositionDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId);
-		duplicateMeaningDefinitions(meaningId, duplicateMeaningId);
+		compositionDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId, publicDataOnly);
+		duplicateMeaningDefinitions(meaningId, duplicateMeaningId, publicDataOnly);
 		activityLogService.createActivityLog("duplicateMeaningData", duplicateMeaningId, ActivityOwner.MEANING);
 
 		return duplicateMeaningId;
 	}
 
-	private void duplicateMeaningDefinitions(Long meaningId, Long duplicateMeaningId) throws Exception {
+	private void duplicateMeaningDefinitions(Long meaningId, Long duplicateMeaningId, boolean publicDataOnly) {
 
-		List<DefinitionRecord> meaningDefinitions = compositionDbService.getMeaningDefinitions(meaningId);
-		for (DefinitionRecord meaningDefinition : meaningDefinitions) {
-			Long duplicateDefinintionId = compositionDbService.cloneMeaningDefinition(meaningDefinition.getId(), duplicateMeaningId);
-			compositionDbService.cloneDefinitionFreeforms(meaningDefinition.getId(), duplicateDefinintionId);
-			compositionDbService.cloneDefinitionDatasets(meaningDefinition.getId(), duplicateDefinintionId);
-			compositionDbService.cloneDefinitionSourceLinks(meaningDefinition.getId(), duplicateDefinintionId);
+		List<Long> meaningDefinitionIds = compositionDbService.getMeaningDefinitionIds(meaningId, publicDataOnly);
+		for (Long meaningDefinitionId : meaningDefinitionIds) {
+			Long duplicateDefinintionId = compositionDbService.cloneMeaningDefinition(meaningDefinitionId, duplicateMeaningId);
+			compositionDbService.cloneDefinitionFreeforms(meaningDefinitionId, duplicateDefinintionId);
+			compositionDbService.cloneDefinitionDatasets(meaningDefinitionId, duplicateDefinintionId);
+			compositionDbService.cloneDefinitionSourceLinks(meaningDefinitionId, duplicateDefinintionId);
 		}
 	}
 

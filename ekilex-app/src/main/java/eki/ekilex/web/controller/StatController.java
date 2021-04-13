@@ -23,8 +23,6 @@ public class StatController extends AbstractPrivatePageController {
 
 	@GetMapping(STAT_URI)
 	public String stat() {
-
-		// TODO move home page ekilex stats here? - yogesh
 		return STAT_PAGE;
 	}
 
