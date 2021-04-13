@@ -1119,11 +1119,15 @@ create table feedback_log
   sender_name text not null,
   sender_email text not null,
   created_on timestamp not null default statement_timestamp(),
-  word text not null,
+  description text null,
+  word text null,
   definition text null,
+  definition_source text null,
   comments text null,
-  usages text null,
+  usage text null,
+  usage_source text null,
   other_info text null,
+  company text null,
   last_search text null
 );
 alter sequence feedback_log_id_seq restart with 10000;

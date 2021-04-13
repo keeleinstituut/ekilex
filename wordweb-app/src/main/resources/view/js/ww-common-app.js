@@ -79,13 +79,13 @@ function clearMessages(modalDlg) {
 	modalDlg.find('[name=error_message]').attr('hidden', true);
 }
 
-$(document).on("click", "#feedbackWordRadio", function() {
+$(document).on("click", "#feedbackSimpleRadio", function() {
 	$('#feedWord').addClass('show-section');
 	$('#feedComment').removeClass('show-section');
 	clearMessages($(this).closest('.modal-dialog'));
 });
 
-$(document).on("click", "#feedbackCommentRadio", function() {
+$(document).on("click", "#feedbackCompleteRadio", function() {
 	$('#feedWord').removeClass('show-section');
 	$('#feedComment').addClass('show-section');
 	clearMessages($(this).closest('.modal-dialog'));

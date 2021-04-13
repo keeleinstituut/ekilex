@@ -229,3 +229,12 @@ end $$;
 
 -- sõnakogu pilt
 alter table dataset add column image_url text;
+
+-- Sõnaveebi tagasiside vorm
+alter table feedback_log rename column usages to usage;
+alter table feedback_log
+  add column description text null,
+  add column definition_source text null,
+  add column usage_source text null,
+  add column company text null,
+  alter column word drop not null;
