@@ -72,6 +72,10 @@ public interface WebConstant {
 
 	String MEANING_REL_SELECT_PAGE = "meaningrelselect";
 
+	String MEANING_INTERNAL_LINK_SEARCH_URI = "/meaning_internal_link_search";
+
+	String WORD_INTERNAL_LINK_SEARCH_URI = "/word_internal_link_search";
+
 	String UPDATE_MEANING_REL_PREFS_URI = "/update_meaning_rel_prefs";
 
 	String UPDATE_TAG_PREFS_URI = "/update_tag_prefs";
