@@ -22,6 +22,7 @@ import eki.ekilex.data.db.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.udt.TypeWordRelMeaning;
 import eki.ekilex.data.db.udt.TypeWordRelParam;
 import eki.ekilex.data.db.udt.TypeWordRelation;
+import eki.ekilex.data.db.udt.WordHomNrDataTuple;
 
 
 /**
@@ -119,4 +120,9 @@ public class UDTs {
      * The type <code>public.type_word_relation</code>
      */
     public static TypeWordRelation TYPE_WORD_RELATION = eki.ekilex.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION;
+
+    /**
+     * The type <code>public.word_hom_nr_data_tuple</code>
+     */
+    public static WordHomNrDataTuple WORD_HOM_NR_DATA_TUPLE = eki.ekilex.data.db.udt.WordHomNrDataTuple.WORD_HOM_NR_DATA_TUPLE;
 }

@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.routines.AdjustHomonymNrs;
 import eki.ekilex.data.db.routines.MergeHomonymsToEki;
 import eki.ekilex.data.db.routines.Unaccent1;
 import eki.ekilex.data.db.routines.Unaccent2;
@@ -19,6 +20,15 @@ import org.jooq.Field;
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
+
+    /**
+     * Call <code>public.adjust_homonym_nrs</code>
+     */
+    public static void adjustHomonymNrs(Configuration configuration) {
+        AdjustHomonymNrs p = new AdjustHomonymNrs();
+
+        p.execute(configuration);
+    }
 
     /**
      * Call <code>public.merge_homonyms_to_eki</code>

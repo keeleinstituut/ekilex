@@ -41,6 +41,11 @@ public class MaintenanceDbService implements GlobalConstant {
 		Routines.mergeHomonymsToEki(create.configuration(), includedLangs);
 	}
 
+	public void adjustHomonymNrs() {
+
+		Routines.adjustHomonymNrs(create.configuration());
+	}
+
 	public int deleteFloatingFreeforms() {
 
 		return create

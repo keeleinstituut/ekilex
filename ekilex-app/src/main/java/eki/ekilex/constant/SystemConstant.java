@@ -14,6 +14,8 @@ public interface SystemConstant {
 
 	String MERGE_HOMONYMS_TIME_3_AM = "0 0 3 * * *";
 
+	String ADJUST_HOMONYM_NRS_TIME_3_30_AM = "0 30 3 * * *";
+
 	String DELETE_FLOATING_DATA_TIME_4_AM = "0 0 4 * * *";
 
 	String CLASSIF_LABEL_LANG_EST = "est";
