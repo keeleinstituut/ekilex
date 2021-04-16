@@ -22,6 +22,7 @@ import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.EmailService;
 import eki.ekilex.service.MaintenanceService;
 import eki.ekilex.service.PermissionService;
+import eki.ekilex.service.TagService;
 import eki.ekilex.service.UserService;
 
 @SpringBootApplication
@@ -37,7 +38,8 @@ import eki.ekilex.service.UserService;
 						DatasetService.class,
 						EmailService.class,
 						UserService.class,
-						PermissionService.class})})
+						PermissionService.class,
+						TagService.class})})
 @EnableTransactionManagement
 public class DatasetExporter implements CommandLineRunner {
 
