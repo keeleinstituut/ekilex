@@ -95,7 +95,6 @@ import eki.ekilex.data.db.tables.ValueState;
 import eki.ekilex.data.db.tables.ValueStateLabel;
 import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
-import eki.ekilex.data.db.tables.ViewWwCounts;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwDatasetWordMenu;
 import eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink;
@@ -595,11 +594,6 @@ public class Tables {
      * The table <code>public.view_ww_collocation</code>.
      */
     public static final ViewWwCollocation VIEW_WW_COLLOCATION = ViewWwCollocation.VIEW_WW_COLLOCATION;
-
-    /**
-     * The table <code>public.view_ww_counts</code>.
-     */
-    public static final ViewWwCounts VIEW_WW_COUNTS = ViewWwCounts.VIEW_WW_COUNTS;
 
     /**
      * The table <code>public.view_ww_dataset</code>.

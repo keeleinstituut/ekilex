@@ -167,10 +167,9 @@ public class LexEditController extends AbstractPrivatePageController {
 	@PostMapping(LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		String userName = userContext.getUserName();
 		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
-			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId, userName);
+			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
@@ -192,8 +191,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	@PostMapping(EMPTY_LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		String userName = userContext.getUserName();
-		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, userName);
+		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId);
 
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Uus tähendus loodud");
@@ -207,8 +205,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	@PostMapping(MEANING_WORD_AND_LEX_DUPLICATE_URI + "/{lexemeId}")
 	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId) throws Exception {
 
-		String userName = userContext.getUserName();
-		compositionService.duplicateLexemeAndWord(lexemeId, userName);
+		compositionService.duplicateLexemeAndWord(lexemeId);
 		return RESPONSE_OK_VER1;
 	}
 

@@ -83,6 +83,14 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		maintenanceDbService.mergeHomonymsToEki(includedLangs);
 	}
 
+	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_3_30_AM)
+	@Transactional
+	public void adjustHomonymNrs() {
+
+		logger.info("Starting homonym numbers adjust procedure...");
+		maintenanceDbService.adjustHomonymNrs();
+	}
+
 	@Transactional
 	public Map<String, Count> unifyApostrophesAndRecalcAccents() {
 

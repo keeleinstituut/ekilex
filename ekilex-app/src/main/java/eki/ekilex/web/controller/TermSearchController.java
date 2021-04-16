@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -24,6 +26,7 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.InternalLinkSearchRequest;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
@@ -184,5 +187,24 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("searchUri", searchUri);
 
 		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "term_search_result";
+	}
+
+	@PostMapping(MEANING_INTERNAL_LINK_SEARCH_URI)
+	public String searchMeaningInternalLink(@RequestBody InternalLinkSearchRequest internalLinkSearchRequest, Model model) throws Exception {
+
+		String searchFilter = internalLinkSearchRequest.getSearchFilter();
+		logger.debug("meaning internal link search {}", searchFilter);
+
+		List<String> datasets = Collections.emptyList();
+		SearchResultMode resultMode = SearchResultMode.MEANING;
+		String resultLang = null;
+		boolean fetchAll = true;
+
+		TermSearchResult termSearchResult = termSearchService.getTermSearchResult(searchFilter, datasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+		termSearchResult.setShowPaging(false);
+
+		model.addAttribute("termSearchResult", termSearchResult);
+
+		return TERM_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result_rows";
 	}
 }

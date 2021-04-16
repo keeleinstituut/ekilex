@@ -165,12 +165,10 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (CollectionUtils.isEmpty(notes)) {
 			return;
 		}
-
-		Map<String, List<TypeFreeform>> notesByLangOrdered = null;
-		if (CollectionUtils.isNotEmpty(notes)) {
-			Map<String, List<TypeFreeform>> notesByLangUnordered = notes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
-			notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
-		}
+		List<TypeSourceLink> lexemeFreeformSourceLinks = lexemeWord.getLexemeFreeformSourceLinks();
+		applySourceLinks(notes, lexemeFreeformSourceLinks);
+		Map<String, List<TypeFreeform>> notesByLangUnordered = notes.stream().collect(Collectors.groupingBy(TypeFreeform::getLang));
+		Map<String, List<TypeFreeform>> notesByLangOrdered = composeOrderedMap(notesByLangUnordered, langOrderByMap);
 		lexemeWord.setLexemeNotesByLang(notesByLangOrdered);
 	}
 

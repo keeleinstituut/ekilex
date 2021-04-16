@@ -19,15 +19,25 @@ public class FeedbackLog extends AbstractDataObject {
 
 	private String senderEmail;
 
+	private String description;
+
 	private String word;
 
 	private String definition;
 
-	private String comments;
+	private String definitionSource;
 
-	private String usages;
+	private String domain;
+
+	private String comments; // teacher-tools only
+
+	private String usage;
+
+	private String usageSource;
 
 	private String otherInfo;
+
+	private String company;
 
 	private String lastSearch;
 
@@ -73,6 +83,14 @@ public class FeedbackLog extends AbstractDataObject {
 		this.senderEmail = senderEmail;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public String getWord() {
 		return word;
 	}
@@ -89,6 +107,22 @@ public class FeedbackLog extends AbstractDataObject {
 		this.definition = definition;
 	}
 
+	public String getDefinitionSource() {
+		return definitionSource;
+	}
+
+	public void setDefinitionSource(String definitionSource) {
+		this.definitionSource = definitionSource;
+	}
+
+	public String getDomain() {
+		return domain;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
 	public String getComments() {
 		return comments;
 	}
@@ -97,12 +131,20 @@ public class FeedbackLog extends AbstractDataObject {
 		this.comments = comments;
 	}
 
-	public String getUsages() {
-		return usages;
+	public String getUsage() {
+		return usage;
 	}
 
-	public void setUsages(String usages) {
-		this.usages = usages;
+	public void setUsage(String usage) {
+		this.usage = usage;
+	}
+
+	public String getUsageSource() {
+		return usageSource;
+	}
+
+	public void setUsageSource(String usageSource) {
+		this.usageSource = usageSource;
 	}
 
 	public String getOtherInfo() {
@@ -111,6 +153,14 @@ public class FeedbackLog extends AbstractDataObject {
 
 	public void setOtherInfo(String otherInfo) {
 		this.otherInfo = otherInfo;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
 	}
 
 	public String getLastSearch() {
@@ -128,5 +178,4 @@ public class FeedbackLog extends AbstractDataObject {
 	public void setFeedbackComments(List<FeedbackComment> feedbackComments) {
 		this.feedbackComments = feedbackComments;
 	}
-
 }

@@ -53,7 +53,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 			wordCount = words.size();
-			if (!fetchAll && wordCount == maxResultsLimit) {
+			if ((!fetchAll && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}

@@ -36,7 +36,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Field;
 import org.jooq.Record2;
-import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -53,6 +53,7 @@ import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
@@ -457,6 +458,7 @@ public class CudDbService extends AbstractDataDbService {
 
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
+		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
 		Field<Integer> dsobf = DSL
 				.select(DSL.when(DSL.count(l.ID).gt(0), 1).otherwise(2))
@@ -466,11 +468,20 @@ public class CudDbService extends AbstractDataDbService {
 						.and(l.DATASET_CODE.eq(DATASET_EKI)))
 				.asField();
 
-		Table<Record3<Long, Integer, Integer>> ww = DSL
+		Field<Integer> afobf = DSL
+				.select(DSL.when(DSL.count(wt.ID).gt(0), 2).otherwise(1))
+				.from(wt)
+				.where(
+						wt.WORD_ID.eq(w.ID)
+								.and(wt.WORD_TYPE_CODE.in(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID)))
+				.asField();
+
+		Table<Record4<Long, Integer, Integer, Integer>> ww = DSL
 				.select(
 						w.ID,
 						w.HOMONYM_NR,
-						dsobf.as("ds_order_by"))
+						dsobf.as("ds_order_by"),
+						afobf.as("af_order_by"))
 				.from(w)
 				.where(
 						w.LANG.eq(lang)
@@ -488,6 +499,7 @@ public class CudDbService extends AbstractDataDbService {
 				.from(ww)
 				.orderBy(
 						ww.field("ds_order_by"),
+						ww.field("af_order_by"),
 						ww.field("homonym_nr"),
 						ww.field("id"))
 				.fetch();
