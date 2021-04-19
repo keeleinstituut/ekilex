@@ -83,6 +83,7 @@ function initializeDatasets() {
 			thisForm.find('select[name="type"]').val(dataset.type);
 			thisForm.find('textarea[name="description"]').val(dataset.description);
 			thisForm.find('textarea[name="contact"]').val(dataset.contact);
+			thisForm.find('textarea[name="imageUrl"]').val(dataset.imageUrl);
 			thisForm.find('input[name="public"]').attr('checked', dataset.public);
 			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);
 

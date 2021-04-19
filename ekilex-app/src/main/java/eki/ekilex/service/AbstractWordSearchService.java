@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import eki.common.exception.OperationDeniedException;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.Relation;
+import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
@@ -53,7 +53,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
 			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
 			wordCount = words.size();
-			if (!fetchAll && wordCount == maxResultsLimit) {
+			if ((!fetchAll && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}
@@ -109,12 +109,12 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 		return count;
 	}
 
-	public void appendLexemeLevels(List<Relation> synMeaningRelations) {
+	public void appendLexemeLevels(List<MeaningRelation> synMeaningRelations) {
 
 		Map<Long, List<WordLexeme>> wordLexemesMap = new HashMap<>();
 
 		List<Long> repetitiveWordIds = synMeaningRelations.stream()
-				.collect(groupingBy(Relation::getWordId, Collectors.counting()))
+				.collect(groupingBy(MeaningRelation::getWordId, Collectors.counting()))
 				.entrySet().stream()
 				.filter(wordIdCountEntry -> wordIdCountEntry.getValue() > 1L)
 				.map(Map.Entry::getKey)

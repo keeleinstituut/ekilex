@@ -91,12 +91,12 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
+import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Origin;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -780,7 +780,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(MeaningWord.class);
 	}
 
-	public List<Relation> getSynMeaningRelations(Long meaningId, String datasetCode) {
+	public List<eki.ekilex.data.MeaningRelation> getSynMeaningRelations(Long meaningId, String datasetCode) {
 
 		MeaningRelation mr = MEANING_RELATION.as("mr");
 		Meaning m2 = MEANING.as("m2");
@@ -850,10 +850,10 @@ public class CommonDataDbService extends AbstractDataDbService {
 						whe.as("homonyms_exist"))
 				.from(mrel)
 				.orderBy(mrel.field("order_by"))
-				.fetchInto(Relation.class);
+				.fetchInto(eki.ekilex.data.MeaningRelation.class);
 	}
 
-	public List<Relation> getMeaningRelations(
+	public List<eki.ekilex.data.MeaningRelation> getMeaningRelations(
 			Long meaningId, List<String> meaningWordPreferredOrderDatasetCodes, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		MeaningRelation mr = MEANING_RELATION.as("mr");
@@ -957,7 +957,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(mr.MEANING1_ID.eq(meaningId).and(mr.MEANING_REL_TYPE_CODE.ne(MEANING_REL_TYPE_CODE_SIMILAR)))
 				.groupBy(m2.ID, mr.ID, w2.ID)
 				.orderBy(mr.ID, DSL.field("lexeme_order_by"))
-				.fetchInto(Relation.class);
+				.fetchInto(eki.ekilex.data.MeaningRelation.class);
 	}
 
 	public List<Classifier> getMeaningSemanticTypes(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
@@ -1167,7 +1167,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(NoteSourceTuple.class);
 	}
 
-	public List<Relation> getLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<LexemeRelation> getLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		LexRelation r = LEX_RELATION.as("r");
 		LexRelTypeLabel rtl = LEX_REL_TYPE_LABEL.as("rtl");
@@ -1205,7 +1205,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(r.LEXEME1_ID.eq(lexemeId))
 				.groupBy(r.ID, l2.ID, w2.ID, rtl.VALUE)
 				.orderBy(r.ORDER_BY)
-				.fetchInto(Relation.class);
+				.fetchInto(LexemeRelation.class);
 	}
 
 	public List<String> getLexemeTags(Long lexemeId) {

@@ -83,16 +83,22 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		maintenanceDbService.mergeHomonymsToEki(includedLangs);
 	}
 
+	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_3_30_AM)
+	@Transactional
+	public void adjustHomonymNrs() {
+
+		logger.info("Starting homonym numbers adjust procedure...");
+		maintenanceDbService.adjustHomonymNrs();
+	}
+
 	@Transactional
 	public Map<String, Count> unifyApostrophesAndRecalcAccents() {
 
 		logger.info("Unifying apostrophes and updating accents...");
 
-		Count unifiedApostropheWordCount = new Count();
-		Count accentRecalcWordCount = new Count();
+		Count updateCount = new Count();
 		Map<String, Count> resultCounts = new HashMap<>();
-		resultCounts.put("unifiedApostropheWordCount", unifiedApostropheWordCount);
-		resultCounts.put("accentRecalcWordCount", accentRecalcWordCount);
+		resultCounts.put("updateCount", updateCount);
 
 		List<WordRecord> wordRecords = maintenanceDbService.getWordRecords();
 		boolean updateExists;
@@ -100,29 +106,40 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 			String value = wordRecord.getValue();
 			String valueAsWordSrc = wordRecord.getValueAsWord();
 			String valueClean = textDecorationService.unifyToApostrophe(value);
-			updateExists = false;
-			if (!StringUtils.equals(value, valueClean)) {
-				wordRecord.setValueAsWord(valueClean);
-				unifiedApostropheWordCount.increment();
-				updateExists = true;
-			}
 			String valueAsWordTrgt = textDecorationService.removeAccents(valueClean);
-			if (StringUtils.isNotBlank(valueAsWordTrgt) && !StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
-				wordRecord.setValueAsWord(valueAsWordTrgt);
-				accentRecalcWordCount.increment();
-				updateExists = true;
+			updateExists = false;
+			if (StringUtils.isBlank(valueAsWordSrc)) {
+				// initial valuation
+				if (StringUtils.isNotBlank(valueAsWordTrgt)) {
+					wordRecord.setValueAsWord(valueAsWordTrgt);
+					updateExists = true;
+				} else if (!StringUtils.equals(value, valueClean)) {
+					wordRecord.setValueAsWord(valueClean);
+					updateExists = true;
+				}
+			} else {
+				// compare with existing value
+				if (StringUtils.isNotBlank(valueAsWordTrgt)) {
+					if (!StringUtils.equals(valueAsWordSrc, valueAsWordTrgt)) {
+						wordRecord.setValueAsWord(valueAsWordTrgt);
+						updateExists = true;
+					}
+				} else if (!StringUtils.equals(valueAsWordSrc, valueClean)) {
+					wordRecord.setValueAsWord(valueClean);
+					updateExists = true;
+				}
 			}
 			if (updateExists) {
 				wordRecord.update();
+				updateCount.increment();
 			}
 		}
-		if (unifiedApostropheWordCount.getValue() > 0) {
-			logger.info("Unified apostrophe word count: {}", unifiedApostropheWordCount.getValue());
+		if (updateCount.getValue() > 0) {
+			logger.info("Unified apostrophe and accent recalc update count: {}", updateCount.getValue());
 		}
-		if (accentRecalcWordCount.getValue() > 0) {
-			logger.info("Accent recalc word count: {}", accentRecalcWordCount.getValue());
-		}
+
 		logger.info("...apostrophes and accents done");
+
 		return resultCounts;
 	}
 

@@ -43,10 +43,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -189,13 +189,13 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
-	public List<Relation> getWordRelations(Long wordId, String relTypeCode) {
+	public List<WordRelation> getWordRelations(Long wordId, String relTypeCode) {
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
 				.where(WORD_RELATION.WORD1_ID.eq(wordId))
 				.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode))
 				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetchInto(Relation.class);
+				.fetchInto(WordRelation.class);
 	}
 
 	public int getWordLexemesMaxLevel1(Long wordId, String datasetCode) {

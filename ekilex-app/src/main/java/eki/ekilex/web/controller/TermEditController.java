@@ -146,10 +146,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 	@PostMapping("/duplicatemeaning/{meaningId}")
 	public String duplicateMeaning(@PathVariable("meaningId") Long meaningId) throws JsonProcessingException {
 
-		String userName = userContext.getUserName();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
-			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId, userName);
+			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}

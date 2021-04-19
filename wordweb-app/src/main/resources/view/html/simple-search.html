@@ -74,6 +74,7 @@
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
             <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
+            <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
           </div>
         </div>
       </div>
@@ -91,6 +92,7 @@
   	var wordDetailsUrl = /*[[@{/worddetails/lite}]]*/"/worddetails/lite";
   	var morphoUrl = /*[[@{/morpho/lite}]]*/"/morpho/lite";
   	var corpUrl = /*[[@{/corp/simple}]]*/"/corp/simple";
+  	var corpTransUrl = /*[[@{/corptrans}]]*/"/corptrans";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search-lite');
   </script>

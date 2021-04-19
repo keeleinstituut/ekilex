@@ -56,7 +56,7 @@ public class CommonDataDbService implements SystemConstant {
 						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
 				.limit(1)
 				.fetchOptionalInto(Classifier.class)
-				.orElse(null);
+				.orElse(new Classifier(name.name(), null, null, code, code, lang));
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #origin, #code, #lang}")
@@ -86,7 +86,7 @@ public class CommonDataDbService implements SystemConstant {
 						.and(clc.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE)))
 				.limit(1)
 				.fetchOptionalInto(Classifier.class)
-				.orElse(null);
+				.orElse(new Classifier(name.name(), origin, null, code, code, lang));
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #lang}")
@@ -201,6 +201,7 @@ public class CommonDataDbService implements SystemConstant {
 						ds.TYPE,
 						ds.NAME,
 						ds.DESCRIPTION,
+						ds.IMAGE_URL,
 						ds.IS_SUPERIOR)
 				.from(ds)
 				.where(ds.CODE.eq(datasetCode))

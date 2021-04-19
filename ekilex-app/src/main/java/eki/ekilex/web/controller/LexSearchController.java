@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -26,6 +28,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.InternalLinkSearchRequest;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Source;
@@ -245,6 +248,27 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("lexeme", lexeme);
 
 		return "lexdetail" + PAGE_FRAGMENT_ELEM + "lexeme_details_" + composition;
+	}
+
+	@PostMapping(WORD_INTERNAL_LINK_SEARCH_URI)
+	public String searchWordInternalLink(@RequestBody InternalLinkSearchRequest internalLinkSearchRequest, Model model) throws Exception {
+
+		String searchFilter = internalLinkSearchRequest.getSearchFilter();
+		logger.debug("word internal link search {}", searchFilter);
+
+		List<String> datasets = Collections.emptyList();
+		boolean fetchAll = true;
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		List<String> tagNames = userContextData.getTagNames();
+
+		WordsResult wordsResult = lexSearchService.getWords(searchFilter, datasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		wordsResult.setShowPaging(false);
+
+		model.addAttribute("wordsResult", wordsResult);
+
+		return LEX_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result_rows";
 	}
 
 }

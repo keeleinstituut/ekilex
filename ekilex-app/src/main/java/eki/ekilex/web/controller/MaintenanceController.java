@@ -40,6 +40,15 @@ public class MaintenanceController implements WebConstant {
 	}
 
 	@ResponseBody
+	@GetMapping(MAINTENANCE_URI + "/adjusthomonymnumbers")
+	public String adjustHomonymNumbers() {
+
+		maintenanceService.adjustHomonymNrs();
+
+		return RESPONSE_OK_VER1;
+	}
+
+	@ResponseBody
 	@GetMapping(MAINTENANCE_URI + "/recalcaccents")
 	public Map<String, Count> recalcAccents() {
 

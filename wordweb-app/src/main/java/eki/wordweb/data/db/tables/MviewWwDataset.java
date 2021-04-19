@@ -11,7 +11,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row7;
+import org.jooq.Row8;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -26,7 +26,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
 
-    private static final long serialVersionUID = -730650913;
+    private static final long serialVersionUID = -110273732;
 
     /**
      * The reference instance of <code>public.mview_ww_dataset</code>
@@ -65,6 +65,11 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
      * The column <code>public.mview_ww_dataset.contact</code>.
      */
     public final TableField<MviewWwDatasetRecord, String> CONTACT = createField(DSL.name("contact"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_dataset.image_url</code>.
+     */
+    public final TableField<MviewWwDatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.is_superior</code>.
@@ -141,11 +146,11 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row7 type methods
+    // Row8 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row7<String, String, String, String, String, Boolean, Long> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<String, String, String, String, String, String, Boolean, Long> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 }

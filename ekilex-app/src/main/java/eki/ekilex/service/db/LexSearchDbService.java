@@ -49,7 +49,6 @@ import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ParadigmFormTuple;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
@@ -397,7 +396,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 				.orElse(null);
 	}
 
-	public List<Relation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.WordRelation> getWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");
 		WordGroupMember wgrm2 = WORD_GROUP_MEMBER.as("wgrm2");
@@ -437,10 +436,10 @@ public class LexSearchDbService extends AbstractDataDbService {
 														.and(wrtl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(wgrm1.WORD_ID.eq(wordId))
 				.orderBy(wgrm2.ORDER_BY)
-				.fetchInto(Relation.class);
+				.fetchInto(eki.ekilex.data.WordRelation.class);
 	}
 
-	public List<Relation> getWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<eki.ekilex.data.WordRelation> getWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		Lexeme l2 = LEXEME.as("l2");
@@ -476,7 +475,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 														.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(r.WORD1_ID.eq(wordId))
 				.orderBy(r.ORDER_BY)
-				.fetchInto(Relation.class);
+				.fetchInto(eki.ekilex.data.WordRelation.class);
 	}
 
 	public List<WordEtymTuple> getWordEtymology(Long wordId) {

@@ -14,10 +14,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
-import eki.common.constant.ActivityOwner;
 import eki.common.constant.RelationStatus;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
@@ -25,12 +25,12 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
@@ -1038,7 +1038,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD);
 		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		moveCreatedRelationToFirst(existingWordId, createdRelationId);
+		moveCreatedWordRelationToFirst(existingWordId, createdRelationId, RAW_RELATION_TYPE);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
@@ -1053,7 +1053,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		}
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD);
 		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		moveCreatedRelationToFirst(targetWordId, createdRelationId);
+		moveCreatedWordRelationToFirst(targetWordId, createdRelationId, RAW_RELATION_TYPE);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
@@ -1442,19 +1442,19 @@ public class CudService extends AbstractService implements GlobalConstant {
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
 	}
 
-	private void moveCreatedRelationToFirst(Long wordId, Long relationId) {
-		List<Relation> existingRelations = lookupDbService.getWordRelations(wordId, RAW_RELATION_TYPE);
+	private void moveCreatedWordRelationToFirst(Long wordId, Long relationId, String relTypeCode) {
+		List<WordRelation> existingRelations = lookupDbService.getWordRelations(wordId, relTypeCode);
 		if (existingRelations.size() > 1) {
 
-			Relation firstRelation = existingRelations.get(0);
-			List<Long> existingOrderByValues = existingRelations.stream().map(Relation::getOrderBy).collect(Collectors.toList());
+			WordRelation firstRelation = existingRelations.get(0);
+			List<Long> existingOrderByValues = existingRelations.stream().map(WordRelation::getOrderBy).collect(Collectors.toList());
 
 			cudDbService.updateWordRelationOrderBy(relationId, firstRelation.getOrderBy());
 			existingRelations.remove(existingRelations.size() - 1);
 			existingOrderByValues.remove(0);
 
 			int relIdx = 0;
-			for (Relation relation : existingRelations) {
+			for (WordRelation relation : existingRelations) {
 				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
 				relIdx++;
 			}

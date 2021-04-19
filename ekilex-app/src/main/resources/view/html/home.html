@@ -48,7 +48,7 @@
           <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <p>
-          <a th:href="@{/stat}">Statistika</a>
+          <a th:href="@{/stat}">Sõnaveebi Statistika</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
         <hr />
@@ -62,7 +62,7 @@
   <div class="container-fluid" th:if="${statExists}">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <button class="btn btn-secondary" data-toggle="collapse" data-target="#statData">Statistika</button>
+        <button class="btn btn-secondary" data-toggle="collapse" data-target="#statData">Ekilexi statistika</button>
       </div>
       <div id="statData" class="collapse">
         <div class="card-body">

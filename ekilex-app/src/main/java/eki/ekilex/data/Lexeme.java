@@ -60,7 +60,7 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private List<SourceLink> sourceLinks;
 
-	private List<Relation> lexemeRelations;
+	private List<LexemeRelation> lexemeRelations;
 
 	private boolean classifiersExist;
 
@@ -274,11 +274,11 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 		this.sourceLinks = sourceLinks;
 	}
 
-	public List<Relation> getLexemeRelations() {
+	public List<LexemeRelation> getLexemeRelations() {
 		return lexemeRelations;
 	}
 
-	public void setLexemeRelations(List<Relation> lexemeRelations) {
+	public void setLexemeRelations(List<LexemeRelation> lexemeRelations) {
 		this.lexemeRelations = lexemeRelations;
 	}
 

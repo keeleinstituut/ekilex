@@ -22,8 +22,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.Complexity;
-import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
@@ -273,7 +271,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetchOneInto(eki.ekilex.data.Word.class);
 	}
 
-	public List<Relation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
+	public List<eki.ekilex.data.WordRelation> getExistingFollowingRelationsForWord(Long relationId, String relTypeCode) {
 		WordRelation wr2 = WORD_RELATION.as("wr2");
 
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
@@ -284,7 +282,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.and(WORD_RELATION.ORDER_BY.ge(wr2.ORDER_BY))
 								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode)))
 				.orderBy(WORD_RELATION.ORDER_BY)
-				.fetchInto(Relation.class);
+				.fetchInto(eki.ekilex.data.WordRelation.class);
 	}
 
 	public List<TypeWordRelParam> getWordRelationParams(Long wordRelationId) {

@@ -44,7 +44,7 @@ public interface SystemConstant {
 
 	String CACHE_KEY_CLASSIF = "classif";
 
-	String CACHE_KEY_CORPORA = "corpora";
+	String CACHE_KEY_CORPUS = "corpus";
 
 	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 

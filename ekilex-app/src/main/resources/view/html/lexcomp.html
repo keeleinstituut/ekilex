@@ -6,6 +6,9 @@
     <div class="bg-light rounded-top px-2 py-1">
       <span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span>
     </div>
+    <th:block th:replace=" :: search_result_rows"></th:block>
+  </div>
+  <th:block th:fragment="search_result_rows">
     <div class="overflow-auto h-100">
       <ul id="results" class="mb-0 pb-3 list-group">
         <th:block th:each="word : ${wordsResult.words}">
@@ -49,7 +52,7 @@
     <div th:if="${wordsResult.showPaging}">
       <div th:replace="components :: paging(${wordsResult})"></div>
     </div>
-  </div>
+  </th:block>
   <div class="row" th:fragment="tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Ilmiku sildid</span>

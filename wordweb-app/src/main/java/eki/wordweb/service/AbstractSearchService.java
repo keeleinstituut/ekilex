@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.GlobalConstant;
+import eki.common.service.TextDecorationService;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
@@ -40,6 +41,9 @@ import eki.wordweb.service.util.ParadigmConversionUtil;
 import eki.wordweb.service.util.WordConversionUtil;
 
 public abstract class AbstractSearchService implements SystemConstant, WebConstant, GlobalConstant {
+
+	@Autowired
+	protected TextDecorationService textDecorationService;
 
 	@Autowired
 	protected SearchDbService searchDbService;
@@ -84,7 +88,9 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 	public Map<String, List<String>> getWordsByInfixLev(String wordInfix, SearchFilter searchFilter, int limit) {
 
 		SearchContext searchContext = getSearchContext(searchFilter);
-		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, searchContext, limit);
+		String wordInfixClean = textDecorationService.unifyToApostrophe(wordInfix);
+		String wordInfixUnaccent = textDecorationService.removeAccents(wordInfixClean);
+		Map<String, List<WordSearchElement>> results = searchDbService.getWordsByInfixLev(wordInfix, wordInfixUnaccent, searchContext, limit);
 		List<WordSearchElement> wordGroup = results.get(WORD_SEARCH_GROUP_WORD);
 		List<WordSearchElement> formGroup = results.get(WORD_SEARCH_GROUP_FORM);
 		if (CollectionUtils.isEmpty(wordGroup)) {
@@ -93,8 +99,8 @@ public abstract class AbstractSearchService implements SystemConstant, WebConsta
 		if (CollectionUtils.isEmpty(formGroup)) {
 			formGroup = new ArrayList<>();
 		}
-		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
-		List<String> formWords = formGroup.stream().map(WordSearchElement::getWord).collect(Collectors.toList());
+		List<String> prefWords = wordGroup.stream().map(WordSearchElement::getWord).distinct().collect(Collectors.toList());
+		List<String> formWords = formGroup.stream().map(WordSearchElement::getWord).distinct().collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(prefWords)) {
 			prefWords.forEach(formWords::remove);
 			int prefWordsCount = prefWords.size();

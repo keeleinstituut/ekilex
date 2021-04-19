@@ -28,9 +28,11 @@ public class FeedbackService implements SystemConstant {
 
 	private static final int MAX_RESULTS_LIMIT = 20;
 
-	private static final String FEEDBACK_TYPE_NEW_WORD = "new_word";
+	private static final String FEEDBACK_TYPE_WW_SIMPLE = "simple";
 
-	private static final String FEEDBACK_TYPE_COMMENT = "comment";
+	private static final String FEEDBACK_TYPE_WW_COMPLETE = "complete";
+
+	private static final String FEEDBACK_TYPE_TEACHER_TOOLS = "comment";
 
 	@Autowired
 	private FeedbackDbService feedbackDbService;
@@ -63,11 +65,22 @@ public class FeedbackService implements SystemConstant {
 	}
 
 	public boolean isValidFeedbackLog(FeedbackLog newFeedback) {
-		return newFeedback != null &&
-				StringUtils.equalsAny(newFeedback.getFeedbackType(), FEEDBACK_TYPE_NEW_WORD, FEEDBACK_TYPE_COMMENT)
-				&& isNotBlank(newFeedback.getSenderName())
-				&& isNotBlank(newFeedback.getSenderEmail())
-				&& isNotBlank(newFeedback.getWord());
+
+		boolean isValid = false;
+		if (newFeedback != null) {
+			String feedbackType = newFeedback.getFeedbackType();
+			String senderName = newFeedback.getSenderName();
+			String senderEmail = newFeedback.getSenderEmail();
+			String comments = newFeedback.getComments();
+			String description = newFeedback.getDescription();
+
+			if (StringUtils.equals(feedbackType, FEEDBACK_TYPE_TEACHER_TOOLS)) {
+				isValid = isNotBlank(senderName) && isNotBlank(senderEmail) && isNotBlank(comments);
+			} else if (StringUtils.equalsAny(newFeedback.getFeedbackType(), FEEDBACK_TYPE_WW_SIMPLE, FEEDBACK_TYPE_WW_COMPLETE)) {
+				isValid = isNotBlank(senderName) && isNotBlank(senderEmail) && isNotBlank(description);
+			}
+		}
+		return isValid;
 	}
 
 	@Transactional

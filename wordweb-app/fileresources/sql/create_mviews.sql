@@ -172,7 +172,6 @@ dblink(
 	sgroup varchar(10),
 	word text,
 	crit text,
-	unacrit text,
 	lang_order_by bigint,
 	lang_complexities type_lang_complexity array
 );
@@ -414,6 +413,7 @@ dblink(
 	name text,
 	description text,
 	contact text,
+  image_url text,
 	is_superior boolean,
 	order_by bigint
 );
@@ -463,8 +463,7 @@ create index mview_ww_dataset_word_menu_dataset_fletter_idx on mview_ww_dataset_
 create index mview_ww_word_search_sgroup_idx on mview_ww_word_search (sgroup);
 create index mview_ww_word_search_crit_idx on mview_ww_word_search (crit);
 create index mview_ww_word_search_crit_prefix_idx on mview_ww_word_search (crit text_pattern_ops);
-create index mview_ww_word_search_crit_lower_prefix_idx on mview_ww_word_search (lower(crit) text_pattern_ops);
-create index mview_ww_word_search_unacrit_tri_idx on mview_ww_word_search using gin(unacrit gin_trgm_ops);
+create index mview_ww_word_search_crit_tri_idx on mview_ww_word_search using gin(crit gin_trgm_ops);
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_value_idx on mview_ww_word (word);
 create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));

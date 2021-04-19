@@ -33,6 +33,7 @@ function fetchDetails(wordId, wordSelectUrl) {
 	$.get(wordDetailsUrlWithParams).done(function(data) {
 		detailsDiv.replaceWith(data);
 		fetchCorpSentences();
+		fetchCorpTranslations();
 		updateBrowserHistory(wordSelectUrl);
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"], [data-tooltip="tooltip"]').tooltip();
@@ -65,6 +66,16 @@ function fetchCorpSentences() {
 	$.get(corpSentencesUrl).done(function(data) {
 		corpDiv.replaceWith(data);
 		//Activate collapse button after last bit of data is loaded
+		activateCollapseBtn();
+	}).fail(function(data) {
+	})
+}
+
+function fetchCorpTranslations() {
+	var corpTransDiv = $("#corpTrans");
+	var corpTranslationsUrl = corpTransUrl + '/' + currentWordId + '/' + currentWordLang + '/' + encodeURIComponent(currentWord);
+	$.get(corpTranslationsUrl).done(function(data) {
+		corpTransDiv.replaceWith(data);
 		activateCollapseBtn();
 	}).fail(function(data) {
 	})

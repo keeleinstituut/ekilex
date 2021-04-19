@@ -14,7 +14,7 @@ public class WordGroup extends AbstractDataObject {
 
 	private String groupTypeLabel;
 
-	private List<Relation> members;
+	private List<WordRelation> members;
 
 	public Long getId() {
 		return id;
@@ -40,11 +40,11 @@ public class WordGroup extends AbstractDataObject {
 		this.groupTypeLabel = groupTypeLabel;
 	}
 
-	public List<Relation> getMembers() {
+	public List<WordRelation> getMembers() {
 		return members;
 	}
 
-	public void setMembers(List<Relation> members) {
+	public void setMembers(List<WordRelation> members) {
 		this.members = members;
 	}
 

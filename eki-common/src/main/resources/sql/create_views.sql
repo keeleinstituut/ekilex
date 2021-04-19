@@ -145,7 +145,6 @@ as
 select ws.sgroup,
        ws.word,
        ws.crit,
-       unaccent(ws.crit) unacrit,
        ws.lang_order_by,
        wlc.lang_complexities
 from (
@@ -1519,14 +1518,14 @@ from lex_relation r
               from word as w
                 left outer join word_word_type as wt on wt.word_id = w.id and wt.word_type_code not in ('vv', 'yv')
               group by w.id) as w2 on w2.word_id = l2.word_id
-where exists (select l1.id
+where r.lex_rel_type_code != 'otse'
+  and exists (select l1.id
               from lexeme l1,
                    dataset l1ds
               where l1.id = r.lexeme1_id
               and   l1.is_public = true
               and   l1ds.code = l1.dataset_code
               and   l1ds.is_public = true)
-  and r.lex_rel_type_code != 'otse'
 group by r.lexeme1_id;
 
 
@@ -1611,7 +1610,8 @@ from (select mr.meaning1_id m1_id,
            join lexeme l on l.meaning_id = m.id and l.is_public = true
            join word w on w.id = l.word_id
            join dataset l_ds on l_ds.code = l.dataset_code and l_ds.is_public = true
-      where exists(select lex.id
+      where mr.meaning_rel_type_code != 'duplikaadikandidaat'
+        and exists(select lex.id
                    from lexeme lex,
                         dataset lex_ds
                    where lex.meaning_id = mr.meaning1_id
@@ -1954,6 +1954,7 @@ create view view_ww_dataset
        name,
        description,
        contact,
+       image_url,
        is_superior,
        order_by
      from dataset
