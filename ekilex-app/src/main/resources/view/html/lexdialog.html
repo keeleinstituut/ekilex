@@ -173,7 +173,11 @@
                   <div class="radioTabs">
 
                     <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
-                      <input type="radio" name="complexity" th:value="${complexity}" />
+                      <input
+                        type="radio"
+                        name="complexity"
+                        th:checked="${complexity == 'DETAIL'}"
+                        th:value="${complexity}" />
                       <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
                     </label><!--/radioTabs__item-->
                   </div><!--/radioTabs-->

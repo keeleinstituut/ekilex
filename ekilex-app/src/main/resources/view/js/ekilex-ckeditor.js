@@ -93,14 +93,16 @@ CKEDITOR.plugins.add('ekiStyles', {
 	}
 });
 
+CKEDITOR.addCss('eki-link{color:blue; text-decoration: underline;}');
+
 CKEDITOR.plugins.add('ekiLink', {
 	icons: icons,
 	hidpi: true,
 	init: function( editor ) {
 		editor.addCommand( 'insertTimestamp', {
       exec: function( editor ) {
-        var now = new Date();
-        editor.insertHtml( 'The current date and time is: <em>' + now.toString() + '</em>' );
+				const link = new ckLink(editor);
+				link.init();
       }
     });
     editor.ui.addButton( 'Timestamp', {
@@ -111,6 +113,88 @@ CKEDITOR.plugins.add('ekiLink', {
 	}
 });
 
+class ckLink {
+
+	constructor(editor){
+		this.editor = editor;
+		this.parent = $(this.editor.element.$).parents('.modal-content:first');
+		this.parentTop = this.parent.css('top');
+		this.parentHeight = this.parent.outerHeight();
+	}
+
+	addTemplate() {
+		this.parent.after(this.linkContent = $(`
+			<div class="modal-content" style="top:${this.parentTop};">
+				<div class="modal-header">
+					<button class="btn btn-secondary" data-role="cancel">Tagasi</button>
+					<button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div><!--/modal-header-->
+				<div class="modal-body">
+					<div class="formItem">
+						<div class="formItem--title">
+							Valitud Tekst
+						</div><!--/formItem--title-->
+						<input type="text" name="title" />
+					</div><!--/formItem-->
+					<div class="formItem">
+						<div class="formItem--title">
+							Lisa link
+						</div><!--/formItem--title-->
+						<input type="text" name="url" />
+					</div><!--/formItem-->
+				</div><!--/modal-body-->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" data-role="cancel">Katkesta</button>
+					<button type="submit" class="btn btn-primary" data-role="save">Valmis</button>
+				</div>
+			</div>
+		`));
+
+		console.log(this.parentTop);
+		this.linkContent.css('marginBottom', (parseInt(this.parentTop) + this.parentHeight) - this.linkContent.outerHeight());
+
+		this.outerLink = {
+			title: this.linkContent.find('input[name="title"]:first'),
+			url: this.linkContent.find('input[name="url"]:first'),
+		}
+	}
+
+	toggle(state) {
+		if (state === 'show') {
+			this.addTemplate();
+			this.parent.hide();
+		} else {
+			this.linkContent.remove();
+			this.parent.show();
+		}
+	}
+
+	bindEvents() {
+		this.linkContent.find('[data-role="cancel"]').on('click', (e) => {
+			e.preventDefault();
+			this.toggle('hide');
+		});
+		this.linkContent.find('[data-role="save"]').on('click', (e) => {
+			e.preventDefault();
+			this.insertLink();
+		});
+
+	}
+
+	insertLink() {
+		const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="_blank">${this.outerLink.title.val()}</eki-link>`);
+		this.editor.insertElement(content);
+		this.toggle('hide');
+	}
+
+	init() {
+		this.toggle('show');
+		this.bindEvents();
+	}
+}
+
 function initCkEditor(elem) {
 	elem.ckeditor(function( textarea ) {
 		// Callback function code.
@@ -120,7 +204,7 @@ function initCkEditor(elem) {
 		toolbarGroups: [
 			{
 				name: "eki-styles",
-				groups: ["ekiStyles"],
+				groups: ["ekiStyles", 'ekiLink'],
 			},
 			{
 				name: 'eki-tools',
@@ -129,5 +213,8 @@ function initCkEditor(elem) {
 		],
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
 	});
+
+	
+
 }
 
