@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -1170,6 +1171,12 @@ public class CudDbService extends AbstractDataDbService {
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public void deleteParadigm(Long paradigmId) {
+		create.delete(PARADIGM)
+				.where(PARADIGM.ID.eq(paradigmId))
+				.execute();
 	}
 
 	private List<Long> getMeaningDefinitionIds(Long meaningId) {

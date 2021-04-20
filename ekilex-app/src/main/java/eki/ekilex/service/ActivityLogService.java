@@ -222,6 +222,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			return activityLogDbService.getMeaningDefinitionOwnerId(entityId);
 		} else if (ActivityEntity.DEFINITION_SOURCE_LINK.equals(entity)) {
 			return activityLogDbService.getDefinitionSourceLinkOwnerId(entityId);
+		} else if (ActivityEntity.PARADIGM.equals(entity)) {
+			return activityLogDbService.getParadigmOwnerId(entityId);
 		} else {
 			throw new IllegalParamException("Missing activity entity owner mapping for " + entity);
 		}

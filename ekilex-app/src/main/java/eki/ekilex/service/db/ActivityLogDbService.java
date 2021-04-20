@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
@@ -526,6 +527,10 @@ public class ActivityLogDbService implements GlobalConstant {
 				.from(DEFINITION, DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_SOURCE_LINK.ID.eq(sourceLinkId).and(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID)))
 				.fetchOptionalInto(Long.class).orElse(null);
+	}
+
+	public Long getParadigmOwnerId(Long paradigmId) {
+		return create.select(PARADIGM.WORD_ID).from(PARADIGM).where(PARADIGM.ID.eq(paradigmId)).fetchOptionalInto(Long.class).orElse(null);
 	}
 
 	public Timestamp getMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
