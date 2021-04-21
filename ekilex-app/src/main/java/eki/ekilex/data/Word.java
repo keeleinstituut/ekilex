@@ -3,6 +3,10 @@ package eki.ekilex.data;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_EMPTY)
 public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;

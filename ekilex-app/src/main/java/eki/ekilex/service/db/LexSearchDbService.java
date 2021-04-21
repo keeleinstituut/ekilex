@@ -38,7 +38,7 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Param;
 import org.jooq.Record10;
-import org.jooq.Record16;
+import org.jooq.Record17;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -654,6 +654,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtpf = getWordIsPrefixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w.field("word_id", Long.class));
 		Field<Boolean> wtz = getWordIsForeignField(w.field("word_id", Long.class));
+		Field<Timestamp> wlaeof = getWordLastActivityEventOnField(w.field("word_id", Long.class));
 
 		Field<String[]> lxvslvf;
 		Field<Boolean> lxpsf;
@@ -709,7 +710,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 		} else {
 			wvobf = w.field("word_value");
 		}
-		Table<Record16<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[]>> ww = DSL
+		Table<Record17<Long, String, String, Integer, String, String, String, String, String[], Boolean, Boolean, Boolean, Boolean, String[], String[], String[], Timestamp>> ww = DSL
 				.select(
 						w.field("word_id", Long.class),
 						w.field("word_value", String.class),
@@ -726,7 +727,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						lxpsf.as("lexemes_are_public"),
 						lxvslvf.as("lexemes_value_state_labels"),
 						lxtnf.as("lexemes_tag_names"),
-						dscf.as("dataset_codes"))
+						dscf.as("dataset_codes"),
+						wlaeof.as("last_activity_event_on"))
 				.from(w)
 				.orderBy(
 						w.field("min_ds_order_by"),
