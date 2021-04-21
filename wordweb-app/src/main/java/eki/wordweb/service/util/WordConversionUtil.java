@@ -294,7 +294,8 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		for (Lexeme lexeme : lexemes) {
 			boolean isShowSection1 = DatasetType.TERM.equals(lexeme.getDatasetType())
 					|| (CollectionUtils.isNotEmpty(lexeme.getPoses()) && !isSinglePos)
-					|| CollectionUtils.isNotEmpty(lexeme.getGrammars());
+					|| CollectionUtils.isNotEmpty(lexeme.getGrammars())
+					|| (lexeme.getValueState() != null);
 			boolean isShowSection2 = CollectionUtils.isNotEmpty(lexeme.getRelatedLexemes())
 					|| CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())
 					|| CollectionUtils.isNotEmpty(lexeme.getAdviceNotes())

@@ -623,3 +623,6 @@ insert into value_state_label (code, value, lang, type) values ('vigane', 'vigan
 alter table eki_user_application add column is_reviewed boolean default false not null;
 update eki_user_application set is_reviewed = true;
 alter table eki_user drop column is_reviewed;
+
+-- fix 20210330 (paradigmasid ei saa üleslaadida)
+alter table form drop column mode cascade;
