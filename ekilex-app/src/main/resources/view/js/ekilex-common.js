@@ -114,7 +114,7 @@ function alignAndFocus(e, dlg) {
 		if (dlgTop < 0) {
 			dlgTop = 0;
 		}
-		dlg.find('.modal-content').css('top', dlgTop);
+		//dlg.find('.modal-content').css('top', dlgTop);
 	}
 };
 

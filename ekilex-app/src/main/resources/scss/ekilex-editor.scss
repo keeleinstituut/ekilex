@@ -65,4 +65,101 @@
     background-image: url('../img/ckeditor/meta.png') !important;
 }
 
+.cke_button__ekilink_icon {
+    background-image: url('../img/ckeditor/ekilink.png') !important;
+}
+
 a.cke_path_item:first-child{display: none !important;}
+
+.ekilinkEditor {
+    h3 {
+        color: $gray-300;
+        font-size: 12px;
+        margin: 0;
+    }
+    .formItem {
+        &__title {
+            margin-bottom: 5px;
+        }
+        &__error {
+            color: red; 
+            font-size: 12px;
+            display: none;
+        }
+
+        &--dual {
+            display: flex;
+            button {
+                margin-left: 16px;
+            }
+        }
+        &--error {
+            .formItem__error {
+                display: block;
+            }
+        }
+        input {
+            border: 1px solid #5D606E;
+            box-sizing: border-box;
+            border-radius: 2px;
+            font-size: 14px;
+            padding:5px 6px;
+            width: 100%;
+        }
+    }
+
+    .results {
+        margin-top:8px;
+        max-height: 300px;
+        overflow: auto;
+        border: 0.0625rem solid rgba(0,0,0,.125);
+        #results.pb-3 {
+            margin: 0 !important;
+        }
+    }
+    .loader {
+        text-align: center;
+        padding: 20px 0;
+    }
+    .editorLink {
+        border-bottom: 1px solid #CCD9E0;
+        color: $gray-400;
+        font-size: 14px;
+        padding:12px 10px;
+        line-height: 100%;
+        cursor: pointer;
+        &--nested {
+            cursor:auto;
+        }
+        &:last-child {
+            border-bottom: none;
+        }
+        &__child {
+            padding-left: 27px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-left:#fff 1px solid;
+        }
+        &.active, .active {
+            font-weight: bold;
+        }
+        .active {
+            border-left-color: #A0DCF8;
+        }
+    }
+    .col-4 {
+        margin-right: -1rem;
+    }
+    .col-8.position-relative {
+        &:before {
+            position: absolute;
+            content: ' ';
+            display: block;
+            top: -1rem;
+            left: 0;
+            bottom: -1rem;
+            width: 1px;
+            background:#ccd9e0;
+        }
+    }
+}
