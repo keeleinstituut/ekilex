@@ -587,6 +587,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "od_usage_alternative":
 			cudService.deleteOdUsageAlternative(id);
 			break;
+		case "paradigm":
+			cudService.deleteParadigm(id);
+			break;
 		}
 		return RESPONSE_OK_VER1;
 	}

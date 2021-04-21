@@ -1442,6 +1442,14 @@ public class CudService extends AbstractService implements GlobalConstant {
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
 	}
 
+	@Transactional
+	public void deleteParadigm(Long paradigmId) throws Exception {
+		Long wordId = activityLogService.getOwnerId(paradigmId, ActivityEntity.PARADIGM);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteParadigm", wordId, ActivityOwner.WORD);
+		cudDbService.deleteParadigm(paradigmId);
+		activityLogService.createActivityLog(activityLog, paradigmId, ActivityEntity.PARADIGM);
+	}
+
 	private void moveCreatedWordRelationToFirst(Long wordId, Long relationId, String relTypeCode) {
 		List<WordRelation> existingRelations = lookupDbService.getWordRelations(wordId, relTypeCode);
 		if (existingRelations.size() > 1) {

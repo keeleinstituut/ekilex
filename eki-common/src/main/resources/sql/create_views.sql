@@ -530,7 +530,36 @@ from (select w.id as word_id,
                      and   ds.code = l.dataset_code
                      and   ds.is_public = true
                      and   l.meaning_id = d.meaning_id
-                     and   d.is_public = true)) lc
+                     and   d.is_public = true)
+                     union all
+                     (select l1.word_id,
+                             w1.lang,
+                             l1.dataset_code,
+                             l1.complexity lex_complexity,
+                             l1.complexity data_complexity
+                     from lexeme l1,
+                          word w1,
+                          dataset l1ds
+                     where l1.is_public = true
+                     and   l1ds.code = l1.dataset_code
+                     and   l1ds.is_public = true
+                     and   w1.id = l1.word_id
+                     and   not exists (select l2.id
+                                       from lexeme l2,
+                                            dataset l2ds
+                                       where l2.meaning_id = l1.meaning_id
+                                       and   l2.dataset_code = l1.dataset_code
+                                       and   l2.id != l1.id
+                                       and   l2.is_public = true
+                                       and   l2ds.code = l2.dataset_code
+                                       and   l2ds.is_public = true)
+                     and   not exists (select d.id from definition d where d.meaning_id = l1.meaning_id and   d.is_public = true)
+                     and   not exists (select ff.id
+                                       from lexeme_freeform lff,
+                                            freeform ff
+                                       where lff.lexeme_id = l1.id
+                                       and   lff.freeform_id = ff.id
+                                       and   ff.type in ('USAGE', 'GRAMMAR', 'GOVERNMENT', 'NOTE')))) lc
               group by lc.word_id) lc
           on lc.word_id = w.word_id
   left outer join (select wd.word_id,
