@@ -22,8 +22,6 @@ public interface WebConstant {
 
 	String GAMES_PAGE = "games";
 
-	String CONDITIONS_PAGE = "conditions";
-
 	String COLLECTIONS_PAGE = "collections";
 
 	String ABOUT_PAGE = "about";
@@ -69,8 +67,6 @@ public interface WebConstant {
 	String CONTACTS_URI = "/contacts";
 
 	String GAMES_URI = "/games";
-	
-	String CONDITIONS_URI = "/conditions";
 
 	String COLLECTIONS_URI = "/collections";
 
