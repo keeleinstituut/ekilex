@@ -68,7 +68,12 @@ public class EtymConversionUtil {
 		wordEtymLevel.setTree(new ArrayList<>());
 
 		for (TypeWordEtymRelation relation : wordEtymRelations) {
-			WordEtymTuple relWordEtymTuple = wordEtymTupleMap.get(relation.getRelatedWordId());
+			Long relatedWordId = relation.getRelatedWordId();
+			Long etymLevelWordId = wordEtymLevel.getWordId();
+			if (relatedWordId.equals(etymLevelWordId)) {
+				continue;
+			}
+			WordEtymTuple relWordEtymTuple = wordEtymTupleMap.get(relatedWordId);
 			WordEtymLevel relWordEtymLevel = composeEtymLevel(relWordEtymTuple, relation.isQuestionable(), relation.isCompound(), relation.getComment(), wordEtymSourceLinkMap);
 			wordEtymLevel.getTree().add(relWordEtymLevel);
 			composeEtymTree(relWordEtymLevel, relWordEtymTuple.getWordEtymRelations(), wordEtymTupleMap, wordEtymSourceLinkMap);
