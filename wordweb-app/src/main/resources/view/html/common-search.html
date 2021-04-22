@@ -300,7 +300,7 @@
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="text-small">
                             <!-- valueState matches -->
-                            <span th:if="${!isAnyTerm && (syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
+                            <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
 
                             <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
                               <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
