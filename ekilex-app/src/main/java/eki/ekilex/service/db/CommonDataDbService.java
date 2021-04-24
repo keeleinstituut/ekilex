@@ -231,8 +231,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
-	public List<Classifier> getDomainsInUse() {
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getDomainsInUse(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
 						getClassifierNameField(ClassifierName.DOMAIN),
@@ -244,7 +244,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.select(MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
 						.from(MEANING_DOMAIN)
 						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
-								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
+								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))
+								.and(DOMAIN_LABEL.LANG.eq(classifierLabelLang))
+								.and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode))))
 				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE, DOMAIN_LABEL.LANG.desc())
 				.fetchInto(Classifier.class);
 	}
@@ -602,7 +604,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Media.class);
 	}
 
-	public List<OrderedClassifier> getMeaningDomains(Long meaningId) {
+	public List<OrderedClassifier> getMeaningDomains(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
@@ -615,7 +617,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(
 						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
 								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
-										.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))))
+										.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
+										.and(DOMAIN_LABEL.LANG.eq(classifierLabelLang))
+										.and(DOMAIN_LABEL.TYPE.eq(classifierLabelTypeCode))))
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
 				.orderBy(MEANING_DOMAIN.ORDER_BY, DOMAIN_LABEL.LANG.desc())
 				.fetchInto(OrderedClassifier.class);
@@ -1271,7 +1275,9 @@ public class CommonDataDbService extends AbstractDataDbService {
 					.where(
 							DOMAIN.CODE.eq(DOMAIN_LABEL.CODE)
 									.and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
-									.and(DOMAIN.DATASETS.contains(datasetCodes)))
+									.and(DOMAIN.DATASETS.contains(datasetCodes))
+									.and(DOMAIN_LABEL.TYPE.eq(labelType))
+									.and(DOMAIN_LABEL.LANG.eq(labelLanguage)))
 					.orderBy(DOMAIN.CODE, DOMAIN_LABEL.LANG.desc())
 					.fetchInto(Classifier.class);
 		}
