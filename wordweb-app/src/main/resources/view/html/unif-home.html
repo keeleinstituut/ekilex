@@ -32,14 +32,14 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
-        <div class="text-center mt-5">
+        <div class="text-center mt-5 align-middle">
           <span class="align-middle">
             <a th:href="@{/lite}" target="_blank" class="link simple-search-brand-link" data-item-name="search-lite">
               <span th:text="#{menu.search.lite}">Keeleõppija Sõnaveeb</span>
               <i class="fas fa-external-link-alt ml-2" aria-hidden="true"></i>
             </a>
           </span>
-          <span class="align-middle">
+          <span class="align-middle d-none d-md-inline">
             <a th:href="@{/feelinglucky}" class="link ml-5">
               <span th:text="#{button.label.feelinglucky}">Ehk mul veab</span>
             </a>
