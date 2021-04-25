@@ -20,6 +20,9 @@ public class EkiUserLogConverter extends ClassicConverter {
 		if (principal.getClass().getName().equals(EkiUser.class.getName())) {
 			try {
 				Object idObj = MethodUtils.invokeMethod(principal, "getId");
+				if (idObj == null) {
+					return "anyone";
+				}
 				return idObj.toString();
 			} catch (Exception e) {
 				return "error";

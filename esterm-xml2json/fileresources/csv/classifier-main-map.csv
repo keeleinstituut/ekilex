@@ -459,8 +459,8 @@ kasutus	kasutus	NATO	NATO	en	region	NATO
 kasutus	kasutus	UK	UK	en	region	UK
 kasutus	kasutus	UN	UN	en	region	UN
 kasutus	kasutus	US	US	en	region	US
-keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	value_state	eelistermin
-keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	value_state	rööptermin
+keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	value_state	eelistatud
+keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	value_state	mööndav
 keelenditüüp	keelenditüüp	variant	variant	et	value_state	variant
 keelenditüüp	keelenditüüp	väldi	väldi	et	value_state	väldi
 keelenditüüp	keelenditüüp	endine	endine	et	value_state	endine
@@ -589,7 +589,7 @@ mvtl_tyyp	mvtl_tyyp	gr	vormiviide	et	-	-
 mvtl_tyyp	mvtl_tyyp	gr	cross-reference (from inflectional form)	en	-	-
 mvtl_tyyp	märksõnaviide	cmp	võrdlusvormi viide	et	-	-
 mvtl_tyyp	märksõnaviide	var	variandiviide	et	-	-
-mõistetüüp	Mõistetüüp	termin	termin	et	word_type	termin
+mõistetüüp	Mõistetüüp	termin	termin	et	-	-
 mõistetüüp	Mõistetüüp	tõlkeprobleem	tõlkeprobleem	et	word_type	tõlkeprobleem
 mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	word_type	ametinimetus
 mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	word_type	organisatsiooni, asutuse nimi
