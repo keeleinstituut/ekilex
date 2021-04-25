@@ -21,3 +21,4 @@ Käivita konverter:
 - Enne sõnakogu importimist kustuta olemasolev poolik Esterm sõnakogude haldusest
 - Sõnakogude importeri praegusel tehnilisel lahendusel võtab Estermi laadimine kaua! Testimine andis kuni 20 tunnise laadimisaja!
 - Mõningase võidu andis laadimisajas kui kustutada tabelite `temp_ds_import_pk_map` ja `temp_ds_import_queue` indeksid. (Lihtsaim viis on teha tabelitele drop cascade ja create ilma indeksiteta)
+- Konfi `.mvn/jvm.config` sisu vastavakt võimalustele ning kopeeri importeri kasutamise ajaks `ekilex-app` mooduli juurikasse, et eraldada rakendusele rohkem ressurssi
