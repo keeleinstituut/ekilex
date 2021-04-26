@@ -155,6 +155,9 @@ class ckLink {
 			title: this.linkContent.find('input[name="internalTitle"]'),
 		}
 
+		this.outerLink.title.val(this.editor.getSelection().getSelectedText());
+		this.internalLink.title.val(this.editor.getSelection().getSelectedText());
+
 		this.roles = this.linkContent.find('[data-linkType]');
 		this.internalTypes = this.linkContent.find('[data-internalType]');
 		this.results = this.linkContent.find('.results');
@@ -252,10 +255,10 @@ class ckLink {
 		const buttons = this.results.find('.list-group-item');
 		buttons.on('click', (e) => {
 			const obj = $(e.currentTarget);
-			const id = obj.attr('data-id');
+			const id = obj.find('[data-id]').attr('data-id');
 			buttons.removeClass('active');
 			obj.addClass('active');
-			this.activeID = obj.attr('data-id');
+			this.activeID = id;
 		});
 	}
 
@@ -295,7 +298,7 @@ class ckLink {
 			if (!this.valid.internal) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}">${this.internalLink.title.val()}</eki-link>`);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		}
