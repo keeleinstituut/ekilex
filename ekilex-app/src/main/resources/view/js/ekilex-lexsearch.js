@@ -338,12 +338,15 @@ function loadDetails(wordId, task, lastWordId) {
 					id: parseInt(wordId),
 					word: dataObject.attr('data-word'),
 				});
-				var scrollPosition = parseInt(dataObject.attr('data-id')) === wordId ? detailsDiv[0].scrollTop : 0;
+				var retainScrollPosition = parseInt(dataObject.attr('data-id')) === parseInt(wordId);
+
+				const scrollPosition = detailsDiv.find('.overflow-auto:first').length && retainScrollPosition ? detailsDiv.find('.overflow-auto:first')[0].scrollTop : 0;
 
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
+
 				var newDiv;
 				detailsDiv.replaceWith(newDiv = $(dataObject[0].outerHTML));
-				newDiv.scrollTop(scrollPosition);
+				newDiv.find('.overflow-auto:first').scrollTop(scrollPosition);
 			} else {
 				const lastDetailsArea = $('#resultColumn:first').find('[data-rel="details-area"]:last');
 
@@ -445,6 +448,8 @@ function initLexemeLevelsDlg(editDlg) {
 		let editForm = editDlg.find('form');
 		editDlg.find('[name="action"]').val($(this).data('action'));
 		let url = editForm.attr('action') + '?' + editForm.serialize();
+
+		Cookies.set('details-open', $('.details-open').parent().attr('id'));
 
 		$.post(url).done(function(data) {
 			let id = editDlg.parents('[data-rel="details-area"]:first').data('id');
