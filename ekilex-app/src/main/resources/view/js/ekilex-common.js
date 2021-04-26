@@ -28,7 +28,7 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.', c
 };
 
 function doPostDelete(deleteUrl, callback, force) {
-	
+	Cookies.set('details-open', $('.details-open').parent().attr('id'));
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
 
