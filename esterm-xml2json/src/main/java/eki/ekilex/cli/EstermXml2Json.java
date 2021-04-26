@@ -46,6 +46,7 @@ import eki.common.constant.LoaderConstant;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.data.Count;
+import eki.common.data.OrderedMap;
 import eki.common.exception.DataLoadingException;
 import eki.common.service.TextDecorationService;
 import eki.common.service.XmlReader;
@@ -184,7 +185,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 
 		logger.debug("Starting loading file: \"{}\"", dataXmlFilePath);
 
-		Map<String, Object> serialisableData = new HashMap<>();
+		Map<String, Object> serialisableData = new OrderedMap<>();
 		Map<String, Long> sorceIdMap = new HashMap<>();
 		extractSources(dataXmlFilePath, serialisableData, sorceIdMap);
 		extractDataset(dataXmlFilePath, serialisableData, sorceIdMap);
@@ -243,7 +244,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 		List<Map<String, Object>> sourceFreeforms = new ArrayList<>();
 		sourceId = sourceIdSeq.increment();
 
-		source = new HashMap<>();
+		source = new OrderedMap<>();
 		source.put("id", sourceId);
 		source.put("type", SourceType.DOCUMENT.name());
 		source.put("source_freeform", sourceFreeforms);
@@ -299,7 +300,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 
 		Long id = sourceFreeformIdSeq.increment();
 		Long freeformId = (Long) freeform.get("id");
-		Map<String, Object> lexemeFreeform = new HashMap<>();
+		Map<String, Object> lexemeFreeform = new OrderedMap<>();
 		lexemeFreeform.put("id", id);
 		lexemeFreeform.put("source_id", sourceId);
 		lexemeFreeform.put("freeform_id", freeformId);
@@ -324,9 +325,19 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 		String lang;
 		Map<String, Object> dataset, word, meaning, lexeme;
 
-		dataset = new HashMap<>();
+		dataset = new OrderedMap<>();
 		dataset.put("code", getDatasetCode());
-		dataset.put("name", "Esterm");
+		dataset.put("name", "EKI terminibaas Esterm");
+		dataset.put("description",
+				"Esterm on Eesti Keele Instituudi mitmekeelne terminibaas, mis sisaldab peamiselt Euroopa Liidu ja Eesti Vabariigi õigusaktide termineid. "
+				+ "Terminibaas koondab üle 50 valdkonna terminoloogiat, näiteks põllumajandus, rahandus, õigus, transport, meditsiin, keemia, bioloogia, avalik haldus. "
+				+ "Peale terminite on baasis ka organisatsioonide ja asutuste nimetusi, ametinimetusi, õigusaktide ja dokumentide pealkirju ning tõlkeprobleeme ehk fraase, mis võivad tõlkimisel raskusi valmistada.\n"
+				+ "Eesti Keele Instituudi terminoloogid täiendavad ja ajakohastavad Estermi pidevalt, sest mõisted ja terminid muutuvad. Terminitöö eesmärk on koondada, korrastada, talletada ja levitada terminoloogiat. "
+				+ "Konsulteerime sageli eri valdkondade asjatundjatega ja oleme avatud terminoloogiakoostööle. \n"
+				+ "Esterm loodi 1996. aastal Eesti Õigustõlke Keskuses õigusaktide tõlkimise abivahendina, et talletada uuritud termineid ja tagada tõlgitavates õigusaktides järjepidava terminoloogia kasutamine. "
+				+ "2006. aastast haldab Estermi Eesti Keele Instituut. Tõlkepõhiselt terminitöölt oleme üle läinud süsteemsele, valdkondade ja mõistesüsteemide kaupa tehtavale terminitööle.\n"
+				+ "Esterm on mõeldud tõlkijatele, tõlkidele, spetsialistidele, ajakirjanikele, toimetajatele, ametnikele, teadustöötajatele, aga ka teistele erialatekstide tõlkimise või koostamisega tegelevatele inimestele.\n"
+				+ "Kontakt: terminoloogia@eki.ee");
 		dataset.put("type", DatasetType.TERM.name());
 		dataset.put("is_public", Boolean.FALSE);
 		dataset.put("is_visible", Boolean.TRUE);
@@ -355,7 +366,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 			List<Map<String, Object>> definitions = new ArrayList<>();
 
 			meaningId = meaningIdSeq.increment();
-			meaning = new HashMap<>();
+			meaning = new OrderedMap<>();
 			meaning.put("id", meaningId);
 			meaning.put("meaning_domain", meaningDomains);
 			meaning.put("meaning_freeform", meaningFreeforms);
@@ -413,7 +424,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 					// word
 					wordId = wordIdSeq.increment();
 					Integer homonymNr = getHomonymNr(termCleanValue, lang);
-					word = new HashMap<>();
+					word = new OrderedMap<>();
 					word.put("id", wordId);
 					word.put("lang", lang);
 					word.put("homonym_nr", homonymNr);
@@ -430,19 +441,21 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 					List<Map<String, Object>> lexemeSourceLinks = new ArrayList<>();
 
 					lexemeId = lexemeIdSeq.increment();
-					lexeme = new HashMap<>();
+					lexeme = new OrderedMap<>();
 					lexeme.put("id", lexemeId);
 					lexeme.put("word_id", wordId);
 					lexeme.put("meaning_id", meaningId);
+					lexeme.put("dataset_code", getDatasetCode());
+					lexeme.put("complexity", getComplexityValue());
 					lexeme.put("value_state_code", valueStateCode);
 					lexeme.put("is_public", isPublic);
 					lexeme.put("lexeme_freeform", lexemeFreeforms);
 					lexeme.put("lexeme_source_link", lexemeSourceLinks);
 					lexemes.add(lexeme);
 
+					extractAndCreateDefinitionsAndSourceLinks(meaningId, definitions, termGroupNode, term, lang, sourceIdMap);
 					extractAndCreateLexemeSourceLinks(lexemeId, lexemeSourceLinks, termGroupNode, term, lang, sourceIdMap);
 					extractAndCreateLexemeNotesAndSourceLinks(lexemeId, lexemeFreeforms, termGroupNode, term, lang, sourceIdMap);
-					extractAndCreateDefinitionsAndSourceLinks(meaningId, definitions, termGroupNode, term, lang, sourceIdMap);
 					extractAndCreateUsagesAndSourceLinks(lexemeId, lexemeFreeforms, termGroupNode, term, lang, sourceIdMap);
 				}
 			}
@@ -729,7 +742,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 		if (domainCodes.contains(domainCode)) {
 			return null;
 		}
-		Map<String, Object> meaningDomain = new HashMap<>();
+		Map<String, Object> meaningDomain = new OrderedMap<>();
 		meaningDomain.put("meaning_id", meaningId);
 		meaningDomain.put("domain_origin", domainOrigin);
 		meaningDomain.put("domain_code", domainCode);
@@ -949,7 +962,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 			valueClean = textDecorationService.removeEkiElementMarkup(valueClean);
 			String valuePrese = textDecorationService.convertEkiEntityMarkup(value);
 
-			Map<String, Object> definitionDataset = new HashMap<>();
+			Map<String, Object> definitionDataset = new OrderedMap<>();
 			definitionDataset.put("definition_id", definitionId);
 			definitionDataset.put("dataset_code", getDatasetCode());
 			List<Map<String, Object>> definitionDatasets = new ArrayList<>();
@@ -964,8 +977,9 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 				}
 			}
 
-			Map<String, Object> definition = new HashMap<>();
+			Map<String, Object> definition = new OrderedMap<>();
 			definition.put("id", definitionId);
+			definition.put("meaning_id", meaningId);
 			definition.put("definition_type_code", DEFAULT_DEFINITION_TYPE_CODE);
 			definition.put("value", valueClean);
 			definition.put("value_prese", valuePrese);
@@ -987,7 +1001,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 		}
 		Long id = meaningFreeformIdSeq.increment();
 		Long freeformId = (Long) freeform.get("id");
-		Map<String, Object> meaningFreeform = new HashMap<>();
+		Map<String, Object> meaningFreeform = new OrderedMap<>();
 		meaningFreeform.put("id", id);
 		meaningFreeform.put("meaning_id", meaningId);
 		meaningFreeform.put("freeform_id", freeformId);
@@ -1005,7 +1019,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 
 		Long id = definitionFreeformIdSeq.increment();
 		Long freeformId = (Long) freeform.get("id");
-		Map<String, Object> definitionFreeform = new HashMap<>();
+		Map<String, Object> definitionFreeform = new OrderedMap<>();
 		definitionFreeform.put("id", id);
 		definitionFreeform.put("definition_id", definitionId);
 		definitionFreeform.put("freeform_id", freeformId);
@@ -1023,7 +1037,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 
 		Long id = lexemeFreeformIdSeq.increment();
 		Long freeformId = (Long) freeform.get("id");
-		Map<String, Object> lexemeFreeform = new HashMap<>();
+		Map<String, Object> lexemeFreeform = new OrderedMap<>();
 		lexemeFreeform.put("id", id);
 		lexemeFreeform.put("lexeme_id", lexemeId);
 		lexemeFreeform.put("freeform_id", freeformId);
@@ -1049,7 +1063,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 	private Map<String, Object> createFreeformTextEkiMarkup(Long parentId, FreeformType freeformType, String value, String lang, boolean isPublic) throws Exception {
 
 		Long id = freeformIdSeq.increment();
-		Map<String, Object> freeform = new HashMap<>();
+		Map<String, Object> freeform = new OrderedMap<>();
 		freeform.put("id", id);
 		freeform.put("type", freeformType.name());
 		if (parentId != null) {
@@ -1071,7 +1085,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 	private Map<String, Object> createFreeformDate(Long parentId, FreeformType freeformType, Timestamp value, boolean isPublic) throws Exception {
 
 		Long id = freeformIdSeq.increment();
-		Map<String, Object> freeform = new HashMap<>();
+		Map<String, Object> freeform = new OrderedMap<>();
 		freeform.put("id", id);
 		freeform.put("type", freeformType.name());
 		if (parentId != null) {
@@ -1126,7 +1140,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 	private Map<String, Object> createLexemeSourceLink(Long lexemeId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
 
 		Long id = lexemeSourceLinkIdSeq.increment();
-		Map<String, Object> lexemeSourceLink = new HashMap<>();
+		Map<String, Object> lexemeSourceLink = new OrderedMap<>();
 		lexemeSourceLink.put("id", id);
 		lexemeSourceLink.put("lexeme_id", lexemeId);
 		lexemeSourceLink.put("type", refType.name());
@@ -1143,7 +1157,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 	private Map<String, Object> createDefinitionSourceLink(Long definitionId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
 
 		Long id = definitionSourceLinkIdSeq.increment();
-		Map<String, Object> definitionSourceLink = new HashMap<>();
+		Map<String, Object> definitionSourceLink = new OrderedMap<>();
 		definitionSourceLink.put("id", id);
 		definitionSourceLink.put("definition_id", definitionId);
 		definitionSourceLink.put("type", refType.name());
@@ -1160,7 +1174,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 	private Map<String, Object> createFreeformSourceLink(Long freeformId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
 
 		Long id = freeformSourceLinkIdSeq.increment();
-		Map<String, Object> freeformSourceLink = new HashMap<>();
+		Map<String, Object> freeformSourceLink = new OrderedMap<>();
 		freeformSourceLink.put("id", id);
 		freeformSourceLink.put("freeform_id", freeformId);
 		freeformSourceLink.put("type", refType.name());
@@ -1250,7 +1264,7 @@ public class EstermXml2Json implements LoaderConstant, TermLoaderConstant, Globa
 		if (CollectionUtils.isNotEmpty(termWordTypeCodes)) {
 			List<Map<String, Object>> wordWordTypes = new ArrayList<>();
 			for (String wordTypeCode : termWordTypeCodes) {
-				Map<String, Object> wordType = new HashMap<>();
+				Map<String, Object> wordType = new OrderedMap<>();
 				wordType.put("word_id", wordId);
 				wordType.put("word_type_code", wordTypeCode);
 				wordWordTypes.add(wordType);

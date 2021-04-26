@@ -59,8 +59,7 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public Map<String, List<Classifier>> getDomainsInUseByOrigin() {
-		List<Classifier> domains = commonDataDbService.getDomainsInUse();
-		domains = conversionUtil.removeClassifierDuplicates(domains);
+		List<Classifier> domains = commonDataDbService.getDomainsInUse(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
@@ -68,7 +67,6 @@ public class CommonDataService implements SystemConstant {
 	public Map<String, List<Classifier>> getDatasetDomainsByOrigin(String datasetCode) {
 		List<Classifier> domains = commonDataDbService.getDatasetClassifiers(
 				ClassifierName.DOMAIN, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		domains = conversionUtil.removeClassifierDuplicates(domains);
 		Map<String, List<Classifier>> datasetDomainsByOrigin = domains.stream().collect(groupingBy(Classifier::getOrigin));
 		return datasetDomainsByOrigin;
 	}

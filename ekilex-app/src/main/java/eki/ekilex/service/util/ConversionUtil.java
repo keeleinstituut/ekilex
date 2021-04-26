@@ -59,7 +59,6 @@ import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.OdUsageAlternative;
 import eki.ekilex.data.OdUsageDefinition;
-import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Source;
@@ -1084,32 +1083,6 @@ public class ConversionUtil implements GlobalConstant {
 			source.setSourceNames(sourceNames);
 		});
 		return sources;
-	}
-
-	public List<OrderedClassifier> removeOrderedClassifierDuplicates(List<OrderedClassifier> allClassifiers) {
-
-		List<OrderedClassifier> distinctClassifiers = new ArrayList<>();
-		for (OrderedClassifier classifierCandidate : allClassifiers) {
-			String classifCandidateCode = classifierCandidate.getCode();
-			boolean alreadyExists = distinctClassifiers.stream().anyMatch(classif -> StringUtils.equals(classif.getCode(), classifCandidateCode));
-			if (!alreadyExists) {
-				distinctClassifiers.add(classifierCandidate);
-			}
-		}
-		return distinctClassifiers;
-	}
-
-	public List<Classifier> removeClassifierDuplicates(List<Classifier> allClassifiers) {
-
-		List<Classifier> distinctClassifiers = new ArrayList<>();
-		for (Classifier classifierCandidate : allClassifiers) {
-			String classifCandidateCode = classifierCandidate.getCode();
-			boolean alreadyExists = distinctClassifiers.stream().anyMatch(classif -> StringUtils.equals(classif.getCode(), classifCandidateCode));
-			if (!alreadyExists) {
-				distinctClassifiers.add(classifierCandidate);
-			}
-		}
-		return distinctClassifiers;
 	}
 
 	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {

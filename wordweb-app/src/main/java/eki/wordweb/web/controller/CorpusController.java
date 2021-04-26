@@ -2,7 +2,6 @@ package eki.wordweb.web.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CorpusSentence;
+import eki.wordweb.data.CorpusTranslation;
 import eki.wordweb.service.CorpusEstService;
 import eki.wordweb.service.CorpusRusService;
 import eki.wordweb.service.CorpusTranslationService;
@@ -61,9 +61,9 @@ public class CorpusController implements WebConstant, SystemConstant {
 			@PathVariable("wordValue") String wordValue,
 			Model model) {
 
-		Map<String, String> sentences = corpusTranslationService.getSentences(wordId, wordLang,wordValue);
+		List<CorpusTranslation> translations = corpusTranslationService.getTranslations(wordId, wordLang,wordValue);
 
-		model.addAttribute("sentences", sentences);
+		model.addAttribute("translations", translations);
 		return "common-search :: corp_trans";
 	}
 }

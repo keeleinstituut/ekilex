@@ -63,7 +63,12 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <th:block th:if="${!wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
-          <span class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
+          <span th:unless="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block">
+            <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
+            <button class="btn btn-lg btn-link px-0" name="word-form-btn" th:each="word : ${wordsData.formMatchWordValues}" th:text="${word}" th:data-word="${word}"></button>
+            <span th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
+          </span>
+          <span th:if="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
           <h5 class="meaning-sub-heading">
             <i class="fa fa-book mr-1 text-muted"></i>
             <a th:href="${ekilexLimTermSearchUrl}" target="_blank">

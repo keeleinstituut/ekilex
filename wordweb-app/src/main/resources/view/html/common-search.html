@@ -168,14 +168,14 @@
           </button>
         </h5>
       </div>
-      <div class="sentence-wrapper" th:each="sentenceEntry : ${sentences}">
-        <p class="mb-2" th:utext="${sentenceEntry.key + ' - ' + sentenceEntry.value}"></p>
+      <div class="sentence-wrapper" th:each="translation : ${translations}">
+        <p class="mb-2" th:utext="${translation.sentence + ' - ' + translation.translatedSentence}"></p>
       </div>
       <button class="show-more btn btn-collapse btn-link-muted btn-sm ml-n2"
               type="button"
               aria-expanded="false"
               data-dynamic-text="true"
-              th:if="${#maps.size(sentences) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
+              th:if="${#lists.size(translations) > T(eki.wordweb.constant.WebConstant).CORPUS_SENTENCES_DISPLAY_LIMIT}">
         <span class="btn-content see-more-content" data-toggle="tooltip" th:title="#{button.see.more}">
           <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
         </span>

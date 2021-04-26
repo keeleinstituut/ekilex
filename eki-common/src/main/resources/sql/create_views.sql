@@ -1311,6 +1311,7 @@ from
   left outer join (
     select
       wer.word_etym_id,
+      wer.related_word_id,
       array_agg(
         row(
             wer.id,
@@ -1323,8 +1324,8 @@ from
       ) word_etym_relations
     from
       word_etymology_relation wer
-    group by wer.word_etym_id
-  ) wer on wer.word_etym_id = rec.word_etym_id
+    group by wer.word_etym_id, wer.related_word_id
+  ) wer on wer.word_etym_id = rec.word_etym_id and wer.related_word_id != rec.word_id
   left outer join (
     select
       l1.word_id,

@@ -55,10 +55,4 @@ public class PagesController extends AbstractController {
 		return REGULATIONS_PAGE;
 	}
 
-	@GetMapping(CONDITIONS_URI)
-	public String conditions(Model model) {
-		populateCommonModel(model);
-		return CONDITIONS_PAGE;
-	}
-
 }
