@@ -174,7 +174,7 @@ $(document).on("click", ".homonym-item", function() {
 	$(".homonym-list").removeClass("expand");
 });
 
-$(document).on("click", "[name='word-form-btn']", function() {
+$(document).on("click", ".word-form", function() {
 	var word = $(this).data('word');
 	$("input[name = 'searchWord']").val(word);
 	$('#search-btn').trigger('click');
