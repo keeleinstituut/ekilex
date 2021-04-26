@@ -302,7 +302,6 @@ class ckLink {
 	}
 
 	init() {
-		console.log(this.editor);
 		this.toggle('show');
 		this.bindEvents();
 	}

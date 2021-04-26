@@ -344,7 +344,6 @@ function loadDetails(wordId, task, lastWordId) {
 				var newDiv;
 				detailsDiv.replaceWith(newDiv = $(dataObject[0].outerHTML));
 				newDiv.scrollTop(scrollPosition);
-
 			} else {
 				const lastDetailsArea = $('#resultColumn:first').find('[data-rel="details-area"]:last');
 

@@ -220,9 +220,11 @@ class Sorter {
 
         openWaitDlg();
         postJson(applicationUrl + 'update_ordering', data).done(function() {
+          console.log(viewType);
           if (viewType === 'lex') {
             let successCallbackName = orderingBtn.attr("data-callback");
             let successCallbackFunc = () => eval(successCallbackName);
+            console.log(successCallbackName);
             successCallbackFunc();
           } else {
             refreshSynDetails();

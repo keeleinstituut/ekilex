@@ -135,7 +135,7 @@
                   </button>
                 </span>
                 <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2 flex-shrink-0" style="width: 30px;"></span>
-                <div data-plugin="sorter" data-sorter:type="syn" class="w-100" data-sorter:handle=".hidden-buttons">
+                <div data-plugin="sorter" data-sorter:type="syn" class="w-100" data-sorter:handle=".sort-handle">
                   <div th:each="syn,synIter : ${synonymLangGroup.synonyms}"
                        class="draggable-syn-rel do-refresh"
                        th:data-lexeme-id="${lexeme.lexemeId}"
@@ -153,49 +153,51 @@
                       </th:block>
                     </th:block>
                     <div class="hidden-buttons">
-                      <th:block th:each="synWord, synWordIter : ${syn.words}">
-                        <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
-                        <button type="button"
-                                class="btn btn-link p-0 syn-handle"
-                                th:data-id="${synWord.wordId}"
-                                name="details-btn"
-                                data-behaviour="replace"
-                                data-plugin="contextmenu"
-                                data-contextmenu:compare="Ava uues paneelis">
-                          <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
-                          <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
-                          <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
-                          <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
-                          <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
-                        </button><span th:unless="${synWordIter.last}">,</span>
-                        <th:block th:if="${isMeaningWordSyn || isMeaningWordDirectMatchSyn}">
-                          <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
-                          <div class="meaning_buttons">
-                            <button type="button" class="btn badge badge-primary"
-                                    title="Muuda vastet"
-                                    data-toggle="modal"
-                                    th:data-target="${'#editMeaningWordAndLexemeWeightDlg_' + synWord.lexemeId}"
-                                    sec:authorize="#vars.lexeme.crudGrant">
-                              <i class="fa fa-edit" aria-hidden="true"></i>
-                            </button>
-                            <button th:id="${'duplicateMeaningWordAndLexemeBtn_' + lexeme.lexemeId}"
-                                    th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                                    th:data-lexeme-id="${synWord.lexemeId}"
-                                    class="btn badge badge-primary"
-                                    title="Tee vastest duplikaat"
-                                    sec:authorize="#vars.lexeme.crudGrant">
-                              <i class="fa fa-clone" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn badge badge-warning"
-                                    th:data-id="${synWord.lexemeId}"
-                                    data-callback="refreshDetailsSearch"
-                                    data-toggle="deleteLexemeAndWordAndMeaning"
-                                    sec:authorize="#vars.lexeme.crudGrant">
-                              <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste"></i>
-                            </button>
-                          </div><!--/meaning_buttons-->
+                      <span class="sort-handle">
+                        <th:block th:each="synWord, synWordIter : ${syn.words}">
+                          <input type="hidden" name="synword-lexeme-id" th:value="${synWord.lexemeId}"/>
+                          <button type="button"
+                                  class="btn btn-link p-0 syn-handle"
+                                  th:data-id="${synWord.wordId}"
+                                  name="details-btn"
+                                  data-behaviour="replace"
+                                  data-plugin="contextmenu"
+                                  data-contextmenu:compare="Ava uues paneelis">
+                            <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
+                            <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
+                            <sup th:if="${synWord.homonymsExist}" th:text="${synWord.homonymNr}"></sup>
+                            <small class="text-gray fontSize-12" th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
+                            <small class="text-gray fontSize-12" th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
+                          </button><span th:unless="${synWordIter.last}">,</span>
+                          <th:block th:if="${isMeaningWordSyn || isMeaningWordDirectMatchSyn}">
+                            <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
+                            <div class="meaning_buttons">
+                              <button type="button" class="btn badge badge-primary"
+                                      title="Muuda vastet"
+                                      data-toggle="modal"
+                                      th:data-target="${'#editMeaningWordAndLexemeWeightDlg_' + synWord.lexemeId}"
+                                      sec:authorize="#vars.lexeme.crudGrant">
+                                <i class="fa fa-edit" aria-hidden="true"></i>
+                              </button>
+                              <button th:id="${'duplicateMeaningWordAndLexemeBtn_' + lexeme.lexemeId}"
+                                      th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+                                      th:data-lexeme-id="${synWord.lexemeId}"
+                                      class="btn badge badge-primary"
+                                      title="Tee vastest duplikaat"
+                                      sec:authorize="#vars.lexeme.crudGrant">
+                                <i class="fa fa-clone" aria-hidden="true"></i>
+                              </button>
+                              <button type="button" class="btn badge badge-warning"
+                                      th:data-id="${synWord.lexemeId}"
+                                      data-callback="refreshDetailsSearch"
+                                      data-toggle="deleteLexemeAndWordAndMeaning"
+                                      sec:authorize="#vars.lexeme.crudGrant">
+                                <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste"></i>
+                              </button>
+                            </div><!--/meaning_buttons-->
+                          </th:block>
                         </th:block>
-                      </th:block>
+                      </span>
                       <th:block th:if="${isMeaningRelSyn}">
                         <div th:replace="lexdialog :: edit_syn_meaning_relation_weight_dlg"></div>
                         <div class="meaning_buttons">
