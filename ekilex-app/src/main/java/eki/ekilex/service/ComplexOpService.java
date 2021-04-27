@@ -29,28 +29,16 @@ public class ComplexOpService {
 		String validationMessage = "";
 		boolean isValid = true;
 
-		boolean isOnlyPrimaryLexemeForMeaning = lookupDbService.isOnlyPrimaryLexemeForMeaning(lexemeId);
-		if (isOnlyPrimaryLexemeForMeaning) {
-			boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
-			if (isOnlyLexemeForMeaning) {
-				question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
-				questions.add(question);
-			} else {
-				isValid = false;
-				validationMessage += "Valitud ilmiku kustutamisega kaasneks ka tähenduse kustutamine. Ilmikut ei saa kustutada, sest tähendusel on sünonüümiks märgitud keelend. ";
-			}
+		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
+		if (isOnlyLexemeForMeaning) {
+			question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
+			questions.add(question);
 		}
 
-		boolean isOnlyPrimaryLexemeForWord = lookupDbService.isOnlyPrimaryLexemeForWord(lexemeId);
-		if (isOnlyPrimaryLexemeForWord) {
-			boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
-			if (isOnlyLexemeForWord) {
-				question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
-				questions.add(question);
-			} else {
-				isValid = false;
-				validationMessage += "Valitud ilmik on keelendi ainus ilmik. Ilmikut ei saa kustutada, sest selle keelend on märgitud sünonüümiks. ";
-			}
+		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
+		if (isOnlyLexemeForWord) {
+			question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
+			questions.add(question);
 		}
 
 		return createConfirmationRequest(questions, validationMessage, isValid);
@@ -71,6 +59,8 @@ public class ComplexOpService {
 		}
 
 		String datasetCode = userRole.getDatasetCode();
+		boolean isSuperiorPermission = userRole.isSuperiorPermission();
+
 		boolean meaningRelationsExist = lookupDbService.meaningRelationsExist(meaningId);
 		if (meaningRelationsExist) {
 			isValid = false;
@@ -79,14 +69,19 @@ public class ComplexOpService {
 		}
 
 		boolean isOnlyLexemesForMeaning = lookupDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
-		if (isOnlyLexemesForMeaning) {
+		if (isOnlyLexemesForMeaning || isSuperiorPermission) {
 			question = "Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine";
 			questions.add(question);
 		}
 
-		boolean isOnlyPrimaryLexemesForWords = lookupDbService.isOnlyPrimaryLexemesForWords(meaningId, datasetCode);
-		if (isOnlyPrimaryLexemesForWords) {
-			List<Long> wordIdsToDelete = getWordIdsToBeDeleted(meaningId, datasetCode);
+		boolean isOnlyLexemesForWords;
+		if (isSuperiorPermission) {
+			isOnlyLexemesForWords = lookupDbService.isOnlyLexemesForWords(meaningId);
+		} else {
+			isOnlyLexemesForWords = lookupDbService.isOnlyLexemesForWords(meaningId, datasetCode);
+		}
+		if (isOnlyLexemesForWords) {
+			List<Long> wordIdsToDelete = getWordIdsToBeDeleted(meaningId, datasetCode, isSuperiorPermission);
 			List<String> wordValuesToDelete = lookupDbService.getWordsValues(wordIdsToDelete);
 			String joinedWords = StringUtils.join(wordValuesToDelete, ", ");
 			question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
@@ -120,38 +115,21 @@ public class ComplexOpService {
 			lexemeIdsToDelete.add(lexemeId);
 		}
 
-		boolean areOnlyPrimaryLexemesForMeaning = lookupDbService.areOnlyPrimaryLexemesForMeaning(lexemeIdsToDelete);
-		if (areOnlyPrimaryLexemesForMeaning) {
-			boolean areOnlyLexemesForMeaning = lookupDbService.areOnlyLexemesForMeaning(lexemeIdsToDelete);
-			if (areOnlyLexemesForMeaning) {
-				question = "Ilmikute kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine";
-				questions.add(question);
-			} else {
-				isValid = false;
-				validationMessage += "Ilmikute kustutamisega kaasneks ka tähenduse kustutamine. Ilmikuid ei saa kustutada, sest tähendusel on sünonüümiks märgitud keelend. ";
-			}
+		boolean areOnlyLexemesForMeaning = lookupDbService.areOnlyLexemesForMeaning(lexemeIdsToDelete);
+		if (areOnlyLexemesForMeaning) {
+			question = "Ilmikute kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine";
+			questions.add(question);
 		}
 
 		boolean isWordDelete = false;
-		boolean isSecondaryLexemeConflict = false;
-
 		for (Long lexemeIdToDelete : lexemeIdsToDelete) {
-			boolean isOnlyPrimaryLexemeForWord = lookupDbService.isOnlyPrimaryLexemeForWord(lexemeIdToDelete);
-			if (isOnlyPrimaryLexemeForWord) {
-				boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeIdToDelete);
-				if (isOnlyLexemeForWord) {
-					isWordDelete = true;
-				} else {
-					isSecondaryLexemeConflict = true;
-					break;
-				}
+			boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeIdToDelete);
+			if (isOnlyLexemeForWord) {
+				isWordDelete = true;
+				break;
 			}
 		}
-
-		if (isSecondaryLexemeConflict) {
-			isValid = false;
-			validationMessage += "Ilmikute kustutamisega kaasneks ka sünonüümiks märgitud keelendi(te) kustutamine. Ilmikut ei saa seetõttu kustutada. ";
-		} else if (isWordDelete) {
+		 if (isWordDelete) {
 			question = "Ilmikute kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita keelendi(te) kustutamine";
 			questions.add(question);
 		}
@@ -183,15 +161,20 @@ public class ComplexOpService {
 		return confirmationRequest;
 	}
 
-	private List<Long> getWordIdsToBeDeleted(Long meaningId, String datasetCode) {
+	private List<Long> getWordIdsToBeDeleted(Long meaningId, String datasetCode, boolean isSuperiorPermission) {
 
 		List<Long> wordIdsToBeDeleted = new ArrayList<>();
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
+		if (isSuperiorPermission) {
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId);
+		} else {
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		}
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			Long wordId = wordLexemeMeaningId.getWordId();
-			boolean isOnlyPrimaryLexemeForWord = lookupDbService.isOnlyPrimaryLexemeForWord(lexemeId);
-			if (isOnlyPrimaryLexemeForWord) {
+			boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
+			if (isOnlyLexemeForWord) {
 				wordIdsToBeDeleted.add(wordId);
 			}
 		}

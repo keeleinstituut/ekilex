@@ -323,7 +323,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
+		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
@@ -340,7 +340,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
+		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, lexemePosition);
 		for (WordLexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
@@ -1312,7 +1312,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteMeaningAndLexemes(Long meaningId, String datasetCode) throws Exception {
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		boolean isSuperiorPermission = StringUtils.equals(DATASET_XXX, datasetCode);
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
+		if (isSuperiorPermission) {
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId);
+		} else {
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		}
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			deleteLexeme(lexemeId);

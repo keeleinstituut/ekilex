@@ -425,7 +425,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
+		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			cudDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2());
