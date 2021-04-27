@@ -17,7 +17,7 @@ import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row15;
+import org.jooq.Row16;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
 
-    private static final long serialVersionUID = -403831471;
+    private static final long serialVersionUID = -1551427432;
 
     /**
      * The reference instance of <code>public.feedback_log</code>
@@ -124,6 +124,11 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     public final TableField<FeedbackLogRecord, String> COMPANY = createField(DSL.name("company"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.feedback_log.domain</code>.
+     */
+    public final TableField<FeedbackLogRecord, String> DOMAIN = createField(DSL.name("domain"), org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
      * Create a <code>public.feedback_log</code> table reference
      */
     public FeedbackLog() {
@@ -203,11 +208,11 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row15 type methods
+    // Row16 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, String, String, String, Timestamp, String, String, String, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row15) super.fieldsRow();
+    public Row16<Long, String, String, String, Timestamp, String, String, String, String, String, String, String, String, String, String, String> fieldsRow() {
+        return (Row16) super.fieldsRow();
     }
 }

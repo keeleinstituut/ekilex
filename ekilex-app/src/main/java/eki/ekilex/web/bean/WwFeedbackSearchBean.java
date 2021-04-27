@@ -6,18 +6,18 @@ public class WwFeedbackSearchBean extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String senderEmailFilter;
+	private String searchFilter;
 
 	private Boolean notCommentedFilter;
 
 	private int pageNum;
 
-	public String getSenderEmailFilter() {
-		return senderEmailFilter;
+	public String getSearchFilter() {
+		return searchFilter;
 	}
 
-	public void setSenderEmailFilter(String senderEmailFilter) {
-		this.senderEmailFilter = senderEmailFilter;
+	public void setSearchFilter(String searchFilter) {
+		this.searchFilter = searchFilter;
 	}
 
 	public Boolean getNotCommentedFilter() {

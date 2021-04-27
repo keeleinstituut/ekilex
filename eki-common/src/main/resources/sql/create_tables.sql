@@ -1123,6 +1123,7 @@ create table feedback_log
   word text null,
   definition text null,
   definition_source text null,
+  domain text null,
   comments text null,
   usage text null,
   usage_source text null,
