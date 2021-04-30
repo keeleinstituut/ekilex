@@ -25,7 +25,7 @@
     </tr>
   </th:block>
   <th:block th:fragment="morpho-paradigm-header(paradigm)">
-    <th:block th:if="${paradigm.inflectionType}">
+    <th:block th:if="${paradigm.inflectionType} and ${paradigm.inflectionType} != '41'">
       <p class="btn-bold mt-3">
         Muuttüüp
         <a aria-label="Vaata muuttüübi kirjeldust, avab uues aknas"
