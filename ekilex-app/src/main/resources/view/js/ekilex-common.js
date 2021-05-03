@@ -639,18 +639,6 @@ function openAlertDlg(alertMessage, showAsAlert = true) {
 	alertDlg.find('.modal-footer button').focus();
 };
 
-function openConfirmDlg(confirmQuestion, callback) {
-	let alertDlg = $('#confirmDlg');
-	alertDlg.find(('[name=confirm_question]')).text(confirmQuestion);
-	alertDlg.modal('show');
-	let okBtn = alertDlg.find('.modal-footer [name=ok]');
-	okBtn.focus();
-	okBtn.off('click').on('click', function() {
-		alertDlg.modal('hide');
-		callback();
-	});
-};
-
 function openWaitDlg(message) {
 	if (message) {
 		$("#waitMessageDiv").show();
@@ -674,21 +662,14 @@ function closeWaitDlg() {
 	}, timeout);
 };
 
-function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
-	var ul = $("<ul/>");
-	$.each(confirmQuestions, function(index, question) {
-		var li = $("<li/>").text(question);
-		ul.append(li);
-	});
-	var qWrap = $("<div/>");
-	qWrap.append(ul);
-	$('#confirmQuestion').html(qWrap);
-	var alertDlg = $('#confirmDlg');
-	alertDlg.modal('show');
-	let okBtn = alertDlg.find('.modal-footer [name=ok]');
+function openConfirmDlg(confirmDlgHtml, callback, ...callbackArgs) {
+	$('#confirmDlg').html(confirmDlgHtml);
+	var confirmDlg = $('#confirmDlg');
+	confirmDlg.modal('show');
+	let okBtn = confirmDlg.find('.modal-footer [name=ok]');
 	okBtn.focus();
 	okBtn.off('click').on('click', function() {
-		alertDlg.modal('hide');
+		confirmDlg.modal('hide');
 		callback(...callbackArgs);
 	});
 };
@@ -757,16 +738,9 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc, 
 		url: confirmationOpUrl,
 		data: JSON.stringify(dataObj),
 		method: 'POST',
-		dataType: 'json',
 		contentType: 'application/json'
 	}).done(function(data) {
-		if (!data.valid) {
-			openAlertDlg(data.validationMessage);
-		} else if (data.unconfirmed) {
-			openMultiConfirmDlg(data.questions, doPostDelete, deleteUrl, successCallbackFunc, force);
-		} else {
-			doPostDelete(deleteUrl, successCallbackFunc, force);
-		}
+		openConfirmDlg(data, doPostDelete, deleteUrl, successCallbackFunc, force);
 	}).fail(function(data) {
 		console.log(data);
 		openAlertDlg("Kustutamine ebaõnnestus");

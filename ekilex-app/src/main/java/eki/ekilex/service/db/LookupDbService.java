@@ -444,6 +444,31 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
+	public Map<Long, String[]> getMeaningRelationDatasetCodes(Long meaningId) {
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		Lexeme l = LEXEME.as("l");
+
+		Table<Record2<Long, String>> rmds = DSL
+				.select(mr.MEANING2_ID.as("rel_meaning_id"), l.DATASET_CODE)
+				.from(mr, l)
+				.where(mr.MEANING1_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING2_ID))
+				.unionAll(DSL
+						.select(mr.MEANING1_ID.as("rel_meaning_id"), l.DATASET_CODE)
+						.from(mr, l)
+						.where(mr.MEANING2_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING1_ID)))
+				.asTable("rmds");
+
+		Field<Long> meaningIdField = rmds.field("rel_meaning_id", Long.class);
+		Field<String> datasetCodeField = rmds.field("dataset_code", String.class);
+
+		return create
+				.select(meaningIdField, DSL.arrayAggDistinct(datasetCodeField))
+				.from(rmds)
+				.groupBy(meaningIdField)
+				.fetchMap(meaningIdField, DSL.arrayAggDistinct(datasetCodeField));
+	}
+
 	public boolean meaningPublicLexemeExists(Long meaningId) {
 
 		return create
@@ -604,45 +629,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 
 		return noOtherDatasetsExist;
-	}
-
-	public boolean isOnlyLexemesForWords(Long meaningId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-
-		boolean noOtherMeaningsExist = create
-				.select(DSL.field(DSL.countDistinct(l2.WORD_ID).eq(0)).as("no_other_meanings_exist"))
-				.from(l1, l2)
-				.where(
-						l1.MEANING_ID.eq(meaningId)
-								.and(l1.WORD_ID.eq(l2.WORD_ID))
-								.and(l1.ID.ne(l2.ID))
-								.and(l1.MEANING_ID.ne(l2.MEANING_ID)))
-				.fetchSingleInto(Boolean.class);
-
-		return noOtherMeaningsExist;
-	}
-
-	public boolean isOnlyLexemesForWords(Long meaningId, String datasetCode) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-
-		boolean noOtherMeaningsExist = create
-				.select(DSL.field(DSL.countDistinct(l2.WORD_ID).eq(0)).as("no_other_meanings_exist"))
-				.from(l1, l2)
-				.where(
-						l1.MEANING_ID.eq(meaningId)
-								.and(l1.WORD_ID.eq(l2.WORD_ID))
-								.and(l1.DATASET_CODE.eq(datasetCode))
-								.and(l1.ID.ne(l2.ID))
-								.and(DSL.or(
-										l1.MEANING_ID.ne(l2.MEANING_ID),
-										l1.MEANING_ID.eq(l2.MEANING_ID).and(l1.DATASET_CODE.ne(l2.DATASET_CODE)))))
-				.fetchSingleInto(Boolean.class);
-
-		return noOtherMeaningsExist;
 	}
 
 	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {

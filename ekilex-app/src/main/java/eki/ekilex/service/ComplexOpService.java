@@ -2,16 +2,16 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.ConfirmationRequest;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.LexemeDeleteConfirmation;
+import eki.ekilex.data.MeaningDeleteConfirmation;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.db.LookupDbService;
 
@@ -22,90 +22,73 @@ public class ComplexOpService {
 	private LookupDbService lookupDbService;
 
 	@Transactional
-	public ConfirmationRequest validateLexemeDelete(Long lexemeId) {
+	public LexemeDeleteConfirmation validateLexemeDelete(Long lexemeId, DatasetPermission userRole) {
 
-		List<String> questions = new ArrayList<>();
-		String question;
-		String validationMessage = "";
-		boolean isValid = true;
+		LexemeDeleteConfirmation deleteConfirmation = new LexemeDeleteConfirmation();
+
+		if (userRole == null) {
+			deleteConfirmation.setUserRoleExist(false);
+			deleteConfirmation.setShowConfirmation(true);
+			return deleteConfirmation;
+		} else {
+			deleteConfirmation.setUserRoleExist(true);
+		}
 
 		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
 		if (isOnlyLexemeForMeaning) {
-			question = "Valitud ilmik on tähenduse ainus ilmik. Palun kinnita tähenduse kustutamine";
-			questions.add(question);
+			deleteConfirmation.setMeaningDelete(true);
+			deleteConfirmation.setShowConfirmation(true);
 		}
 
 		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
 		if (isOnlyLexemeForWord) {
-			question = "Valitud ilmik on keelendi ainus ilmik. Palun kinnita keelendi kustutamine";
-			questions.add(question);
+			deleteConfirmation.setWordDelete(true);
+			deleteConfirmation.setShowConfirmation(true);
 		}
 
-		return createConfirmationRequest(questions, validationMessage, isValid);
+		return deleteConfirmation;
 	}
 
 	@Transactional
-	public ConfirmationRequest validateMeaningDelete(Long meaningId, DatasetPermission userRole) {
+	public MeaningDeleteConfirmation validateMeaningDelete(Long meaningId, DatasetPermission userRole) {
 
-		List<String> questions = new ArrayList<>();
-		String question;
-		StringBuffer validatonMessageBuf = new StringBuffer();
-		boolean isValid = true;
+		MeaningDeleteConfirmation deleteConfirmation = new MeaningDeleteConfirmation();
 
 		if (userRole == null) {
-			isValid = false;
-			validatonMessageBuf.append("Mõiste kustutamine pole ilma rollita õigustatud.");
-			return createConfirmationRequest(questions, validatonMessageBuf.toString(), isValid);
+			deleteConfirmation.setUserRoleExist(false);
+			return deleteConfirmation;
+		} else {
+			deleteConfirmation.setUserRoleExist(true);
 		}
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isSuperiorPermission = userRole.isSuperiorPermission();
 
-		boolean meaningRelationsExist = lookupDbService.meaningRelationsExist(meaningId);
-		if (meaningRelationsExist) {
-			isValid = false;
-			validatonMessageBuf.append("Valitud mõistel on seoseid. Mõistet ei saa kustutada.");
-			return createConfirmationRequest(questions, validatonMessageBuf.toString(), isValid);
-		}
-
 		boolean isOnlyLexemesForMeaning = lookupDbService.isOnlyLexemesForMeaning(meaningId, datasetCode);
 		if (isOnlyLexemesForMeaning || isSuperiorPermission) {
-			question = "Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine";
-			questions.add(question);
+			deleteConfirmation.setMeaningDelete(true);
+			Map<Long, String[]> relatedMeaningsDatasetsMap = lookupDbService.getMeaningRelationDatasetCodes(meaningId);
+			deleteConfirmation.setRelatedMeaningsDatasetsMap(relatedMeaningsDatasetsMap);
 		}
 
-		boolean isOnlyLexemesForWords;
-		if (isSuperiorPermission) {
-			isOnlyLexemesForWords = lookupDbService.isOnlyLexemesForWords(meaningId);
-		} else {
-			isOnlyLexemesForWords = lookupDbService.isOnlyLexemesForWords(meaningId, datasetCode);
-		}
-		if (isOnlyLexemesForWords) {
-			List<Long> wordIdsToDelete = getWordIdsToBeDeleted(meaningId, datasetCode, isSuperiorPermission);
-			List<String> wordValuesToDelete = lookupDbService.getWordsValues(wordIdsToDelete);
-			String joinedWords = StringUtils.join(wordValuesToDelete, ", ");
-			question = "Valitud mõiste kustutamisel jäävad järgnevad terminid mõisteta: ";
-			question += joinedWords;
-			questions.add(question);
-			question = "Palun kinnita terminite kustutamine";
-			questions.add(question);
-		}
+		List<Long> wordIdsToDelete = getWordIdsToBeDeleted(meaningId, datasetCode, isSuperiorPermission);
+		List<String> wordValues = lookupDbService.getWordsValues(wordIdsToDelete);
+		deleteConfirmation.setWordValues(wordValues);
 
-		return createConfirmationRequest(questions, validatonMessageBuf.toString(), isValid);
+		return deleteConfirmation;
 	}
 
 	@Transactional
-	public ConfirmationRequest validateLexemeAndMeaningLexemesDelete(Long lexemeId, String meaningLexemesLang, DatasetPermission userRole) {
+	public LexemeDeleteConfirmation validateLexemeAndMeaningLexemesDelete(Long lexemeId, String meaningLexemesLang, DatasetPermission userRole) {
 
-		List<String> questions = new ArrayList<>();
-		String question;
-		String validationMessage = "";
-		boolean isValid = true;
+		LexemeDeleteConfirmation deleteConfirmation = new LexemeDeleteConfirmation();
+		deleteConfirmation.setShowConfirmation(true);
 
 		if (userRole == null) {
-			isValid = false;
-			validationMessage += "Ilmikute kustutamine pole ilma rollita õigustatud.";
-			return createConfirmationRequest(questions, validationMessage, isValid);
+			deleteConfirmation.setUserRoleExist(false);
+			return deleteConfirmation;
+		} else {
+			deleteConfirmation.setUserRoleExist(true);
 		}
 
 		String datasetCode = userRole.getDatasetCode();
@@ -117,8 +100,7 @@ public class ComplexOpService {
 
 		boolean areOnlyLexemesForMeaning = lookupDbService.areOnlyLexemesForMeaning(lexemeIdsToDelete);
 		if (areOnlyLexemesForMeaning) {
-			question = "Ilmikute kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine";
-			questions.add(question);
+			deleteConfirmation.setMeaningDelete(true);
 		}
 
 		boolean isWordDelete = false;
@@ -129,36 +111,12 @@ public class ComplexOpService {
 				break;
 			}
 		}
-		 if (isWordDelete) {
-			question = "Ilmikute kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita keelendi(te) kustutamine";
-			questions.add(question);
-		}
+		deleteConfirmation.setWordDelete(isWordDelete);
 
-		List<String> lexemeWordValuesToDelete = lookupDbService.getLexemesWordValues(lexemeIdsToDelete);
-		String joinedLexemeWords = StringUtils.join(lexemeWordValuesToDelete, ", ");
-		question = "Kustuvad järgnevad ilmikud: ";
-		question += joinedLexemeWords;
-		questions.add(question);
-		question = "Palun kinnita ilmikute kustutamine";
-		questions.add(question);
+		List<String> lexemesWordValues = lookupDbService.getLexemesWordValues(lexemeIdsToDelete);
+		deleteConfirmation.setLexemesWordValues(lexemesWordValues);
 
-		return createConfirmationRequest(questions, validationMessage, isValid);
-	}
-
-	private ConfirmationRequest createConfirmationRequest(List<String> questions, String validationMessage, boolean isValid) {
-
-		ConfirmationRequest confirmationRequest = new ConfirmationRequest();
-		confirmationRequest.setValid(isValid);
-
-		if (isValid) {
-			boolean unconfirmed = CollectionUtils.isNotEmpty(questions);
-			confirmationRequest.setUnconfirmed(unconfirmed);
-			confirmationRequest.setQuestions(questions);
-		} else {
-			confirmationRequest.setValidationMessage(validationMessage);
-		}
-
-		return confirmationRequest;
+		return deleteConfirmation;
 	}
 
 	private List<Long> getWordIdsToBeDeleted(Long meaningId, String datasetCode, boolean isSuperiorPermission) {

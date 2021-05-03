@@ -287,4 +287,71 @@
       <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
     </div>
   </form>
+  <div class="modal-dialog modal-dialog-centered" role="document" th:fragment="meaning_delete_confirmation">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Palun kinnita kustutamine</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-primary" role="alert">
+          <th:block th:unless="${meaningDeleteConfirmation.userRoleExist}">
+            <span>Mõiste kustutamine pole ilma rollita õigustatud.</span>
+          </th:block>
+          <ul th:if="${meaningDeleteConfirmation.userRoleExist}">
+            <li th:if="${meaningDeleteConfirmation.meaningDelete}">Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine.</li>
+            <th:block th:if="${not #maps.isEmpty(meaningDeleteConfirmation.relatedMeaningsDatasetsMap)}">
+              <li>Koos mõistega kustuvad ka seosed järgnevate mõistetega:</li>
+              <ul>
+                <li th:each="relatedMeaningEntry : ${meaningDeleteConfirmation.relatedMeaningsDatasetsMap}"
+                    th:with="datasets=${#strings.arrayJoin(relatedMeaningEntry.value,', ')}">
+                  <a th:href="@{'/termsearch?id=' + ${relatedMeaningEntry.key}}" th:text="${relatedMeaningEntry.key + ' - ' + datasets}" target="_blank"></a>
+                </li>
+              </ul>
+            </th:block>
+            <th:block th:if="${not #lists.isEmpty(meaningDeleteConfirmation.wordValues)}">
+              <li>Koos mõistega kustuvad ka järgmised keelendid:</li>
+              <ul>
+                <li th:each="wordValue : ${meaningDeleteConfirmation.wordValues}" th:text="${wordValue}"></li>
+              </ul>
+            </th:block>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer" th:if="${meaningDeleteConfirmation.userRoleExist}">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-dialog modal-dialog-centered" role="document" th:fragment="lexeme_delete_confirmation">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Palun kinnita kustutamine</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" th:if="${lexemeDeleteConfirmation.showConfirmation}">
+        <div class="alert alert-primary" role="alert">
+          <th:block th:unless="${lexemeDeleteConfirmation.userRoleExist}">
+            <span>Ilmiku kustutamine pole ilma rollita õigustatud.</span>
+          </th:block>
+          <ul th:if="${lexemeDeleteConfirmation.userRoleExist}">
+            <li>Palun kinnita kustutamine</li>
+            <li th:if="${lexemeDeleteConfirmation.meaningDelete}">Ilmiku(te) kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine.</li>
+            <li th:if="${lexemeDeleteConfirmation.wordDelete}">Ilmiku(te) kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita keelendi(te) kustutamine.</li>
+            <th:block th:if="${not #lists.isEmpty(lexemeDeleteConfirmation.lexemesWordValues)}">
+              <li>Kustuvad järgmised ilmikud:</li>
+              <ul>
+                <li th:each="wordValue : ${lexemeDeleteConfirmation.lexemesWordValues}" th:text="${wordValue}"></li>
+              </ul>
+            </th:block>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer" th:if="${lexemeDeleteConfirmation.userRoleExist}">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+      </div>
+    </div>
+  </div>
 </body>
