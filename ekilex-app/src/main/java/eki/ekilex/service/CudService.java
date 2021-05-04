@@ -656,6 +656,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		String language = wordDetails.getLanguage();
 		String dataset = wordDetails.getDataset();
 		Long meaningId = wordDetails.getMeaningId();
+		boolean isMeaningCreate = meaningId == null;
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
@@ -668,9 +669,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
+		meaningId = wordLexemeMeaningId.getMeaningId();
 		tagDbService.createLexemeAutomaticTags(lexemeId);
 		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD);
 		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME);
+		if (isMeaningCreate) {
+			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING);
+		}
 
 		return wordId;
 	}
