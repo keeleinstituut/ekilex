@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(_,_)">
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Kasutustingimused</h5>
+      </div>
+      <div class="card-body" th:utext="${activeTerms}"></div>
+    </div>
+  </div>
+</body>
+</html>

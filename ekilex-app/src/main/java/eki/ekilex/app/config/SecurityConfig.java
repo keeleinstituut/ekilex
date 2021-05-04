@@ -71,6 +71,7 @@ public class SecurityConfig {
 							LOGIN_PAGE_URI,
 							LOGIN_ERROR_URI,
 							REGISTER_PAGE_URI + "/**",
+							TERMS_OF_USE_PAGE_URI,
 							VIEW_RESOURCES_URI + "/**",
 							SEND_FEEDBACK_URI,
 							FAKE_REGISTER_AND_PASSWORD_RECOVERY_URI,

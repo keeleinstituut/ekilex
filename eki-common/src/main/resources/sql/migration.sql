@@ -296,3 +296,14 @@ begin
 end $$;
 
 select adjust_homonym_nrs();
+
+-- kõikidele kasutajatele võrgustiku juurdepääs
+insert into dataset_permission (dataset_code, auth_operation, auth_item, user_id)
+select 'vrk', 'CRUD', 'DATASET', u.id
+from eki_user u
+where not exists(select p.id
+                 from dataset_permission p
+                 where u.id = p.user_id
+                   and p.dataset_code = 'vrk'
+                   and p.auth_operation = 'CRUD'
+                   and p.auth_item = 'DATASET');

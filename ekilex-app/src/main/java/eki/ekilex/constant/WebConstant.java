@@ -138,9 +138,13 @@ public interface WebConstant {
 
 	String REGISTER_PAGE = "register";
 
-	String TERMS_PAGE_URI = "/terms";
+	String TERMS_OF_USE_PAGE_URI = "/termsofuse";
 
-	String TERMS_PAGE = "terms";
+	String TERMS_OF_USE_PAGE = "termsofuse";
+
+	String TERMS_AGREEMENT_PAGE_URI = "/termsagreement";
+
+	String TERMS_AGREEMENT_PAGE = "termsagreement";
 
 	String AGREE_TERMS_URI = "/agree_terms";
 
