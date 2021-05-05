@@ -295,5 +295,10 @@
       <span class="font-italic" th:text="${classif.code}" data-toggle="tooltip" th:title="${classif.code} + '-' + ${classif.value}"></span>
     </span>
   </span>
+  <span th:fragment="registers_data" class="clasifiers pr-2 text-secondary" th:if="${not #lists.isEmpty(lexeme.registers)}">
+    <span th:each="classif,classifIter : ${lexeme.registers}">
+      <span th:text="${classif.code}" data-toggle="tooltip" th:title="${classif.code} + '-' + ${classif.value}"></span>
+    </span>
+  </span>
 </body>
 </html>

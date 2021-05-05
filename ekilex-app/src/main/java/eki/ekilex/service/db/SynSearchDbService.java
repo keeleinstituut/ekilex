@@ -206,6 +206,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Condition dsWhere = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
 
 		Field<TypeClassifierRecord[]> lposf = getLexemePosField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return create
 				.select(
@@ -216,7 +217,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 						l.LEVEL1,
 						l.LEVEL2,
 						l.WEIGHT,
-						lposf.as("pos"))
+						lposf.as("pos"),
+						lregf.as("registers"))
 				.from(l.innerJoin(ds).on(ds.CODE.eq(l.DATASET_CODE)))
 				.where(l.WORD_ID.eq(wordId).and(dsWhere))
 				.orderBy(ds.ORDER_BY, l.LEVEL1, l.LEVEL2)
