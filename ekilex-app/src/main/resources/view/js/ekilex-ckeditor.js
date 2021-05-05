@@ -123,12 +123,12 @@ class ckLink {
 		this.parentHeight = this.parent.outerHeight();
 		this.paths = {
 			meaning: {
-				api: '/meaning_internal_link_search',
+				api: `${applicationBaseUrl}/meaning_internal_link_search`,
 				link: `${applicationBaseUrl}/lexsearch?id={{id}};`,
 				title: 'Sisesta otsitav Keelend',
 			},
 			word: {
-				api: '/word_internal_link_search',
+				api: `${applicationBaseUrl}/word_internal_link_search`,
 				link: `${applicationBaseUrl}/termsearch?id={{id}};`,
 				title: 'Sisesta otsitav Tähendus/Mõiste',
 			},
