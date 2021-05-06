@@ -41,7 +41,8 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public Map<String, LanguageData> getLangDataMap() {
-		return commonDataDbService.getLangDataMap();
+		String displayLang = languageContext.getDisplayLang();
+		return commonDataDbService.getLangDataMap(displayLang);
 	}
 
 	@Transactional

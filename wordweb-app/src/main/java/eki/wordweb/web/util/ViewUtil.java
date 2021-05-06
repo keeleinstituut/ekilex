@@ -36,8 +36,6 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 	@Autowired
 	private WebUtil webUtil;
 
-	private Map<String, LanguageData> langDataMap = null;
-
 	private Pattern ekilexMarkupPattern;
 
 	public ViewUtil() {
@@ -65,9 +63,7 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 		if (StringUtils.isBlank(langIso3)) {
 			return new LanguageData(langIso3, "-", "-");
 		}
-		if (langDataMap == null) {
-			langDataMap = commonDataService.getLangDataMap();
-		}
+		Map<String, LanguageData> langDataMap = commonDataService.getLangDataMap();
 		LanguageData langData = langDataMap.get(langIso3);
 		if (langData == null) {
 			return new LanguageData(langIso3, "?", "?");
