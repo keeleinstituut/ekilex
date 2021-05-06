@@ -2244,8 +2244,8 @@ create view view_ww_classifier
 		cl.type,
 		c.order_by
 	from 
-		meaning_rel_type c,
-		meaning_rel_type_label cl
+		value_state c,
+    value_state_label cl
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'
