@@ -78,13 +78,14 @@ public class PermissionsController extends AbstractPrivatePageController {
 			Model model) {
 
 		final int minUserNameLength = 2;
+		int userNameFilterLength = StringUtils.length(userNameFilter);
 
 		if (StringUtils.isBlank(userNameFilter)
 				&& StringUtils.isBlank(userPermDatasetCodeFilter)
 				&& (userEnablePendingFilter == null)) {
 			return "redirect:" + PERMISSIONS_URI;
 		}
-		if (StringUtils.length(userNameFilter) < minUserNameLength) {
+		if (userNameFilterLength > 0 && userNameFilterLength < minUserNameLength) {
 			return "redirect:" + PERMISSIONS_URI;
 		}
 

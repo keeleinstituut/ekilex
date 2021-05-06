@@ -103,6 +103,7 @@
                       <span th:if="${lexeme.levels != null}" th:text="${lexeme.levels}"> 1</span>
                     </span>
                     <th:block th:replace="syncomp :: pos_data"></th:block>
+                    <th:block th:replace="syncomp :: registers_data"></th:block>
                     <span class="pl-0 pr-2">
                       <span class="lbl">Ilmiku sildid</span>
                       <button type="button" class="btn btn-light badge"

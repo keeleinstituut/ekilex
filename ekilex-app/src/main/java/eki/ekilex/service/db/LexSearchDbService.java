@@ -30,15 +30,14 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Param;
-import org.jooq.Record10;
 import org.jooq.Record17;
+import org.jooq.Record8;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -614,26 +613,15 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		Language ln = LANGUAGE.as("ln");
-		Dataset ds = DATASET.as("ds");
 		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
-		Field<Long> mdsobf = DSL
-				.select(DSL.min(ds.ORDER_BY))
-				.from(l, ds)
-				.where(l.WORD_ID.eq(w1.ID).and(l.DATASET_CODE.eq(ds.CODE)))
-				.asField();
 		Field<Long> lnobf = DSL
 				.select(ln.ORDER_BY)
 				.from(ln)
 				.where(ln.CODE.eq(w1.LANG))
 				.asField();
-		Field<Long> wtobf = DSL
-				.select(DSL.count(wt.ID))
-				.from(wt)
-				.where(wt.WORD_ID.eq(w1.ID).and(wt.WORD_TYPE_CODE.in(Arrays.asList(WORD_TYPE_CODE_PREFIXOID, WORD_TYPE_CODE_SUFFIXOID))))
-				.asField();
 
-		Table<Record10<Long,String,String,Integer,String,String,String,Long,Long,Long>> w = DSL
+		Table<Record8<Long, String, String, Integer, String, String, String, Long>> w = DSL
 				.select(
 						w1.ID.as("word_id"),
 						w1.VALUE.as("word_value"),
@@ -642,12 +630,9 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w1.LANG,
 						w1.GENDER_CODE,
 						w1.ASPECT_CODE,
-						mdsobf.as("min_ds_order_by"),
-						lnobf.as("lang_order_by"),
-						wtobf.as("word_type_order_by"))
+						lnobf.as("lang_order_by"))
 				.from(w1)
 				.where(where)
-				//.groupBy(w1.ID)
 				.asTable("w");
 
 		Field<String[]> wtf = getWordTypesField(w.field("word_id", Long.class));
@@ -731,10 +716,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						wlaeof.as("last_activity_event_on"))
 				.from(w)
 				.orderBy(
-						w.field("min_ds_order_by"),
 						w.field("lang_order_by"),
 						wvobf,
-						w.field("word_type_order_by"),
 						w.field("homonym_nr"))
 				.asTable("ww");
 

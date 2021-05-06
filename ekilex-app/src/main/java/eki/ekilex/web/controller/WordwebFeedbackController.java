@@ -89,19 +89,19 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 
 	@PostMapping(WW_FEEDBACK_URI + SEARCH_URI)
 	public String search(
-			@RequestParam(name = "senderEmailFilter", required = false) String senderEmailFilter,
+			@RequestParam(name = "searchFilter", required = false) String searchFilter,
 			@RequestParam(name = "notCommentedFilter", required = false) Boolean notCommentedFilter,
 			Model model) {
 
-		if (StringUtils.isBlank(senderEmailFilter) && (notCommentedFilter == null)) {
+		if (StringUtils.isBlank(searchFilter) && (notCommentedFilter == null)) {
 			return "redirect:" + WW_FEEDBACK_URI;
 		}
-		if (StringUtils.isNotBlank(senderEmailFilter) && StringUtils.length(senderEmailFilter) < 3) {
+		if (StringUtils.isNotBlank(searchFilter) && StringUtils.length(searchFilter) < 3) {
 			return "redirect:" + WW_FEEDBACK_URI;
 		}
 
 		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
-		wwFeedbackSearchBean.setSenderEmailFilter(senderEmailFilter);
+		wwFeedbackSearchBean.setSearchFilter(searchFilter);
 		wwFeedbackSearchBean.setNotCommentedFilter(notCommentedFilter);
 		wwFeedbackSearchBean.setPageNum(1);
 
@@ -146,11 +146,11 @@ public class WordwebFeedbackController extends AbstractPublicPageController {
 	private void populateModel(Model model) {
 
 		WwFeedbackSearchBean wwFeedbackSearchBean = getWwFeedbackSearchBean(model);
-		String senderEmailFilter = wwFeedbackSearchBean.getSenderEmailFilter();
+		String searchFilter = wwFeedbackSearchBean.getSearchFilter();
 		Boolean notCommentedFilter = wwFeedbackSearchBean.getNotCommentedFilter();
 		int pageNum = wwFeedbackSearchBean.getPageNum();
 
-		FeedbackLogResult feedbackLogResult = feedbackService.getFeedbackLog(senderEmailFilter, notCommentedFilter, pageNum);
+		FeedbackLogResult feedbackLogResult = feedbackService.getFeedbackLog(searchFilter, notCommentedFilter, pageNum);
 		model.addAttribute("feedbackLogResult", feedbackLogResult);
 	}
 }

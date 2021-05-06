@@ -19,10 +19,10 @@ import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
+import eki.ekilex.data.db.udt.TypeWordHomNrDataTuple;
 import eki.ekilex.data.db.udt.TypeWordRelMeaning;
 import eki.ekilex.data.db.udt.TypeWordRelParam;
 import eki.ekilex.data.db.udt.TypeWordRelation;
-import eki.ekilex.data.db.udt.WordHomNrDataTuple;
 
 
 /**
@@ -107,6 +107,11 @@ public class UDTs {
     public static TypeWordEtymRelation TYPE_WORD_ETYM_RELATION = eki.ekilex.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION;
 
     /**
+     * The type <code>public.type_word_hom_nr_data_tuple</code>
+     */
+    public static TypeWordHomNrDataTuple TYPE_WORD_HOM_NR_DATA_TUPLE = eki.ekilex.data.db.udt.TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE;
+
+    /**
      * The type <code>public.type_word_rel_meaning</code>
      */
     public static TypeWordRelMeaning TYPE_WORD_REL_MEANING = eki.ekilex.data.db.udt.TypeWordRelMeaning.TYPE_WORD_REL_MEANING;
@@ -120,9 +125,4 @@ public class UDTs {
      * The type <code>public.type_word_relation</code>
      */
     public static TypeWordRelation TYPE_WORD_RELATION = eki.ekilex.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION;
-
-    /**
-     * The type <code>public.word_hom_nr_data_tuple</code>
-     */
-    public static WordHomNrDataTuple WORD_HOM_NR_DATA_TUPLE = eki.ekilex.data.db.udt.WordHomNrDataTuple.WORD_HOM_NR_DATA_TUPLE;
 }

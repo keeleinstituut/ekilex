@@ -237,10 +237,11 @@ alter table feedback_log
   add column definition_source text null,
   add column usage_source text null,
   add column company text null,
+  add column domain text null,
   alter column word drop not null;
 
 -- homonüüminumbrite järjestamine
-create type word_hom_nr_data_tuple as (word_id bigint, homonym_nr integer);
+create type type_word_hom_nr_data_tuple as (word_id bigint, homonym_nr integer);
 
 create or replace function adjust_homonym_nrs()
   returns void
@@ -249,7 +250,7 @@ as $$
 declare
   ordered_homonym_nrs_str_pattern text := array_to_string(array(select generate_series(1, 100)), '-', '');
   word_row                        record;
-  adj_word_ids                    word_hom_nr_data_tuple;
+  adj_word_ids                    type_word_hom_nr_data_tuple;
   homonym_nr_iter                 integer;
 begin
   for word_row in
@@ -258,7 +259,7 @@ begin
             w.word_ids
      from (select w.value,
                   w.lang,
-                  array_agg(row (w.id, w.homonym_nr)::word_hom_nr_data_tuple order by w.ds_order_by, w.af_order_by, w.homonym_nr, w.id) word_ids,
+                  array_agg(row (w.id, w.homonym_nr)::type_word_hom_nr_data_tuple order by w.ds_order_by, w.af_order_by, w.homonym_nr, w.id) word_ids,
                   array_to_string(array_agg(w.homonym_nr order by w.ds_order_by, w.af_order_by, w.homonym_nr), '-', '') homonym_nrs_str
            from (select w.id,
                         w.value,
@@ -295,3 +296,14 @@ begin
 end $$;
 
 select adjust_homonym_nrs();
+
+-- kõikidele kasutajatele võrgustiku juurdepääs
+insert into dataset_permission (dataset_code, auth_operation, auth_item, user_id)
+select 'vrk', 'CRUD', 'DATASET', u.id
+from eki_user u
+where not exists(select p.id
+                 from dataset_permission p
+                 where u.id = p.user_id
+                   and p.dataset_code = 'vrk'
+                   and p.auth_operation = 'CRUD'
+                   and p.auth_item = 'DATASET');

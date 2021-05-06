@@ -323,7 +323,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
+		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
@@ -340,7 +340,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 			return;
 		}
 
-		List<WordLexeme> lexemes = lookupDbService.getWordPrimaryLexemes(lexemeId);
+		List<WordLexeme> lexemes = lookupDbService.getWordLexemes(lexemeId);
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, lexemePosition);
 		for (WordLexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
@@ -656,6 +656,7 @@ public class CudService extends AbstractService implements GlobalConstant {
 		String language = wordDetails.getLanguage();
 		String dataset = wordDetails.getDataset();
 		Long meaningId = wordDetails.getMeaningId();
+		boolean isMeaningCreate = meaningId == null;
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
@@ -668,9 +669,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
+		meaningId = wordLexemeMeaningId.getMeaningId();
 		tagDbService.createLexemeAutomaticTags(lexemeId);
 		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD);
 		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME);
+		if (isMeaningCreate) {
+			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING);
+		}
 
 		return wordId;
 	}
@@ -1312,7 +1317,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Transactional
 	public void deleteMeaningAndLexemes(Long meaningId, String datasetCode) throws Exception {
-		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		boolean isSuperiorPermission = StringUtils.equals(DATASET_XXX, datasetCode);
+		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
+		if (isSuperiorPermission) {
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId);
+		} else {
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+		}
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			deleteLexeme(lexemeId);

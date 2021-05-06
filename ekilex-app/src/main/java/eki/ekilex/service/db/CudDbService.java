@@ -51,6 +51,7 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.db.tables.LexRelation;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Word;
@@ -753,12 +754,19 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public Long createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
-		LexRelationRecord lexemeRelation = create.newRecord(LEX_RELATION);
-		lexemeRelation.setLexeme1Id(lexemeId1);
-		lexemeRelation.setLexeme2Id(lexemeId2);
-		lexemeRelation.setLexRelTypeCode(relationType);
-		lexemeRelation.store();
-		return lexemeRelation.getId();
+		LexRelation lr = LEX_RELATION.as("lr");
+		LexRelationRecord lexRelationRecord = create
+				.insertInto(lr, lr.LEXEME1_ID, lr.LEXEME2_ID, lr.LEX_REL_TYPE_CODE)
+				.select(DSL
+						.select(DSL.val(lexemeId1), DSL.val(lexemeId2), DSL.val(relationType))
+						.whereNotExists(DSL
+								.select(lr.ID)
+								.from(lr)
+								.where(lr.LEXEME1_ID.eq(lexemeId1).and(lr.LEXEME2_ID.eq(lexemeId2).and(lr.LEX_REL_TYPE_CODE.eq(relationType))))))
+				.returning(lr.ID)
+				.fetchOne();
+
+		return lexRelationRecord != null ? lexRelationRecord.getId() : null;
 	}
 
 	public Long createMeaning() {

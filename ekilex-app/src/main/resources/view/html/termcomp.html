@@ -2,24 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div class="card-body px-2 pt-1 pb-2 d-flex flex-column h-100" th:fragment="term_search_result">
+  <div class="card-body px-2 pt-1 pb-2 d-flex flex-column h-100"
+       th:fragment="term_search_result"
+       th:with="
+         isWordResultMode=${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD},
+         isMeaningResultMode=${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING}">
     <div class="row">
       <div class="col-auto">
         <div class="btn-group btn-group-toggle btn-tabs" data-toggle="buttons">
-          <label class="btn btn-secondary" th:classappend="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD ? 'active' : ''}">
-            <span th:text="${'Term : ' + termSearchResult.wordCount}"></span>
+          <label class="btn btn-secondary" th:classappend="${isWordResultMode ? 'active' : ''}">
+            <span th:if="${isWordResultMode}" th:text="${'Term : ' + termSearchResult.wordCount}" data-toggle="tooltip" th:title="#{search.tooltip.terms}"></span>
+            <span th:if="${isMeaningResultMode}" th:text="${'Term : ' + termSearchResult.wordCount}" data-toggle="tooltip" th:title="#{search.tooltip.meaning.terms}"></span>
             <input type="radio" name="resultMode" autocomplete="off"
                    data-plugin="relativeFormItem"
                    data-relativeFormItem:id="search-result-mode-1"
-                   th:checked="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD}"
+                   th:checked="${isWordResultMode}"
                    th:value="${T(eki.ekilex.constant.SearchResultMode).WORD}"/>
           </label>
-          <label class="btn btn-secondary" th:classappend="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING ? 'active' : ''}">
-            <span  th:text="${'Mõisteid : ' + termSearchResult.meaningCount}"></span>
+          <label class="btn btn-secondary" th:classappend="${isMeaningResultMode ? 'active' : ''}">
+            <span th:if="${isMeaningResultMode}" th:text="${'Mõisteid : ' + termSearchResult.meaningCount}" data-toggle="tooltip" th:title="#{search.tooltip.meanings}"></span>
+            <span th:if="${isWordResultMode}" th:text="${'Mõisteid : ' + termSearchResult.meaningCount}" data-toggle="tooltip" th:title="#{search.tooltip.term.meanings}"></span>
             <input type="radio" name="resultMode" autocomplete="off"
                    data-plugin="relativeFormItem"
                    data-relativeFormItem:id="search-result-mode-2"
-                   th:checked="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING}"
+                   th:checked="${isMeaningResultMode}"
                    th:value="${T(eki.ekilex.constant.SearchResultMode).MEANING}"/>
           </label>
         </div>
