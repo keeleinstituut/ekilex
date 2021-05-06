@@ -16680,9 +16680,11 @@ body.hidden-scroll {
   color: #6b7885;
 }
 
-.definition-sources button {
+.definition-sources .source-link {
   font-size: 14px;
   color: #6b7885;
+  text-align: left;
+  word-break: break-all;
 }
 
 .dependence .dependence-unit {

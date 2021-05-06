@@ -19,9 +19,11 @@
   font-size: 14px;
   font-weight: 400;
   color: #6b7885;
-  button {
+  .source-link{
     font-size: 14px;
     color: #6b7885;
+    text-align: left;
+    word-break: break-all;
   }
 }
 
