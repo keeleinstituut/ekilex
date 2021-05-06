@@ -18769,6 +18769,10 @@ eki-shy {
   justify-content: center;
 }
 
+.image-card-title-large {
+  font-size: x-large;
+}
+
 .learn-content-wrapper {
   margin-left: auto;
   overflow: hidden;
