@@ -35,6 +35,7 @@ function initUsageMemberDlg(theDlg) {
 
 function initEkiEditorDlg(editDlg) {
 	let modifyFld = editDlg.find('[data-id="editFld"]');
+	console.log(editDlg.find('[name=value]').val());
 	modifyFld.val(editDlg.find('[name=value]').val());
 
 	initCkEditor(modifyFld);
