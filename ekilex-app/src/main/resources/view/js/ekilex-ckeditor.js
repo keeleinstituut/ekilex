@@ -326,6 +326,7 @@ function initCkEditor(elem) {
 				groups: ['cleanup', 'undo'],
 			}
 		],
+		extraAllowedContent: 'eki-link',
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
 	});
 

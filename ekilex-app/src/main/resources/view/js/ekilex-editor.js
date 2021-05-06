@@ -38,6 +38,10 @@ function initEkiEditorDlg(editDlg) {
 	console.log(editDlg.find('[name=value]').val());
 	modifyFld.val(editDlg.find('[name=value]').val());
 
+	const complexityBtns = editDlg.find('[name="complexity"]');
+	if (complexityBtns.filter(':checked').length === 0){
+		complexityBtns.eq(complexityBtns.length-1).prop('checked', true);
+	}
 	initCkEditor(modifyFld);
 
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {

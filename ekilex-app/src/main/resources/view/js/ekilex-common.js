@@ -719,11 +719,20 @@ function deleteLexemeAndWordAndMeaning() {
 function deleteLexemeAndRusMeaningLexemes() {
 	var opName = "delete";
 	var opCode = "rus_meaning_lexemes";
-	var lexemeId = $(this).attr("data-id");
+	var element = $(this);
+	var lexemeId = element.attr("data-id");
 	var successCallbackName = $(this).attr("data-callback");
 	let successCallbackFunc = () => eval(successCallbackName)($(this));
 
-	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc, true);
+
+	executeMultiConfirmPostDelete(opName, opCode, lexemeId, function() {
+		const detailsLength = element.parents('[data-rel="details-area"]:first').find('[id*="lexeme-details-"]').length;
+		if (detailsLength <= 1) {
+			successCallbackFunc();
+		} else {
+			element.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+		}
+	}, true);
 };
 
 function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc, force) {
