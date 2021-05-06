@@ -174,22 +174,32 @@ public class CommonDataDbService implements SystemConstant {
 				.fetchMap(cl.CODE, cl.ORDER_BY);
 	}
 
-	@Cacheable(value = CACHE_KEY_CLASSIF, key = "#root.methodName")
-	public Map<String, LanguageData> getLangDataMap() {
-		MviewWwClassifier cllbl = MVIEW_WW_CLASSIFIER.as("cllbl");
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #lang}")
+	public Map<String, LanguageData> getLangDataMap(String lang) {
+		MviewWwClassifier cllbldflt = MVIEW_WW_CLASSIFIER.as("cllbldflt");
+		MviewWwClassifier cllbllang = MVIEW_WW_CLASSIFIER.as("cllbllang");
 		MviewWwClassifier cliso = MVIEW_WW_CLASSIFIER.as("cliso");
 		return create
-				.select(cllbl.CODE, cliso.VALUE.as("codeIso2"), cllbl.VALUE.as("label"))
-				.from(cllbl, cliso)
+				.select(
+						cllbldflt.CODE,
+						cliso.VALUE.as("codeIso2"),
+						DSL.coalesce(cllbllang.VALUE, cllbldflt.VALUE).as("label"))
+				.from(
+						cliso,
+						cllbldflt.leftOuterJoin(cllbllang).on(
+								cllbllang.NAME.eq(cllbldflt.NAME)
+										.and(cllbllang.CODE.eq(cllbldflt.CODE))
+										.and(cllbllang.TYPE.eq(cllbldflt.TYPE))
+										.and(cllbllang.LANG.eq(lang))))
 				.where(
-						cllbl.NAME.eq(ClassifierName.LANGUAGE.name())
-								.and(cllbl.NAME.eq(cliso.NAME))
-								.and(cllbl.CODE.eq(cliso.CODE))
-								.and(cllbl.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
+						cllbldflt.NAME.eq(ClassifierName.LANGUAGE.name())
+								.and(cllbldflt.NAME.eq(cliso.NAME))
+								.and(cllbldflt.CODE.eq(cliso.CODE))
+								.and(cllbldflt.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
 								.and(cliso.LANG.eq(DEFAULT_CLASSIF_VALUE_LANG))
-								.and(cllbl.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE))
+								.and(cllbldflt.TYPE.eq(DEFAULT_CLASSIF_VALUE_TYPE))
 								.and(cliso.TYPE.eq(CLASSIF_VALUE_TYPE_ISO2)))
-				.fetchMap(cllbl.CODE, LanguageData.class);
+				.fetchMap(cllbldflt.CODE, LanguageData.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #datasetCode}")
