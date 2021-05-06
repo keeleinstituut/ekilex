@@ -125,12 +125,12 @@ class ckLink {
 			meaning: {
 				api: `${applicationUrl}meaning_internal_link_search`,
 				link: `${applicationBaseUrl}/lexsearch?id={{id}};`,
-				title: 'Sisesta otsitav Keelend',
+				title: 'Sisesta otsitav Tähendus/Mõiste',
 			},
 			word: {
 				api: `${applicationUrl}word_internal_link_search`,
 				link: `${applicationBaseUrl}/termsearch?id={{id}};`,
-				title: 'Sisesta otsitav Tähendus/Mõiste',
+				title: 'Sisesta otsitav Keelend',
 			},
 		};
 		this.activeID = false;
