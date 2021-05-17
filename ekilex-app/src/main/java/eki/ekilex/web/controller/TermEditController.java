@@ -38,6 +38,7 @@ import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexemeMeaningDetails;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordMeaningRelationsDetails;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
@@ -178,7 +179,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
 
 		String wordValue = wordDetails.getWordValue();
-		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
 			Long meaningId = wordDetails.getMeaningId();
@@ -187,6 +187,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			Long userId = userContext.getUserId();
 			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = null;
 
 			sessionBean.setRecentLanguage(language);
 
@@ -202,7 +203,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 					attributes.addFlashAttribute("backUri", backUri);
 					return "redirect:" + MEANING_REL_SELECT_URI;
 				} else {
-					cudService.createWord(wordDetails);
+					wordLexemeMeaningId = cudService.createWord(wordDetails);
 				}
 			}
 
@@ -210,9 +211,12 @@ public class TermEditController extends AbstractMutableDataPageController {
 				userPrefDatasetCodes.add(dataset);
 				userProfileService.updateUserPreferredDatasets(userPrefDatasetCodes, userId);
 			}
-			searchUri = searchHelper.composeSearchUri(userPrefDatasetCodes, wordValue);
+			if (meaningId == null && wordLexemeMeaningId != null) {
+				meaningId = wordLexemeMeaningId.getMeaningId();
+			}
+			backUri += "?id=" + meaningId;
 		}
-		return "redirect:" + TERM_SEARCH_URI + searchUri;
+		return "redirect:" + TERM_SEARCH_URI + backUri;
 	}
 
 	@GetMapping(MEANING_REL_SELECT_URI)
@@ -220,7 +224,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 			@ModelAttribute(name = "dataset") String dataset,
 			@ModelAttribute(name = "wordValue") String wordValue,
 			@ModelAttribute(name = "language") String language,
-			@ModelAttribute(name = "morphCode") String morphCode,
 			@ModelAttribute(name = "meaningId") Long meaningId,
 			@ModelAttribute(name = "relationCandidates") List<Meaning> relationCandidates,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
@@ -263,7 +266,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			if (meaningId == null) {
 				searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 			} else {
-				searchUri = backUri;
+				searchUri = backUri + "?id=" + meaningId;
 			}
 			response.put("status", "valid");
 			response.put("searchUri", searchUri);
