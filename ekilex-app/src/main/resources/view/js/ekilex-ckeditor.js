@@ -1,4 +1,4 @@
-
+CKEDITOR.disableAutoInline = true;
 CKEDITOR.config.removeFormatTags = CKEDITOR.config.removeFormatTags + ',eki-stress,eki-foreign,eki-highlight,eki-meta,eki-sub,eki-sup';
 var buttons = [
 	{
@@ -95,6 +95,7 @@ CKEDITOR.plugins.add('ekiStyles', {
 });
 
 CKEDITOR.addCss('eki-link{color:blue; text-decoration: underline;}');
+CKEDITOR.plugins.addExternal('sourcedialog', '/view/js/sourcedialog/plugin.js');
 
 CKEDITOR.plugins.add('ekiLink', {
 	icons: 'ekilink',
@@ -110,6 +111,48 @@ CKEDITOR.plugins.add('ekiLink', {
       label: 'Eki-link',
       command: 'ekilink',
       toolbar: 'ekiLink'
+    });
+	}
+});
+
+function getSelectedElement( selection, tag) {
+	var range = selection.getRanges()[ 0 ],
+		element = selection.getSelectedElement();
+
+	// In case of table cell selection, we want to shrink selection from td to a element.
+	range.shrink( CKEDITOR.SHRINK_ELEMENT );
+	element = range.getEnclosedNode();
+
+	// If selection is inside text, get its parent element (#3437).
+	if ( element && element.type === CKEDITOR.NODE_TEXT ) {
+		element = element.getParent();
+	}
+
+	if ( element && element.type === CKEDITOR.NODE_ELEMENT && element.is(tag) ) {
+		return element;
+	}
+}
+
+CKEDITOR.plugins.add('removeEkilink', {
+	icons: 'removeekilink',
+	hidpi: true,
+	init: function( editor ) {
+		editor.addCommand( 'removeEkilink', {
+      exec: function( editor ) {
+				try {
+
+					let element = getSelectedElement(editor.getSelection(), 'eki-link');
+					if (element.getName() === 'eki-link') {
+						const native = $(element.$);
+						native.replaceWith(native.text());
+					}
+				} catch(err) {}
+      }
+    });
+    editor.ui.addButton( 'removeEkilink', {
+      label: 'Eki-link',
+      command: 'removeEkilink',
+      toolbar: 'removeEkilink'
     });
 	}
 });
@@ -182,9 +225,16 @@ class ckLink {
 	}
 
 	bindEvents() {
+		console.log(this.linkContent);
 		this.linkContent.find('[data-role="cancel"]').on('click', (e) => {
 			e.preventDefault();
 			this.toggle('hide');
+		});
+		
+		this.linkContent.parents('.modal:first').on('click', (e) => {
+			if ($(e.target).is('.modal')) {
+				this.toggle('hide');
+			}
 		});
 		this.linkContent.find('[data-role="save"]').on('click', (e) => {
 			e.preventDefault();
@@ -291,14 +341,16 @@ class ckLink {
 			if (!this.valid.external) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="_blank">${this.outerLink.title.val()}</eki-link>`);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="_blank">${this.outerLink.title.val()}</eki-link> `);
 			this.editor.insertElement(content);
+
 			this.toggle('hide');
 		} else {
 			if (!this.valid.internal) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link> `);
+			console.log(content);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		}
@@ -315,16 +367,17 @@ function initCkEditor(elem) {
 		// Callback function code.
 	}, {
 		enterMode: CKEDITOR.ENTER_BR,
-		extraPlugins: 'ekiStyles,ekiLink',
+		extraPlugins: 'ekiStyles,ekiLink,removeEkilink',
 		toolbarGroups: [
 			{
 				name: "eki-styles",
-				groups: ["ekiStyles", 'ekiLink'],
+				groups: ["ekiStyles", 'ekiLink','removeEkilink'],
 			},
 			{
 				name: 'eki-tools',
 				groups: ['cleanup', 'undo'],
-			}
+			},
+			{ name: 'mode' },
 		],
 		extraAllowedContent: 'eki-link',
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
