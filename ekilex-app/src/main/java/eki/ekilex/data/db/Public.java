@@ -147,10 +147,10 @@ import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
+import eki.ekilex.data.db.udt.TypeWordHomNrDataTuple;
 import eki.ekilex.data.db.udt.TypeWordRelMeaning;
 import eki.ekilex.data.db.udt.TypeWordRelParam;
 import eki.ekilex.data.db.udt.TypeWordRelation;
-import eki.ekilex.data.db.udt.WordHomNrDataTuple;
 
 import java.util.Arrays;
 import java.util.List;
@@ -168,7 +168,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1517391938;
+    private static final long serialVersionUID = 1293760667;
 
     /**
      * The reference instance of <code>public</code>
@@ -1093,9 +1093,9 @@ public class Public extends SchemaImpl {
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
+            TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE,
             TypeWordRelMeaning.TYPE_WORD_REL_MEANING,
             TypeWordRelParam.TYPE_WORD_REL_PARAM,
-            TypeWordRelation.TYPE_WORD_RELATION,
-            WordHomNrDataTuple.WORD_HOM_NR_DATA_TUPLE);
+            TypeWordRelation.TYPE_WORD_RELATION);
     }
 }

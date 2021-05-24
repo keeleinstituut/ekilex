@@ -77,7 +77,7 @@ public class LookupDbService extends AbstractDataDbService {
 		return wordWordTypeRecord.getId();
 	}
 
-	public List<WordLexeme> getWordPrimaryLexemes(Long lexemeId) {
+	public List<WordLexeme> getWordLexemes(Long lexemeId) {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
 		return create
@@ -330,6 +330,18 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchMap(wordValue, homonymNumbers);
 	}
 
+	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId) {
+
+		return create
+				.select(
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.ID.as("lexeme_id"))
+				.from(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.fetchInto(WordLexemeMeaningIdTuple.class);
+	}
+
 	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId, String datasetCode) {
 
 		return create
@@ -430,6 +442,31 @@ public class LookupDbService extends AbstractDataDbService {
 								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifLabelLang))
 								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifLabelType)))
 				.fetchInto(Classifier.class);
+	}
+
+	public Map<Long, String[]> getMeaningRelationDatasetCodes(Long meaningId) {
+
+		MeaningRelation mr = MEANING_RELATION.as("mr");
+		Lexeme l = LEXEME.as("l");
+
+		Table<Record2<Long, String>> rmds = DSL
+				.select(mr.MEANING2_ID.as("rel_meaning_id"), l.DATASET_CODE)
+				.from(mr, l)
+				.where(mr.MEANING1_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING2_ID))
+				.unionAll(DSL
+						.select(mr.MEANING1_ID.as("rel_meaning_id"), l.DATASET_CODE)
+						.from(mr, l)
+						.where(mr.MEANING2_ID.eq(meaningId)).and(l.MEANING_ID.eq(mr.MEANING1_ID)))
+				.asTable("rmds");
+
+		Field<Long> meaningIdField = rmds.field("rel_meaning_id", Long.class);
+		Field<String> datasetCodeField = rmds.field("dataset_code", String.class);
+
+		return create
+				.select(meaningIdField, DSL.arrayAggDistinct(datasetCodeField))
+				.from(rmds)
+				.groupBy(meaningIdField)
+				.fetchMap(meaningIdField, DSL.arrayAggDistinct(datasetCodeField));
 	}
 
 	public boolean meaningPublicLexemeExists(Long meaningId) {
@@ -583,51 +620,6 @@ public class LookupDbService extends AbstractDataDbService {
 		return count == lexemeIds.size();
 	}
 
-	public boolean isOnlyPrimaryLexemeForWord(Long lexemeId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		int count = create
-				.fetchCount(DSL
-						.select(l2.ID)
-						.from(l1, l2)
-						.where(
-								l1.ID.eq(lexemeId)
-										.and(l1.WORD_ID.eq(l2.WORD_ID))
-										.and(l1.ID.ne(l2.ID))));
-		return count == 0;
-	}
-
-	public boolean isOnlyPrimaryLexemeForMeaning(Long lexemeId) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		int count = create
-				.fetchCount(DSL
-						.select(l2.ID)
-						.from(l1, l2)
-						.where(
-								l1.ID.eq(lexemeId)
-										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-										.and(l1.ID.ne(l2.ID))));
-		return count == 0;
-	}
-
-	public boolean areOnlyPrimaryLexemesForMeaning(List<Long> lexemeIds) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		int count = create
-				.fetchCount(DSL
-						.select(l2.ID)
-						.from(l1, l2)
-						.where(
-								l1.ID.in(lexemeIds)
-										.and(l1.MEANING_ID.eq(l2.MEANING_ID))
-										.and(l1.ID.ne(l2.ID))));
-		return count == lexemeIds.size();
-	}
-
 	public boolean isOnlyLexemesForMeaning(Long meaningId, String datasetCode) {
 
 		boolean noOtherDatasetsExist = create
@@ -637,29 +629,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 
 		return noOtherDatasetsExist;
-	}
-
-	public boolean isOnlyPrimaryLexemesForWords(Long meaningId, String datasetCode) {
-
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-
-		boolean noOtherMeaningsExist = create
-				.select(DSL.field(DSL.countDistinct(l2.WORD_ID).eq(0)).as("no_other_meanings_exist"))
-				.from(l1, l2)
-				.where(
-						l1.MEANING_ID.eq(meaningId)
-								.and(l1.WORD_ID.eq(l2.WORD_ID))
-								.and(l1.DATASET_CODE.eq(datasetCode))
-								.and(l1.ID.ne(l2.ID))
-								.and(DSL.or(
-										l1.MEANING_ID.ne(l2.MEANING_ID),
-										l1.MEANING_ID.eq(l2.MEANING_ID).and(l1.DATASET_CODE.ne(l2.DATASET_CODE))))
-
-				)
-				.fetchSingleInto(Boolean.class);
-
-		return noOtherMeaningsExist;
 	}
 
 	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {

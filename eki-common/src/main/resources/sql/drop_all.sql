@@ -34,11 +34,14 @@ drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
--- ekilex associated tables and types
+-- ekilex associated tables, types and functions
+drop function if exists merge_homonyms_to_eki(char(3) array);
+drop function if exists adjust_homonym_nrs();
 drop type if exists type_term_meaning_word;
 drop type if exists type_word_rel_param;
 drop type if exists type_word_rel_meaning;
 drop type if exists type_classifier;
+drop type if exists type_word_hom_nr_data_tuple;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
 drop table if exists feedback_log_comment;

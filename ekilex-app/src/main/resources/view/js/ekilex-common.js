@@ -27,13 +27,17 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.', c
 	});
 };
 
-function doPostDelete(deleteUrl, callback) {
-	
+function doPostDelete(deleteUrl, callback, force) {
+	Cookies.set('details-open', $('.details-open').parent().attr('id'));
 	$.post(deleteUrl).done(function(data) {
 		if (data === "OK") {
 
-			if (QueryParams.parseParams(deleteUrl).id) {
-				if ($(`#lexeme-details-${QueryParams.parseParams(deleteUrl).id}`).length) {
+			if (QueryParams.parseParams(deleteUrl).id && !force) {
+				if (QueryParams.parseParams(deleteUrl).opCode === 'syn_meaning_relation') {
+					const word = $(`[data-id="${QueryParams.parseParams(deleteUrl).id}"]:first`);
+					word.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
+				}
+				else if ($(`#lexeme-details-${QueryParams.parseParams(deleteUrl).id}`).length) {
 					let elem = $(`#lexeme-details-${QueryParams.parseParams(deleteUrl).id}`);
 					let parent = elem.parents('[data-rel="details-area"]');
 					parent.find('[name="details-btn"]:first').trigger('click');
@@ -99,6 +103,9 @@ function submitForm(theForm, failMessage, callback) {
 		if (typeof callback === 'function') {
 			callback();
 		} else {
+			if ($('.details-open').length) {
+				Cookies.set('details-open', $('.details-open').parent().attr('id'));
+			}
 			theForm.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').trigger('click');
 		}
 	}).fail(function(data) {
@@ -632,18 +639,6 @@ function openAlertDlg(alertMessage, showAsAlert = true) {
 	alertDlg.find('.modal-footer button').focus();
 };
 
-function openConfirmDlg(confirmQuestion, callback) {
-	let alertDlg = $('#confirmDlg');
-	alertDlg.find(('[name=confirm_question]')).text(confirmQuestion);
-	alertDlg.modal('show');
-	let okBtn = alertDlg.find('.modal-footer [name=ok]');
-	okBtn.focus();
-	okBtn.off('click').on('click', function() {
-		alertDlg.modal('hide');
-		callback();
-	});
-};
-
 function openWaitDlg(message) {
 	if (message) {
 		$("#waitMessageDiv").show();
@@ -667,21 +662,14 @@ function closeWaitDlg() {
 	}, timeout);
 };
 
-function openMultiConfirmDlg(confirmQuestions, callback, ...callbackArgs) {
-	var ul = $("<ul/>");
-	$.each(confirmQuestions, function(index, question) {
-		var li = $("<li/>").text(question);
-		ul.append(li);
-	});
-	var qWrap = $("<div/>");
-	qWrap.append(ul);
-	$('#confirmQuestion').html(qWrap);
-	var alertDlg = $('#confirmDlg');
-	alertDlg.modal('show');
-	let okBtn = alertDlg.find('.modal-footer [name=ok]');
+function openConfirmDlg(confirmDlgHtml, callback, ...callbackArgs) {
+	$('#confirmDlg').html(confirmDlgHtml);
+	var confirmDlg = $('#confirmDlg');
+	confirmDlg.modal('show');
+	let okBtn = confirmDlg.find('.modal-footer [name=ok]');
 	okBtn.focus();
 	okBtn.off('click').on('click', function() {
-		alertDlg.modal('hide');
+		confirmDlg.modal('hide');
 		callback(...callbackArgs);
 	});
 };
@@ -731,14 +719,23 @@ function deleteLexemeAndWordAndMeaning() {
 function deleteLexemeAndRusMeaningLexemes() {
 	var opName = "delete";
 	var opCode = "rus_meaning_lexemes";
-	var lexemeId = $(this).attr("data-id");
+	var element = $(this);
+	var lexemeId = element.attr("data-id");
 	var successCallbackName = $(this).attr("data-callback");
 	let successCallbackFunc = () => eval(successCallbackName)($(this));
 
-	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
+
+	executeMultiConfirmPostDelete(opName, opCode, lexemeId, function() {
+		const detailsLength = element.parents('[data-rel="details-area"]:first').find('[id*="lexeme-details-"]').length;
+		if (detailsLength <= 1) {
+			successCallbackFunc();
+		} else {
+			element.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+		}
+	}, true);
 };
 
-function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) {
+function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc, force) {
 	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
 	var confirmationOpUrl = applicationUrl + "confirm_op";
 	var dataObj = {
@@ -750,16 +747,9 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc) 
 		url: confirmationOpUrl,
 		data: JSON.stringify(dataObj),
 		method: 'POST',
-		dataType: 'json',
 		contentType: 'application/json'
 	}).done(function(data) {
-		if (!data.valid) {
-			openAlertDlg(data.validationMessage);
-		} else if (data.unconfirmed) {
-			openMultiConfirmDlg(data.questions, doPostDelete, deleteUrl, successCallbackFunc);
-		} else {
-			doPostDelete(deleteUrl, successCallbackFunc);
-		}
+		openConfirmDlg(data, doPostDelete, deleteUrl, successCallbackFunc, force);
 	}).fail(function(data) {
 		console.log(data);
 		openAlertDlg("Kustutamine ebaõnnestus");

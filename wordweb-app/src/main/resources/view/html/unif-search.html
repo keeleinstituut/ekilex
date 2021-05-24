@@ -63,11 +63,17 @@
       <th:block th:replace="common-search :: homonyms"></th:block>
       <div class="word-details">
         <th:block th:if="${!wordsData.resultsExist}" th:with="isFiltered = ${isLangFiltered || isDatasetFiltered}">
-          <span th:unless="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block">
-            <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-            <button class="btn btn-lg btn-link px-0" name="word-form-btn" th:each="word : ${wordsData.formMatchWordValues}" th:text="${word}" th:data-word="${word}"></button>
-            <span th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
-          </span>
+          <div th:unless="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block">
+            <div>
+              <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
+              <a href="#" class="word-form"
+                 th:each="word,wordIter : ${wordsData.formMatchWordValues}"
+                 th:text="${wordIter.last ? word : word + ',&nbsp;'}"
+                 th:data-word="${word}">
+              </a>
+            </div>
+            <div th:utext="#{|label.form.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</div>
+          </div>
           <span th:if="${#lists.isEmpty(wordsData.formMatchWordValues)}" class="h1 mt-4 ml-3 d-inline-block" th:utext="#{|label.word.not.found.detail.filtered.${isFiltered}|}">Ei leidnud midagi</span>
           <h5 class="meaning-sub-heading">
             <i class="fa fa-book mr-1 text-muted"></i>

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +21,12 @@ import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.ConfirmationRequest;
 import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.DeleteItemRequest;
+import eki.ekilex.data.LexemeDeleteConfirmation;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.MeaningDeleteConfirmation;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateLexemeLevelsRequest;
@@ -420,13 +423,12 @@ public class EditController extends AbstractMutableDataPageController {
 		return RESPONSE_OK_VER1;
 	}
 
-	@ResponseBody
 	@PostMapping(CONFIRM_OP_URI)
-	public ConfirmationRequest confirmOperation(@RequestBody ConfirmationRequest confirmationRequest) {
+	public String confirmOperation(@RequestBody DeleteItemRequest deleteItemRequest, Model model) {
 
-		String opName = confirmationRequest.getOpName();
-		String opCode = confirmationRequest.getOpCode();
-		Long id = confirmationRequest.getId();
+		String opName = deleteItemRequest.getOpName();
+		String opCode = deleteItemRequest.getOpCode();
+		Long id = deleteItemRequest.getId();
 
 		logger.debug("Confirmation request: {} {} {}", opName, opCode, id);
 
@@ -436,11 +438,17 @@ public class EditController extends AbstractMutableDataPageController {
 		case "delete":
 			switch (opCode) {
 			case "lexeme":
-				return complexOpService.validateLexemeDelete(id);
+				LexemeDeleteConfirmation lexemeDeleteConfirmation = complexOpService.validateLexemeDelete(id, userRole);
+				model.addAttribute("lexemeDeleteConfirmation", lexemeDeleteConfirmation);
+				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
 			case "meaning":
-				return complexOpService.validateMeaningDelete(id, userRole);
+				MeaningDeleteConfirmation meaningDeleteConfirmation = complexOpService.validateMeaningDelete(id, userRole);
+				model.addAttribute("meaningDeleteConfirmation", meaningDeleteConfirmation);
+				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_delete_confirmation";
 			case "rus_meaning_lexemes":
-				return complexOpService.validateLexemeAndMeaningLexemesDelete(id, LANGUAGE_CODE_RUS, userRole);
+				LexemeDeleteConfirmation meaningLexemesDeleteConfirmation = complexOpService.validateLexemeAndMeaningLexemesDelete(id, LANGUAGE_CODE_RUS, userRole);
+				model.addAttribute("lexemeDeleteConfirmation", meaningLexemesDeleteConfirmation);
+				return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "lexeme_delete_confirmation";
 			}
 		}
 		throw new UnsupportedOperationException("Unsupported confirm operation: " + opName + " " + opCode);

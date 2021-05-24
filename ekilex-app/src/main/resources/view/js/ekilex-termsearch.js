@@ -160,6 +160,5 @@ function deleteMeaningAndLexemesAndWords() {
 	var meaningId = $(this).attr("data-id");
 	var successCallbackName = $(this).attr("data-callback");
 	let successCallbackFunc = () => eval(successCallbackName)($(this));
-
-	executeMultiConfirmPostDelete(opName, opCode, meaningId, successCallbackFunc);
+	executeMultiConfirmPostDelete(opName, opCode, meaningId, successCallbackFunc, true);
 };

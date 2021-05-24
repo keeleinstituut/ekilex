@@ -41,6 +41,7 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LexSearchService;
@@ -255,7 +256,8 @@ public class LexEditController extends AbstractPrivatePageController {
 
 			int wordCount = lexSearchService.countWords(wordValue, allDatasets);
 			if (wordCount == 0) {
-				wordId = cudService.createWord(wordDetails);
+				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails);
+				wordId = wordLexemeMeaningId.getWordId();
 			} else {
 				attributes.addFlashAttribute("wordDetails", wordDetails);
 				return "redirect:" + WORD_SELECT_URI;
@@ -283,7 +285,8 @@ public class LexEditController extends AbstractPrivatePageController {
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String dataset = wordDetails.getDataset();
-			Long wordId = cudService.createWord(wordDetails);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails);
+			Long wordId = wordLexemeMeaningId.getWordId();
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
 				Long userId = userContext.getUserId();

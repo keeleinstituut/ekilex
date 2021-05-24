@@ -35,13 +35,13 @@ public class FeedbackDbService {
 				.execute();
 	}
 
-	public long getFeedbackLogCount(String senderEmailFilter, Boolean notCommentedFilter) {
-		Condition where = getFeedbackLogCond(senderEmailFilter, notCommentedFilter);
+	public long getFeedbackLogCount(String searchFilter, Boolean notCommentedFilter) {
+		Condition where = getFeedbackLogCond(searchFilter, notCommentedFilter);
 		return create.selectCount().from(FEEDBACK_LOG).where(where).fetchOneInto(Long.class);
 	}
 
-	public List<FeedbackLog> getFeedbackLogs(String senderEmailFilter, Boolean notCommentedFilter, int offset, int limit) {
-		Condition where = getFeedbackLogCond(senderEmailFilter, notCommentedFilter);
+	public List<FeedbackLog> getFeedbackLogs(String searchFilter, Boolean notCommentedFilter, int offset, int limit) {
+		Condition where = getFeedbackLogCond(searchFilter, notCommentedFilter);
 		return create
 				.selectFrom(FEEDBACK_LOG)
 				.where(where)
@@ -51,11 +51,27 @@ public class FeedbackDbService {
 				.fetchInto(FeedbackLog.class);
 	}
 
-	private Condition getFeedbackLogCond(String senderEmailFilter, Boolean notCommentedFilter) {
+	private Condition getFeedbackLogCond(String searchFilter, Boolean notCommentedFilter) {
 		Condition where = DSL.noCondition();
-		if (StringUtils.isNotBlank(senderEmailFilter)) {
-			String senderEmailCrit = "%" + StringUtils.lowerCase(senderEmailFilter) + "%";
-			where = where.and(FEEDBACK_LOG.SENDER_EMAIL.like(DSL.lower(senderEmailCrit)));
+		if (StringUtils.isNotBlank(searchFilter)) {
+			String searchCrit = "%" + searchFilter + "%";
+			where = where.and(DSL.or(
+					FEEDBACK_LOG.SENDER_NAME.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.SENDER_EMAIL.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.DESCRIPTION.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.WORD.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.DEFINITION.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.DEFINITION_SOURCE.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.COMMENTS.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.USAGE.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.USAGE_SOURCE.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.COMPANY.likeIgnoreCase(searchCrit),
+					FEEDBACK_LOG.LAST_SEARCH.likeIgnoreCase(searchCrit),
+					DSL.exists(DSL
+							.select(FEEDBACK_LOG_COMMENT.ID)
+							.from(FEEDBACK_LOG_COMMENT)
+							.where(FEEDBACK_LOG_COMMENT.COMMENT.likeIgnoreCase(searchCrit)
+									.and(FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID.eq(FEEDBACK_LOG.ID))))));
 		}
 		if (Boolean.TRUE.equals(notCommentedFilter)) {
 			where = where.andNotExists(DSL

@@ -38,11 +38,11 @@ public class FeedbackService implements SystemConstant {
 	private FeedbackDbService feedbackDbService;
 
 	@Transactional
-	public FeedbackLogResult getFeedbackLog(String senderEmailFilter, Boolean notCommentedFilter, int pageNum) {
+	public FeedbackLogResult getFeedbackLog(String searchFilter, Boolean notCommentedFilter, int pageNum) {
 		int limit = MAX_RESULTS_LIMIT;
 		int offset = (pageNum - 1) * limit;
-		long feedbackLogCount = feedbackDbService.getFeedbackLogCount(senderEmailFilter, notCommentedFilter);
-		List<FeedbackLog> feedbackLogs = feedbackDbService.getFeedbackLogs(senderEmailFilter, notCommentedFilter, offset, limit);
+		long feedbackLogCount = feedbackDbService.getFeedbackLogCount(searchFilter, notCommentedFilter);
+		List<FeedbackLog> feedbackLogs = feedbackDbService.getFeedbackLogs(searchFilter, notCommentedFilter, offset, limit);
 		List<FeedbackComment> feedbackLogComments = feedbackDbService.getFeedbackLogComments();
 		Map<Long, List<FeedbackComment>> feedbackLogCommentsMap = feedbackLogComments.stream().collect(Collectors.groupingBy(FeedbackComment::getFeedbackLogId));
 		feedbackLogs.forEach(feedbackLog -> feedbackLog.setFeedbackComments(feedbackLogCommentsMap.get(feedbackLog.getId())));
