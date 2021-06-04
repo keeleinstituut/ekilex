@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.22-SNAPSHOT</version>
+		<version>1.22.0</version>
 	</parent>
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>esterm-xml2json</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
 	<name>Esterm XML to JSON transformer</name>
