@@ -304,7 +304,8 @@ public class WordConversionUtil extends AbstractConversionUtil {
 		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
 		for (LexemeWord lexemeWord : lexemeWords) {
 			boolean isShowSection1 = CollectionUtils.isNotEmpty(lexemeWord.getGrammars())
-					|| (CollectionUtils.isNotEmpty(lexemeWord.getPoses()) && !isSinglePos);
+					|| (CollectionUtils.isNotEmpty(lexemeWord.getPoses()) && !isSinglePos)
+					|| (lexemeWord.getValueState() != null);
 			boolean isShowSection2 = CollectionUtils.isNotEmpty(lexemeWord.getRelatedLexemes())
 					|| CollectionUtils.isNotEmpty(lexemeWord.getRelatedMeanings())
 					|| CollectionUtils.isNotEmpty(lexemeWord.getAdviceNotes())

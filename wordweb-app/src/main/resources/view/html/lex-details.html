@@ -39,6 +39,8 @@
                   <span class="lexeme grammars tag" th:if="${not #lists.isEmpty(lexeme.grammars)}">
                     <span th:each="grammar,grammarIter : ${lexeme.grammars}" th:utext="${grammar.value + (grammarIter.last ? '' : ', ')}"></span>
                   </span>
+                  <!-- valueState meaning -->
+                  <span class="lexeme tag" th:if="${lexeme.valueState != null}" th:text="${lexeme.valueState.value}"></span>
                 </div>
                 <th:block th:if="${not #maps.isEmpty(lexeme.definitionsByLang)}">
                   <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
@@ -104,9 +106,12 @@
                             th:if="${syn.mwLexWeight != 1}"
                             th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                         </a>
-                        <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-uppercase text-small">
+                        <span th:if="${syn.additionalDataExists}" class="synonym-additional-meta text-small">
+                          <!-- valueState synonyms -->
+                          <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
+
                           <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
-                            <span class="type-two" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
+                            <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
                         <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
@@ -151,6 +156,9 @@
                             <span th:utext="${viewUtil.getWordValueMarkup(syn)}">tee</span>
                           </a>
                           <span th:if="${syn.additionalDataExists}" class="text-small">
+                            <!-- valueState matches -->
+                            <span th:if="${(syn.mwLexValueState != null)}" th:text="${syn.mwLexValueState.value}"></span>
+
                             <th:block th:if="${not #lists.isEmpty(syn.mwLexRegisters)}">
                               <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
