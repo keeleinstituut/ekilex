@@ -23,6 +23,13 @@ eki-stress {
   }
 }
 
+.corp-panel eki-stress::after {
+  content: none;
+}
+.corp-panel eki-stress {
+  font-weight: bold;
+}
+
 eki-sub {
   font-size: 70%;
   vertical-align: sub;
@@ -44,7 +51,7 @@ eki-link {
 }
 
 eki-form { 
-  color: #28b463;
+  color: #006321;
 }
 
 eki-shy::before {
