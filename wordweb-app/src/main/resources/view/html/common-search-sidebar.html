@@ -281,8 +281,8 @@
           <h5 class="font-weight-bold mb-0">
             <span th:text="#{sentence.same.as}"></span>
             <a th:if="${wordData.word.lang == 'est'}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
-               th:href="${'https://kn.eki.ee/?Q=' + wordData.word.word}" target="_blank">
-              e-keelenõus
+               th:href="${'https://portaal.eki.ee/sonaraamatud.html/?Q=' + wordData.word.word}" target="_blank">
+              EKI teistes sõnastikes
               <i class="fas fa-external-link-alt" aria-hidden="true"></i>
             </a>
             <a th:if="${wordData.word.lang == 'rus'}" th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
