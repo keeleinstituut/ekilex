@@ -22,6 +22,23 @@
       <span th:unless="${formIter.last}">~</span>
     </th:block>
   </th:block>
+  <th:block th:fragment="morpho-verb-reversed-nud-form-row(paradigm, morphCode, prefix)">
+    <th:block th:if="${#lists.isEmpty( ${viewUtil.getForms(paradigm, 'PtsPtPsNeg')} )}">
+      <th:block th:replace=" :: morpho-verb-form-row(paradigm, morphCode, prefix)"></th:block>
+    </th:block>
+    <th:block th:unless="${#lists.isEmpty( ${viewUtil.getForms(paradigm, 'PtsPtPsNeg')} )}">
+      <th:block th:replace=" :: morpho-verb-form-row(paradigm, 'PtsPtPsNeg', prefix)"></th:block>
+    </th:block>
+  </th:block>
+  <th:block th:fragment="morpho-verb-reversed-tud-form-row(paradigm, morphCode, prefix)">
+    <th:block th:if="${#lists.isEmpty( ${viewUtil.getForms(paradigm, 'PtsPtIpsNeg')} )}">
+      <th:block th:replace=" :: morpho-verb-form-row(paradigm, morphCode, prefix)"></th:block>
+    </th:block>
+    <th:block th:unless="${#lists.isEmpty( ${viewUtil.getForms(paradigm, 'PtsPtIpsNeg')} )}">
+      <th:block th:replace=" :: morpho-verb-form-row(paradigm, 'PtsPtIpsNeg', prefix)"></th:block>
+    </th:block>
+  </th:block>
+
   <th:block th:fragment="morpho-noun-form-row(paradigm, morphCode)">
     <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, morphCode)}">
       <table>
@@ -296,7 +313,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg1', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-reversed-nud-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -307,7 +324,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg2', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-reversed-nud-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -318,7 +335,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfSg3', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-reversed-nud-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -329,7 +346,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl1', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-reversed-nud-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -340,7 +357,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl2', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-reversed-nud-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -351,7 +368,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfPl3', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-reversed-nud-form-row(${paradigm}, 'PtsPtPs', 'ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
@@ -362,7 +379,7 @@
                       <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'IndIpfIps', '')"></th:block>
                     </td>
                     <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'PtsPtIps', 'ei')"></th:block>
+                      <th:block th:replace=" :: morpho-verb-reversed-tud-form-row(${paradigm}, 'PtsPtIps', 'ei')"></th:block>
                     </td>
                   </tr>
                   <tr>
