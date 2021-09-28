@@ -266,10 +266,4 @@ public class UnifSearchController extends AbstractSearchController {
 		model.addAttribute("isDatasetFiltered", isDatasetFiltered);
 	}
 
-	private String decode(String value) {
-		value = UriUtils.decode(value, UTF_8);
-		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
-		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
-		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
-		return value;	}
 }

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.web.bean.SessionBean;
@@ -57,5 +58,13 @@ public abstract class AbstractSearchController extends AbstractController {
 			return null;
 		}
 		return Integer.valueOf(value);
+	}
+
+	protected String decode(String value) {
+		value = UriUtils.decode(value, UTF_8);
+		value = StringUtils.replace(value, ENCODE_SYM_SLASH, "/");
+		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
+		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
+		return value;
 	}
 }
