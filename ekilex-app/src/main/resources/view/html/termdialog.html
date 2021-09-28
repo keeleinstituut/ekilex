@@ -1087,7 +1087,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/meaningsearch}">
-            <input type="hidden" name="meaningId">
+            <input type="hidden" name="meaningId" th:value="${meaningId}">
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group row">
