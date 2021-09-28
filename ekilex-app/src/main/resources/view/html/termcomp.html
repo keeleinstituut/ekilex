@@ -1626,5 +1626,46 @@
       </span>
     </div>
   </div>
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.word.notes)}" th:fragment="word_note">
+    <hr/>
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Keelendi märkused</span>
+      <button type="button" class="btn badge badge-secondary float-right mr-4"
+              title="Lisa uus"
+              data-toggle="modal"
+              th:data-target="${'#addWordNoteDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.word.crudGrant">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="col pl-0">
+      <div th:each="note : ${lexeme.word.notes}">
+        <div th:replace="lexdialog :: edit_word_note_dlg"></div>
+        <div class="invisible-buttons action-buttons-anchor mw-80 ml-3">
+          <div style="display: list-item; position: absolute"></div>
+          <span th:utext="${note.valuePrese}"></span>
+          <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
+          <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.word.crudGrant}"></span>
+          <div class="action-buttons-2">
+            <button type="button" class="btn badge badge-primary"
+                    title="Muuda"
+                    data-toggle="modal"
+                    th:data-target="${'#editWordNoteDlg_' + note.id}"
+                    sec:authorize="#vars.lexeme.word.crudGrant">
+              <i class="fa fa-edit" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn badge badge-warning"
+                    th:data-id="${note.id}"
+                    data-op-code="word_note"
+                    data-toggle="delete-confirm"
+                    data-placement="right"
+                    sec:authorize="#vars.lexeme.word.crudGrant">
+              <i class="fa fa-remove" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

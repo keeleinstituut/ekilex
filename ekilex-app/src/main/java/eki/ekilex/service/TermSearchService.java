@@ -46,6 +46,7 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordNote;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -168,6 +169,9 @@ public class TermSearchService extends AbstractSearchService {
 			permCalculator.applyCrud(userRole, lexeme);
 			Long wordId = lexeme.getWordId();
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
+			List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
+			permCalculator.filterVisibility(userRole, wordNotes);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -184,7 +188,9 @@ public class TermSearchService extends AbstractSearchService {
 			List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 
 			Word word = lexeme.getWord();
+			word.setNotes(wordNotes);
 			permCalculator.applyCrud(userRole, word);
+
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
 					|| CollectionUtils.isNotEmpty(wordTypes)
