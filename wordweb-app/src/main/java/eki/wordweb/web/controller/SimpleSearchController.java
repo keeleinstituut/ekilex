@@ -91,7 +91,7 @@ public class SimpleSearchController extends AbstractSearchController {
 			sessionBean = getSessionBean(model);
 		}
 
-		searchWord = UriUtils.decode(searchWord, UTF_8);
+		searchWord = decode(searchWord);
 		SearchValidation searchValidation = validateAndCorrectSearch(destinLangsStr, searchWord, homonymNrStr);
 		sessionBean.setSearchWord(searchWord);
 

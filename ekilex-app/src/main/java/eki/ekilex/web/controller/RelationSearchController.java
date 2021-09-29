@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +58,12 @@ public class RelationSearchController extends AbstractMutableDataPageController 
 	}
 
 	@GetMapping("/meaningsearch")
-	public String searchMeaning(@RequestParam String searchFilter, Model model) throws Exception {
+	public String searchMeaning(
+			@RequestParam String searchFilter,
+			@RequestParam Long meaningId,
+			Model model) throws Exception {
 
-		logger.debug("meaning search {}", searchFilter);
+		logger.debug("meaning search {}, meaning {}", searchFilter, meaningId);
 
 		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 
@@ -70,15 +74,18 @@ public class RelationSearchController extends AbstractMutableDataPageController 
 
 		List<WordLexeme> lexemes = lexSearchService.getWordLexemesWithDefinitionsData(searchFilter, datasetCodes, userRole, tagNames);
 
-		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
+		List<WordLexeme> lexemesFilteredByMeaning = new ArrayList<>();
 		List<Long> distinctMeanings = new ArrayList<>();
 		for (WordLexeme lexeme : lexemes) {
-			if (!distinctMeanings.contains(lexeme.getMeaningId())) {
-				lexemesFileterdByMeaning.add(lexeme);
-				distinctMeanings.add(lexeme.getMeaningId());
+			Long lexemeMeaningId = lexeme.getMeaningId();
+			boolean isMeaningExcluded = Objects.equals(meaningId, lexemeMeaningId);
+			if (!distinctMeanings.contains(lexemeMeaningId) && !isMeaningExcluded) {
+				lexemesFilteredByMeaning.add(lexeme);
+				distinctMeanings.add(lexemeMeaningId);
 			}
 		}
-		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
+
+		model.addAttribute("lexemesFoundBySearch", lexemesFilteredByMeaning);
 
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "meaning_search_result";
 	}

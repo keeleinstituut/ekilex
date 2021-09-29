@@ -26,6 +26,7 @@
                   <option value="addLexemeNoteDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku märkus</option>
                   <option value="word_gender" sec:authorize="#vars.lexeme.word.crudGrant">Sugu</option>
                   <option value="word_type" sec:authorize="#vars.lexeme.word.crudGrant">Keelendi tüüp</option>
+                  <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.crudGrant">Keelendi märkus</option>
                 </select>
               </div>
             </div>
@@ -577,7 +578,8 @@
         </form>
       </div>
     </div>
-  </div>  <div th:id="${'addLexemeNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_note_dlg">
+  </div>
+  <div th:id="${'addLexemeNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_note_dlg">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -638,6 +640,54 @@
                 <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
               </label>
             </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addWordNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_word_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title">Lisa keelendi märkus</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.wordId}">
+            <input type="hidden" name="opCode" value="word_note">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordNoteDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_word_note_dlg">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title">Muuda keelendi märkust</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${note.id}">
+            <input type="hidden" name="opCode" value="word_note">
+            <input type="hidden" name="value" th:value="${note.valuePrese}">
+            <div th:replace="components :: eki_editor_elem(true)"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -1037,7 +1087,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/meaningsearch}">
-            <input type="hidden" name="meaningId">
+            <input type="hidden" name="meaningId" th:value="${meaningId}">
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group row">

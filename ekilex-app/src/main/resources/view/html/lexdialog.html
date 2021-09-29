@@ -122,10 +122,10 @@
 
             <div class="modal-header">
               <h5 class="modal-title">Lisa seletus</h5>
-              <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+              <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
                 <span aria-hidden="true">&times;</span>
               </button>
-            </div><!--/modal-header-->
+            </div>
             <div class="modal-body">
               
               <input type="hidden" name="id" th:value="${lexeme.meaningId}">
@@ -145,13 +145,13 @@
                             dataset
                     </option>
                   </select>
-                </div><!--/formItem__element-->
-              </div><!--/formItem-->
+                </div>
+              </div>
 
               <div class="formItem mb-2" th:unless="${userRoleData.userRole.superiorPermission}">
                 <input type="hidden" name="dataset" th:value="${userRoleData.userRole.datasetCode}">
                 <div class="formItem__title" th:text="${userRoleData.userRole.datasetName}"></div>
-              </div><!--/formItem-->
+              </div>
 
               <div class="formItem">
                 <div class="formItem__title">Vali keel</div>
@@ -164,26 +164,22 @@
                             th:text="${language.value}">language
                     </option>
                   </select>
-                </div><!--/formItem__element-->
-              </div><!--/formItem-->
-
+                </div>
+              </div>
               <div class="formItem">
                 <div class="formItem__title">Vali detailsus</div>
                 <div class="formItem__element">
                   <div class="radioTabs">
-
                     <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
-                      <input
-                        type="radio"
-                        name="complexity"
-                        th:checked="${complexity == 'DETAIL'}"
-                        th:value="${complexity}" />
+                      <input type="radio"
+                             name="complexity"
+                             th:checked="${complexity == 'DETAIL'}"
+                             th:value="${complexity}"/>
                       <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                    </label><!--/radioTabs__item-->
-                  </div><!--/radioTabs-->
-                </div><!--/formItem__element-->
-              </div><!--/formItem-->
-
+                    </label>
+                  </div>
+                </div>
+              </div>
               <div class="formItem">
                 <div class="formItem__title">Vali avalikus</div>
                 <div class="formItem__element">
@@ -191,17 +187,14 @@
                     <label class="radioTabs__item">
                       <input type="radio" name="public" value="true" checked />
                       <span>avalik</span>
-                    </label><!--/radioTabs__item-->
-
+                    </label>
                     <label class="radioTabs__item">
                       <input type="radio" name="public" value="false" />
                       <span>mitteavalik</span>
-                    </label><!--/radioTabs__item-->
-
-                  </div><!--/radioTabs-->
-                </div><!--/formItem__element-->
-              </div><!--/formItem-->
-              
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -219,10 +212,10 @@
         <form th:action="@{/update_item}" method="post">
           <div class="modal-header">
             <h5 class="modal-title">Muuda seletust</h5>
-            <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div><!--/modal-header-->
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition">
@@ -230,7 +223,6 @@
             <input type="hidden" name="code" th:value="${definition.typeCode}">
             <input type="hidden" name="complexity" th:value="${definition.complexity}">
             <div th:replace="components :: eki_editor_elem(true)"></div>
-
             <div class="formItem">
               <div class="formItem__title">Vali keel</div>
               <div class="formItem__element">
@@ -241,9 +233,8 @@
                           th:text="${language.value}">language
                   </option>
                 </select>
-              </div><!--/formItem__element-->
-            </div><!--/formItem-->
-
+              </div>
+            </div>
             <div class="formItem">
               <div class="formItem__title">Vali detailsus</div>
               <div class="formItem__element">
@@ -251,11 +242,10 @@
                   <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
                     <input type="radio" name="complexity" th:value="${complexity}" th:checked="${complexity == definition.complexity}" />
                     <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                  </label><!--/radioTabs__item-->
-                </div><!--/radioTabs-->
-              </div><!--/formItem__element-->
-            </div><!--/formItem-->
-
+                  </label>
+                </div>
+              </div>
+            </div>
             <div class="formItem">
               <div class="formItem__title">Vali avalikus</div>
               <div class="formItem__element">
@@ -263,17 +253,14 @@
                   <label class="radioTabs__item">
                     <input type="radio" name="public" value="true" th:checked="${definition.public}" />
                     <span>avalik</span>
-                  </label><!--/radioTabs__item-->
-
+                  </label>
                   <label class="radioTabs__item">
                     <input type="radio" name="public" value="false" th:checked="${!definition.public}" />
                     <span>mitteavalik</span>
-                  </label><!--/radioTabs__item-->
-
-                </div><!--/radioTabs-->
-              </div><!--/formItem__element-->
-            </div><!--/formItem-->
-              
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -470,7 +457,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/meaningsearch}">
-            <input type="hidden" name="meaningId">
+            <input type="hidden" name="meaningId" th:value="${lexeme.meaningId}">
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group row">
@@ -520,7 +507,7 @@
       <div class="modal-content">
         <div class="modal-body">
           <form th:action="@{/meaningsearch}">
-            <input type="hidden" name="meaningId">
+            <input type="hidden" name="meaningId" th:value="${lexeme.meaningId}">
             <div class="form-row">
               <div class="col-12">
                 <div class="form-group row">
@@ -642,10 +629,10 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
             <h5 class="modal-title">Lisa kasutusnäide</h5>
-            <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div><!--/modal-header-->
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
@@ -661,10 +648,10 @@
                   <label class="radioTabs__item" th:each="complexity : ${enabledComplexities}">
                     <input type="radio" name="complexity" th:value="${complexity}" />
                     <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                  </label><!--/radioTabs__item-->
-                </div><!--/radioTabs-->
-              </div><!--/formItem__element-->
-            </div><!--/formItem-->
+                  </label>
+                </div>
+              </div>
+            </div>
 
             <div class="formItem">
               <div class="formItem__title">Vali avalikus</div>
@@ -673,16 +660,16 @@
                   <label class="radioTabs__item">
                     <input type="radio" name="public" value="true" checked />
                     <span>avalik</span>
-                  </label><!--/radioTabs__item-->
+                  </label>
 
                   <label class="radioTabs__item">
                     <input type="radio" name="public" value="false" />
                     <span>mitteavalik</span>
-                  </label><!--/radioTabs__item-->
+                  </label>
 
-                </div><!--/radioTabs-->
-              </div><!--/formItem__element-->
-            </div><!--/formItem-->
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -742,10 +729,10 @@
         <form th:action="@{/update_item}" method="post">
           <div class="modal-header">
             <h5 class="modal-title">Muuda kasutusnäidet</h5>
-            <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div><!--/modal-header-->
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${usage.id}">
             <input type="hidden" name="opCode" value="usage">
@@ -765,10 +752,10 @@
                       th:value="${complexity}"
                       th:checked="${complexity == usage.complexity}"/>
                     <span th:text="#{'enum.complexity.' + ${complexity}}">value</span>
-                  </label><!--/radioTabs__item-->
-                </div><!--/radioTabs-->
-              </div><!--/formItem__element-->
-            </div><!--/formItem-->
+                  </label>
+                </div>
+              </div>
+            </div>
 
             <div class="formItem">
               <div class="formItem__title">Vali avalikus</div>
@@ -777,16 +764,16 @@
                   <label class="radioTabs__item">
                     <input type="radio" name="public" value="true" th:checked="${usage.public}" />
                     <span>avalik</span>
-                  </label><!--/radioTabs__item-->
+                  </label>
 
                   <label class="radioTabs__item">
                     <input type="radio" name="public" value="false" th:checked="${!usage.public}" />
                     <span>mitteavalik</span>
-                  </label><!--/radioTabs__item-->
+                  </label><
 
-                </div><!--/radioTabs-->
-              </div><!--/formItem__element-->
-            </div><!--/formItem-->
+                </div>
+              </div>
+            </div>
 
           </div>
           <div class="modal-footer">
@@ -2161,10 +2148,10 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
             <h5 class="modal-title">Lisa soovitus</h5>
-            <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div><!--/modal-header-->
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="od_word_recommendation">
@@ -2185,10 +2172,10 @@
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
             <h5 class="modal-title">Lisa keelendi märkus</h5>
-            <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div><!--/modal-header-->
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_note">
@@ -2209,10 +2196,10 @@
         <form th:action="@{/update_item}" method="post">
           <div class="modal-header">
             <h5 class="modal-title">Muuda keelendi märkust</h5>
-            <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div><!--/modal-header-->
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="word_note">
@@ -2233,10 +2220,10 @@
         <form th:action="@{/update_item}" method="post">
           <div class="modal-header">
             <h5 class="modal-title">Muuda soovitust </h5>
-            <button type="button" class="close" aria-label="Close" data-role="close"  data-dismiss="modal">
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
-          </div><!--/modal-header-->
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${odWordRecommendation.id}">
             <input type="hidden" name="opCode" value="od_word_recommendation">
