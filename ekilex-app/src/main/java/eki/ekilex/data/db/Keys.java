@@ -69,6 +69,7 @@ import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
@@ -177,6 +178,7 @@ import eki.ekilex.data.db.tables.records.MeaningRelTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelTypeRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
+import eki.ekilex.data.db.tables.records.MeaningTagRecord;
 import eki.ekilex.data.db.tables.records.MorphFreqRecord;
 import eki.ekilex.data.db.tables.records.MorphLabelRecord;
 import eki.ekilex.data.db.tables.records.MorphRecord;
@@ -290,6 +292,7 @@ public class Keys {
     public static final Identity<MeaningRelTypeRecord, Long> IDENTITY_MEANING_REL_TYPE = Identities0.IDENTITY_MEANING_REL_TYPE;
     public static final Identity<MeaningRelationRecord, Long> IDENTITY_MEANING_RELATION = Identities0.IDENTITY_MEANING_RELATION;
     public static final Identity<MeaningSemanticTypeRecord, Long> IDENTITY_MEANING_SEMANTIC_TYPE = Identities0.IDENTITY_MEANING_SEMANTIC_TYPE;
+    public static final Identity<MeaningTagRecord, Long> IDENTITY_MEANING_TAG = Identities0.IDENTITY_MEANING_TAG;
     public static final Identity<MorphRecord, Long> IDENTITY_MORPH = Identities0.IDENTITY_MORPH;
     public static final Identity<MorphFreqRecord, Long> IDENTITY_MORPH_FREQ = Identities0.IDENTITY_MORPH_FREQ;
     public static final Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Identities0.IDENTITY_PARADIGM;
@@ -417,6 +420,8 @@ public class Keys {
     public static final UniqueKey<MeaningRelationRecord> MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = UniqueKeys0.MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY;
     public static final UniqueKey<MeaningSemanticTypeRecord> MEANING_SEMANTIC_TYPE_PKEY = UniqueKeys0.MEANING_SEMANTIC_TYPE_PKEY;
     public static final UniqueKey<MeaningSemanticTypeRecord> MEANING_SEMANTIC_TYPE_MEANING_ID_SEMANTIC_TYPE_CODE_KEY = UniqueKeys0.MEANING_SEMANTIC_TYPE_MEANING_ID_SEMANTIC_TYPE_CODE_KEY;
+    public static final UniqueKey<MeaningTagRecord> MEANING_TAG_PKEY = UniqueKeys0.MEANING_TAG_PKEY;
+    public static final UniqueKey<MeaningTagRecord> MEANING_TAG_MEANING_ID_TAG_NAME_KEY = UniqueKeys0.MEANING_TAG_MEANING_ID_TAG_NAME_KEY;
     public static final UniqueKey<MorphRecord> MORPH_PKEY = UniqueKeys0.MORPH_PKEY;
     public static final UniqueKey<MorphFreqRecord> MORPH_FREQ_PKEY = UniqueKeys0.MORPH_FREQ_PKEY;
     public static final UniqueKey<MorphFreqRecord> MORPH_FREQ_FREQ_CORP_ID_MORPH_CODE_KEY = UniqueKeys0.MORPH_FREQ_FREQ_CORP_ID_MORPH_CODE_KEY;
@@ -587,6 +592,8 @@ public class Keys {
     public static final ForeignKey<MeaningRelationRecord, MeaningRelTypeRecord> MEANING_RELATION__MEANING_RELATION_MEANING_REL_TYPE_CODE_FKEY = ForeignKeys0.MEANING_RELATION__MEANING_RELATION_MEANING_REL_TYPE_CODE_FKEY;
     public static final ForeignKey<MeaningSemanticTypeRecord, MeaningRecord> MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_MEANING_ID_FKEY = ForeignKeys0.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_MEANING_ID_FKEY;
     public static final ForeignKey<MeaningSemanticTypeRecord, SemanticTypeRecord> MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_SEMANTIC_TYPE_CODE_FKEY = ForeignKeys0.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_SEMANTIC_TYPE_CODE_FKEY;
+    public static final ForeignKey<MeaningTagRecord, MeaningRecord> MEANING_TAG__MEANING_TAG_MEANING_ID_FKEY = ForeignKeys0.MEANING_TAG__MEANING_TAG_MEANING_ID_FKEY;
+    public static final ForeignKey<MeaningTagRecord, TagRecord> MEANING_TAG__MEANING_TAG_TAG_NAME_FKEY = ForeignKeys0.MEANING_TAG__MEANING_TAG_TAG_NAME_FKEY;
     public static final ForeignKey<MorphFreqRecord, FreqCorpRecord> MORPH_FREQ__MORPH_FREQ_FREQ_CORP_ID_FKEY = ForeignKeys0.MORPH_FREQ__MORPH_FREQ_FREQ_CORP_ID_FKEY;
     public static final ForeignKey<MorphFreqRecord, MorphRecord> MORPH_FREQ__MORPH_FREQ_MORPH_CODE_FKEY = ForeignKeys0.MORPH_FREQ__MORPH_FREQ_MORPH_CODE_FKEY;
     public static final ForeignKey<MorphLabelRecord, MorphRecord> MORPH_LABEL__MORPH_LABEL_CODE_FKEY = ForeignKeys0.MORPH_LABEL__MORPH_LABEL_CODE_FKEY;
@@ -708,6 +715,7 @@ public class Keys {
         public static Identity<MeaningRelTypeRecord, Long> IDENTITY_MEANING_REL_TYPE = Internal.createIdentity(MeaningRelType.MEANING_REL_TYPE, MeaningRelType.MEANING_REL_TYPE.ORDER_BY);
         public static Identity<MeaningRelationRecord, Long> IDENTITY_MEANING_RELATION = Internal.createIdentity(MeaningRelation.MEANING_RELATION, MeaningRelation.MEANING_RELATION.ID);
         public static Identity<MeaningSemanticTypeRecord, Long> IDENTITY_MEANING_SEMANTIC_TYPE = Internal.createIdentity(MeaningSemanticType.MEANING_SEMANTIC_TYPE, MeaningSemanticType.MEANING_SEMANTIC_TYPE.ID);
+        public static Identity<MeaningTagRecord, Long> IDENTITY_MEANING_TAG = Internal.createIdentity(MeaningTag.MEANING_TAG, MeaningTag.MEANING_TAG.ID);
         public static Identity<MorphRecord, Long> IDENTITY_MORPH = Internal.createIdentity(Morph.MORPH, Morph.MORPH.ORDER_BY);
         public static Identity<MorphFreqRecord, Long> IDENTITY_MORPH_FREQ = Internal.createIdentity(MorphFreq.MORPH_FREQ, MorphFreq.MORPH_FREQ.ID);
         public static Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Internal.createIdentity(Paradigm.PARADIGM, Paradigm.PARADIGM.ID);
@@ -833,6 +841,8 @@ public class Keys {
         public static final UniqueKey<MeaningRelationRecord> MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = Internal.createUniqueKey(MeaningRelation.MEANING_RELATION, "meaning_relation_meaning1_id_meaning2_id_meaning_rel_type_c_key", new TableField[] { MeaningRelation.MEANING_RELATION.MEANING1_ID, MeaningRelation.MEANING_RELATION.MEANING2_ID, MeaningRelation.MEANING_RELATION.MEANING_REL_TYPE_CODE }, true);
         public static final UniqueKey<MeaningSemanticTypeRecord> MEANING_SEMANTIC_TYPE_PKEY = Internal.createUniqueKey(MeaningSemanticType.MEANING_SEMANTIC_TYPE, "meaning_semantic_type_pkey", new TableField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.ID }, true);
         public static final UniqueKey<MeaningSemanticTypeRecord> MEANING_SEMANTIC_TYPE_MEANING_ID_SEMANTIC_TYPE_CODE_KEY = Internal.createUniqueKey(MeaningSemanticType.MEANING_SEMANTIC_TYPE, "meaning_semantic_type_meaning_id_semantic_type_code_key", new TableField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.MEANING_ID, MeaningSemanticType.MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE }, true);
+        public static final UniqueKey<MeaningTagRecord> MEANING_TAG_PKEY = Internal.createUniqueKey(MeaningTag.MEANING_TAG, "meaning_tag_pkey", new TableField[] { MeaningTag.MEANING_TAG.ID }, true);
+        public static final UniqueKey<MeaningTagRecord> MEANING_TAG_MEANING_ID_TAG_NAME_KEY = Internal.createUniqueKey(MeaningTag.MEANING_TAG, "meaning_tag_meaning_id_tag_name_key", new TableField[] { MeaningTag.MEANING_TAG.MEANING_ID, MeaningTag.MEANING_TAG.TAG_NAME }, true);
         public static final UniqueKey<MorphRecord> MORPH_PKEY = Internal.createUniqueKey(Morph.MORPH, "morph_pkey", new TableField[] { Morph.MORPH.CODE }, true);
         public static final UniqueKey<MorphFreqRecord> MORPH_FREQ_PKEY = Internal.createUniqueKey(MorphFreq.MORPH_FREQ, "morph_freq_pkey", new TableField[] { MorphFreq.MORPH_FREQ.ID }, true);
         public static final UniqueKey<MorphFreqRecord> MORPH_FREQ_FREQ_CORP_ID_MORPH_CODE_KEY = Internal.createUniqueKey(MorphFreq.MORPH_FREQ, "morph_freq_freq_corp_id_morph_code_key", new TableField[] { MorphFreq.MORPH_FREQ.FREQ_CORP_ID, MorphFreq.MORPH_FREQ.MORPH_CODE }, true);
@@ -1001,6 +1011,8 @@ public class Keys {
         public static final ForeignKey<MeaningRelationRecord, MeaningRelTypeRecord> MEANING_RELATION__MEANING_RELATION_MEANING_REL_TYPE_CODE_FKEY = Internal.createForeignKey(Keys.MEANING_REL_TYPE_PKEY, MeaningRelation.MEANING_RELATION, "meaning_relation_meaning_rel_type_code_fkey", new TableField[] { MeaningRelation.MEANING_RELATION.MEANING_REL_TYPE_CODE }, true);
         public static final ForeignKey<MeaningSemanticTypeRecord, MeaningRecord> MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_MEANING_ID_FKEY = Internal.createForeignKey(Keys.MEANING_PKEY, MeaningSemanticType.MEANING_SEMANTIC_TYPE, "meaning_semantic_type_meaning_id_fkey", new TableField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.MEANING_ID }, true);
         public static final ForeignKey<MeaningSemanticTypeRecord, SemanticTypeRecord> MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_SEMANTIC_TYPE_CODE_FKEY = Internal.createForeignKey(Keys.SEMANTIC_TYPE_PKEY, MeaningSemanticType.MEANING_SEMANTIC_TYPE, "meaning_semantic_type_semantic_type_code_fkey", new TableField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.SEMANTIC_TYPE_CODE }, true);
+        public static final ForeignKey<MeaningTagRecord, MeaningRecord> MEANING_TAG__MEANING_TAG_MEANING_ID_FKEY = Internal.createForeignKey(Keys.MEANING_PKEY, MeaningTag.MEANING_TAG, "meaning_tag_meaning_id_fkey", new TableField[] { MeaningTag.MEANING_TAG.MEANING_ID }, true);
+        public static final ForeignKey<MeaningTagRecord, TagRecord> MEANING_TAG__MEANING_TAG_TAG_NAME_FKEY = Internal.createForeignKey(Keys.TAG_PKEY, MeaningTag.MEANING_TAG, "meaning_tag_tag_name_fkey", new TableField[] { MeaningTag.MEANING_TAG.TAG_NAME }, true);
         public static final ForeignKey<MorphFreqRecord, FreqCorpRecord> MORPH_FREQ__MORPH_FREQ_FREQ_CORP_ID_FKEY = Internal.createForeignKey(Keys.FREQ_CORP_PKEY, MorphFreq.MORPH_FREQ, "morph_freq_freq_corp_id_fkey", new TableField[] { MorphFreq.MORPH_FREQ.FREQ_CORP_ID }, true);
         public static final ForeignKey<MorphFreqRecord, MorphRecord> MORPH_FREQ__MORPH_FREQ_MORPH_CODE_FKEY = Internal.createForeignKey(Keys.MORPH_PKEY, MorphFreq.MORPH_FREQ, "morph_freq_morph_code_fkey", new TableField[] { MorphFreq.MORPH_FREQ.MORPH_CODE }, true);
         public static final ForeignKey<MorphLabelRecord, MorphRecord> MORPH_LABEL__MORPH_LABEL_CODE_FKEY = Internal.createForeignKey(Keys.MORPH_PKEY, MorphLabel.MORPH_LABEL, "morph_label_code_fkey", new TableField[] { MorphLabel.MORPH_LABEL.CODE }, true);

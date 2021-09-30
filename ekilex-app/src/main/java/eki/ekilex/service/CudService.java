@@ -796,6 +796,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void createMeaningTag(Long meaningId, String tagName) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING);
+		Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
+		activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
+	}
+
+	@Transactional
 	public void createLexemeDeriv(Long lexemeId, String derivCode) throws Exception {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeDeriv", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
@@ -1274,6 +1281,16 @@ public class CudService extends AbstractService implements GlobalConstant {
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeTag", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.deleteLexemeTag(lexemeTagId);
 			activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
+		}
+	}
+
+	@Transactional
+	public void deleteMeaningTag(Long meaningId, String tagName) throws Exception {
+		if (StringUtils.isNotBlank(tagName)) {
+			Long meaningTagId = lookupDbService.getMeaningTagId(meaningId, tagName);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningTag", meaningId, ActivityOwner.MEANING);
+			cudDbService.deleteMeaningTag(meaningTagId);
+			activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 		}
 	}
 

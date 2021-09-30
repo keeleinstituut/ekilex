@@ -98,6 +98,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_tag":
 			cudService.createLexemeTag(itemData.getId(), itemValue);
 			break;
+		case "meaning_tag":
+			cudService.createMeaningTag(itemData.getId(), itemValue);
+			break;
 		case "meaning_domain":
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemValue);
 			cudService.createMeaningDomain(itemData.getId2(), meaningDomain);
@@ -506,6 +509,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_tag":
 			cudService.deleteLexemeTag(id, valueToDelete);
+			break;
+		case "meaning_tag":
+			cudService.deleteMeaningTag(id, valueToDelete);
 			break;
 		case "lexeme_deriv":
 			cudService.deleteLexemeDeriv(id, valueToDelete);

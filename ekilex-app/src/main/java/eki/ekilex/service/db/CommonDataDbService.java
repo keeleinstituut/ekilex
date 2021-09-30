@@ -39,6 +39,7 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.MORPH;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.POS;
@@ -137,9 +138,13 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
 	}
 
-	@Cacheable(value = CACHE_KEY_TAG)
+	@Cacheable(value = CACHE_KEY_TAG, key = "#root.methodName")
 	public List<String> getTags() {
 		return create.select(TAG.NAME).from(TAG).orderBy(TAG.ORDER_BY).fetchInto(String.class);
+	}
+	@Cacheable(value = CACHE_KEY_TAG, key = "{#root.methodName, #tagType}")
+	public List<String> getTags(String tagType) {
+		return create.select(TAG.NAME).from(TAG).where(TAG.TYPE.eq(tagType)).orderBy(TAG.ORDER_BY).fetchInto(String.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
@@ -1219,6 +1224,16 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(LEXEME_TAG)
 				.where(LEXEME_TAG.LEXEME_ID.eq(lexemeId))
 				.orderBy(LEXEME_TAG.CREATED_ON)
+				.fetchInto(String.class);
+	}
+
+	public List<String> getMeaningTags(Long meaningId) {
+
+		return create
+				.select(MEANING_TAG.TAG_NAME)
+				.from(MEANING_TAG)
+				.where(MEANING_TAG.MEANING_ID.eq(meaningId))
+				.orderBy(MEANING_TAG.CREATED_ON)
 				.fetchInto(String.class);
 	}
 

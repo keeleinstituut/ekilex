@@ -450,6 +450,7 @@ create table tag
   name varchar(100) primary key,
   set_automatically boolean default false not null,
   remove_to_complete boolean default true not null,
+  type varchar(10) not null,
   order_by bigserial
 );
 
@@ -756,6 +757,16 @@ create table meaning_freeform
   unique(meaning_id, freeform_id)
 );
 alter sequence meaning_freeform_id_seq restart with 10000;
+
+create table meaning_tag
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  tag_name varchar(100) references tag(name) on delete cascade not null,
+  created_on timestamp not null default statement_timestamp(),
+  unique(meaning_id, tag_name)
+);
+alter sequence meaning_tag_id_seq restart with 10000;
 
 -- seletus
 create table definition
@@ -1216,6 +1227,8 @@ create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
 create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
 create index meaning_rel_mapping_code1_idx on meaning_rel_mapping(code1);
 create index meaning_rel_mapping_code2_idx on meaning_rel_mapping(code2);
+create index meaning_tag_meaning_id_idx on meaning_tag(meaning_id);
+create index meaning_tag_tag_name_idx on meaning_tag(tag_name);
 create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
 create index lex_rel_mapping_code1_idx on lex_rel_mapping(code1);

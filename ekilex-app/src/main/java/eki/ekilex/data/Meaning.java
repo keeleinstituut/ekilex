@@ -37,6 +37,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<SynonymLangGroup> synonymLangGroups;
 
+	private List<String> tags;
+
 	private boolean activeTagComplete;
 
 	private Timestamp lastActivityEventOn;
@@ -161,6 +163,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setSynonymLangGroups(List<SynonymLangGroup> synonymLangGroups) {
 		this.synonymLangGroups = synonymLangGroups;
+	}
+
+	public List<String> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<String> tags) {
+		this.tags = tags;
 	}
 
 	public boolean isActiveTagComplete() {

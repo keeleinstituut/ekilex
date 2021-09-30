@@ -81,6 +81,7 @@
       <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
       <div th:replace="termdialog :: add_meaning_image_dlg"></div>
       <div th:replace="termdialog :: add_meaning_media_dlg"></div>
+      <div th:replace="termdialog :: add_meaning_tag_dlg"></div>
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn" data-behaviour="replace"></button>
       <div class="navigate-panel term-panel card shadow h-100">
         <div class="card border-0 mb-2">
@@ -106,6 +107,7 @@
                 </button>
               </div>
             </div>
+            <div th:replace="termcomp :: meaning_tags"></div>
             <div th:replace="termcomp :: meaning_domain"></div>
             <div th:replace="termcomp :: meaning_semantic_type"></div>
             <div th:replace="termcomp :: meaning_definition"></div>
@@ -149,7 +151,7 @@
                   <div>
                     <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
                     <div th:replace="termcomp :: data_ids"></div>
-                    <div th:replace="termcomp :: tags"></div>
+                    <div th:replace="termcomp :: lexeme_tags"></div>
                     <div th:replace="termcomp :: lexeme_complexity"></div>
                     <div th:replace="termcomp :: lexeme_publicity"></div>
                     <div th:replace="termcomp :: lexeme_value_state"></div>

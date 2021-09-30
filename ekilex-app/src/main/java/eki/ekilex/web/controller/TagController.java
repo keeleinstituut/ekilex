@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.TagType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Tag;
 import eki.ekilex.service.TagService;
@@ -36,10 +37,11 @@ public class TagController extends AbstractPrivatePageController {
 	@ResponseBody
 	public String createTag(
 			@RequestParam("tagName") String tagName,
+			@RequestParam("tagType") TagType tagType,
 			@RequestParam(value = "setAutomatically", required = false) boolean setAutomatically,
 			@RequestParam(value = "removeToComplete", required = false) boolean removeToComplete) {
 
-		boolean isSuccessful = tagService.createTag(tagName, setAutomatically, removeToComplete);
+		boolean isSuccessful = tagService.createTag(tagName, tagType, setAutomatically, removeToComplete);
 		if (isSuccessful) {
 			return RESPONSE_OK_VER1;
 		}

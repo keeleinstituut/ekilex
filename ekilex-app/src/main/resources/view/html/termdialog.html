@@ -112,6 +112,7 @@
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
                   <option value="addMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant">Märkus</option>
                   <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse seos</option>
+                  <option value="addMeaningTagDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse silt</option>
                   <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant">Semantiline tüüp</option>
                   <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Pilt</option>
                   <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Videod ja muu meedia</option>
@@ -141,7 +142,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" name="addLexemeDataBtn">Lisa</button>
+            <button type="submit" class="btn btn-primary">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -194,7 +195,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" name="addLexemeDataBtn">Lisa</button>
+            <button type="submit" class="btn btn-primary">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -566,7 +567,36 @@
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option th:each="tag : ${tags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(lexeme.tags, tag)}">tag</option>
+                  <option th:each="tag : ${lexemeTags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(lexeme.tags, tag)}">tag</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningTagDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_tag_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title">Tähenduse silt</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${meaningId}">
+            <input type="hidden" name="opCode" value="meaning_tag">
+            <input type="hidden" name="value">
+            <div class="form-group row">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="tag : ${meaningTags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(meaning.tags, tag)}">tag</option>
                 </select>
               </div>
             </div>

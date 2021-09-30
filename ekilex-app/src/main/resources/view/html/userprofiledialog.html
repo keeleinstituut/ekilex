@@ -138,7 +138,7 @@
                 <select name="preferredTagNames" multiple data-live-search="true"
                         data-max-options="3" data-max-options-text="lubatud on kuni 3 valikut"
                         title="Vali otsingutulemustes nähtavad sildid">
-                  <th:block th:each="tag : ${tags}">
+                  <th:block th:each="tag : ${lexemeTags}">
                     <option th:value="${tag}" th:text="${tag}" th:selected="${userProfile.preferredTagNames != null && #lists.contains(userProfile.preferredTagNames, tag)}"/>
                   </th:block>
                 </select>
@@ -149,7 +149,7 @@
               <div class="col-md-12">
                 <select name="activeTagName" class="form-control">
                   <option value="" hidden disabled selected>vali aktiivne silt</option>
-                  <option th:each="tag : ${tags}"
+                  <option th:each="tag : ${lexemeTags}"
                           th:value="${tag}"
                           th:selected="${tag == userProfile.activeTagName}"
                           th:text="${tag}">tags

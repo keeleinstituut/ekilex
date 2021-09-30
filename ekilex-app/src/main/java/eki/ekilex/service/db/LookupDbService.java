@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_MAPPING;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
@@ -58,6 +59,7 @@ import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
+import eki.ekilex.data.db.tables.records.MeaningTagRecord;
 import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
@@ -247,6 +249,11 @@ public class LookupDbService extends AbstractDataDbService {
 	public Long getLexemeTagId(Long lexemeId, String tagName) {
 		LexemeTagRecord lexemeTagRecord = create.fetchOne(LEXEME_TAG, LEXEME_TAG.LEXEME_ID.eq(lexemeId).and(LEXEME_TAG.TAG_NAME.eq(tagName)));
 		return lexemeTagRecord.getId();
+	}
+
+	public Long getMeaningTagId(Long meaningId, String tagName) {
+		MeaningTagRecord meaningTagRecord = create.fetchOne(MEANING_TAG, MEANING_TAG.MEANING_ID.eq(meaningId).and(MEANING_TAG.TAG_NAME.eq(tagName)));
+		return meaningTagRecord.getId();
 	}
 
 	public Long getLexemeDerivId(Long lexemeId, String derivCode) {

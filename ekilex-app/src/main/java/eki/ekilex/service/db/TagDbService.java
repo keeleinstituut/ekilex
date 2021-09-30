@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
+import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.TAG;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.TagType;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.records.LexemeTagRecord;
@@ -26,7 +28,7 @@ public class TagDbService extends AbstractDataDbService {
 	public Tag getTag(String tagName) {
 
 		return create
-				.select(TAG.NAME, TAG.SET_AUTOMATICALLY, TAG.REMOVE_TO_COMPLETE, TAG.ORDER_BY)
+				.select(TAG.NAME, TAG.TYPE, TAG.SET_AUTOMATICALLY, TAG.REMOVE_TO_COMPLETE, TAG.ORDER_BY)
 				.from(TAG)
 				.where(TAG.NAME.eq(tagName))
 				.fetchOneInto(Tag.class);
@@ -34,15 +36,21 @@ public class TagDbService extends AbstractDataDbService {
 
 	public List<Tag> getTags() {
 
-		Field<Boolean> isUsed = DSL.field(DSL.exists(DSL
-				.select(LEXEME_TAG.ID)
-				.from(LEXEME_TAG)
-				.where(LEXEME_TAG.TAG_NAME.eq(TAG.NAME))));
+		Field<Boolean> isUsed = DSL.field(DSL
+						.exists(DSL
+								.select(LEXEME_TAG.ID)
+								.from(LEXEME_TAG)
+								.where(LEXEME_TAG.TAG_NAME.eq(TAG.NAME)))
+						.orExists(DSL
+								.select(MEANING_TAG.ID)
+								.from(MEANING_TAG)
+								.where(MEANING_TAG.TAG_NAME.eq(TAG.NAME))));
 
 		return create
 				.select(
 						DSL.rowNumber().over(DSL.orderBy(TAG.ORDER_BY)).as("order"),
 						TAG.NAME,
+						TAG.TYPE,
 						TAG.SET_AUTOMATICALLY,
 						TAG.REMOVE_TO_COMPLETE,
 						isUsed.as("used")
@@ -105,12 +113,12 @@ public class TagDbService extends AbstractDataDbService {
 						.where(TAG.NAME.eq(tagName)));
 	}
 
-	public void createTag(String tagName, boolean setAutomatically, boolean removeToComplete) {
+	public void createTag(String tagName, TagType tagType, boolean setAutomatically, boolean removeToComplete) {
 
 		create
 				.insertInto(TAG)
-				.columns(TAG.NAME, TAG.SET_AUTOMATICALLY, TAG.REMOVE_TO_COMPLETE)
-				.values(tagName, setAutomatically, removeToComplete)
+				.columns(TAG.NAME, TAG.TYPE, TAG.SET_AUTOMATICALLY, TAG.REMOVE_TO_COMPLETE)
+				.values(tagName, tagType.name(), setAutomatically, removeToComplete)
 				.execute();
 	}
 

@@ -186,7 +186,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		Meaning meaning = new Meaning();
 
 		permCalculator.applyCrud(userRole, lexeme);
-		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
+		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 
 		List<MeaningRelation> synMeaningRelations = commonDataDbService.getSynMeaningRelations(meaningId, datasetCode);
 		appendLexemeLevels(synMeaningRelations);
@@ -198,7 +198,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		permCalculator.applyCrud(userRole, definitions);
 		permCalculator.filterVisibility(userRole, definitions);
 
-		lexeme.setTags(tags);
+		lexeme.setTags(lexemeTags);
 		lexeme.setSynonymLangGroups(synonymLangGroups);
 		lexeme.setMeaning(meaning);
 

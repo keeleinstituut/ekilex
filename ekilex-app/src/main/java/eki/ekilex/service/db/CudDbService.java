@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
@@ -920,6 +921,25 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeTagId;
 	}
 
+	public Long createMeaningTag(Long meaningId, String tagName) {
+		Long meaningTagId = create
+				.select(MEANING_TAG.ID)
+				.from(MEANING_TAG)
+				.where(MEANING_TAG.MEANING_ID.eq(meaningId)
+						.and(MEANING_TAG.TAG_NAME.eq(tagName)))
+				.limit(1)
+				.fetchOneInto(Long.class);
+		if (meaningTagId == null) {
+			meaningTagId = create
+					.insertInto(MEANING_TAG, MEANING_TAG.MEANING_ID, MEANING_TAG.TAG_NAME)
+					.values(meaningId, tagName)
+					.returning(MEANING_TAG.ID)
+					.fetchOne()
+					.getId();
+		}
+		return meaningTagId;
+	}
+
 	public Long createLexemeDeriv(Long lexemeId, String derivCode) {
 		Long lexemeDerivId = create
 				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)
@@ -1103,6 +1123,12 @@ public class CudDbService extends AbstractDataDbService {
 	public void deleteLexemeTag(Long lexemeTagId) {
 		create.delete(LEXEME_TAG)
 				.where(LEXEME_TAG.ID.eq(lexemeTagId))
+				.execute();
+	}
+
+	public void deleteMeaningTag(Long meaningTagId) {
+		create.delete(MEANING_TAG)
+				.where(MEANING_TAG.ID.eq(meaningTagId))
 				.execute();
 	}
 

@@ -86,6 +86,7 @@ drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning_semantic_type;
 drop table if exists meaning_nr;
+drop table if exists meaning_tag;
 drop table if exists form_frequency;--TODO remove later
 drop table if exists form;
 drop table if exists paradigm;

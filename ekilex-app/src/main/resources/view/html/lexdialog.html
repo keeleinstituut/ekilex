@@ -106,7 +106,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" name="addLexemeDataBtn">Lisa</button>
+            <button type="submit" class="btn btn-primary">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -1698,7 +1698,7 @@
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
-                  <option th:each="tag : ${tags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(lexeme.tags, tag)}">tag</option>
+                  <option th:each="tag : ${lexemeTags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(lexeme.tags, tag)}">tag</option>
                 </select>
               </div>
             </div>

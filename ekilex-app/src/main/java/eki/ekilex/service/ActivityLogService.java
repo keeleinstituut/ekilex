@@ -576,7 +576,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
-		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
+		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 		List<Government> governments = commonDataDbService.getLexemeGovernments(lexemeId);
 		List<FreeForm> grammars = commonDataDbService.getLexemeGrammars(lexemeId);
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples = commonDataDbService
@@ -595,7 +595,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 
 		lexeme.setMeaningWords(meaningWords);
-		lexeme.setTags(tags);
+		lexeme.setTags(lexemeTags);
 		lexeme.setGovernments(governments);
 		lexeme.setGrammars(grammars);
 		lexeme.setUsages(usages);
@@ -652,6 +652,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name()};
 
 		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, null, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
 		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
@@ -669,6 +670,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 
 		meaning.setMeaningId(meaningId);
 		meaning.setDomains(meaningDomains);
+		meaning.setTags(meaningTags);
 		meaning.setDefinitions(definitions);
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setLearnerComments(meaningLearnerComments);
