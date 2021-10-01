@@ -27,7 +27,7 @@
               <th class="m-1 p-1 text-center" style="width: 10%" th:text="#{tag.used}"></th>
               <th class="m-1 p-1" style="width: 5%"></th>
             </tr>
-            <th:block th:each="tag : ${allTags}">
+            <th:block th:each="tag : ${tags}">
               <tr>
                 <td class="m-1 p-1">
                   <span th:text="${tag.order}"></span>
