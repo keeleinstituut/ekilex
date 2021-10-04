@@ -16,6 +16,8 @@ public class SearchCriterion extends AbstractDataObject {
 
 	private boolean not;
 
+	private String validationMessage;
+
 	public SearchKey getSearchKey() {
 		return searchKey;
 	}
@@ -47,4 +49,13 @@ public class SearchCriterion extends AbstractDataObject {
 	public void setNot(boolean not) {
 		this.not = not;
 	}
+
+	public String getValidationMessage() {
+		return validationMessage;
+	}
+
+	public void setValidationMessage(String validationMessage) {
+		this.validationMessage = validationMessage;
+	}
+
 }

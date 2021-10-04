@@ -1105,11 +1105,11 @@ public class SearchFilterHelper implements GlobalConstant {
 	public Condition applyValueFilter(
 			String searchValueStr, boolean isNot, SearchOperand searchOperand, Field<?> searchField, Condition condition, boolean isOnLowerValue) throws Exception {
 
-		Field<String> searchValueField = DSL.lower(searchValueStr);
-		searchValueStr = StringUtils.lowerCase(searchValueStr);
+		Field<String> searchValueFieldLower = DSL.lower(searchValueStr);
+		String searchValueStrLower = StringUtils.lowerCase(searchValueStr);
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			Condition critWhere = textTypeSearchFieldCase.eq(searchValueField);
+			Condition critWhere = textTypeSearchFieldCase.eq(searchValueFieldLower);
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
@@ -1118,30 +1118,30 @@ public class SearchFilterHelper implements GlobalConstant {
 			//by value comparison it is exactly the same operation as equals
 			//the not contains operand rather translates into join condition elsewhere
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			condition = condition.and(textTypeSearchFieldCase.eq(searchValueField));
+			condition = condition.and(textTypeSearchFieldCase.eq(searchValueFieldLower));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			Condition critWhere = textTypeSearchFieldCase.startsWith(searchValueField);
+			Condition critWhere = textTypeSearchFieldCase.startsWith(searchValueFieldLower);
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
 			condition = condition.and(critWhere);
 		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			Condition critWhere = textTypeSearchFieldCase.endsWith(searchValueField);
+			Condition critWhere = textTypeSearchFieldCase.endsWith(searchValueFieldLower);
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
 			condition = condition.and(critWhere);
 		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
 			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, isOnLowerValue);
-			Condition critWhere = textTypeSearchFieldCase.contains(searchValueField);
+			Condition critWhere = textTypeSearchFieldCase.contains(searchValueFieldLower);
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
 			condition = condition.and(critWhere);
 		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
-			Field<Boolean> containsWord = DSL.field("to_tsvector('simple', {0}) @@ to_tsquery('simple', {1})", Boolean.class, searchField, DSL.inline(searchValueStr));
+			Field<Boolean> containsWord = DSL.field("to_tsvector('simple', {0}) @@ to_tsquery('simple', {1})", Boolean.class, searchField, DSL.inline(searchValueStrLower));
 			if (isNot) {
 				containsWord = DSL.not(containsWord);
 			}
@@ -1164,6 +1164,13 @@ public class SearchFilterHelper implements GlobalConstant {
 				laterThan = DSL.not(laterThan);
 			}
 			condition = condition.and(laterThan);
+		} else if (SearchOperand.REGEX.equals(searchOperand)) {
+			Field<String> textTypeSearchFieldCase = getTextTypeSearchFieldCase(searchField, false);
+			Condition critWhere = textTypeSearchFieldCase.likeRegex(searchValueStr);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			condition = condition.and(critWhere);
 		} else {
 			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
 		}

@@ -27,7 +27,6 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -77,7 +76,6 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
-import eki.ekilex.data.db.tables.WordWordType;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.service.db.util.LexSearchConditionComposer;
 import eki.ekilex.service.db.util.SearchFilterHelper;
@@ -613,7 +611,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		LexemeTag lt = LEXEME_TAG.as("lt");
 		Language ln = LANGUAGE.as("ln");
-		WordWordType wt = WORD_WORD_TYPE.as("wt");
 
 		Field<Long> lnobf = DSL
 				.select(ln.ORDER_BY)
