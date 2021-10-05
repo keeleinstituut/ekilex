@@ -304,6 +304,9 @@
     </div>
   </div>
   <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="edit_source_link_dlg">
+    <div class="row m-1 float-right">
+      <a th:href="@{'/sourcesearch/' + ${source.id}}" class="btn btn-secondary btn-compact">Muuda allikat</a>
+    </div>
     <table>
       <tr>
         <td style="width: 70px;"></td>

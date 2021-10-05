@@ -392,7 +392,7 @@
                   <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
                   <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
                   <button type="button" class="btn badge badge-primary"
-                          th:title="Muuda"
+                          title="Muuda"
                           data-toggle="modal"
                           th:data-target="${'#editDefinitionSourceLinkDlg_' + sourceLink.id}"
                           sec:authorize="#vars.definition.crudGrant">
@@ -447,7 +447,7 @@
                     </span>
                     <div class="action-buttons-2">
                       <button type="button" class="btn badge badge-primary"
-                              th:title="Muuda"
+                              title="Muuda"
                               data-toggle="modal"
                               th:data-target="${'#editDefinitionNoteDlg_' + definition.id + '_' + note.id}"
                               sec:authorize="#vars.definition.crudGrant">
@@ -473,7 +473,7 @@
                           <span th:text="${sourceLink.name}"></span>
                         </span>
                         <button type="button" class="btn badge badge-primary"
-                                th:title="Muuda"
+                                title="Muuda"
                                 data-toggle="modal"
                                 th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
                                 sec:authorize="#vars.definition.crudGrant">
@@ -556,7 +556,7 @@
               </span>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
-                        th:title="Muuda"
+                        title="Muuda"
                         data-toggle="modal"
                         th:data-target="${'#editMeaningNoteDlg_' + meaningId + '_' + note.id}"
                         sec:authorize="#vars.meaning.crudGrant">
@@ -582,7 +582,7 @@
                     <span th:text="${sourceLink.name}"></span>
                   </span>
                   <button type="button" class="btn badge badge-primary"
-                          th:title="Muuda"
+                          title="Muuda"
                           data-toggle="modal"
                           th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
                           sec:authorize="#vars.meaning.crudGrant">
@@ -657,7 +657,7 @@
               </span>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
-                        th:title="Muuda"
+                        title="Muuda"
                         data-toggle="modal"
                         th:data-target="${'#editLimTermMeaningNoteDlg_' + meaningId + '_' + note.id}"
                         sec:authorize="#vars.meaning.crudGrant">
@@ -683,7 +683,7 @@
                     <span th:text="${sourceLink.name}"></span>
                   </span>
                   <button type="button" class="btn badge badge-primary"
-                          th:title="Muuda"
+                          title="Muuda"
                           data-toggle="modal"
                           th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
                           sec:authorize="#ars.meaning.crudGrant">
@@ -736,7 +736,7 @@
           <img class="w-25" th:src="${image.sourceUrl}">
           <span class="invisible-buttons">
             <button type="button" class="btn badge badge-primary align-bottom"
-                    th:title="Muuda"
+                    title="Muuda"
                     data-toggle="modal"
                     th:data-target="${'#editMeaningImageDlg_' + image.id}"
                     sec:authorize="#vars.meaning.crudGrant">
@@ -778,7 +778,7 @@
                 <span th:text="${sourceLink.name}"></span>
               </span>
               <button type="button" class="btn badge badge-primary"
-                      th:title="Muuda"
+                      title="Muuda"
                       data-toggle="modal"
                       th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
                       sec:authorize="#vars.meaning.crudGrant">
@@ -812,7 +812,7 @@
             </span>
             <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
-                      th:title="Muuda"
+                      title="Muuda"
                       data-toggle="modal"
                       th:data-target="${'#editImageTitleDlg_' + image.id}"
                       sec:authorize="#vars.meaning.crudGrant">
@@ -838,7 +838,7 @@
                   <span th:text="${sourceLink.name}"></span>
                 </span>
                 <button type="button" class="btn badge badge-primary"
-                        th:title="Muuda"
+                        title="Muuda"
                         data-toggle="modal"
                         th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
                         sec:authorize="#vars.meaning.crudGrant">
@@ -887,7 +887,7 @@
           <iframe th:src="${media.sourceUrl}" allowfullscreen></iframe>
           <span class="invisible-buttons">
             <button type="button" class="btn badge badge-primary"
-                    th:title="Muuda"
+                    title="Muuda"
                     data-toggle="modal"
                     th:data-target="${'#editMeaningMediaDlg_' + media.id}"
                     sec:authorize="#vars.meaning.crudGrant">
@@ -1330,7 +1330,7 @@
             <span th:text="${sourceLink.name}"></span>
           </span>
           <button type="button" class="btn badge badge-primary"
-                  th:title="Muuda"
+                  title="Muuda"
                   data-toggle="modal"
                   th:data-target="${'#editLexemeSourceLinkDlg_' + sourceLink.id}"
                   sec:authorize="#vars.lexeme.crudGrant">
@@ -1419,7 +1419,7 @@
               <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
               <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
               <button type="button" class="btn badge badge-primary"
-                      th:title="Muuda"
+                      title="Muuda"
                       data-toggle="modal"
                       th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
                       sec:authorize="#vars.usage.crudGrant">
@@ -1562,7 +1562,7 @@
                     <span th:text="${sourceLink.name}"></span>
                   </span>
                   <button type="button" class="btn badge badge-primary"
-                          th:title="Muuda"
+                          title="Muuda"
                           data-toggle="modal"
                           th:data-target="${'#editFreeformSourceLinkDlg_' + sourceLink.id}"
                           sec:authorize="#vars.lexeme.crudGrant">

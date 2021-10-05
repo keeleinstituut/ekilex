@@ -85,7 +85,7 @@
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
                 <div class="action-buttons-2" sec:authorize="#vars.source.crudGrant">
-                  <button type="button" class="btn badge badge-primary" th:title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
+                  <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
                   <button type="button" class="btn badge badge-warning"
