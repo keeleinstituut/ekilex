@@ -10,7 +10,7 @@
             <input type="hidden" name="sourcePropertyId" th:value="${sourceProperty.id}">
             <div class="form-group row">
               <div class="col-auto">
-                <span th:text="${sourceProperty.type}"></span>
+                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
               </div>
             </div>
             <div class="form-group row">
@@ -36,7 +36,7 @@
             <div class="form-group row">
               <div class="col-auto">
                 <select required class="form-control" name="type">
-                  <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value</option>
+                  <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="#{|source.property.${type.name()}|}">value</option>
                 </select>
               </div>
             </div>
@@ -61,7 +61,7 @@
           <div class="modal-body">
             <input type="hidden" name="sourceId" th:value="${source.id}">
             <select class="form-control" name="sourceType">
-              <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}" th:selected="${type == source.type}">value</option>
+              <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="#{|source.type.${type}|}" th:selected="${type == source.type}">value</option>
             </select>
           </div>
         </form>

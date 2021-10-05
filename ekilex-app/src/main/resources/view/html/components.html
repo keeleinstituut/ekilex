@@ -134,12 +134,12 @@
         <div class="row mb-1">
           <table style="background-color: #ececec; font-weight: bold;">
             <tr>
-              <td>source id &nbsp;</td>
+              <td>allika id &nbsp;</td>
               <td th:text="${source.id}"></td>
             </tr>
             <tr>
-              <td>type</td>
-              <td th:text="${source.type}"></td>
+              <td>tüüp</td>
+              <td th:text="#{|source.type.${source.type}|}"></td>
             </tr>
           </table>
         </div>
@@ -152,7 +152,7 @@
           <div class="row">
             <div class="mb-1">
               <div style="display: list-item; position: absolute"></div>
-              <span th:text="${sourceProperty.type}"></span>
+              <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
               -
               <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"></span>
               <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
@@ -243,7 +243,7 @@
                     <label title="Tüüp">
                       <select required class="form-control required-field" name="type">
                         <option value="" hidden disabled selected>vali allika tüüp</option>
-                        <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="${type}">value</option>
+                        <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="#{|source.type.${type}|}">value</option>
                       </select>
                     </label>
                   </div>
@@ -260,7 +260,7 @@
               <div class="col-auto">
                 <label title="Allika atribuudi nimetus">
                   <select required class="form-control" name="properties[][type]">
-                    <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="${type}">value</option>
+                    <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="#{|source.property.${type.name()}|}">value</option>
                   </select>
                 </label>
               </div>
