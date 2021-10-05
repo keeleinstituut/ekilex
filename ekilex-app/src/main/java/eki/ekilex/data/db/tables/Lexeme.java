@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row11;
+import org.jooq.Row12;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 1581310405;
+    private static final long serialVersionUID = -1375879183;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -104,6 +104,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.is_public</code>.
      */
     public final TableField<LexemeRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.lexeme.reliability</code>.
+     */
+    public final TableField<LexemeRecord, Integer> RELIABILITY = createField(DSL.name("reliability"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.lexeme</code> table reference
@@ -211,11 +216,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row11 type methods
+    // Row12 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean> fieldsRow() {
-        return (Row11) super.fieldsRow();
+    public Row12<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean, Integer> fieldsRow() {
+        return (Row12) super.fieldsRow();
     }
 }

@@ -74,3 +74,6 @@ $(document).on("show.bs.modal", "[id^=editLexemeRegionDlg_]", function() {
 	initSelectDlg($(this));
 });
 
+$(document).on("show.bs.modal", "[id^=editLexemeReliabilityDlg_]", function() {
+	initSelectDlg($(this));
+});

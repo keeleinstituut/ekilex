@@ -836,6 +836,7 @@ create table lexeme
   is_public boolean default true not null,
   complexity varchar(100) not null,
   weight numeric(5,4) default 1,
+  reliability integer null,
   order_by bigserial,
   unique(word_id, meaning_id, dataset_code)
 );

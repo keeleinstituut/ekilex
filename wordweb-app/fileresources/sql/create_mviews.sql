@@ -268,6 +268,7 @@ dblink(
 	dataset_type varchar(10),
 	dataset_name text,
 	value_state_code varchar(100),
+  reliability integer,
 	level1 integer,
 	level2 integer,
 	weight numeric(5,4),

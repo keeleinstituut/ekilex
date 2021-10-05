@@ -134,6 +134,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_region":
 			cudService.createLexemeRegion(itemData.getId(), itemValue);
 			break;
+		case "lexeme_reliability":
+			cudService.updateLexemeReliability(itemData.getId(), itemValue);
+			break;
 		case "word_gender":
 			cudService.updateWordGender(itemData.getId3(), itemValue);
 			break;
@@ -264,6 +267,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_region":
 			cudService.updateLexemeRegion(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			break;
+		case "lexeme_reliability":
+			cudService.updateLexemeReliability(itemData.getId(), itemValue);
 			break;
 		case "lexeme_weight":
 			cudService.updateLexemeWeight(itemData.getId(), itemValue);
@@ -521,6 +527,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_region":
 			cudService.deleteLexemeRegion(id, valueToDelete);
+			break;
+		case "lexeme_reliability":
+			cudService.updateLexemeReliability(id, null);
 			break;
 		case "lexeme_grammar":
 			cudService.deleteLexemeGrammar(id);

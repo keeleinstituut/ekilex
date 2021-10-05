@@ -408,6 +408,19 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateLexemeReliability(Long lexemeId, String reliabilityStr) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeReliability", lexemeId, ActivityOwner.LEXEME);
+		Integer reliability;
+		try {
+			reliability = Integer.parseInt(reliabilityStr);
+		} catch (NumberFormatException e) {
+			reliability = null;
+		}
+		cudDbService.updateLexemeReliability(lexemeId, reliability);
+		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional
 	public void updateLexemeNote(Long lexemeNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
 
 		FreeForm freeform = new FreeForm();

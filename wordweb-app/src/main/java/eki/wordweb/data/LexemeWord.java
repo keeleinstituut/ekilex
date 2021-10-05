@@ -45,6 +45,8 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Complexity complexity;
 
+	private Integer reliability;
+
 	private Float weight;
 
 	private Long datasetOrderBy;
@@ -247,6 +249,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	public void setComplexity(Complexity complexity) {
 		this.complexity = complexity;
+	}
+
+	public Integer getReliability() {
+		return reliability;
+	}
+
+	public void setReliability(Integer reliability) {
+		this.reliability = reliability;
 	}
 
 	public Float getWeight() {

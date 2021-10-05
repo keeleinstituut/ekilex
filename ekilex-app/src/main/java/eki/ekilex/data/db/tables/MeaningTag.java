@@ -4,6 +4,7 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningTagRecord;
@@ -15,6 +16,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -33,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningTag extends TableImpl<MeaningTagRecord> {
 
-    private static final long serialVersionUID = 1367773639;
+    private static final long serialVersionUID = -696017624;
 
     /**
      * The reference instance of <code>public.meaning_tag</code>
@@ -104,6 +106,11 @@ public class MeaningTag extends TableImpl<MeaningTagRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MEANING_TAG_MEANING_ID_IDX, Indexes.MEANING_TAG_TAG_NAME_IDX);
     }
 
     @Override

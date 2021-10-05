@@ -1052,7 +1052,7 @@
       <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
     </div>
   </div>
-  <div class="row" th:fragment="lexeme_tags">
+  <div class="row" th:if="${not #lists.isEmpty(lexeme.tags)}" th:fragment="lexeme_tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Ilmiku sildid</span>
       <button type="button" class="btn badge badge-secondary float-right mr-4"
@@ -1282,6 +1282,30 @@
         </button>
         <span th:unless="${classifIter.last}">,</span>
       </span>
+    </div>
+  </div>
+  <div class="row mr-0 hidden-buttons" th:if="${lexeme.reliability != null}" th:fragment="lexeme_reliability">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Usaldusväärsus</span>
+    </div>
+    <div class="col pl-0">
+      <span class="fa fa-star" th:classappend="${lexeme.reliability >= 1} ? 'text-warning': ''"></span>
+      <span class="fa fa-star" th:classappend="${lexeme.reliability >= 2} ? 'text-warning': ''"></span>
+      <span class="fa fa-star" th:classappend="${lexeme.reliability >= 3} ? 'text-warning': ''"></span>
+      <span class="fa fa-star" th:classappend="${lexeme.reliability >= 4} ? 'text-warning': ''"></span>
+      <span class="fa fa-star" th:classappend="${lexeme.reliability >= 5} ? 'text-warning': ''"></span>
+      <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal"
+              th:data-target="${'#editLexemeReliabilityDlg_' + lexeme.lexemeId}">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn badge badge-warning"
+              th:data-id="${lexeme.wordId}"
+              data-op-code="lexeme_reliability"
+              data-toggle="delete-confirm"
+              data-placement="right"
+              sec:authorize="${#vars.lexeme.crudGrant}">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
     </div>
   </div>
   <div class="row mt-2" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}" th:fragment="lexeme_source_link">

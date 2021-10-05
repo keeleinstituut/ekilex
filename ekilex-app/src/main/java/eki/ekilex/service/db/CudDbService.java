@@ -209,6 +209,14 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateLexemeReliability(Long lexemeId, Integer reliability) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.RELIABILITY, reliability)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
 	public void updateLexemeWeight(Long lexemeId, BigDecimal lexemeWeight) {
 		create
 				.update(LEXEME)

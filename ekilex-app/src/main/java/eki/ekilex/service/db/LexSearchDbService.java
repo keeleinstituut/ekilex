@@ -310,6 +310,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						l.LEVEL2,
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						lvalstf.as("lexeme_value_state"),
+						l.RELIABILITY,
 						l.IS_PUBLIC,
 						l.COMPLEXITY,
 						l.WEIGHT,

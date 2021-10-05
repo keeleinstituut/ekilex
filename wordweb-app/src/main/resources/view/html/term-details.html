@@ -26,6 +26,14 @@
                 <span th:text="${#dates.format(lexeme.meaningLastActivityEventOn, 'dd.MM.yyyy')}"></span>
               </span>
             </div>
+            <th:block th:if="${lexeme.reliability != null}">
+              <span th:text="#{label.lexeme.reliability}">Usaldusväärsus</span>
+              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 1} ? 'text-warning': ''"></span>
+              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 2} ? 'text-warning': ''"></span>
+              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 3} ? 'text-warning': ''"></span>
+              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 4} ? 'text-warning': ''"></span>
+              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 5} ? 'text-warning': ''"></span>
+            </th:block>
             <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">
               <div class="mb-2">
                 <span class="domain mr-1" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>

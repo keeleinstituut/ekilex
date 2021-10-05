@@ -248,6 +248,18 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 				.collect(Collectors.toList());
 	}
 
+	@ModelAttribute("lexemeReliabilities")
+	public List<Integer> getLexemeReliabilities() {
+		List<Integer> lexemeReliabilities = new ArrayList<>();
+		lexemeReliabilities.add(null);
+		lexemeReliabilities.add(1);
+		lexemeReliabilities.add(2);
+		lexemeReliabilities.add(3);
+		lexemeReliabilities.add(4);
+		lexemeReliabilities.add(5);
+		return lexemeReliabilities;
+	}
+
 	@ModelAttribute("lexemeRelationTypes")
 	public List<Classifier> getLexemeRelationTypes() {
 		return commonDataService.getLexemeRelationTypes();

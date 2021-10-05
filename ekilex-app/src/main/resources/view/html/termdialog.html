@@ -24,6 +24,8 @@
                   <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.lexeme.crudGrant">Allikaviide</option>
                   <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku seos</option>
                   <option value="addLexemeNoteDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku märkus</option>
+                  <option value="addLexemeTagDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku silt</option>
+                  <option value="lexeme_reliability" sec:authorize="#vars.lexeme.crudGrant">Ilmiku usaldusväärsus</option>
                   <option value="word_gender" sec:authorize="#vars.lexeme.word.crudGrant">Sugu</option>
                   <option value="word_type" sec:authorize="#vars.lexeme.word.crudGrant">Keelendi tüüp</option>
                   <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.crudGrant">Keelendi märkus</option>
@@ -67,6 +69,14 @@
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="region : ${allLexemeRegions}" th:value="${region.code}" th:text="${region.value}">region</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_reliability_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="lexemeReliability : ${lexemeReliabilities}" th:value="${lexemeReliability}" th:text="#{|lexeme.reliability.${lexemeReliability}|}">reliability</option>
                 </select>
               </div>
             </div>
@@ -291,6 +301,21 @@
             <input type="hidden" name="currentValue" th:value="${classif.code}">
             <select class="form-control" name="value">
               <option th:each="item : ${allLexemeRegions}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeReliabilityDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_reliability_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_reliability">
+            <select class="form-control" name="value">
+              <option th:each="lexemeReliability : ${lexemeReliabilities}" th:value="${lexemeReliability}" th:text="#{|lexeme.reliability.${lexemeReliability}|}" th:selected="${lexemeReliability == lexeme.reliability}">value</option>
             </select>
           </div>
         </form>
@@ -559,6 +584,10 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title">Ilmiku silt</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_tag">

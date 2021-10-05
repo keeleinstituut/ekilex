@@ -36,3 +36,6 @@ begin
 
   update tag set type = 'MEANING' where name = any(meaning_tag_names);
 end $$;
+
+-- ilmiku usaldusväärsus
+alter table lexeme add column reliability integer null;
