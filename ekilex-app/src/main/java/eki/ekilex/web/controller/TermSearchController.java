@@ -118,6 +118,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			searchHelper.addValidationMessages(detailSearchFilter);
 			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, selectedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		} else {
 			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, selectedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);

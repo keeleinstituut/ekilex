@@ -100,6 +100,7 @@ public class LimitedTermSearchController extends AbstractSearchController {
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			searchHelper.addValidationMessages(detailSearchFilter);
 			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, limitedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
 		} else {
 			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);

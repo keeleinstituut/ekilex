@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriUtils;
 
@@ -57,6 +61,9 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 
 	@Autowired
 	private ValueUtil valueUtil;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
 		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, SearchResultMode.WORD, null);
@@ -193,6 +200,45 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		}
 
 		return uriBuf.toString();
+	}
+
+	public void addValidationMessages(SearchFilter searchFilter) {
+
+		List<SearchCriterionGroup> criteriaGroups = searchFilter.getCriteriaGroups();
+		if (CollectionUtils.isEmpty(criteriaGroups)) {
+			return;
+		}
+		for (SearchCriterionGroup criterionGroup : criteriaGroups) {
+			List<SearchCriterion> searchCriteria = criterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
+				continue;
+			}
+			for (SearchCriterion searchCriterion : searchCriteria) {
+				SearchOperand searchOperand = searchCriterion.getSearchOperand();
+				Object searchValue = searchCriterion.getSearchValue();
+				String validationMessageKey = null;
+				if (searchValue == null) {
+					validationMessageKey = "search.validation.empty-value";
+				} else if (StringUtils.isBlank(searchValue.toString())) {
+					validationMessageKey = "search.validation.empty-value";
+				} else {
+					String searchValueStr = StringUtils.trim(searchValue.toString());
+					if (SearchOperand.CONTAINS_WORD.equals(searchOperand) && StringUtils.containsWhitespace(searchValueStr)) {
+						validationMessageKey = "search.validation.contains-words";
+					} else if (SearchOperand.REGEX.equals(searchOperand)) {
+						try {
+							Pattern.compile(searchValueStr);
+						} catch (PatternSyntaxException e) {
+							validationMessageKey = "search.validation.invalid-regex";
+						}
+					}
+				}
+				if (StringUtils.isNotBlank(validationMessageKey)) {
+					String validationMessage = messageSource.getMessage(validationMessageKey, new Object[0], LocaleContextHolder.getLocale());
+					searchCriterion.setValidationMessage(validationMessage);
+				}
+			}
+		}
 	}
 
 	public SearchUriData parseSearchUri(String searchPage, String searchUri) {

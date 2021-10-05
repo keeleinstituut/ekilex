@@ -120,6 +120,7 @@ public class SynSearchController extends AbstractPrivateSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			searchHelper.addValidationMessages(detailSearchFilter);
 			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
 			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
