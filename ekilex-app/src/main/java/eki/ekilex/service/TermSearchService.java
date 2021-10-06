@@ -94,7 +94,7 @@ public class TermSearchService extends AbstractSearchService {
 			SearchFilter searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
 
 		TermSearchResult termSearchResult;
-		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+		if (!isValidSearchFilter(searchFilter)) {
 			termSearchResult = new TermSearchResult();
 			termSearchResult.setResults(Collections.emptyList());
 			termSearchResult.setMeaningCount(0);

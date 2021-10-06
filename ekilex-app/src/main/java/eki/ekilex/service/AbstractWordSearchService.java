@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,7 +45,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 		List<Word> words;
 		int wordCount;
-		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+		if (!isValidSearchFilter(searchFilter)) {
 			words = Collections.emptyList();
 			wordCount = 0;
 		} else {
