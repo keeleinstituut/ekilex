@@ -26,9 +26,9 @@
                   <option value="addLexemeNoteDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku märkus</option>
                   <option value="addLexemeTagDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku silt</option>
                   <option value="lexeme_reliability" sec:authorize="#vars.lexeme.crudGrant">Ilmiku usaldusväärsus</option>
-                  <option value="word_gender" sec:authorize="#vars.lexeme.word.crudGrant">Sugu</option>
-                  <option value="word_type" sec:authorize="#vars.lexeme.word.crudGrant">Keelendi tüüp</option>
-                  <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.crudGrant">Keelendi märkus</option>
+                  <option value="word_gender" sec:authorize="#vars.lexeme.word.subGrant">Sugu</option>
+                  <option value="word_type" sec:authorize="#vars.lexeme.word.subGrant">Keelendi tüüp</option>
+                  <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.subGrant">Keelendi märkus</option>
                 </select>
               </div>
             </div>

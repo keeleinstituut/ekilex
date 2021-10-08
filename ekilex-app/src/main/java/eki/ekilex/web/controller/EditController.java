@@ -70,6 +70,8 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Add new item : {}", itemData);
 
+		Long userId = userContext.getUserId();
+		DatasetPermission userRole = userContext.getUserRole();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 		String sourceLinkValue;
@@ -138,10 +140,10 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateLexemeReliability(itemData.getId(), itemValue);
 			break;
 		case "word_gender":
-			cudService.updateWordGender(itemData.getId3(), itemValue);
+			cudService.duplicateWordAndUpdateWordGender(itemData.getId3(), itemValue, userId, userRole);
 			break;
 		case "word_type":
-			cudService.createWordType(itemData.getId3(), itemValue);
+			cudService.duplicateWordAndCreateWordType(itemData.getId3(), itemValue, userId, userRole);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(itemData.getId3(), itemValue);
@@ -172,7 +174,7 @@ public class EditController extends AbstractMutableDataPageController {
 			sessionBean.setRecentNoteLanguage(itemData.getLanguage());
 			break;
 		case "word_note":
-			cudService.createWordNote(itemData.getId(), itemValue);
+			cudService.duplicateWordAndCreateWordNote(itemData.getId(), itemValue, userId, userRole);
 			break;
 		case "meaning_image":
 			cudService.createMeaningImage(itemData.getId(), itemValue, itemData.getComplexity());
@@ -221,6 +223,8 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Update item : {}", itemData);
 
+		Long userId = userContext.getUserId();
+		DatasetPermission userRole = userContext.getUserRole();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 
@@ -278,10 +282,10 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateMeaningRelationWeight(itemData.getId(), itemValue);
 			break;
 		case "word_gender":
-			cudService.updateWordGender(itemData.getId(), itemValue);
+			cudService.duplicateWordAndUpdateWordGender(itemData.getId(), itemValue, userId, userRole);
 			break;
 		case "word_type":
-			cudService.updateWordType(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			cudService.duplicateWordAndUpdateWordType(itemData.getId(), itemData.getCurrentValue(), itemValue, userId, userRole);
 			break;
 		case "lexeme_grammar":
 			cudService.updateLexemeGrammar(itemData.getId(), itemValue, itemData.getComplexity());
@@ -472,6 +476,7 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
 
+		Long userId = userContext.getUserId();
 		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
 			return "NOK";
@@ -566,7 +571,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteSynMeaningRelation(id);
 			break;
 		case "word_gender":
-			cudService.updateWordGender(id, null);
+			cudService.duplicateWordAndUpdateWordGender(id, null, userId, userRole);
 			break;
 		case "meaning_image":
 			cudService.deleteMeaningImage(id);
@@ -575,7 +580,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteMeaningMedia(id);
 			break;
 		case "word_type":
-			cudService.deleteWordType(id, valueToDelete);
+			cudService.duplicateWordAndDeleteWordType(id, valueToDelete, userId, userRole);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(id, null);
@@ -621,11 +626,13 @@ public class EditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String value) throws Exception {
 
+		Long userId = userContext.getUserId();
+		DatasetPermission userRole = userContext.getUserRole();
 		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
 
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, value);
 
-		cudService.updateWordValue(wordId, value);
+		cudService.duplicateWordAndUpdateWordValue(wordId, value, userId, userRole);
 
 		return value;
 	}
