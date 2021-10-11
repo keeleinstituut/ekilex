@@ -685,7 +685,9 @@ function initWordValueEditorDlg(dlg) {
 	dlg.find('button[name="saveWordValueBtn"]').off('click').on('click', function() {
 		let form = dlg.find('form');
 		if (editFld.html()) {
-			valueInput.val(editFld.html());
+			let wordValue = editFld.html();
+			wordValue = wordValue.replaceAll("&nbsp;", "")
+			valueInput.val(wordValue);
 			$.ajax({
 				url: form.attr('action'),
 				data: form.serialize(),

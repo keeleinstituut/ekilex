@@ -157,3 +157,6 @@ update definition set value = replace(value, '&nbsp;', ' ') where value like '%&
 update definition set value_prese = replace(value_prese, '&nbsp;', ' ') where value_prese like '%&nbsp;%';
 update word set value = replace(value, '&nbsp;', ' ') where value like '%&nbsp;%';
 update word set value_prese = replace(value_prese, '&nbsp;', ' ') where value_prese like '%&nbsp;%';
+
+-- eemaldab tühikud keelendi ees ja lõpus
+update word set value = trim(value), value_prese = trim(value_prese);
