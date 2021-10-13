@@ -45,3 +45,73 @@ create index activity_entity_id_idx on activity_log(entity_id);
 create index activity_curr_data_word_id_idx on activity_log(cast(curr_data ->> 'wordId' as bigint));
 create index activity_curr_data_meaning_id_idx on activity_log(cast(curr_data ->> 'meaningId' as bigint));
 create index activity_curr_data_lexeme_id_idx on activity_log(cast(curr_data ->> 'lexemeId' as bigint));
+
+-- html entity asendamised
+do $$
+declare
+  html_entity           text;
+  sym                   text;
+  html_entity_sym_row   text[];
+  html_entity_sym_array text[][] := array [
+    ['&otilde;','õ'],['&Otilde;','Õ'],
+    ['&auml;','ä'],['&Auml;','Ä'],
+    ['&ouml;','ö'],['&Ouml;','Ö'],
+    ['&uuml;','ü'],['&Uuml;','Ü'],
+    ['&scaron;','š'],['&Scaron;','Š'],
+    ['&ocirc;','ô'],['&Ocirc;','Ô'],
+    ['&oacute;','ó'],['&Oacute;','Ó'],
+    ['&ograve;','ò'],['&Ograve;','Ò'],
+    ['&ocirc;','ô'],['&Ocirc;','Ô'],
+    ['&ntilde;','ñ'],['&Ntilde;','Ñ'],
+    ['&quot;','"'],['&#39;',''''],['&bdquo;','„'],
+    ['&ldquo;','“'],['&rdquo;','”'],
+    ['&lsquo;','‘'],['&rsquo;','’'],
+    ['&laquo;','«'],['raquo','»'],
+    ['&ndash;','–'],
+    ['&gt;','>'],['&lt;','<'],
+    ['&nbsp;',' '],
+    ['&alpha;','α'],['&Alpha;','Α'],
+    ['&beta;','β'],['&Beta;','Β'],
+    ['&gamma;','γ'],['&Gamma;','Γ'],
+    ['&delta;','δ'],['&Delta;','Δ'],
+    ['&epsilon;','ε'],['&Epsilon;','Ε'],
+    ['&zeta;','ζ'],['&Zeta;','Ζ'],
+    ['&eta;','η'],['&Eta;','Η'],
+    ['&theta;','θ'],['&Theta;','Θ'],
+    ['&iota;','ι'],['&Iota;','Ι'],
+    ['&kappa;','κ'],['&Kappa;','Κ'],
+    ['&lambda;','λ'],['&Lambda;','Λ'],
+    ['&mu;','μ'],['&Mu;','Μ'],
+    ['&nu;','ν'],['&Nu;','Ν'],
+    ['&xi;','ξ'],['&Xi;','Ξ'],
+    ['&omicron;','ο'],['&Omicron;','Ο'],
+    ['&pi;','π'],['&Pi;','Π'],
+    ['&Rho;','ρ'],['&Zeta;','Ρ'],
+    ['&sigmaf;','ς'],
+    ['&sigma;','σ'],['&Sigma;','Σ'],
+    ['&tau;','τ'],['&Tau;','Τ'],
+    ['&upsilon;','υ'],['&Upsilon;','Υ'],
+    ['&phi;','φ'],['&Phi;','Φ'],
+    ['&chi;','χ'],['&Chi;','Χ'],
+    ['&psi;','ψ'],['&Psi;','Ψ'],
+    ['&omega;','ω'],['&Omega;','Ω'],
+    ['&hellip;','…'],
+    ['&micro;','µ'],
+    ['&minus;','−']];
+begin
+  foreach html_entity_sym_row slice 1 in array html_entity_sym_array
+    loop
+      html_entity := html_entity_sym_row[1];
+      sym := html_entity_sym_row[2];
+      update freeform set value_text = replace(value_text, html_entity, sym) where value_text like '%'||html_entity||'%';
+      update freeform set value_prese = replace(value_prese, html_entity, sym) where value_prese like '%'||html_entity||'%';
+      update definition set value = replace(value, html_entity, sym) where value like '%'||html_entity||'%';
+      update definition set value_prese = replace(value_prese, html_entity, sym) where value_prese like '%'||html_entity||'%';
+      update word set value = replace(value, html_entity, sym) where value like '%'||html_entity||'%';
+      update word set value_prese = replace(value_prese, html_entity, sym) where value_prese like '%'||html_entity||'%';
+      raise notice 'replaced % to %',html_entity, sym;
+    end loop;
+end $$;
+
+-- eemaldab tühikud keelendi ees ja lõpus
+update word set value = trim(value), value_prese = trim(value_prese);

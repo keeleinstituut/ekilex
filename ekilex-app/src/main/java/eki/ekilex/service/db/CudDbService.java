@@ -462,6 +462,16 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordLexemesWordId(Long currentWordId, Long newWordId, String datasetCode) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.WORD_ID, newWordId)
+				.where(
+						LEXEME.WORD_ID.eq(currentWordId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.execute();
+	}
+
 	public void adjustWordHomonymNrs(SimpleWord word) {
 
 		String wordValue = word.getWordValue();
