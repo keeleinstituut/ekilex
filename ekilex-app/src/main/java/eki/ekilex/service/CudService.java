@@ -99,7 +99,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void duplicateWordAndUpdateWordValue(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
+	public void updateWordValueWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
@@ -150,7 +150,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void duplicateWordAndUpdateWordType(
+	public void updateWordTypeWithDuplication(
 			Long wordId, String currentTypeCode, String newTypeCode, Long userId, DatasetPermission userRole) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
@@ -186,7 +186,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void duplicateWordAndUpdateWordGender(Long wordId, String genderCode, Long userId, DatasetPermission userRole) throws Exception {
+	public void updateWordGenderWithDuplication(Long wordId, String genderCode, Long userId, DatasetPermission userRole) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
@@ -777,7 +777,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void duplicateWordAndCreateWordType(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
+	public void createWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
@@ -835,7 +835,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void duplicateWordAndCreateWordNote(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
+	public void createWordNoteWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
@@ -1261,7 +1261,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void duplicateWordAndDeleteWordType(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
+	public void deleteWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);

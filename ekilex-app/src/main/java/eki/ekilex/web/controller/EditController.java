@@ -140,10 +140,10 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateLexemeReliability(itemData.getId(), itemValue);
 			break;
 		case "word_gender":
-			cudService.duplicateWordAndUpdateWordGender(itemData.getId3(), itemValue, userId, userRole);
+			cudService.updateWordGenderWithDuplication(itemData.getId3(), itemValue, userId, userRole);
 			break;
 		case "word_type":
-			cudService.duplicateWordAndCreateWordType(itemData.getId3(), itemValue, userId, userRole);
+			cudService.createWordTypeWithDuplication(itemData.getId3(), itemValue, userId, userRole);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(itemData.getId3(), itemValue);
@@ -174,7 +174,7 @@ public class EditController extends AbstractMutableDataPageController {
 			sessionBean.setRecentNoteLanguage(itemData.getLanguage());
 			break;
 		case "word_note":
-			cudService.duplicateWordAndCreateWordNote(itemData.getId(), itemValue, userId, userRole);
+			cudService.createWordNoteWithDuplication(itemData.getId(), itemValue, userId, userRole);
 			break;
 		case "meaning_image":
 			cudService.createMeaningImage(itemData.getId(), itemValue, itemData.getComplexity());
@@ -282,10 +282,10 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateMeaningRelationWeight(itemData.getId(), itemValue);
 			break;
 		case "word_gender":
-			cudService.duplicateWordAndUpdateWordGender(itemData.getId(), itemValue, userId, userRole);
+			cudService.updateWordGenderWithDuplication(itemData.getId(), itemValue, userId, userRole);
 			break;
 		case "word_type":
-			cudService.duplicateWordAndUpdateWordType(itemData.getId(), itemData.getCurrentValue(), itemValue, userId, userRole);
+			cudService.updateWordTypeWithDuplication(itemData.getId(), itemData.getCurrentValue(), itemValue, userId, userRole);
 			break;
 		case "lexeme_grammar":
 			cudService.updateLexemeGrammar(itemData.getId(), itemValue, itemData.getComplexity());
@@ -571,7 +571,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteSynMeaningRelation(id);
 			break;
 		case "word_gender":
-			cudService.duplicateWordAndUpdateWordGender(id, null, userId, userRole);
+			cudService.updateWordGenderWithDuplication(id, null, userId, userRole);
 			break;
 		case "meaning_image":
 			cudService.deleteMeaningImage(id);
@@ -580,7 +580,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteMeaningMedia(id);
 			break;
 		case "word_type":
-			cudService.duplicateWordAndDeleteWordType(id, valueToDelete, userId, userRole);
+			cudService.deleteWordTypeWithDuplication(id, valueToDelete, userId, userRole);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(id, null);
@@ -632,7 +632,7 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, value);
 
-		cudService.duplicateWordAndUpdateWordValue(wordId, value, userId, userRole);
+		cudService.updateWordValueWithDuplication(wordId, value, userId, userRole);
 
 		return value;
 	}
