@@ -272,6 +272,10 @@ public interface WebConstant {
 
 	String DELETE_TAG_URI = "/delete_tag";
 
+	String HISTORY_URI = "/history";
+
+	String HISTORY_PAGE = "history";
+
 	String STAT_URI = "/stat";
 
 	String STAT_PAGE = "stat";

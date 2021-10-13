@@ -7,21 +7,16 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.ClassifierLabel;
 
 @Component
 public class ClassifierDbService extends AbstractDataDbService {
-
-	@Autowired
-	private DSLContext create;
 
 	private static final Field<Object> CODE_FIELD = DSL.field("code");
 

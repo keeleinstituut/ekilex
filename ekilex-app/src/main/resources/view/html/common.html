@@ -62,6 +62,7 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}">Kustutatud andmed</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
                  sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>

@@ -39,3 +39,9 @@ end $$;
 
 -- ilmiku usaldusväärsus
 alter table lexeme add column reliability integer null;
+
+-- täiendavad indeksid tegevuslogide ajaloo päringuteks
+create index activity_entity_id_idx on activity_log(entity_id);
+create index activity_curr_data_word_id_idx on activity_log(cast(curr_data ->> 'wordId' as bigint));
+create index activity_curr_data_meaning_id_idx on activity_log(cast(curr_data ->> 'meaningId' as bigint));
+create index activity_curr_data_lexeme_id_idx on activity_log(cast(curr_data ->> 'lexemeId' as bigint));

@@ -6,12 +6,10 @@ import static eki.ekilex.data.db.Tables.TAG;
 
 import java.util.List;
 
-import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record2;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.TagType;
@@ -21,9 +19,6 @@ import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 
 @Component
 public class TagDbService extends AbstractDataDbService {
-
-	@Autowired
-	private DSLContext create;
 
 	public Tag getTag(String tagName) {
 
