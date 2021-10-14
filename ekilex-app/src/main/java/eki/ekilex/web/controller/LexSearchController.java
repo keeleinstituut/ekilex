@@ -124,6 +124,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			searchHelper.addValidationMessages(detailSearchFilter);
 			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
 		} else {
 			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);

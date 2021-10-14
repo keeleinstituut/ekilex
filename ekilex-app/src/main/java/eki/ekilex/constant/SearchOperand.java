@@ -15,5 +15,6 @@ public enum SearchOperand {
 	MULTIPLE,
 	EARLIER_THAN,
 	LATER_THAN,
-	HAS_BEEN
+	HAS_BEEN,
+	REGEX
 }

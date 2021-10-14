@@ -117,7 +117,7 @@
 	  </tr>
 	</table>
   </th:block>
-  
+
   <th:block th:fragment="morpho-muutumatu_est">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -1511,19 +1511,6 @@
                     </td>
                   </tr>
                   <tr>
-                    <td rowspan="2">
-                      <span class="word-sufix-rus">мы / me</span> <span class="highlight">1. лицо мн. ч.</span>
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'sing,impr,incl', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'plur,impr,incl', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
                     <td>
                       <span class="word-sufix-rus">вы / te</span> <span class="highlight"> 2. лицо мн. ч.</span>
                     </td>
@@ -1580,7 +1567,7 @@
 
                   <tr>
                     <td>
-                      страдательное / tav-kesksõna 
+                      страдательное / tav-kesksõna
                       <br />
                       <span class="small">(краткая форма / lühike vorm)</span>
                       <br />
@@ -2131,7 +2118,7 @@
         <div class="modal-body">
           <div>
             <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
-            <h2>Положительная степень / Algvõrre</h2>
+            <h2>Прилагательное / Omadussõna</h2>
             <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
             <div class="scrollable-table">
               <div class="scrollable-table--scroller">
@@ -2185,31 +2172,6 @@
                     </td>
                   </tr>
                 </table>
-              </div>
-            </div>
-            <div class="scrollable-table">
-              <div class="scrollable-table--scroller">
-                <table class="stretch-middle-td">
-                  <tr>
-                    <th colspan="2">Cтепени сравнения / Võrdlusastmed</th>
-                  </tr>
-                  <tr>
-                    <td >
-                      Сравнительная степень / Keskvõrre
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'COMP', '')"></th:block>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Превосходная степень / Ülivõrre
-                    </td>
-                    <td>
-                      <th:block th:replace=" :: morpho-verb-form-row(${paradigm}, 'SUPR,masc,sing,nomn', '')"></th:block>
-                    </td>
-                  </tr>
-                 </table>
               </div>
             </div>
           </div>

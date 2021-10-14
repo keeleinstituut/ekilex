@@ -46,12 +46,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
@@ -110,9 +108,6 @@ import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 
 @Component
 public class CompositionDbService extends AbstractDataDbService implements GlobalConstant {
-
-	@Autowired
-	private DSLContext create;
 
 	public LexemeRecord getLexeme(Long lexemeId) {
 		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();

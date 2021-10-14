@@ -3,6 +3,7 @@ $.fn.editTag = function() {
 	main.on('click', function(e) {
 		e.preventDefault();
 		let tagName = main.data('tag-name');
+		let tagType = main.data('tag-type');
 		let tagOrder = main.data('tag-order');
 		let setAutomatically = main.data('tag-set-automatically');
 		let removeToComplete = main.data('tag-remove-to-complete');
@@ -11,6 +12,7 @@ $.fn.editTag = function() {
 		let editTagForm = editTagDlg.find('form');
 		editTagForm.find('input[name="currentTagName"]').val(tagName);
 		editTagForm.find('input[name="tagName"]').val(tagName);
+		editTagForm.find('span[name="tagType"]').text(tagType);
 		editTagForm.find('input[name="tagOrder"]').val(tagOrder);
 		editTagForm.find('input[name="setAutomatically"]').prop('checked', setAutomatically);
 		editTagForm.find('input[name="removeToComplete"]').prop('checked', removeToComplete);

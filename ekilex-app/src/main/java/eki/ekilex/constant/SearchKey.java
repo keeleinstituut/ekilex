@@ -61,7 +61,7 @@ public enum SearchKey {
 	private interface OperandSets {
 
 		SearchOperand[] VALUE_OPERANDS = new SearchOperand[] {
-				SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.CONTAINS_WORD};
+				SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.CONTAINS_WORD, SearchOperand.REGEX};
 		SearchOperand[] VALUE_AND_EXISTS_OPERANDS = ArrayUtils.addAll(VALUE_OPERANDS, SearchOperand.EXISTS);
 		SearchOperand[] CLASSIFIER_AND_EXISTS_OPERANDS = new SearchOperand[] {
 				SearchOperand.EQUALS, SearchOperand.EXISTS, SearchOperand.SINGLE, SearchOperand.MULTIPLE};

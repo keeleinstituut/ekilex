@@ -18,11 +18,13 @@ import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.PermConstant;
 import eki.common.constant.RelationStatus;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.SimpleWord;
@@ -32,14 +34,16 @@ import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 @Component
-public class CudService extends AbstractService implements GlobalConstant {
+public class CudService extends AbstractService implements GlobalConstant, PermConstant {
 
 	private static final String RAW_RELATION_TYPE = "raw";
 
@@ -49,6 +53,12 @@ public class CudService extends AbstractService implements GlobalConstant {
 
 	@Autowired
 	private CudDbService cudDbService;
+
+	@Autowired
+	private CompositionDbService compositionDbService;
+
+	@Autowired
+	private PermissionDbService permissionDbService;
 
 	@Autowired
 	private TextDecorationService textDecorationService;
@@ -89,6 +99,43 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateWordValueWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
+
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (isWordCrudGrant) {
+			updateWordValue(wordId, valuePrese);
+		} else {
+			Long duplicateWordId = duplicateWordData(wordId);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
+			updateWordValue(duplicateWordId, valuePrese);
+		}
+	}
+
+	private Long duplicateWordData(Long wordId) throws Exception {
+
+		SimpleWord simpleWord = compositionDbService.getSimpleWord(wordId);
+		Long duplicateWordId = compositionDbService.cloneWord(simpleWord);
+		compositionDbService.cloneWordParadigmsAndForms(wordId, duplicateWordId);
+		compositionDbService.cloneWordTypes(wordId, duplicateWordId);
+		compositionDbService.cloneWordRelations(wordId, duplicateWordId);
+		compositionDbService.cloneWordGroupMembers(wordId, duplicateWordId);
+		compositionDbService.cloneWordFreeforms(wordId, duplicateWordId);
+		compositionDbService.cloneWordEtymology(wordId, duplicateWordId);
+		activityLogService.createActivityLog("duplicateWordData", duplicateWordId, ActivityOwner.WORD);
+
+		return duplicateWordId;
+	}
+
+	private void updateWordLexemesWordId(Long currentWordId, Long newWordId, String datasetCode) throws Exception {
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("updateWordLexemesWordId", currentWordId, ActivityOwner.WORD);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("updateWordLexemesWordId", newWordId, ActivityOwner.WORD);
+		cudDbService.updateWordLexemesWordId(currentWordId, newWordId, datasetCode);
+		activityLogService.createActivityLog(activityLog1, currentWordId, ActivityEntity.WORD);
+		activityLogService.createActivityLog(activityLog2, newWordId, ActivityEntity.WORD);
+	}
+
+	@Transactional
 	public void updateWordVocalForm(Long wordId, String vocalForm) throws Exception {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordVocalForm(wordId, vocalForm);
@@ -100,6 +147,21 @@ public class CudService extends AbstractService implements GlobalConstant {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordType", wordId, ActivityOwner.WORD);
 		Long wordWordTypeId = cudDbService.updateWordType(wordId, currentTypeCode, newTypeCode);
 		activityLogService.createActivityLog(activityLog, wordWordTypeId, ActivityEntity.WORD_TYPE);
+	}
+
+	@Transactional
+	public void updateWordTypeWithDuplication(
+			Long wordId, String currentTypeCode, String newTypeCode, Long userId, DatasetPermission userRole) throws Exception {
+
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (isWordCrudGrant) {
+			updateWordType(wordId, currentTypeCode, newTypeCode);
+		} else {
+			Long duplicateWordId = duplicateWordData(wordId);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
+			updateWordType(duplicateWordId, currentTypeCode, newTypeCode);
+		}
 	}
 
 	@Transactional
@@ -121,6 +183,20 @@ public class CudService extends AbstractService implements GlobalConstant {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordGender", wordId, ActivityOwner.WORD);
 		cudDbService.updateWordGender(wordId, genderCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
+	}
+
+	@Transactional
+	public void updateWordGenderWithDuplication(Long wordId, String genderCode, Long userId, DatasetPermission userRole) throws Exception {
+
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (isWordCrudGrant) {
+			updateWordGender(wordId, genderCode);
+		} else {
+			Long duplicateWordId = duplicateWordData(wordId);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
+			updateWordGender(duplicateWordId, genderCode);
+		}
 	}
 
 	@Transactional
@@ -408,6 +484,19 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void updateLexemeReliability(Long lexemeId, String reliabilityStr) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeReliability", lexemeId, ActivityOwner.LEXEME);
+		Integer reliability;
+		try {
+			reliability = Integer.parseInt(reliabilityStr);
+		} catch (NumberFormatException e) {
+			reliability = null;
+		}
+		cudDbService.updateLexemeReliability(lexemeId, reliability);
+		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional
 	public void updateLexemeNote(Long lexemeNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
 
 		FreeForm freeform = new FreeForm();
@@ -688,6 +777,20 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void createWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
+
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (isWordCrudGrant) {
+			createWordType(wordId, typeCode);
+		} else {
+			Long duplicateWordId = duplicateWordData(wordId);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
+			createWordType(duplicateWordId, typeCode);
+		}
+	}
+
+	@Transactional
 	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode) throws Exception {
 		ActivityLogData activityLog;
 		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
@@ -729,6 +832,20 @@ public class CudService extends AbstractService implements GlobalConstant {
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		createWordFreeform(ActivityEntity.WORD_NOTE, wordId, freeform);
+	}
+
+	@Transactional
+	public void createWordNoteWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
+
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (isWordCrudGrant) {
+			createWordNote(wordId, valuePrese);
+		} else {
+			Long duplicateWordId = duplicateWordData(wordId);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
+			createWordNote(duplicateWordId, valuePrese);
+		}
 	}
 
 	@Transactional
@@ -793,6 +910,13 @@ public class CudService extends AbstractService implements GlobalConstant {
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME);
 		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
 		activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
+	}
+
+	@Transactional
+	public void createMeaningTag(Long meaningId, String tagName) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING);
+		Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
+		activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 	}
 
 	@Transactional
@@ -1137,6 +1261,20 @@ public class CudService extends AbstractService implements GlobalConstant {
 	}
 
 	@Transactional
+	public void deleteWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
+
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		if (isWordCrudGrant) {
+			deleteWordType(wordId, typeCode);
+		} else {
+			Long duplicateWordId = duplicateWordData(wordId);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
+			deleteWordType(duplicateWordId, typeCode);
+		}
+	}
+
+	@Transactional
 	public void deleteWordRelation(Long relationId) throws Exception {
 		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordRelation", wordId, ActivityOwner.WORD);
@@ -1274,6 +1412,16 @@ public class CudService extends AbstractService implements GlobalConstant {
 			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeTag", lexemeId, ActivityOwner.LEXEME);
 			cudDbService.deleteLexemeTag(lexemeTagId);
 			activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
+		}
+	}
+
+	@Transactional
+	public void deleteMeaningTag(Long meaningId, String tagName) throws Exception {
+		if (StringUtils.isNotBlank(tagName)) {
+			Long meaningTagId = lookupDbService.getMeaningTagId(meaningId, tagName);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningTag", meaningId, ActivityOwner.MEANING);
+			cudDbService.deleteMeaningTag(meaningTagId);
+			activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 		}
 	}
 

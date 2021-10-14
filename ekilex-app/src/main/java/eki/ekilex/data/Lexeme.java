@@ -28,6 +28,8 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	private Classifier lexemeValueState;
 
+	private Integer reliability;
+
 	private List<String> tags;
 
 	private boolean isPublic;
@@ -142,6 +144,14 @@ public class Lexeme extends AbstractCrudEntity implements LexemeTag {
 
 	public void setLexemeValueState(Classifier lexemeValueState) {
 		this.lexemeValueState = lexemeValueState;
+	}
+
+	public Integer getReliability() {
+		return reliability;
+	}
+
+	public void setReliability(Integer reliability) {
+		this.reliability = reliability;
 	}
 
 	@Override

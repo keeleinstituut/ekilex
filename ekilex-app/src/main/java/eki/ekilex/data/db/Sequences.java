@@ -360,6 +360,11 @@ public class Sequences {
     public static final Sequence<Long> MEANING_SEMANTIC_TYPE_ORDER_BY_SEQ = Internal.createSequence("meaning_semantic_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.meaning_tag_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_TAG_ID_SEQ = Internal.createSequence("meaning_tag_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.morph_freq_id_seq</code>
      */
     public static final Sequence<Long> MORPH_FREQ_ID_SEQ = Internal.createSequence("morph_freq_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);

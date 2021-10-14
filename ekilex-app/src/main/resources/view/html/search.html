@@ -127,7 +127,7 @@
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option value="" selected>Kõik sildid</option>
-                    <option th:each="tag : ${tags}"
+                    <option th:each="tag : ${lexemeTags}"
                             th:value="${tag}"
                             th:selected="${criteria.searchValue == tag}"
                             th:text="${tag}">Täääg</option>
@@ -201,54 +201,64 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'RANK'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ATTRIBUTE_VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE_AND_EXISTS'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
@@ -260,12 +270,14 @@
                         <i class="fa fa-calendar fa-lg"></i>
                       </div>
                     </div>
+                    <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                   </div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
@@ -277,12 +289,14 @@
                         <i class="fa fa-calendar fa-lg"></i>
                       </div>
                     </div>
+                    <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                   </div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
@@ -295,6 +309,7 @@
                       </div>
                     </div>
                   </div>
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'LAST_UPDATE_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
@@ -307,6 +322,7 @@
                       </div>
                     </div>
                   </div>
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DATASET_USAGE'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
@@ -321,6 +337,7 @@
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLICITY'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
@@ -333,18 +350,21 @@
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GRAMMAR'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GOVERNMENT'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
                          th:hidden="${isExistsOperand}">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
                   <select class="form-control"
@@ -475,7 +495,7 @@
             <div name="TAG_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option value="" selected>Kõik sildid</option>
-                <option th:each="tag : ${tags}" th:value="${tag}" th:text="${tag}">Täääg</option>
+                <option th:each="tag : ${lexemeTags}" th:value="${tag}" th:text="${tag}">Täääg</option>
               </select>
             </div>
             <div name="DOMAIN" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.TagType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
@@ -267,8 +268,17 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<String> getTags() {
+	public List<String> getAllTags() {
 		return commonDataDbService.getTags();
 	}
 
+	@Transactional
+	public List<String> getLexemeTags() {
+		return commonDataDbService.getTags(TagType.LEX.name());
+	}
+
+	@Transactional
+	public List<String> getMeaningTags() {
+		return commonDataDbService.getTags(TagType.MEANING.name());
+	}
 }

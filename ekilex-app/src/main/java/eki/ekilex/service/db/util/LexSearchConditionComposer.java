@@ -20,6 +20,7 @@ import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -90,6 +91,10 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
 
 			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
+				continue;
+			}
+			searchCriteria = searchCriteria.stream().filter(searchCriterion -> StringUtils.isBlank(searchCriterion.getValidationMessage())).collect(Collectors.toList());
 			if (CollectionUtils.isEmpty(searchCriteria)) {
 				continue;
 			}

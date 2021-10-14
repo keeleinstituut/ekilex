@@ -845,6 +845,7 @@ select l.id lexeme_id,
        ds.type dataset_type,
        ds.name dataset_name,
        l.value_state_code,
+       l.reliability,
        l.level1,
        l.level2,
        l.weight,
@@ -927,6 +928,7 @@ from lexeme l
                                 )::type_meaning_word
                                 order by
                                 mw.direct_match_lex_rel_cnt desc,
+                                mw.hw_lex_reliability,
                                 mw.hw_lex_level1,
                                 mw.hw_lex_level2,
                                 mw.hw_lex_order_by,
@@ -934,6 +936,7 @@ from lexeme l
                    from (select distinct l1.word_id,
                                 l1.id lexeme_id,
                                 l1.meaning_id,
+                                l1.level2 hw_lex_reliability,
                                 l1.level1 hw_lex_level1,
                                 l1.level2 hw_lex_level2,
                                 l1.order_by hw_lex_order_by,

@@ -20,7 +20,8 @@
           <table class="table table-striped m-0 p-0 table-hover">
             <tr>
               <th class="m-1 p-1" style="width: 5%" th:text="#{tag.order}"></th>
-              <th class="m-1 p-1" style="width: 50%" th:text="#{tag.name}"></th>
+              <th class="m-1 p-1" style="width: 35%" th:text="#{tag.name}"></th>
+              <th class="m-1 p-1 text-center" style="width: 15%" th:text="#{tag.type}"></th>
               <th class="m-1 p-1 text-center" style="width: 15%" th:text="#{tag.set.automatically}"></th>
               <th class="m-1 p-1 text-center" style="width: 15%" th:text="#{tag.remove.to.complete}"></th>
               <th class="m-1 p-1 text-center" style="width: 10%" th:text="#{tag.used}"></th>
@@ -33,6 +34,9 @@
                 </td>
                 <td class="m-1 p-1">
                   <span th:text="${tag.name}"></span>
+                </td>
+                <td class="m-1 p-1 text-center">
+                  <span th:text="#{|enum.tag.type.${tag.type}|}"></span>
                 </td>
                 <td class="m-1 p-1 text-center">
                   <span class="text-secondary fa" th:classappend="${tag.setAutomatically ? 'fa-check-square-o' : 'fa-square-o'}"
@@ -52,6 +56,7 @@
                 <td class="m-1 p-1">
                   <button type="button" class="btn badge badge-primary" title="Muuda" data-plugin="editTag"
                           th:data-tag-name="${tag.name}"
+                          th:data-tag-type="#{|enum.tag.type.${tag.type}|}"
                           th:data-tag-order="${tag.order}"
                           th:data-tag-set-automatically="${tag.setAutomatically}"
                           th:data-tag-remove-to-complete="${tag.removeToComplete}">

@@ -62,6 +62,7 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}">Kustutatud andmed</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
                  sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
@@ -254,12 +255,12 @@
             <div class="row mb-1">
               <table style="background-color: #ececec; font-weight: bold">
                 <tr>
-                  <td>source id &nbsp;</td>
+                  <td>allika id &nbsp;</td>
                   <td th:text="${source.id}"></td>
                 </tr>
                 <tr>
-                  <td>type</td>
-                  <td th:text="${source.type}"></td>
+                  <td>tüüp</td>
+                  <td th:text="#{|source.type.${source.type}|}"></td>
                 </tr>
               </table>
             </div>
@@ -273,7 +274,7 @@
                 <div class="mb-1">
                   <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" th:name="${'source_' + source.id}"
                     th:checked="${sourcePropertyIter.count == 1}">
-                  <span th:text="${sourceProperty.type}"></span>
+                  <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
                   -
                   <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                   <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
@@ -304,6 +305,9 @@
     </div>
   </div>
   <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="edit_source_link_dlg">
+    <div class="row m-1 float-right">
+      <a th:href="@{'/sourcesearch/' + ${source.id}}" class="btn btn-secondary btn-compact">Muuda allikat</a>
+    </div>
     <table>
       <tr>
         <td style="width: 70px;"></td>
@@ -311,12 +315,12 @@
           <div class="row m-1">
             <table style="background-color: #ececec; font-weight: bold">
               <tr>
-                <td>source id &nbsp;</td>
+                <td>allika id &nbsp;</td>
                 <td th:text="${source.id}"></td>
               </tr>
               <tr>
-                <td>type</td>
-                <td th:text="${source.type}"></td>
+                <td>tüüp</td>
+                <td th:text="#{|source.type.${source.type}|}"></td>
               </tr>
             </table>
           </div>
@@ -330,7 +334,7 @@
               <div class="mb-1">
                 <input th:if="${sourceProperty.type.toString() == 'SOURCE_NAME'}" type="radio" th:value="${sourceProperty.id}" name="id2"
                        th:checked="${sourceLink.value == sourceProperty.valueText}">
-                <span th:text="${sourceProperty.type}"></span>
+                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>

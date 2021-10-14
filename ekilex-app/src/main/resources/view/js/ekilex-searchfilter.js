@@ -243,6 +243,7 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 	copyOfLastElement.find('[name*="' + indexName + '["]').each(function(i, v) {
 		$(this).attr('name', $(this).attr('name').replace(oldIndexVal, newIndexVal))
 	});
+	copyOfLastElement.find('div.invalid-feedback').empty();
 	let inputCopy = copyOfLastElement.find('input');
 	let isCheckbox = inputCopy.is(':checkbox');
 	if (!isCheckbox) {

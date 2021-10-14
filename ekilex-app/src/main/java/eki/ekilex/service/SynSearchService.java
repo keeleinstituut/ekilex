@@ -126,12 +126,12 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 		usages = usages.stream().filter(Usage::isPublic).collect(Collectors.toList());
 
-		List<String> tags = commonDataDbService.getLexemeTags(lexemeId);
+		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 
 		lexeme.setWordLang(headwordLanguage);
 		lexeme.setSynonymLangGroups(synonymLangGroups);
 		lexeme.setUsages(usages);
-		lexeme.setTags(tags);
+		lexeme.setTags(lexemeTags);
 		Meaning meaning = new Meaning();
 		meaning.setMeaningId(meaningId);
 		meaning.setDefinitions(definitions);

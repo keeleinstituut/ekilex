@@ -51,6 +51,8 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private Classifier lexemeValueState;
 
+	private Integer reliability;
+
 	private List<String> tags;
 
 	private boolean isPublic;
@@ -278,6 +280,14 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setLexemeValueState(Classifier lexemeValueState) {
 		this.lexemeValueState = lexemeValueState;
+	}
+
+	public Integer getReliability() {
+		return reliability;
+	}
+
+	public void setReliability(Integer reliability) {
+		this.reliability = reliability;
 	}
 
 	@Override

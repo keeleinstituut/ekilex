@@ -46,15 +46,15 @@
           <div class="row mb-1">
             <table style="background-color: #ececec; font-weight: bold">
               <tr>
-                <td>source id</td>
+                <td>allika id</td>
                 <td th:text="${source.id}"></td>
               </tr>
               <tr>
-                <td>type</td>
+                <td>tüüp</td>
                 <td>
                   <div class="hidden-buttons">
                     <div class="col pl-0">
-                      <span th:text="${source.type}"></span>
+                      <span th:text="#{|source.type.${source.type}|}"></span>
                       <button type="button" class="btn badge badge-primary"
                               title="Muuda"
                               data-toggle="modal"
@@ -80,12 +80,12 @@
             <div class="row">
               <div class="invisible-buttons action-buttons-anchor mw-90 mb-1">
                 <div style="display: list-item; position: absolute"></div>
-                <span th:text="${sourceProperty.type}"></span>
+                <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
                 -
                 <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                 <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
                 <div class="action-buttons-2" sec:authorize="#vars.source.crudGrant">
-                  <button type="button" class="btn badge badge-primary" th:title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
+                  <button type="button" class="btn badge badge-primary" title="Muuda" data-toggle="modal" th:data-target="${'#editSourcePropertyDlg_' + sourceProperty.id}">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
                   <button type="button" class="btn badge badge-warning"
@@ -111,12 +111,12 @@
             <div class="row mb-1">
               <table style="background-color: #ececec; font-weight: bold;">
                 <tr>
-                  <td>source id &nbsp;</td>
+                  <td>allika id &nbsp;</td>
                   <td th:text="${source.id}"></td>
                 </tr>
                 <tr>
-                  <td>type</td>
-                  <td th:text="${source.type}"></td>
+                  <td>tüüp</td>
+                  <td th:text="#{|source.type.${source.type}|}"></td>
                 </tr>
               </table>
               <div class="ml-4">
@@ -140,7 +140,7 @@
               <div class="row">
                 <div class="mb-1">
                   <div style="display: list-item; position: absolute"></div>
-                  <span th:text="${sourceProperty.type}"></span>
+                  <span th:text="#{|source.property.${sourceProperty.type}|}"></span>
                   -
                   <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}"></span>
                   <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>

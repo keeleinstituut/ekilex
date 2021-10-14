@@ -94,7 +94,7 @@ public class TermSearchService extends AbstractSearchService {
 			SearchFilter searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
 
 		TermSearchResult termSearchResult;
-		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+		if (!isValidSearchFilter(searchFilter)) {
 			termSearchResult = new TermSearchResult();
 			termSearchResult.setResults(Collections.emptyList());
 			termSearchResult.setMeaningCount(0);
@@ -158,6 +158,7 @@ public class TermSearchService extends AbstractSearchService {
 		List<String> meaningWordPreferredOrderDatasetCodes = new ArrayList<>(selectedDatasetCodes);
 		List<MeaningRelation> meaningRelations = commonDataDbService.getMeaningRelations(meaningId, meaningWordPreferredOrderDatasetCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<List<MeaningRelation>> viewRelations = conversionUtil.composeViewMeaningRelations(meaningRelations, userProfile, null, languagesOrder);
+		List<String> meaningTags = commonDataDbService.getMeaningTags(meaningId);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
@@ -228,6 +229,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setViewRelations(viewRelations);
+		meaning.setTags(meaningTags);
 		meaning.setActiveTagComplete(isActiveTagComplete);
 
 		return meaning;

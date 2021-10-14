@@ -195,6 +195,10 @@ $(function() {
 		initAddMultiDataDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=addMeaningTagDlg_]", function() {
+		initAddMultiDataDlg($(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=editSynMeaningRelationWeightDlg_]", function() {
 		initGenericTextEditDlg($(this));
 	});

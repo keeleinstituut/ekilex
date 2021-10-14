@@ -43,6 +43,7 @@ import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
@@ -173,6 +174,8 @@ public class Indexes {
     public static final Index MEANING_RELATION_MEANING1_ID_IDX = Indexes0.MEANING_RELATION_MEANING1_ID_IDX;
     public static final Index MEANING_RELATION_MEANING2_ID_IDX = Indexes0.MEANING_RELATION_MEANING2_ID_IDX;
     public static final Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Indexes0.MEANING_SEMANTIC_TYPE_MEANING_ID_IDX;
+    public static final Index MEANING_TAG_MEANING_ID_IDX = Indexes0.MEANING_TAG_MEANING_ID_IDX;
+    public static final Index MEANING_TAG_TAG_NAME_IDX = Indexes0.MEANING_TAG_TAG_NAME_IDX;
     public static final Index MORPH_FREQ_CORP_ID_IDX = Indexes0.MORPH_FREQ_CORP_ID_IDX;
     public static final Index MORPH_FREQ_MORPH_CODE_IDX = Indexes0.MORPH_FREQ_MORPH_CODE_IDX;
     public static final Index MORPH_FREQ_RANK_IDX = Indexes0.MORPH_FREQ_RANK_IDX;
@@ -321,6 +324,8 @@ public class Indexes {
         public static Index MEANING_RELATION_MEANING1_ID_IDX = Internal.createIndex("meaning_relation_meaning1_id_idx", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING1_ID }, false);
         public static Index MEANING_RELATION_MEANING2_ID_IDX = Internal.createIndex("meaning_relation_meaning2_id_idx", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING2_ID }, false);
         public static Index MEANING_SEMANTIC_TYPE_MEANING_ID_IDX = Internal.createIndex("meaning_semantic_type_meaning_id_idx", MeaningSemanticType.MEANING_SEMANTIC_TYPE, new OrderField[] { MeaningSemanticType.MEANING_SEMANTIC_TYPE.MEANING_ID }, false);
+        public static Index MEANING_TAG_MEANING_ID_IDX = Internal.createIndex("meaning_tag_meaning_id_idx", MeaningTag.MEANING_TAG, new OrderField[] { MeaningTag.MEANING_TAG.MEANING_ID }, false);
+        public static Index MEANING_TAG_TAG_NAME_IDX = Internal.createIndex("meaning_tag_tag_name_idx", MeaningTag.MEANING_TAG, new OrderField[] { MeaningTag.MEANING_TAG.TAG_NAME }, false);
         public static Index MORPH_FREQ_CORP_ID_IDX = Internal.createIndex("morph_freq_corp_id_idx", MorphFreq.MORPH_FREQ, new OrderField[] { MorphFreq.MORPH_FREQ.FREQ_CORP_ID }, false);
         public static Index MORPH_FREQ_MORPH_CODE_IDX = Internal.createIndex("morph_freq_morph_code_idx", MorphFreq.MORPH_FREQ, new OrderField[] { MorphFreq.MORPH_FREQ.MORPH_CODE }, false);
         public static Index MORPH_FREQ_RANK_IDX = Internal.createIndex("morph_freq_rank_idx", MorphFreq.MORPH_FREQ, new OrderField[] { MorphFreq.MORPH_FREQ.RANK }, false);

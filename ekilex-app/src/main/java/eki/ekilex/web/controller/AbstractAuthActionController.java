@@ -19,6 +19,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
+import eki.common.constant.TagType;
 import eki.common.constant.TextDecoration;
 import eki.common.data.CodeValue;
 import eki.ekilex.constant.SystemConstant;
@@ -156,9 +157,24 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return permissionService.getUserDatasetPermissions(userId);
 	}
 
-	@ModelAttribute("tags")
-	public List<String> getTags() {
-		return commonDataService.getTags();
+	@ModelAttribute("allTags")
+	public List<String> getAllTags() {
+		return commonDataService.getAllTags();
+	}
+
+	@ModelAttribute("lexemeTags")
+	public List<String> getLexemeTags() {
+		return commonDataService.getLexemeTags();
+	}
+
+	@ModelAttribute("meaningTags")
+	public List<String> getMeaningTags() {
+		return commonDataService.getMeaningTags();
+	}
+
+	@ModelAttribute("tagTypes")
+	public List<TagType> getTagTypes() {
+		return Arrays.asList(TagType.class.getEnumConstants());
 	}
 
 	@ModelAttribute("allLanguages")
@@ -230,6 +246,18 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		return allWordRelationTypes.stream()
 				.filter(wordRelType -> !ArrayUtils.contains(PRIMARY_WORD_REL_TYPE_CODES, wordRelType.getCode()))
 				.collect(Collectors.toList());
+	}
+
+	@ModelAttribute("lexemeReliabilities")
+	public List<Integer> getLexemeReliabilities() {
+		List<Integer> lexemeReliabilities = new ArrayList<>();
+		lexemeReliabilities.add(null);
+		lexemeReliabilities.add(1);
+		lexemeReliabilities.add(2);
+		lexemeReliabilities.add(3);
+		lexemeReliabilities.add(4);
+		lexemeReliabilities.add(5);
+		return lexemeReliabilities;
 	}
 
 	@ModelAttribute("lexemeRelationTypes")

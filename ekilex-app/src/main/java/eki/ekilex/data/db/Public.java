@@ -69,6 +69,7 @@ import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
@@ -168,7 +169,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1293760667;
+    private static final long serialVersionUID = -1291805157;
 
     /**
      * The reference instance of <code>public</code>
@@ -499,6 +500,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_semantic_type</code>.
      */
     public final MeaningSemanticType MEANING_SEMANTIC_TYPE = MeaningSemanticType.MEANING_SEMANTIC_TYPE;
+
+    /**
+     * The table <code>public.meaning_tag</code>.
+     */
+    public final MeaningTag MEANING_TAG = MeaningTag.MEANING_TAG;
 
     /**
      * The table <code>public.morph</code>.
@@ -900,6 +906,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
             Sequences.MEANING_SEMANTIC_TYPE_ID_SEQ,
             Sequences.MEANING_SEMANTIC_TYPE_ORDER_BY_SEQ,
+            Sequences.MEANING_TAG_ID_SEQ,
             Sequences.MORPH_FREQ_ID_SEQ,
             Sequences.MORPH_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
@@ -1010,6 +1017,7 @@ public class Public extends SchemaImpl {
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
             MeaningRelation.MEANING_RELATION,
             MeaningSemanticType.MEANING_SEMANTIC_TYPE,
+            MeaningTag.MEANING_TAG,
             Morph.MORPH,
             MorphFreq.MORPH_FREQ,
             MorphLabel.MORPH_LABEL,

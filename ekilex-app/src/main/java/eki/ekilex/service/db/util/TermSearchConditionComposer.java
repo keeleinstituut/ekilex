@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -83,6 +84,10 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		for (SearchCriterionGroup searchCriterionGroup : criteriaGroups) {
 
 			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
+				continue;
+			}
+			searchCriteria = searchCriteria.stream().filter(searchCriterion -> StringUtils.isBlank(searchCriterion.getValidationMessage())).collect(Collectors.toList());
 			if (CollectionUtils.isEmpty(searchCriteria)) {
 				continue;
 			}

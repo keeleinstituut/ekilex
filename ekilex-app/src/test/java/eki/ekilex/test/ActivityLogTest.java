@@ -61,7 +61,7 @@ public class ActivityLogTest extends AbstractTest {
 	public void testWordActivityLog() throws Exception {
 
 		final Long wordId = 1001L;
-		final Long ownerId = new Long(wordId);
+		final Long ownerId = Long.valueOf(wordId);
 		final ActivityOwner ownerName = ActivityOwner.WORD;
 
 		String functName;
@@ -72,7 +72,7 @@ public class ActivityLogTest extends AbstractTest {
 		String modifiedWordTypeCode;
 
 		functName = "updateWordLang";
-		entityId = new Long(wordId);
+		entityId = Long.valueOf(wordId);
 		entityName = ActivityEntity.WORD;
 		String originalLang = "est";
 		String modifiedLang = "eng";
@@ -121,7 +121,7 @@ public class ActivityLogTest extends AbstractTest {
 		assertEquals("Unexpected update result", modifiedWordTypeCode, currWordTypeLogDiff.getValue());
 
 		functName = "deleteWordWordType";
-		entityId = new Long(10001L);
+		entityId = Long.valueOf(10001L);
 		entityName = ActivityEntity.WORD_TYPE;
 
 		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);

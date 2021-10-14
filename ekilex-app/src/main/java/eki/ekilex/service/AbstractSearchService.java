@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.GlobalConstant;
@@ -13,7 +15,9 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.PagingResult;
+import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
@@ -25,6 +29,26 @@ public abstract class AbstractSearchService extends AbstractService implements S
 
 	@Autowired
 	private PermissionDbService permissionDbService;
+
+	protected boolean isValidSearchFilter(SearchFilter searchFilter) {
+
+		if (searchFilter == null) {
+			return false;
+		}
+		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+			return false;
+		}
+		for (SearchCriterionGroup searchCriterionGroup : searchFilter.getCriteriaGroups()) {
+			if (CollectionUtils.isEmpty(searchCriterionGroup.getSearchCriteria())) {
+				continue;
+			}
+			boolean searchCriteriaExists = searchCriterionGroup.getSearchCriteria().stream().anyMatch(searchCriterion -> StringUtils.isBlank(searchCriterion.getValidationMessage()));
+			if (searchCriteriaExists) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	protected SearchDatasetsRestriction composeDatasetsRestriction(List<String> selectedDatasetCodes) {
 

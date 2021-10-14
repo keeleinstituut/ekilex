@@ -450,6 +450,7 @@ create table tag
   name varchar(100) primary key,
   set_automatically boolean default false not null,
   remove_to_complete boolean default true not null,
+  type varchar(10) not null,
   order_by bigserial
 );
 
@@ -757,6 +758,16 @@ create table meaning_freeform
 );
 alter sequence meaning_freeform_id_seq restart with 10000;
 
+create table meaning_tag
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  tag_name varchar(100) references tag(name) on delete cascade not null,
+  created_on timestamp not null default statement_timestamp(),
+  unique(meaning_id, tag_name)
+);
+alter sequence meaning_tag_id_seq restart with 10000;
+
 -- seletus
 create table definition
 (
@@ -825,6 +836,7 @@ create table lexeme
   is_public boolean default true not null,
   complexity varchar(100) not null,
   weight numeric(5,4) default 1,
+  reliability integer null,
   order_by bigserial,
   unique(word_id, meaning_id, dataset_code)
 );
@@ -1216,6 +1228,8 @@ create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
 create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
 create index meaning_rel_mapping_code1_idx on meaning_rel_mapping(code1);
 create index meaning_rel_mapping_code2_idx on meaning_rel_mapping(code2);
+create index meaning_tag_meaning_id_idx on meaning_tag(meaning_id);
+create index meaning_tag_tag_name_idx on meaning_tag(tag_name);
 create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
 create index lex_rel_mapping_code1_idx on lex_rel_mapping(code1);
@@ -1313,6 +1327,10 @@ create index activity_log_owner_name_idx on activity_log(owner_name);
 create index activity_funct_name_idx on activity_log(funct_name);
 create index activity_entity_name_idx on activity_log(entity_name);
 create index activity_entity_name_owner_name_event_on_idx on activity_log(entity_name, owner_name, (date_part('epoch', event_on) * 1000));
+create index activity_entity_id_idx on activity_log(entity_id);
+create index activity_curr_data_word_id_idx on activity_log(cast(curr_data ->> 'wordId' as bigint));
+create index activity_curr_data_meaning_id_idx on activity_log(cast(curr_data ->> 'meaningId' as bigint));
+create index activity_curr_data_lexeme_id_idx on activity_log(cast(curr_data ->> 'lexemeId' as bigint));
 create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
 create index temp_ds_import_pk_map_import_code_idx on temp_ds_import_pk_map(import_code);
 create index temp_ds_import_pk_map_table_name_idx on temp_ds_import_pk_map(table_name);

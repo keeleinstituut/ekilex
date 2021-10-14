@@ -70,6 +70,8 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Add new item : {}", itemData);
 
+		Long userId = userContext.getUserId();
+		DatasetPermission userRole = userContext.getUserRole();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 		String sourceLinkValue;
@@ -97,6 +99,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_tag":
 			cudService.createLexemeTag(itemData.getId(), itemValue);
+			break;
+		case "meaning_tag":
+			cudService.createMeaningTag(itemData.getId(), itemValue);
 			break;
 		case "meaning_domain":
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemValue);
@@ -131,11 +136,14 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_region":
 			cudService.createLexemeRegion(itemData.getId(), itemValue);
 			break;
+		case "lexeme_reliability":
+			cudService.updateLexemeReliability(itemData.getId(), itemValue);
+			break;
 		case "word_gender":
-			cudService.updateWordGender(itemData.getId3(), itemValue);
+			cudService.updateWordGenderWithDuplication(itemData.getId3(), itemValue, userId, userRole);
 			break;
 		case "word_type":
-			cudService.createWordType(itemData.getId3(), itemValue);
+			cudService.createWordTypeWithDuplication(itemData.getId3(), itemValue, userId, userRole);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(itemData.getId3(), itemValue);
@@ -166,7 +174,7 @@ public class EditController extends AbstractMutableDataPageController {
 			sessionBean.setRecentNoteLanguage(itemData.getLanguage());
 			break;
 		case "word_note":
-			cudService.createWordNote(itemData.getId(), itemValue);
+			cudService.createWordNoteWithDuplication(itemData.getId(), itemValue, userId, userRole);
 			break;
 		case "meaning_image":
 			cudService.createMeaningImage(itemData.getId(), itemValue, itemData.getComplexity());
@@ -215,6 +223,8 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Update item : {}", itemData);
 
+		Long userId = userContext.getUserId();
+		DatasetPermission userRole = userContext.getUserRole();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 
@@ -262,6 +272,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_region":
 			cudService.updateLexemeRegion(itemData.getId(), itemData.getCurrentValue(), itemValue);
 			break;
+		case "lexeme_reliability":
+			cudService.updateLexemeReliability(itemData.getId(), itemValue);
+			break;
 		case "lexeme_weight":
 			cudService.updateLexemeWeight(itemData.getId(), itemValue);
 			break;
@@ -269,10 +282,10 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateMeaningRelationWeight(itemData.getId(), itemValue);
 			break;
 		case "word_gender":
-			cudService.updateWordGender(itemData.getId(), itemValue);
+			cudService.updateWordGenderWithDuplication(itemData.getId(), itemValue, userId, userRole);
 			break;
 		case "word_type":
-			cudService.updateWordType(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			cudService.updateWordTypeWithDuplication(itemData.getId(), itemData.getCurrentValue(), itemValue, userId, userRole);
 			break;
 		case "lexeme_grammar":
 			cudService.updateLexemeGrammar(itemData.getId(), itemValue, itemData.getComplexity());
@@ -463,6 +476,7 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
 
+		Long userId = userContext.getUserId();
 		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
 			return "NOK";
@@ -507,6 +521,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_tag":
 			cudService.deleteLexemeTag(id, valueToDelete);
 			break;
+		case "meaning_tag":
+			cudService.deleteMeaningTag(id, valueToDelete);
+			break;
 		case "lexeme_deriv":
 			cudService.deleteLexemeDeriv(id, valueToDelete);
 			break;
@@ -515,6 +532,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_region":
 			cudService.deleteLexemeRegion(id, valueToDelete);
+			break;
+		case "lexeme_reliability":
+			cudService.updateLexemeReliability(id, null);
 			break;
 		case "lexeme_grammar":
 			cudService.deleteLexemeGrammar(id);
@@ -551,7 +571,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteSynMeaningRelation(id);
 			break;
 		case "word_gender":
-			cudService.updateWordGender(id, null);
+			cudService.updateWordGenderWithDuplication(id, null, userId, userRole);
 			break;
 		case "meaning_image":
 			cudService.deleteMeaningImage(id);
@@ -560,7 +580,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteMeaningMedia(id);
 			break;
 		case "word_type":
-			cudService.deleteWordType(id, valueToDelete);
+			cudService.deleteWordTypeWithDuplication(id, valueToDelete, userId, userRole);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(id, null);
@@ -606,11 +626,13 @@ public class EditController extends AbstractMutableDataPageController {
 	@ResponseBody
 	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String value) throws Exception {
 
+		Long userId = userContext.getUserId();
+		DatasetPermission userRole = userContext.getUserRole();
 		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
 
 		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, value);
 
-		cudService.updateWordValue(wordId, value);
+		cudService.updateWordValueWithDuplication(wordId, value, userId, userRole);
 
 		return value;
 	}

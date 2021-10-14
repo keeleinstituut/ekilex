@@ -8,6 +8,8 @@ public class Tag extends AbstractDataObject {
 
 	private String name;
 
+	private String type;
+
 	private boolean setAutomatically;
 
 	private boolean removeToComplete;
@@ -22,6 +24,14 @@ public class Tag extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public boolean isSetAutomatically() {

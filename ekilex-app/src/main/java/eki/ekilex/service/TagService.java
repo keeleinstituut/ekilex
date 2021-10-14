@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.TagType;
 import eki.ekilex.data.Tag;
 import eki.ekilex.service.db.TagDbService;
 
@@ -31,14 +32,14 @@ public class TagService {
 	}
 
 	@Transactional
-	public boolean createTag(String tagName, boolean setAutomatically, boolean removeToComplete) {
+	public boolean createTag(String tagName, TagType tagType, boolean setAutomatically, boolean removeToComplete) {
 
 		boolean tagExists = tagDbService.tagExists(tagName);
 		if (tagExists) {
 			return false;
 		}
 
-		tagDbService.createTag(tagName, setAutomatically, removeToComplete);
+		tagDbService.createTag(tagName, tagType, setAutomatically, removeToComplete);
 		maintenanceService.clearTagCache();
 		return true;
 	}

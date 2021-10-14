@@ -69,6 +69,7 @@ import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.MeaningTag;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphFreq;
 import eki.ekilex.data.db.tables.MorphLabel;
@@ -464,6 +465,11 @@ public class Tables {
      * The table <code>public.meaning_semantic_type</code>.
      */
     public static final MeaningSemanticType MEANING_SEMANTIC_TYPE = MeaningSemanticType.MEANING_SEMANTIC_TYPE;
+
+    /**
+     * The table <code>public.meaning_tag</code>.
+     */
+    public static final MeaningTag MEANING_TAG = MeaningTag.MEANING_TAG;
 
     /**
      * The table <code>public.morph</code>.
