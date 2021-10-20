@@ -51,18 +51,18 @@ public class TermSearchServiceTest implements SystemConstant {
 		TermSearchResult termSearchResult;
 		SearchResultMode resultMode;
 		String resultLang = null;
-		boolean fetchAll = true;
+		boolean noLimit = true;
 
 		resultMode = SearchResultMode.MEANING;
 		termSearchResult = termSearchDbService.getTermSearchResult(
-				wordWithMetaCharacters, searchDatasetsRestriction, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+				wordWithMetaCharacters, searchDatasetsRestriction, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
 
 		assertEquals("Incorrect count of matches", 20, termSearchResult.getMeaningCount());
 		assertEquals("Incorrect count of matches", 9, termSearchResult.getWordCount());
 
 		resultMode = SearchResultMode.WORD;
 		termSearchResult = termSearchDbService.getTermSearchResult(
-				wordWithMetaCharacters, searchDatasetsRestriction, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+				wordWithMetaCharacters, searchDatasetsRestriction, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
 
 		assertEquals("Incorrect count of matches", 20, termSearchResult.getMeaningCount());
 		assertEquals("Incorrect count of matches", 6, termSearchResult.getWordCount());

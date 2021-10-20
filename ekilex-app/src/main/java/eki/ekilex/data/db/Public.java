@@ -9,6 +9,7 @@ import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
+import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
@@ -169,7 +170,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1291805157;
+    private static final long serialVersionUID = -673895039;
 
     /**
      * The reference instance of <code>public</code>
@@ -200,6 +201,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.collocation_freeform</code>.
      */
     public final CollocationFreeform COLLOCATION_FREEFORM = CollocationFreeform.COLLOCATION_FREEFORM;
+
+    /**
+     * The table <code>public.data_request</code>.
+     */
+    public final DataRequest DATA_REQUEST = DataRequest.DATA_REQUEST;
 
     /**
      * The table <code>public.dataset</code>.
@@ -841,6 +847,7 @@ public class Public extends SchemaImpl {
             Sequences.ASPECT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
+            Sequences.DATA_REQUEST_ID_SEQ,
             Sequences.DATASET_ORDER_BY_SEQ,
             Sequences.DATASET_PERMISSION_ID_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
@@ -957,6 +964,7 @@ public class Public extends SchemaImpl {
             AspectLabel.ASPECT_LABEL,
             Collocation.COLLOCATION,
             CollocationFreeform.COLLOCATION_FREEFORM,
+            DataRequest.DATA_REQUEST,
             Dataset.DATASET,
             DatasetPermission.DATASET_PERMISSION,
             Definition.DEFINITION,

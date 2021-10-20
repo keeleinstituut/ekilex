@@ -3,7 +3,7 @@ package eki.ekilex.service;
 import static java.util.stream.Collectors.toList;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
@@ -49,6 +49,9 @@ public class EmailService {
 
 	private static final String USER_TERMS_REFUSE_SUBJECT = "Ekilexi kasutaja ei nõustunud kasutustingimustega";
 	private static final String USER_TERMS_REFUSE_TEMPLATE = "user-terms-refuse";
+
+	private static final String TERM_SEARCH_RESULT_SUBJECT = "Ekilexi otsingutulemus";
+	private static final String TERM_SEARCH_RESULT_TEMPLATE = "term-search-result";
 
 	@Value("${email.from.address}")
 	private String fromAddress;
@@ -131,8 +134,17 @@ public class EmailService {
 		sendTextEmail(emails, USER_TERMS_REFUSE_SUBJECT, USER_TERMS_REFUSE_TEMPLATE, context);
 	}
 
+	public void sendTermSearchResult(EkiUser user, String termSearchUrl, String termSearchResultUrl) {
+
+		Context context = new Context(locale);
+		context.setVariable("userName", user.getName());
+		context.setVariable("termSearchUrl", termSearchUrl);
+		context.setVariable("termSearchResultUrl", termSearchResultUrl);
+		sendTextEmail(user.getEmail(), TERM_SEARCH_RESULT_SUBJECT, TERM_SEARCH_RESULT_TEMPLATE, context);
+	}
+
 	private void sendTextEmail(String to, String subject, String template, Context context) {
-		sendTextEmail(Collections.singletonList(to), subject, template, context);
+		sendTextEmail(Arrays.asList(to), subject, template, context);
 	}
 
 	private void sendTextEmail(List<String> toList, String subject, String template, Context context) {
@@ -142,11 +154,12 @@ public class EmailService {
 		}
 
 		try {
+			String[] toArr = toList.toArray(new String[0]);
 			MimeMessage mimeMessage = emailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "UTF-8");
 			helper.setSubject(subject);
 			helper.setFrom(fromAddress, fromName);
-			helper.setTo(toList.toArray(new String[0]));
+			helper.setTo(toArr);
 
 			String textContent = textTemplateEngine.process(template, context);
 			helper.setText(textContent);

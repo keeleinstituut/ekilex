@@ -107,7 +107,7 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		String searchMode = searchUriData.getSearchMode();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = false;
+		boolean noLimit = false;
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
@@ -121,9 +121,9 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -148,7 +148,7 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		String searchMode = searchUriData.getSearchMode();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = false;
+		boolean noLimit = false;
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
@@ -167,9 +167,9 @@ public class SynSearchController extends AbstractPrivateSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 
 		wordsResult.setOffset(offset);
@@ -241,7 +241,7 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 		List<String> tagNames = userContextData.getTagNames();
 
-		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, false, DEFAULT_OFFSET, maxResultsLimit);
+		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, maxResultsLimit, false);
 
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());

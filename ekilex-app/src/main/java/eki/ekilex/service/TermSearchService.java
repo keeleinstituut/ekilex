@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,6 +12,11 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.FreeformType;
 import eki.common.exception.OperationDeniedException;
@@ -42,6 +48,7 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Tag;
+import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -59,74 +66,153 @@ public class TermSearchService extends AbstractSearchService {
 	@Autowired
 	private PermCalculator permCalculator;
 
+	public byte[] serialiseTermSearchResult(
+			String searchFilter,
+			List<String> selectedDatasetCodes,
+			List<ClassifierSelect> languagesOrder,
+			String resultLang,
+			EkiUserProfile userProfile,
+			EkiUser user) throws Exception {
+
+		if (StringUtils.isBlank(searchFilter)) {
+			return new byte[0];
+		}
+		final SearchResultMode resultMode = SearchResultMode.MEANING;
+		final int offset = DEFAULT_OFFSET;
+		final boolean noLimit = false;
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
+		TermSearchResult termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
+		List<TermMeaning> termMeanings = termSearchResult.getResults();
+		return collectAndSerialiseMeanings(termMeanings, selectedDatasetCodes, languagesOrder, userProfile, user);
+	}
+
 	@Transactional
 	public TermSearchResult getTermSearchResult(
-			String searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
+			String searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, int offset, boolean noLimit) throws Exception {
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.isBlank(searchFilter)) {
-			termSearchResult = new TermSearchResult();
-			termSearchResult.setResults(Collections.emptyList());
-			termSearchResult.setMeaningCount(0);
-			termSearchResult.setWordCount(0);
-			termSearchResult.setResultCount(0);
+			termSearchResult = getEmptyResult();
 		} else if (StringUtils.equals(searchFilter, QUERY_MULTIPLE_CHARACTERS_SYM)) {
 			throw new OperationDeniedException("Please be more specific. Use other means to dump data");
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
+			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
 			conversionUtil.cleanTermMeanings(termSearchResult.getResults());
 		}
-		int resultCount = termSearchResult.getResultCount();
-		boolean resultExist = resultCount > 0;
-		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
-		termSearchResult.setResultExist(resultExist);
-		termSearchResult.setShowPaging(showPaging);
-		if (showPaging) {
-			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
-		}
+		completeResultParams(termSearchResult, offset);
 
 		return termSearchResult;
+	}
+
+	public byte[] serialiseTermSearchResult(
+			SearchFilter searchFilter,
+			List<String> selectedDatasetCodes,
+			List<ClassifierSelect> languagesOrder,
+			String resultLang,
+			EkiUserProfile userProfile,
+			EkiUser user) throws Exception {
+
+		if (!isValidSearchFilter(searchFilter)) {
+			return new byte[0];
+		}
+		final SearchResultMode resultMode = SearchResultMode.MEANING;
+		final int offset = DEFAULT_OFFSET;
+		final boolean noLimit = true;
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
+		TermSearchResult termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
+		List<TermMeaning> termMeanings = termSearchResult.getResults();
+		return collectAndSerialiseMeanings(termMeanings, selectedDatasetCodes, languagesOrder, userProfile, user);
 	}
 
 	@Transactional
 	public TermSearchResult getTermSearchResult(
-			SearchFilter searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
+			SearchFilter searchFilter, List<String> selectedDatasetCodes, SearchResultMode resultMode, String resultLang, int offset, boolean noLimit) throws Exception {
 
 		TermSearchResult termSearchResult;
 		if (!isValidSearchFilter(searchFilter)) {
-			termSearchResult = new TermSearchResult();
-			termSearchResult.setResults(Collections.emptyList());
-			termSearchResult.setMeaningCount(0);
-			termSearchResult.setWordCount(0);
-			termSearchResult.setResultCount(0);
+			termSearchResult = getEmptyResult();
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
-			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
+			termSearchResult = termSearchDbService.getTermSearchResult(searchFilter, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
 			conversionUtil.cleanTermMeanings(termSearchResult.getResults());
 		}
-		int resultCount = termSearchResult.getResultCount();
-		boolean resultExist = resultCount > 0;
-		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
-		termSearchResult.setResultExist(resultExist);
-		termSearchResult.setShowPaging(showPaging);
-		if (showPaging) {
-			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
-		}
+		completeResultParams(termSearchResult, offset);
 
 		return termSearchResult;
 	}
 
+	private byte[] collectAndSerialiseMeanings(
+			List<TermMeaning> termMeanings,
+			List<String> selectedDatasetCodes,
+			List<ClassifierSelect> languagesOrder,
+			EkiUserProfile userProfile,
+			EkiUser user) throws Exception {
+
+		List<Meaning> meanings = new ArrayList<>();
+		for (TermMeaning termMeaning : termMeanings) {
+			Long meaningId = termMeaning.getMeaningId();
+			Meaning meaning = getMeaning(meaningId, selectedDatasetCodes, languagesOrder, userProfile, user, null);
+			meanings.add(meaning);
+		}
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonFactory jsonFactory = new JsonFactory();
+		JsonGenerator jsonGenerator = jsonFactory.createGenerator(byteStream);
+		jsonGenerator.setPrettyPrinter(new DefaultPrettyPrinter());
+		jsonGenerator.setCodec(objectMapper);
+		jsonGenerator.writeObject(meanings);
+		jsonGenerator.close();
+		byteStream.flush();
+		byte[] bytes = byteStream.toByteArray();
+		byteStream.close();
+		return bytes;
+	}
+
+	private TermSearchResult getEmptyResult() {
+		TermSearchResult termSearchResult;
+		termSearchResult = new TermSearchResult();
+		termSearchResult.setResults(Collections.emptyList());
+		termSearchResult.setMeaningCount(0);
+		termSearchResult.setWordCount(0);
+		termSearchResult.setResultCount(0);
+		termSearchResult.setResultExist(false);
+		termSearchResult.setShowPaging(false);
+		termSearchResult.setResultDownloadNow(false);
+		termSearchResult.setResultDownloadLater(false);
+		return termSearchResult;
+	}
+
+	private void completeResultParams(TermSearchResult termSearchResult, int offset) {
+		int resultCount = termSearchResult.getResultCount();
+		boolean resultExist = resultCount > 0;
+		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
+		boolean resultDownloadNow = resultExist && (resultCount < DEFAULT_MAX_DOWNLOAD_LIMIT);
+		boolean resultDownloadLater = resultExist && (resultCount >= DEFAULT_MAX_DOWNLOAD_LIMIT);
+		termSearchResult.setResultExist(resultExist);
+		termSearchResult.setShowPaging(showPaging);
+		termSearchResult.setResultDownloadNow(resultDownloadNow);
+		termSearchResult.setResultDownloadLater(resultDownloadLater);
+		if (showPaging) {
+			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
+		}
+	}
+
 	@Transactional
-	public Meaning getMeaning(Long meaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile,
-			EkiUser user, Tag activeTag) throws Exception {
+	public Meaning getMeaning(
+			Long meaningId,
+			List<String> selectedDatasetCodes,
+			List<ClassifierSelect> languagesOrder,
+			EkiUserProfile userProfile,
+			EkiUser user,
+			Tag activeTag) throws Exception {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
 				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
 
 		DatasetPermission userRole = user.getRecentRole();
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);

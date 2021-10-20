@@ -55,6 +55,7 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 	public void clearTagCache() {
 		cacheManager.getCache(CACHE_KEY_TAG).clear();
 	}
+
 	private void clearUserCache() {
 		cacheManager.getCache(CACHE_KEY_USER).clear();
 	}
@@ -161,6 +162,16 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 		int deletedWordCount = maintenanceDbService.deleteFloatingWords();
 		if (deletedWordCount > 0) {
 			logger.debug("Maintenance service deleted {} floating words", deletedWordCount);
+		}
+	}
+
+	@Scheduled(cron = DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM)
+	@Transactional
+	public void deleteOutdatedDataRequests() {
+
+		int deletedDataRequestCount = maintenanceDbService.deleteAccessedDataRequests(DELETE_OUTDATED_DATA_AFTER_ACCESS_HOURS);
+		if (deletedDataRequestCount > 0) {
+			logger.debug("Maintenance service deleted {} outdated data requests", deletedDataRequestCount);
 		}
 	}
 }

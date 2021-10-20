@@ -4,6 +4,8 @@ public interface SystemConstant {
 
 	int DEFAULT_MAX_RESULTS_LIMIT = 50;
 
+	int DEFAULT_MAX_DOWNLOAD_LIMIT = 25;
+
 	int DEFAULT_OFFSET = 0;
 
 	long UPDATE_STAT_DATA_DELAY = 10 * 60 * 1000;
@@ -17,6 +19,8 @@ public interface SystemConstant {
 	String ADJUST_HOMONYM_NRS_TIME_3_30_AM = "0 30 3 * * *";
 
 	String DELETE_FLOATING_DATA_TIME_4_AM = "0 0 4 * * *";
+
+	String DELETE_OUTDATED_DATA_REQUESTS_TIME_5_AM = "0 0 5 * * *";
 
 	String CLASSIF_LABEL_LANG_EST = "est";
 
@@ -35,4 +39,8 @@ public interface SystemConstant {
 	String CACHE_KEY_TAG = "tag";
 
 	int MAX_TEXT_LENGTH_LIMIT = 2000;
+
+	int EXECUTE_QUEUE_DELAY_10_SEC = 10000;
+
+	int DELETE_OUTDATED_DATA_AFTER_ACCESS_HOURS = 24;
 }

@@ -9,6 +9,7 @@ import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
+import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
@@ -118,6 +119,7 @@ import eki.ekilex.data.db.tables.records.AspectLabelRecord;
 import eki.ekilex.data.db.tables.records.AspectRecord;
 import eki.ekilex.data.db.tables.records.CollocationFreeformRecord;
 import eki.ekilex.data.db.tables.records.CollocationRecord;
+import eki.ekilex.data.db.tables.records.DataRequestRecord;
 import eki.ekilex.data.db.tables.records.DatasetPermissionRecord;
 import eki.ekilex.data.db.tables.records.DatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
@@ -245,6 +247,7 @@ public class Keys {
     public static final Identity<AspectRecord, Long> IDENTITY_ASPECT = Identities0.IDENTITY_ASPECT;
     public static final Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Identities0.IDENTITY_COLLOCATION;
     public static final Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Identities0.IDENTITY_COLLOCATION_FREEFORM;
+    public static final Identity<DataRequestRecord, Long> IDENTITY_DATA_REQUEST = Identities0.IDENTITY_DATA_REQUEST;
     public static final Identity<DatasetRecord, Long> IDENTITY_DATASET = Identities0.IDENTITY_DATASET;
     public static final Identity<DatasetPermissionRecord, Long> IDENTITY_DATASET_PERMISSION = Identities0.IDENTITY_DATASET_PERMISSION;
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
@@ -337,6 +340,7 @@ public class Keys {
     public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = UniqueKeys0.COLLOCATION_PKEY;
     public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = UniqueKeys0.COLLOCATION_FREEFORM_PKEY;
     public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = UniqueKeys0.COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY;
+    public static final UniqueKey<DataRequestRecord> DATA_REQUEST_PKEY = UniqueKeys0.DATA_REQUEST_PKEY;
     public static final UniqueKey<DatasetRecord> DATASET_PKEY = UniqueKeys0.DATASET_PKEY;
     public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_PKEY = UniqueKeys0.DATASET_PERMISSION_PKEY;
     public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = UniqueKeys0.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY;
@@ -489,6 +493,7 @@ public class Keys {
     public static final ForeignKey<AspectLabelRecord, LabelTypeRecord> ASPECT_LABEL__ASPECT_LABEL_TYPE_FKEY = ForeignKeys0.ASPECT_LABEL__ASPECT_LABEL_TYPE_FKEY;
     public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY;
     public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY;
+    public static final ForeignKey<DataRequestRecord, EkiUserRecord> DATA_REQUEST__DATA_REQUEST_USER_ID_FKEY = ForeignKeys0.DATA_REQUEST__DATA_REQUEST_USER_ID_FKEY;
     public static final ForeignKey<DatasetPermissionRecord, DatasetRecord> DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY = ForeignKeys0.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY;
     public static final ForeignKey<DatasetPermissionRecord, EkiUserRecord> DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY = ForeignKeys0.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY;
     public static final ForeignKey<DatasetPermissionRecord, LanguageRecord> DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY = ForeignKeys0.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY;
@@ -668,6 +673,7 @@ public class Keys {
         public static Identity<AspectRecord, Long> IDENTITY_ASPECT = Internal.createIdentity(Aspect.ASPECT, Aspect.ASPECT.ORDER_BY);
         public static Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Internal.createIdentity(Collocation.COLLOCATION, Collocation.COLLOCATION.ID);
         public static Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Internal.createIdentity(CollocationFreeform.COLLOCATION_FREEFORM, CollocationFreeform.COLLOCATION_FREEFORM.ID);
+        public static Identity<DataRequestRecord, Long> IDENTITY_DATA_REQUEST = Internal.createIdentity(DataRequest.DATA_REQUEST, DataRequest.DATA_REQUEST.ID);
         public static Identity<DatasetRecord, Long> IDENTITY_DATASET = Internal.createIdentity(Dataset.DATASET, Dataset.DATASET.ORDER_BY);
         public static Identity<DatasetPermissionRecord, Long> IDENTITY_DATASET_PERMISSION = Internal.createIdentity(DatasetPermission.DATASET_PERMISSION, DatasetPermission.DATASET_PERMISSION.ID);
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Internal.createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
@@ -758,6 +764,7 @@ public class Keys {
         public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = Internal.createUniqueKey(Collocation.COLLOCATION, "collocation_pkey", new TableField[] { Collocation.COLLOCATION.ID }, true);
         public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_pkey", new TableField[] { CollocationFreeform.COLLOCATION_FREEFORM.ID }, true);
         public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_collocation_id_freeform_id_key", new TableField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID, CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, true);
+        public static final UniqueKey<DataRequestRecord> DATA_REQUEST_PKEY = Internal.createUniqueKey(DataRequest.DATA_REQUEST, "data_request_pkey", new TableField[] { DataRequest.DATA_REQUEST.ID }, true);
         public static final UniqueKey<DatasetRecord> DATASET_PKEY = Internal.createUniqueKey(Dataset.DATASET, "dataset_pkey", new TableField[] { Dataset.DATASET.CODE }, true);
         public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_PKEY = Internal.createUniqueKey(DatasetPermission.DATASET_PERMISSION, "dataset_permission_pkey", new TableField[] { DatasetPermission.DATASET_PERMISSION.ID }, true);
         public static final UniqueKey<DatasetPermissionRecord> DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createUniqueKey(DatasetPermission.DATASET_PERMISSION, "dataset_permission_dataset_code_user_id_auth_operation_auth_key", new TableField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, true);
@@ -908,6 +915,7 @@ public class Keys {
         public static final ForeignKey<AspectLabelRecord, LabelTypeRecord> ASPECT_LABEL__ASPECT_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, AspectLabel.ASPECT_LABEL, "aspect_label_type_fkey", new TableField[] { AspectLabel.ASPECT_LABEL.TYPE }, true);
         public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = Internal.createForeignKey(Keys.COLLOCATION_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_collocation_id_fkey", new TableField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID }, true);
         public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = Internal.createForeignKey(Keys.FREEFORM_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_freeform_id_fkey", new TableField[] { CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, true);
+        public static final ForeignKey<DataRequestRecord, EkiUserRecord> DATA_REQUEST__DATA_REQUEST_USER_ID_FKEY = Internal.createForeignKey(Keys.EKI_USER_PKEY, DataRequest.DATA_REQUEST, "data_request_user_id_fkey", new TableField[] { DataRequest.DATA_REQUEST.USER_ID }, true);
         public static final ForeignKey<DatasetPermissionRecord, DatasetRecord> DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY = Internal.createForeignKey(Keys.DATASET_PKEY, DatasetPermission.DATASET_PERMISSION, "dataset_permission_dataset_code_fkey", new TableField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE }, true);
         public static final ForeignKey<DatasetPermissionRecord, EkiUserRecord> DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY = Internal.createForeignKey(Keys.EKI_USER_PKEY, DatasetPermission.DATASET_PERMISSION, "dataset_permission_user_id_fkey", new TableField[] { DatasetPermission.DATASET_PERMISSION.USER_ID }, true);
         public static final ForeignKey<DatasetPermissionRecord, LanguageRecord> DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, DatasetPermission.DATASET_PERMISSION, "dataset_permission_auth_lang_fkey", new TableField[] { DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, true);

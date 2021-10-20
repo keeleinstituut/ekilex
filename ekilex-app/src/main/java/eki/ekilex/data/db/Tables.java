@@ -9,6 +9,7 @@ import eki.ekilex.data.db.tables.Aspect;
 import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
+import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
@@ -165,6 +166,11 @@ public class Tables {
      * The table <code>public.collocation_freeform</code>.
      */
     public static final CollocationFreeform COLLOCATION_FREEFORM = CollocationFreeform.COLLOCATION_FREEFORM;
+
+    /**
+     * The table <code>public.data_request</code>.
+     */
+    public static final DataRequest DATA_REQUEST = DataRequest.DATA_REQUEST;
 
     /**
      * The table <code>public.dataset</code>.

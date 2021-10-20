@@ -16,6 +16,10 @@ public class TermSearchResult extends PagingResult {
 
 	private boolean resultExist;
 
+	private boolean resultDownloadNow;
+
+	private boolean resultDownloadLater;
+
 	public int getMeaningCount() {
 		return meaningCount;
 	}
@@ -54,6 +58,22 @@ public class TermSearchResult extends PagingResult {
 
 	public void setResultExist(boolean resultExist) {
 		this.resultExist = resultExist;
+	}
+
+	public boolean isResultDownloadNow() {
+		return resultDownloadNow;
+	}
+
+	public void setResultDownloadNow(boolean resultDownloadNow) {
+		this.resultDownloadNow = resultDownloadNow;
+	}
+
+	public boolean isResultDownloadLater() {
+		return resultDownloadLater;
+	}
+
+	public void setResultDownloadLater(boolean resultDownloadLater) {
+		this.resultDownloadLater = resultDownloadLater;
 	}
 
 }

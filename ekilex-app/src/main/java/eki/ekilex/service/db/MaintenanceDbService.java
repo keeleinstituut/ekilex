@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.COLLOCATION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DATA_REQUEST;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.db.Routines;
+import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.records.WordRecord;
 
 @Component
@@ -112,4 +114,14 @@ public class MaintenanceDbService implements GlobalConstant {
 				.execute();
 	}
 
+	public int deleteAccessedDataRequests(int hours) {
+
+		DataRequest dr = DATA_REQUEST.as("dr");
+		return create
+				.delete(dr)
+				.where(
+						dr.ACCESSED.isNotNull()
+						.and(DSL.condition("(current_timestamp - dr.accessed) >= (interval '" + hours + " hour')")))
+				.execute();
+	}
 }
