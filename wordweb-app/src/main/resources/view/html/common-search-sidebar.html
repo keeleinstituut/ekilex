@@ -283,7 +283,7 @@
           <h5 class="font-weight-bold mb-0">
             <span th:text="#{sentence.same.as}"></span>
             <a th:if="${wordData.word.lang == 'est'}" th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
-               th:href="${'https://portaal.eki.ee/sonaraamatud.html/?Q=' + wordData.word.word}" target="_blank">
+               th:href="${'https://portaal.eki.ee/sonaraamatud.html?Q=' + wordData.word.word}" target="_blank">
               EKI teistes sõnastikes
               <i class="fas fa-external-link-alt" aria-hidden="true"></i>
             </a>
