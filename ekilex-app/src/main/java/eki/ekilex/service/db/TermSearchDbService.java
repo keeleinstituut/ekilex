@@ -54,20 +54,20 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 	public TermSearchResult getTermSearchResult(
 			String searchFilter, SearchDatasetsRestriction searchDatasetsRestriction,
-			SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) {
+			SearchResultMode resultMode, String resultLang, int offset, boolean noLimit) {
 
 		Table<Record3<Long, Long, Long[]>> wm = termSearchConditionComposer.composeFilteredMeaning(searchFilter, searchDatasetsRestriction, resultMode);
-		return composeResult(wm, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
+		return composeResult(wm, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
 	}
 
 	// detail search
 
 	public TermSearchResult getTermSearchResult(
 			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction,
-			SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) throws Exception {
+			SearchResultMode resultMode, String resultLang, int offset, boolean noLimit) throws Exception {
 
 		Table<Record3<Long, Long, Long[]>> wm = termSearchConditionComposer.composeFilteredMeaning(searchFilter, searchDatasetsRestriction, resultMode);
-		return composeResult(wm, searchDatasetsRestriction, resultMode, resultLang, fetchAll, offset);
+		return composeResult(wm, searchDatasetsRestriction, resultMode, resultLang, offset, noLimit);
 	}
 
 	// search commons
@@ -75,7 +75,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 	private List<TermMeaning> executeFetchMeaningMode(
 			Table<Record3<Long, Long, Long[]>> m,
 			SearchDatasetsRestriction searchDatasetsRestriction,
-			String resultLang, boolean fetchAll, int offset) {
+			String resultLang, int offset, boolean noLimit) {
 
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
@@ -168,7 +168,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						+ "m.lex_order_by)", TypeTermMeaningWordRecord[].class);
 
 		int limit = DEFAULT_MAX_RESULTS_LIMIT;
-		if (fetchAll) {
+		if (noLimit) {
 			limit = Integer.MAX_VALUE;
 		}
 
@@ -226,7 +226,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 	private List<TermMeaning> executeFetchWordMode(
 			Table<Record3<Long, Long, Long[]>> wmid,
-			String resultLang, boolean fetchAll, int offset) {
+			String resultLang, int offset, boolean noLimit) {
 
 		Lexeme lvs = LEXEME.as("lvs");
 		Lexeme lw = LEXEME.as("lw");
@@ -344,7 +344,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 						+ ")::type_term_meaning_word)", TypeTermMeaningWordRecord[].class);
 
 		int limit = DEFAULT_MAX_RESULTS_LIMIT;
-		if (fetchAll) {
+		if (noLimit) {
 			limit = Integer.MAX_VALUE;
 		}
 
@@ -391,18 +391,18 @@ public class TermSearchDbService extends AbstractDataDbService {
 
 	private TermSearchResult composeResult(
 			Table<Record3<Long, Long, Long[]>> wm, SearchDatasetsRestriction searchDatasetsRestriction,
-			SearchResultMode resultMode, String resultLang, boolean fetchAll, int offset) {
+			SearchResultMode resultMode, String resultLang, int offset, boolean noLimit) {
 
 		List<TermMeaning> results = Collections.emptyList();
 		int meaningCount = 0;
 		int wordCount = 0;
 		int resultCount = 0;
 		if (SearchResultMode.MEANING.equals(resultMode)) {
-			results = executeFetchMeaningMode(wm, searchDatasetsRestriction, resultLang, fetchAll, offset);
+			results = executeFetchMeaningMode(wm, searchDatasetsRestriction, resultLang, offset, noLimit);
 			meaningCount = resultCount = executeCountMeaningsMeaningMode(wm);
 			wordCount = executeCountWordsMeaningMode(wm, searchDatasetsRestriction, resultLang);
 		} else if (SearchResultMode.WORD.equals(resultMode)) {
-			results = executeFetchWordMode(wm, resultLang, fetchAll, offset);
+			results = executeFetchWordMode(wm, resultLang, offset, noLimit);
 			meaningCount = executeCountMeaningsWordMode(wm);
 			wordCount = resultCount = executeCountWordsWordMode(wm, resultLang);
 		}

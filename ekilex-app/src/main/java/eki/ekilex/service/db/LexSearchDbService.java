@@ -91,13 +91,13 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 	public List<eki.ekilex.data.Word> getWords(
 			SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
-			List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) throws Exception {
+			List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
 		Condition wordCondition = lexSearchConditionComposer.createSearchCondition(w1, searchCriteriaGroups, searchDatasetsRestriction);
 
-		return execute(w1, wordCondition, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
+		return execute(w1, wordCondition, searchDatasetsRestriction, userRole, tagNames, offset, maxResultsLimit, noLimit);
 	}
 
 	public int countWords(SearchFilter searchFilter, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
@@ -110,12 +110,12 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 	public List<eki.ekilex.data.Word> getWords(
 			String searchWordCrit, SearchDatasetsRestriction searchDatasetsRestriction, DatasetPermission userRole,
-			List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
+			List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) {
 
 		Word word = WORD.as("w");
 		Condition where = lexSearchConditionComposer.createSearchCondition(word, searchWordCrit, searchDatasetsRestriction);
 
-		return execute(word, where, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
+		return execute(word, where, searchDatasetsRestriction, userRole, tagNames, offset, maxResultsLimit, noLimit);
 	}
 
 	public int countWords(String wordWithMetaCharacters, SearchDatasetsRestriction searchDatasetsRestriction) {
@@ -605,7 +605,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 
 	private List<eki.ekilex.data.Word> execute(
 			Word w1, Condition where, SearchDatasetsRestriction searchDatasetsRestriction,
-			DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) {
+			DatasetPermission userRole, List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) {
 
 		List<String> availableDatasetCodes = searchDatasetsRestriction.getAvailableDatasetCodes();
 
@@ -719,7 +719,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.field("homonym_nr"))
 				.asTable("ww");
 
-		if (fetchAll) {
+		if (noLimit) {
 			return create.selectFrom(ww).fetchInto(eki.ekilex.data.Word.class);
 		} else {
 			return create.selectFrom(ww).limit(maxResultsLimit).offset(offset).fetchInto(eki.ekilex.data.Word.class);

@@ -54,6 +54,7 @@ drop table if exists word_last_activity_log;
 drop table if exists meaning_activity_log;
 drop table if exists meaning_last_activity_log;
 drop table if exists source_activity_log;
+drop table if exists data_request;
 drop table if exists word_freq;
 drop table if exists morph_freq;
 drop table if exists form_freq;

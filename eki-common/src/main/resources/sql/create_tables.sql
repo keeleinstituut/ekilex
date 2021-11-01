@@ -1044,6 +1044,17 @@ create table word_freq
 );
 alter sequence word_freq_id_seq restart with 10000;
 
+create table data_request
+(
+  id bigserial primary key,
+  user_id bigint references eki_user(id) on delete cascade not null,
+  request_key varchar(60) not null,
+  content text not null,
+  accessed timestamp,
+  created timestamp not null default statement_timestamp()
+);
+alter sequence data_request_id_seq restart with 10000;
+
 create table activity_log
 (
   id bigserial primary key,
@@ -1304,6 +1315,7 @@ create index word_freq_corp_id_idx on word_freq(freq_corp_id);
 create index word_freq_word_id_idx on word_freq(word_id);
 create index word_freq_value_id_idx on word_freq(value);
 create index word_freq_rank_id_idx on word_freq(rank);
+create index data_request_user_id_idx on data_request(user_id);
 create index lexeme_activity_log_lexeme_id_idx on lexeme_activity_log(lexeme_id);
 create index lexeme_activity_log_log_id_idx on lexeme_activity_log(activity_log_id);
 create index word_activity_log_word_id_idx on word_activity_log(word_id);

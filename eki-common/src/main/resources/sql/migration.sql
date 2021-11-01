@@ -115,3 +115,16 @@ end $$;
 
 -- eemaldab tühikud keelendi ees ja lõpus
 update word set value = trim(value), value_prese = trim(value_prese);
+
+-- asünkroonsed datapäringud
+create table data_request
+(
+  id bigserial primary key,
+  user_id bigint references eki_user(id) on delete cascade not null,
+  request_key varchar(60) not null,
+  content text not null,
+  accessed timestamp,
+  created timestamp not null default statement_timestamp()
+);
+alter sequence data_request_id_seq restart with 10000;
+create index data_request_user_id_idx on data_request(user_id);

@@ -113,7 +113,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = false;
+		boolean noLimit = false;
 
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
@@ -125,9 +125,9 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -153,7 +153,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = false;
+		boolean noLimit = false;
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
@@ -167,9 +167,9 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, fetchAll, offset, DEFAULT_MAX_RESULTS_LIMIT);
+			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 
 		wordsResult.setOffset(offset);
@@ -190,7 +190,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 
-		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, false, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		WordsResult result = lexSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, false);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
@@ -258,13 +258,13 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		logger.debug("word internal link search {}", searchFilter);
 
 		List<String> datasets = Collections.emptyList();
-		boolean fetchAll = true;
+		boolean noLimit = true;
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
 
-		WordsResult wordsResult = lexSearchService.getWords(searchFilter, datasets, userRole, tagNames, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		WordsResult wordsResult = lexSearchService.getWords(searchFilter, datasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		wordsResult.setShowPaging(false);
 
 		model.addAttribute("wordsResult", wordsResult);

@@ -40,8 +40,8 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			SearchFilter searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, boolean fetchAll,
-			int offset, int maxResultsLimit) throws Exception {
+			SearchFilter searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, int offset,
+			int maxResultsLimit, boolean noLimit) throws Exception {
 
 		List<Word> words;
 		int wordCount;
@@ -50,9 +50,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			wordCount = 0;
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, offset, maxResultsLimit, noLimit);
 			wordCount = words.size();
-			if ((!fetchAll && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
+			if ((!noLimit && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}
@@ -70,7 +70,7 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Transactional
 	public WordsResult getWords(
-			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, boolean fetchAll, int offset, int maxResultsLimit) throws Exception {
+			String searchFilter, List<String> datasetCodes, DatasetPermission userRole, List<String> tagNames, int offset, int maxResultsLimit, boolean noLimit) throws Exception {
 
 		List<Word> words;
 		int wordCount;
@@ -81,9 +81,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 			throw new OperationDeniedException("Please be more specific. Use other means to dump data");
 		} else {
 			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodes);
-			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, fetchAll, offset, maxResultsLimit);
+			words = lexSearchDbService.getWords(searchFilter, searchDatasetsRestriction, userRole, tagNames, offset, maxResultsLimit, noLimit);
 			wordCount = words.size();
-			if ((!fetchAll && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
+			if ((!noLimit && wordCount == maxResultsLimit) || offset > DEFAULT_OFFSET) {
 				wordCount = lexSearchDbService.countWords(searchFilter, searchDatasetsRestriction);
 			}
 		}

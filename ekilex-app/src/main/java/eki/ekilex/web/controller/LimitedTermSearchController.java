@@ -96,14 +96,14 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		SearchResultMode resultMode = SearchResultMode.MEANING;
 		String resultLang = null;
-		boolean fetchAll = false;
+		boolean noLimit = false;
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, limitedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, limitedDatasets, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
 		} else {
-			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
 		}
 		boolean noResults = termSearchResult.getResultCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -155,7 +155,7 @@ public class LimitedTermSearchController extends AbstractSearchController {
 		String searchMode = searchUriData.getSearchMode();
 		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
-		boolean fetchAll = false;
+		boolean noLimit = false;
 
 		if ("next".equals(direction)) {
 			offset += DEFAULT_MAX_RESULTS_LIMIT;
@@ -165,9 +165,9 @@ public class LimitedTermSearchController extends AbstractSearchController {
 
 		TermSearchResult termSearchResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, limitedDatasets, SearchResultMode.MEANING, null, fetchAll, offset);
+			termSearchResult = termSearchService.getTermSearchResult(detailSearchFilter, limitedDatasets, SearchResultMode.MEANING, null, offset, noLimit);
 		} else {
-			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, SearchResultMode.MEANING, null, fetchAll, offset);
+			termSearchResult = termSearchService.getTermSearchResult(simpleSearchFilter, limitedDatasets, SearchResultMode.MEANING, null, offset, noLimit);
 		}
 
 		termSearchResult.setOffset(offset);

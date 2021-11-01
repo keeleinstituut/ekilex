@@ -7,6 +7,7 @@ package eki.ekilex.data.db;
 import eki.ekilex.data.db.tables.ActivityLog;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
+import eki.ekilex.data.db.tables.DataRequest;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
@@ -81,6 +82,7 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index ACTIVITY_ENTITY_ID_IDX = Indexes0.ACTIVITY_ENTITY_ID_IDX;
     public static final Index ACTIVITY_ENTITY_NAME_IDX = Indexes0.ACTIVITY_ENTITY_NAME_IDX;
     public static final Index ACTIVITY_FUNCT_NAME_IDX = Indexes0.ACTIVITY_FUNCT_NAME_IDX;
     public static final Index ACTIVITY_LOG_EVENT_BY_IDX = Indexes0.ACTIVITY_LOG_EVENT_BY_IDX;
@@ -91,6 +93,7 @@ public class Indexes {
     public static final Index COLLOCATION_VALUE_IDX = Indexes0.COLLOCATION_VALUE_IDX;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_IDX;
     public static final Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Indexes0.COLLOCATION_FREEFORM_FREEFORM_ID_IDX;
+    public static final Index DATA_REQUEST_USER_ID_IDX = Indexes0.DATA_REQUEST_USER_ID_IDX;
     public static final Index DATASET_CODE_IDX = Indexes0.DATASET_CODE_IDX;
     public static final Index DATASET_TYPE_IDX = Indexes0.DATASET_TYPE_IDX;
     public static final Index DATASET_PERM_DATASET_CODE_IDX = Indexes0.DATASET_PERM_DATASET_CODE_IDX;
@@ -231,6 +234,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index ACTIVITY_ENTITY_ID_IDX = Internal.createIndex("activity_entity_id_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.ENTITY_ID }, false);
         public static Index ACTIVITY_ENTITY_NAME_IDX = Internal.createIndex("activity_entity_name_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.ENTITY_NAME }, false);
         public static Index ACTIVITY_FUNCT_NAME_IDX = Internal.createIndex("activity_funct_name_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.FUNCT_NAME }, false);
         public static Index ACTIVITY_LOG_EVENT_BY_IDX = Internal.createIndex("activity_log_event_by_idx", ActivityLog.ACTIVITY_LOG, new OrderField[] { ActivityLog.ACTIVITY_LOG.EVENT_BY }, false);
@@ -241,6 +245,7 @@ public class Indexes {
         public static Index COLLOCATION_VALUE_IDX = Internal.createIndex("collocation_value_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.VALUE }, false);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Internal.createIndex("collocation_freeform_collocation_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID }, false);
         public static Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("collocation_freeform_freeform_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, false);
+        public static Index DATA_REQUEST_USER_ID_IDX = Internal.createIndex("data_request_user_id_idx", DataRequest.DATA_REQUEST, new OrderField[] { DataRequest.DATA_REQUEST.USER_ID }, false);
         public static Index DATASET_CODE_IDX = Internal.createIndex("dataset_code_idx", Dataset.DATASET, new OrderField[] { Dataset.DATASET.CODE }, false);
         public static Index DATASET_TYPE_IDX = Internal.createIndex("dataset_type_idx", Dataset.DATASET, new OrderField[] { Dataset.DATASET.TYPE }, false);
         public static Index DATASET_PERM_DATASET_CODE_IDX = Internal.createIndex("dataset_perm_dataset_code_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE }, false);

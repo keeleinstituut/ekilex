@@ -52,8 +52,13 @@ public abstract class AbstractSearchService extends AbstractService implements S
 
 	protected SearchDatasetsRestriction composeDatasetsRestriction(List<String> selectedDatasetCodes) {
 
-		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
 		Long userId = userContext.getUserId();
+		return composeDatasetsRestriction(selectedDatasetCodes, userId);
+	}
+
+	protected SearchDatasetsRestriction composeDatasetsRestriction(List<String> selectedDatasetCodes, Long userId) {
+
+		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
 		List<Dataset> availableDatasets = permissionDbService.getUserVisibleDatasets(userId);
 		List<String> availableDatasetCodes = availableDatasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 		int availableDatasetsCount = availableDatasets.size();

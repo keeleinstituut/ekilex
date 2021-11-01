@@ -156,9 +156,9 @@ public class ApiSearchController extends AbstractApiController {
 	public WordsResult lexSearch(
 			@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
-		boolean fetchAll = true;
+		boolean noLimit = true;
 		List<String> datasets = parseDatasets(datasetsStr);
-		WordsResult results = lexSearchService.getWords(word, datasets, null, null, fetchAll, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT);
+		WordsResult results = lexSearchService.getWords(word, datasets, null, null, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		return results;
 	}
 
@@ -188,11 +188,11 @@ public class ApiSearchController extends AbstractApiController {
 	public TermSearchResult termSearch(
 			@PathVariable("word") String word, @PathVariable(value = "datasets", required = false) String datasetsStr) throws Exception {
 
-		boolean fetchAll = true;
+		boolean noLimit = true;
 		List<String> datasets = parseDatasets(datasetsStr);
 		SearchResultMode resultMode = SearchResultMode.MEANING;
 		String resultLang = null;
-		TermSearchResult results = termSearchService.getTermSearchResult(word, datasets, resultMode, resultLang, fetchAll, DEFAULT_OFFSET);
+		TermSearchResult results = termSearchService.getTermSearchResult(word, datasets, resultMode, resultLang, DEFAULT_OFFSET, noLimit);
 		return results;
 	}
 

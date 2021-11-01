@@ -119,6 +119,25 @@ $.fn.approveMeaning = function() {
 	});
 }
 
+$.fn.queueTermSearchResults = function() {
+	var main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		var form = main.closest('form');
+		$.ajax({
+			url: form.attr('action'),
+			data: form.serialize(),
+			method: 'POST',
+		}).done(function() {
+			$("#queueTermSearchResultsBtn").hide();
+			$("#queueTermSearchResultsMsg").show();
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg('Viga!');
+		});
+	});
+}
+
 // TODO not in use?
 // function loadMeaningDetails(meaningId) {
 // 	$("[id^='meaning_select_point_']").hide();

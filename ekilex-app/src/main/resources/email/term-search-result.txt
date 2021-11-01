@@ -1,0 +1,9 @@
+Tere "[(${userName})]"!
+
+Sinu tellitud otsingutulemus on valmis.
+
+Otsingu link:
+[(${termSearchUrl})]
+
+Allalaadimise link:
+[(${termSearchResultUrl})]

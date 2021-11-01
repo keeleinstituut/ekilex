@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ActivityLog extends TableImpl<ActivityLogRecord> {
 
-    private static final long serialVersionUID = 2028254698;
+    private static final long serialVersionUID = -1689184797;
 
     /**
      * The reference instance of <code>public.activity_log</code>
@@ -152,7 +152,7 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.ACTIVITY_ENTITY_NAME_IDX, Indexes.ACTIVITY_FUNCT_NAME_IDX, Indexes.ACTIVITY_LOG_EVENT_BY_IDX, Indexes.ACTIVITY_LOG_EVENT_ON_DESC_IDX, Indexes.ACTIVITY_LOG_EVENT_ON_IDX, Indexes.ACTIVITY_LOG_OWNER_IDX, Indexes.ACTIVITY_LOG_OWNER_NAME_IDX);
+        return Arrays.<Index>asList(Indexes.ACTIVITY_ENTITY_ID_IDX, Indexes.ACTIVITY_ENTITY_NAME_IDX, Indexes.ACTIVITY_FUNCT_NAME_IDX, Indexes.ACTIVITY_LOG_EVENT_BY_IDX, Indexes.ACTIVITY_LOG_EVENT_ON_DESC_IDX, Indexes.ACTIVITY_LOG_EVENT_ON_IDX, Indexes.ACTIVITY_LOG_OWNER_IDX, Indexes.ACTIVITY_LOG_OWNER_NAME_IDX);
     }
 
     @Override

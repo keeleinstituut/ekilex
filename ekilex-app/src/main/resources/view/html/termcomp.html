@@ -29,6 +29,25 @@
                    th:value="${T(eki.ekilex.constant.SearchResultMode).MEANING}"/>
           </label>
         </div>
+        <th:block th:if="${termSearchResult != null}">
+          <div class="btn-group btn-tabs">
+            <th:block th:if="${termSearchResult.resultDownloadNow}">
+              <form th:action="@{/termsearch_result_download}" method="post">
+                <input type="hidden" name="searchUri" th:value="${searchUri}">
+                <button type="submit" class="btn btn-secondary ml-3">Laadi alla</button>
+              </form>
+            </th:block>
+            <th:block th:if="${termSearchResult.resultDownloadLater}">
+              <div class="ml-3">
+                <form th:action="@{/termsearch_result_queue}" method="post">
+                  <input type="hidden" name="searchUri" th:value="${searchUri}">
+                  <button id="queueTermSearchResultsBtn" type="button" data-plugin="queueTermSearchResults" class="btn btn-secondary">Saada e-postiga</button>
+                  <span id="queueTermSearchResultsMsg" class="btn" style="display: none">Saatmisel</span>
+                </form>
+              </div>
+            </th:block>
+          </div>
+        </th:block>
       </div>
       <div class="col-auto ml-auto">
         <select

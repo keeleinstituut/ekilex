@@ -52,6 +52,12 @@ public interface WebConstant {
 
 	String TERM_PAGING_URI = "/term_paging";
 
+	String TERM_SEARCH_RESULT_DOWNLOAD_URI = "/termsearch_result_download";
+
+	String TERM_SEARCH_RESULT_QUEUE_URI = "/termsearch_result_queue";
+
+	String TERM_SEARCH_RESULT_ACCESS_URI = "/termsearch_result_access";
+
 	String LIM_TERM_PAGING_URI = "/lim_term_paging";
 
 	String TERM_COMPONENTS_PAGE = "termcomp";
