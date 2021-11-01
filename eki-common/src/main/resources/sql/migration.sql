@@ -128,3 +128,8 @@ create table data_request
 );
 alter sequence data_request_id_seq restart with 10000;
 create index data_request_user_id_idx on data_request(user_id);
+
+-- definitsioonide puhastamine html kehadest
+update definition d
+   set value_prese = trim(substring(d.value_prese, position('<body>' in d.value_prese) + 7, position('</body>' in d.value_prese) - position('<body>' in d.value_prese) - 7))
+where d.value_prese like '%<html>%';

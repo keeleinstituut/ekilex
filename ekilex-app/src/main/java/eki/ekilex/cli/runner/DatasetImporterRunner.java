@@ -632,7 +632,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 			}
 			ekiMeaningLink.attr("link-id", targetMeaningIdStr);
 		}
-		valuePrese = valueHtmlDoc.html();
+		valuePrese = valueHtmlDoc.body().html();
 		return valuePrese;
 	}
 
