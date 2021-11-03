@@ -38,7 +38,11 @@ public enum SearchKey {
 	FREQUENCY(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	RANK(new SearchOperand[] {SearchOperand.GREATER_THAN, SearchOperand.LESS_THAN}, SearchValueType.NUMERIC),
 	ATTRIBUTE_NAME(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
-	ATTRIBUTE_VALUE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL)
+	ATTRIBUTE_VALUE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	WORD_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	LEXEME_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	MEANING_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
+	DEFINITION_NOTE(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL)
 	;
 
 	private SearchOperand[] operands;

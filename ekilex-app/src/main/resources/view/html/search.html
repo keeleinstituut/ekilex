@@ -413,6 +413,30 @@
                             th:text="${meaningAttribute}">attribute name</option>
                   </select>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_NOTE'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_NOTE'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'MEANING_NOTE'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DEFINITION_NOTE'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
                 <div class="col-auto">
                   <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
@@ -633,6 +657,18 @@
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="meaningAttribute : ${meaningAttributes}" th:value="${meaningAttribute}" th:text="${meaningAttribute}">attribute name</option>
               </select>
+            </div>
+            <div name="WORD_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
+            <div name="LEXEME_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
+            <div name="MEANING_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
+            </div>
+            <div name="DEFINITION_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control">
             </div>
           </div>
         </div>
