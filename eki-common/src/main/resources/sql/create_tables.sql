@@ -4,7 +4,7 @@ create type type_term_meaning_word as (
   word_value_prese text,
   homonym_nr integer,
   lang char(3),
-  word_type_codes varchar(100) array,  
+  word_type_codes varchar(100) array,
   prefixoid boolean,
   suffixoid boolean,
   "foreign" boolean,
@@ -12,19 +12,27 @@ create type type_term_meaning_word as (
   most_preferred boolean,
   least_preferred boolean,
   is_public boolean,
-  dataset_codes varchar(10) array);
+  dataset_codes varchar(10) array
+);
+
 create type type_word_rel_param as (
   name text,
-  value numeric(5, 4));
+  value numeric(5, 4)
+);
+
 create type type_word_rel_meaning as (
   meaning_id bigint,
   definitions text array,
   lex_register_codes varchar(100) array,
-  lex_pos_codes varchar(100) array);
+  lex_pos_codes varchar(100) array
+);
+
 create type type_classifier as (
   name varchar(100),
   code varchar(100),
-  value text);
+  value text
+);
+
 create type type_activity_log_diff as (
   op varchar(100),
   path text,
@@ -39,6 +47,7 @@ create table terms_of_use
   is_active boolean default false not null,
   unique(version)
 );
+
 alter sequence terms_of_use_id_seq restart with 10000;
 
 create table eki_user
@@ -59,6 +68,7 @@ create table eki_user
   created timestamp not null default statement_timestamp(),
   unique(email)
 );
+
 alter sequence eki_user_id_seq restart with 10000;
 
 create table eki_user_application
@@ -70,6 +80,7 @@ create table eki_user_application
   is_reviewed boolean default false not null,
   created timestamp not null default statement_timestamp()
 );
+
 alter sequence eki_user_application_id_seq restart with 10000;
 
 ---------------------------------
@@ -1358,3 +1369,4 @@ create index meaning_domain_code_origin_idx on meaning_domain(domain_code, domai
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));
 create index form_fts_idx on form using gin(to_tsvector('simple',value));
+
