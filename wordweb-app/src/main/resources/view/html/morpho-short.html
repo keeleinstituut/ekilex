@@ -25,7 +25,7 @@
     </tr>
   </th:block>
   <th:block th:fragment="morpho-paradigm-header(paradigm)">
-    <th:block th:if="${paradigm.inflectionType} and ${paradigm.inflectionType} != '41'">
+    <th:block th:if="${paradigm.inflectionType} and ${paradigm.inflectionType} != '41' and ${paradigm.inflectionType} != '0'">
       <p class="btn-bold mt-3">
         <span th:text="#{label.morpho.inflectiontype}">Muuttüüp</span>
         <a aria-label="Vaata muuttüübi kirjeldust, avab uues aknas"
@@ -34,6 +34,16 @@
           <span th:text="${paradigm.inflectionType}">33i</span>
           <i class="fas fa-external-link-alt" aria-hidden="true"></i>
         </a>
+      </p>
+    </th:block>
+    <th:block th:if="${paradigm.inflectionType} and ${paradigm.inflectionType} == '41'">
+      <p class="btn-bold mt-3">
+        <span th:text="#{label.morpho.inflectiontype}">Muutumatu</span>
+      </p>
+    </th:block>
+    <th:block th:if="${paradigm.inflectionType} and ${paradigm.inflectionType} == '0'">
+      <p class="btn-bold mt-3">
+        <span th:text="#{label.morpho.inflectiontype}">Erandlik</span>
       </p>
     </th:block>
     <p th:utext="${paradigm.comment}" class="paradigm-comment"></p>
