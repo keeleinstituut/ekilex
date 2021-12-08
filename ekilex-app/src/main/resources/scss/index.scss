@@ -1,17 +1,14 @@
 /* stylelint-disable */
 
 .footer {
-    position: absolute;
-    bottom: 0px;
-    width:100%;
-    min-height: 60px;
-    background: #001124;
-    padding: 1rem 0 1rem 0;
-}
+	width: 100%;
+	background: #001124;
+	padding: 1rem 0;
 
-footer p {
-    color: #d8d8d8;
-    margin-bottom: 0px;
+	p {
+		color: #d8d8d8;
+		margin-bottom: 0;
+	}
 }
 
 .footer-wrapper {
