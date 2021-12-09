@@ -43,7 +43,7 @@
               <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                 <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
                       th:with="langData=${viewUtil.getLangData(definitionEntry.key)}"
-                      th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                      th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                 <div class="flex-shrink-1" style="font-weight: 500;">
                   <th:block th:each="definition,definitionIter : ${definitionEntry.value}">
                     <th:block th:if="${!definition.subDataExists}">
@@ -92,7 +92,7 @@
                 <div class="mb-0 d-flex flex-row" th:each="noteEntry : ${lexeme.meaningNotesByLang}">
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
                         th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
-                        th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                        th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                   <div class="flex-shrink-1">
                     <div th:each="note : ${noteEntry.value}">
                       <span th:utext="${note.value}"></span>
@@ -171,7 +171,7 @@
                      th:classappend="${meaninglexemeEntryIter.last ? '' : 'mb-2'}">
                   <span class="lang-code lang-code-sm mr-2 align-self-start"
                         th:with="langData=${viewUtil.getLangData(meaninglexemeEntry.key)}"
-                        th:text="${langData.codeIso2}" th:title="${langData.label}">
+                        th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
                   </span>
                   <div class="flex-shrink-1">
                     <div th:each="meaningLexeme,meaninglexemeIter : ${meaningLangLexemes}" th:classappend="${meaninglexemeIter.last ? '' : 'mb-1'}">
@@ -318,7 +318,7 @@
                             <div class="d-flex flex-row" th:each="noteEntry : ${meaningLexeme.lexemeNotesByLang}">
                               <span class="lang-code lang-code-sm mr-2 align-self-start"
                                     th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
-                                    th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                                    th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                               <div th:each="note : ${noteEntry.value}">
                                 <span th:utext="${note.value}"></span>
                                 <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
