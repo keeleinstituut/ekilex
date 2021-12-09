@@ -333,7 +333,7 @@
         background: white;
       }
       &:focus + span {
-        box-shadow: 0 0 0 2px rgb(38 115 182 / 50%);
+        box-shadow: 0 0 0 2px rgba(38, 115, 182, 50%);
       }
       &:disabled {
         cursor: not-allowed;
