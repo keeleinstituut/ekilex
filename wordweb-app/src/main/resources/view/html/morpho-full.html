@@ -1760,6 +1760,107 @@
       </div>
     </div>
   </th:block>
+  <th:block th:fragment="morpho-numeral_rus">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI vene keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                <table class="stretch-middle-td">
+                  <tr class="unindent">
+                    <th colspan="3">падеж / kääne</th>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      Именительный
+                      <br />
+                      <span class="highlight">сколько? / mitu?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'nomn')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      Родительный
+                      <br />
+                      <span class="highlight">скольких? / mitme?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'gent')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      Дательный
+                      <br />
+                      <span class="highlight">скольким? / mitmele?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'datv')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td rowspan="2">
+                      Винительный
+                      <br />
+                      <span class="highlight">скольких? сколькo? / mitut?</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="word-prefix-adjective-rus">одуш. / elus</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'accs,anim')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="text-right">
+                      <span class="word-prefix-adjective-rus">неодуш. / eluta</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'accs,inan')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      Творительный
+                      <br />
+                      <span class="highlight">сколькими? / mitmega?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ablt')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      Предложный
+                      <br />
+                      <span class="highlight">о скольких? / mitmest?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'loct')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <th:block th:replace=" :: table-legend_rus"></th:block>
+        </div>
+      </div>
+    </div>
+  </th:block>
   <th:block th:fragment="morpho-rus-adj-basetable(paradigm)">
     <div class="scrollable-table">
       <div class="scrollable-table--scroller">
