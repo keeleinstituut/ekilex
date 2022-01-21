@@ -156,6 +156,19 @@
     </div><!--/overflow-auto-->
     <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
   </th:block>
+  <th:block th:fragment="morpho-numeral_rus">
+    <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
+    <div class="overflow-auto">
+
+      <table>
+        <th:block th:replace=" :: morpho-row(${paradigm}, 'nomn', 'accs,anim')"></th:block>
+        <th:block th:replace=" :: morpho-row(${paradigm}, 'gent', 'accs,inan')"></th:block>
+        <th:block th:replace=" :: morpho-row(${paradigm}, 'datv', 'ablt')"></th:block>
+        <th:block th:replace=" :: morpho-row(${paradigm}, '', 'loct')"></th:block>
+      </table>
+    </div><!--/overflow-auto-->
+    <th:block th:replace=" :: morpho-paradigm-footer(${paradigm})"></th:block>
+  </th:block>
   <th:block th:fragment="morpho-indeclinable_rus">
     <th:block th:replace=" :: morpho-paradigm-header_rus(${paradigm})"></th:block>
     <div class="overflow-auto">
