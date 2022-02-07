@@ -2304,6 +2304,83 @@
       </div>
     </div>
   </th:block>
+  <th:block th:fragment="morpho-participle_rus">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            Sõnavormid
+            <span>EKI vene keele morfoloogiline andmebaas 2020</span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <p th:utext="${paradigm.comment}" class="paradigm-text"></p>
+            <h2>Причастие / Kesksõna</h2>
+            <th:block th:replace=" :: morpho-rus-adj-basetable(${paradigm})"></th:block>
+            <div class="scrollable-table">
+              <div class="scrollable-table--scroller">
+                 <table class="stretch-middle-td">
+                  <tr>
+                    <th colspan="2">Краткое причастие / Kesksõna lühike vorm</th>
+                  </tr>
+                  <tr>
+                    <th colspan="2">
+                      eдинственное число / ainsus
+                    </th>
+                  </tr>
+                  <tr>
+                    <td>
+                      мужской род / meessugu
+                      <br />
+                      <span class="highlight">каков? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,masc,sing')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      женский род / naissugu
+                      <br />
+                      <span class="highlight">какова? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,femn,sing')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      средний род / kesksugu
+                      <br />
+                      <span class="highlight">каково? / missugune?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,neut,sing')"></th:block>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>множественное число /  mitmus</b>
+                      <br />
+                      <span class="highlight">каковы? / missugused?</span>
+                    </td>
+                    <td>
+                      <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'ADJS,plur')"></th:block>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <th:block th:replace=" :: table-legend_rus"></th:block>
+        </div>
+      </div>
+    </div>
+  </th:block>
   <th:block th:fragment="morpho-indeclinable_rus">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
