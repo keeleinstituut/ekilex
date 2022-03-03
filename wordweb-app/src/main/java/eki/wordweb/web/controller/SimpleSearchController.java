@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.SearchFilter;
+import eki.wordweb.data.SearchRequest;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.data.Word;
@@ -109,7 +109,8 @@ public class SimpleSearchController extends AbstractSearchController {
 		WordsData wordsData = simpleSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		statDataCollector.postSearchStat(searchValidation, wordsData, request, isSearchForm, SEARCH_MODE_SIMPLE);
+		SearchRequest searchRequest = populateSearchRequest(request, isSearchForm, SEARCH_MODE_SIMPLE, searchValidation, wordsData);
+		statDataCollector.postSearchStat(searchRequest);
 
 		return LITE_SEARCH_PAGE;
 	}

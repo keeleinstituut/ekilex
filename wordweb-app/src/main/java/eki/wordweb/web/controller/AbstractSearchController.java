@@ -3,6 +3,8 @@ package eki.wordweb.web.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -10,7 +12,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.util.UriUtils;
 
+import eki.wordweb.data.SearchRequest;
+import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
+import eki.wordweb.data.WordsData;
 import eki.wordweb.web.bean.SessionBean;
 
 public abstract class AbstractSearchController extends AbstractController {
@@ -66,5 +71,24 @@ public abstract class AbstractSearchController extends AbstractController {
 		value = StringUtils.replace(value, ENCODE_SYM_BACKSLASH, "\\");
 		value = StringUtils.replace(value, ENCODE_SYM_PERCENT, "%");
 		return value;
+	}
+
+	protected SearchRequest populateSearchRequest(HttpServletRequest request, boolean isSearchForm, String searchMode, SearchValidation searchValidation, WordsData wordsData) {
+
+		String sessionId = request.getSession().getId();
+		String userAgent = request.getHeader("User-Agent");
+		String referer = request.getHeader("referer");
+		String serverDomain = request.getServerName();
+
+		SearchRequest searchRequest = new SearchRequest();
+		searchRequest.setSearchValidation(searchValidation);
+		searchRequest.setWordsData(wordsData);
+		searchRequest.setSearchForm(isSearchForm);
+		searchRequest.setSearchMode(searchMode);
+		searchRequest.setSessionId(sessionId);
+		searchRequest.setUserAgent(userAgent);
+		searchRequest.setReferer(referer);
+		searchRequest.setServerDomain(serverDomain);
+		return searchRequest;
 	}
 }
