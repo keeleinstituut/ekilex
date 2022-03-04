@@ -132,7 +132,7 @@
               <input type="hidden" name="opCode" value="definition">
               <input type="hidden" name="itemType" th:value="${defaultDefinitionTypeCode}">
               <input type="hidden" name="value">
-              <div th:replace="components :: eki_editor_elem(true)"></div>
+              <div th:replace="components :: eki_editor_elem"></div>
 
               <div class="formItem" th:if="${userRoleData.userRole.superiorPermission}">
                 <div class="formItem__title">Vali sõnakogu</div>
@@ -222,7 +222,7 @@
             <input type="hidden" name="value" th:value="${definition.value}">
             <input type="hidden" name="code" th:value="${definition.typeCode}">
             <input type="hidden" name="complexity" th:value="${definition.complexity}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="formItem">
               <div class="formItem__title">Vali keel</div>
               <div class="formItem__element">
@@ -303,7 +303,7 @@
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition_note">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -339,7 +339,7 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="definition_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -420,7 +420,7 @@
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="learner_comment">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -440,7 +440,7 @@
             <input type="hidden" name="id" th:value="${learnerComment.id}">
             <input type="hidden" name="opCode" value="learner_comment">
             <input type="hidden" name="value" th:value="${learnerComment.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -638,7 +638,7 @@
             <input type="hidden" name="language" th:value="${lexeme.wordLang}">
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
 
             <div class="formItem">
               <div class="formItem__title">Vali detailsus</div>
@@ -738,7 +738,7 @@
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.value}">
             <input type="hidden" name="complexity" th:value="${usage.complexity}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
 
             <div class="formItem">
               <div class="formItem__title">Vali detailsus</div>
@@ -812,16 +812,16 @@
                   </select>
                 </div>
               </div>
-              <div th:replace="components :: eki_editor_elem(true)"></div>
+              <div th:replace="components :: eki_editor_elem"></div>
             </div>
             <div class="value-group" data-id="usage_definition">
-              <div th:replace="components :: eki_editor_elem(true)"></div>
+              <div th:replace="components :: eki_editor_elem"></div>
             </div>
             <div class="value-group" data-id="od_usage_definition">
-              <div th:replace="components :: eki_editor_elem(true)"></div>
+              <div th:replace="components :: eki_editor_elem"></div>
             </div>
             <div class="value-group" data-id="od_usage_alternative">
-              <div th:replace="components :: eki_editor_elem(true)"></div>
+              <div th:replace="components :: eki_editor_elem"></div>
             </div>
           </div>
           <div class="modal-footer">
@@ -842,7 +842,7 @@
             <input type="hidden" name="id" th:value="${usageTranslation.id}">
             <input type="hidden" name="opCode" value="usage_translation">
             <input type="hidden" name="value" th:value="${usageTranslation.value}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -862,7 +862,7 @@
             <input type="hidden" name="id" th:value="${usageDefinition.id}">
             <input type="hidden" name="opCode" value="usage_definition">
             <input type="hidden" name="value" th:value="${usageDefinition.value}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -882,7 +882,7 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -927,7 +927,7 @@
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
             <input type="hidden" name="complexity" th:value="${note.complexity}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -974,7 +974,7 @@
             <input type="hidden" name="id" th:value="${lexeme.meaningId}">
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -1019,7 +1019,7 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -1469,22 +1469,7 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_grammar">
             <input type="hidden" name="value">
-            <div class="form-group row eki-editor">
-              <div class="col-md-12 pb-3">
-                <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgendus</button>
-                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgendus</button>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
-                <div class="eki-editor-menu">
-                  <select class="eki-tag-select" size="6">
-                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control required-field" name="complexity">
@@ -1513,22 +1498,7 @@
             <input type="hidden" name="opCode" value="lexeme_grammar">
             <input type="hidden" name="complexity" th:value="${grammar.complexity}">
             <input type="hidden" name="value" th:value="${grammar.valuePrese}">
-            <div class="form-group row eki-editor">
-              <div class="col-md-12 pb-3">
-                <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgendus</button>
-                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgendus</button>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
-                <div class="eki-editor-menu">
-                  <select class="eki-tag-select" size="6">
-                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control" name="complexity">
@@ -1940,7 +1910,11 @@
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="image_title">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(false)"></div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" name="value"></textarea>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -1959,8 +1933,11 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="image_title">
-            <input type="hidden" name="value" th:value="${image.title}">
-            <div th:replace="components :: eki_editor_elem(false)"></div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" name="value" th:text="${image.title}"></textarea>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -2156,7 +2133,7 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="od_word_recommendation">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -2180,7 +2157,7 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_note">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -2204,7 +2181,7 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="word_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -2228,7 +2205,7 @@
             <input type="hidden" name="id" th:value="${odWordRecommendation.id}">
             <input type="hidden" name="opCode" value="od_word_recommendation">
             <input type="hidden" name="value" th:value="${odWordRecommendation.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -2248,7 +2225,7 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="od_lexeme_recommendation">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -2268,7 +2245,7 @@
             <input type="hidden" name="id" th:value="${odLexemeRecommendation.id}">
             <input type="hidden" name="opCode" value="od_lexeme_recommendation">
             <input type="hidden" name="value" th:value="${odLexemeRecommendation.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -2288,7 +2265,7 @@
             <input type="hidden" name="id" th:value="${odUsageDefinition.id}">
             <input type="hidden" name="opCode" value="od_usage_definition">
             <input type="hidden" name="value" th:value="${odUsageDefinition.value}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -2308,7 +2285,7 @@
             <input type="hidden" name="id" th:value="${odUsageAlternative.id}">
             <input type="hidden" name="opCode" value="od_usage_alternative">
             <input type="hidden" name="value" th:value="${odUsageAlternative.value}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>

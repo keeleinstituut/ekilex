@@ -124,12 +124,12 @@ $(function() {
 	});
 
 	$(document).on("show.bs.modal", "[id^=addImageTitleDlg_]", function(e) {
-		initEkiEditorDlg($(this));
+		initGenericTextAddDlg($(this));
 		alignAndFocus(e, $(this));
 	});
 
 	$(document).on("show.bs.modal", "[id^=editImageTitleDlg_]", function(e) {
-		initEkiEditorDlg($(this));
+		initGenericTextEditDlg($(this));
 		alignAndFocus(e, $(this));
 	});
 
