@@ -795,7 +795,7 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-4">
-                <select required class="form-control" name="opCode">
+                <select id="usageMemberTypeSelect" required class="form-control" name="opCode">
                   <option value="usage_translation">Kasutusnäite tõlge</option>
                   <option value="usage_definition">Kasutusnäite seletus</option>
                   <option value="od_usage_definition">ÕSi sõnastussoovitus</option>
@@ -803,7 +803,7 @@
                 </select>
               </div>
             </div>
-            <div class="value-group" data-id="usage_translation">
+            <div class="usage-member-additional-fields" data-id="usage_translation" style="display: none;">
               <div class="form-group row">
                 <div class="col-md-4">
                   <select required class="form-control classifier-select required-field" name="language" data-live-search="true">
@@ -812,17 +812,8 @@
                   </select>
                 </div>
               </div>
-              <div th:replace="components :: eki_editor_elem"></div>
             </div>
-            <div class="value-group" data-id="usage_definition">
-              <div th:replace="components :: eki_editor_elem"></div>
-            </div>
-            <div class="value-group" data-id="od_usage_definition">
-              <div th:replace="components :: eki_editor_elem"></div>
-            </div>
-            <div class="value-group" data-id="od_usage_alternative">
-              <div th:replace="components :: eki_editor_elem"></div>
-            </div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
