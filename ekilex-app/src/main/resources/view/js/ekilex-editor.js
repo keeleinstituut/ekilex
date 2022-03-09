@@ -1,37 +1,19 @@
 // Javascript methods for Ekilex custom editor component and dialogs are using it
-function toggleGroup(dlg, groupName) {
-	dlg.find('.value-group').hide();
-	dlg.find('[data-id=' + groupName + ']').show();
-};
 
-function initUsageMemberDlg(theDlg) {
-	theDlg.find('[name=opCode]').off('change').on('change', function(e) {
-		toggleGroup(theDlg, $(e.target).val())
+function initUsageMemberDlg(dlg) {
+	let usageMemberType = $('#usageMemberTypeSelect').find(':selected').val();
+	toggleUsageMemberAdditionalFields(dlg, usageMemberType);
+
+	dlg.find('[name=opCode]').off('change').on('change', function(e) {
+		let usageMemberType = $(e.target).val();
+		toggleUsageMemberAdditionalFields(dlg, usageMemberType);
 	});
-	theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		let selectedGroup = theDlg.find('[name=opCode]').val();
-		let selectedEditFld = theDlg.find('[data-id=' + selectedGroup + ']').find('[data-name=editFld]');
-		theDlg.find('[name=value]').val(selectedEditFld.html());
-		submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')
-	});
-	theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		theDlg.find('.form-control').each(function(indx, item) {
-			if ($(item).prop('contenteditable') === 'true') {
-				$(item).html(null);
-			} else {
-				$(item).val(null);
-			}
-		});
-		theDlg.find('select').each(function(indx, item) {
-			$(item).val($(item).find('option').first().val());
-		});
-		toggleGroup(theDlg, theDlg.find('[name=opCode]').val());
-		alignAndFocus(e, theDlg);
-	});
-	theDlg.find('.eki-editor').each(function(indx, item) {
-		initEkiEditor($(item));
-	});
-};
+}
+
+function toggleUsageMemberAdditionalFields(dlg, usageMemberType) {
+	dlg.find('.usage-member-additional-fields').hide();
+	dlg.find('[data-id=' + usageMemberType + ']').show();
+}
 
 function initEkiEditorDlg(editDlg) {
 	let modifyFld = editDlg.find('[data-id="editFld"]');

@@ -118,14 +118,10 @@ $.fn.addSourcePropertyGroup = function() {
 	});
 };
 
-$.fn.removeSourcePropertyGroup = function() {
-	var main = $(this);
-	main.on('click', function(e) {
-		e.preventDefault();
-		main.closest('[name="sourcePropertyGroup"]').remove();
-		displayRemoveButtons();
-	});
-};
+$(document).on("click", ":button[name='removePropertyGroupBtn']", function() {
+	$(this).closest('[name="sourcePropertyGroup"]').remove();
+	displayRemoveButtons();
+});
 
 function displayRemoveButtons() {
 	$('[name="removePropertyGroupBtn"]').each(function (i, v) {

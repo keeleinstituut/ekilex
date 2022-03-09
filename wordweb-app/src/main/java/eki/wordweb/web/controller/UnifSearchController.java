@@ -26,6 +26,7 @@ import org.springframework.web.util.UriUtils;
 
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.SearchFilter;
+import eki.wordweb.data.SearchRequest;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.data.WordData;
@@ -114,7 +115,8 @@ public class UnifSearchController extends AbstractSearchController {
 		WordsData wordsData = unifSearchService.getWords(searchValidation);
 		populateSearchModel(searchWord, wordsData, model);
 
-		statDataCollector.postSearchStat(searchValidation, wordsData, request, isSearchForm, SEARCH_MODE_DETAIL);
+		SearchRequest searchRequest = populateSearchRequest(request, isSearchForm, SEARCH_MODE_DETAIL, searchValidation, wordsData);
+		statDataCollector.postSearchStat(searchRequest);
 
 		return UNIF_SEARCH_PAGE;
 	}

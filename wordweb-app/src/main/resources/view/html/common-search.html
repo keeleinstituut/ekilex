@@ -69,7 +69,7 @@
             <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
               <span class="homonym-item-wrap">
                 <span class="homonym-header d-flex align-items-center">
-                  <span class="text-muted mr-1 lang-code lang-code-sm" th:with="langData=${viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}">1</span>
+                  <span class="text-muted mr-1 lang-code lang-code-sm" th:with="langData=${viewUtil.getLangData(word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">1</span>
                   <span class="homonym-name-container">
                     <span class="homonym-name" th:utext="${viewUtil.getWordValueMarkup(word)}">tee</span>
                   </span>
@@ -87,7 +87,7 @@
   <th:block th:fragment="word-data">
     <div class="col-12 content-title d-flex align-items-center flex-wrap position-relative">
       <h1 class="mb-0 font-weight-bold d-flex align-items-start align-items-lg-center">
-        <span class="additional-meta lang-code mt-2 mt-lg-0" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+        <span class="additional-meta lang-code lang-code-sm mt-2 mt-lg-0" th:with="langData=${viewUtil.getLangData(wordData.word.lang)}" th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
         <span class="homonym-name" th:utext="${viewUtil.getWordValueMarkup(wordData.word)}">tee</span>
       </h1>
       <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>

@@ -8,6 +8,9 @@ public class ExceptionStat extends AbstractDataObject {
 
 	private String exceptionMessage;
 
+	public ExceptionStat() {
+	}
+
 	public ExceptionStat(String exceptionName, String exceptionMessage) {
 		this.exceptionName = exceptionName;
 		this.exceptionMessage = exceptionMessage;

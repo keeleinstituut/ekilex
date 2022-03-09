@@ -219,7 +219,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
+		<java.version>15</java.version>
 		<skip.jooq.generation>true</skip.jooq.generation>
 		<start-class>${spring.boot.mainclass}</start-class>
 	</properties>

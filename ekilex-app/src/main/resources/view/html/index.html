@@ -3,11 +3,11 @@
 <head th:replace="common :: common_header(~{::title},_)">
   <title>EKILEX</title>
 </head>
-<body>
+<body class="d-flex flex-column">
 
 
-  <div class="container-fluid">
-    <div class="card mt-4 shadow">
+  <main class="container-fluid flex-shrink-0">
+    <div class="card mt-4 mb-4 shadow">
       <div class="card-header">
         <span class="erf-logo mini-logo"></span>
         <span class="eki-logo mini-logo"></span>
@@ -25,16 +25,16 @@
         </p>
         <div class="form-group row">
           <div class="col-sm-auto">
-            <a role="button" class="btn btn-primary" th:href="@{/home}">Logi sisse</a>
-            <a role="button" class="btn btn-info ml-5" th:href="@{/register}">Loo kasutaja</a>
-            <a class="btn btn-light ml-5" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>
+            <a role="button" class="btn btn-primary mr-5 mb-2" th:href="@{/home}">Logi sisse</a>
+            <a role="button" class="btn btn-info mr-5 mb-2" th:href="@{/register}">Loo kasutaja</a>
+            <a class="btn btn-light mb-2" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
-  <footer role="contentinfo" class="footer">
+  <footer role="contentinfo" class="footer mt-auto">
     <div class="container footer-wrapper">
       <div class="row">
         <div class="col-12 col-sm-6 col-md-4">
@@ -51,7 +51,7 @@
             reg-kood: 70004011
           </p>
         </div>
-        <div class="col-12 col-md-4 order-2 order-md-1 col-reverse">
+        <div class="col-12 col-md-4 order-2 order-md-1 col-reverse mt-3">
           <span class="last-update">
             <span th:text="#{general.lastupdate}">Ekilex 2021</span>
             <span th:if="${appData != null}" th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}" style="color: gray"></span>

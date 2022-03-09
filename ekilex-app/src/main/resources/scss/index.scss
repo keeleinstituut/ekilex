@@ -1,17 +1,14 @@
 /* stylelint-disable */
 
 .footer {
-    position: absolute;
-    bottom: 0px;
-    width:100%;
-    min-height: 60px;
-    background: #001124;
-    padding: 1rem 0 1rem 0;
-}
+	width: 100%;
+	background: #001124;
+	padding: 1rem 0;
 
-footer p {
-    color: #d8d8d8;
-    margin-bottom: 0px;
+	p {
+		color: #d8d8d8;
+		margin-bottom: 0;
+	}
 }
 
 .footer-wrapper {
@@ -336,7 +333,7 @@ footer p {
         background: white;
       }
       &:focus + span {
-        box-shadow: 0 0 0 2px rgb(38 115 182 / 50%);
+        box-shadow: 0 0 0 2px rgba(38, 115, 182, 50%);
       }
       &:disabled {
         cursor: not-allowed;

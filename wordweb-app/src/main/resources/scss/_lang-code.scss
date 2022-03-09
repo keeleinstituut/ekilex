@@ -12,4 +12,5 @@
   text-align: center;
   background: $gray-100;
   @include border-radius(4px);
+	cursor: default;
 }

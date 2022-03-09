@@ -127,7 +127,7 @@
             <input type="hidden" name="id" th:value="${wordId}">
             <input type="hidden" name="opCode" value="word_note">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -145,7 +145,7 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="word_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>

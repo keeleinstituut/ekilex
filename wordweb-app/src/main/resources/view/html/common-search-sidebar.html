@@ -11,7 +11,7 @@
           </button>
         </h5>
         <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-          <div class="morphology-paradigm" th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus'} }">
+          <div class="morphology-paradigm" th:with="morphtemplates=${ {'muutumatu_est', 'verb_est', 'noomen_est', 'verb_rus', 'noun_rus', 'numeral_rus', 'adjective_rus', 'adjective1_rus', 'adjective2_rus', 'indeclinable_rus', 'participle_rus'} }">
             <th:block th:if="${morphtemplates.contains(paradigm.wordClass+'_'+ wordData.word.lang)}">
               <th:block th:replace="morpho-short :: ${'morpho-' + paradigm.wordClass + '_' + wordData.word.lang}"></th:block>
             </th:block>
@@ -158,7 +158,7 @@
         <div th:id="${'word-rel-map-collapse-panel-' + wordRelType.code + '-' + relEntryIter.index}" class="collapse-panel d-flex flex-wrap">
           <span class="lang-code lang-code-sm mr-2 align-self-start"
                 th:with="langData=${viewUtil.getLangData(relationEntry.key)}"
-                th:text="${langData.codeIso2}" th:title="${langData.label}">
+                th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
           </span>
           <th:block th:each="relation, relationIter : ${relatedWords}"
                     th:with="
@@ -251,7 +251,7 @@
       <div>
         <span class="lang-code lang-code-sm mr-2 align-self-start"
               th:with="langData=${viewUtil.getLangData(etymLevel.lang)}"
-              th:text="${langData.codeIso2}" th:title="${langData.label}">
+              th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
         </span>
         <span>
           <span th:if="${etymLevel.compound}">+</span>

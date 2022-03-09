@@ -494,7 +494,7 @@
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
@@ -518,7 +518,7 @@
             <input type="hidden" name="opCode" value="usage">
             <input type="hidden" name="value" th:value="${usage.value}">
             <input type="hidden" name="complexity" th:value="${usage.complexity}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group form-check">
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">Avalik
@@ -647,7 +647,7 @@
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -682,7 +682,7 @@
             <input type="hidden" name="opCode" value="lexeme_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
             <input type="hidden" name="complexity" th:value="${note.complexity}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -722,7 +722,7 @@
             <input type="hidden" name="id" th:value="${lexeme.wordId}">
             <input type="hidden" name="opCode" value="word_note">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Lisa</button>
@@ -746,7 +746,7 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="word_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -785,7 +785,7 @@
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -822,7 +822,7 @@
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <input type="hidden" name="public" value="true">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -853,7 +853,7 @@
             <input type="hidden" name="opCode" value="meaning_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
             <input type="hidden" name="complexity" th:value="${note.complexity}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -889,7 +889,7 @@
             <input type="hidden" name="value" th:value="${note.valuePrese}">
             <input type="hidden" name="complexity" th:value="${note.complexity}">
             <input type="hidden" name="public" th:value="${note.public}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -940,7 +940,7 @@
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value">
             <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-8" th:if="${userRoleData.userRole.superiorPermission}">
                 <select name="dataset" required class="form-control required-field classifier-select" data-live-search="true">
@@ -1000,7 +1000,7 @@
             <input type="hidden" name="opCode" value="definition">
             <input type="hidden" name="value" th:value="${definition.value}">
             <input type="hidden" name="complexity" th:value="${definition.complexity}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -1061,7 +1061,7 @@
             <input type="hidden" name="id" th:value="${definition.id}">
             <input type="hidden" name="opCode" value="definition_note">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -1095,7 +1095,7 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="definition_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
-            <div th:replace="components :: eki_editor_elem(true)"></div>
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
@@ -1326,7 +1326,11 @@
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="image_title">
             <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem(false)"></div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" name="value"></textarea>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
@@ -1344,7 +1348,11 @@
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="image_title">
             <input type="hidden" name="value" th:value="${image.title}">
-            <div th:replace="components :: eki_editor_elem(false)"></div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" rows="1" name="value" th:text="${image.title}"></textarea>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>

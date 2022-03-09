@@ -1,28 +1,29 @@
 package eki.wordweb.service;
 
+import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.jooq.tools.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.RequestOrigin;
 import eki.common.constant.StatType;
 import eki.common.data.ExceptionStat;
 import eki.common.data.SearchStat;
+import eki.wordweb.data.SearchRequest;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.WordsData;
 
@@ -30,6 +31,8 @@ import eki.wordweb.data.WordsData;
 public class StatDataCollector implements GlobalConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(StatDataCollector.class);
+
+	private static final int REQUEST_TIMEOUT_SECONDS = 5;
 
 	@Value("${ekistat.service.enabled:false}")
 	private boolean serviceEnabled;
@@ -50,39 +53,42 @@ public class StatDataCollector implements GlobalConstant {
 		String exceptionName = exception.getClass().getName();
 		String exceptionMessage = exception.getMessage();
 		ExceptionStat exceptionStat = new ExceptionStat(exceptionName, exceptionMessage);
+		String url = serviceUrl + "/" + StatType.WW_EXCEPTION.name();
 
-		HttpHeaders headers = createHeaders();
-		RestTemplate restTemplate = new RestTemplate();
-		HttpEntity<ExceptionStat> exceptionStatEntity = new HttpEntity<>(exceptionStat, headers);
 		try {
-			restTemplate.postForObject(serviceUrl + "/" + StatType.WW_EXCEPTION.name(), exceptionStatEntity, String.class);
-		} catch (RestClientException e) {
-			logger.error("posting exception stat data failed: {}", e.getMessage());
+			postStat(url, exceptionStat);
+		} catch (Exception e) {
+			logger.error("Posting exception stat data failed.", e);
 		}
 	}
 
 	@Async
-	public void postSearchStat(SearchValidation searchValidation, WordsData wordsData, HttpServletRequest request, boolean isSearchForm, String searchMode) throws Exception {
+	public void postSearchStat(SearchRequest searchRequest) throws Exception {
 
 		if (!serviceEnabled) {
 			return;
 		}
+		SearchValidation searchValidation = searchRequest.getSearchValidation();
 		String searchWord = searchValidation.getSearchWord();
 		Integer homonymNr = searchValidation.getHomonymNr();
 		List<String> destinLangs = searchValidation.getDestinLangs();
 		List<String> datasetCodes = searchValidation.getDatasetCodes();
 		String searchUri = searchValidation.getSearchUri();
+		WordsData wordsData = searchRequest.getWordsData();
 		int resultCount = wordsData.getResultCount();
 		boolean resultsExist = wordsData.isResultsExist();
 		boolean isSingleResult = wordsData.isSingleResult();
+		String sessionId = searchRequest.getSessionId();
+		String userAgent = searchRequest.getUserAgent();
+		String referer = searchRequest.getReferer();
+		boolean isSearchForm = searchRequest.isSearchForm();
+		String searchMode = searchRequest.getSearchMode();
 
-		String sessionId = request.getSession().getId();
-		String userAgent = request.getHeader("User-Agent");
 		String referrerDomain = null;
-		if (request.getHeader("referer") != null) {
-			referrerDomain = new URI(request.getHeader("referer")).getHost();
+		if (referer != null) {
+			referrerDomain = new URI(referer).getHost();
 		}
-		String serverDomain = request.getServerName();
+		String serverDomain = searchRequest.getServerDomain();
 
 		RequestOrigin requestOrigin;
 		if (isSearchForm) {
@@ -107,23 +113,31 @@ public class StatDataCollector implements GlobalConstant {
 		searchStat.setReferrerDomain(referrerDomain);
 		searchStat.setSessionId(sessionId);
 		searchStat.setRequestOrigin(requestOrigin);
+		String url = serviceUrl + "/" + StatType.WW_SEARCH.name();
 
-		HttpHeaders headers = createHeaders();
-		RestTemplate restTemplate = new RestTemplate();
-		HttpEntity<SearchStat> searchStatEntity = new HttpEntity<>(searchStat, headers);
 		try {
-			restTemplate.postForObject(serviceUrl + "/" + StatType.WW_SEARCH.name(), searchStatEntity, String.class);
-		} catch (RestClientException e) {
-			logger.error("posting search stat data failed: {}", e.getMessage());
+			postStat(url, searchStat);
+		} catch (Exception e) {
+			logger.error("Posting search stat data failed.", e);
 		}
 	}
 
-	private HttpHeaders createHeaders() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-		headers.set(STAT_API_KEY_HEADER_NAME, serviceKey);
-		return headers;
+	public void postStat(String url, Object statObject) throws IOException, InterruptedException {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String requestBody = objectMapper.writeValueAsString(statObject);
+		HttpClient client = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create(url))
+				.header(STAT_API_KEY_HEADER_NAME, serviceKey)
+				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
+				.timeout(Duration.ofSeconds(REQUEST_TIMEOUT_SECONDS))
+				.build();
+
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		if (response.statusCode() != HttpStatus.OK.value()) {
+			logger.debug("Unexpected response status code {} when posting stat", response.statusCode());
+		}
 	}
 
 }

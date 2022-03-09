@@ -29,6 +29,7 @@ $(function() {
 	});
 
 	$(document).on("show.bs.modal", "[id^=addUsageMemberDlg_]", function() {
+		initEkiEditorDlg($(this));
 		initUsageMemberDlg($(this));
 	});
 

@@ -18,7 +18,7 @@
             <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
               <span class="lang-code lang-code-sm mr-2 align-self-start"
                     th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
-                    th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                    th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
               <div><p class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value}"></p></div>
             </div>
           </div>
@@ -46,7 +46,7 @@
                   <div class="mb-0 d-flex flex-row" th:each="definitionEntry : ${lexeme.definitionsByLang}">
                     <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
                           th:with="langData=${viewUtil.getLangData(definitionEntry.key)}"
-                          th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                          th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                     <div class="flex-shrink-1" style="font-weight: 500;">
                       <span class="domain register mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                       <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
@@ -144,7 +144,7 @@
                     <div th:id="${'matches-show-more-panel-' + lexeme.lexemeId + '-' + synEntry.key}" class="d-flex flex-wrap">
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(synEntry.key)}"
-                            th:text="${langData.codeIso2}" th:title="${langData.label}">
+                            th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip">
                       </span>
                       <th:block th:each="syn,synIter : ${destinLangSyns}"
                                 th:with="
@@ -255,7 +255,7 @@
                     <div class="d-flex flex-row" th:each="noteEntry : ${lexeme.lexemeNotesByLang}">
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
-                            th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                            th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                       <div><p  class="mb-1" th:each="note, noteIter : ${noteEntry.value}" th:utext="${note.value}"></p></div>
                     </div>
                   </th:block>
@@ -263,7 +263,7 @@
                     <div th:each="noteEntry : ${lexeme.meaningNotesByLang}">
                       <span class="lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
-                            th:text="${langData.codeIso2}" th:title="${langData.label}"></span>
+                            th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                       <div th:each="note : ${noteEntry.value}">
                         <span th:utext="${note.value}"></span>
                         <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">

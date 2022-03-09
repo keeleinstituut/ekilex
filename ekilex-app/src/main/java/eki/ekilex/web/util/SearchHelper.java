@@ -217,6 +217,9 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 				SearchOperand searchOperand = searchCriterion.getSearchOperand();
 				Object searchValue = searchCriterion.getSearchValue();
 				String validationMessageKey = null;
+				if (SearchOperand.EXISTS.equals(searchOperand)) {
+					continue;
+				}
 				if (searchValue == null) {
 					validationMessageKey = "search.validation.empty-value";
 				} else if (StringUtils.isBlank(searchValue.toString())) {
