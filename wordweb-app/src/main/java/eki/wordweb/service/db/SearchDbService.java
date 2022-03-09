@@ -98,7 +98,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.from(c)
 				.where(
 						c.LANG.eq(lang)
-						.and(c.DATASET_CODE.eq(DATASET_ALL)))
+								.and(c.DATASET_CODE.eq(DATASET_ALL)))
 				.asTable("c");
 		return create
 				.select(ww.field("word", String.class))
@@ -367,6 +367,41 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
 					return pojo;
 				});
+	}
+
+	public WordSearchElement getFirstMeaningWord(Long meaningId, SearchContext searchContext) {
+
+		List<String> destinLangs = searchContext.getDestinLangs();
+		List<String> datasetCodes = searchContext.getDatasetCodes();
+
+		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+		Condition where = l.WORD_ID.eq(w.WORD_ID).and(l.MEANING_ID.eq(meaningId));
+
+		if (CollectionUtils.isNotEmpty(destinLangs)) {
+			if (destinLangs.size() == 1) {
+				String destinLang = destinLangs.get(0);
+				where = where.and(w.LANG.eq(destinLang));
+			} else {
+				where = where.and(w.LANG.in(destinLangs));
+			}
+		}
+		if (CollectionUtils.isNotEmpty(datasetCodes)) {
+			if (datasetCodes.size() == 1) {
+				String datasetCode = datasetCodes.get(0);
+				where = where.and(l.DATASET_CODE.eq(datasetCode));
+			} else {
+				where = where.and(l.DATASET_CODE.in(datasetCodes));
+			}
+		}
+
+		return create
+				.select(w.WORD, w.HOMONYM_NR)
+				.from(l, w)
+				.where(where)
+				.orderBy(l.DATASET_ORDER_BY, w.LANG_ORDER_BY, l.LEXEME_ORDER_BY)
+				.limit(1)
+				.fetchOptionalInto(WordSearchElement.class).orElse(null);
 	}
 
 	private Condition composeLexemeJoinCond(MviewWwLexeme l, SearchContext searchContext) {

@@ -29,6 +29,7 @@ import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.SearchValidation;
 import eki.wordweb.data.UiFilterElement;
 import eki.wordweb.data.WordData;
+import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.UnifSearchService;
 import eki.wordweb.web.bean.SessionBean;
@@ -122,7 +123,7 @@ public class UnifSearchController extends AbstractSearchController {
 	@ResponseBody
 	public Map<String, List<String>> searchWordsByFragment(
 			@PathVariable("wordFrag") String wordFragment,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean) {
 
 		List<String> destinLangs = sessionBean.getDestinLangs();
 		List<String> datasetCodes = sessionBean.getDatasetCodes();
@@ -133,7 +134,7 @@ public class UnifSearchController extends AbstractSearchController {
 	@GetMapping(WORD_DETAILS_URI + UNIF_URI + "/{wordId}")
 	public String wordDetails(
 			@PathVariable("wordId") Long wordId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		List<String> destinLangs = sessionBean.getDestinLangs();
@@ -158,6 +159,27 @@ public class UnifSearchController extends AbstractSearchController {
 		String randomWord = unifSearchService.getRandomWord();
 		String searchUri = webUtil.composeDetailSearchUri(DESTIN_LANG_ALL, DATASET_ALL, randomWord, null);
 		return "redirect:" + searchUri;
+	}
+
+	@GetMapping(SEARCH_LINK_URI + UNIF_URI + "/{linkType}/{linkId}")
+	@ResponseBody
+	public String getSearchUri(
+			@PathVariable("linkType") String linkType,
+			@PathVariable("linkId") Long linkId,
+			@ModelAttribute(SESSION_BEAN) SessionBean sessionBean) {
+
+		List<String> destinLangs = sessionBean.getDestinLangs();
+		List<String> datasetCodes = sessionBean.getDatasetCodes();
+
+		WordSearchElement linkWord = unifSearchService.getLinkWord(linkType, linkId, destinLangs, datasetCodes);
+
+		String destinLangsStr = StringUtils.join(destinLangs, UI_FILTER_VALUES_SEPARATOR);
+		String datasetCodesStr = StringUtils.join(datasetCodes, UI_FILTER_VALUES_SEPARATOR);
+		String searchUri = webUtil.composeDetailSearchUri(destinLangsStr, datasetCodesStr, linkWord.getWord(), linkWord.getHomonymNr());
+
+		// TODO impl anchor
+
+		return searchUri;
 	}
 
 	private SearchValidation validateAndCorrectSearch(String destinLangsStr, String datasetCodesStr, String searchWord, String homonymNrStr) {

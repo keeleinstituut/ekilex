@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.ContentKey;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
@@ -24,6 +25,7 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelationsTuple;
+import eki.wordweb.data.WordSearchElement;
 
 @Component
 public class UnifSearchService extends AbstractSearchService {
@@ -91,10 +93,31 @@ public class UnifSearchService extends AbstractSearchService {
 		return composeWordData(word, forms, paradigms, lexLexemes, termLexemes, limTermLexemes);
 	}
 
+	@Transactional
+	public WordSearchElement getLinkWord(String linkType, Long linkId, List<String> destinLangs, List<String> datasetCodes) {
+
+		SearchContext searchContext = getSearchContext(destinLangs, datasetCodes);
+
+		if (StringUtils.equals(ContentKey.MEANING_LINK, linkType)) {
+			Long meaningId = Long.valueOf(linkId);
+			WordSearchElement firstMeaningWord = searchDbService.getFirstMeaningWord(meaningId, searchContext);
+			return firstMeaningWord;
+		}
+		if (StringUtils.equals(ContentKey.WORD_LINK, linkType)) {
+			Long wordId = Long.valueOf(linkId);
+			//TODO impl
+		}
+		return null;
+	}
+
 	@Override
 	public SearchContext getSearchContext(SearchFilter searchFilter) {
 		List<String> destinLangs = searchFilter.getDestinLangs();
 		List<String> datasetCodes = searchFilter.getDatasetCodes();
+		return getSearchContext(destinLangs, datasetCodes);
+	}
+
+	private SearchContext getSearchContext(List<String> destinLangs, List<String> datasetCodes) {
 		Complexity lexComplexity = Complexity.DETAIL;
 		DatasetType datasetType = null;
 		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;

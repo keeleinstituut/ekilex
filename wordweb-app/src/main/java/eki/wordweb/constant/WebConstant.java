@@ -52,6 +52,8 @@ public interface WebConstant {
 
 	String SEARCH_WORD_FRAG_URI = "/searchwordfrag";
 
+	String SEARCH_LINK_URI = "/searchlink";
+
 	String WORD_DETAILS_URI = "/worddetails";
 
 	String FEELING_LUCKY_URI = "/feelinglucky";
