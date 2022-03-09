@@ -286,3 +286,6 @@ begin
   raise info 'Moved lexemes: %', lex_rec_cnt;
 end $$;
 
+-- kth sõnakogu detailsus
+update lexeme set complexity = 'DETAIL' where complexity = 'DEFAULT';
+update definition set complexity = 'DETAIL' where complexity = 'DEFAULT';
