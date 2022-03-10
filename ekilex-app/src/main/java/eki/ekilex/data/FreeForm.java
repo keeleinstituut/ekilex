@@ -34,6 +34,8 @@ public class FreeForm extends AbstractDataObject {
 
 	private Boolean isPublic;
 
+	private String modifiedBy;
+
 	public Long getId() {
 		return id;
 	}
@@ -120,5 +122,13 @@ public class FreeForm extends AbstractDataObject {
 
 	public void setPublic(Boolean aPublic) {
 		isPublic = aPublic;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 }

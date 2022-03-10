@@ -8,7 +8,5 @@ public enum Complexity {
 	SIMPLE1,//ps
 	DETAIL1,//ss
 	SIMPLE2,//qq
-	DETAIL2,//ev
-	@Deprecated
-	DEFAULT,//term
+	DETAIL2//ev
 }

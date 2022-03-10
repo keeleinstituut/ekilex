@@ -165,6 +165,7 @@
                         <div class="col hidden-buttons pr-5">
                           <div class="action-buttons-anchor">
                             <span th:utext="${odWordRecommendation.valuePrese}"></span>
+                            <span class="ctxt" th:text="'[' + ${odWordRecommendation.modifiedBy} + ']'" th:if="${odWordRecommendation.modifiedBy != null}"></span>
                             <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'"></span>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"
