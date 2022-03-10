@@ -47,6 +47,7 @@ import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.LinkedWordSearchElement;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.SearchContext;
 import eki.wordweb.data.Word;
@@ -369,7 +370,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				});
 	}
 
-	public WordSearchElement getFirstMeaningWord(Long meaningId, SearchContext searchContext) {
+	public LinkedWordSearchElement getFirstMeaningWord(Long meaningId, SearchContext searchContext) {
 
 		List<String> destinLangs = searchContext.getDestinLangs();
 		List<String> datasetCodes = searchContext.getDatasetCodes();
@@ -396,12 +397,13 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		}
 
 		return create
-				.select(w.WORD, w.HOMONYM_NR)
+				.select(w.WORD, w.HOMONYM_NR, l.LEXEME_ID, l.MEANING_ID)
 				.from(l, w)
 				.where(where)
 				.orderBy(l.DATASET_ORDER_BY, w.LANG_ORDER_BY, l.LEXEME_ORDER_BY)
 				.limit(1)
-				.fetchOptionalInto(WordSearchElement.class).orElse(null);
+				.fetchOptionalInto(LinkedWordSearchElement.class)
+				.orElse(null);
 	}
 
 	private Condition composeLexemeJoinCond(MviewWwLexeme l, SearchContext searchContext) {
@@ -493,6 +495,18 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
 					return pojo;
 				});
+	}
+
+	public LinkedWordSearchElement getWordValue(Long wordId) {
+
+		MviewWwWord w = MVIEW_WW_WORD.as("w");
+
+		return create
+				.select(w.WORD, w.HOMONYM_NR)
+				.from(w)
+				.where(w.WORD_ID.eq(wordId))
+				.fetchOptionalInto(LinkedWordSearchElement.class)
+				.orElse(null);
 	}
 
 	public List<Form> getParadigmForms(Long paradigmId, Integer maxDisplayLevel, boolean excludeQuestionable) {

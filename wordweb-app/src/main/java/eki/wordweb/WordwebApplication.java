@@ -12,12 +12,18 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication(scanBasePackages = {"eki.common", "eki.wordweb"})
+import eki.common.service.TransportService;
+
+@SpringBootApplication
+@ComponentScan(basePackages = {"eki.common", "eki.wordweb"}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, value = {TransportService.class}))
 @EnableCaching
 @EnableTransactionManagement
 @EnableScheduling
@@ -36,7 +42,7 @@ public class WordwebApplication {
 	public static void main(String[] args) {
 		System.setProperty("org.jooq.no-logo", "true");
 		System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");
-		System.setProperty ("jsse.enableSNIExtension", "false");
+		System.setProperty("jsse.enableSNIExtension", "false");
 		SpringApplication.run(WordwebApplication.class, args);
 	}
 

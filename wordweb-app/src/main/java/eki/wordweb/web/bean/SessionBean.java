@@ -16,6 +16,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private String recentWord;
 
+	private Long linkedLexemeId;
+
 	public List<String> getDestinLangs() {
 		return destinLangs;
 	}
@@ -46,6 +48,14 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setRecentWord(String recentWord) {
 		this.recentWord = recentWord;
+	}
+
+	public Long getLinkedLexemeId() {
+		return linkedLexemeId;
+	}
+
+	public void setLinkedLexemeId(Long linkedLexemeId) {
+		this.linkedLexemeId = linkedLexemeId;
 	}
 
 }

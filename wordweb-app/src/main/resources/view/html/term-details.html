@@ -4,7 +4,7 @@
   <th:block th:fragment="meaning-data" th:with="
             isProTerm = ${viewUtil.isProTermData(lexeme)},
             isLimTerm = ${viewUtil.isLimTermData(lexeme)}">
-    <div>
+    <div th:id="|lexeme-section-${lexeme.lexemeId}|">
       <h6 class="font-weight-bold">
         <a th:href="@{'/ds/' + ${lexeme.datasetCode}}" th:text="${lexeme.datasetName}">Aianduse terminibaas</a>
       </h6>

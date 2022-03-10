@@ -17,6 +17,7 @@ import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeWord;
+import eki.wordweb.data.LinkedWordSearchElement;
 import eki.wordweb.data.Meaning;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SearchContext;
@@ -25,7 +26,6 @@ import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymTuple;
 import eki.wordweb.data.WordRelationsTuple;
-import eki.wordweb.data.WordSearchElement;
 
 @Component
 public class UnifSearchService extends AbstractSearchService {
@@ -94,18 +94,19 @@ public class UnifSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
-	public WordSearchElement getLinkWord(String linkType, Long linkId, List<String> destinLangs, List<String> datasetCodes) {
+	public LinkedWordSearchElement getLinkWord(String linkType, Long linkId, List<String> destinLangs, List<String> datasetCodes) {
 
 		SearchContext searchContext = getSearchContext(destinLangs, datasetCodes);
 
 		if (StringUtils.equals(ContentKey.MEANING_LINK, linkType)) {
 			Long meaningId = Long.valueOf(linkId);
-			WordSearchElement firstMeaningWord = searchDbService.getFirstMeaningWord(meaningId, searchContext);
+			LinkedWordSearchElement firstMeaningWord = searchDbService.getFirstMeaningWord(meaningId, searchContext);
 			return firstMeaningWord;
 		}
 		if (StringUtils.equals(ContentKey.WORD_LINK, linkType)) {
 			Long wordId = Long.valueOf(linkId);
-			//TODO impl
+			LinkedWordSearchElement word = searchDbService.getWordValue(wordId);
+			return word;
 		}
 		return null;
 	}

@@ -80,7 +80,6 @@ $(document).ready(function() {
   };
 
   $("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
-
 });
 
 $(document).on("click", "#clear-search-btn", function(e) {
@@ -92,7 +91,14 @@ $(document).on("click", "eki-link", function(e) {
   var linkId = $(this).attr("link-id");
   var searchLinkUrlWithParams = searchLinkUrl + "/" + linkType + "/" + linkId;
   $.get(searchLinkUrlWithParams).done(function(data) {
-    window.location = data;
+    if (data) {
+      $("#hiddenSearchForm input[name='searchWord']").val(data.word);
+      $("#hiddenSearchForm input[name='selectedWordHomonymNr']").val(data.homonymNr);
+      $("#hiddenSearchForm input[name='linkedLexemeId']").val(data.lexemeId);
+      $("#hiddenSearchForm").submit();
+    } else {
+      //handle incorrect link?
+    }
   });
 });
 

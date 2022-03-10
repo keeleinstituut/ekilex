@@ -16,6 +16,8 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import eki.common.service.TransportService;
+
 @SpringBootApplication(scanBasePackages = {
 		"eki.common",
 		"eki.ekilex.app.config",

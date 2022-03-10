@@ -18,6 +18,8 @@ public class WordData extends AbstractDataObject {
 
 	private List<Paradigm> paradigms;
 
+	private Long linkedLexemeId;
+
 	private String firstAvailableAudioFile;
 
 	private boolean morphologyExists;
@@ -66,6 +68,14 @@ public class WordData extends AbstractDataObject {
 
 	public void setParadigms(List<Paradigm> paradigms) {
 		this.paradigms = paradigms;
+	}
+
+	public Long getLinkedLexemeId() {
+		return linkedLexemeId;
+	}
+
+	public void setLinkedLexemeId(Long linkedLexemeId) {
+		this.linkedLexemeId = linkedLexemeId;
 	}
 
 	public String getFirstAvailableAudioFile() {

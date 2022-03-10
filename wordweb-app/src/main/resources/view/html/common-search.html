@@ -6,10 +6,10 @@
     <div class="main-search" th:classappend="${pageContext == 'search' ? 'compact' : ''}">
       <form th:action="@{${searchUri}}" th:method="post" name="searchForm">
         <div>
-          <input id="search" type="text" role="search" class="main-search-input form-control search-phrase" 
-                 name="searchWord"
+          <input id="search" type="text" name="searchWord" th:value="${searchWord}"
+                 class="main-search-input form-control search-phrase" 
                  th:classappend="${pageContext == 'search' ? 'compact' : ''}"
-                 th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
+                 th:placeholder="#{search.placeholder}" role="search" />
           <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="datasetCodesStr" th:value="${datasetCodesStr}" />
           <input type="hidden" name="selectedWordHomonymNr" />
@@ -26,6 +26,13 @@
             <span class="fas fa-search"></span>
           </button>
         </div>
+      </form>
+      <form th:action="@{${searchUri}}" th:method="post" id="hiddenSearchForm">
+        <input type="hidden" name="searchWord" />
+        <input type="hidden" name="selectedWordHomonymNr" />
+        <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
+        <input type="hidden" name="datasetCodesStr" th:value="${datasetCodesStr}" />
+        <input type="hidden" name="linkedLexemeId" />
       </form>
     </div>
   </th:block>
