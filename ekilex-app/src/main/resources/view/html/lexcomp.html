@@ -815,6 +815,7 @@
             <div class="action-buttons-anchor">
               <div class="pr-3">
                 <span th:utext="${odLexemeRecommendation.valuePrese}"></span>
+                <span class="ctxt" th:text="'[' + ${odLexemeRecommendation.modifiedBy} + ']'" th:if="${odLexemeRecommendation.modifiedBy != null}"></span>
                 <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odLexemeRecommendation.complexity}} + ')'" data-plugin="complexity"></span>
               </div>
               <div class="action-buttons-2">
