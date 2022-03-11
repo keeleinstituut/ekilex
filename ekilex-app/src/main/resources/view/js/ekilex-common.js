@@ -164,6 +164,10 @@ function changeItemOrdering(target, delta) {
 	let itemToMove = target.closest('[data-orderby]');
 	let additionalInfo = orderBlock.attr('data-additional-info');
 	let items = orderBlock.find('[data-orderby]');
+	items = $.grep(items, function(item, index) {
+		return $(item).parent().attr("data-op-code") === opCode;
+	});
+	items = $(items);
 	let itemToMovePos = items.index(itemToMove);
 	let orderedItems = [];
 	if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {

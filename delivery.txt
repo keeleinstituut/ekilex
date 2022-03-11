@@ -1,8 +1,5 @@
-Märkused ver 1.22.0 tarne kohta:
+Märkused ver 1.23.0 tarne kohta:
 
-* Uuendada sõnaveebi properties faile, lisandus Indreku korpuse teenus ja olemasolevate korpuste parameetite nimetused muutusid:
-- kõikide 'corpora' algusega parameetrite nimetuste uus algus on 'corpus' (nt 'corpora.service.est.url' -> 'corpus.service.est.url')
-- 'corpora.service.est.parameters' ja 'corpora.service.rus.parameters' muutus lisaks nimetusele ka sisu
-- lisandus 2 uut parameetrit 'corpus.service.trans.url' ja 'corpus.service.trans.estrus.corpname'
-
-* Lisandus igaöine homonüüminumbrite järjestamise teenus. Teenust on võimalik käivitada ka '/maintenance/adjusthomonymnumbers'
+* Tarne sql skriptis on veelkord default complexity muutmine detailseks, kuna kth sõnakogus
+leidus sellise detailsusega ilmikuid ja definitsioone.
+Koodist on nüüd default complexity eemaldatud.
