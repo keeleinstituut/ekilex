@@ -690,7 +690,7 @@ function initWordValueEditorDlg(dlg) {
 		let form = dlg.find('form');
 		if (editFld.html()) {
 			let wordValue = editFld.html();
-			wordValue = wordValue.replaceAll("&nbsp;", "")
+			wordValue = wordValue.replaceAll("&nbsp;", " ")
 			valueInput.val(wordValue);
 			$.ajax({
 				url: form.attr('action'),

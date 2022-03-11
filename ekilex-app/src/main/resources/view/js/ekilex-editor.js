@@ -17,7 +17,6 @@ function toggleUsageMemberAdditionalFields(dlg, usageMemberType) {
 
 function initEkiEditorDlg(editDlg) {
 	let modifyFld = editDlg.find('[data-id="editFld"]');
-	console.log(editDlg.find('[name=value]').val());
 	modifyFld.val(editDlg.find('[name=value]').val());
 
 	const complexityBtns = editDlg.find('[name="complexity"]');
@@ -29,19 +28,15 @@ function initEkiEditorDlg(editDlg) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		if (modifyFld.val()) {
 			let content = modifyFld.val();
-			content = content.replace("<br>", "").replaceAll("&nbsp;", "")
+			content = content.replace("<br>", "").replaceAll("&nbsp;", " ");
 			editDlg.find('[name=value]').val(content);
 			modifyFld.removeClass('is-invalid');
-			submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+			submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.');
 		} else {
 			e.preventDefault();
 			modifyFld.addClass('is-invalid');
 		}
 	});
-	/*
-	let ekiEditorElem = editDlg.find('.eki-editor');
-	initEkiEditor(ekiEditorElem);
-	*/
 };
 
 function initEkiEditor(ekiEditorElem) {
