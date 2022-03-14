@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -1375879183;
+    private static final long serialVersionUID = 2106541355;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -111,6 +111,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     public final TableField<LexemeRecord, Integer> RELIABILITY = createField(DSL.name("reliability"), org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
+     * The column <code>public.lexeme.proficiency_level_code</code>.
+     */
+    public final TableField<LexemeRecord, String> PROFICIENCY_LEVEL_CODE = createField(DSL.name("proficiency_level_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * Create a <code>public.lexeme</code> table reference
      */
     public Lexeme() {
@@ -170,7 +175,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     @Override
     public List<ForeignKey<LexemeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY, Keys.LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY);
     }
 
     public Word word() {
@@ -187,6 +192,10 @@ public class Lexeme extends TableImpl<LexemeRecord> {
 
     public ValueState valueState() {
         return new ValueState(this, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
+    }
+
+    public ProficiencyLevel proficiencyLevel() {
+        return new ProficiencyLevel(this, Keys.LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY);
     }
 
     @Override
@@ -216,11 +225,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean, Integer> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean, Integer, String> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

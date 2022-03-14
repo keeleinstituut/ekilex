@@ -289,3 +289,42 @@ end $$;
 -- kth sõnakogu detailsus
 update lexeme set complexity = 'DETAIL' where complexity = 'DEFAULT';
 update definition set complexity = 'DETAIL' where complexity = 'DEFAULT';
+
+-- ilmiku keeletase
+create table proficiency_level
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null,
+  order_by bigserial
+);
+
+create table proficiency_level_label
+(
+  code varchar(100) references proficiency_level(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references language(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
+alter table lexeme add column proficiency_level_code varchar(100) references proficiency_level(code) null;
+
+insert into proficiency_level (code, datasets) values ('A1', '{}');
+insert into proficiency_level (code, datasets) values ('A2', '{}');
+insert into proficiency_level (code, datasets) values ('B1', '{}');
+insert into proficiency_level (code, datasets) values ('B2', '{}');
+insert into proficiency_level (code, datasets) values ('C1', '{}');
+insert into proficiency_level (code, datasets) values ('C2', '{}');
+
+insert into proficiency_level_label (code, value, lang, type) values ('A1', 'A1', 'est', 'descrip');
+insert into proficiency_level_label (code, value, lang, type) values ('A2', 'A2', 'est', 'descrip');
+insert into proficiency_level_label (code, value, lang, type) values ('B1', 'B1', 'est', 'descrip');
+insert into proficiency_level_label (code, value, lang, type) values ('B2', 'B2', 'est', 'descrip');
+insert into proficiency_level_label (code, value, lang, type) values ('C1', 'C1', 'est', 'descrip');
+insert into proficiency_level_label (code, value, lang, type) values ('C2', 'C2', 'est', 'descrip');
+insert into proficiency_level_label (code, value, lang, type) values ('A1', 'A1', 'est', 'wordweb');
+insert into proficiency_level_label (code, value, lang, type) values ('A2', 'A2', 'est', 'wordweb');
+insert into proficiency_level_label (code, value, lang, type) values ('B1', 'B1', 'est', 'wordweb');
+insert into proficiency_level_label (code, value, lang, type) values ('B2', 'B2', 'est', 'wordweb');
+insert into proficiency_level_label (code, value, lang, type) values ('C1', 'C1', 'est', 'wordweb');
+insert into proficiency_level_label (code, value, lang, type) values ('C2', 'C2', 'est', 'wordweb');

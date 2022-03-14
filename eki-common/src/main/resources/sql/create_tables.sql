@@ -465,6 +465,23 @@ create table tag
   order_by bigserial
 );
 
+-- keeletase
+create table proficiency_level
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null,
+  order_by bigserial
+);
+
+create table proficiency_level_label
+(
+  code varchar(100) references proficiency_level(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references language(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -844,6 +861,7 @@ create table lexeme
   level1 integer default 0 not null,
   level2 integer default 0 not null,
   value_state_code varchar(100) references value_state(code) null,
+  proficiency_level_code varchar(100) references proficiency_level(code) null,
   is_public boolean default true not null,
   complexity varchar(100) not null,
   weight numeric(5,4) default 1,

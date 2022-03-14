@@ -144,6 +144,11 @@ public class CommonDataService implements SystemConstant {
 	}
 
 	@Transactional
+	public List<Classifier> getProficiencyLevels() {
+		return commonDataDbService.getProficiencyLevels(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+	}
+
+	@Transactional
 	public List<Classifier> getSemanticTypes() {
 		return commonDataDbService.getSemanticTypes(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 	}
@@ -219,6 +224,9 @@ public class CommonDataService implements SystemConstant {
 		}
 		if (ClassifierName.VALUE_STATE.equals(classifierName)) {
 			return getValueStates();
+		}
+		if (ClassifierName.PROFICIENCY_LEVEL.equals(classifierName)) {
+			return getProficiencyLevels();
 		}
 		if (ClassifierName.SEMANTIC_TYPE.equals(classifierName)) {
 			return getSemanticTypes();

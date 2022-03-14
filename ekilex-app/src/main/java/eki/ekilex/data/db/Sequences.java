@@ -395,6 +395,11 @@ public class Sequences {
     public static final Sequence<Long> POS_ORDER_BY_SEQ = Internal.createSequence("pos_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.proficiency_level_order_by_seq</code>
+     */
+    public static final Sequence<Long> PROFICIENCY_LEVEL_ORDER_BY_SEQ = Internal.createSequence("proficiency_level_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.region_order_by_seq</code>
      */
     public static final Sequence<Long> REGION_ORDER_BY_SEQ = Internal.createSequence("region_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
