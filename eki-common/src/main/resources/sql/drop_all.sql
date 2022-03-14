@@ -147,6 +147,8 @@ drop table if exists definition_type_label;
 drop table if exists definition_type;
 drop table if exists government_type_label;
 drop table if exists government_type;
+drop table if exists proficiency_level_label;
+drop table if exists proficiency_level;
 drop table if exists value_state_label;
 drop table if exists value_state;
 drop table if exists language_label;

@@ -89,6 +89,11 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 		return commonDataService.getValueStates();
 	}
 
+	@ModelAttribute("lexemeProficiencyLevels")
+	public List<Classifier> getLexemeProficiencyLevels() {
+		return commonDataService.getProficiencyLevels();
+	}
+
 	@ModelAttribute("semanticTypes")
 	public List<Classifier> getSemanticTypes() {
 		return commonDataService.getSemanticTypes();

@@ -79,6 +79,8 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.ProficiencyLevel;
+import eki.ekilex.data.db.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
@@ -189,6 +191,8 @@ import eki.ekilex.data.db.tables.records.PosGroupLabelRecord;
 import eki.ekilex.data.db.tables.records.PosGroupRecord;
 import eki.ekilex.data.db.tables.records.PosLabelRecord;
 import eki.ekilex.data.db.tables.records.PosRecord;
+import eki.ekilex.data.db.tables.records.ProficiencyLevelLabelRecord;
+import eki.ekilex.data.db.tables.records.ProficiencyLevelRecord;
 import eki.ekilex.data.db.tables.records.RegionRecord;
 import eki.ekilex.data.db.tables.records.RegisterLabelRecord;
 import eki.ekilex.data.db.tables.records.RegisterRecord;
@@ -301,6 +305,7 @@ public class Keys {
     public static final Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Identities0.IDENTITY_PARADIGM;
     public static final Identity<PosRecord, Long> IDENTITY_POS = Identities0.IDENTITY_POS;
     public static final Identity<PosGroupRecord, Long> IDENTITY_POS_GROUP = Identities0.IDENTITY_POS_GROUP;
+    public static final Identity<ProficiencyLevelRecord, Long> IDENTITY_PROFICIENCY_LEVEL = Identities0.IDENTITY_PROFICIENCY_LEVEL;
     public static final Identity<RegionRecord, Long> IDENTITY_REGION = Identities0.IDENTITY_REGION;
     public static final Identity<RegisterRecord, Long> IDENTITY_REGISTER = Identities0.IDENTITY_REGISTER;
     public static final Identity<SemanticTypeRecord, Long> IDENTITY_SEMANTIC_TYPE = Identities0.IDENTITY_SEMANTIC_TYPE;
@@ -435,6 +440,8 @@ public class Keys {
     public static final UniqueKey<PosGroupRecord> POS_GROUP_PKEY = UniqueKeys0.POS_GROUP_PKEY;
     public static final UniqueKey<PosGroupLabelRecord> POS_GROUP_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.POS_GROUP_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.POS_LABEL_CODE_LANG_TYPE_KEY;
+    public static final UniqueKey<ProficiencyLevelRecord> PROFICIENCY_LEVEL_PKEY = UniqueKeys0.PROFICIENCY_LEVEL_PKEY;
+    public static final UniqueKey<ProficiencyLevelLabelRecord> PROFICIENCY_LEVEL_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.PROFICIENCY_LEVEL_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<RegionRecord> REGION_PKEY = UniqueKeys0.REGION_PKEY;
     public static final UniqueKey<RegisterRecord> REGISTER_PKEY = UniqueKeys0.REGISTER_PKEY;
     public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.REGISTER_LABEL_CODE_LANG_TYPE_KEY;
@@ -561,6 +568,7 @@ public class Keys {
     public static final ForeignKey<LexemeRecord, MeaningRecord> LEXEME__LEXEME_MEANING_ID_FKEY = ForeignKeys0.LEXEME__LEXEME_MEANING_ID_FKEY;
     public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_DATASET_CODE_FKEY;
     public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY;
+    public static final ForeignKey<LexemeRecord, ProficiencyLevelRecord> LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY;
     public static final ForeignKey<LexemeActivityLogRecord, LexemeRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeActivityLogRecord, ActivityLogRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = ForeignKeys0.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY;
     public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY;
@@ -611,6 +619,9 @@ public class Keys {
     public static final ForeignKey<PosLabelRecord, PosRecord> POS_LABEL__POS_LABEL_CODE_FKEY = ForeignKeys0.POS_LABEL__POS_LABEL_CODE_FKEY;
     public static final ForeignKey<PosLabelRecord, LanguageRecord> POS_LABEL__POS_LABEL_LANG_FKEY = ForeignKeys0.POS_LABEL__POS_LABEL_LANG_FKEY;
     public static final ForeignKey<PosLabelRecord, LabelTypeRecord> POS_LABEL__POS_LABEL_TYPE_FKEY = ForeignKeys0.POS_LABEL__POS_LABEL_TYPE_FKEY;
+    public static final ForeignKey<ProficiencyLevelLabelRecord, ProficiencyLevelRecord> PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_CODE_FKEY = ForeignKeys0.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_CODE_FKEY;
+    public static final ForeignKey<ProficiencyLevelLabelRecord, LanguageRecord> PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_LANG_FKEY = ForeignKeys0.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_LANG_FKEY;
+    public static final ForeignKey<ProficiencyLevelLabelRecord, LabelTypeRecord> PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_TYPE_FKEY = ForeignKeys0.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_TYPE_FKEY;
     public static final ForeignKey<RegisterLabelRecord, RegisterRecord> REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY;
     public static final ForeignKey<RegisterLabelRecord, LanguageRecord> REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY;
     public static final ForeignKey<RegisterLabelRecord, LabelTypeRecord> REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY;
@@ -727,6 +738,7 @@ public class Keys {
         public static Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Internal.createIdentity(Paradigm.PARADIGM, Paradigm.PARADIGM.ID);
         public static Identity<PosRecord, Long> IDENTITY_POS = Internal.createIdentity(Pos.POS, Pos.POS.ORDER_BY);
         public static Identity<PosGroupRecord, Long> IDENTITY_POS_GROUP = Internal.createIdentity(PosGroup.POS_GROUP, PosGroup.POS_GROUP.ORDER_BY);
+        public static Identity<ProficiencyLevelRecord, Long> IDENTITY_PROFICIENCY_LEVEL = Internal.createIdentity(ProficiencyLevel.PROFICIENCY_LEVEL, ProficiencyLevel.PROFICIENCY_LEVEL.ORDER_BY);
         public static Identity<RegionRecord, Long> IDENTITY_REGION = Internal.createIdentity(Region.REGION, Region.REGION.ORDER_BY);
         public static Identity<RegisterRecord, Long> IDENTITY_REGISTER = Internal.createIdentity(Register.REGISTER, Register.REGISTER.ORDER_BY);
         public static Identity<SemanticTypeRecord, Long> IDENTITY_SEMANTIC_TYPE = Internal.createIdentity(SemanticType.SEMANTIC_TYPE, SemanticType.SEMANTIC_TYPE.ORDER_BY);
@@ -859,6 +871,8 @@ public class Keys {
         public static final UniqueKey<PosGroupRecord> POS_GROUP_PKEY = Internal.createUniqueKey(PosGroup.POS_GROUP, "pos_group_pkey", new TableField[] { PosGroup.POS_GROUP.CODE }, true);
         public static final UniqueKey<PosGroupLabelRecord> POS_GROUP_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(PosGroupLabel.POS_GROUP_LABEL, "pos_group_label_code_lang_type_key", new TableField[] { PosGroupLabel.POS_GROUP_LABEL.CODE, PosGroupLabel.POS_GROUP_LABEL.LANG, PosGroupLabel.POS_GROUP_LABEL.TYPE }, true);
         public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(PosLabel.POS_LABEL, "pos_label_code_lang_type_key", new TableField[] { PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE }, true);
+        public static final UniqueKey<ProficiencyLevelRecord> PROFICIENCY_LEVEL_PKEY = Internal.createUniqueKey(ProficiencyLevel.PROFICIENCY_LEVEL, "proficiency_level_pkey", new TableField[] { ProficiencyLevel.PROFICIENCY_LEVEL.CODE }, true);
+        public static final UniqueKey<ProficiencyLevelLabelRecord> PROFICIENCY_LEVEL_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL, "proficiency_level_label_code_lang_type_key", new TableField[] { ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL.CODE, ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL.LANG, ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL.TYPE }, true);
         public static final UniqueKey<RegionRecord> REGION_PKEY = Internal.createUniqueKey(Region.REGION, "region_pkey", new TableField[] { Region.REGION.CODE }, true);
         public static final UniqueKey<RegisterRecord> REGISTER_PKEY = Internal.createUniqueKey(Register.REGISTER, "register_pkey", new TableField[] { Register.REGISTER.CODE }, true);
         public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(RegisterLabel.REGISTER_LABEL, "register_label_code_lang_type_key", new TableField[] { RegisterLabel.REGISTER_LABEL.CODE, RegisterLabel.REGISTER_LABEL.LANG, RegisterLabel.REGISTER_LABEL.TYPE }, true);
@@ -983,6 +997,7 @@ public class Keys {
         public static final ForeignKey<LexemeRecord, MeaningRecord> LEXEME__LEXEME_MEANING_ID_FKEY = Internal.createForeignKey(Keys.MEANING_PKEY, Lexeme.LEXEME, "lexeme_meaning_id_fkey", new TableField[] { Lexeme.LEXEME.MEANING_ID }, true);
         public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = Internal.createForeignKey(Keys.DATASET_PKEY, Lexeme.LEXEME, "lexeme_dataset_code_fkey", new TableField[] { Lexeme.LEXEME.DATASET_CODE }, true);
         public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = Internal.createForeignKey(Keys.VALUE_STATE_PKEY, Lexeme.LEXEME, "lexeme_value_state_code_fkey", new TableField[] { Lexeme.LEXEME.VALUE_STATE_CODE }, true);
+        public static final ForeignKey<LexemeRecord, ProficiencyLevelRecord> LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY = Internal.createForeignKey(Keys.PROFICIENCY_LEVEL_PKEY, Lexeme.LEXEME, "lexeme_proficiency_level_code_fkey", new TableField[] { Lexeme.LEXEME.PROFICIENCY_LEVEL_CODE }, true);
         public static final ForeignKey<LexemeActivityLogRecord, LexemeRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_lexeme_id_fkey", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.LEXEME_ID }, true);
         public static final ForeignKey<LexemeActivityLogRecord, ActivityLogRecord> LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY = Internal.createForeignKey(Keys.ACTIVITY_LOG_PKEY, LexemeActivityLog.LEXEME_ACTIVITY_LOG, "lexeme_activity_log_activity_log_id_fkey", new TableField[] { LexemeActivityLog.LEXEME_ACTIVITY_LOG.ACTIVITY_LOG_ID }, true);
         public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = Internal.createForeignKey(Keys.LEXEME_PKEY, LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_lexeme_id_fkey", new TableField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID }, true);
@@ -1033,6 +1048,9 @@ public class Keys {
         public static final ForeignKey<PosLabelRecord, PosRecord> POS_LABEL__POS_LABEL_CODE_FKEY = Internal.createForeignKey(Keys.POS_PKEY, PosLabel.POS_LABEL, "pos_label_code_fkey", new TableField[] { PosLabel.POS_LABEL.CODE }, true);
         public static final ForeignKey<PosLabelRecord, LanguageRecord> POS_LABEL__POS_LABEL_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, PosLabel.POS_LABEL, "pos_label_lang_fkey", new TableField[] { PosLabel.POS_LABEL.LANG }, true);
         public static final ForeignKey<PosLabelRecord, LabelTypeRecord> POS_LABEL__POS_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, PosLabel.POS_LABEL, "pos_label_type_fkey", new TableField[] { PosLabel.POS_LABEL.TYPE }, true);
+        public static final ForeignKey<ProficiencyLevelLabelRecord, ProficiencyLevelRecord> PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_CODE_FKEY = Internal.createForeignKey(Keys.PROFICIENCY_LEVEL_PKEY, ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL, "proficiency_level_label_code_fkey", new TableField[] { ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL.CODE }, true);
+        public static final ForeignKey<ProficiencyLevelLabelRecord, LanguageRecord> PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL, "proficiency_level_label_lang_fkey", new TableField[] { ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL.LANG }, true);
+        public static final ForeignKey<ProficiencyLevelLabelRecord, LabelTypeRecord> PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL, "proficiency_level_label_type_fkey", new TableField[] { ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL.TYPE }, true);
         public static final ForeignKey<RegisterLabelRecord, RegisterRecord> REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY = Internal.createForeignKey(Keys.REGISTER_PKEY, RegisterLabel.REGISTER_LABEL, "register_label_code_fkey", new TableField[] { RegisterLabel.REGISTER_LABEL.CODE }, true);
         public static final ForeignKey<RegisterLabelRecord, LanguageRecord> REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY = Internal.createForeignKey(Keys.LANGUAGE_PKEY, RegisterLabel.REGISTER_LABEL, "register_label_lang_fkey", new TableField[] { RegisterLabel.REGISTER_LABEL.LANG }, true);
         public static final ForeignKey<RegisterLabelRecord, LabelTypeRecord> REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY = Internal.createForeignKey(Keys.LABEL_TYPE_PKEY, RegisterLabel.REGISTER_LABEL, "register_label_type_fkey", new TableField[] { RegisterLabel.REGISTER_LABEL.TYPE }, true);

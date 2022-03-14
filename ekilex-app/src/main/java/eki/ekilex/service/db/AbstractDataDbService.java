@@ -11,6 +11,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
+import static eki.ekilex.data.db.Tables.PROFICIENCY_LEVEL_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
@@ -245,6 +246,26 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 								.and(VALUE_STATE_LABEL.CODE.eq(LEXEME.VALUE_STATE_CODE))
 								.and(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang))
 								.and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.asField();
+	}
+
+	protected Field<TypeClassifierRecord> getLexemeProficiencyLevelField(Field<Long> lexemeIdField, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		String clrowsql = DSL.row(DSL.field(DSL.value(ClassifierName.PROFICIENCY_LEVEL.name())), PROFICIENCY_LEVEL_LABEL.CODE, PROFICIENCY_LEVEL_LABEL.VALUE).toString();
+		Field<TypeClassifierRecord> claggf = DSL.field(
+				"array_agg("
+						+ clrowsql
+						+ "::type_classifier)",
+				TypeClassifierRecord.class);
+
+		return DSL
+				.select(claggf)
+				.from(LEXEME, PROFICIENCY_LEVEL_LABEL)
+				.where(
+						LEXEME.ID.eq(lexemeIdField)
+								.and(PROFICIENCY_LEVEL_LABEL.CODE.eq(LEXEME.PROFICIENCY_LEVEL_CODE))
+								.and(PROFICIENCY_LEVEL_LABEL.LANG.eq(classifierLabelLang))
+								.and(PROFICIENCY_LEVEL_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.asField();
 	}
 

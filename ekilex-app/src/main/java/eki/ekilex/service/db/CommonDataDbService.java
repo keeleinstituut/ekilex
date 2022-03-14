@@ -46,6 +46,8 @@ import static eki.ekilex.data.db.Tables.POS;
 import static eki.ekilex.data.db.Tables.POS_GROUP;
 import static eki.ekilex.data.db.Tables.POS_GROUP_LABEL;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
+import static eki.ekilex.data.db.Tables.PROFICIENCY_LEVEL;
+import static eki.ekilex.data.db.Tables.PROFICIENCY_LEVEL_LABEL;
 import static eki.ekilex.data.db.Tables.REGION;
 import static eki.ekilex.data.db.Tables.REGISTER;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
@@ -344,6 +346,19 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(VALUE_STATE_LABEL, VALUE_STATE)
 				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)).and(VALUE_STATE_LABEL.CODE.eq(VALUE_STATE.CODE)))
 				.orderBy(VALUE_STATE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
+	public List<Classifier> getProficiencyLevels(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.PROFICIENCY_LEVEL),
+						PROFICIENCY_LEVEL_LABEL.CODE,
+						PROFICIENCY_LEVEL_LABEL.VALUE)
+				.from(PROFICIENCY_LEVEL_LABEL, PROFICIENCY_LEVEL)
+				.where(PROFICIENCY_LEVEL_LABEL.LANG.eq(classifierLabelLang).and(PROFICIENCY_LEVEL_LABEL.TYPE.eq(classifierLabelType)).and(PROFICIENCY_LEVEL_LABEL.CODE.eq(PROFICIENCY_LEVEL.CODE)))
+				.orderBy(PROFICIENCY_LEVEL.ORDER_BY)
 				.fetchInto(Classifier.class);
 	}
 

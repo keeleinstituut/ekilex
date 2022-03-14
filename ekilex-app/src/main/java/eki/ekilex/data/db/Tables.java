@@ -79,6 +79,8 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.ProficiencyLevel;
+import eki.ekilex.data.db.tables.ProficiencyLevelLabel;
 import eki.ekilex.data.db.tables.Region;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
@@ -516,6 +518,16 @@ public class Tables {
      * The table <code>public.pos_label</code>.
      */
     public static final PosLabel POS_LABEL = PosLabel.POS_LABEL;
+
+    /**
+     * The table <code>public.proficiency_level</code>.
+     */
+    public static final ProficiencyLevel PROFICIENCY_LEVEL = ProficiencyLevel.PROFICIENCY_LEVEL;
+
+    /**
+     * The table <code>public.proficiency_level_label</code>.
+     */
+    public static final ProficiencyLevelLabel PROFICIENCY_LEVEL_LABEL = ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL;
 
     /**
      * The table <code>public.region</code>.

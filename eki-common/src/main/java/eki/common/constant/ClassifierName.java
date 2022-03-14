@@ -23,7 +23,8 @@ public enum ClassifierName {
 	ASPECT(true),
 	DEFINITION_TYPE(true),
 	REGION(false),
-	SEMANTIC_TYPE(true)
+	SEMANTIC_TYPE(true),
+	PROFICIENCY_LEVEL(true)
 	;
 
 	private boolean hasLabel;
