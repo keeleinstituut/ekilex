@@ -146,6 +146,30 @@
       </button>
     </div>
   </div>
+  <div class="hidden-buttons row" th:if="${lexeme.lexemeProficiencyLevel != null}" th:fragment="lexeme_proficiency_level">
+    <div class="col pr-0 col-w13rem">
+      <span class="lbl">Keeletase</span>
+    </div>
+    <div class="col pl-0">
+      <span th:text="${lexeme.lexemeProficiencyLevel.value}"></span>
+      <button type="button" class="btn badge badge-primary"
+              title="Muuda"
+              data-toggle="modal"
+              th:data-target="${'#editLexemeProficiencyLevelDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.lexeme.crudGrant">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn badge badge-warning"
+              data-op-code="lexeme_proficiency_level"
+              th:data-id="${lexeme.lexemeId}"
+              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+              data-toggle="delete-confirm"
+              data-placement="right"
+              sec:authorize="#vars.lexeme.crudGrant">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
   <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Grammatika</span>

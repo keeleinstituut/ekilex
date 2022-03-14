@@ -524,6 +524,13 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
+	public void updateLexemeProficiencyLevel(Long lexemeId, String proficiencyLevelCode) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeProficiencyLevel", lexemeId, ActivityOwner.LEXEME);
+		cudDbService.updateLexemeProficiencyLevel(lexemeId, proficiencyLevelCode);
+		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional
 	public void updateLexemeRelationOrdering(List<ListData> items) throws Exception {
 		for (ListData item : items) {
 			Long lexemeRelationId = item.getId();

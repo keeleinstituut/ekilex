@@ -163,6 +163,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), itemValue);
 			break;
+		case "lexeme_proficiency_level":
+			cudService.updateLexemeProficiencyLevel(itemData.getId(), itemValue);
+			break;
 		case "learner_comment":
 			cudService.createMeaningLearnerComment(itemData.getId(), itemValue, itemData.getLanguage());
 			break;
@@ -307,6 +310,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(itemData.getId(), itemValue);
+			break;
+		case "lexeme_proficiency_level":
+			cudService.updateLexemeProficiencyLevel(itemData.getId(), itemValue);
 			break;
 		case "learner_comment":
 			cudService.updateMeaningLearnerComment(itemData.getId(), itemValue);
@@ -544,6 +550,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "lexeme_value_state":
 			cudService.updateLexemeValueState(id, null);
+			break;
+		case "lexeme_proficiency_level":
+			cudService.updateLexemeProficiencyLevel(id, null);
 			break;
 		case "lexeme":
 			cudService.deleteLexeme(id);
