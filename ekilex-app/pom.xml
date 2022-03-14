@@ -53,6 +53,12 @@
 				<spring.boot.mainclass>eki.ekilex.cli.DatasetExporter</spring.boot.mainclass>
 			</properties>
 		</profile>
+		<profile>
+      <id>plimp</id>
+      <properties>
+        <spring.boot.mainclass>eki.ekilex.cli.LexemeProficiencyLevelImporter</spring.boot.mainclass>
+      </properties>
+    </profile>
 	</profiles>
 
 	<build>
