@@ -457,6 +457,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 		Field<TypeClassifierRecord[]> lregf = getLexemeRegistersField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 		Field<TypeClassifierRecord[]> lrgnf = getLexemeRegionsField(l.ID);
 		Field<TypeClassifierRecord> lvalstf = getLexemeValueStateField(l.ID, classifierLabelLang, classifierLabelTypeCode);
+		Field<TypeClassifierRecord> lproflf = getLexemeProficiencyLevelField(l.ID, classifierLabelLang, classifierLabelTypeCode);
 
 		return create
 				.select(
@@ -467,6 +468,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 						l.LEVEL2,
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						lvalstf.as("lexeme_value_state"),
+						l.PROFICIENCY_LEVEL_CODE.as("lexeme_proficiency_level_code"),
+						lproflf.as("lexeme_proficiency_level"),
 						l.RELIABILITY,
 						l.IS_PUBLIC,
 						l.COMPLEXITY,

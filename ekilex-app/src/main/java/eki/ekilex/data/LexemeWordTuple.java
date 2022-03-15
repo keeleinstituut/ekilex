@@ -23,6 +23,10 @@ public class LexemeWordTuple extends AbstractDataObject {
 
 	private Classifier lexemeValueState;
 
+	private String lexemeProficiencyLevelCode;
+
+	private Classifier lexemeProficiencyLevel;
+
 	private Integer reliability;
 
 	private boolean isPublic;
@@ -115,6 +119,22 @@ public class LexemeWordTuple extends AbstractDataObject {
 
 	public void setLexemeValueState(Classifier lexemeValueState) {
 		this.lexemeValueState = lexemeValueState;
+	}
+
+	public String getLexemeProficiencyLevelCode() {
+		return lexemeProficiencyLevelCode;
+	}
+
+	public void setLexemeProficiencyLevelCode(String lexemeProficiencyLevelCode) {
+		this.lexemeProficiencyLevelCode = lexemeProficiencyLevelCode;
+	}
+
+	public Classifier getLexemeProficiencyLevel() {
+		return lexemeProficiencyLevel;
+	}
+
+	public void setLexemeProficiencyLevel(Classifier lexemeProficiencyLevel) {
+		this.lexemeProficiencyLevel = lexemeProficiencyLevel;
 	}
 
 	public Integer getReliability() {
