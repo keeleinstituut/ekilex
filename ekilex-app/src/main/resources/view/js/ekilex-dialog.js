@@ -79,6 +79,10 @@ $(function() {
 		initSelectDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=editLexemeProficiencyLevelDlg_]", function() {
+		initSelectDlg($(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=editLexemeGrammarDlg_]", function(e) {
 		initEkiEditorDlg($(this));
 		alignAndFocus(e, $(this));

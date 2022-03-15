@@ -20,6 +20,7 @@
                   <option value="lexeme_value_state" sec:authorize="#vars.lexeme.crudGrant">Väärtusolek</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Tähenduse seletus</option>
                   <option value="addUsageDlg" sec:authorize="#vars.lexeme.crudGrant">Kasutusnäide</option>
+                  <option value="lexeme_proficiency_level" sec:authorize="#vars.lexeme.crudGrant">Keeletase</option>
                   <option value="lexeme_pos" sec:authorize="#vars.lexeme.crudGrant">Sõnaliik</option>
                   <option value="lexeme_deriv" sec:authorize="#vars.lexeme.crudGrant">Tuletuskood</option>
                   <option value="lexeme_register" sec:authorize="#vars.lexeme.crudGrant">Register</option>
@@ -44,6 +45,14 @@
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'lexeme_proficiency_level_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-4">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${lexemeProficiencyLevels}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
               </div>
             </div>
@@ -1444,6 +1453,23 @@
             <input type="hidden" name="opCode" value="lexeme_value_state">
             <select class="form-control" name="value">
               <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeValueStateCode}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editLexemeProficiencyLevelDlg_' + lexeme.lexemeId}"
+       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
+       class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_proficiency_level_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_proficiency_level">
+            <select class="form-control" name="value">
+              <option th:each="item : ${lexemeProficiencyLevels}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.lexemeProficiencyLevelCode}">value</option>
             </select>
           </div>
         </form>
