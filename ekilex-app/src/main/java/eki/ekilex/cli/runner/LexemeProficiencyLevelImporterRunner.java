@@ -2,6 +2,7 @@ package eki.ekilex.cli.runner;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,8 @@ public class LexemeProficiencyLevelImporterRunner extends AbstractLoaderCommons 
 		SearchDatasetsRestriction searchDatasetsRestriction = new SearchDatasetsRestriction();
 		searchDatasetsRestriction.setNoDatasetsFiltering(true);
 		searchDatasetsRestriction.setAllDatasetsPermissions(true);
+		searchDatasetsRestriction.setFilteringDatasetCodes(Arrays.asList(DATASET_EKI));
+		searchDatasetsRestriction.setSingleFilteringDataset(true);
 
 		List<Long> updatedLexemeIds = new ArrayList<>();
 		List<Long> alreadyMappedWordIds = new ArrayList<>();
