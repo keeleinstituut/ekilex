@@ -51,6 +51,10 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private Classifier lexemeValueState;
 
+	private String lexemeProficiencyLevelCode;
+
+	private Classifier lexemeProficiencyLevel;
+
 	private Integer reliability;
 
 	private List<String> tags;
@@ -280,6 +284,22 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setLexemeValueState(Classifier lexemeValueState) {
 		this.lexemeValueState = lexemeValueState;
+	}
+
+	public String getLexemeProficiencyLevelCode() {
+		return lexemeProficiencyLevelCode;
+	}
+
+	public void setLexemeProficiencyLevelCode(String lexemeProficiencyLevelCode) {
+		this.lexemeProficiencyLevelCode = lexemeProficiencyLevelCode;
+	}
+
+	public Classifier getLexemeProficiencyLevel() {
+		return lexemeProficiencyLevel;
+	}
+
+	public void setLexemeProficiencyLevel(Classifier lexemeProficiencyLevel) {
+		this.lexemeProficiencyLevel = lexemeProficiencyLevel;
 	}
 
 	public Integer getReliability() {

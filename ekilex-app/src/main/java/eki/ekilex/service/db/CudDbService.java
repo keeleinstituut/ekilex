@@ -261,6 +261,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateLexemeProficiencyLevel(Long lexemeId, String proficiencyLevelCode) {
+		create.update(LEXEME)
+				.set(LEXEME.PROFICIENCY_LEVEL_CODE, proficiencyLevelCode)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
 	public void updateLexemeComplexity(Long lexemeId, String complexity) {
 		create.update(LEXEME)
 				.set(LEXEME.COMPLEXITY, complexity)
