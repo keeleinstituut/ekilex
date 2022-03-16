@@ -1,0 +1,226 @@
+<div class="wordgame__options">
+  <ul>
+    <li>
+      <span>{{ labels.level }}:</span>
+      <div class="form-check" title="{{ labels.beginner }}">
+        <div class="customRadio">
+          <input
+          {% if options.level == "algtase" %}
+            checked=""
+          {% endif %}
+          class="form-check-input" type="radio" name="sort" id="flexRadioDefault1" sort-id="algtase">
+
+          <div class="customRadio__indicator"></div>
+        </div><!--/customRadio-->
+        <label class="form-check-label" for="flexRadioDefault1">
+          A1-A2
+        </label>
+      </div>
+    
+      <div class="form-check" title="{{labels.advanced}}">
+        <div class="customRadio">
+          <input
+        {% if options.level == "kesktase" %}
+          checked=""
+        {% endif %}
+        class="form-check-input" type="radio" name="sort" id="flexRadioDefault2" sort-id="kesktase">
+          <div class="customRadio__indicator"></div>
+        </div><!--/customRadio-->
+        <label class="form-check-label" for="flexRadioDefault2">
+          A1-B1
+        </label>
+      </div>
+    </li>
+    <li>
+      <span>{{ labels.texttransform }}:</span>
+      <div class="form-check" title="{{labels.lowercase}}">
+        <div class="customRadio">
+          <input
+        {% if options.text_transform == "lower" %}
+          checked=""
+        {% endif %}
+        class="form-check-input" type="radio" name="text_transform" id="flexRadioDefault3" text-transform="lower">
+          <div class="customRadio__indicator"></div>
+        </div><!--/customRadio-->
+        <label class="form-check-label" for="flexRadioDefault3">
+          aa
+        </label>
+      </div>
+  
+      <div class="form-check" title="{{labels.uppercase}}">
+        <div class="customRadio">
+          <input
+        {% if options.text_transform == "upper" %}
+          checked=""
+        {% endif %}
+        class="form-check-input" type="radio" name="text_transform" id="flexRadioDefault4" text-transform="upper">
+          <div class="customRadio__indicator"></div>
+        </div><!--/customRadio-->
+        <label class="form-check-label" for="flexRadioDefault4">
+          AA
+        </label>
+      </div>
+    </li>
+    <li>
+      <span>
+      Automaatne hääldamine:
+      </span>
+      <span>
+      Väljas
+      </span>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="wordAutoplaySwitch" autoplay-switch="" {% if options.autoplay == "on" %} checked {% endif %}>
+        <label class="custom-control-label" for="wordAutoplaySwitch"></label>
+      </div>
+      <span>
+      Sees
+      </span>
+    </li>
+  </ul>
+</div>
+
+<aside class="">
+
+  <div class="dropdown dropdown-game">
+    <button class="btn dropdown-toggle"
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            data-display="static"
+    >
+      {{ options.active_category }}
+    </button>
+    <ul class="dropdown-menu"
+        role="tablist"
+
+      {% for key, item in data %}
+      <li>
+        <a class="nav-link {% if key == options.active_category %}active wordgame-active{% endif %}"
+           data-toggle="pill"
+           href="#v-pills-{{ key|slug }}"
+           role="tab"
+           aria-controls="v-pills-{{ key|slug }}"
+           aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
+           data-category="{{key}}">
+           <img src="/view/images/{{ key|slug }}.svg" />
+           {{key}}
+           </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</aside>
+
+<main role="main" class="content-panel loading wordgame__main">
+  <aside class="wordgame__menu d-md-block d-none">
+    <h1>{{labels.wordgametitle}}</h1>
+    <ul role="tablist">
+    {% for key, item in data %}
+      <li>
+        <button
+          {% if key == options.active_category %}
+            class="wordgame-active"
+          {% endif %}
+          id="v-pills-{{ key|slug }}-tab"
+          role="tab"
+          aria-controls="v-pills-{{ key|slug }}"
+          aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
+          data-category="{{key}}">
+            <img src="/view/images/{{ key|slug }}.svg" aria-hidden="true" alt="{{ key }} menu icon" />
+            {# <i class="fas fa-external-link-alt" aria-hidden="true"></i> #}
+             {{ key }}
+          </button>
+      </li>
+    {% endfor %}
+    </ul>
+  </aside>
+
+  <div class="wordgame__content" id="main" role="main" aria-labelledby="v-pills-{{ options.active_category|slug }}-tab">
+    <div class="wordgame__category--header">
+      <h2>{{ options.active_category }}</h2>
+    </div>
+    {% for sub_key, subcategory in data[options.active_category] %}
+    {% if subcategory %}
+    <div class="wordgame__subcategory--header">
+      {% set is_static_picture = "wordgame_static_picture" in sub_key %}
+      {% if not is_static_picture %}
+        {% if sub_key is not null and sub_key is not empty %}
+        <h3>{{ sub_key }}</h3>
+        {% endif %}
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="row justify-content-center wordgame__row {% if options.text_transform == "upper" %}text-upper{% endif %}" >
+      {% for item in subcategory %}
+        {% if ((item.A1_A2 == "yes" and options.level == "algtase") or (item.A1_B1 == "yes" and options.level == "kesktase")) and ((item.image_link is not null and item.image_link is not empty) or item.type != 1) %}
+        <div class="{{item.cols}} wordgame__col" level="{{ item.level }}">
+            {# <div>order: {{ item.order }}</div> #}
+            {# <div>id: {{ item.wordid }}</div> #}
+            {% if item.type == 1 and item.image_link is not null and item.image_link is not empty %}
+              <div>
+                <div class="wordgame-multicard">
+                  {# <img src="{{item.image_link}}"> #}
+                  {{ source(item.image_link) }}
+                </div>
+              </div>
+            {% endif %}
+            {% if item.type == 2 %}
+            <div class="wordgame-flippable wordgame__card card--type-{{ item.type }}">
+                <div class="card__face">
+                  <a href="{{item.word_link}}" class="card__button card__button--left" target="_blank" aria-label="{{labels.towiki}}" title="{{labels.towiki}}">
+                    <img src="/view/images/sonaveeb-logo-sm2.svg
+                    " aria-hidden="true" class="wordgame__card__icon" alt="{{labels.towiki}} icon">
+                  </a>
+                  <button toggle="flip" class="card__button card__button--right" aria-label="{{labels.example}}" title="{{labels.example}}">
+                    <img src="/view/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.example}} icon">
+                  </button>
+                  <div class="wordgame__card--top">
+                    <div class="wordgame__card__thumb">
+                      <img data-src="{{item.image_link}}" alt="{{item.word}}">
+                    </div>
+                  </div>
+                  <div class="wordgame__card--bottom">
+                    <button class="wordgame__card__name {% if item.audio_link is empty or item.audio_link is null %} wordgame-no-sound {% endif %}" audio-value="{{item.audio_link}}" audio-type="play" {% if item.audio_link is empty or item.audio_link is null %} title="{{labels.nosound}}" {% endif %} aria-label="Audio">
+                      {{ item.word }}
+                    </button>
+                  </div>
+                </div>
+                <div class="card__back">
+                  <button tabindex="-1" toggle="flip" class="card__button card__button--right" aria-label="{{labels.tocardfront}}" title="{{labels.tocardfront}}">
+                    <img src="/view/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.tocardfront}} icon">
+                  </button>
+                  <div class="wordgame__card--top">
+                    <h3>Näited</h3>
+                    {% for example in item.examples %}
+                    <p>
+                      {{example}} <button tabindex="-1" class="wordgame__card__audiobtn" data-words="{{example}}" aria-label="Audio"><img src="/view/images/speaker-icon.png" alt="Audio icon" aria-hidden="true"/></button>
+                    </p>
+                    {% endfor %}
+                  </div>
+                  <div class="wordgame__card--bottom">
+                    <button tabindex="-1" class="wordgame__card__name {% if item.audio_link is empty or item.audio_link is null %} wordgame-no-sound {% endif %}" audio-value="{{item.audio_link}}" audio-type="play" {% if item.audio_link is empty or item.audio_link is null %} title="{{labels.nosound}}" {% endif %} aria-label="Audio">
+                      {{ item.word }}
+                    </button>
+                  </div>
+                </div>
+            </div>
+            {% endif %}
+            {% if item.type == 3 %}
+              {# <img src="{{item.image_link}}">
+              <div>
+                <h1>staatiline pilt</h1>
+              </div> #}
+              <div>
+                <div class="wordgame-static-picture">
+                  <img src="{{item.image_link}}">
+                </div>
+              </div>
+            {% endif %}
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</main>

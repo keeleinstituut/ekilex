@@ -18,6 +18,8 @@ public interface WebConstant {
 
 	String LEARN_PAGE = "learn";
 
+	String WORDGAME_PAGE = "wordgame";
+
 	String REGULATIONS_PAGE = "regulations";
 
 	String GAMES_PAGE = "games";
@@ -61,6 +63,8 @@ public interface WebConstant {
 	String MORPHO_URI = "/morpho";
 
 	String LEARN_URI = "/learn";
+
+	String WORDGAME_URI = "/wordgame";
 
 	String REGULATIONS_URI = "/regulations";
 
