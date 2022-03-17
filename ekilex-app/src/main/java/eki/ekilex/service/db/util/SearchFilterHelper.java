@@ -882,6 +882,26 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where;
 	}
 
+	public Condition applyLexemeProficiencyLevelFilters(List<SearchCriterion> searchCriteria, Field<String> lexemeProficiencyLevelField, Condition where) {
+
+		List<SearchCriterion> filteredCriteria = filterCriteriaBySearchKey(searchCriteria, SearchKey.LEXEME_PROFICIENCY_LEVEL);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			String proficiencyLevelCode = criterion.getSearchValue().toString();
+			boolean isNot = criterion.isNot();
+			Condition critWhere = lexemeProficiencyLevelField.eq(proficiencyLevelCode);
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
 	public Condition applyLexemeFreeformFilters(
 			SearchKey searchKey,
 			FreeformType freeformType,

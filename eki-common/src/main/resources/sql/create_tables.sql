@@ -1257,6 +1257,8 @@ create index meaning_nr_mnr_idx on meaning_nr(mnr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index lexeme_dataset_code_idx on lexeme(dataset_code);
+create index lexeme_value_state_code_idx on lexeme(value_state_code);
+create index lexeme_proficiency_level_code_idx on lexeme(proficiency_level_code);
 create index lexeme_is_public_idx on lexeme(is_public);
 create index lexeme_complexity_idx on lexeme(complexity);
 create index lexeme_tag_lexeme_id_idx on lexeme_tag(lexeme_id);

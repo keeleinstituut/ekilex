@@ -328,3 +328,6 @@ insert into proficiency_level_label (code, value, lang, type) values ('B1', 'B1'
 insert into proficiency_level_label (code, value, lang, type) values ('B2', 'B2', 'est', 'wordweb');
 insert into proficiency_level_label (code, value, lang, type) values ('C1', 'C1', 'est', 'wordweb');
 insert into proficiency_level_label (code, value, lang, type) values ('C2', 'C2', 'est', 'wordweb');
+
+create index lexeme_value_state_code_idx on lexeme(value_state_code);
+create index lexeme_proficiency_level_code_idx on lexeme(proficiency_level_code);

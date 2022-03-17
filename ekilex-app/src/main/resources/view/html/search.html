@@ -402,6 +402,18 @@
                             th:text="${valueState.value}">value state</option>
                   </select>
                 </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_PROFICIENCY_LEVEL'}">
+                  <select class="form-control"
+                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                          data-live-search="true"
+                          th:hidden="${isExistsOperand}"
+                          th:disabled="${isExistsOperand}">
+                    <option th:each="proficiencyLevel : ${lexemeProficiencyLevels}"
+                            th:value="${proficiencyLevel.code}"
+                            th:selected="${criteria.searchValue == proficiencyLevel.code}"
+                            th:text="${proficiencyLevel.value}">proficiency level</option>
+                  </select>
+                </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ATTRIBUTE_NAME'}">
                   <select class="form-control"
                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
@@ -651,6 +663,11 @@
             <div name="LEXEME_VALUE_STATE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
                 <option th:each="valueState : ${lexemeValueStates}" th:value="${valueState.code}" th:text="${valueState.value}">value state</option>
+              </select>
+            </div>
+            <div name="LEXEME_PROFICIENCY_LEVEL" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
+                <option th:each="proficiencyLevel : ${lexemeProficiencyLevels}" th:value="${proficiencyLevel.code}" th:text="${proficiencyLevel.value}">proficiency level</option>
               </select>
             </div>
             <div name="ATTRIBUTE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
