@@ -23,6 +23,12 @@ public class PagesController extends AbstractController {
 		return LEARN_PAGE;
 	}
 
+	@GetMapping(WORDGAME_URI)
+	public String wordgame(Model model) {
+		populateCommonModel(model);
+		return WORDGAME_PAGE;
+	}
+
 	@GetMapping(GAMES_URI)
 	public String games(Model model) {
 		populateCommonModel(model);

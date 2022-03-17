@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="et"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links},_)">
+  <title>Sõnaveeb - Õpime eesti keelt</title>
+  <th:block th:fragment="links">
+    <script type="text/javascript"
+            th:src="@{/view/js/hash.js}"></script>
+    <!-- <script type="text/javascript"
+            th:src="@{/view/js/ww-aside-menu.js}"></script> -->
+    <script type="text/javascript"
+            th:src="@{/view/js/ww-common-audio.js}"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.15.0/twig.min.js"></script> -->
+    <script src="/view/js/twig.min.js"></script>
+    <script src="/view/js/ww-wordgame.js"></script>
+    <script th:inline="javascript">
+      var wordGameTranslations = {
+        'level' : /*[[#{label.wordgame.level}]]*/'Keeletase',
+        'texttransform' : /*[[#{label.wordgame.texttransform}]]*/'Kirjatüüp',
+        'beginner' : /*[[#{label.wordgame.beginner}]]*/'Algtase',
+        'advanced' : /*[[#{label.wordgame.advanced}]]*/'Kesktase',
+        'lowercase' : /*[[#{label.wordgame.lowercase}]]*/'Kirjatäht',
+        'uppercase' : /*[[#{label.wordgame.uppercase}]]*/'Trükitäht',
+        'wordgametitle' : /*[[#{label.wordgame.title}]]*/'Pilt ja heli',
+        'towiki' : /*[[#{label.wordgame.towiki}]]*/'Sõnaveebi',
+        'example' : /*[[#{label.wordgame.example}]]*/'Näitelause',
+        'tocardfront' : /*[[#{label.wordgame.tocardfront}]]*/'Pilt',
+        'nosound' : /*[[#{label.wordgame.nosound}]]*/'Sellel sõnal ei ole heli',
+      }
+    </script>
+  </th:block>
+</head>
+<body>
+<th:block th:replace="common-app :: wcag-sidebar"></th:block>
+<th:block th:replace="common-app :: wcag-main"></th:block>
+<th:block th:replace="common-app :: ie-user"></th:block>
+<div th:replace="common-app :: menu"></div>
+<div class="container-fluid learn">
+    <div id="wordgame"></div>
+</div>
+<div th:replace="common-app :: footer-content"></div>
+<th:block th:replace="common-app :: content-top"></th:block>
+<script th:inline="javascript">
+    setActiveMenuItem('wordgame');
+    $(document).on("click", ".back", function (e) {
+        window.location = applicationUrl;
+    });
+</script>
+</body>
+</html>
