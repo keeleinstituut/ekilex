@@ -1,26 +1,30 @@
 class WordGame {
-  paths = {
-    // data: 'word-game.json',
-    // data: '/view/js/real-data-naide.json',
-    data: '/view/js/wordgame-data.json',
-    template: '/view/js/wordgame.twig',
-    missingImage: '/view/images/missing.svg',
-  }
 
-  images = []
-
-  options = {
-    active_category: undefined,
-    level: undefined,
-    text_transform: undefined,
-    autoplay: undefined,
-  }
-
-  colMapper = {
-    type_1: 'col-12',
-    type_2: 'col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12',
-    type_2_2: 'col-lg-4 col-md-6 col-sm-6 col-xs-12',
-    type_3: 'col-12',
+  constructor() {
+    this.paths = {
+      // data: 'word-game.json',
+      // data: '/view/js/real-data-naide.json',
+      data: '/view/js/wordgame-data.json',
+      template: '/view/js/wordgame.twig',
+      missingImage: '/view/images/wordgame-icons/missing.svg',
+    }
+  
+    this.images = []
+  
+    this.options = {
+      active_category: undefined,
+      level: undefined,
+      text_transform: undefined,
+      autoplay: undefined,
+    }
+  
+    this.colMapper = {
+      type_1: 'col-12',
+      // type_2: 'col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12',
+      type_2: 'col-lg-3 col-md-6 col-sm-6 col-xs-12',
+      type_2_2: 'col-lg-4 col-md-6 col-sm-6 col-xs-12',
+      type_3: 'col-12',
+    }
   }
 
   loadData(path, contentType) {
@@ -153,11 +157,12 @@ class WordGame {
             }
           });
 
-          if (hasOnlyType2) {
-            items[item.sub_category].forEach((item2) => {
-              item2.cols = this.colMapper['type_2_2'];
-            });
-          }
+          // kui alla 4 asja siis suuremad col'id
+          // if (hasOnlyType2) {
+          //   items[item.sub_category].forEach((item2) => {
+          //     item2.cols = this.colMapper['type_2_2'];
+          //   });
+          // }
         }
       });
 
@@ -244,9 +249,9 @@ class WordGame {
             elem.setAttribute("tabindex","-1");
           });
 
+          cardBack.classList.remove('wordgame-hidden');
           setTimeout(() => {
             cardFront.classList.add('wordgame-hidden');
-            cardBack.classList.remove('wordgame-hidden');
           }, 200);
         }
         else {
@@ -258,8 +263,8 @@ class WordGame {
             elem.setAttribute("tabindex","0");
           });
 
+          cardFront.classList.remove('wordgame-hidden');
           setTimeout(() => {
-            cardFront.classList.remove('wordgame-hidden');
             cardBack.classList.add('wordgame-hidden');
           }, 200);
         }
@@ -332,11 +337,9 @@ class WordGame {
               alert(messages.audio_generation_failure);
             })
           } else {
-            if (this.options.autoplay == "off") {
-              playAudio(audioValue, function () {
-              
-              });
-            }
+            playAudio(audioValue, function () {
+            
+            });
           }
           console.log(`audio value: ${audioValue} type: ${audioType}`);
           //play audio
@@ -393,11 +396,9 @@ class WordGame {
 
             if (wordData != null && wordData != "") {
               item.addEventListener('click', (e) => {
-                if (this.options.autoplay == "off") { 
-                  playAudio(wordData.audio_link, function () {
+                playAudio(wordData.audio_link, function () {
 
-                  });
-                }
+                });
               });
               item.addEventListener('mouseenter', (e) => {
                 if (this.options.autoplay == "on") {

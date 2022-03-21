@@ -3,29 +3,29 @@
     <li>
       <span>{{ labels.level }}:</span>
       <div class="form-check" title="{{ labels.beginner }}">
-        <div class="customRadio">
+        <div class="wordgame-customRadio">
           <input
           {% if options.level == "algtase" %}
             checked=""
           {% endif %}
           class="form-check-input" type="radio" name="sort" id="flexRadioDefault1" sort-id="algtase">
 
-          <div class="customRadio__indicator"></div>
-        </div><!--/customRadio-->
+          <div class="wordgame-customRadio__indicator"></div>
+        </div><!--/wordgame-customRadio-->
         <label class="form-check-label" for="flexRadioDefault1">
           A1-A2
         </label>
       </div>
     
       <div class="form-check" title="{{labels.advanced}}">
-        <div class="customRadio">
+        <div class="wordgame-customRadio">
           <input
         {% if options.level == "kesktase" %}
           checked=""
         {% endif %}
         class="form-check-input" type="radio" name="sort" id="flexRadioDefault2" sort-id="kesktase">
-          <div class="customRadio__indicator"></div>
-        </div><!--/customRadio-->
+          <div class="wordgame-customRadio__indicator"></div>
+        </div><!--/wordgame-customRadio-->
         <label class="form-check-label" for="flexRadioDefault2">
           A1-B1
         </label>
@@ -34,28 +34,28 @@
     <li>
       <span>{{ labels.texttransform }}:</span>
       <div class="form-check" title="{{labels.lowercase}}">
-        <div class="customRadio">
+        <div class="wordgame-customRadio">
           <input
         {% if options.text_transform == "lower" %}
           checked=""
         {% endif %}
         class="form-check-input" type="radio" name="text_transform" id="flexRadioDefault3" text-transform="lower">
-          <div class="customRadio__indicator"></div>
-        </div><!--/customRadio-->
+          <div class="wordgame-customRadio__indicator"></div>
+        </div><!--/wordgame-customRadio-->
         <label class="form-check-label" for="flexRadioDefault3">
           aa
         </label>
       </div>
   
       <div class="form-check" title="{{labels.uppercase}}">
-        <div class="customRadio">
+        <div class="wordgame-customRadio">
           <input
         {% if options.text_transform == "upper" %}
           checked=""
         {% endif %}
         class="form-check-input" type="radio" name="text_transform" id="flexRadioDefault4" text-transform="upper">
-          <div class="customRadio__indicator"></div>
-        </div><!--/customRadio-->
+          <div class="wordgame-customRadio__indicator"></div>
+        </div><!--/wordgame-customRadio-->
         <label class="form-check-label" for="flexRadioDefault4">
           AA
         </label>
@@ -63,23 +63,28 @@
     </li>
     <li>
       <span>
-      Automaatne hääldamine:
+      {{labels.autoplay}}:
       </span>
       <span>
-      Väljas
+      {{labels.off}}
       </span>
-      <div class="custom-control custom-switch">
+      <div class="custom-control custom-switch wordgame-custom-toggle">
         <input type="checkbox" class="custom-control-input" id="wordAutoplaySwitch" autoplay-switch="" {% if options.autoplay == "on" %} checked {% endif %}>
         <label class="custom-control-label" for="wordAutoplaySwitch"></label>
       </div>
       <span>
-      Sees
+      {{labels.on}}
       </span>
+    </li>
+    <li>
+      <button name="feedback-btn" value="feedback" class="feedback-btn ml-auto btn btn-success py-0 show-with-details"
+        role="button" type="button" data-toggle="modal" data-target="#feedbackModal"
+        data-item-name="feedback">Tagasiside</button>
     </li>
   </ul>
 </div>
 
-<aside class="">
+<aside>
 
   <div class="dropdown dropdown-game">
     <button class="btn dropdown-toggle"
@@ -103,7 +108,7 @@
            aria-controls="v-pills-{{ key|slug }}"
            aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
            data-category="{{key}}">
-           <img src="/view/images/{{ key|slug }}.svg" />
+           <img src="/view/images/wordgame-icons/{{ key|slug }}.svg" />
            {{key}}
            </a>
       </li>
@@ -127,7 +132,7 @@
           aria-controls="v-pills-{{ key|slug }}"
           aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
           data-category="{{key}}">
-            <img src="/view/images/{{ key|slug }}.svg" aria-hidden="true" alt="{{ key }} menu icon" />
+            <img src="/view/images/wordgame-icons/{{ key|slug }}.svg" aria-hidden="true" alt="{{ key }} menu icon" />
             {# <i class="fas fa-external-link-alt" aria-hidden="true"></i> #}
              {{ key }}
           </button>
