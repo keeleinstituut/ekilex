@@ -21,7 +21,7 @@ class WordGame {
     this.colMapper = {
       type_1: 'col-12',
       // type_2: 'col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12',
-      type_2: 'col-lg-3 col-md-6 col-sm-6 col-xs-12',
+      type_2: 'col-lg-3 col-md-6 col-sm-6 col-xs-9 col-9',
       type_2_2: 'col-lg-4 col-md-6 col-sm-6 col-xs-12',
       type_3: 'col-12',
     }
@@ -121,6 +121,7 @@ class WordGame {
         staticPictureCounter++;
       }
 
+      // item level convertimine, juhul kui datas pole märgitud, kus kategoorias antud itemit kuvada tahetakse
       if (!item.level || item.level == "" || item.level == null) {
         item.level = 'A1';
       }
@@ -217,6 +218,8 @@ class WordGame {
         }
         this.pushToUrl();
         this.renderTemplate();
+
+        window.scrollTo(0, 0);
       });
     });
 
@@ -251,6 +254,7 @@ class WordGame {
 
           cardBack.classList.remove('wordgame-hidden');
           setTimeout(() => {
+            cardBack.classList.remove('wordgame-hidden');
             cardFront.classList.add('wordgame-hidden');
           }, 200);
         }
@@ -265,6 +269,7 @@ class WordGame {
 
           cardFront.classList.remove('wordgame-hidden');
           setTimeout(() => {
+            cardFront.classList.remove('wordgame-hidden');
             cardBack.classList.add('wordgame-hidden');
           }, 200);
         }
