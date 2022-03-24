@@ -109,6 +109,7 @@ begin
       update definition set value_prese = replace(value_prese, html_entity, sym) where value_prese like '%'||html_entity||'%';
       update word set value = replace(value, html_entity, sym) where value like '%'||html_entity||'%';
       update word set value_prese = replace(value_prese, html_entity, sym) where value_prese like '%'||html_entity||'%';
+      update word set value_as_word = replace(value_as_word, html_entity, sym) where value_as_word like '%'||html_entity||'%';
       raise notice 'replaced % to %',html_entity, sym;
     end loop;
 end $$;
@@ -331,3 +332,6 @@ insert into proficiency_level_label (code, value, lang, type) values ('C2', 'C2'
 
 create index lexeme_value_state_code_idx on lexeme(value_state_code);
 create index lexeme_proficiency_level_code_idx on lexeme(proficiency_level_code);
+
+-- Ehitiste projekteerimise terminibaasi tüüp
+update dataset set type = 'TERM' where code = 'ehpr';
