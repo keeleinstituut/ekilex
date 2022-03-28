@@ -1,7 +1,8 @@
 /* stylelint-disable */
 :root {
   --wordgame-gray: #CCD9E0;
-  --wordgame-purple: #4125D0;
+  // --wordgame-purple: #4125D0;
+  --wordgame-purple: var(--primary);
   --wordgame-card-top-padding: 8px;
   --wordgame-card-top-button-size: 1;
   --wordgame-card-description-padding: 20px;
@@ -59,8 +60,6 @@
       max-width: 1200px !important;
     }
     
-    
-    
     ul {
       display: flex;
       flex-wrap: wrap;
@@ -117,45 +116,19 @@
       } 
     }
 
-    @media (max-width: 576px) {
-      margin-bottom: 10px;
-      li>span {
-        width: 100%;
-      }
+    @media (max-width: 340px) {
       ul {
         li {
-          .form-check{
-            // padding-left: 0;
-            padding-right: 0.5rem;
-          }
+          .form-check {
+            padding-left: 0.4rem;
 
-          margin-right: 0;
+            .wordgame-customRadio {
+              margin-right: 5px !important;
+            }
+          }
         }
       }
     }
-
-    // @media (max-width: 768px) {
-    //   li {
-    //     margin-right: 10px;
-
-    //     div {
-    //       margin-left: 10px;
-    //     }
-    //   }
-    // }
-
-    // li button {
-    //   padding: 0 10px;
-    //   background-color: rgb(218, 218, 218);
-    //   border-radius: 20px;
-    // }
-
-    // button {
-    //   padding: 0;
-    //   background: none;
-    //   border: none;
-    //   appearance: none;
-    // }
   }
 
   &__content {
@@ -264,19 +237,17 @@
 }
 
 .wordgame__card {
-  font-size: 16px;
-  // border: 1px var(--wordgame-gray) solid;
-  // border-radius: 4px;
+  font-size: 14px;
 
   p {
-    font-size: 0.9em;
+    font-size: 1em;
     padding: 0;
     margin: 0;
     margin-top: var(--wordgame-card-description-padding);
   }
 
   h3 {
-    font-size: 1.1em;
+    font-size: 18px;
     margin-top: 2px;
     margin-bottom: 10px;
     color: #687887;
@@ -287,35 +258,26 @@
     width: 100%;
   }
 
-
-
   &--bottom {
     flex-shrink: 0;
     flex-grow: 0;
+    color: black;
     padding: var(--wordgame-card-bottom-padding);
     font-size: 1em;
     border-top: 1px var(--wordgame-gray) solid;
   }
 
-  @media (max-width: 380px) {
-    font-size: 16px;
-  }
-
-  @media (min-width: 380px) {
-    font-size: 20px;
+  @media (max-width: 576px) {
+    font-size: 14px;
   }
 
   @media (min-width: 576px) {
-    font-size: 18px;
-  }
-
-  @media (min-width: 768px) {
     font-size: 16px;
   }
 
-  // @media (min-width: 1200px) and (max-width: 1310px) {
-  //   --wordgame-card-description-padding: 8px;
-  // }
+  @media (min-width: 768px) {
+    font-size: 14px;
+  }
 
   &__icon {
     height: 20px;
@@ -327,6 +289,7 @@
     padding-bottom: 120%;
     background: center center no-repeat;
     background-size: contain;
+    border-radius: 3px;
 
     img {
       position: absolute;
@@ -337,18 +300,39 @@
       opacity: 0;
     }
 
+    &.wordgame-no-image {
+      background-color: #ECF0F2;
+    }
   }
 
   &--top {
+    position: relative;
     flex-grow: 1;
     min-width: 100px;
     overflow: hidden;
     font-size: 1em;
     padding: var(--wordgame-card-top-padding);
 
-    // @media (min-width: 1200px) and (max-width: 1310px) {
-    //   font-size: 0.9em;
-    // }
+    .wordgame-no-image-text {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      p {
+        margin: 0;
+        z-index: 1;
+        text-align: center;
+        color: #8996A4;
+        user-select: none;
+        line-height: 24px;
+        font-size: 16px;
+      }
+    }
   }
 
   &__audiobtn {
@@ -358,7 +342,6 @@
   }
 
   &__name {
-    // padding: var(--wordgame-card-bottom-text-padding);
     min-height: 32px;
     background-color: var(--light);
     display: block;
@@ -367,23 +350,28 @@
     border-radius: 40px;
     border: none;
     appearance: none;
+    color: black;
 
     img {
       display: none;
     }
 
-    @media (pointer:none), (pointer:coarse) {
+    @media (any-hover: none), (pointer: coarse) {
       img {
         display: inline;
-        width: 24px;
-        height: 20px;
+        width: 16px;
+        height: auto;
       }
     }
 
     &:hover {
       color: #fff;
-      cursor: url("/view/images/speaker-icon.png"), auto;
+      cursor: url("/view/images/speaker-icon-light.png"), auto;
       background-color: var(--wordgame-purple);
+
+      img {
+        filter: brightness(0) invert(1);
+      }
 
       &.wordgame-no-sound {
         cursor: default;
@@ -427,7 +415,6 @@
     -webkit-transform: rotateY(0deg);
     -o-transform: rotateY(0deg);
     background-color: white;
-    // z-index: 2;
   }
 
   .card__back {
@@ -480,22 +467,6 @@
       outline: 2px solid black;
     }
 
-    // @media (max-width: 576px) {
-    //   font-size: 30px;
-    // }
-
-    // @media (min-width: 576px) {
-    //   font-size: 24px;
-    // }
-
-    // @media (min-width: 768px) {
-    //   font-size: 22px;
-    // }
-
-    // @media (min-width: 1200px) {
-    //   font-size: 20px;
-    // }
-
     img {
       display: block;
       width: 20px;
@@ -512,10 +483,6 @@
     }
 
   }
-
-  // &.card--flipped {
-  //   transform: rotateY(180deg);
-  // }
 
   &.card--flipped .card__face {
     transform: rotateY(180deg);
@@ -555,13 +522,12 @@
 
 .wordgame-multicard {
   display: flex;
-  padding: 16px;
   position: relative;
   border: 1px var(--wordgame-gray) solid;
   justify-content: center;
   border-radius: 4px;
 
-  width: 70%;
+  width: 60%;
   margin: 0 auto;
 
   @media (max-width: 992px) {
@@ -573,7 +539,7 @@
   }
 
   &-label:hover {
-    cursor: url("/view/images/speaker-icon.png"), auto;
+    cursor: url("/view/images/speaker-icon-light.png"), auto;
 
     &.wordgame-no-sound {
       cursor: default;
@@ -599,7 +565,7 @@
   font-weight: 700;
 }
 
-.wordgame-hidden {
+.wordgame-card-hidden {
   visibility: hidden;
 
   .wordgame__card--top {
@@ -607,20 +573,12 @@
   }
 }
 
-.text-upper {
+.wordgame-text-upper {
   text-transform: uppercase;
 
   button {
     text-transform: uppercase;
   }
-}
-
-.display-block {
-  display: block;
-}
-
-.no-margin {
-  margin: 0;
 }
 
 .wordgame-customRadio {
@@ -639,14 +597,6 @@
   * {
     margin: 0 !important;
   }
-
-  // input {
-  //   &:focus {
-  //     + label::before {
-  //       box-shadow: 0 0px 8px red;
-  //     }
-  //   }
-  // }
 
   input {
     position: absolute;
@@ -756,10 +706,3 @@
     }
   }
 }
-
-// @media (max-width: 576px) {
-//   .wordgame-top-menu {
-//     left: 20px;
-//     top: 0;
-//   }
-// }
