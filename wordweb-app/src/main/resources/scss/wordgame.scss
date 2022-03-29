@@ -366,7 +366,7 @@
 
     &:hover {
       color: #fff;
-      cursor: url("/view/images/speaker-icon-light.png"), auto;
+      cursor: url("../images/speaker-icon-light.png"), auto;
       background-color: var(--wordgame-purple);
 
       img {
@@ -539,7 +539,7 @@
   }
 
   &-label:hover {
-    cursor: url("/view/images/speaker-icon-light.png"), auto;
+    cursor: url("../images/speaker-icon-light.png"), auto;
 
     &.wordgame-no-sound {
       cursor: default;

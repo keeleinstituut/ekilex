@@ -2,9 +2,10 @@ class WordGame {
 
   constructor() {
     this.paths = {
-      data: '/view/js/wordgame-data.json',
-      template: '/view/js/wordgame.twig',
-      missingImage: '/view/images/wordgame-icons/missing.svg',
+      data: `${viewPath}/js/wordgame-data.json`,
+      template: `${viewPath}/js/wordgame.twig`,
+      missingImage: `${viewPath}/images/wordgame-icons/missing.svg`,
+      images: `${viewPath}/images`,
     }
   
     this.images = []
@@ -72,6 +73,7 @@ class WordGame {
         data: this.parsedData,
         options: this.options,
         labels: wordGameTranslations,
+        viewPath: viewPath,
       });
 
       // re-render only necessary stuff
@@ -117,7 +119,7 @@ class WordGame {
             example_1: "",
             example_2: "",
             example_3: "",
-            image_link: `/view/images/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}.svg`,
+            image_link: `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}.svg`,
             audio_link: "",
             level: `${item.level}`,
             A1_A2: `${item.A1_A2}`,

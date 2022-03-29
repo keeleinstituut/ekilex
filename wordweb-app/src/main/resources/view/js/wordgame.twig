@@ -111,7 +111,7 @@
              aria-controls="v-pills-{{ key|slug }}"
              aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
              data-category="{{key}}">
-             <img src="/view/images/wordgame-icons/{{ key|slug }}.svg" />
+             <img src="{{ viewPath }}/images/wordgame-icons/{{ key|slug }}.svg" />
              {{key}}
              </a>
         </li>
@@ -137,7 +137,7 @@
           aria-controls="v-pills-{{ key|slug }}"
           aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
           data-category="{{key}}">
-            <img src="/view/images/wordgame-icons/{{ key|slug }}.svg" aria-hidden="true" alt="{{ key }} menu icon" />
+            <img src="{{ viewPath }}/images/wordgame-icons/{{ key|slug }}.svg" aria-hidden="true" alt="{{ key }} menu icon" />
              {{ key }}
           </button>
       </li>
@@ -177,11 +177,11 @@
             <div class="wordgame-flippable wordgame__card card--type-{{ item.type }}">
                 <div class="card__face">
                   <a href="{{item.word_link}}" class="card__button card__button--left" target="_blank" aria-label="{{labels.towiki}}" title="{{labels.towiki}}">
-                    <img src="/view/images/sonaveeb-logo-light-sm2.svg
+                    <img src="{{ viewPath }}/images/sonaveeb-logo-light-sm2.svg
                     " aria-hidden="true" class="wordgame__card__icon" alt="{{labels.towiki}} icon">
                   </a>
                   <button toggle="flip" class="card__button card__button--right" aria-label="{{labels.example}}" title="{{labels.example}}">
-                    <img src="/view/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.example}} icon">
+                    <img src="{{ viewPath }}/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.example}} icon">
                   </button>
                   <div class="wordgame__card--top">
                     {% if item.image_link is empty or item.image_link is null %}
@@ -195,19 +195,19 @@
                   </div>
                   <div class="wordgame__card--bottom">
                     <button class="wordgame__card__name {% if item.audio_link is empty or item.audio_link is null %} wordgame-no-sound {% endif %}" audio-value="{{item.audio_link}}" audio-type="play" {% if item.audio_link is empty or item.audio_link is null %} title="{{labels.nosound}}" {% endif %} aria-label="Audio">
-                      {{ item.word }} {% if item.audio_link is not empty and item.audio_link is not null %} <img src="/view/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
+                      {{ item.word }} {% if item.audio_link is not empty and item.audio_link is not null %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
                     </button>
                   </div>
                 </div>
                 <div class="card__back">
                   <button tabindex="-1" toggle="flip" class="card__button card__button--right" aria-label="{{labels.tocardfront}}" title="{{labels.tocardfront}}">
-                    <img src="/view/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.tocardfront}} icon">
+                    <img src="{{ viewPath }}/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.tocardfront}} icon">
                   </button>
                   <div class="wordgame__card--top">
                     <h3>Näited</h3>
                     {% for example in item.examples %}
                     <p>
-                      {{example}} <button tabindex="-1" class="wordgame__card__audiobtn" data-words="{{example}}" aria-label="Audio"><img src="/view/images/speaker-icon-dark.svg" alt="Audio icon" aria-hidden="true"/></button>
+                      {{example}} <button tabindex="-1" class="wordgame__card__audiobtn" data-words="{{example}}" aria-label="Audio"><img src="{{ viewPath }}/images/speaker-icon-dark.svg" alt="Audio icon" aria-hidden="true"/></button>
                     </p>
                     {% endfor %}
                     {% if item.examples is empty %}
@@ -218,7 +218,7 @@
                   </div>
                   <div class="wordgame__card--bottom">
                     <button tabindex="-1" class="wordgame__card__name {% if item.audio_link is empty or item.audio_link is null %} wordgame-no-sound {% endif %}" audio-value="{{item.audio_link}}" audio-type="play" {% if item.audio_link is empty or item.audio_link is null %} title="{{labels.nosound}}" {% endif %} aria-label="Audio">
-                      {{ item.word }} {% if item.audio_link is not empty and item.audio_link is not null %} <img src="/view/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
+                      {{ item.word }} {% if item.audio_link is not empty and item.audio_link is not null %} <img src="{{ viewPath }}/images/speaker-icon-dark.svg" aria-hidden="true" alt="{{labels.word}} icon"> {% endif %}
                     </button>
                   </div>
                 </div>

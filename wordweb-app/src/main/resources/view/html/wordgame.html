@@ -10,9 +10,6 @@
             th:src="@{/view/js/ww-aside-menu.js}"></script> -->
     <script type="text/javascript"
             th:src="@{/view/js/ww-common-audio.js}"></script>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.15.0/twig.min.js"></script> -->
-    <script th:src="@{/view/js/twig.min.js}"></script>
-    <script th:src="@{/view/js/ww-wordgame.js}"></script>
     <script th:inline="javascript">
       var wordGameTranslations = {
         'level' : /*[[#{label.wordgame.level}]]*/'Keeletase',
@@ -31,7 +28,14 @@
         'wordgame' : /*[[#{menu.wordgame}]]*/'Pilt ja heli',
         'feedback' : /*[[#{feedback.title}]]*/'Tagasiside',
       }
+
+      const viewPath = /*[[@{/view}]]*/'/view';
+
+      console.log("path: " + viewPath);
     </script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/twig.js/1.15.0/twig.min.js"></script> -->
+    <script th:src="@{/view/js/twig.min.js}"></script>
+    <script th:src="@{/view/js/ww-wordgame.js}"></script>
   </th:block>
 </head>
 <body>
