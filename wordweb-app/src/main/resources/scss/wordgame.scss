@@ -146,10 +146,6 @@
         margin-right: 16px;
         margin-left: 16px;
       }
-
-      @media (max-width: 768px) {
-        font-size: 24px;
-      }
     }
 
     .wordgame__category--header {
@@ -158,6 +154,10 @@
         margin-bottom: 16px;
         font-size: 1.75em;
         color: #000;
+
+        @media (max-width: 768px) {
+          font-size: 1.4em;
+        }
       }
     }
 
@@ -415,6 +415,10 @@
     -webkit-transform: rotateY(0deg);
     -o-transform: rotateY(0deg);
     background-color: white;
+
+    @media print {
+      z-index: 3;
+    }
   }
 
   .card__back {
@@ -529,9 +533,17 @@
 
   width: 60%;
   margin: 0 auto;
+  
+  &.bigger {
+    width: 80%;
+  }
 
   @media (max-width: 992px) {
     width: 100%;
+
+    &.bigger {
+      width: 100%;
+    }
   }
 
   img {
@@ -548,6 +560,7 @@
 
   svg {
     height: 100%;
+    width: 100%;
   }
 }
 

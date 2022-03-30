@@ -150,6 +150,7 @@
       <h2>{{ options.active_category }}</h2>
     </div>
     {% for sub_key, subcategory in data[options.active_category] %}
+    {% if ((emptySubCategories[options.active_category][sub_key].A1_A2 == "yes" and options.level == "algtase") or (emptySubCategories[options.active_category][sub_key].A1_B1 == "yes" and options.level == "kesktase")) %}
     {% if subcategory %}
     <div class="wordgame__subcategory--header">
       {% set is_static_picture = "wordgame_static_picture" in sub_key %}
@@ -235,6 +236,7 @@
         {% endif %}
       {% endfor %}
     </div>
+    {% endif %}
     {% endfor %}
   </div>
 </main>

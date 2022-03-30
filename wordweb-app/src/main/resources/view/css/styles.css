@@ -18791,6 +18791,12 @@ body {
   color: #000;
 }
 
+@media (max-width: 768px) {
+  .wordgame__content .wordgame__category--header h2 {
+    font-size: 1.4em;
+  }
+}
+
 .wordgame__content .wordgame__subcategory--header {
   border-top: 1px var(--wordgame-gray) solid;
 }
@@ -19059,6 +19065,12 @@ body {
   -webkit-transform: rotateY(0deg);
   -o-transform: rotateY(0deg);
   background-color: white;
+}
+
+@media print {
+  .card--type-2 .card__face {
+    z-index: 3;
+  }
 }
 
 .card--type-2 .card__back {
