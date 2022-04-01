@@ -1,8 +1,6 @@
 /* stylelint-disable */
 :root {
   --wordgame-gray: #CCD9E0;
-  // --wordgame-purple: #4125D0;
-  --wordgame-purple: var(--primary);
   --wordgame-card-top-padding: 8px;
   --wordgame-card-top-button-size: 1;
   --wordgame-card-description-padding: 20px;
@@ -126,6 +124,14 @@
               margin-right: 5px !important;
             }
           }
+        }
+      }
+    }
+
+    @media (any-hover: none), (pointer: coarse) {
+      ul {
+        li:nth-of-type(3) {
+          display: none;
         }
       }
     }
@@ -255,7 +261,7 @@
   }
   
   img {
-    width: 100%;
+    width: 16px;
   }
 
   &--bottom {
@@ -367,7 +373,7 @@
     &:hover {
       color: #fff;
       cursor: url("../images/speaker-icon-light.png"), auto;
-      background-color: var(--wordgame-purple);
+      background-color: var(--primary);
 
       img {
         filter: brightness(0) invert(1);
@@ -431,7 +437,7 @@
     -moz-backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
     -o-backface-visibility: hidden;
-    border: 1px var(--wordgame-purple) solid;
+    border: 1px var(--primary) solid;
     border-radius: 4px;
     display: flex;
     transform: rotateX(0deg);
@@ -531,11 +537,11 @@
   justify-content: center;
   border-radius: 4px;
 
-  width: 60%;
+  width: 50%;
   margin: 0 auto;
   
   &.bigger {
-    width: 80%;
+    width: 70%;
   }
 
   @media (max-width: 992px) {

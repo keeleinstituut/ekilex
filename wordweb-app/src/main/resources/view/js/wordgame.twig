@@ -163,11 +163,11 @@
     {% endif %}
     <div class="row justify-content-center wordgame__row {% if options.text_transform == "upper" %}wordgame-text-upper{% endif %}" >
       {% for item in subcategory %}
-        {% if ((item.A1_A2 == "yes" and options.level == "algtase") or (item.A1_B1 == "yes" and options.level == "kesktase")) and ((item.image_link is not null and item.image_link is not empty) or item.type != 1) %}
+        {% if ((item.A1_A2 == "yes" and options.level == "algtase") or (item.A1_B1 == "yes" and options.level == "kesktase")) and ((item.type != 1 or (item.level == "A1" or item.level == "A2" or item.level == "B1") or ((item.level == "upper" and options.text_transform == "upper") or (item.level == "lower" and options.text_transform == "lower")))) %}
         <div class="{{item.cols}} wordgame__col" level="{{ item.level }}">
             {# <div>order: {{ item.order }}</div> #}
             {# <div>id: {{ item.wordid }}</div> #}
-            {% if item.type == 1 and item.image_link is not null and item.image_link is not empty %}
+            {% if (item.type == 1 and item.image_link is not null and item.image_link is not empty) and (item.level == "A1" or item.level == "B1" or item.level is null or item.level is empty or (item.level == "upper" and options.text_transform == "upper") or (item.level == "lower" and options.text_transform == "lower")) %}
               <div>
                 <div class="wordgame-multicard">
                   {{ source(item.image_link) }}

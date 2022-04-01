@@ -20,7 +20,6 @@ class WordGame {
     this.colMapper = {
       type_1: 'col-12',
       type_2: 'col-lg-3 col-md-6 col-sm-6 col-xs-10 col-10',
-      type_2_2: 'col-lg-4 col-md-6 col-sm-6 col-xs-12',
       type_3: 'col-12',
     }
   }
@@ -89,10 +88,6 @@ class WordGame {
         resolve(true);
         this.bindEvents();
       }
-
-      // this.main.innerHTML = html;
-      // this.bindEvents();
-
     });
   }
 
@@ -106,8 +101,6 @@ class WordGame {
     var multicardsToAdd = [];
     
     this.origData = this.origData.concat(multiCards);
-
-    console.log(this.origData);
     
     this.origData.forEach((item) => {
       if (item.type == 1) {
@@ -119,61 +112,54 @@ class WordGame {
         item.A1_B1 = "no";
 
         if ((item.sub_category != "" && item.sub_category != null) && !addedMulticards.includes(item.sub_category)) {
-          if (multiLevelMulticards.includes(item.sub_category)) {
-            multicardsToAdd.push({
-              wordId: 123456,
-              word: "Multikaart",
-              word_link: "",
-              category: `${item.category}`,
-              sub_category: `${item.sub_category}`,
-              example_1: "",
-              example_2: "",
-              example_3: "",
-              image_link: `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-A.svg`,
-              audio_link: "",
-              level: "A1",
-              A1_A2: "yes",
-              A1_B1: "no",
-              order: 1,
-              type: 1
-            });
+
+          var multiCardTemplate = {
+            wordId: 123456,
+            word: "Multikaart",
+            word_link: "",
+            category: `${item.category}`,
+            sub_category: `${item.sub_category}`,
+            example_1: "",
+            example_2: "",
+            example_3: "",
+            image_link: `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}.svg`,
+            audio_link: "",
+            level: "",
+            A1_A2: "yes",
+            A1_B1: "yes",
+            order: 1,
+            type: 1
+          };
+
+          if (multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_L.svg`;
+            card1.level = "lower";
+            multicardsToAdd.push(card1);
   
-            multicardsToAdd.push({
-              wordId: 123456,
-              word: "Multikaart",
-              word_link: "",
-              category: `${item.category}`,
-              sub_category: `${item.sub_category}`,
-              example_1: "",
-              example_2: "",
-              example_3: "",
-              image_link: `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-B.svg`,
-              audio_link: "",
-              level: "B1",
-              A1_A2: "no",
-              A1_B1: "yes",
-              order: 1,
-              type: 1
-            });
+            var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_U.svg`;
+            card2.level = "upper";
+            multicardsToAdd.push(card2);
           }
-          else {
-            multicardsToAdd.push({
-              wordId: 123456,
-              word: "Multikaart",
-              word_link: "",
-              category: `${item.category}`,
-              sub_category: `${item.sub_category}`,
-              example_1: "",
-              example_2: "",
-              example_3: "",
-              image_link: `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}.svg`,
-              audio_link: "",
-              level: "A1",
-              A1_A2: "yes",
-              A1_B1: "yes",
-              order: 1,
-              type: 1
-            });
+
+          if (multiLevelMulticards.includes(item.sub_category.toLowerCase())) {
+            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-A.svg`;
+            card1.level = "A1";
+            card1.A1_B1 = "no"
+            multicardsToAdd.push(card1);
+
+            var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-B.svg`;
+            card2.level = "B1";
+            card2.A1_A2 = "no"
+            multicardsToAdd.push(card2);
+          }
+          if (!multiLevelMulticards.includes(item.sub_category.toLowerCase()) && !multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card1.level = "A1";
+            multicardsToAdd.push(card1);
           }
 
 
@@ -263,8 +249,6 @@ class WordGame {
         };
       });
     });
-
-    console.log(this.parsedData);
   }
 
   bindEvents(element) {
@@ -386,7 +370,21 @@ class WordGame {
           }
         });
 
+        var hasMulticard = false;
+
+        Object.keys(this.parsedData[this.options.active_category]).forEach((key) => {
+          this.parsedData[this.options.active_category][key].forEach((obj) => {
+            if (obj.type == 1) {
+              hasMulticard = true;
+            }
+          });
+        });
+
         this.pushToUrl();
+
+        if (hasMulticard) {
+          this.renderTemplate();
+        }
       });
     });
 
@@ -438,7 +436,6 @@ class WordGame {
             
             });
           }
-          console.log(`audio value: ${audioValue} type: ${audioType}`);
         });
 
         item.addEventListener('mouseenter', (e) => {
@@ -446,7 +443,6 @@ class WordGame {
             playAudio(audioValue, function () {
 
             });
-            console.log(`audio value: ${audioValue} type: ${audioType}`);
           }
 
         });
@@ -491,7 +487,6 @@ class WordGame {
 
             const multicardId = multicard.getAttribute('id').replace('svg','');
             
-            // const wordData = this.parsedData[this.options.active_category][multicardId].find((name) => name.word === dataName);
             const wordData = this.origData.find((name) => name.word === dataName);
 
             if (wordData != null && wordData != "") {
@@ -665,7 +660,7 @@ class WordGame {
       this.loadImages();
     });
 
-    console.log('initialized');
+    console.log('wordgamejs initialized');
   }
 
 }
@@ -685,6 +680,7 @@ function decodeHTMLEntities(text) {
 }
 
 const multiLevelMulticards = ['keha','nägu','jalg','käsi'];
+const multiCaseMulticards = ['laps', 'vanem', 'vanavanem'];
 
 var multiCards = [
   {
