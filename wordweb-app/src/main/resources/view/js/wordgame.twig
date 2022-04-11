@@ -149,6 +149,13 @@
     <div class="wordgame__category--header">
       <h2>{{ options.active_category }}</h2>
     </div>
+    {% if ((emptyCategories[options.active_category].A1_A2 == "no" and options.level == "algtase") or (emptyCategories[options.active_category].A1_B1 == "no" and options.level == "kesktase")) %}
+      <div class="wordgame__subcategory--header">
+        <p>
+          Selle teema sõnu algtasemel ei ole. Vali ülevalt keeleoskustase "Edasijõudnud".
+        </p>
+      </div>
+    {% endif %}
     {% for sub_key, subcategory in data[options.active_category] %}
     {% if ((emptySubCategories[options.active_category][sub_key].A1_A2 == "yes" and options.level == "algtase") or (emptySubCategories[options.active_category][sub_key].A1_B1 == "yes" and options.level == "kesktase")) %}
     {% if subcategory %}

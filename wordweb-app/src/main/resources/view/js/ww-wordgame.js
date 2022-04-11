@@ -71,6 +71,7 @@ class WordGame {
       const html = template.render({
         data: this.parsedData,
         emptySubCategories: this.parsedSubCategories,
+        emptyCategories: this.parsedCategories,
         options: this.options,
         labels: wordGameTranslations,
         viewPath: viewPath,
@@ -95,6 +96,7 @@ class WordGame {
     this.parsedData = {};
 
     this.parsedSubCategories = {};
+    this.parsedCategories = {};
 
     var staticPictureCounter = 0;
     var addedMulticards = [];
@@ -221,9 +223,16 @@ class WordGame {
       
       this.parsedData[key] = items;
 
+      if (!this.parsedCategories[key]) {
+        this.parsedCategories[key] = [];
+      }
+      
       if (!this.parsedSubCategories[key]) {
         this.parsedSubCategories[key] = [];
       }
+
+      var catHasA = "no";
+      var catHasB = "no";
 
       Object.keys(this.parsedData[key]).forEach((subkey) => {  
         items[subkey] = items[subkey].sort((a, b) => a.order - b.order);
@@ -235,10 +244,12 @@ class WordGame {
           if (item2.type != 1 || item2.image_link.trim() != null || item2.image_link.trim() != "") {
             if (item2.A1_A2 == "yes") {
               hasA = "yes";
+              catHasA = "yes";
             }
 
             if (item2.A1_B1 == "yes") {
               hasB = "yes";
+              catHasB = "yes";
             }
           }
         });
@@ -248,20 +259,313 @@ class WordGame {
           A1_B1: hasB
         };
       });
+
+      this.parsedCategories[key] = {
+        A1_A2: catHasA,
+        A1_B1: catHasB
+      };
     });
   }
 
   bindEvents(element) {
     const parent = element ? element : this.main;
 
-    parent.querySelectorAll('[title]').forEach((item) => {
-      $(item).tooltip({
-        trigger: 'hover'
+    this.bindHoverTooltips(parent);
+
+    this.bindSidebarMenuCategories(parent);
+
+    this.bindOptions(parent);
+
+    this.bindCards(parent);
+
+    this.setMenuPlaceholderIcons(parent);
+
+    this.lazyLoad();
+  }
+
+
+  bindCards(parent) {
+    this.bindFlipcardButtons(parent);
+
+    this.bindFlipcardAudioButtons(parent);
+
+    this.bindMulticard();
+  }
+
+  bindOptions(parent) {
+    // keeletase
+    this.bindLevelFilter(parent);
+
+    // kirjatüüp
+    this.bindTextTransformFilter(parent);
+
+    // automaatne hääldamine
+    this.bindAutoplaySwitch(parent);
+  }
+
+  setMenuPlaceholderIcons(parent) {
+    parent.querySelectorAll('.wordgame__menu img, .dropdown-game img').forEach((item) => {
+      const src = item.getAttribute('src');
+      const tmp = new Image();
+      tmp.onerror = () => {
+        item.setAttribute('src', this.paths.missingImage);
+      };
+      tmp.src = src;
+    });
+  }
+
+  // multikaardi struktuur:
+  // multikaardi svg asub div'is klassiga "wordgame-multicard"
+  // svg ise on tähistatud kujul "subcategory+svg" ehk subcategory "keha" puhul on svg id'ks "kehasvg"
+  // svg sisaldab endas:
+  // - data-label'id ja data-circle'id
+  // - data-label märgitakse sedasi "data-label=name"
+  // - data-circle märgitakse sedasi "data-circle-name" (tähelepanu sellele et = märgi asemel on -)
+  // - 'name' peab matchima json'is antud sõnaga
+  // svg's peavad olema labelid hierarhiliselt data-circle'de peal, kuna muidu click/hover event lihtsalt ei tööta
+  bindMulticard() {
+    document.querySelectorAll('.wordgame-multicard').forEach((multicardElem) => {
+      const multicard = multicardElem.children[0];
+
+      if (multicard != null && !multicard.classList.contains('wordgame-multicard-initialized')) {
+
+        if (multicardElem.querySelectorAll('[data-bigger]').length > 0) {
+          multicardElem.classList.add('bigger');
+        }
+
+        multicard.querySelectorAll('[id]').forEach((item) => {
+          const elemId = item.getAttribute('id');
+
+
+          if (elemId.includes('data-label')) {
+            const dataName = elemId.substring(elemId.indexOf('=') + 1);
+            const dataCircle = multicard.querySelector(`#data-circle-${dataName}`);
+
+            const highlightColor1 = '#2c6fb6';
+            const highlightColor2 = 'white';
+
+            const multicardId = multicard.getAttribute('id').replace('svg', '');
+
+            const wordData = this.origData.find((name) => name.word === dataName);
+
+            if (wordData != null && wordData != "") {
+              item.addEventListener('click', (e) => {
+                playAudio(wordData.audio_link, function () {
+                });
+              });
+              item.addEventListener('mouseenter', (e) => {
+                if (this.options.autoplay == "on") {
+                  playAudio(wordData.audio_link, function () {
+                  });
+                }
+              });
+            }
+            else {
+              item.classList.add('wordgame-no-sound');
+
+              if (this.options.debugmissing) {
+                item.children[0].setAttribute('fill', 'red');
+              }
+            }
+
+            if (dataCircle != null) {
+              const origColor1 = item.children[0].getAttribute('fill');
+              const origColor2 = item.children[1].getAttribute('fill');
+              const origOpacity = dataCircle.getAttribute('opacity');
+
+              dataCircle.setAttribute('opacity', '0');
+              item.classList.add("wordgame-multicard-label");
+
+              item.addEventListener('mouseenter', (e) => {
+                dataCircle.setAttribute('opacity', origOpacity);
+                item.children[0].setAttribute('fill', highlightColor1);
+                item.children[1].setAttribute('fill', highlightColor2);
+              });
+              item.addEventListener('mouseleave', (e) => {
+                dataCircle.setAttribute('opacity', '0');
+                item.children[0].setAttribute('fill', origColor1);
+                item.children[1].setAttribute('fill', origColor2);
+              });
+            }
+            else {
+              const origColor1 = item.children[0].getAttribute('fill');
+              const origColor2 = item.children[1].getAttribute('fill');
+
+              item.classList.add("wordgame-multicard-label");
+
+              item.addEventListener('mouseenter', (e) => {
+                item.children[0].setAttribute('fill', highlightColor1);
+                item.children[1].setAttribute('fill', highlightColor2);
+              });
+              item.addEventListener('mouseleave', (e) => {
+                item.children[0].setAttribute('fill', origColor1);
+                item.children[1].setAttribute('fill', origColor2);
+              });
+            }
+          }
+        });
+
+        multicard.classList.add('wordgame-multicard-initialized');
+      }
+    });
+  }
+
+  bindFlipcardAudioButtons(parent) {
+    parent.querySelectorAll('[audio-value],[data-words]').forEach((item) => {
+      const audioValue = item.getAttribute('audio-value');
+      const audioType = item.getAttribute('audio-type');
+
+      if ((audioValue != null && audioValue != "") || (item.getAttribute('data-words') != null && item.getAttribute('data-words') != "")) {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (item.getAttribute('data-words')) {
+
+            var definedUrlToAudio = item.getAttribute('data-url-to-audio');
+            if (definedUrlToAudio) {
+              playAudio(definedUrlToAudio, function () {
+              });
+              return;
+            }
+
+            var data = {
+              'words': item.getAttribute('data-words')
+            };
+
+            $.post(applicationUrl + 'generate_audio', data).done(function (providedUrlToAudio) {
+              item.setAttribute('data-url-to-audio', providedUrlToAudio);
+              playAudio(providedUrlToAudio, function () {
+              });
+            }).fail(function () {
+              alert(messages.audio_generation_failure);
+            });
+          } else {
+            playAudio(audioValue, function () {
+            });
+          }
+        });
+
+        item.addEventListener('mouseenter', (e) => {
+          if (this.options.autoplay == "on") {
+            playAudio(audioValue, function () {
+            });
+          }
+        });
+      }
+      else {
+        if (this.options.debugmissing) {
+          item.style.background = "red";
+        }
+      }
+    });
+  }
+
+  bindAutoplaySwitch(parent) {
+    parent.querySelectorAll('[autoplay-switch]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        if (this.options.autoplay === "on") {
+          this.options.autoplay = "off";
+        }
+        else {
+          this.options.autoplay = "on";
+        }
+        this.pushToUrl();
       });
     });
-    $('.tooltip[role="tooltip"]').remove();
+  }
 
-    // category sidebar
+  bindTextTransformFilter(parent) {
+    parent.querySelectorAll('[text-transform]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        this.options.text_transform = item.getAttribute('text-transform');
+        const upperClass = 'wordgame-text-upper';
+
+        document.querySelectorAll('.wordgame__row').forEach((item2) => {
+          if (item.getAttribute('text-transform') == "upper") {
+            if (!item2.classList.contains(upperClass)) {
+              item2.classList.add(upperClass);
+            }
+          } else {
+            if (item2.classList.contains(upperClass)) {
+              item2.classList.remove(upperClass);
+            }
+          }
+        });
+
+        var hasMulticard = false;
+
+        Object.keys(this.parsedData[this.options.active_category]).forEach((key) => {
+          this.parsedData[this.options.active_category][key].forEach((obj) => {
+            if (obj.type == 1) {
+              hasMulticard = true;
+            }
+          });
+        });
+
+        this.pushToUrl();
+
+        if (hasMulticard) {
+          this.renderTemplate();
+        }
+      });
+    });
+  }
+
+  bindFlipcardButtons(parent) {
+    parent.querySelectorAll('[toggle="flip"]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const flipClass = 'card--flipped';
+        const parent = item.closest('.wordgame-flippable');
+        parent.classList.toggle(flipClass);
+
+        const cardBack = parent.querySelector('.card__back');
+        const cardFront = parent.querySelector('.card__face');
+
+        if (parent.classList.contains(flipClass)) {
+          cardBack.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "0");
+          });
+
+          cardFront.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "-1");
+          });
+
+          cardBack.classList.remove('wordgame-card-hidden');
+          setTimeout(() => {
+            cardBack.classList.remove('wordgame-card-hidden');
+            cardFront.classList.add('wordgame-card-hidden');
+          }, 200);
+        }
+        else {
+          cardBack.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "-1");
+          });
+
+          cardFront.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "0");
+          });
+
+          cardFront.classList.remove('wordgame-card-hidden');
+          setTimeout(() => {
+            cardFront.classList.remove('wordgame-card-hidden');
+            cardBack.classList.add('wordgame-card-hidden');
+          }, 200);
+        }
+      });
+    });
+  }
+
+  bindLevelFilter(parent) {
+    parent.querySelectorAll('[sort-id]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        this.options.level = item.getAttribute('sort-id');
+        this.pushToUrl();
+        this.renderTemplate();
+      });
+    });
+  }
+
+  bindSidebarMenuCategories(parent) {
     const categories = parent.querySelectorAll('[data-category]');
 
     categories.forEach((item) => {
@@ -298,272 +602,15 @@ class WordGame {
         window.scrollTo(0, 0);
       });
     });
+  }
 
-    // keeletase
-    parent.querySelectorAll('[sort-id]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        this.options.level = item.getAttribute('sort-id');
-        this.pushToUrl();
-        this.renderTemplate();
+  bindHoverTooltips(parent) {
+    parent.querySelectorAll('[title]').forEach((item) => {
+      $(item).tooltip({
+        trigger: 'hover'
       });
     });
-
-    // flipcard
-    parent.querySelectorAll('[toggle="flip"]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const flipClass = 'card--flipped';
-        const parent = item.closest('.wordgame-flippable');
-        parent.classList.toggle(flipClass);
-
-        const cardBack = parent.querySelector('.card__back');
-        const cardFront = parent.querySelector('.card__face');
-
-        if (parent.classList.contains(flipClass)) {
-          cardBack.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","0");
-          });
-
-          cardFront.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","-1");
-          });
-
-          cardBack.classList.remove('wordgame-card-hidden');
-          setTimeout(() => {
-            cardBack.classList.remove('wordgame-card-hidden');
-            cardFront.classList.add('wordgame-card-hidden');
-          }, 200);
-        }
-        else {
-          cardBack.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","-1");
-          });
-
-          cardFront.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","0");
-          });
-
-          cardFront.classList.remove('wordgame-card-hidden');
-          setTimeout(() => {
-            cardFront.classList.remove('wordgame-card-hidden');
-            cardBack.classList.add('wordgame-card-hidden');
-          }, 200);
-        }
-      });
-    });
-
-    // kirjatüüp
-    parent.querySelectorAll('[text-transform]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        this.options.text_transform = item.getAttribute('text-transform');
-        const upperClass = 'wordgame-text-upper';
-
-        document.querySelectorAll('.wordgame__row').forEach((item2) => {
-          if (item.getAttribute('text-transform') == "upper") {
-            if (!item2.classList.contains(upperClass)) {
-              item2.classList.add(upperClass);
-            }
-          } else {
-            if (item2.classList.contains(upperClass)) {
-              item2.classList.remove(upperClass);
-            }
-          }
-        });
-
-        var hasMulticard = false;
-
-        Object.keys(this.parsedData[this.options.active_category]).forEach((key) => {
-          this.parsedData[this.options.active_category][key].forEach((obj) => {
-            if (obj.type == 1) {
-              hasMulticard = true;
-            }
-          });
-        });
-
-        this.pushToUrl();
-
-        if (hasMulticard) {
-          this.renderTemplate();
-        }
-      });
-    });
-
-    // automaatne hääldamine
-    parent.querySelectorAll('[autoplay-switch]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        if (this.options.autoplay === "on") {
-          this.options.autoplay = "off";
-        }
-        else {
-          this.options.autoplay = "on";
-        }
-        this.pushToUrl();
-      });
-    });
-
-    // flipcard audio buttons
-    parent.querySelectorAll('[audio-value],[data-words]').forEach((item) => {
-      const audioValue = item.getAttribute('audio-value');
-      const audioType = item.getAttribute('audio-type');
-
-      if ((audioValue != null && audioValue != "") || (item.getAttribute('data-words') != null && item.getAttribute('data-words') != "")) {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (item.getAttribute('data-words')) {
-
-            var definedUrlToAudio = item.getAttribute('data-url-to-audio');
-            if (definedUrlToAudio) {
-              playAudio(definedUrlToAudio, function () {
-
-              });
-              return;
-            }
-
-            var data = {
-              'words': item.getAttribute('data-words')
-            };
-
-            $.post(applicationUrl + 'generate_audio', data).done(function (providedUrlToAudio) {
-              item.setAttribute('data-url-to-audio', providedUrlToAudio);
-              playAudio(providedUrlToAudio, function () {
-
-              });
-            }).fail(function () {
-              alert(messages.audio_generation_failure);
-            })
-          } else {
-            playAudio(audioValue, function () {
-            
-            });
-          }
-        });
-
-        item.addEventListener('mouseenter', (e) => {
-          if (this.options.autoplay == "on") {
-            playAudio(audioValue, function () {
-
-            });
-          }
-
-        });
-      }
-      else {
-        if (this.options.debugmissing) {
-          item.style.background = "red";
-        }
-      }
-    });
-    
-    // multikaardi struktuur:
-    // multikaardi svg asub div'is klassiga "wordgame-multicard"
-    // svg ise on tähistatud kujul "subcategory+svg" ehk subcategory "keha" puhul on svg id'ks "kehasvg"
-    // svg sisaldab endas:
-    // - data-label'id ja data-circle'id
-    // - data-label märgitakse sedasi "data-label=name"
-    // - data-circle märgitakse sedasi "data-circle-name" (tähelepanu sellele et = märgi asemel on -)
-    // - 'name' peab matchima json'is antud sõnaga
-    // svg's peavad olema labelid hierarhiliselt data-circle'de peal, kuna muidu click/hover event lihtsalt ei tööta
-
-    // multicard
-    document.querySelectorAll('.wordgame-multicard').forEach((multicardElem) => {
-      const multicard = multicardElem.children[0];
-
-      if (multicard != null && !multicard.classList.contains('wordgame-multicard-initialized')) {
-
-        if (multicardElem.querySelectorAll('[data-bigger]').length > 0) {
-          multicardElem.classList.add('bigger'); 
-        }
-
-        multicard.querySelectorAll('[id]').forEach((item) => {
-          const elemId = item.getAttribute('id');
-
-          
-          if (elemId.includes('data-label')) {
-            const dataName = elemId.substring(elemId.indexOf('=') + 1);
-            const dataCircle = multicard.querySelector(`#data-circle-${dataName}`);
-            
-            const highlightColor1 = '#2c6fb6';
-            const highlightColor2 = 'white';
-
-            const multicardId = multicard.getAttribute('id').replace('svg','');
-            
-            const wordData = this.origData.find((name) => name.word === dataName);
-
-            if (wordData != null && wordData != "") {
-              item.addEventListener('click', (e) => {
-                playAudio(wordData.audio_link, function () {
-
-                });
-              });
-              item.addEventListener('mouseenter', (e) => {
-                if (this.options.autoplay == "on") {
-                  playAudio(wordData.audio_link, function () {
-
-                  });
-                }
-              });
-            }
-            else {
-              item.classList.add('wordgame-no-sound');
-
-              if (this.options.debugmissing) {
-                item.children[0].setAttribute('fill', 'red');
-              }
-            }
-
-            if (dataCircle != null) {
-              const origColor1 = item.children[0].getAttribute('fill');
-              const origColor2 = item.children[1].getAttribute('fill');
-              const origOpacity = dataCircle.getAttribute('opacity');
-            
-              dataCircle.setAttribute('opacity', '0');
-              item.classList.add("wordgame-multicard-label");
-            
-              item.addEventListener('mouseenter', (e) => {
-                dataCircle.setAttribute('opacity', origOpacity);
-                item.children[0].setAttribute('fill', highlightColor1);
-                item.children[1].setAttribute('fill', highlightColor2);
-              });
-              item.addEventListener('mouseleave', (e) => {
-                dataCircle.setAttribute('opacity', '0');
-                item.children[0].setAttribute('fill', origColor1);
-                item.children[1].setAttribute('fill', origColor2);
-              });
-            }
-            else {
-              const origColor1 = item.children[0].getAttribute('fill');
-              const origColor2 = item.children[1].getAttribute('fill');
-
-              item.classList.add("wordgame-multicard-label");
-            
-              item.addEventListener('mouseenter', (e) => {
-                item.children[0].setAttribute('fill', highlightColor1);
-                item.children[1].setAttribute('fill', highlightColor2);
-              });
-              item.addEventListener('mouseleave', (e) => {
-                item.children[0].setAttribute('fill', origColor1);
-                item.children[1].setAttribute('fill', origColor2);
-              });
-            }
-          }
-        });
-        
-        multicard.classList.add('wordgame-multicard-initialized');
-      }
-    });
-
-    // placeholder icon, in case category icon is missing
-    parent.querySelectorAll('.wordgame__menu img, .dropdown-game img').forEach((item) => {
-      const src = item.getAttribute('src');
-      const tmp = new Image();
-      tmp.onerror = () => {
-        item.setAttribute('src', this.paths.missingImage);
-      };
-      tmp.src = src;
-    });
-
-    this.lazyLoad();
-
+    $('.tooltip[role="tooltip"]').remove();
   }
 
   wordgameSlugify (str) {

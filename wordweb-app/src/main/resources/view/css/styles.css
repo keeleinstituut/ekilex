@@ -18781,6 +18781,11 @@ body {
   font-weight: 700;
 }
 
+.wordgame__content .wordgame__category--header p,
+.wordgame__content .wordgame__subcategory--header p {
+  margin: 16px;
+}
+
 .wordgame__content .wordgame__category--header h2,
 .wordgame__content .wordgame__category--header h3,
 .wordgame__content .wordgame__subcategory--header h2,
@@ -18817,6 +18822,11 @@ body {
   min-width: var(--wordgame-menu-min-width);
   flex-shrink: 0;
   border-right: 1px var(--wordgame-gray) solid;
+  height: calc(100vh - 79px);
+  overflow-y: scroll;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 79px;
 }
 
 .wordgame__menu h1 {

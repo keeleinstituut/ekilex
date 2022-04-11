@@ -147,6 +147,10 @@
     .wordgame__category--header,
     .wordgame__subcategory--header {
 
+      p {
+        margin: 16px;
+      }
+
       h2,
       h3 {
         margin-right: 16px;
@@ -184,6 +188,11 @@
     flex-shrink: 0;
 
     border-right: 1px var(--wordgame-gray) solid;
+
+    height: calc(100vh - 79px);
+    overflow-y: scroll;
+    position: sticky;
+    top: 79px;
 
     h1 {
       margin: 16px 24px 20px var(--wordgame-menu-margin-left);
