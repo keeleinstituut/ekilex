@@ -605,11 +605,15 @@ class WordGame {
   }
 
   bindHoverTooltips(parent) {
-    parent.querySelectorAll('[title]').forEach((item) => {
-      $(item).tooltip({
-        trigger: 'hover'
+    let isMobile = window.matchMedia("only screen and (any-hover: none), (pointer: coarse)").matches;
+
+    if (!isMobile) {
+      parent.querySelectorAll('[title]').forEach((item) => {
+        $(item).tooltip({
+          trigger: 'hover'
+        });
       });
-    });
+    }
     $('.tooltip[role="tooltip"]').remove();
   }
 
