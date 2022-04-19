@@ -57,7 +57,7 @@ Muud tehn operatsioonid
 
 Andmebaasi tabelite proksi-klasside genereerimine (kasutatakse ainult arenduses, pärast andmebaasi struktuuri muudatusi):
 
-`ekilex>mvn compile -Dskip.jooq.generation=false`
+`ekilex>mvn compile -D skip.jooq.generation=false`
 
 Detailsemalt kõigest:
 * [paigaldusjuhend](doc/ekilex-paigaldusjuhend.pdf)

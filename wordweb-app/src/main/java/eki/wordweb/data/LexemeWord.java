@@ -37,6 +37,8 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Classifier valueState;
 
+	private String proficiencyLevelCode;
+
 	private Integer level1;
 
 	private Integer level2;
@@ -212,6 +214,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	public void setValueState(Classifier valueState) {
 		this.valueState = valueState;
+	}
+
+	public String getProficiencyLevelCode() {
+		return proficiencyLevelCode;
+	}
+
+	public void setProficiencyLevelCode(String proficiencyLevelCode) {
+		this.proficiencyLevelCode = proficiencyLevelCode;
 	}
 
 	@Override

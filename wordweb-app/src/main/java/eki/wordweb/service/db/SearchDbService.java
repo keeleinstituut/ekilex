@@ -262,6 +262,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						l.DATASET_TYPE,
 						l.DATASET_NAME,
 						l.VALUE_STATE_CODE,
+						l.PROFICIENCY_LEVEL_CODE,
 						l.RELIABILITY,
 						l.LEVEL1,
 						l.LEVEL2,

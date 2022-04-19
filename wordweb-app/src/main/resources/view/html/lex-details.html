@@ -48,6 +48,9 @@
                       <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
                             th:with="langData=${viewUtil.getLangData(definitionEntry.key)}"
                             th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
+                      <span class="additional-meta lang-code lang-code-sm mr-2 align-self-start"
+                            th:if="${lexeme.proficiencyLevelCode != null}"
+                            th:text="${lexeme.proficiencyLevelCode}" th:title="#{label.lexeme.proficiency.level}" data-toggle="tooltip"></span>
                       <div class="flex-shrink-1" style="font-weight: 500;">
                         <span class="domain register mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                         <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
