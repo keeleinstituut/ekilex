@@ -2,4 +2,8 @@ Märkused ver 1.23.0 tarne kohta:
 
 * Tarne sql skriptis on veelkord default complexity muutmine detailseks, kuna kth sõnakogus
 leidus sellise detailsusega ilmikuid ja definitsioone.
-Koodist on nüüd default complexity eemaldatud.
+Koodist on nüüd default complexity eemaldatud ja selle kasutamine annab veateate.
+
+* Uuendada sõnaveebi properties faile:
+- corpus.service.rus.url väärtus muutus
+- teised corpus.service.rus parameetrid pole enam vajalikud ja võib kustutada
