@@ -94,7 +94,7 @@ function updateBrowserHistory(wordSelectUrl) {
 function scrollToLexeme(lexemeId) {
   if (lexemeId) {
     $([document.documentElement, document.body]).animate({
-      scrollTop: $("#lexeme-section-" + lexemeId).offset().top
+      scrollTop: $("#lexeme-section-" + lexemeId).offset().top - 100
     }, 1000);
   }
 }
