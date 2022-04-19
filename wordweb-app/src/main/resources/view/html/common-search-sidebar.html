@@ -376,6 +376,10 @@
           </button>
         </h5>
       </div>
+      <div class="corp-warning mb-1">
+        <i class="text-danger fa fa-exclamation-triangle mr-1 mt-1" aria-hidden="true"></i>
+        <span th:text="#{corpus.warning}"></span>
+      </div>
       <div class="col-6">
         <a th:href="${viewUtil.getRusCorpWordUrl(wordData.word.word)}" target="_blank">
           <img th:src="@{'/view/images/skell-logo.jpg'}" alt="Skell logo" class="img-fluid">
