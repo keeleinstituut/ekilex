@@ -1,9 +1,20 @@
 Märkused ver 1.23.0 tarne kohta:
 
-* Tarne sql skriptis on veelkord default complexity muutmine detailseks, kuna kth sõnakogus
+* Tarnega kaasnev andmebaasi igratsiooni skript:
+  /eki-common/src/main/resources/sql/delivery.sql
+
+* Java JDK alates versioonist 15
+  
+* delivery.sql skriptis on veelkord default complexity muutmine detailseks, kuna kth sõnakogus
 leidus sellise detailsusega ilmikuid ja definitsioone.
 Koodist on nüüd default complexity eemaldatud ja selle kasutamine annab veateate.
 
 * Uuendada sõnaveebi properties faile:
 - corpus.service.rus.url väärtus muutus
 - teised corpus.service.rus parameetrid pole enam vajalikud ja võib kustutada
+
+* Lisatud keeletaseme klassifikaator ning lekseemide keeletaseme laadur.
+  Täpsem juhend Wikis:
+  https://github.com/keeleinstituut/ekilex/wiki/Keeletaseme-laadur
+
+* Mitmed parandused. Muuhulgas parandatud on homonüümide ühendamise protseduur, tekstides HTML entity-te asendamine reaalsete sümbolitega jpm
