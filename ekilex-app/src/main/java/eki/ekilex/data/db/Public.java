@@ -150,6 +150,7 @@ import eki.ekilex.data.db.udt.TypeMediaFile;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
+import eki.ekilex.data.db.udt.TypeValueNameLang;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.udt.TypeWordHomNrDataTuple;
 import eki.ekilex.data.db.udt.TypeWordRelMeaning;
@@ -172,7 +173,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -632172692;
+    private static final long serialVersionUID = 14697775;
 
     /**
      * The reference instance of <code>public</code>
@@ -1123,6 +1124,7 @@ public class Public extends SchemaImpl {
             TypeSourceLink.TYPE_SOURCE_LINK,
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,
+            TypeValueNameLang.TYPE_VALUE_NAME_LANG,
             TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION,
             TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE,
             TypeWordRelMeaning.TYPE_WORD_REL_MEANING,

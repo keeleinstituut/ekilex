@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import eki.common.util.CodeGenerator;
@@ -16,15 +15,16 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
+import eki.ekilex.data.FedTermUploadQueueContent;
 import eki.ekilex.data.QueueContent;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.TermSearchResultQueueContent;
 
 @Component
-public class AsyncQueueHandlerService implements WebConstant {
+public class QueueHandlerService implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(AsyncQueueHandlerService.class);
+	private static final Logger logger = LoggerFactory.getLogger(QueueHandlerService.class);
 
 	@Value("${ekilex.app.url:}")
 	private String ekilexAppUrl;
@@ -38,7 +38,9 @@ public class AsyncQueueHandlerService implements WebConstant {
 	@Autowired
 	private EmailService emailService;
 
-	@Async
+	@Autowired	
+	private FedTermUploadService fedTermUploadService;
+
 	public void handleTermSearchResultSerialisation(EkiUser user, QueueContent content) throws Exception {
 
 		String requestKey = CodeGenerator.generateUniqueId();
@@ -69,5 +71,18 @@ public class AsyncQueueHandlerService implements WebConstant {
 		emailService.sendTermSearchResult(user, termSearchUrl, termSearchResultUrl);
 
 		logger.info("Term search result serialisation \"{}\" complete", requestKey);
+	}
+
+	public void handleFedTermUpload(EkiUser user, QueueContent content) throws Exception {
+
+		FedTermUploadQueueContent fedTermUploadQueueContent = (FedTermUploadQueueContent) content;
+		String datasetCode = fedTermUploadQueueContent.getDatasetCode();
+
+		logger.info("Handling FedTerm upload step of \"{}\" for \"{}\"", datasetCode, user.getName());
+
+		String fedTermCollectionId = fedTermUploadService.getOrCreateFedTermCollectionId(datasetCode);
+		fedTermUploadService.uploadFedTermConceptEntries(fedTermCollectionId, fedTermUploadQueueContent);
+
+		logger.info("FedTerm upload step of \"{}\" for \"{}\" complete", datasetCode, user.getName());
 	}
 }

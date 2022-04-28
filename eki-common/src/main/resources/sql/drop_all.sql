@@ -37,6 +37,7 @@ drop type if exists type_meaning_relation;
 -- ekilex associated tables, types and functions
 drop function if exists merge_homonyms_to_eki(char(3) array);
 drop function if exists adjust_homonym_nrs();
+drop type if exists type_value_name_lang;
 drop type if exists type_term_meaning_word;
 drop type if exists type_word_rel_param;
 drop type if exists type_word_rel_meaning;

@@ -67,6 +67,7 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
                  sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}">FedTerm liidestus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'classifiers' ? 'active' : ''}" th:href="@{/classifiers}"
                  sec:authorize="#vars.userRoleData.admin">Klassifikaatorite haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'tags' ? 'active' : ''}" th:href="@{/tags}"

@@ -256,6 +256,10 @@ public interface WebConstant {
 
 	String VALIDATE_CREATE_DATASET_URI = "/validate_create_dataset";
 
+	String FEDTERM_UPLOAD_URI = "/fedtermupload";
+
+	String FEDTERM_UPLOAD_PAGE = "fedtermupload";
+
 	String ORIGIN_DOMAINS_URI = "/origin_domains";
 
 	String CLASSIFIERS_URI = "/classifiers";

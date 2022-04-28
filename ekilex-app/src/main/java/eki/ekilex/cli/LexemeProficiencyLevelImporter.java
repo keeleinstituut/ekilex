@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.cli.runner.LexemeProficiencyLevelImporterRunner;
-import eki.ekilex.service.AsyncQueueHandlerService;
+import eki.ekilex.service.QueueHandlerService;
 import eki.ekilex.service.ClassifierService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.EmailService;
@@ -33,7 +33,7 @@ import eki.ekilex.service.UserService;
 		"eki.ekilex.data"}, excludeFilters = {
 				@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
 						QueueService.class,
-						AsyncQueueHandlerService.class,
+						QueueHandlerService.class,
 						MaintenanceService.class,
 						ClassifierService.class,
 						DatasetService.class,

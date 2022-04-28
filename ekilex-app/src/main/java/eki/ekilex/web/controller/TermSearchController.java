@@ -270,6 +270,8 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		SearchUriData searchUriData = searchHelper.parseSearchUri(TERM_SEARCH_PAGE, searchUri);
+		QueueAction queueItemAction = QueueAction.TERM_SEARCH_RESULT_EMAIL;
+		String queueGroupId = queueItemAction.name();
 
 		TermSearchResultQueueContent content = new TermSearchResultQueueContent();
 		content.setLanguagesOrder(languagesOrder);
@@ -278,9 +280,11 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		content.setSearchUriData(searchUriData);
 
 		QueueItem queueItem = new QueueItem();
-		queueItem.setAction(QueueAction.TERM_SEARCH_RESULT_EMAIL);
+		queueItem.setGroupId(queueGroupId);
+		queueItem.setAction(queueItemAction);
 		queueItem.setUser(user);
 		queueItem.setContent(content);
+
 		queueService.queue(queueItem);
 	}
 
