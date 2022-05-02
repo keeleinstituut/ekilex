@@ -64,6 +64,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
+		searchFilter = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(searchFilter);
 		List<Source> sources = sourceService.getSources(searchFilter);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("sources", sources);
