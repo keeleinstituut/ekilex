@@ -58,7 +58,27 @@ public class FedTermDataDbService {
 												.and(l.DATASET_CODE.eq(datasetCode)))));
 	}
 
-	public List<MeaningLexemeWordTuple> getMeaningLexemeWordTuples(String datasetCode) {
+	public List<Long> getMeaningIds(String datasetCode, int meaningOffset, int meaningLimit) {
+
+		Lexeme l = LEXEME.as("l");
+		Meaning m = MEANING.as("m");
+
+		return create
+				.select(m.ID)
+				.from(m)
+				.whereExists(DSL
+						.select(l.ID)
+						.from(l)
+						.where(
+								l.MEANING_ID.eq(m.ID)
+										.and(l.DATASET_CODE.eq(datasetCode))))
+				.orderBy(m.ID)
+				.offset(meaningOffset)
+				.limit(meaningLimit)
+				.fetchInto(Long.class);
+	}
+
+	public List<MeaningLexemeWordTuple> getMeaningLexemeWordTuples(String datasetCode, List<Long> meaningIds) {
 
 		Word w = WORD.as("w");
 		Lexeme l = LEXEME.as("l");
@@ -157,6 +177,7 @@ public class FedTermDataDbService {
 				.from(w, l, m)
 				.where(
 						l.DATASET_CODE.eq(datasetCode)
+						.and(l.MEANING_ID.in(meaningIds))
 								//TODO very much temporary
 								/*
 								l.ID.in(DSL.field(

@@ -56,7 +56,7 @@ public class QueueService implements InitializingBean, SystemConstant {
 		queueItems.add(queueItem);
 	}
 
-	@Scheduled(initialDelay = 60000, fixedDelay = EXECUTE_QUEUE_DELAY_5_SEC)
+	@Scheduled(initialDelay = 30000, fixedDelay = EXECUTE_QUEUE_DELAY_1_SEC)
 	public void executeQueue() throws Exception {
 
 		if (queueItems.isEmpty()) {

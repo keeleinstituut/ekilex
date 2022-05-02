@@ -94,6 +94,16 @@ public class DatasetDbService {
 
 	}
 
+	public void setFedTermCollectionId(String datasetCode, String fedTermCollectionId) {
+
+		create
+				.update(DATASET)
+				.set(DATASET.FED_TERM_COLLECTION_ID, fedTermCollectionId)
+				.where(DATASET.CODE.eq(datasetCode))
+				.execute();
+
+	}
+
 	public void deleteDataset(String datasetCode) {
 
 		// collect word ids
@@ -158,6 +168,7 @@ public class DatasetDbService {
 						DATASET.DESCRIPTION,
 						DATASET.CONTACT,
 						DATASET.IMAGE_URL,
+						DATASET.FED_TERM_COLLECTION_ID,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC,
 						DATASET.IS_VISIBLE)

@@ -1,14 +1,15 @@
 package eki.ekilex.service;
 
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -26,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import eki.ekilex.client.FedTermClient;
 import eki.ekilex.constant.QueueAction;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.EkiUser;
@@ -53,7 +55,8 @@ public class FedTermUploadService implements InitializingBean {
 	@Autowired
 	private FedTermDataDbService fedTermDataDbService;
 
-	private Map<String, String> languageIso2Map;
+	@Autowired
+	private FedTermClient fedTermClient;
 
 	private Map<Boolean, String> lexemeIsPublicMap;
 
@@ -67,11 +70,8 @@ public class FedTermUploadService implements InitializingBean {
 
 	private Map<String, String> lexemeValueStateMap;
 
-	@Transactional
 	@Override
 	public void afterPropertiesSet() throws Exception {
-
-		languageIso2Map = commonDataService.getLanguageIso2Map();
 
 		lexemeIsPublicMap = new HashMap<>();
 		lexemeIsPublicMap.put(Boolean.TRUE, "approved");
@@ -109,10 +109,21 @@ public class FedTermUploadService implements InitializingBean {
 		lexemeValueStateMap.put(VALUE_MAP_ANY_OTHER_KEY, null);
 	}
 
+	//TODO restore later
+	public boolean isFedTermAccessEnabled() {
+		//return fedTermClient.isFedTermAccessEnabled();
+		return false;
+	}
+
 	@Transactional
 	public List<QueueItem> composeFedTermUploadQueueSteps(EkiUser user, String datasetCode) {
 
+		if (!isFedTermAccessEnabled()) {
+			return Collections.emptyList();
+		}
+
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
+		String datasetName = dataset.getName();
 		int datasetMeaningCount = fedTermDataDbService.getMeaningCount(datasetCode);
 
 		List<QueueItem> fedTermUploadQueueSteps = new ArrayList<>();
@@ -120,10 +131,11 @@ public class FedTermUploadService implements InitializingBean {
 		for (int meaningOffset = 0; meaningOffset < datasetMeaningCount; meaningOffset += FED_TERM_MESSAGE_MAX_MEANING_COUNT) {
 
 			QueueAction queueAction = QueueAction.FEDTERM_UPLOAD;
-			String groupId = queueAction.name() + " " + dataset.getName();
+			String groupId = queueAction.name() + " " + datasetName;
 
 			FedTermUploadQueueContent content = new FedTermUploadQueueContent();
 			content.setDatasetCode(datasetCode);
+			content.setDatasetName(datasetName);
 			content.setMeaningOffset(meaningOffset);
 
 			QueueItem queueItem = new QueueItem();
@@ -138,26 +150,33 @@ public class FedTermUploadService implements InitializingBean {
 	}
 
 	@Transactional
-	public String getOrCreateFedTermCollectionId(String datasetCode) {
-
-		//TODO implement
-
-		return null;
-	}
-
-	@Transactional
-	public void uploadFedTermConceptEntries(String fedTermCollectionId, FedTermUploadQueueContent content) {
-
-		//TODO implement
-
-	}
-
-	//TODO compose and send api message instead
-	@Transactional
-	public String composeTbx(String datasetCode) throws Exception {
+	public String getOrCreateFedTermCollectionId(String datasetCode) throws Exception {
 
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
-		List<MeaningLexemeWordTuple> datasetMeaningLexemeWordTuples = fedTermDataDbService.getMeaningLexemeWordTuples(datasetCode);
+		String fedTermCollectionId = dataset.getFedTermCollectionId();
+		if (StringUtils.isBlank(fedTermCollectionId)) {
+			fedTermCollectionId = fedTermClient.createFedTermCollection(dataset);
+			datasetDbService.setFedTermCollectionId(datasetCode, fedTermCollectionId);
+		}
+		return fedTermCollectionId;
+	}
+
+	@Transactional
+	public void uploadFedTermConceptEntries(String fedTermCollectionId, FedTermUploadQueueContent content) throws Exception {
+
+		//TODO implement
+		String datasetCode = content.getDatasetCode();
+		String datasetName = content.getDatasetName();
+		int meaningOffset = content.getMeaningOffset();
+		int meaningLimit = FED_TERM_MESSAGE_MAX_MEANING_COUNT - 1;
+		Map<String, String> languageIso2Map = commonDataService.getLanguageIso2Map();
+		List<Long> meaningIds = fedTermDataDbService.getMeaningIds(datasetCode, meaningOffset, meaningLimit);
+		List<MeaningLexemeWordTuple> datasetMeaningLexemeWordTuples = fedTermDataDbService.getMeaningLexemeWordTuples(datasetCode, meaningIds);
+		Document datasetTbxDocument = composeTbxDocument(datasetName, datasetMeaningLexemeWordTuples, languageIso2Map);
+		//TODO send to client
+	}
+
+	private Document composeTbxDocument(String datasetName, List<MeaningLexemeWordTuple> datasetMeaningLexemeWordTuples, Map<String, String> languageIso2Map) throws Exception {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -169,14 +188,10 @@ public class FedTermUploadService implements InitializingBean {
 		Element martifHeader = appendChild(document, martif, "martifHeader");
 		Element fileDesc = appendChild(document, martifHeader, "fileDesc");
 		Element sourceDesc = appendChild(document, fileDesc, "sourceDesc");
-		appendChild(document, sourceDesc, "p", dataset.getName());
+		appendChild(document, sourceDesc, "p", datasetName);
 		Element text = appendChild(document, martif, "text");
 		Element body = appendChild(document, text, "body");
 
-		//TODO temp for testing:
-		if (datasetMeaningLexemeWordTuples.size() > 100) {
-			datasetMeaningLexemeWordTuples = datasetMeaningLexemeWordTuples.subList(0, 100);
-		}
 		List<Long> meaningIds = datasetMeaningLexemeWordTuples.stream().map(MeaningLexemeWordTuple::getMeaningId).distinct().collect(Collectors.toList());
 		Map<Long, List<MeaningLexemeWordTuple>> meaningMap = datasetMeaningLexemeWordTuples.stream().collect(Collectors.groupingBy(MeaningLexemeWordTuple::getMeaningId));
 
@@ -284,12 +299,7 @@ public class FedTermUploadService implements InitializingBean {
 			}
 		}
 
-		FileOutputStream tbxFileOutputStream = new FileOutputStream("./fileresources/ekilex-" + datasetCode + "-tbx.xml");
-		logDocument(document, tbxFileOutputStream);
-		tbxFileOutputStream.flush();
-		tbxFileOutputStream.close();
-
-		return null;
+		return document;
 	}
 
 	private Element appendChild(Document document, Node parent, String childName) {
@@ -332,7 +342,17 @@ public class FedTermUploadService implements InitializingBean {
 
 	private void logDocument(Document doc, OutputStream output) throws Exception {
 
+		/*
+		FileOutputStream tbxFileOutputStream = new FileOutputStream("./fileresources/ekilex-" + datasetCode + "-tbx.xml");
+		logDocument(document, tbxFileOutputStream);
+		tbxFileOutputStream.flush();
+		tbxFileOutputStream.close();
+		 */
+
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		transformerFactory.setAttribute("indent-number", 2);
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		DOMSource source = new DOMSource(doc);

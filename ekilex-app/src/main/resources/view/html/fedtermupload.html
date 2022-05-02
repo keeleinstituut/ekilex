@@ -8,6 +8,9 @@
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'fedtermupload')"></th:block>
   <div class="container-fluid">
+    <div class="alert alert-warning" role="alert" th:if="${!isFedTermAccessEnabled}">
+      FedTerm liidestus puudub
+    </div>
     <th:block th:if="${queueStats}">
       <div class="card mt-4 shadow">
         <div class="card-header">
@@ -62,7 +65,7 @@
                   <small data-toggle="tooltip" data-placement="bottom" th:title="${dataset.contact}" th:text="${dataset.contact}"></small>
                 </td>
                 <td class="m-1 p-1">
-                  <th:block th:if="${isAdmin && dataset.public}">
+                  <th:block th:if="${isAdmin && dataset.public && isFedTermAccessEnabled}">
                     <form th:action="@{/fedtermupload}" method="post">
                       <input type="hidden" name="datasetCode" th:value="${dataset.code}">
                       <button type="submit" class="btn badge badge-primary" title="Saada">
@@ -80,8 +83,5 @@
   </div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
-  <script th:inline="javascript">
-			
-		</script>
 </body>
 </html>

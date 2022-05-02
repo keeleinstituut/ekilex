@@ -8,6 +8,8 @@ public class FedTermUploadQueueContent extends AbstractDataObject implements Que
 
 	private String datasetCode;
 
+	private String datasetName;
+
 	private int meaningOffset;
 
 	public String getDatasetCode() {
@@ -16,6 +18,14 @@ public class FedTermUploadQueueContent extends AbstractDataObject implements Que
 
 	public void setDatasetCode(String datasetCode) {
 		this.datasetCode = datasetCode;
+	}
+
+	public String getDatasetName() {
+		return datasetName;
+	}
+
+	public void setDatasetName(String datasetName) {
+		this.datasetName = datasetName;
 	}
 
 	public int getMeaningOffset() {

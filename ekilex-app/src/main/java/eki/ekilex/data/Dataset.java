@@ -25,6 +25,8 @@ public class Dataset extends AbstractDataObject {
 
 	private String imageUrl;
 
+	private String fedTermCollectionId;
+
 	private boolean isVisible;
 
 	private boolean isPublic;
@@ -83,6 +85,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public String getFedTermCollectionId() {
+		return fedTermCollectionId;
+	}
+
+	public void setFedTermCollectionId(String fedTermCollectionId) {
+		this.fedTermCollectionId = fedTermCollectionId;
 	}
 
 	public boolean isVisible() {

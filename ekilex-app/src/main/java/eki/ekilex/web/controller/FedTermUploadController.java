@@ -34,8 +34,10 @@ public class FedTermUploadController extends AbstractPrivatePageController {
 	@GetMapping(FEDTERM_UPLOAD_URI)
 	public String initPage(Model model) {
 
+		boolean isFedTermAccessEnabled = fedTermUploadService.isFedTermAccessEnabled();
 		List<Dataset> datasets = datasetService.getDatasets();
 		List<QueueStat> queueStats = queueService.getQueueStats();
+		model.addAttribute("isFedTermAccessEnabled", isFedTermAccessEnabled);
 		model.addAttribute("datasets", datasets);
 		model.addAttribute("queueStats", queueStats);
 
