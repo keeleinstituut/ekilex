@@ -17,7 +17,6 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CorpusSentence;
 import eki.wordweb.data.CorpusTranslation;
 import eki.wordweb.service.CorpusEstService;
-import eki.wordweb.service.CorpusRusService;
 import eki.wordweb.service.CorpusTranslationService;
 
 @ConditionalOnWebApplication
@@ -27,9 +26,6 @@ public class CorpusController implements WebConstant, SystemConstant {
 
 	@Autowired
 	private CorpusEstService corpusEstService;
-
-	@Autowired
-	private CorpusRusService corpusRusService;
 
 	@Autowired
 	private CorpusTranslationService corpusTranslationService;
@@ -44,14 +40,12 @@ public class CorpusController implements WebConstant, SystemConstant {
 		List<CorpusSentence> sentences = new ArrayList<>();
 		if (StringUtils.equals(wordLang, DESTIN_LANG_EST)) {
 			sentences = corpusEstService.getSentences(wordValue, searchMode);
-		} else if (StringUtils.equals(wordLang, DESTIN_LANG_RUS)) {
-			sentences = corpusRusService.getSentences(wordValue);
 		}
 
 		model.addAttribute("sentences", sentences);
 		model.addAttribute("corpLang", wordLang);
 
-		return "common-search :: corp";
+		return "common-search-sidebar :: corp";
 	}
 
 	@GetMapping(CORP_TRANS_URI + "/{wordId}/{wordLang}/{wordValue}")
@@ -64,6 +58,6 @@ public class CorpusController implements WebConstant, SystemConstant {
 		List<CorpusTranslation> translations = corpusTranslationService.getTranslations(wordId, wordLang,wordValue);
 
 		model.addAttribute("translations", translations);
-		return "common-search :: corp_trans";
+		return "common-search-sidebar :: corp_trans";
 	}
 }

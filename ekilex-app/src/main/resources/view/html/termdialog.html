@@ -1263,18 +1263,11 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_image">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" placeholder="sisesta pildi url" name="value"></textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -1293,20 +1286,10 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${image.id}">
             <input type="hidden" name="opCode" value="meaning_image">
+            <input type="hidden" name="complexity" th:value="${image.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${image.sourceUrl}"></textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-4">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == image.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
-                  </option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -1369,18 +1352,11 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${meaningId}">
             <input type="hidden" name="opCode" value="meaning_media">
+            <input type="hidden" name="complexity" th:value="${T(eki.common.constant.Complexity).DETAIL}">
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" placeholder="sisesta meedia url" name="value"></textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-4">
-                <select required class="form-control required-field" name="complexity">
-                  <option value="" hidden disabled selected>vali detailsus...</option>
-                  <option th:each="complexity : ${enabledComplexities}" th:value="${complexity}" th:text="#{'enum.complexity.' + ${complexity}}">value</option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -1399,20 +1375,10 @@
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${media.id}">
             <input type="hidden" name="opCode" value="meaning_media">
+            <input type="hidden" name="complexity" th:value="${media.complexity}">
             <div class="form-group row">
               <div class="col-md-12">
                 <textarea class="form-control" rows="1" name="value" th:text="${media.sourceUrl}"></textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-4">
-                <select required class="form-control" name="complexity">
-                  <option th:each="complexity : ${enabledComplexities}"
-                          th:value="${complexity}"
-                          th:selected="${complexity == media.complexity}"
-                          th:text="#{'enum.complexity.' + ${complexity}}">value
-                  </option>
-                </select>
               </div>
             </div>
             <div class="modal-footer">
@@ -1432,7 +1398,7 @@
           <input type="hidden" name="opCode" value="ff_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -1447,7 +1413,7 @@
           <input type="hidden" name="opCode" value="def_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
@@ -1462,7 +1428,7 @@
           <input type="hidden" name="opCode" value="lex_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

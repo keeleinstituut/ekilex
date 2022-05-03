@@ -39,6 +39,12 @@ create type type_activity_log_diff as (
   value text
 );
 
+create type type_value_name_lang as (
+  value_id bigint,
+  value text,
+  name text,
+  lang char(3));
+
 create table terms_of_use
 (
   id bigserial primary key,
@@ -495,6 +501,7 @@ create table dataset
   description text,
   contact text,
   image_url text,
+  fed_term_collection_id varchar(100),
   is_visible boolean default true,
   is_public boolean default true,
   is_superior boolean default false,

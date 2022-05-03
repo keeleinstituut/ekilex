@@ -7,11 +7,21 @@ public class QueueItem extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private String groupId;
+
 	private QueueAction action;
 
 	private EkiUser user;
 
 	private QueueContent content;
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
 
 	public QueueAction getAction() {
 		return action;

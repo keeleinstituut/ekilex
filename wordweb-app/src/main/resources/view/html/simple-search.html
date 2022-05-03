@@ -73,8 +73,11 @@
             <th:block th:replace="common-search-sidebar :: paradigms"></th:block>
             <th:block th:replace="common-search-sidebar :: word-relations"></th:block>
             <th:block th:replace="common-search-sidebar :: keelenou"></th:block>
-            <div id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
-            <div id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
+            <div th:if="${wordData.word.lang == 'est'}" id="corp" th:text="#{label.corp.search}">Otsin veebilauseid ...</div>
+            <div th:if="${wordData.word.lang == 'est'}" id="corpTrans" th:text="#{label.corp.translations.search}">Otsin tõlgitud näiteid ...</div>
+            <th:block th:if="${wordData.word.lang == 'rus'}">
+              <section th:replace="common-search-sidebar :: corp_rus"></section>
+            </th:block>
           </div>
         </div>
       </div>

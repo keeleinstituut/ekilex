@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SpringBootApplication(scanBasePackages = {
 		"eki.common",
 		"eki.ekilex.app.config",
+		"eki.ekilex.client",
 		"eki.ekilex.api",
 		"eki.ekilex.web",
 		"eki.ekilex.service",

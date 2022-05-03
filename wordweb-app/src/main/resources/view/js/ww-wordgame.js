@@ -2,11 +2,10 @@ class WordGame {
 
   constructor() {
     this.paths = {
-      // data: 'word-game.json',
-      // data: '/view/js/real-data-naide.json',
-      data: '/view/js/wordgame-data.json',
-      template: '/view/js/wordgame.twig',
-      missingImage: '/view/images/wordgame-icons/missing.svg',
+      data: `${viewPath}/js/wordgame-data.json`,
+      template: `${viewPath}/js/wordgame.twig`,
+      missingImage: `${viewPath}/images/wordgame-icons/missing.svg`,
+      images: `${viewPath}/images`,
     }
   
     this.images = []
@@ -20,9 +19,7 @@ class WordGame {
   
     this.colMapper = {
       type_1: 'col-12',
-      // type_2: 'col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12',
-      type_2: 'col-lg-3 col-md-6 col-sm-6 col-xs-12',
-      type_2_2: 'col-lg-4 col-md-6 col-sm-6 col-xs-12',
+      type_2: 'col-lg-3 col-md-6 col-sm-6 col-xs-10 col-10',
       type_3: 'col-12',
     }
   }
@@ -73,13 +70,14 @@ class WordGame {
       });
       const html = template.render({
         data: this.parsedData,
+        emptySubCategories: this.parsedSubCategories,
+        emptyCategories: this.parsedCategories,
         options: this.options,
         labels: wordGameTranslations,
+        viewPath: viewPath,
       });
 
-      // console.log(wordGameTranslations);
-
-      // enamasti renderdab uuesti ainult content ala
+      // re-render only necessary stuff
       if (this.main.querySelector('.wordgame__options')) {
         this.main.querySelector('.wordgame__content').innerHTML = $(html).find('.wordgame__content').html();
         this.main.querySelector('.dropdown-game').innerHTML = $(html).find('.dropdown-game').html();
@@ -91,24 +89,100 @@ class WordGame {
         resolve(true);
         this.bindEvents();
       }
-
-      // this.main.innerHTML = html;
-      // this.bindEvents();
-
     });
   }
 
   categorizeData() {
     this.parsedData = {};
 
-    var staticPictureCounter = 0;
+    this.parsedSubCategories = {};
+    this.parsedCategories = {};
 
-    // data kategooriate järgi kokku panemine
+    var staticPictureCounter = 0;
+    var addedMulticards = [];
+    var multicardsToAdd = [];
+    
+    this.origData = this.origData.concat(multiCards);
+    
+    this.origData.forEach((item) => {
+      if (item.type == 1) {
+
+        item.image_link = "";
+        item.category = item.category.trim();
+        item.sub_category = item.sub_category.trim();
+        item.A1_A2 = "no";
+        item.A1_B1 = "no";
+
+        if ((item.sub_category != "" && item.sub_category != null) && !addedMulticards.includes(item.sub_category)) {
+
+          var multiCardTemplate = {
+            wordId: 123456,
+            word: "Multikaart",
+            word_link: "",
+            category: `${item.category}`,
+            sub_category: `${item.sub_category}`,
+            example_1: "",
+            example_2: "",
+            example_3: "",
+            image_link: `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}.svg`,
+            audio_link: "",
+            level: "",
+            A1_A2: "yes",
+            A1_B1: "yes",
+            order: 1,
+            type: 1
+          };
+
+          if (multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_L.svg`;
+            card1.level = "lower";
+            multicardsToAdd.push(card1);
+  
+            var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_U.svg`;
+            card2.level = "upper";
+            multicardsToAdd.push(card2);
+          }
+
+          if (multiLevelMulticards.includes(item.sub_category.toLowerCase())) {
+            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-A.svg`;
+            card1.level = "A1";
+            card1.A1_B1 = "no"
+            multicardsToAdd.push(card1);
+
+            var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-B.svg`;
+            card2.level = "B1";
+            card2.A1_A2 = "no"
+            multicardsToAdd.push(card2);
+          }
+          if (!multiLevelMulticards.includes(item.sub_category.toLowerCase()) && !multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+            card1.level = "A1";
+            multicardsToAdd.push(card1);
+          }
+
+
+          addedMulticards.push(item.sub_category);
+        }
+      }
+    });
+
+    if (multicardsToAdd != null) {
+      multicardsToAdd.forEach((item) => {
+        this.origData.push(item);
+      });
+    }
+
+    // separating data by category
     this.origData.forEach((item) => {
       const category = item.category;
       if (!this.parsedData[category]) {
         this.parsedData[category] = [];
       }
+
       item.examples = [item.example_1, item.example_2, item.example_3].filter(text => text);
       item.cols = this.colMapper[`type_${item.type}`];
 
@@ -125,17 +199,19 @@ class WordGame {
         item.level = 'A1';
       }
 
-      item.A1_A2 = 'yes';
-      item.A1_B1 = 'yes';
-
-      if (item.level == "B1") {
-        item.A1_A2 = 'no';
+      if (item.A1_A2 == "" || item.A1_A2 == null || item.A1_B1 == "" || item.A1_B1 == null) {
+        item.A1_A2 = 'yes';
+        item.A1_B1 = 'yes';
+  
+        if (item.level == "B1") {
+          item.A1_A2 = 'no';
+        }
       }
 
       this.parsedData[category].push(item);
     });
 
-    // igas kategoorias data subkategooriatesse kokku panemine
+    // separating data by subcategory in each category
     Object.keys(this.parsedData).forEach((key) => {
       const items = {};
       this.parsedData[key].forEach((item) => {
@@ -144,45 +220,352 @@ class WordGame {
         }
         items[item.sub_category].push(item);
       });
+      
+      this.parsedData[key] = items;
 
-      this.parsedData[key].forEach((item) => {
-        items[item.sub_category] = items[item.sub_category].sort((a, b) => a.order - b.order);
+      if (!this.parsedCategories[key]) {
+        this.parsedCategories[key] = [];
+      }
+      
+      if (!this.parsedSubCategories[key]) {
+        this.parsedSubCategories[key] = [];
+      }
 
-        if(items[item.sub_category].length <= 3) {
-          var hasOnlyType2 = true;
+      var catHasA = "no";
+      var catHasB = "no";
 
-          items[item.sub_category].forEach((item2) => {
-            if (item2.type != 2) {
-              hasOnlyType2 = false;
+      Object.keys(this.parsedData[key]).forEach((subkey) => {  
+        items[subkey] = items[subkey].sort((a, b) => a.order - b.order);
+
+        var hasA = "no";
+        var hasB = "no";
+
+        items[subkey].forEach((item2) => {
+          if (item2.type != 1 || item2.image_link.trim() != null || item2.image_link.trim() != "") {
+            if (item2.A1_A2 == "yes") {
+              hasA = "yes";
+              catHasA = "yes";
             }
-          });
 
-          // kui alla 4 asja siis suuremad col'id
-          // if (hasOnlyType2) {
-          //   items[item.sub_category].forEach((item2) => {
-          //     item2.cols = this.colMapper['type_2_2'];
-          //   });
-          // }
-        }
+            if (item2.A1_B1 == "yes") {
+              hasB = "yes";
+              catHasB = "yes";
+            }
+          }
+        });
+
+        this.parsedSubCategories[key][subkey] = {
+          A1_A2: hasA,
+          A1_B1: hasB
+        };
       });
 
-      this.parsedData[key] = items;
+      this.parsedCategories[key] = {
+        A1_A2: catHasA,
+        A1_B1: catHasB
+      };
     });
-
-    console.log(this.parsedData);
   }
 
   bindEvents(element) {
     const parent = element ? element : this.main;
 
-    parent.querySelectorAll('[title]').forEach((item) => {
-      $(item).tooltip({
-        trigger: 'hover'
+    this.bindHoverTooltips(parent);
+
+    this.bindSidebarMenuCategories(parent);
+
+    this.bindOptions(parent);
+
+    this.bindCards(parent);
+
+    this.setMenuPlaceholderIcons(parent);
+
+    this.lazyLoad();
+  }
+
+
+  bindCards(parent) {
+    this.bindFlipcardButtons(parent);
+
+    this.bindFlipcardAudioButtons(parent);
+
+    this.bindMulticard();
+  }
+
+  bindOptions(parent) {
+    // keeletase
+    this.bindLevelFilter(parent);
+
+    // kirjatüüp
+    this.bindTextTransformFilter(parent);
+
+    // automaatne hääldamine
+    this.bindAutoplaySwitch(parent);
+  }
+
+  setMenuPlaceholderIcons(parent) {
+    parent.querySelectorAll('.wordgame__menu img, .dropdown-game img').forEach((item) => {
+      const src = item.getAttribute('src');
+      const tmp = new Image();
+      tmp.onerror = () => {
+        item.setAttribute('src', this.paths.missingImage);
+      };
+      tmp.src = src;
+    });
+  }
+
+  // multikaardi struktuur:
+  // multikaardi svg asub div'is klassiga "wordgame-multicard"
+  // svg ise on tähistatud kujul "subcategory+svg" ehk subcategory "keha" puhul on svg id'ks "kehasvg"
+  // svg sisaldab endas:
+  // - data-label'id ja data-circle'id
+  // - data-label märgitakse sedasi "data-label=name"
+  // - data-circle märgitakse sedasi "data-circle-name" (tähelepanu sellele et = märgi asemel on -)
+  // - 'name' peab matchima json'is antud sõnaga
+  // svg's peavad olema labelid hierarhiliselt data-circle'de peal, kuna muidu click/hover event lihtsalt ei tööta
+  bindMulticard() {
+    document.querySelectorAll('.wordgame-multicard').forEach((multicardElem) => {
+      const multicard = multicardElem.children[0];
+
+      if (multicard != null && !multicard.classList.contains('wordgame-multicard-initialized')) {
+
+        if (multicardElem.querySelectorAll('[data-bigger]').length > 0) {
+          multicardElem.classList.add('bigger');
+        }
+
+        multicard.querySelectorAll('[id]').forEach((item) => {
+          const elemId = item.getAttribute('id');
+
+
+          if (elemId.includes('data-label')) {
+            const dataName = elemId.substring(elemId.indexOf('=') + 1);
+            const dataCircle = multicard.querySelector(`#data-circle-${dataName}`);
+
+            const highlightColor1 = '#2c6fb6';
+            const highlightColor2 = 'white';
+
+            const multicardId = multicard.getAttribute('id').replace('svg', '');
+
+            const wordData = this.origData.find((name) => name.word === dataName);
+
+            if (wordData != null && wordData != "") {
+              item.addEventListener('click', (e) => {
+                playAudio(wordData.audio_link, function () {
+                });
+              });
+              item.addEventListener('mouseenter', (e) => {
+                if (this.options.autoplay == "on") {
+                  playAudio(wordData.audio_link, function () {
+                  });
+                }
+              });
+            }
+            else {
+              item.classList.add('wordgame-no-sound');
+
+              if (this.options.debugmissing) {
+                item.children[0].setAttribute('fill', 'red');
+              }
+            }
+
+            if (dataCircle != null) {
+              const origColor1 = item.children[0].getAttribute('fill');
+              const origColor2 = item.children[1].getAttribute('fill');
+              const origOpacity = dataCircle.getAttribute('opacity');
+
+              dataCircle.setAttribute('opacity', '0');
+              item.classList.add("wordgame-multicard-label");
+
+              item.addEventListener('mouseenter', (e) => {
+                dataCircle.setAttribute('opacity', origOpacity);
+                item.children[0].setAttribute('fill', highlightColor1);
+                item.children[1].setAttribute('fill', highlightColor2);
+              });
+              item.addEventListener('mouseleave', (e) => {
+                dataCircle.setAttribute('opacity', '0');
+                item.children[0].setAttribute('fill', origColor1);
+                item.children[1].setAttribute('fill', origColor2);
+              });
+            }
+            else {
+              const origColor1 = item.children[0].getAttribute('fill');
+              const origColor2 = item.children[1].getAttribute('fill');
+
+              item.classList.add("wordgame-multicard-label");
+
+              item.addEventListener('mouseenter', (e) => {
+                item.children[0].setAttribute('fill', highlightColor1);
+                item.children[1].setAttribute('fill', highlightColor2);
+              });
+              item.addEventListener('mouseleave', (e) => {
+                item.children[0].setAttribute('fill', origColor1);
+                item.children[1].setAttribute('fill', origColor2);
+              });
+            }
+          }
+        });
+
+        multicard.classList.add('wordgame-multicard-initialized');
+      }
+    });
+  }
+
+  bindFlipcardAudioButtons(parent) {
+    parent.querySelectorAll('[audio-value],[data-words]').forEach((item) => {
+      const audioValue = item.getAttribute('audio-value');
+      const audioType = item.getAttribute('audio-type');
+
+      if ((audioValue != null && audioValue != "") || (item.getAttribute('data-words') != null && item.getAttribute('data-words') != "")) {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (item.getAttribute('data-words')) {
+
+            var definedUrlToAudio = item.getAttribute('data-url-to-audio');
+            if (definedUrlToAudio) {
+              playAudio(definedUrlToAudio, function () {
+              });
+              return;
+            }
+
+            var data = {
+              'words': item.getAttribute('data-words')
+            };
+
+            $.post(applicationUrl + 'generate_audio', data).done(function (providedUrlToAudio) {
+              item.setAttribute('data-url-to-audio', providedUrlToAudio);
+              playAudio(providedUrlToAudio, function () {
+              });
+            }).fail(function () {
+              alert(messages.audio_generation_failure);
+            });
+          } else {
+            playAudio(audioValue, function () {
+            });
+          }
+        });
+
+        item.addEventListener('mouseenter', (e) => {
+          if (this.options.autoplay == "on") {
+            playAudio(audioValue, function () {
+            });
+          }
+        });
+      }
+      else {
+        if (this.options.debugmissing) {
+          item.style.background = "red";
+        }
+      }
+    });
+  }
+
+  bindAutoplaySwitch(parent) {
+    parent.querySelectorAll('[autoplay-switch]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        if (this.options.autoplay === "on") {
+          this.options.autoplay = "off";
+        }
+        else {
+          this.options.autoplay = "on";
+        }
+        this.pushToUrl();
       });
     });
-    $('.tooltip[role="tooltip"]').remove();
+  }
 
-    // menüü
+  bindTextTransformFilter(parent) {
+    parent.querySelectorAll('[text-transform]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        this.options.text_transform = item.getAttribute('text-transform');
+        const upperClass = 'wordgame-text-upper';
+
+        document.querySelectorAll('.wordgame__row').forEach((item2) => {
+          if (item.getAttribute('text-transform') == "upper") {
+            if (!item2.classList.contains(upperClass)) {
+              item2.classList.add(upperClass);
+            }
+          } else {
+            if (item2.classList.contains(upperClass)) {
+              item2.classList.remove(upperClass);
+            }
+          }
+        });
+
+        var hasMulticard = false;
+
+        Object.keys(this.parsedData[this.options.active_category]).forEach((key) => {
+          this.parsedData[this.options.active_category][key].forEach((obj) => {
+            if (obj.type == 1) {
+              hasMulticard = true;
+            }
+          });
+        });
+
+        this.pushToUrl();
+
+        if (hasMulticard) {
+          this.renderTemplate();
+        }
+      });
+    });
+  }
+
+  bindFlipcardButtons(parent) {
+    parent.querySelectorAll('[toggle="flip"]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const flipClass = 'card--flipped';
+        const parent = item.closest('.wordgame-flippable');
+        parent.classList.toggle(flipClass);
+
+        const cardBack = parent.querySelector('.card__back');
+        const cardFront = parent.querySelector('.card__face');
+
+        if (parent.classList.contains(flipClass)) {
+          cardBack.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "0");
+          });
+
+          cardFront.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "-1");
+          });
+
+          cardBack.classList.remove('wordgame-card-hidden');
+          setTimeout(() => {
+            cardBack.classList.remove('wordgame-card-hidden');
+            cardFront.classList.add('wordgame-card-hidden');
+          }, 200);
+        }
+        else {
+          cardBack.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "-1");
+          });
+
+          cardFront.querySelectorAll('button,a').forEach((elem) => {
+            elem.setAttribute("tabindex", "0");
+          });
+
+          cardFront.classList.remove('wordgame-card-hidden');
+          setTimeout(() => {
+            cardFront.classList.remove('wordgame-card-hidden');
+            cardBack.classList.add('wordgame-card-hidden');
+          }, 200);
+        }
+      });
+    });
+  }
+
+  bindLevelFilter(parent) {
+    parent.querySelectorAll('[sort-id]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        this.options.level = item.getAttribute('sort-id');
+        this.pushToUrl();
+        this.renderTemplate();
+      });
+    });
+  }
+
+  bindSidebarMenuCategories(parent) {
     const categories = parent.querySelectorAll('[data-category]');
 
     categories.forEach((item) => {
@@ -196,8 +579,6 @@ class WordGame {
         });
         item.classList.add('wordgame-active');
         item.setAttribute('aria-selected', "true");
-
-        // console.log(categories);
 
         this.options.active_category = item.getAttribute('data-category');
 
@@ -217,259 +598,40 @@ class WordGame {
         }
         this.pushToUrl();
         this.renderTemplate();
+
+        window.scrollTo(0, 0);
       });
     });
+  }
 
-    // keeletase
-    parent.querySelectorAll('[sort-id]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        this.options.level = item.getAttribute('sort-id');
-        this.pushToUrl();
-        this.renderTemplate();
-      });
-    });
+  bindHoverTooltips(parent) {
+    let isMobile = window.matchMedia("only screen and (any-hover: none), (pointer: coarse)").matches;
 
-    // flipkaart
-    parent.querySelectorAll('[toggle="flip"]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        const flipClass = 'card--flipped';
-        const parent = item.closest('.wordgame-flippable');
-        parent.classList.toggle(flipClass);
-
-        const cardBack = parent.querySelector('.card__back');
-        const cardFront = parent.querySelector('.card__face');
-
-        if (parent.classList.contains(flipClass)) {
-          cardBack.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","0");
-          });
-
-          cardFront.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","-1");
-          });
-
-          cardBack.classList.remove('wordgame-hidden');
-          setTimeout(() => {
-            cardFront.classList.add('wordgame-hidden');
-          }, 200);
-        }
-        else {
-          cardBack.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","-1");
-          });
-
-          cardFront.querySelectorAll('button,a').forEach((elem) => {
-            elem.setAttribute("tabindex","0");
-          });
-
-          cardFront.classList.remove('wordgame-hidden');
-          setTimeout(() => {
-            cardBack.classList.add('wordgame-hidden');
-          }, 200);
-        }
-      });
-    });
-
-    // kirjatüüp
-    parent.querySelectorAll('[text-transform]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        this.options.text_transform = item.getAttribute('text-transform');
-        const upperClass = 'text-upper';
-
-        document.querySelectorAll('.wordgame__row').forEach((item2) => {
-          if (item.getAttribute('text-transform') == "upper") {
-            if (!item2.classList.contains(upperClass)) {
-              item2.classList.add(upperClass);
-            }
-          } else {
-            if (item2.classList.contains(upperClass)) {
-              item2.classList.remove(upperClass);
-            }
-          }
+    if (!isMobile) {
+      parent.querySelectorAll('[title]').forEach((item) => {
+        $(item).tooltip({
+          trigger: 'hover'
         });
-
-        this.pushToUrl();
       });
-    });
+    }
+    $('.tooltip[role="tooltip"]').remove();
+  }
 
-    // automaatne hääldamine
-    parent.querySelectorAll('[autoplay-switch]').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        if (this.options.autoplay === "on") {
-          this.options.autoplay = "off";
-        }
-        else {
-          this.options.autoplay = "on";
-        }
-        this.pushToUrl();
-      });
-    });
+  wordgameSlugify (str) {
+    str = str.replace(/^\s+|\s+$/g, '');
+    str = str.toLowerCase();
 
-    // flip kaartide audio nupud
-    parent.querySelectorAll('[audio-value],[data-words]').forEach((item) => {
-      const audioValue = item.getAttribute('audio-value');
-      const audioType = item.getAttribute('audio-type');
+    var from = "àáäâèéëêìíïîòóöôõùúüûñç·/_,:;";
+    var to = "aaaaeeeeiiiiooooouuuunc------";
+    for (var i = 0, l = from.length; i < l; i++) {
+      str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+    }
 
-      if ((audioValue != null && audioValue != "") || (item.getAttribute('data-words') != null && item.getAttribute('data-words') != "")) {
-        item.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (item.getAttribute('data-words')) {
+    str = str.replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
 
-            var definedUrlToAudio = item.getAttribute('data-url-to-audio');
-            if (definedUrlToAudio) {
-              playAudio(definedUrlToAudio, function () {
-
-              });
-              return;
-            }
-
-            var data = {
-              'words': item.getAttribute('data-words')
-            };
-            // https://sonaveeb.ee/
-            $.post(applicationUrl + 'generate_audio', data).done(function (providedUrlToAudio) {
-              item.setAttribute('data-url-to-audio', providedUrlToAudio);
-              playAudio(providedUrlToAudio, function () {
-
-              });
-            }).fail(function () {
-              alert(messages.audio_generation_failure);
-            })
-          } else {
-            playAudio(audioValue, function () {
-            
-            });
-          }
-          console.log(`audio value: ${audioValue} type: ${audioType}`);
-          //play audio
-        });
-
-        item.addEventListener('mouseenter', (e) => {
-          if (this.options.autoplay == "on") {
-            playAudio(audioValue, function () {
-
-            });
-            console.log(`audio value: ${audioValue} type: ${audioType}`);
-          }
-
-        });
-      }
-      else {
-        // debug. visuaalselt näitab ära, mis sõnadel puudub audio
-        if (this.options.debugmissing) {
-          item.style.background = "red";
-        }
-      }
-    });
-    
-    // multikaardi struktuur:
-    // multikaardi svg asub div'is klassiga "wordgame-multicard"
-    // svg ise on tähistatud kujul "subcategory+svg" ehk subcategory "keha" puhul on svg id'ks "kehasvg"
-    // svg sisaldab endas:
-    // - data-label'id ja data-circle'id
-    // - data-label märgitakse sedasi "data-label=name"
-    // - data-circle märgitakse sedasi "data-circle-name" (tähelepanu sellele et = märgi asemel on -)
-    // - 'name' peab matchima json'is antud sõnaga
-    // svg's peavad olema labelid hierarhiliselt data-circle'de peal, kuna muidu click/hover event lihtsalt ei tööta
-
-    // tegeleb multikaartidega
-    document.querySelectorAll('.wordgame-multicard').forEach((multicardElem) => {
-      // const multicard = document.querySelector('#kehaosadsvg');
-      const multicard = multicardElem.children[0];
-
-      if (multicard != null && !multicard.classList.contains('wordgame-multicard-initialized')) {
-        multicard.querySelectorAll('[id]').forEach((item) => {
-          const elemId = item.getAttribute('id');
-
-          
-          if (elemId.includes('data-label')) {
-            const dataName = elemId.substring(elemId.indexOf('=') + 1);
-            const dataCircle = multicard.querySelector(`#data-circle-${dataName}`);
-            
-            const highlightColor1 = '#2c6fb6';
-            const highlightColor2 = 'white';
-
-            const multicardId = multicard.getAttribute('id').replace('svg','');
-            
-            const wordData = this.parsedData[this.options.active_category][multicardId].find((name) => name.word === dataName);
-
-            if (wordData != null && wordData != "") {
-              item.addEventListener('click', (e) => {
-                playAudio(wordData.audio_link, function () {
-
-                });
-              });
-              item.addEventListener('mouseenter', (e) => {
-                if (this.options.autoplay == "on") {
-                  playAudio(wordData.audio_link, function () {
-
-                  });
-                }
-              });
-            }
-            else {
-              item.classList.add('wordgame-no-sound');
-
-              // debug. visuaalselt näitab ära, mis sõnadel puudub audio
-              if (this.options.debugmissing) {
-                item.children[0].setAttribute('fill', 'red');
-              }
-            }
-
-            if (dataCircle != null) {
-              const origColor1 = item.children[0].getAttribute('fill');
-              const origColor2 = item.children[1].getAttribute('fill');
-              const origOpacity = dataCircle.getAttribute('opacity');
-            
-              dataCircle.setAttribute('opacity', '0');
-              item.classList.add("wordgame-multicard-label");
-            
-              item.addEventListener('mouseenter', (e) => {
-                dataCircle.setAttribute('opacity', origOpacity);
-                item.children[0].setAttribute('fill', highlightColor1);
-                item.children[1].setAttribute('fill', highlightColor2);
-              });
-              item.addEventListener('mouseleave', (e) => {
-                dataCircle.setAttribute('opacity', '0');
-                item.children[0].setAttribute('fill', origColor1);
-                item.children[1].setAttribute('fill', origColor2);
-              });
-            }
-            else {
-              const origColor1 = item.children[0].getAttribute('fill');
-              const origColor2 = item.children[1].getAttribute('fill');
-
-              item.classList.add("wordgame-multicard-label");
-            
-              item.addEventListener('mouseenter', (e) => {
-                item.children[0].setAttribute('fill', highlightColor1);
-                item.children[1].setAttribute('fill', highlightColor2);
-              });
-              item.addEventListener('mouseleave', (e) => {
-                item.children[0].setAttribute('fill', origColor1);
-                item.children[1].setAttribute('fill', origColor2);
-              });
-            }
-          }
-        });
-        
-        multicard.classList.add('wordgame-multicard-initialized');
-      }
-    });
-
-    // puuduva ikooni puhul placeholderi kuvamine
-    parent.querySelectorAll('.wordgame__menu img, .dropdown-game img').forEach((item) => {
-      const src = item.getAttribute('src');
-      const tmp = new Image();
-      tmp.onerror = () => {
-        item.setAttribute('src', this.paths.missingImage);
-      };
-      tmp.src = src;
-    });
-
-    this.lazyLoad();
-
+    return str;
   }
 
   lazyLoad() {
@@ -506,9 +668,7 @@ class WordGame {
   }
 
   pushToUrl() {
-    // console.log(this.options);
     const url = Object.keys(this.options).map((key) => {
-      // console.log(key);
       return key ? `${key}=${this.options[key]}` : undefined;
     }).filter(item => item).join('&');
     window.history.replaceState({}, '', `?${url}`);
@@ -516,14 +676,13 @@ class WordGame {
 
   retrieveFromUrl() {
     const search = window.location.search.replace('?', '');
-    // console.log(search);
+
     search.split('&').forEach((item) => {
       const splitValues = item.split('=');
       const key = splitValues[0];
       const value = decodeURIComponent(splitValues[1]);
       this.options[key] = value;
     });
-    // console.log(this.options);
   }
 
   async initialize() {
@@ -552,7 +711,7 @@ class WordGame {
       this.loadImages();
     });
 
-    console.log('initialized');
+    console.log('wordgamejs initialized');
   }
 
 }
@@ -570,6 +729,132 @@ function decodeHTMLEntities(text) {
 
   return text;
 }
+
+const multiLevelMulticards = ['keha','nägu','jalg','käsi'];
+const multiCaseMulticards = ['laps', 'vanem', 'vanavanem'];
+
+var multiCards = [
+  {
+    category: "Kehaosad",
+    sub_category: "keha",
+    word: "keha",
+    wordId: 123456,
+    word_link: "",
+    example_1: "",
+    example_2: "",
+    example_3: "",
+    image_link: "",
+    audio_link: "",
+    level: "A1",
+    A1_A2: "yes",
+    A1_B1: "yes",
+    order: 1,
+    type: 1
+  },
+  {
+    category: "Kehaosad",
+    sub_category: "nägu",
+    word: "nägu",
+    wordId: 123456,
+    word_link: "",
+    example_1: "",
+    example_2: "",
+    example_3: "",
+    image_link: "",
+    audio_link: "",
+    level: "A1",
+    A1_A2: "yes",
+    A1_B1: "yes",
+    order: 1,
+    type: 1
+  },
+  {
+    category: "Kehaosad",
+    sub_category: "jalg",
+    word: "jalg",
+    wordId: 123456,
+    word_link: "",
+    example_1: "",
+    example_2: "",
+    example_3: "",
+    image_link: "",
+    audio_link: "",
+    level: "A1",
+    A1_A2: "yes",
+    A1_B1: "yes",
+    order: 1,
+    type: 1
+  },
+  {
+    category: "Kehaosad",
+    sub_category: "käsi",
+    word: "käsi",
+    wordId: 123456,
+    word_link: "",
+    example_1: "",
+    example_2: "",
+    example_3: "",
+    image_link: "",
+    audio_link: "",
+    level: "A1",
+    A1_A2: "yes",
+    A1_B1: "yes",
+    order: 1,
+    type: 1
+  },
+  {
+    category: "Pereliikmed",
+    sub_category: "laps",
+    word: "laps",
+    wordId: 123456,
+    word_link: "",
+    example_1: "",
+    example_2: "",
+    example_3: "",
+    image_link: "",
+    audio_link: "",
+    level: "A1",
+    A1_A2: "yes",
+    A1_B1: "yes",
+    order: 1,
+    type: 1
+  },
+  {
+    category: "Pereliikmed",
+    sub_category: "vanem",
+    word: "vanem",
+    wordId: 123456,
+    word_link: "",
+    example_1: "",
+    example_2: "",
+    example_3: "",
+    image_link: "",
+    audio_link: "",
+    level: "A1",
+    A1_A2: "yes",
+    A1_B1: "yes",
+    order: 1,
+    type: 1
+  }
+  ,
+  {
+    category: "Pereliikmed",
+    sub_category: "vanavanem",
+    word: "vanavanem",
+    wordId: 123456,
+    word_link: "",
+    example_1: "",
+    example_2: "",
+    example_3: "",
+    image_link: "",
+    audio_link: "",
+    level: "A1",
+    A1_A2: "yes",
+    A1_B1: "yes",
+    order: 1,
+    type: 1
+  }
+];
 
 const decodeData = [
   ['&otilde;', 'õ'],

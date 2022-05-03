@@ -38,6 +38,9 @@
         <p>
           <a th:href="@{/datasets}">Sõnakogude haldus</a>
         </p>
+        <p>
+          <a th:href="@{/fedtermupload}">FedTerm liidestus</a>
+        </p>
         <p sec:authorize="#authentication.principal.admin">
           <a th:href="@{/classifiers}">Klassifikaatorite haldus</a>
         </p>
@@ -170,7 +173,7 @@
     </div>
   </div>
   <script th:inline="javascript">
-	initializeHome();
+	  initializeHome();
   </script>
 </body>
 </html>

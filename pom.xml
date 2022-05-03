@@ -11,7 +11,7 @@
 
 	<groupId>eki.ekilex</groupId>
 	<artifactId>eki-root</artifactId>
-	<version>1.23-SNAPSHOT</version>
+	<version>1.24-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Eki apps root project</name>
@@ -130,7 +130,7 @@
 				<groupId>eki.common</groupId>
 				<artifactId>eki-common</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
-				<version>1.23-SNAPSHOT</version>
+				<version>1.24-SNAPSHOT</version>
 			</dependency>
 			<!-- commons -->
 			<dependency>
@@ -202,6 +202,12 @@
 				<groupId>com.google.truth</groupId>
 				<artifactId>truth</artifactId>
 				<version>0.36</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit.platform</groupId>
+				<artifactId>junit-platform-commons</artifactId>
+				<version>1.8.2</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>

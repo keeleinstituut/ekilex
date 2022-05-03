@@ -230,4 +230,8 @@ public class ViewUtil implements WebConstant, SystemConstant, GlobalConstant {
 	public String getEkilexLimTermMeaningDetailsUrl(Long meaningId) {
 		return webUtil.composeEkilexLimTermDetailsUrl(meaningId);
 	}
+
+	public String getRusCorpWordUrl(String word) {
+		return webUtil.composeRusCorpWordUrl(word);
+	}
 }

@@ -18,6 +18,7 @@ import eki.ekilex.data.db.udt.TypeMediaFile;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
+import eki.ekilex.data.db.udt.TypeValueNameLang;
 import eki.ekilex.data.db.udt.TypeWordEtymRelation;
 import eki.ekilex.data.db.udt.TypeWordHomNrDataTuple;
 import eki.ekilex.data.db.udt.TypeWordRelMeaning;
@@ -100,6 +101,11 @@ public class UDTs {
      * The type <code>public.type_usage</code>
      */
     public static TypeUsage TYPE_USAGE = eki.ekilex.data.db.udt.TypeUsage.TYPE_USAGE;
+
+    /**
+     * The type <code>public.type_value_name_lang</code>
+     */
+    public static TypeValueNameLang TYPE_VALUE_NAME_LANG = eki.ekilex.data.db.udt.TypeValueNameLang.TYPE_VALUE_NAME_LANG;
 
     /**
      * The type <code>public.type_word_etym_relation</code>

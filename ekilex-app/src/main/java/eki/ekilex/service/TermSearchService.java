@@ -66,6 +66,7 @@ public class TermSearchService extends AbstractSearchService {
 	@Autowired
 	private PermCalculator permCalculator;
 
+	@Transactional
 	public byte[] serialiseTermSearchResult(
 			String searchFilter,
 			List<String> selectedDatasetCodes,
@@ -105,6 +106,7 @@ public class TermSearchService extends AbstractSearchService {
 		return termSearchResult;
 	}
 
+	@Transactional
 	public byte[] serialiseTermSearchResult(
 			SearchFilter searchFilter,
 			List<String> selectedDatasetCodes,

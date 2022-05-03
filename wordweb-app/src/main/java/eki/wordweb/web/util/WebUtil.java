@@ -16,8 +16,13 @@ public class WebUtil implements WebConstant, GlobalConstant {
 
 	private static final String MEANING_ID_URL_PLACEHOLDER = "{meaningId}";
 
+	private static final String WORD_URL_PLACEHOLDER = "{word}";
+
 	@Value("${ekilex.limterm.details.url}")
 	private String ekilexLimTermDetailsUrl;
+
+	@Value("${corpus.service.rus.url}")
+	private String corpusServiceRusUrl;
 
 	public String composeDetailSearchUri(String destinLangsStr, String datasetCodesStr, String word, Integer homonymNr) {
 		String encodedWord = encode(word);
@@ -51,6 +56,11 @@ public class WebUtil implements WebConstant, GlobalConstant {
 	public String getEkilexLimTermSearchUrl() {
 		String limTermSearchUrl = StringUtils.substringBefore(ekilexLimTermDetailsUrl, "?");
 		return limTermSearchUrl;
+	}
+
+	public String composeRusCorpWordUrl(String word) {
+		String rusCorpWordUrl = StringUtils.replace(corpusServiceRusUrl, WORD_URL_PLACEHOLDER, word);
+		return rusCorpWordUrl;
 	}
 
 	private String encodeSeparatedValuesStr(String separatedValuesStr) {

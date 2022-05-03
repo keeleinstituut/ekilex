@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.client.HttpClientErrorException;
 
 import eki.common.constant.Complexity;
+import eki.common.constant.DatasetType;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
@@ -218,6 +219,11 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 	@ModelAttribute("enabledComplexities")
 	public List<Complexity> getEnabledComplexities() {
 		return Arrays.asList(Complexity.ANY, Complexity.SIMPLE, Complexity.DETAIL);
+	}
+
+	@ModelAttribute("enabledDatasetTypes")
+	public List<DatasetType> getEnabledDatasetTypes() {
+		return Arrays.asList(DatasetType.LEX, DatasetType.TERM);
 	}
 
 	@ModelAttribute("wordGenders")
