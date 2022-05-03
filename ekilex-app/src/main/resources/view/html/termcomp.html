@@ -89,9 +89,8 @@
         <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
            title="Tähenduste ühendamine"
            sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
-        <button id="duplicateMeaningBtn"
-                title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
-                class="btn btn-secondary mr-1"
+        <button class="btn btn-secondary mr-1"
+                data-toggle="duplicate-meaning-confirm"
                 th:data-meaning-id="${meaningId}"
                 sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
         <div style="display:inline-block">
@@ -134,6 +133,14 @@
         </div>
       </div>
     </div>
+    <script>
+      $('[data-toggle=duplicate-meaning-confirm]').confirmation({
+        btnOkLabel : 'Jah',
+        btnCancelLabel : 'Ei',
+        title : 'Tee duplikaat mõistest ja kõigist tema ilmikutest',
+        onConfirm : dublicateMeaning
+      });
+    </script>
   </div>
   <div class="border-bottom pb-2 title-bar" th:fragment="lim_term_meaning_header">
     <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center flex-nowrap" role="alert">

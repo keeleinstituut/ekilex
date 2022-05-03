@@ -13,25 +13,6 @@ function initializeTermSearch() {
 		});
 	});
 
-	$(document).on('click', '#duplicateMeaningBtn', function() {
-		let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
-		$.post(url).done(function(data) {
-			let response = JSON.parse(data);
-			if (response.status === 'ok') {
-				openMessageDlg(response.message);
-				let duplicateMeaningId = response.duplicateMeaningId;
-				setTimeout(function() {
-					window.location = applicationUrl + 'meaningback/' + duplicateMeaningId;
-				}, 1500);
-			} else {
-				openAlertDlg(response.message);
-			}
-		}).fail(function(data) {
-			openAlertDlg("Mõiste dubleerimine ebaõnnestus");
-			console.log(data);
-		});
-	});
-
 	$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg();
 		let url = applicationUrl + "term_paging";
@@ -181,3 +162,22 @@ function deleteMeaningAndLexemesAndWords() {
 	let successCallbackFunc = () => eval(successCallbackName)($(this));
 	executeMultiConfirmPostDelete(opName, opCode, meaningId, successCallbackFunc, true);
 };
+
+function dublicateMeaning() {
+	let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
+	$.post(url).done(function(data) {
+		let response = JSON.parse(data);
+		if (response.status === 'ok') {
+			openMessageDlg(response.message);
+			let duplicateMeaningId = response.duplicateMeaningId;
+			setTimeout(function() {
+				window.location = applicationUrl + 'meaningback/' + duplicateMeaningId;
+			}, 1500);
+		} else {
+			openAlertDlg(response.message);
+		}
+	}).fail(function(data) {
+		openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+		console.log(data);
+	});
+}
