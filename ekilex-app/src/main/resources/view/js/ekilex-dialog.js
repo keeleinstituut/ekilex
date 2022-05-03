@@ -71,6 +71,10 @@ $(function() {
 		initSelectDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=editWordDisplayMorphDlg_]", function() {
+		initSelectDlg($(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=editLexemePublicityDlg_]", function() {
 		initSelectDlg($(this));
 	});
