@@ -1,5 +1,62 @@
-function selectDatasets(selection) {
-	$('#datasetSelectDlg').find(':checkbox').prop('checked', selection)
+$.fn.selectDatasets = function() {
+	
+	$('[name=selectAll]').on("click", function(){
+		$('#datasetSelectDlg').find(':checkbox').prop('checked', true)
+	  });
+
+	  $('[name=selectNone]').on("click", function(){
+		$('#datasetSelectDlg').find(':checkbox').prop('checked', false)
+	  });
+
+};
+
+$.fn.detailSearchModeBtn = function () {
+
+	$('.detail-search-mode-less-btn').on("click", function () {
+		let finalOutput = "";
+
+		let icon = $('.detail-search-mode-less-btn').find("i");
+		if (icon.hasClass("fa-sort-desc")) {
+			icon.addClass("fa-sort-asc").removeClass("fa-sort-desc");
+			$('.detail-search-filter-items').show();
+			$('.detail-search-box-less').hide();
+		} else {
+			icon.addClass("fa-sort-desc").removeClass("fa-sort-asc");
+			$('.detail-search-filter-items').hide();
+			$('.detail-search-box-less').show();
+
+		}
+
+		$(".detail-search-group").each(function (index, value) {
+			let output = "";
+			let selected = $(this).find("select[name$='entity'] option:selected").text() ? ($(this).find("select[name$='entity'] option:selected").text() + "-") : "";
+
+			$('.detail-search-sub-row', this).each(function (index, value) {
+				let obj = $(this);
+				let outputInner = "";
+				let notChksTitle = obj.find('[name$="not"]').is(':checked') ? (obj.find('[name$="not"]').attr('title').toLowerCase() + "-") : "";
+				let searchKey = obj.find("select[name$='searchKey'] option:selected").text() ? (obj.find("select[name$='searchKey'] option:selected").text() + "-") : "";
+				let searchOperand = obj.find("select[name$='searchOperand'] option:selected").text() ? (obj.find("select[name$='searchOperand'] option:selected").text()) : "";
+				outputInner = outputInner + selected + notChksTitle + searchKey + searchOperand;
+
+				let searchValueVal = obj.find("input[name$='searchValue']").val() ?? "";
+				let searchValueText = obj.find("select[name$='searchValue'] option:selected").text() ?? "";
+
+				if (searchValueVal.length > 0) {
+					outputInner = outputInner + "-" + '"' + searchValueVal + '"' + "; ";
+					output = output + outputInner;
+				} else if (searchValueText.length > 0) {
+					outputInner = outputInner + "-" + '"' + searchValueText + '"' + "; ";
+					output = output + outputInner;
+				} else {
+					outputInner = "";
+				}
+			});
+			finalOutput = finalOutput + output;
+		});
+		$('.detail-search-box-less-value').val(finalOutput);
+	});
+
 };
 
 function displayDetailConditionButtons() {

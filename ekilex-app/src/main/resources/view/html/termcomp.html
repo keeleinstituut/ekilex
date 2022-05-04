@@ -89,9 +89,8 @@
         <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
            title="Tähenduste ühendamine"
            sec:authorize="#vars.meaning.crudGrant">Ühenda</a>
-        <button id="duplicateMeaningBtn"
-                title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
-                class="btn btn-secondary mr-1"
+        <button class="btn btn-secondary mr-1"
+                data-toggle="duplicate-meaning-confirm"
                 th:data-meaning-id="${meaningId}"
                 sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
         <div style="display:inline-block">
@@ -134,6 +133,14 @@
         </div>
       </div>
     </div>
+    <script>
+      $('[data-toggle=duplicate-meaning-confirm]').confirmation({
+        btnOkLabel : 'Jah',
+        btnCancelLabel : 'Ei',
+        title : 'Tee duplikaat mõistest ja kõigist tema ilmikutest',
+        onConfirm : dublicateMeaning
+      });
+    </script>
   </div>
   <div class="border-bottom pb-2 title-bar" th:fragment="lim_term_meaning_header">
     <div class="alert bg-warning text-black px-3 py-1 d-flex align-items-center flex-nowrap" role="alert">
@@ -1032,7 +1039,28 @@
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
       </div>
-      <span th:if="${lexeme.word.displayMorphCode != null}" th:text="${lexeme.word.displayMorphCode}" class="pl-1"></span>
+      <th:block th:if="${lexeme.word.displayMorphCode != null}">
+        <div class="hover-actions-container hover-actions-container-outline ml-2">
+          <span th:text="'[' + ${lexeme.word.displayMorphCode} + ']'" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Vormikood"></span>
+          <div class="hover-actions">
+            <div class="btn-group">
+              <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal"
+                      th:data-target="${'#editWordDisplayMorphDlg_' + lexeme.wordId}"
+                      sec:authorize="#vars.lexeme.word.subGrant">
+                <i class="fa fa-caret-down action-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm"
+                      th:data-id="${lexeme.wordId}"
+                      data-op-code="word_display_morph"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.lexeme.word.subGrant">
+                <i class="fa fa-remove action-icon" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </th:block>
       <button class="btn" data-plugin="identificator"><span class="fa fa-info-circle"></span></button>
       <button type="button" class="btn badge badge-secondary float-right mt-1"
               title="Lisa andmeid"

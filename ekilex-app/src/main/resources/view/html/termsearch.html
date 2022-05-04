@@ -48,7 +48,7 @@
     <div class="mt-4 float-left" th:if="${invalidSearch}">
       <div th:text="#{term.search.invalid}"></div>
     </div>
-    <div class="row no-gutters pt-2 h-100">
+    <div class="row no-gutters pt-3 h-100">
       <div class="mt-4 float-left" th:if="${noResults == true}">
         <div th:text="#{term.not.found}">Not found.</div>
       </div>
@@ -147,6 +147,7 @@
                 <div th:replace="termdialog :: edit_word_value_dlg"></div>
                 <div th:replace="termdialog :: edit_word_gender_dlg"></div>
                 <div th:replace="termdialog :: edit_word_lang_dlg"></div>
+                <div th:replace="termdialog :: edit_word_display_morph_dlg"></div>
                 <div class="card-body pb-4" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
                   <div th:replace="termcomp :: lexeme_header"></div>
                   <div>
