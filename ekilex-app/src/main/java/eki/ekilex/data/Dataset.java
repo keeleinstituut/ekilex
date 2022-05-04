@@ -27,6 +27,8 @@ public class Dataset extends AbstractDataObject {
 
 	private String fedTermCollectionId;
 
+	private String fedTermDomainId;
+
 	private boolean isVisible;
 
 	private boolean isPublic;
@@ -93,6 +95,14 @@ public class Dataset extends AbstractDataObject {
 
 	public void setFedTermCollectionId(String fedTermCollectionId) {
 		this.fedTermCollectionId = fedTermCollectionId;
+	}
+
+	public String getFedTermDomainId() {
+		return fedTermDomainId;
+	}
+
+	public void setFedTermDomainId(String fedTermDomainId) {
+		this.fedTermDomainId = fedTermDomainId;
 	}
 
 	public boolean isVisible() {

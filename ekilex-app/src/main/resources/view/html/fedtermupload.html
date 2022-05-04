@@ -8,9 +8,6 @@
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'fedtermupload')"></th:block>
   <div class="container-fluid">
-    <div class="alert alert-warning" role="alert" th:if="${!isFedTermAccessEnabled}">
-      FedTerm liidestus puudub
-    </div>
     <th:block th:if="${queueStats}">
       <div class="card mt-4 shadow">
         <div class="card-header">
@@ -41,16 +38,22 @@
         <h5 class="card-title">FedTerm liidestus</h5>
       </div>
       <div class="card-body">
+        <div class="alert alert-warning" role="alert" th:if="${!isFedTermAccessEnabled}">FedTerm liidestus puudub</div>
         <th:block th:with="isAdmin=${#vars.userRoleData.admin}">
           <table class="table table-striped m-0 p-0 table-hover">
             <tr>
               <th class="m-1 p-1" style="width: 5%">Kood</th>
               <th class="m-1 p-1" style="width: 20%">Nimi</th>
-              <th class="m-1 p-1" style="width: 50%">Kirjeldus</th>
-              <th class="m-1 p-1" style="width: 8%">Kontaktid</th>
+              <th class="m-1 p-1" style="width: 30%">Kirjeldus</th>
+              <th class="m-1 p-1" style="width: 10%">Kontaktid</th>
+              <th class="m-1 p-1" style="width: 5%">Domain ID</th>
+              <th class="m-1 p-1" style="width: 5%">Collection ID</th>
               <th class="m-1 p-1" style="width: 4%"></th>
             </tr>
-            <th:block th:each="dataset : ${datasets}">
+            <th:block th:each="dataset : ${datasets}"
+                      th:with="
+                                  fedTermDomainExists=${dataset.fedTermDomainId != null},
+                                  fedTermCollectionExists=${dataset.fedTermCollectionId != null}">
               <tr th:classappend="${dataset.superior} ? 'font-weight-bold': ''">
                 <td class="m-1 p-1">
                   <span th:text="${dataset.code}"></span>
@@ -61,11 +64,21 @@
                 <td class="m-1 p-1">
                   <small data-toggle="tooltip" data-placement="bottom" th:title="${dataset.description}" th:text="${#strings.abbreviate(dataset.description, 500)}"></small>
                 </td>
-                <td class="m-1 p-1 pl-2 pr-2 border-left border-right">
+                <td class="m-1 p-1 pl-2 border-left">
                   <small data-toggle="tooltip" data-placement="bottom" th:title="${dataset.contact}" th:text="${dataset.contact}"></small>
                 </td>
-                <td class="m-1 p-1">
-                  <th:block th:if="${isAdmin && dataset.public && isFedTermAccessEnabled}">
+                <td class="m-1 p-1 pl-2 border-left">
+                  <small data-placement="bottom" th:text="${dataset.fedTermDomainId}" th:if="${fedTermDomainExists}"></small>
+                </td>
+                <td class="m-1 p-1 pl-2 border-left">
+                  <th:block th:if="${fedTermCollectionExists}">
+                    <a th:href="|${fedTermBrowserUrl}/${dataset.fedTermCollectionId}|" target="_blank">
+                      <small th:text="${dataset.fedTermCollectionId}"></small>
+                    </a>
+                  </th:block>
+                </td>
+                <td class="m-1 p-1 pl-2 border-left">
+                  <th:block th:if="${isAdmin && dataset.public && isFedTermAccessEnabled && fedTermDomainExists}">
                     <form th:action="@{/fedtermupload}" method="post">
                       <input type="hidden" name="datasetCode" th:value="${dataset.code}">
                       <button type="submit" class="btn badge badge-primary" title="Saada">

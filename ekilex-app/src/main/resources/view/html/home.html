@@ -38,14 +38,14 @@
         <p>
           <a th:href="@{/datasets}">Sõnakogude haldus</a>
         </p>
-        <p>
+        <p sec:authorize="#vars.userRoleData.admin">
           <a th:href="@{/fedtermupload}">FedTerm liidestus</a>
         </p>
         <p sec:authorize="#authentication.principal.admin">
           <a th:href="@{/classifiers}">Klassifikaatorite haldus</a>
         </p>
-        <p>
-          <a th:href="@{/tags}" sec:authorize="#vars.userRoleData.admin">Siltide haldus</a>
+        <p sec:authorize="#vars.userRoleData.admin">
+          <a th:href="@{/tags}">Siltide haldus</a>
         </p>
         <p sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">
           <a th:href="@{/permissions}">Õiguste haldus</a>

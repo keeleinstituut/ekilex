@@ -502,6 +502,7 @@ create table dataset
   contact text,
   image_url text,
   fed_term_collection_id varchar(100),
+  fed_term_domain_id varchar(100),
   is_visible boolean default true,
   is_public boolean default true,
   is_superior boolean default false,
