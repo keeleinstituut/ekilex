@@ -217,6 +217,7 @@ dblink(
 	paradigm_id bigint,
 	paradigm_comment text,
 	inflection_type varchar(100),
+  inflection_type_nr varchar(100),
 	form_id bigint,
 	morph_group1 text,
 	morph_group2 text,
