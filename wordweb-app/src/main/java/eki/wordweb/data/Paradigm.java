@@ -16,6 +16,8 @@ public class Paradigm extends AbstractDataObject {
 	private String comment;
 
 	private String inflectionType;
+	
+	private String inflectionTypeNr;
 
 	private Map<String, List<Form>> formMorphCodeMap;
 
@@ -49,6 +51,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setInflectionType(String inflectionType) {
 		this.inflectionType = inflectionType;
+	}
+
+	public String getInflectionTypeNr() {
+		return inflectionTypeNr;
+	}
+
+	public void setInflectionTypeNr(String inflectionTypeNr) {
+		this.inflectionTypeNr = inflectionTypeNr;
 	}
 
 	public Map<String, List<Form>> getFormMorphCodeMap() {
