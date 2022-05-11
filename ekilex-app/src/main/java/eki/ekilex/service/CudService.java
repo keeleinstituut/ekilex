@@ -363,10 +363,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateUsageTranslationValue(Long usageTranslationId, String valuePrese) throws Exception {
+	public void updateUsageTranslation(Long usageTranslationId, String valuePrese, String lang) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(usageTranslationId);
+		freeform.setLang(lang);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE_TRANSLATION, freeform);

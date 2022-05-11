@@ -843,6 +843,17 @@
             <input type="hidden" name="opCode" value="usage_translation">
             <input type="hidden" name="value" th:value="${usageTranslation.value}">
             <div th:replace="components :: eki_editor_elem"></div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == usageTranslation.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary">Salvesta</button>
