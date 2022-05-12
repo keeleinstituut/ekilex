@@ -9,6 +9,7 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row10;
+import org.jooq.Row11;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -34,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = -721273710;
+    private static final long serialVersionUID = -1037301683;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -100,6 +101,11 @@ public class Word extends TableImpl<WordRecord> {
     public final TableField<WordRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.word.manual_event_on</code>.
+     */
+    public final TableField<WordRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+
+    /**
      * Create a <code>public.word</code> table reference
      */
     public Word() {
@@ -139,7 +145,7 @@ public class Word extends TableImpl<WordRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_LANG_IDX, Indexes.WORD_VALUE_AS_WORD_IDX, Indexes.WORD_VALUE_IDX);
+        return Arrays.<Index>asList(Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_LANG_IDX, Indexes.WORD_MANUAL_EVENT_ON_IDX, Indexes.WORD_VALUE_AS_WORD_IDX, Indexes.WORD_VALUE_IDX);
     }
 
     @Override
@@ -205,11 +211,11 @@ public class Word extends TableImpl<WordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row10 type methods
+    // Row11 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row10<Long, String, Integer, String, String, String, String, String, String, String> fieldsRow() {
-        return (Row10) super.fieldsRow();
+    public Row11<Long, String, Integer, String, String, String, String, String, String, String, Timestamp> fieldsRow() {
+        return (Row11) super.fieldsRow();
     }
 }

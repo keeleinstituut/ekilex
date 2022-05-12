@@ -1459,6 +1459,30 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editMeaningManualEventOnDlg_' + meaningId}" class="modal" role="dialog" th:fragment="edit_meaning_manual_event_on_dlg">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${meaningId}">
+          <input type="hidden" name="opCode" value="meaning_manual_event_on">
+          <div class="modal-body">
+            <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+              <input type="text" class="form-control" name="value" th:value="${#dates.format(meaning.manualEventOn, 'dd.MM.yyyy')}">
+              <div class="input-group-addon input-group-append">
+                <div class="input-group-text">
+                  <i class="fa fa-calendar"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div id="newWordDlg" class="modal" role="dialog" th:fragment="new_word_dlg">
     <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">

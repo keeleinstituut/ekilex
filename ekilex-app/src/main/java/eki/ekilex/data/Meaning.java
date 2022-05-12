@@ -45,6 +45,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private Timestamp lastApproveEventOn;
 
+	private Timestamp manualEventOn;
+
 	public Long getMeaningId() {
 		return meaningId;
 	}
@@ -197,4 +199,11 @@ public class Meaning extends AbstractCrudEntity {
 		this.lastApproveEventOn = lastApproveEventOn;
 	}
 
+	public Timestamp getManualEventOn() {
+		return manualEventOn;
+	}
+
+	public void setManualEventOn(Timestamp manualEventOn) {
+		this.manualEventOn = manualEventOn;
+	}
 }

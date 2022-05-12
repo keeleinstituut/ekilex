@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -313,6 +314,10 @@ public class EditController extends AbstractMutableDataPageController {
 		case "word_lang":
 			cudService.updateWordLang(itemId, itemValue);
 			break;
+		case "word_manual_event_on":
+			Timestamp wordManualEventOn = conversionUtil.dateStrToTimestamp(itemValue);
+			cudService.updateWordManualUpdateOn(itemId, wordManualEventOn);
+			break;
 		case "lexeme_publicity":
 			cudService.updateLexemePublicity(itemId, isPublic);
 			break;
@@ -345,6 +350,10 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "meaning_semantic_type":
 			cudService.updateMeaningSemanticType(itemId, itemCurrentValue, itemValue);
+			break;
+		case "meaning_manual_event_on":
+			Timestamp meaningManualEventOn = conversionUtil.dateStrToTimestamp(itemValue);
+			cudService.updateMeaningManualUpdateOn(itemId, meaningManualEventOn);
 			break;
 		case "od_word_recommendation":
 			cudService.updateOdWordRecommendation(itemId, itemValue);

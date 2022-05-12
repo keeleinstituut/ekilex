@@ -1404,6 +1404,30 @@
       </div>
     </div>
   </div>
+  <div th:id="${'editWordManualEventOnDlg_' + wordId}" class="modal" role="dialog" th:fragment="edit_word_manual_event_on_dlg">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <input type="hidden" name="id" th:value="${wordId}">
+          <input type="hidden" name="opCode" value="word_manual_event_on">
+          <div class="modal-body">
+            <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+              <input type="text" class="form-control" name="value" th:value="${#dates.format(details.word.manualEventOn, 'dd.MM.yyyy')}">
+              <div class="input-group-addon input-group-append">
+                <div class="input-group-text">
+                  <i class="fa fa-calendar"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <div th:id="${'addWordTypeDlg_' + wordId}" class="modal select-dlg" role="dialog" th:fragment="add_word_type_dlg">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
