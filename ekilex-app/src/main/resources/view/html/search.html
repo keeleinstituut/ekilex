@@ -450,20 +450,20 @@
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="col-auto">
-                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
+                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus" data-plugin="addDetailConditionBtn">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda">
+                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda" data-plugin="removeDetailConditionBtn">
                     <i class="action-icon fa fa-minus" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
             </div>
             <div class="flex-grow-0 flex-shrink-0 d-flex pl-3 pt-1">
-              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" title="Lisa uus otsitav">
+              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" title="Lisa uus otsitav" data-plugin="addDetailGroupBtn">
                 <i class="action-icon fa fa-plus" aria-hidden="true"></i>
               </button>
-              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" title="Eemalda">
+              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" title="Eemalda" data-plugin="removeDetailGroupBtn">
                 <i class="action-icon fa fa-minus" aria-hidden="true"></i>
               </button>
             </div>
@@ -700,7 +700,7 @@
         </div> <!--/detail-search-box-less-->
         <button type="submit" class="btn btn-primary px-5 ml-3 detail-search-filter-items">Otsi</button>
         <div class="d-flex flex-row detail-search-mode-less justify-content-center">
-          <div class="detail-search-mode-less-border">
+          <div class="detail-search-mode-less-border d-none">
             <button class="d-flex flex-column btn btn-secondary shadow-none align-items-center detail-search-mode-less-btn" data-plugin="detailSearchModeBtn" type="button">
               <i class="d-flex flex-row align-items-center fa fa-sort-asc  detail-search-mode-less-btn-i" aria-hidden="true"></i>
             </button>

@@ -374,6 +374,8 @@ function loadDetails(wordId, task, lastWordId) {
 			}
 		});
 
+		detailSearchBtn();
+
 		$wpm.bindObjects();
 
 		setTimeout(() => {

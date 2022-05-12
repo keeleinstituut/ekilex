@@ -54,7 +54,7 @@
 		display: block;
 		height: 100%;
 		width: 100%;
-		background: #fff;
+		background: $white;
 		border:0.0625rem solid rgba(0,0,0,.125);
 		opacity: 0.7;
 		border-radius:.25rem;
@@ -119,7 +119,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		border-top: 1px solid $gray-200;
-		border-bottom: 1px solid #ECF0F2;
+		border-bottom: 1px solid $gray-100;
 		margin:0 -8px 10px -8px;
 		padding:0 20px 4px 20px;
 		.fa-info-circle {
@@ -132,9 +132,9 @@
 	}
 
 	.badge-secondary {
-		color: #3f3f3f;
-		background-color: #ecf0f2;
-		border-color: #ccd9e0;
+		color: $gray-900;
+		background-color: $gray-100;
+		border-color: $gray-200;
 		&:hover {
 			background-color: #d5dee2;
 			border-color: #acc1cd;

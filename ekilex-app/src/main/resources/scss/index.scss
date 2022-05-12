@@ -66,7 +66,7 @@
 }
 .breadcrumbs {
   line-height: 32px;
-  border-top: 1px solid #CCD9E0;
+  border-top: 1px solid $gray-200;
   padding:0 8px;
   flex-shrink: 0;
   overflow-x: auto;
@@ -92,7 +92,7 @@
     button {
       font-size: 12px;
       line-height: 15px;
-      color: #3F3F3F;
+      color: $gray-900;
       appearance: none;
       border: none;
       padding: 0;
@@ -106,7 +106,7 @@
       padding-right: 20px;
       pointer-events: none;
       button {
-        color: #5D606E;
+        color: $gray-400;
       }
     }
   }
@@ -115,7 +115,7 @@
 .multiselect-active {
   background: #EAF1F8 !important;
   .px-2.py-0.bg-light.rounded.font-weight-bold.mr-2 {
-    background: #fff !important;
+    background: $white !important;
   }
 }
 
@@ -159,7 +159,7 @@
 .ui-sortable{
   .ui-state-highlight{
     height: 45px;
-    border-color: #5AABE0;
+    border-color: $blue-200;
     background-color: #EAF1F8;
   }
   .ui-sortable-helper {
@@ -312,7 +312,7 @@
 
 .radioTabs {
   display: inline-flex;
-  background: #CCD9E0;
+  background: $gray-200;
   &__item {
     margin: 2px;
     height: 28px;

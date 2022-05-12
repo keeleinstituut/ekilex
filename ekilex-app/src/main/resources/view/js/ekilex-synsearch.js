@@ -248,7 +248,10 @@ function initializeSynSearch() {
 		detailButtons.trigger('click');
 	}
 
-	$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
+	$.fn.wordActivityLogDlgPlugin = function() {
+		var el = $(this);
+		el.on('show.bs.modal', function(e) {
+	//$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
 		let dlg = $(this);
 		let link = $(e.relatedTarget);
 		let url = link.attr('href');
@@ -258,6 +261,7 @@ function initializeSynSearch() {
 			dlg.find('.modal-body').html(data);
 		});
 	});
+}
 
 	$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg();
@@ -285,6 +289,7 @@ function initializeSynSearch() {
 		});
 
 	});
+	 detailSearchBtn();  
 }
 
 function initAddSynRelationDlg(addDlg) {
