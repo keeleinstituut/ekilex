@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
-import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -20,13 +20,19 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import eki.common.data.OrderedMap;
 import eki.ekilex.client.FedTermClient;
 import eki.ekilex.constant.QueueAction;
 import eki.ekilex.data.Dataset;
@@ -38,13 +44,17 @@ import eki.ekilex.data.TypeValueNameLang;
 import eki.ekilex.service.db.DatasetDbService;
 import eki.ekilex.service.db.FedTermDataDbService;
 
-//TODO under construction!
 @Component
 public class FedTermUploadService implements InitializingBean {
+
+	private static final Logger logger = LoggerFactory.getLogger(FedTermUploadService.class);
 
 	private static final String VALUE_MAP_ANY_OTHER_KEY = "*";
 
 	private static final int FED_TERM_MESSAGE_MAX_MEANING_COUNT = 100;
+
+	@Value("${wordweb.dataset.url}")
+	private String datasetLandingPageUrl;
 
 	@Autowired
 	private DatasetDbService datasetDbService;
@@ -109,10 +119,8 @@ public class FedTermUploadService implements InitializingBean {
 		lexemeValueStateMap.put(VALUE_MAP_ANY_OTHER_KEY, null);
 	}
 
-	//TODO restore later
 	public boolean isFedTermAccessEnabled() {
-		//return fedTermClient.isFedTermAccessEnabled();
-		return false;
+		return fedTermClient.isFedTermAccessEnabled();
 	}
 
 	@Transactional
@@ -155,7 +163,9 @@ public class FedTermUploadService implements InitializingBean {
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
 		String fedTermCollectionId = dataset.getFedTermCollectionId();
 		if (StringUtils.isBlank(fedTermCollectionId)) {
-			fedTermCollectionId = fedTermClient.createFedTermCollection(dataset);
+			Map<String, Object> collectionMessageMap = composeFedTermCollectionMessageMap(dataset);
+			String collectionMessageJson = convertToJson(collectionMessageMap);
+			fedTermCollectionId = fedTermClient.createFedTermCollection(datasetCode, collectionMessageJson);
 			datasetDbService.setFedTermCollectionId(datasetCode, fedTermCollectionId);
 		}
 		return fedTermCollectionId;
@@ -164,7 +174,10 @@ public class FedTermUploadService implements InitializingBean {
 	@Transactional
 	public void uploadFedTermConceptEntries(String fedTermCollectionId, FedTermUploadQueueContent content) throws Exception {
 
-		//TODO implement
+		if (StringUtils.isBlank(fedTermCollectionId)) {
+			logger.warn("FedTerm collection id not specified. Skipping {}", content);
+			return;
+		}
 		String datasetCode = content.getDatasetCode();
 		String datasetName = content.getDatasetName();
 		int meaningOffset = content.getMeaningOffset();
@@ -172,11 +185,13 @@ public class FedTermUploadService implements InitializingBean {
 		Map<String, String> languageIso2Map = commonDataService.getLanguageIso2Map();
 		List<Long> meaningIds = fedTermDataDbService.getMeaningIds(datasetCode, meaningOffset, meaningLimit);
 		List<MeaningLexemeWordTuple> datasetMeaningLexemeWordTuples = fedTermDataDbService.getMeaningLexemeWordTuples(datasetCode, meaningIds);
-		Document datasetTbxDocument = composeTbxDocument(datasetName, datasetMeaningLexemeWordTuples, languageIso2Map);
-		//TODO send to client
+		Document conceptEntriesTbxMessageDocument = composeFedTermConceptEntriesTbxDocument(datasetName, datasetMeaningLexemeWordTuples, languageIso2Map);
+		String conceptEntriesTbxMessageXml = convertToXml(conceptEntriesTbxMessageDocument);
+		fedTermClient.createOrUpdateFedTermConceptEntries(datasetCode, fedTermCollectionId, conceptEntriesTbxMessageXml);
 	}
 
-	private Document composeTbxDocument(String datasetName, List<MeaningLexemeWordTuple> datasetMeaningLexemeWordTuples, Map<String, String> languageIso2Map) throws Exception {
+	private Document composeFedTermConceptEntriesTbxDocument(
+			String datasetName, List<MeaningLexemeWordTuple> datasetMeaningLexemeWordTuples, Map<String, String> languageIso2Map) throws Exception {
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
@@ -340,24 +355,64 @@ public class FedTermUploadService implements InitializingBean {
 		return mappedValue;
 	}
 
-	private void logDocument(Document doc, OutputStream output) throws Exception {
+	private Map<String, Object> composeFedTermCollectionMessageMap(Dataset dataset) throws Exception {
 
-		/*
-		FileOutputStream tbxFileOutputStream = new FileOutputStream("./fileresources/ekilex-" + datasetCode + "-tbx.xml");
-		logDocument(document, tbxFileOutputStream);
-		tbxFileOutputStream.flush();
-		tbxFileOutputStream.close();
-		 */
+		String datasetCode = dataset.getCode();
+		String datasetName = dataset.getName();
+		String datasetDescription = dataset.getDescription();
+		datasetDescription = StringUtils.remove(datasetDescription, '\r');
+		datasetDescription = StringUtils.remove(datasetDescription, '\n');
+		String fedTermDomainId = dataset.getFedTermDomainId();
+		String datasetLandingPageUrlWithDatasetCode = StringUtils.replace(datasetLandingPageUrl, "{datasetCode}", datasetCode);
 
+		Map<String, Object> collectionMessageMap = new OrderedMap<>();
+		collectionMessageMap.put("name", datasetName);
+		collectionMessageMap.put("description", datasetDescription);
+		collectionMessageMap.put("domainid", fedTermDomainId);
+		collectionMessageMap.put("allowsUsesBesidesDGT", Boolean.TRUE);
+		collectionMessageMap.put("appropriatnessForDSI", Boolean.TRUE);
+		collectionMessageMap.put("attributionText", datasetDescription);
+		collectionMessageMap.put("cpEmail", "eki@eki.ee");
+		collectionMessageMap.put("cpName", "n/a");
+		collectionMessageMap.put("cpOrganization", "Institute of the Estonian Language");
+		collectionMessageMap.put("cpSurname", "n/a");
+		collectionMessageMap.put("iprEmail", "eki@eki.ee");
+		collectionMessageMap.put("iprName", "n/a");
+		collectionMessageMap.put("iprOrganization", "Institute of the Estonian Language");
+		collectionMessageMap.put("iprSurname", "n/a");
+		collectionMessageMap.put("isPSI", Boolean.FALSE);
+		collectionMessageMap.put("licence", "CC-BY-4.0");
+		collectionMessageMap.put("originalName", datasetName);
+		collectionMessageMap.put("originalNameLang", "et");
+		collectionMessageMap.put("restrictionsOfUse", "No restrictions, you are welcome to use");
+		collectionMessageMap.put("sourceURL", datasetLandingPageUrlWithDatasetCode);
+
+		return collectionMessageMap;
+	}
+
+	private String convertToJson(Map<String, Object> map) throws Exception {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		String json = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(map);
+
+		return json;
+	}
+
+	private String convertToXml(Document document) throws Exception {
+
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		transformerFactory.setAttribute("indent-number", 2);
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
 		Transformer transformer = transformerFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(output);
+		transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "https://eurotermbank.com/TBXcoreStructV02%20%281%29.dtd");
+		DOMSource source = new DOMSource(document);
+		StreamResult result = new StreamResult(byteArrayOutputStream);
 		transformer.transform(source, result);
+		String xml = byteArrayOutputStream.toString(StandardCharsets.UTF_8);
+		byteArrayOutputStream.close();
 
+		return xml;
 	}
 }

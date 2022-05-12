@@ -177,24 +177,7 @@ public class FedTermDataDbService {
 				.from(w, l, m)
 				.where(
 						l.DATASET_CODE.eq(datasetCode)
-						.and(l.MEANING_ID.in(meaningIds))
-								//TODO very much temporary
-								/*
-								l.ID.in(DSL.field(
-										"select "
-												+ "l.id "
-												+ "from "
-												+ "lexeme l "
-												+ "where "
-												+ "("
-												+ "exists (select lp.id from lexeme_pos lp where lp.lexeme_id = l.id) "
-												+ "and exists (select wwt.id from word_word_type wwt where l.word_id = wwt.word_id) "
-												+ ") "
-												+ "or ("
-												+ "exists (select lf.id from lexeme_freeform lf, freeform f, freeform_source_link fsl where lf.lexeme_id = l.id and lf.freeform_id = f.id and f.\"type\" = 'NOTE' and fsl.freeform_id = f.id) "
-												+ "and exists (select lf.id from lexeme_freeform lf, freeform f, freeform_source_link fsl where lf.lexeme_id = l.id and lf.freeform_id = f.id and f.\"type\" = 'USAGE' and fsl.freeform_id = f.id)"
-												+ ")"))
-								*/
+								.and(l.MEANING_ID.in(meaningIds))
 								.and(l.WORD_ID.eq(w.ID))
 								.and(l.MEANING_ID.eq(m.ID)))
 				.orderBy(w.VALUE, l.ORDER_BY)

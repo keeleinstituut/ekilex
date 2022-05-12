@@ -1417,6 +1417,7 @@
                   <!-- intentional generic lexeme perm on translations -->
                   <div class="action-buttons-anchor">
                     <span th:utext="${usageTranslation.value}"></span>
+                    <span th:text="|(${viewUtil.getLangIso2(usageTranslation.lang)})|"></span>
                     <div class="action-buttons-3">
                       <button type="button" class="btn badge badge-primary"
                               title="Muuda"

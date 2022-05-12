@@ -28,6 +28,7 @@
                   <option value="lexeme_reliability" sec:authorize="#vars.lexeme.crudGrant">Ilmiku usaldusväärsus</option>
                   <option value="word_gender" sec:authorize="#vars.lexeme.word.subGrant">Sugu</option>
                   <option value="word_type" sec:authorize="#vars.lexeme.word.subGrant">Keelendi tüüp</option>
+                  <option value="word_display_morph" sec:authorize="#vars.lexeme.word.subGrant">Vormikood (ainsus/mitmus)</option>
                   <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.subGrant">Keelendi märkus</option>
                 </select>
               </div>
@@ -93,6 +94,14 @@
                 <select required class="form-control value-select required-field">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div th:id="${'word_display_morph_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
+              <div class="col-md-8">
+                <select required class="form-control value-select required-field">
+                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option th:each="item : ${wordDisplayMorphs}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
               </div>
             </div>
@@ -1198,6 +1207,21 @@
             <input type="hidden" name="currentValue" th:value="${classif.code}">
             <select class="form-control" name="value">
               <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == classif.code}">value</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editWordDisplayMorphDlg_' + lexeme.wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_display_morph_dlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.wordId}">
+            <input type="hidden" name="opCode" value="word_display_morph">
+            <select required class="form-control" name="value">
+              <option th:each="item : ${wordDisplayMorphs}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.word.displayMorphCode}">value</option>
             </select>
           </div>
         </form>

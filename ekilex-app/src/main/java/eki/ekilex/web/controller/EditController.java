@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.WebConstant;
@@ -74,25 +75,26 @@ public class EditController extends AbstractMutableDataPageController {
 		DatasetPermission userRole = userContext.getUserRole();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
+		String language = itemData.getLanguage();
 		String sourceLinkValue;
 		String datasetCode;
 
 		switch (itemData.getOpCode()) {
 		case "definition":
 			datasetCode = itemData.getDataset();
-			cudService.createDefinition(itemData.getId(), itemValue, itemData.getLanguage(), datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
+			cudService.createDefinition(itemData.getId(), itemValue, language, datasetCode, itemData.getComplexity(), itemData.getItemType(), itemData.isPublic());
 			break;
 		case "definition_note":
-			cudService.createDefinitionNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
+			cudService.createDefinitionNote(itemData.getId(), itemValue, language, itemData.isPublic());
 			break;
 		case "usage":
-			cudService.createUsage(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			cudService.createUsage(itemData.getId(), itemValue, language, itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "usage_translation":
-			cudService.createUsageTranslation(itemData.getId(), itemValue, itemData.getLanguage());
+			cudService.createUsageTranslation(itemData.getId(), itemValue, language);
 			break;
 		case "usage_definition":
-			cudService.createUsageDefinition(itemData.getId(), itemValue, itemData.getLanguage());
+			cudService.createUsageDefinition(itemData.getId(), itemValue, language);
 			break;
 		case "lexeme_pos":
 			cudService.createLexemePos(itemData.getId(), itemValue);
@@ -167,14 +169,14 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateLexemeProficiencyLevel(itemData.getId(), itemValue);
 			break;
 		case "learner_comment":
-			cudService.createMeaningLearnerComment(itemData.getId(), itemValue, itemData.getLanguage());
+			cudService.createMeaningLearnerComment(itemData.getId(), itemValue, language);
 			break;
 		case "lexeme_note":
-			cudService.createLexemeNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			cudService.createLexemeNote(itemData.getId(), itemValue, language, itemData.getComplexity(), itemData.isPublic());
 			break;
 		case "meaning_note":
-			cudService.createMeaningNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
-			sessionBean.setRecentNoteLanguage(itemData.getLanguage());
+			cudService.createMeaningNote(itemData.getId(), itemValue, language, itemData.getComplexity(), itemData.isPublic());
+			sessionBean.setRecentNoteLanguage(language);
 			break;
 		case "word_note":
 			cudService.createWordNoteWithDuplication(itemData.getId(), itemValue, userId, userRole);
@@ -190,7 +192,7 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "create_syn_word":
 			datasetCode = getDatasetCodeFromRole();
-			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, itemData.getLanguage(), itemData.getValue2());
+			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, language, itemData.getValue2());
 			break;
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(itemData.getId2(), itemValue);
@@ -228,139 +230,145 @@ public class EditController extends AbstractMutableDataPageController {
 
 		Long userId = userContext.getUserId();
 		DatasetPermission userRole = userContext.getUserRole();
+		Long itemId = itemData.getId();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
+		String itemCurrentValue = itemData.getCurrentValue();
+		String itemLanguage = itemData.getLanguage();
+		String itemCode = itemData.getCode();
+		Complexity itemComplexity = itemData.getComplexity();
+		boolean isPublic = itemData.isPublic();
 
 		switch (itemData.getOpCode()) {
 		case "user_lang_selection":
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-			ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), itemData.getCode())).findFirst().get();
+			ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), itemCode)).findFirst().get();
 			langSelect.setSelected(!langSelect.isSelected());
 			break;
 		case "usage":
-			cudService.updateUsageValue(itemData.getId(), itemValue, itemData.getComplexity(), itemData.isPublic());
+			cudService.updateUsageValue(itemId, itemValue, itemComplexity, isPublic);
 			break;
 		case "usage_translation":
-			cudService.updateUsageTranslationValue(itemData.getId(), itemValue);
+			cudService.updateUsageTranslation(itemId, itemValue, itemLanguage);
 			break;
 		case "usage_definition":
-			cudService.updateUsageDefinitionValue(itemData.getId(), itemValue);
+			cudService.updateUsageDefinitionValue(itemId, itemValue);
 			break;
 		case "definition":
-			cudService.updateDefinition(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.getCode(), itemData.isPublic());
+			cudService.updateDefinition(itemId, itemValue, itemLanguage, itemComplexity, itemCode, isPublic);
 			break;
 		case "definition_note":
-			cudService.updateDefinitionNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.isPublic());
+			cudService.updateDefinitionNote(itemId, itemValue, itemLanguage, isPublic);
 			break;
 		case "lexeme_complexity":
-			cudService.updateLexemeComplexity(itemData.getId(), itemValue);
+			cudService.updateLexemeComplexity(itemId, itemValue);
 			break;
 		case "lexeme_pos":
-			cudService.updateLexemePos(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			cudService.updateLexemePos(itemId, itemCurrentValue, itemValue);
 			break;
 		case "meaning_domain":
-			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(itemData.getCurrentValue());
+			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(itemCurrentValue);
 			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
-			cudService.updateMeaningDomain(itemData.getId(), currentMeaningDomain, newMeaningDomain);
+			cudService.updateMeaningDomain(itemId, currentMeaningDomain, newMeaningDomain);
 			break;
 		case "government":
-			cudService.updateLexemeGovernment(itemData.getId(), itemValue, itemData.getComplexity());
+			cudService.updateLexemeGovernment(itemId, itemValue, itemComplexity);
 			break;
 		case "lexeme_deriv":
-			cudService.updateLexemeDeriv(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			cudService.updateLexemeDeriv(itemId, itemCurrentValue, itemValue);
 			break;
 		case "lexeme_register":
-			cudService.updateLexemeRegister(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			cudService.updateLexemeRegister(itemId, itemCurrentValue, itemValue);
 			break;
 		case "lexeme_region":
-			cudService.updateLexemeRegion(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			cudService.updateLexemeRegion(itemId, itemCurrentValue, itemValue);
 			break;
 		case "lexeme_reliability":
-			cudService.updateLexemeReliability(itemData.getId(), itemValue);
+			cudService.updateLexemeReliability(itemId, itemValue);
 			break;
 		case "lexeme_weight":
-			cudService.updateLexemeWeight(itemData.getId(), itemValue);
+			cudService.updateLexemeWeight(itemId, itemValue);
 			break;
 		case "meaning_relation_weight":
-			cudService.updateMeaningRelationWeight(itemData.getId(), itemValue);
+			cudService.updateMeaningRelationWeight(itemId, itemValue);
 			break;
 		case "word_gender":
-			cudService.updateWordGenderWithDuplication(itemData.getId(), itemValue, userId, userRole);
+			cudService.updateWordGenderWithDuplication(itemId, itemValue, userId, userRole);
 			break;
 		case "word_type":
-			cudService.updateWordTypeWithDuplication(itemData.getId(), itemData.getCurrentValue(), itemValue, userId, userRole);
+			cudService.updateWordTypeWithDuplication(itemId, itemCurrentValue, itemValue, userId, userRole);
 			break;
 		case "lexeme_grammar":
-			cudService.updateLexemeGrammar(itemData.getId(), itemValue, itemData.getComplexity());
+			cudService.updateLexemeGrammar(itemId, itemValue, itemComplexity);
 			break;
 		case "word_aspect":
-			cudService.updateWordAspect(itemData.getId(), itemValue);
+			cudService.updateWordAspect(itemId, itemValue);
 			break;
 		case "word_display_morph":
-			cudService.updateWordDisplayMorph(itemData.getId(), itemValue);
+			cudService.updateWordDisplayMorph(itemId, itemValue);
 			break;
 		case "word_vocal_form":
-			cudService.updateWordVocalForm(itemData.getId(), itemValue);
+			cudService.updateWordVocalForm(itemId, itemValue);
 			break;
 		case "word_lang":
-			cudService.updateWordLang(itemData.getId(), itemValue);
+			cudService.updateWordLang(itemId, itemValue);
 			break;
 		case "lexeme_publicity":
-			cudService.updateLexemePublicity(itemData.getId(), itemData.isPublic());
+			cudService.updateLexemePublicity(itemId, isPublic);
 			break;
 		case "lexeme_value_state":
-			cudService.updateLexemeValueState(itemData.getId(), itemValue);
+			cudService.updateLexemeValueState(itemId, itemValue);
 			break;
 		case "lexeme_proficiency_level":
-			cudService.updateLexemeProficiencyLevel(itemData.getId(), itemValue);
+			cudService.updateLexemeProficiencyLevel(itemId, itemValue);
 			break;
 		case "learner_comment":
-			cudService.updateMeaningLearnerComment(itemData.getId(), itemValue);
+			cudService.updateMeaningLearnerComment(itemId, itemValue);
 			break;
 		case "lexeme_note":
-			cudService.updateLexemeNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			cudService.updateLexemeNote(itemId, itemValue, itemLanguage, itemComplexity, isPublic);
 			break;
 		case "meaning_note":
-			cudService.updateMeaningNote(itemData.getId(), itemValue, itemData.getLanguage(), itemData.getComplexity(), itemData.isPublic());
+			cudService.updateMeaningNote(itemId, itemValue, itemLanguage, itemComplexity, isPublic);
 			break;
 		case "word_note":
-			cudService.updateWordNote(itemData.getId(), itemValue);
+			cudService.updateWordNote(itemId, itemValue);
 			break;
 		case "meaning_image":
-			cudService.updateMeaningImage(itemData.getId(), itemValue, itemData.getComplexity());
+			cudService.updateMeaningImage(itemId, itemValue, itemComplexity);
 			break;
 		case "image_title":
-			cudService.updateImageTitle(itemData.getId(), itemValue);
+			cudService.updateImageTitle(itemId, itemValue);
 			break;
 		case "meaning_media":
-			cudService.updateMeaningMedia(itemData.getId(), itemValue, itemData.getComplexity());
+			cudService.updateMeaningMedia(itemId, itemValue, itemComplexity);
 			break;
 		case "meaning_semantic_type":
-			cudService.updateMeaningSemanticType(itemData.getId(), itemData.getCurrentValue(), itemValue);
+			cudService.updateMeaningSemanticType(itemId, itemCurrentValue, itemValue);
 			break;
 		case "od_word_recommendation":
-			cudService.updateOdWordRecommendation(itemData.getId(), itemValue);
+			cudService.updateOdWordRecommendation(itemId, itemValue);
 			break;
 		case "od_lexeme_recommendation":
-			cudService.updateOdLexemeRecommendation(itemData.getId(), itemValue);
+			cudService.updateOdLexemeRecommendation(itemId, itemValue);
 			break;
 		case "od_usage_definition":
-			cudService.updateOdUsageDefinition(itemData.getId(), itemValue);
+			cudService.updateOdUsageDefinition(itemId, itemValue);
 			break;
 		case "od_usage_alternative":
-			cudService.updateOdUsageAlternative(itemData.getId(), itemValue);
+			cudService.updateOdUsageAlternative(itemId, itemValue);
 			break;
 		case ContentKey.FREEFORM_SOURCE_LINK:
 			String ffSourceLinkValue = getSourcePropertyValue(itemData.getId2());
-			sourceLinkService.updateFreeformSourceLink(itemData.getId(), ffSourceLinkValue, itemValue);
+			sourceLinkService.updateFreeformSourceLink(itemId, ffSourceLinkValue, itemValue);
 			break;
 		case ContentKey.LEXEME_SOURCE_LINK:
 			String lexSourceLinkValue = getSourcePropertyValue(itemData.getId2());
-			sourceLinkService.updateLexemeSourceLink(itemData.getId(), lexSourceLinkValue, itemValue);
+			sourceLinkService.updateLexemeSourceLink(itemId, lexSourceLinkValue, itemValue);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK:
 			String defSourceLinkValue = getSourcePropertyValue(itemData.getId2());
-			sourceLinkService.updateDefinitionSourceLink(itemData.getId(), defSourceLinkValue, itemValue);
+			sourceLinkService.updateDefinitionSourceLink(itemId, defSourceLinkValue, itemValue);
 			break;
 		}
 		return RESPONSE_OK_VER2;

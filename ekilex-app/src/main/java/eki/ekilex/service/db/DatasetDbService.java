@@ -35,6 +35,25 @@ public class DatasetDbService {
 	@Autowired
 	private DatasetDbServiceHelper helper;
 
+	public Dataset getDataset(String code) {
+
+		return create
+				.select(DATASET.CODE,
+						DATASET.NAME,
+						DATASET.TYPE,
+						DATASET.DESCRIPTION,
+						DATASET.CONTACT,
+						DATASET.IMAGE_URL,
+						DATASET.FED_TERM_COLLECTION_ID,
+						DATASET.FED_TERM_DOMAIN_ID,
+						DATASET.IS_VISIBLE,
+						DATASET.IS_PUBLIC,
+						DATASET.IS_VISIBLE)
+				.from(DATASET)
+				.where(DATASET.CODE.eq(code))
+				.fetchSingleInto(Dataset.class);
+	}
+
 	public List<Dataset> getDatasets() {
 
 		List<Dataset> datasets = create
@@ -44,6 +63,8 @@ public class DatasetDbService {
 						DATASET.DESCRIPTION,
 						DATASET.CONTACT,
 						DATASET.IMAGE_URL,
+						DATASET.FED_TERM_COLLECTION_ID,
+						DATASET.FED_TERM_DOMAIN_ID,
 						DATASET.IS_VISIBLE,
 						DATASET.IS_PUBLIC,
 						DATASET.IS_SUPERIOR)
@@ -157,25 +178,6 @@ public class DatasetDbService {
 				create.select()
 						.from(DATASET)
 						.where(DATASET.CODE.equalIgnoreCase(datasetCode)));
-	}
-
-	public Dataset getDataset(String code) {
-
-		return create
-				.select(DATASET.CODE,
-						DATASET.NAME,
-						DATASET.TYPE,
-						DATASET.DESCRIPTION,
-						DATASET.CONTACT,
-						DATASET.IMAGE_URL,
-						DATASET.FED_TERM_COLLECTION_ID,
-						DATASET.IS_VISIBLE,
-						DATASET.IS_PUBLIC,
-						DATASET.IS_VISIBLE)
-				.from(DATASET)
-				.where(DATASET.CODE.eq(code))
-				.fetchSingleInto(Dataset.class);
-
 	}
 
 	public void addDatasetToClassifier(ClassifierName classifierName, String datasetCode, List<Classifier> addedClassifiers) {

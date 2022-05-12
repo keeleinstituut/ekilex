@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +23,9 @@ import eki.ekilex.service.QueueService;
 @Controller
 public class FedTermUploadController extends AbstractPrivatePageController {
 
+	@Value("${fedterm.browser.url:null}")
+	private String fedTermBrowserUrl;
+
 	@Autowired
 	private DatasetService datasetService;
 
@@ -38,6 +42,7 @@ public class FedTermUploadController extends AbstractPrivatePageController {
 		List<Dataset> datasets = datasetService.getDatasets();
 		List<QueueStat> queueStats = queueService.getQueueStats();
 		model.addAttribute("isFedTermAccessEnabled", isFedTermAccessEnabled);
+		model.addAttribute("fedTermBrowserUrl", fedTermBrowserUrl);
 		model.addAttribute("datasets", datasets);
 		model.addAttribute("queueStats", queueStats);
 

@@ -59,7 +59,8 @@
             <div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
-              <a class="dropdown-item side-menu-item" sec:authorize="#vars.userRoleData.crudRoleSelected" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}">Vasted</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}"
+                 sec:authorize="#vars.userRoleData.crudRoleSelected">Vasted</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
@@ -67,13 +68,14 @@
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
                  sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}">FedTerm liidestus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}"
+                 sec:authorize="#vars.userRoleData.admin">FedTerm liidestus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'classifiers' ? 'active' : ''}" th:href="@{/classifiers}"
                  sec:authorize="#vars.userRoleData.admin">Klassifikaatorite haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'tags' ? 'active' : ''}" th:href="@{/tags}"
                  sec:authorize="#vars.userRoleData.admin">Siltide haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}"
-                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:href="@{/permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" th:href="@{/permissions}"
+                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">Kasutajaõiguste haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>

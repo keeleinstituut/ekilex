@@ -6,6 +6,8 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,6 +22,8 @@ import eki.ekilex.data.QueueStat;
 
 @Component
 public class QueueService implements InitializingBean, SystemConstant {
+
+	private static final Logger logger = LoggerFactory.getLogger(QueueService.class);
 
 	@Autowired
 	private QueueHandlerService queueHandlerService;
@@ -71,7 +75,13 @@ public class QueueService implements InitializingBean, SystemConstant {
 		if (QueueAction.TERM_SEARCH_RESULT_EMAIL.equals(action)) {
 			queueHandlerService.handleTermSearchResultSerialisation(user, content);
 		} else if (QueueAction.FEDTERM_UPLOAD.equals(action)) {
-			queueHandlerService.handleFedTermUpload(user, content);
+			try {
+				queueHandlerService.handleFedTermUpload(user, content);
+			} catch (Exception e) {
+				logger.error("Failed to handle FedTerm upload", e);
+			}
 		}
+
+		logger.info("Remaining steps in queue: {}", queueItems.size());
 	}
 }
