@@ -40,11 +40,19 @@ public class CollocConversionUtil extends AbstractConversionUtil {
 			return;
 		}
 
+		Map<Long, LexemeWord> lexemeMap = new HashMap<>();
+		for (LexemeWord lexemeWord : lexemeWords) {
+			Long lexemeId = lexemeWord.getLexemeId();
+			if (lexemeMap.containsKey(lexemeId)) {
+				continue;
+			}
+			lexemeMap.put(lexemeId, lexemeWord);
+		}
+
 		Complexity lexComplexity = searchContext.getLexComplexity();
 		collocTuples = filter(collocTuples, lexComplexity);
 		collocTuples = filterCollocsByMostMembers(collocTuples);
 
-		Map<Long, LexemeWord> lexemeMap = lexemeWords.stream().collect(Collectors.toMap(LexemeWord::getLexemeId, lexeme -> lexeme));
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
 		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
 
