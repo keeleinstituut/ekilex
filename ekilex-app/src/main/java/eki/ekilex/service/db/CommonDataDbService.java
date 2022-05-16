@@ -503,6 +503,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 		return create
 				.select(
 						MEANING.ID.as("meaning_id"),
+						MEANING.MANUAL_EVENT_ON,
 						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
 				.from(MEANING, LEXEME)
 				.where(

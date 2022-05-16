@@ -139,3 +139,33 @@ where
       and l.dataset_code = 'eki'
   );
   
+-- militermi kirjete loomise aeg
+update activity_log
+set event_on = '2005-01-01'::timestamp
+where date(event_on) = '2019-12-18'
+  and event_by = 'Ekilex mil-laadur';
+
+-- sisulise muudatuse kuupäev
+alter table word add column manual_event_on timestamp null;
+alter table meaning add column manual_event_on timestamp null;
+create index word_manual_event_on_idx on word(manual_event_on);
+create index meaning_manual_event_on_idx on meaning(manual_event_on);
+
+update word w
+set manual_event_on = wupd.manual_event_on
+from (select wal.word_id, max(al.event_on) manual_event_on
+      from word_activity_log wal,
+           activity_log al
+      where wal.activity_log_id = al.id
+      group by wal.word_id) wupd
+where w.id = wupd.word_id;
+
+update meaning m
+set manual_event_on = mupd.manual_event_on
+from (select mal.meaning_id, max(al.event_on) manual_event_on
+      from meaning_activity_log mal,
+           activity_log al
+      where mal.activity_log_id = al.id
+      group by mal.meaning_id) mupd
+where m.id = mupd.meaning_id;
+

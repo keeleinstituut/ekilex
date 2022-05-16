@@ -36,6 +36,7 @@ import eki.ekilex.data.db.tables.LexemeRegion;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
+import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
@@ -163,6 +164,7 @@ public class Indexes {
     public static final Index LEXEME_SOURCE_LINK_VALUE_IDX = Indexes0.LEXEME_SOURCE_LINK_VALUE_IDX;
     public static final Index LEXEME_TAG_LEXEME_ID_IDX = Indexes0.LEXEME_TAG_LEXEME_ID_IDX;
     public static final Index LEXEME_TAG_TAG_NAME_IDX = Indexes0.LEXEME_TAG_TAG_NAME_IDX;
+    public static final Index MEANING_MANUAL_EVENT_ON_IDX = Indexes0.MEANING_MANUAL_EVENT_ON_IDX;
     public static final Index MEANING_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.MEANING_ACTIVITY_LOG_LOG_ID_IDX;
     public static final Index MEANING_ACTIVITY_LOG_MEANING_ID_IDX = Indexes0.MEANING_ACTIVITY_LOG_MEANING_ID_IDX;
     public static final Index MEANING_DOMAIN_CODE_ORIGIN_IDX = Indexes0.MEANING_DOMAIN_CODE_ORIGIN_IDX;
@@ -199,6 +201,7 @@ public class Indexes {
     public static final Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Indexes0.TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
+    public static final Index WORD_MANUAL_EVENT_ON_IDX = Indexes0.WORD_MANUAL_EVENT_ON_IDX;
     public static final Index WORD_VALUE_AS_WORD_IDX = Indexes0.WORD_VALUE_AS_WORD_IDX;
     public static final Index WORD_VALUE_IDX = Indexes0.WORD_VALUE_IDX;
     public static final Index WORD_ACTIVITY_LOG_LOG_ID_IDX = Indexes0.WORD_ACTIVITY_LOG_LOG_ID_IDX;
@@ -317,6 +320,7 @@ public class Indexes {
         public static Index LEXEME_SOURCE_LINK_VALUE_IDX = Internal.createIndex("lexeme_source_link_value_idx", LexemeSourceLink.LEXEME_SOURCE_LINK, new OrderField[] { LexemeSourceLink.LEXEME_SOURCE_LINK.VALUE }, false);
         public static Index LEXEME_TAG_LEXEME_ID_IDX = Internal.createIndex("lexeme_tag_lexeme_id_idx", LexemeTag.LEXEME_TAG, new OrderField[] { LexemeTag.LEXEME_TAG.LEXEME_ID }, false);
         public static Index LEXEME_TAG_TAG_NAME_IDX = Internal.createIndex("lexeme_tag_tag_name_idx", LexemeTag.LEXEME_TAG, new OrderField[] { LexemeTag.LEXEME_TAG.TAG_NAME }, false);
+        public static Index MEANING_MANUAL_EVENT_ON_IDX = Internal.createIndex("meaning_manual_event_on_idx", Meaning.MEANING, new OrderField[] { Meaning.MEANING.MANUAL_EVENT_ON }, false);
         public static Index MEANING_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("meaning_activity_log_log_id_idx", MeaningActivityLog.MEANING_ACTIVITY_LOG, new OrderField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);
         public static Index MEANING_ACTIVITY_LOG_MEANING_ID_IDX = Internal.createIndex("meaning_activity_log_meaning_id_idx", MeaningActivityLog.MEANING_ACTIVITY_LOG, new OrderField[] { MeaningActivityLog.MEANING_ACTIVITY_LOG.MEANING_ID }, false);
         public static Index MEANING_DOMAIN_CODE_ORIGIN_IDX = Internal.createIndex("meaning_domain_code_origin_idx", MeaningDomain.MEANING_DOMAIN, new OrderField[] { MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE, MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN }, false);
@@ -353,6 +357,7 @@ public class Indexes {
         public static Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Internal.createIndex("temp_ds_import_queue_table_name_idx", TempDsImportQueue.TEMP_DS_IMPORT_QUEUE, new OrderField[] { TempDsImportQueue.TEMP_DS_IMPORT_QUEUE.TABLE_NAME }, false);
         public static Index WORD_HOMONYM_NR_IDX = Internal.createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_LANG_IDX = Internal.createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
+        public static Index WORD_MANUAL_EVENT_ON_IDX = Internal.createIndex("word_manual_event_on_idx", Word.WORD, new OrderField[] { Word.WORD.MANUAL_EVENT_ON }, false);
         public static Index WORD_VALUE_AS_WORD_IDX = Internal.createIndex("word_value_as_word_idx", Word.WORD, new OrderField[] { Word.WORD.VALUE_AS_WORD }, false);
         public static Index WORD_VALUE_IDX = Internal.createIndex("word_value_idx", Word.WORD, new OrderField[] { Word.WORD.VALUE }, false);
         public static Index WORD_ACTIVITY_LOG_LOG_ID_IDX = Internal.createIndex("word_activity_log_log_id_idx", WordActivityLog.WORD_ACTIVITY_LOG, new OrderField[] { WordActivityLog.WORD_ACTIVITY_LOG.ACTIVITY_LOG_ID }, false);

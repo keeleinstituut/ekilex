@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -214,6 +215,13 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		updateFreeform(ActivityOwner.WORD, ActivityEntity.WORD_NOTE, freeform);
+	}
+
+	@Transactional
+	public void updateWordManualUpdateOn(Long wordId, Timestamp manualUpdateOn) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordManualUpdateOn", wordId, ActivityOwner.WORD);
+		cudDbService.updateWordManualUpdateOn(wordId, manualUpdateOn);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
@@ -620,6 +628,13 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningSemanticType", meaningId, ActivityOwner.MEANING);
 		Long meaningSemanticTypeId = cudDbService.updateMeaningSemanticType(meaningId, currentSemanticType, newSemanticType);
 		activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
+	}
+
+	@Transactional
+	public void updateMeaningManualUpdateOn(Long meaningId, Timestamp manualUpdateOn) throws Exception {
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningManualUpdateOn", meaningId, ActivityOwner.MEANING);
+		cudDbService.updateMeaningManualUpdateOn(meaningId, manualUpdateOn);
+		activityLogService.createActivityLog(activityLog, meaningId, ActivityEntity.MEANING);
 	}
 
 	@Transactional

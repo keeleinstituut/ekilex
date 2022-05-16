@@ -61,6 +61,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private Timestamp lastActivityEventOn;
 
+	private Timestamp manualEventOn;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -273,4 +275,11 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.lastActivityEventOn = lastActivityEventOn;
 	}
 
+	public Timestamp getManualEventOn() {
+		return manualEventOn;
+	}
+
+	public void setManualEventOn(Timestamp manualEventOn) {
+		this.manualEventOn = manualEventOn;
+	}
 }

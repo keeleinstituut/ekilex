@@ -1,20 +1,27 @@
-$.fn.selectDatasets = function() {
-	
-	$('[name=selectAll]').on("click", function(){
-		$('#datasetSelectDlg').find(':checkbox').prop('checked', true)
-	  });
+$.fn.selectDatasets = function () {
 
-	  $('[name=selectNone]').on("click", function(){
+	$('[name=selectAll]').on("click", function () {
+		$('#datasetSelectDlg').find(':checkbox').prop('checked', true)
+	});
+
+	$('[name=selectNone]').on("click", function () {
 		$('#datasetSelectDlg').find(':checkbox').prop('checked', false)
-	  });
+	});
 
 };
+
+function detailSearchBtn() {
+
+	if ($('.main-nav-tabs').find("#detailSearchModeBtn").hasClass("active")) {
+		$(".detail-search-mode-less-border").removeClass("d-none");
+	} else {
+		$(".detail-search-mode-less-border").addClass("d-none");
+	}
+}
 
 $.fn.detailSearchModeBtn = function () {
 
 	$('.detail-search-mode-less-btn').on("click", function () {
-		let finalOutput = "";
-
 		let icon = $('.detail-search-mode-less-btn').find("i");
 		if (icon.hasClass("fa-sort-desc")) {
 			icon.addClass("fa-sort-asc").removeClass("fa-sort-desc");
@@ -24,23 +31,31 @@ $.fn.detailSearchModeBtn = function () {
 			icon.addClass("fa-sort-desc").removeClass("fa-sort-asc");
 			$('.detail-search-filter-items').hide();
 			$('.detail-search-box-less').show();
-
 		}
+	});
 
-		$(".detail-search-group").each(function (index, value) {
-			let output = "";
-			let selected = $(this).find("select[name$='entity'] option:selected").text() ? ($(this).find("select[name$='entity'] option:selected").text() + "-") : "";
+};
 
-			$('.detail-search-sub-row', this).each(function (index, value) {
-				let obj = $(this);
-				let outputInner = "";
-				let notChksTitle = obj.find('[name$="not"]').is(':checked') ? (obj.find('[name$="not"]').attr('title').toLowerCase() + "-") : "";
-				let searchKey = obj.find("select[name$='searchKey'] option:selected").text() ? (obj.find("select[name$='searchKey'] option:selected").text() + "-") : "";
-				let searchOperand = obj.find("select[name$='searchOperand'] option:selected").text() ? (obj.find("select[name$='searchOperand'] option:selected").text()) : "";
-				outputInner = outputInner + selected + notChksTitle + searchKey + searchOperand;
+function detailSearchModeBtnValue() {
+	let finalOutput = "";
+	$(".detail-search-group").each(function (index, value) {
+		let output = "";
+		let selected = $(this).find("select[name$='entity'] option:selected").text() ? ($(this).find("select[name$='entity'] option:selected").text() + "-") : "";
 
-				let searchValueVal = obj.find("input[name$='searchValue']").val() ?? "";
-				let searchValueText = obj.find("select[name$='searchValue'] option:selected").text() ?? "";
+		$('.detail-search-sub-row', this).each(function (index, value) {
+			let obj = $(this);
+			let outputInner = "";
+			let notChksTitle = obj.find('[name$="not"]').is(':checked') ? (obj.find('[name$="not"]').attr('title').toLowerCase() + "-") : "";
+			let searchKey = obj.find("select[name$='searchKey'] option:selected").text() ? (obj.find("select[name$='searchKey'] option:selected").text() + "-") : "";
+			let searchOperand = obj.find("select[name$='searchOperand'] option:selected").text() ? (obj.find("select[name$='searchOperand'] option:selected").text()) : "";
+			outputInner = outputInner + selected + notChksTitle + searchKey + searchOperand;
+
+			let searchValueValItem = obj.find("input[name$='searchValue']");
+			let searchValueTextItem = obj.find("select[name$='searchValue']");
+
+			if (!((searchValueTextItem.is(":hidden") === true) || (searchValueValItem.is(":hidden") === true))) { // box exists
+				let searchValueVal = searchValueValItem.val() ?? "";
+				let searchValueText = searchValueTextItem.find(":selected").text() ?? "";
 
 				if (searchValueVal.length > 0) {
 					outputInner = outputInner + "-" + '"' + searchValueVal + '"' + "; ";
@@ -51,13 +66,15 @@ $.fn.detailSearchModeBtn = function () {
 				} else {
 					outputInner = "";
 				}
-			});
-			finalOutput = finalOutput + output;
-		});
-		$('.detail-search-box-less-value').val(finalOutput);
-	});
+			} else {
+				output = output + outputInner + "; ";
+			}
 
-};
+		});
+		finalOutput = finalOutput + output;
+	});
+	$('.detail-search-box-less-value').val(finalOutput);
+}
 
 function displayDetailConditionButtons() {
 	$('[name="removeDetailConditionBtn"]').each(function(i, v) {
@@ -115,6 +132,7 @@ function initialiseSearchForm() {
 	datasetDlg.on('shown.bs.modal', () => {
 		datasetDlg.find('.btn').first().focus();
 	});
+	detailSearchModeBtnValue();
 
 	$('#searchForm').submit(function(e){
 		openWaitDlg();
@@ -156,17 +174,26 @@ function initialiseDetailSearch() {
 	displayDetailGroupButtons();
 	displayNotOperandChk();
 
-	$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
-		$(this).closest('[name="detailCondition"]').remove();
-		displayDetailConditionButtons();
-	});
+	$.fn.removeDetailConditionBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.removeDetailConditionBtn").on("click.removeDetailConditionBtn", ":button[name='removeDetailConditionBtn']", function () {
+			//$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
+			$(this).closest('[name="detailCondition"]').remove();
+			displayDetailConditionButtons();
+		});
+	};
 
-	$(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
-		$(this).closest('[name="detailGroup"]').remove();
-		displayDetailGroupButtons();
-	});
+	$.fn.removeDetailGroupBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.removeDetailGroupBtn").on("click.removeDetailGroupBtn", ":button[name='removeDetailGroupBtn']", function () {
+			//$(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
+			$(this).closest('[name="detailGroup"]').remove();
+			displayDetailGroupButtons();
+		});
+	};
 
-	$(document).on("change", "select[name$='entity']", function() {
+	$("#detail_search_filter").on("change", "select[name$='entity']", function () {
+		//$(document).on("change", "select[name$='entity']", function() {
 
 		let searchEntityVal = $(this).val();
 		let detailGroupElement = $(this).closest('[name="detailGroup"]');
@@ -183,7 +210,8 @@ function initialiseDetailSearch() {
 		displayNotOperandChk();
 	});
 
-	$(document).on("change", "select[name$='searchKey']", function() {
+	$("#detail_search_filter").on("change", "select[name$='searchKey']", function () {
+		//$(document).on("change", "select[name$='searchKey']", function() {
 		let detailConditionElement = $(this).closest('[name="detailCondition"]');
 		let pageName = detailConditionElement.attr("data-page");
 		let searchKey = $(this).val();
@@ -204,7 +232,8 @@ function initialiseDetailSearch() {
 		displayNotOperandChk();
 	});
 
-	$(document).on("change", "select[name$='searchOperand']", function() {
+	$("#detail_search_filter").on("change", "select[name$='searchOperand']", function () {
+		//$(document).on("change", "select[name$='searchOperand']", function() {
 
 		const textTypeSearchKeys = [
 			"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "OD_RECOMMENDATION", "ATTRIBUTE_VALUE",
@@ -268,22 +297,28 @@ function initialiseDetailSearch() {
 		}
 	};
 
-	$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
+	$.fn.addDetailConditionBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.addDetailConditionBtn").on("click.addDetailConditionBtn", ":button[name='addDetailConditionBtn']", function () {
+			//$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
 
-		let detailGroupElement = $(this).closest('[name="detailGroup"]');
-		let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
-		initCondition(addedConditionElement);
-		displayNotOperandChk();
-	});
+			let detailGroupElement = $(this).closest('[name="detailGroup"]');
+			let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
+			initCondition(addedConditionElement);
+			displayNotOperandChk();
+		});
+	};
 
-	$(document).on("click", ":button[name='addDetailGroupBtn']", function() {
-
-		let detailSearchElement = $("#detail_search_filter");
-		let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
-		initConditionGroup(addedGroupElement);
-		displayNotOperandChk();
-	});
-
+	$.fn.addDetailGroupBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.addDetailGroupBtn").on("click.addDetailGroupBtn", ":button[name='addDetailGroupBtn']", function () {
+			let detailSearchElement = block;
+			//$(document).on("click", ":button[name='addDetailGroupBtn']", function() {	
+			let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
+			initConditionGroup(addedGroupElement);
+			displayNotOperandChk();
+		});
+	};
 	$('[data-live-search="true"]:not(:hidden)').each(function () {
 		$(this).selectpicker({width: '100%'});
 	})
