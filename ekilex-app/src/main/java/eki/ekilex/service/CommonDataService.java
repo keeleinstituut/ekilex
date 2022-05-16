@@ -13,23 +13,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.TagType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Origin;
 import eki.ekilex.service.db.CommonDataDbService;
-import eki.ekilex.service.util.ConversionUtil;
+import eki.ekilex.service.util.DatasetUtil;
 
 // only common use data aggregation!
 @Component
-public class CommonDataService implements SystemConstant {
+public class CommonDataService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
 	@Autowired
-	protected ConversionUtil conversionUtil;
+	private DatasetUtil datasetUtil;
 
 	@Transactional
 	public List<Dataset> getAllDatasets() {
@@ -38,7 +39,9 @@ public class CommonDataService implements SystemConstant {
 
 	@Transactional
 	public List<Dataset> getVisibleDatasets() {
-		return commonDataDbService.getVisibleDatasets();
+		List<Dataset> datasets = commonDataDbService.getVisibleDatasets();
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
+		return datasets;
 	}
 
 	@Transactional

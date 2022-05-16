@@ -114,3 +114,28 @@ where id in (select f.id
                and l.meaning_id = mf.meaning_id
                and l.dataset_code = d.code
                and d.type = 'TERM');
+
+-- punkti lisamine kasutusnäidete lõppu
+update
+  freeform ff
+set
+  value_text = ff.value_text || '.',
+  value_prese = ff.value_prese || '.'
+where
+  ff."type" = 'USAGE'
+  and ff.is_public = true
+  and not (
+    right(trim(ff.value_text), 1) = any (array['.', '!', '?', '"'])
+  )
+  and exists (
+    select
+      l.id
+    from
+      lexeme l,
+      lexeme_freeform lff
+    where
+      lff.freeform_id = ff.id
+      and lff.lexeme_id = l.id
+      and l.dataset_code = 'eki'
+  );
+  

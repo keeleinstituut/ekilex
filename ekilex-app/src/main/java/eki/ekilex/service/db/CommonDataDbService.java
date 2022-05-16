@@ -132,12 +132,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 	}
 
 	public List<Dataset> getAllDatasets() {
-		return create.selectFrom(DATASET).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
+		return create.selectFrom(DATASET).orderBy(DATASET.NAME).fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_DATASET)
 	public List<Dataset> getVisibleDatasets() {
-		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.ORDER_BY).fetchInto(Dataset.class);
+		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_VISIBLE.isTrue()).orderBy(DATASET.NAME).fetchInto(Dataset.class);
 	}
 
 	@Cacheable(value = CACHE_KEY_TAG, key = "#root.methodName")
