@@ -153,19 +153,18 @@ create index meaning_manual_event_on_idx on meaning(manual_event_on);
 
 update word w
 set manual_event_on = wupd.manual_event_on
-from (select wal.word_id, max(al.event_on) manual_event_on
-      from word_activity_log wal,
+from (select wlal.word_id, al.event_on manual_event_on
+      from word_last_activity_log wlal,
            activity_log al
-      where wal.activity_log_id = al.id
-      group by wal.word_id) wupd
+      where wlal.activity_log_id = al.id
+      group by wlal.word_id, al.event_on) wupd
 where w.id = wupd.word_id;
 
 update meaning m
 set manual_event_on = mupd.manual_event_on
-from (select mal.meaning_id, max(al.event_on) manual_event_on
-      from meaning_activity_log mal,
+from (select mlal.meaning_id, al.event_on manual_event_on
+      from meaning_last_activity_log mlal,
            activity_log al
-      where mal.activity_log_id = al.id
-      group by mal.meaning_id) mupd
+      where mlal.activity_log_id = al.id
+      group by mlal.meaning_id, al.event_on) mupd
 where m.id = mupd.meaning_id;
-
