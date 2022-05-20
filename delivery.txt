@@ -1,1 +1,20 @@
 Märkused ver 1.24.0 tarne kohta:
+
+* Tarnega kaasnev andmebaasi igratsiooni skript:
+  /eki-common/src/main/resources/sql/delivery.sql
+
+* Loodud FedTerm integratsioonilahendus sõnakogude käsitsi edastamiseks.
+  Saata saab ainult:
+  - admin
+  - avalikke sõnakogusid
+  - sõnakogusid, millel on andmebaasis määratud dataset.fed_term_domain_id
+  Enamus sõnakogusid saavad oma eelmääratud fed_term_domain_id selle tarnega kaasatud migratsiooni skriptiga.
+  Ekilexi kasutajaliidese kaudu saatmiseks määratud sõnakogusid edastatakse asünkroonse jada mehhanismi kaudu 100 mõiste kaupa.
+  Integratsiooniks on application-<env>.properties failis vaja määrata järgmiset atribuudid:
+
+  fedterm.service.url=
+  fedterm.browser.url=
+  fedterm.auth.username=
+  fedterm.auth.password=
+
+* Tarne sisaldab "sisulise muudatuse kuupäeva"-ga seotud täiendusi, kuid funktsionaalsus ise pole veel valmis ning on kasutajaliidese tasemel varjatud
