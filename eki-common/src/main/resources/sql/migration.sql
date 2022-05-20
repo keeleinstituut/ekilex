@@ -165,6 +165,6 @@ set manual_event_on = mupd.manual_event_on
 from (select mlal.meaning_id, al.event_on manual_event_on
       from meaning_last_activity_log mlal,
            activity_log al
-      where mlal.activity_log_id = al.id
+      where mlal.activity_log_id = al.id and mlal.type = 'EDIT'
       group by mlal.meaning_id, al.event_on) mupd
 where m.id = mupd.meaning_id;
