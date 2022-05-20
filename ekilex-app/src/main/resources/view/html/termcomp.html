@@ -116,22 +116,6 @@
                 data-callback="doNewSearchTermSearch"
                 data-toggle="deleteMeaningAndLexemesAndWords"
                 sec:authorize="#vars.isMeaningLexemeCrudGranted">Kustuta</button>
-        <div style="display:inline-block" class="hover-actions-container hover-actions-container-outline ml-2">
-          <div class="date-modified" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Viimane sisuline muudatus">
-            <i class="fa fa-calendar"></i>
-            <span th:text="${#dates.format(meaning.manualEventOn, 'dd.MM.yyyy')}" class="ml-n1"></span>
-          </div>
-          <div class="hover-actions hover-actions-bottom-right">
-            <div class="btn-group">
-                <button type="button" class="btn btn-secondary btn-sm" title="Muuda" data-toggle="modal"
-                        th:data-target="${'#editMeaningManualEventOnDlg_' + meaningId}"
-                        sec:authorize="#vars.meaning.crudGrant">
-                <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div th:replace="termdialog :: edit_meaning_manual_event_on_dlg"></div>
       </div>
       <div class="ml-auto d-flex align-items-center flex-row">
         <div style="display:inline-block">

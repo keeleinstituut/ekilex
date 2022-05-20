@@ -78,6 +78,3 @@ $(document).on("show.bs.modal", "[id^=editLexemeReliabilityDlg_]", function() {
 	initSelectDlg($(this));
 });
 
-$(document).on("show.bs.modal", "[id^=editMeaningManualEventOnDlg_]", function() {
-	initGenericTextEditDlg($(this));
-});
