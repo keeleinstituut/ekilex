@@ -30,7 +30,7 @@ public class WordService extends AbstractService {
 	TagDbService tagDbService;
 
 	@Transactional
-	public Long createWord(Word word) throws Exception {
+	public Long createWord(Word word, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = word.getValue();
 		String valueAsWord = getValueAsWord(value);
@@ -43,24 +43,24 @@ public class WordService extends AbstractService {
 		meaningId = wordLexemeMeaningId.getMeaningId();
 
 		tagDbService.createLexemeAutomaticTags(lexemeId);
-		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD);
-		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME);
+		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		if (isMeaningCreate) {
-			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING);
+			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		}
 
 		return wordId;
 	}
 
 	@Transactional
-	public void updateWord(Word word) throws Exception {
+	public void updateWord(Word word, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long wordId = word.getWordId();
 		String value = word.getValue();
 		String lang = word.getLang();
 		String valueAsWord = getValueAsWord(value);
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWord", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWord", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		cudDbService.updateWord(word, valueAsWord);

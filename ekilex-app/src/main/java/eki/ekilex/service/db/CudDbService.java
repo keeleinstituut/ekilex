@@ -415,14 +415,6 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateWordManualUpdateOn(Long wordId, Timestamp manualUpdateOn) {
-		create
-				.update(WORD)
-				.set(WORD.MANUAL_EVENT_ON, manualUpdateOn)
-				.where(WORD.ID.eq(wordId))
-				.execute();
-	}
-
 	public Long updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
 		Long meaningDomainId = create
 				.update(MEANING_DOMAIN)
@@ -447,14 +439,6 @@ public class CudDbService extends AbstractDataDbService {
 				.fetchOne()
 				.getId();
 		return meaningSemanticTypeId;
-	}
-
-	public void updateMeaningManualUpdateOn(Long meaningId, Timestamp manualUpdateOn) {
-		create
-				.update(MEANING)
-				.set(MEANING.MANUAL_EVENT_ON, manualUpdateOn)
-				.where(MEANING.ID.eq(meaningId))
-				.execute();
 	}
 
 	public void updateWordRelationOrderBy(Long relationId, Long orderBy) {

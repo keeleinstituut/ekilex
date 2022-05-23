@@ -20,6 +20,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private String recentNoteLanguage;
 
+	private boolean isManualEventOnUpdateEnabled;
+
 	public SearchResultMode getTermSearchResultMode() {
 		return termSearchResultMode;
 	}
@@ -58,5 +60,13 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setRecentNoteLanguage(String recentNoteLanguage) {
 		this.recentNoteLanguage = recentNoteLanguage;
+	}
+
+	public boolean isManualEventOnUpdateEnabled() {
+		return isManualEventOnUpdateEnabled;
+	}
+
+	public void setManualEventOnUpdateEnabled(boolean manualEventOnUpdateEnabled) {
+		isManualEventOnUpdateEnabled = manualEventOnUpdateEnabled;
 	}
 }

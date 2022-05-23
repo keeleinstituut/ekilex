@@ -79,7 +79,8 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	// --- UPDATE ---
 
 	@Transactional
-	public void updateWordValue(Long wordId, String valuePrese) throws Exception {
+	public void updateWordValue(Long wordId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
 		String lang = originalWord.getLang();
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
@@ -88,7 +89,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
 			valueAsWord = cleanValue;
 		}
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordValue", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordValue(wordId, value, valuePrese);
 		if (StringUtils.isNotEmpty(valueAsWord)) {
 			cudDbService.updateAsWordValue(wordId, valueAsWord);
@@ -100,20 +101,20 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateWordValueWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
+	public void updateWordValueWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		if (isWordCrudGrant) {
-			updateWordValue(wordId, valuePrese);
+			updateWordValue(wordId, valuePrese, isManualEventOnUpdateEnabled);
 		} else {
-			Long duplicateWordId = duplicateWordData(wordId);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
-			updateWordValue(duplicateWordId, valuePrese);
+			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
+			updateWordValue(duplicateWordId, valuePrese, isManualEventOnUpdateEnabled);
 		}
 	}
 
-	private Long duplicateWordData(Long wordId) throws Exception {
+	private Long duplicateWordData(Long wordId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SimpleWord simpleWord = compositionDbService.getSimpleWord(wordId);
 		Long duplicateWordId = compositionDbService.cloneWord(simpleWord);
@@ -123,111 +124,129 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		compositionDbService.cloneWordGroupMembers(wordId, duplicateWordId);
 		compositionDbService.cloneWordFreeforms(wordId, duplicateWordId);
 		compositionDbService.cloneWordEtymology(wordId, duplicateWordId);
-		activityLogService.createActivityLog("duplicateWordData", duplicateWordId, ActivityOwner.WORD);
+		activityLogService.createActivityLog("duplicateWordData", duplicateWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 
 		return duplicateWordId;
 	}
 
-	private void updateWordLexemesWordId(Long currentWordId, Long newWordId, String datasetCode) throws Exception {
-		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("updateWordLexemesWordId", currentWordId, ActivityOwner.WORD);
-		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("updateWordLexemesWordId", newWordId, ActivityOwner.WORD);
+	private void updateWordLexemesWordId(Long currentWordId, Long newWordId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("updateWordLexemesWordId", currentWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("updateWordLexemesWordId", newWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordLexemesWordId(currentWordId, newWordId, datasetCode);
 		activityLogService.createActivityLog(activityLog1, currentWordId, ActivityEntity.WORD);
 		activityLogService.createActivityLog(activityLog2, newWordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
-	public void updateWordVocalForm(Long wordId, String vocalForm) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, ActivityOwner.WORD);
+	public void updateWordVocalForm(Long wordId, String vocalForm, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordVocalForm", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordVocalForm(wordId, vocalForm);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
-	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordType", wordId, ActivityOwner.WORD);
+	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordType", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long wordWordTypeId = cudDbService.updateWordType(wordId, currentTypeCode, newTypeCode);
 		activityLogService.createActivityLog(activityLog, wordWordTypeId, ActivityEntity.WORD_TYPE);
 	}
 
 	@Transactional
 	public void updateWordTypeWithDuplication(
-			Long wordId, String currentTypeCode, String newTypeCode, Long userId, DatasetPermission userRole) throws Exception {
+			Long wordId, String currentTypeCode, String newTypeCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		if (isWordCrudGrant) {
-			updateWordType(wordId, currentTypeCode, newTypeCode);
+			updateWordType(wordId, currentTypeCode, newTypeCode, isManualEventOnUpdateEnabled);
 		} else {
-			Long duplicateWordId = duplicateWordData(wordId);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
-			updateWordType(duplicateWordId, currentTypeCode, newTypeCode);
+			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
+			updateWordType(duplicateWordId, currentTypeCode, newTypeCode, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void updateWordAspect(Long wordId, String aspectCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordAspect", wordId, ActivityOwner.WORD);
+	public void updateWordAspect(Long wordId, String aspectCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordAspect", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordAspect(wordId, aspectCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
-	public void updateWordDisplayMorph(Long wordId, String displayMorphCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordDisplayMorph", wordId, ActivityOwner.WORD);
+	public void updateWordDisplayMorph(Long wordId, String displayMorphCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordDisplayMorph", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordDisplayMorph(wordId, displayMorphCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
-	public void updateWordGender(Long wordId, String genderCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordGender", wordId, ActivityOwner.WORD);
+	public void updateWordGender(Long wordId, String genderCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordGender", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordGender(wordId, genderCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
-	public void updateWordGenderWithDuplication(Long wordId, String genderCode, Long userId, DatasetPermission userRole) throws Exception {
+	public void updateWordGenderWithDuplication(Long wordId, String genderCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		if (isWordCrudGrant) {
-			updateWordGender(wordId, genderCode);
+			updateWordGender(wordId, genderCode, isManualEventOnUpdateEnabled);
 		} else {
-			Long duplicateWordId = duplicateWordData(wordId);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
-			updateWordGender(duplicateWordId, genderCode);
+			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
+			updateWordGender(duplicateWordId, genderCode, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void updateWordLang(Long wordId, String langCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLang", wordId, ActivityOwner.WORD);
+	public void updateWordLang(Long wordId, String langCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLang", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.updateWordLang(wordId, langCode);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
-	public void updateWordNote(Long wordNoteId, String valuePrese) throws Exception {
+	public void updateWordNote(Long wordNoteId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(wordNoteId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.WORD, ActivityEntity.WORD_NOTE, freeform);
+		updateFreeform(ActivityOwner.WORD, ActivityEntity.WORD_NOTE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateWordManualUpdateOn(Long wordId, Timestamp manualUpdateOn) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordManualUpdateOn", wordId, ActivityOwner.WORD);
-		cudDbService.updateWordManualUpdateOn(wordId, manualUpdateOn);
+	public void updateWordManualEventOn(Long wordId, String eventOnStr) throws Exception {
+
+		Timestamp eventOn = conversionUtil.dateStrToTimestamp(eventOnStr);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordManualEventOn", wordId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogDbService.updateWordManualEventOn(wordId, eventOn);
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
 	@Transactional
-	public void updateWordLexemesTagComplete(Long wordId, String userRoleDatasetCode, Tag tag) throws Exception {
+	public void updateMeaningManualEventOn(Long meaningId, String eventOnStr) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLexemesTagComplete", wordId, ActivityOwner.WORD);
+		Timestamp eventOn = conversionUtil.dateStrToTimestamp(eventOnStr);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningManualEventOn", meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogDbService.updateMeaningManualEventOn(meaningId, eventOn);
+		activityLogService.createActivityLog(activityLog, meaningId, ActivityEntity.MEANING);
+	}
+
+	@Transactional
+	public void updateWordLexemesTagComplete(Long wordId, String userRoleDatasetCode, Tag tag, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordLexemesTagComplete", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 
 		String tagName = tag.getName();
 		boolean removeToComplete = tag.isRemoveToComplete();
@@ -242,9 +261,9 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateMeaningLexemesTagComplete(Long meaningId, String userRoleDatasetCode, Tag tag) throws Exception {
+	public void updateMeaningLexemesTagComplete(Long meaningId, String userRoleDatasetCode, Tag tag, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLexemesTagComplete", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningLexemesTagComplete", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 
 		String tagName = tag.getName();
 		boolean removeToComplete = tag.isRemoveToComplete();
@@ -259,99 +278,105 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateWordRelationOrdering(List<ListData> items) throws Exception {
+	public void updateWordRelationOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long wordRelationId = item.getId();
 			Long wordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordRelationOrdering", wordId, ActivityOwner.WORD);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordRelationOrdering", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 			cudDbService.updateWordRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
 		}
 	}
 
 	@Transactional
-	public void updateWordEtymologyOrdering(List<ListData> items) throws Exception {
+	public void updateWordEtymologyOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long wordEtymId = item.getId();
 			Long wordId = activityLogService.getOwnerId(wordEtymId, ActivityEntity.WORD_ETYMOLOGY);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordEtymologyOrdering", wordId, ActivityOwner.WORD);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordEtymologyOrdering", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 			cudDbService.updateWordEtymologyOrderby(item);
 			activityLogService.createActivityLog(activityLog, wordEtymId, ActivityEntity.WORD_ETYMOLOGY);
 		}
 	}
 
 	@Transactional
-	public void updateMeaningDomainOrdering(List<ListData> items) throws Exception {
+	public void updateMeaningDomainOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long meaningDomainId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(meaningDomainId, ActivityEntity.DOMAIN);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomainOrdering", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomainOrdering", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.updateMeaningDomainOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 		}
 	}
 
 	@Transactional
-	public void updateGovernmentOrdering(List<ListData> items) throws Exception {
+	public void updateGovernmentOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		for (ListData item : items) {
 			Long governmentId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateGovernmentOrdering", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateGovernmentOrdering", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
 		}
 	}
 
 	@Transactional
-	public void updateUsageOrdering(List<ListData> items) throws Exception {
+	public void updateUsageOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		for (ListData item : items) {
 			Long usageId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageOrdering", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateUsageOrdering", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 		}
 	}
 
 	@Transactional
-	public void updateLexemeNoteOrdering(List<ListData> items) throws Exception {
+	public void updateLexemeNoteOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		for (ListData item : items) {
 			Long lexemeNoteId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNoteOrdering", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeNoteOrdering", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.LEXEME_NOTE);
 		}
 	}
 
 	@Transactional
-	public void updateMeaningNoteOrdering(List<ListData> items) throws Exception {
+	public void updateMeaningNoteOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long meaningNoteId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNoteOrdering", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningNoteOrdering", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
 		}
 	}
 
 	@Transactional
-	public void updateDefinitionNoteOrdering(List<ListData> items) throws Exception {
+	public void updateDefinitionNoteOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long definitionId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION_NOTE);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionNoteOrdering", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionNoteOrdering", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.updateFreeformOrderby(item);
 			activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION_NOTE);
 		}
 	}
 
 	@Transactional
-	public void updateLexemeMeaningWordOrdering(List<ListData> items, Long lexemeId) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeMeaningWordOrdering", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeMeaningWordOrdering(List<ListData> items, Long lexemeId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeMeaningWordOrdering", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		for (ListData item : items) {
 			cudDbService.updateLexemeOrderby(item);
 		}
@@ -359,7 +384,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateUsageValue(Long usageId, String valuePrese, Complexity complexity, boolean isPublic) throws Exception {
+	public void updateUsageValue(Long usageId, String valuePrese, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(usageId);
@@ -367,42 +392,43 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateUsageTranslation(Long usageTranslationId, String valuePrese, String lang) throws Exception {
+	public void updateUsageTranslation(Long usageTranslationId, String valuePrese, String lang, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(usageTranslationId);
 		freeform.setLang(lang);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE_TRANSLATION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE_TRANSLATION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateUsageDefinitionValue(Long usageDefinitionId, String valuePrese) throws Exception {
+	public void updateUsageDefinitionValue(Long usageDefinitionId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(usageDefinitionId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE_DEFINITION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.USAGE_DEFINITION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateLexemeOrdering(List<ListData> items) throws Exception {
+	public void updateLexemeOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long lexemeId = item.getId();
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeOrdering", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeOrdering", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 		}
 	}
 
 	@Transactional
-	public void updateLexemeLevels(Long lexemeId, String action) throws Exception {
+	public void updateLexemeLevels(Long lexemeId, String action, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (lexemeId == null) {
 			return;
@@ -412,14 +438,14 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
 			activityLogService.createActivityLog(activityLog, otherLexemeId, ActivityEntity.LEXEME);
 		}
 	}
 
 	@Transactional
-	public void updateLexemeLevels(Long lexemeId, int lexemePosition) throws Exception {
+	public void updateLexemeLevels(Long lexemeId, int lexemePosition, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (lexemeId == null) {
 			return;
@@ -429,72 +455,78 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		lexemeLevelCalcUtil.recalculateLevels(lexemeId, lexemes, lexemePosition);
 		for (WordLexeme lexeme : lexemes) {
 			Long otherLexemeId = lexeme.getLexemeId();
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeLevels", otherLexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeLevels(otherLexemeId, lexeme.getLevel1(), lexeme.getLevel2());
 			activityLogService.createActivityLog(activityLog, otherLexemeId, ActivityEntity.LEXEME);
 		}
 	}
 
 	@Transactional
-	public void updateLexemeGovernment(Long lexemeGovernmentId, String value, Complexity complexity) throws Exception {
+	public void updateLexemeGovernment(Long lexemeGovernmentId, String value, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(lexemeGovernmentId);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, value);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GOVERNMENT, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateLexemeGrammar(Long lexemeGrammarId, String valuePrese, Complexity complexity) throws Exception {
+	public void updateLexemeGrammar(Long lexemeGrammarId, String valuePrese, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(lexemeGrammarId);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GRAMMAR, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.GRAMMAR, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateLexemeComplexity(Long lexemeId, String complexity) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeComplexity", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeComplexity(Long lexemeId, String complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeComplexity", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.updateLexemeComplexity(lexemeId, complexity);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
-	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePos", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemePos(Long lexemeId, String currentPos, String newPos, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePos", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemePosId = cudDbService.updateLexemePos(lexemeId, currentPos, newPos);
 		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 	}
 
 	@Transactional
-	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeDeriv", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeDeriv", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeDerivid = cudDbService.updateLexemeDeriv(lexemeId, currentDeriv, newDeriv);
 		activityLogService.createActivityLog(activityLog, lexemeDerivid, ActivityEntity.DERIV);
 	}
 
 	@Transactional
-	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegister", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegister", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeRegisterId = cudDbService.updateLexemeRegister(lexemeId, currentRegister, newRegister);
 		activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
 	}
 
 	@Transactional
-	public void updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegion", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeRegion(Long lexemeId, String currentRegion, String newRegion, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRegion", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeRegionId = cudDbService.updateLexemeRegion(lexemeId, currentRegion, newRegion);
 		activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
 	}
 
 	@Transactional
-	public void updateLexemeReliability(Long lexemeId, String reliabilityStr) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeReliability", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeReliability(Long lexemeId, String reliabilityStr, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeReliability", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Integer reliability;
 		try {
 			reliability = Integer.parseInt(reliabilityStr);
@@ -506,7 +538,8 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateLexemeNote(Long lexemeNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+	public void updateLexemeNote(
+			Long lexemeNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(lexemeNoteId);
@@ -515,63 +548,70 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.LEXEME_NOTE, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.LEXEME_NOTE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateLexemePublicity(Long lexemeId, boolean isPublic) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePublicity", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemePublicity(Long lexemeId, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemePublicity", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.updateLexemeProcessState(lexemeId, isPublic);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
-	public void updateLexemeValueState(Long lexemeId, String valueStateCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeValueState", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeValueState(Long lexemeId, String valueStateCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeValueState", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.updateLexemeValueState(lexemeId, valueStateCode);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
-	public void updateLexemeProficiencyLevel(Long lexemeId, String proficiencyLevelCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeProficiencyLevel", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeProficiencyLevel(Long lexemeId, String proficiencyLevelCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeProficiencyLevel", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.updateLexemeProficiencyLevel(lexemeId, proficiencyLevelCode);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
-	public void updateLexemeRelationOrdering(List<ListData> items) throws Exception {
+	public void updateLexemeRelationOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long lexemeRelationId = item.getId();
 			Long lexemeId = activityLogService.getOwnerId(lexemeRelationId, ActivityEntity.LEXEME_RELATION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRelationOrdering", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeRelationOrdering", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.updateLexemeRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, lexemeRelationId, ActivityEntity.LEXEME_RELATION);
 		}
 	}
 
 	@Transactional
-	public void updateDefinition(Long definitionId, String valuePrese, String lang, Complexity complexity, String typeCode, boolean isPublic) throws Exception {
+	public void updateDefinition(
+			Long definitionId, String valuePrese, String lang, Complexity complexity, String typeCode, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinition", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.updateDefinition(definitionId, value, valuePrese, lang, complexity, typeCode, isPublic);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 	}
 
 	@Transactional
-	public void updateDefinitionOrdering(List<ListData> items) throws Exception {
+	public void updateDefinitionOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long definitionId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionOrdering", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionOrdering", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.updateDefinitionOrderby(item);
 			activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 		}
 	}
 
 	@Transactional
-	public void updateDefinitionNote(Long definitionNoteId, String valuePrese, String lang, boolean isPublic) throws Exception {
+	public void updateDefinitionNote(Long definitionNoteId, String valuePrese, String lang, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(definitionNoteId);
@@ -579,39 +619,42 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.DEFINITION_NOTE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.DEFINITION_NOTE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateMeaningRelationOrdering(List<ListData> items) throws Exception {
+	public void updateMeaningRelationOrdering(List<ListData> items, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		for (ListData item : items) {
 			Long meaningRelationId = item.getId();
 			Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationOrdering", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationOrdering", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.updateMeaningRelationOrderby(item);
 			activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 		}
 	}
 
 	@Transactional
-	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomain", meaningId, ActivityOwner.MEANING);
+	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningDomain", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long meaningDomainId = cudDbService.updateMeaningDomain(meaningId, currentDomain, newDomain);
 		activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 	}
 
 	@Transactional
-	public void updateMeaningLearnerComment(Long learnerCommentId, String valuePrese) throws Exception {
+	public void updateMeaningLearnerComment(Long learnerCommentId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(learnerCommentId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.LEARNER_COMMENT, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateMeaningNote(Long meaningNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+	public void updateMeaningNote(Long meaningNoteId, String valuePrese, String lang, Complexity complexity, boolean isPublic,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(meaningNoteId);
@@ -620,141 +663,137 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEANING_NOTE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEANING_NOTE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningSemanticType", meaningId, ActivityOwner.MEANING);
+	public void updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningSemanticType", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long meaningSemanticTypeId = cudDbService.updateMeaningSemanticType(meaningId, currentSemanticType, newSemanticType);
 		activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
 	}
 
 	@Transactional
-	public void updateMeaningManualUpdateOn(Long meaningId, Timestamp manualUpdateOn) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningManualUpdateOn", meaningId, ActivityOwner.MEANING);
-		cudDbService.updateMeaningManualUpdateOn(meaningId, manualUpdateOn);
-		activityLogService.createActivityLog(activityLog, meaningId, ActivityEntity.MEANING);
-	}
-
-	@Transactional
-	public void updateMeaningImage(Long imageId, String valuePrese, Complexity complexity) throws Exception {
+	public void updateMeaningImage(Long imageId, String valuePrese, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(imageId);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateImageTitle(Long imageId, String valuePrese) throws Exception {
+	public void updateImageTitle(Long imageId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setParentId(imageId);
 		freeform.setType(FreeformType.IMAGE_TITLE);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateChildFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform);
+		updateChildFreeform(ActivityOwner.MEANING, ActivityEntity.IMAGE_FILE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateMeaningMedia(Long mediaId, String valuePrese, Complexity complexity) throws Exception {
+	public void updateMeaningMedia(Long mediaId, String valuePrese, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(mediaId);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform);
+		updateFreeform(ActivityOwner.MEANING, ActivityEntity.MEDIA_FILE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateOdWordRecommendation(Long freeformId, String valuePrese) throws Exception {
+	public void updateOdWordRecommendation(Long freeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform);
+		updateFreeform(ActivityOwner.WORD, ActivityEntity.OD_WORD_RECOMMENDATION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateOdLexemeRecommendation(Long freeformId, String valuePrese) throws Exception {
+	public void updateOdLexemeRecommendation(Long freeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_LEXEME_RECOMMENDATION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_LEXEME_RECOMMENDATION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateOdUsageDefinition(Long freeformId, String valuePrese) throws Exception {
+	public void updateOdUsageDefinition(Long freeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_DEFINITION, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_DEFINITION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateOdUsageAlternative(Long freeformId, String valuePrese) throws Exception {
+	public void updateOdUsageAlternative(Long freeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setId(freeformId);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_ALTERNATIVE, freeform);
+		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_ALTERNATIVE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void updateLexemeWeight(Long lexemeId, String lexemeWeightStr) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeWeight", lexemeId, ActivityOwner.LEXEME);
+	public void updateLexemeWeight(Long lexemeId, String lexemeWeightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeWeight", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		BigDecimal lexemeWeight = new BigDecimal(lexemeWeightStr);
 		cudDbService.updateLexemeWeight(lexemeId, lexemeWeight);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
-	public void updateMeaningRelationWeight(Long meaningRelationId, String relationWeightStr) throws Exception {
+	public void updateMeaningRelationWeight(Long meaningRelationId, String relationWeightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationWeight", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationWeight", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		BigDecimal relationWeight = new BigDecimal(relationWeightStr);
 		cudDbService.updateMeaningRelationWeight(meaningRelationId, relationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 	}
 
 	@Transactional
-	public void updateWordDataAndLexemeWeight(WordLexemeMeaningDetails wordDataAndLexemeWeight) throws Exception {
+	public void updateWordDataAndLexemeWeight(WordLexemeMeaningDetails wordDataAndLexemeWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long wordId = wordDataAndLexemeWeight.getWordId();
 		Long lexemeId = wordDataAndLexemeWeight.getLexemeId();
 		String lexemeWeight = wordDataAndLexemeWeight.getLexemeWeight();
 		String wordValuePrese = wordDataAndLexemeWeight.getWordValuePrese();
 
-		updateWordValue(wordId, wordValuePrese);
-		updateLexemeWeight(lexemeId, lexemeWeight);
+		updateWordValue(wordId, wordValuePrese, isManualEventOnUpdateEnabled);
+		updateLexemeWeight(lexemeId, lexemeWeight, isManualEventOnUpdateEnabled);
 	}
 
-	private void updateFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+	private void updateFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long freeformId = freeform.getId();
 		Long ownerId = activityLogService.getOwnerId(freeformId, activityEntity);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeform", ownerId, logOwner);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeform", ownerId, logOwner, isManualEventOnUpdateEnabled);
 		cudDbService.updateFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, freeformId, activityEntity);
 	}
 
-	private void updateChildFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+	private void updateChildFreeform(ActivityOwner logOwner, ActivityEntity activityEntity, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long parentId = freeform.getParentId();
 		Long ownerId = activityLogService.getOwnerId(parentId, activityEntity);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateChildFreeform", ownerId, logOwner);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateChildFreeform", ownerId, logOwner, isManualEventOnUpdateEnabled);
 		cudDbService.updateChildFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, parentId, activityEntity);
 	}
@@ -762,7 +801,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	// --- CREATE ---
 
 	@Transactional
-	public WordLexemeMeaningIdTuple createWord(WordLexemeMeaningDetails wordDetails) throws Exception {
+	public WordLexemeMeaningIdTuple createWord(WordLexemeMeaningDetails wordDetails, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = wordDetails.getWordValue();
 		String language = wordDetails.getLanguage();
@@ -783,42 +822,44 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		meaningId = wordLexemeMeaningId.getMeaningId();
 		tagDbService.createLexemeAutomaticTags(lexemeId);
-		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD);
-		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME);
+		activityLogService.createActivityLog("createWord", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createWord", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		if (isMeaningCreate) {
-			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING);
+			activityLogService.createActivityLog("createWord", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		}
 
 		return wordLexemeMeaningId;
 	}
 
 	@Transactional
-	public void createWordType(Long wordId, String typeCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD);
+	public void createWordType(Long wordId, String typeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordType", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long wordTypeId = cudDbService.createWordType(wordId, typeCode);
 		activityLogService.createActivityLog(activityLog, wordTypeId, ActivityEntity.WORD_TYPE);
 	}
 
 	@Transactional
-	public void createWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
+	public void createWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		if (isWordCrudGrant) {
-			createWordType(wordId, typeCode);
+			createWordType(wordId, typeCode, isManualEventOnUpdateEnabled);
 		} else {
-			Long duplicateWordId = duplicateWordData(wordId);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
-			createWordType(duplicateWordId, typeCode);
+			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
+			createWordType(duplicateWordId, typeCode, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode) throws Exception {
+	public void createWordRelation(Long wordId, Long targetWordId, String relationTypeCode, String oppositeRelationTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		ActivityLogData activityLog;
 		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
 		if (wordRelationGroupType.isPresent()) {
-			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD);
+			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 			Long groupId = lookupDbService.getWordRelationGroupId(relationTypeCode, wordId);
 			if (groupId == null) {
 				groupId = cudDbService.createWordRelationGroup(relationTypeCode);
@@ -829,7 +870,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 			}
 			activityLogService.createActivityLog(activityLog, targetWordId, ActivityEntity.WORD_RELATION_GROUP_MEMBER);
 		} else {
-			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD);
+			activityLog = activityLogService.prepareActivityLog("createWordRelation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 			Long relationId = cudDbService.createWordRelation(wordId, targetWordId, relationTypeCode, null);
 			activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 			if (StringUtils.isNotEmpty(oppositeRelationTypeCode)) {
@@ -837,7 +878,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 				if (oppositeRelationExists) {
 					return;
 				}
-				activityLog = activityLogService.prepareActivityLog("createWordRelation", targetWordId, ActivityOwner.WORD);
+				activityLog = activityLogService.prepareActivityLog("createWordRelation", targetWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 				Long oppositeRelationId = cudDbService.createWordRelation(targetWordId, wordId, oppositeRelationTypeCode, null);
 				activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.WORD_RELATION);
 			}
@@ -845,7 +886,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void createWordNote(Long wordId, String valuePrese) throws Exception {
+	public void createWordNote(Long wordId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.NOTE);
@@ -854,28 +895,29 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(false);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createWordFreeform(ActivityEntity.WORD_NOTE, wordId, freeform);
+		createWordFreeform(ActivityEntity.WORD_NOTE, wordId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createWordNoteWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole) throws Exception {
+	public void createWordNoteWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		if (isWordCrudGrant) {
-			createWordNote(wordId, valuePrese);
+			createWordNote(wordId, valuePrese, isManualEventOnUpdateEnabled);
 		} else {
-			Long duplicateWordId = duplicateWordData(wordId);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
-			createWordNote(duplicateWordId, valuePrese);
+			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
+			createWordNote(duplicateWordId, valuePrese, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void createLexeme(Long wordId, String datasetCode, Long meaningId) throws Exception {
+	public void createLexeme(Long wordId, String datasetCode, Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexeme", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexeme", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long lexemeId = cudDbService.createLexeme(wordId, datasetCode, meaningId, lexemeLevel1);
 		if (lexemeId == null) {
 			return;
@@ -885,7 +927,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+	public void createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.USAGE);
@@ -894,11 +936,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform);
+		createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createUsageTranslation(Long usageId, String valuePrese, String lang) throws Exception {
+	public void createUsageTranslation(Long usageId, String valuePrese, String lang, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setParentId(usageId);
@@ -906,11 +948,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setLang(lang);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createUsageChildFreeform(ActivityEntity.USAGE_TRANSLATION, freeform);
+		createUsageChildFreeform(ActivityEntity.USAGE_TRANSLATION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createUsageDefinition(Long usageId, String valuePrese, String lang) throws Exception {
+	public void createUsageDefinition(Long usageId, String valuePrese, String lang, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setParentId(usageId);
@@ -918,75 +960,81 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setLang(lang);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createUsageChildFreeform(ActivityEntity.USAGE_DEFINITION, freeform);
+		createUsageChildFreeform(ActivityEntity.USAGE_DEFINITION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createLexemePos(Long lexemeId, String posCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, ActivityOwner.LEXEME);
+	public void createLexemePos(Long lexemeId, String posCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemePosId = cudDbService.createLexemePos(lexemeId, posCode);
 		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 	}
 
 	@Transactional
-	public void createLexemeTag(Long lexemeId, String tagName) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME);
+	public void createLexemeTag(Long lexemeId, String tagName, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeTag", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeTagId = cudDbService.createLexemeTag(lexemeId, tagName);
 		activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 	}
 
 	@Transactional
-	public void createMeaningTag(Long meaningId, String tagName) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING);
+	public void createMeaningTag(Long meaningId, String tagName, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningTag", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long meaningTagId = cudDbService.createMeaningTag(meaningId, tagName);
 		activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 	}
 
 	@Transactional
-	public void createLexemeDeriv(Long lexemeId, String derivCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeDeriv", lexemeId, ActivityOwner.LEXEME);
+	public void createLexemeDeriv(Long lexemeId, String derivCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeDeriv", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeDerivId = cudDbService.createLexemeDeriv(lexemeId, derivCode);
 		activityLogService.createActivityLog(activityLog, lexemeDerivId, ActivityEntity.DERIV);
 	}
 
 	@Transactional
-	public void createLexemeRegister(Long lexemeId, String registerCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegister", lexemeId, ActivityOwner.LEXEME);
+	public void createLexemeRegister(Long lexemeId, String registerCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegister", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeRegisterId = cudDbService.createLexemeRegister(lexemeId, registerCode);
 		activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
 	}
 
 	@Transactional
-	public void createLexemeRegion(Long lexemeId, String regionCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegion", lexemeId, ActivityOwner.LEXEME);
+	public void createLexemeRegion(Long lexemeId, String regionCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeRegion", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeRegionId = cudDbService.createLexemeRegion(lexemeId, regionCode);
 		activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
 	}
 
 	@Transactional
-	public void createLexemeGovernment(Long lexemeId, String government, Complexity complexity) throws Exception {
+	public void createLexemeGovernment(Long lexemeId, String government, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.GOVERNMENT);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, government);
 
-		createLexemeFreeform(ActivityEntity.GOVERNMENT, lexemeId, freeform);
+		createLexemeFreeform(ActivityEntity.GOVERNMENT, lexemeId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createLexemeGrammar(Long lexemeId, String valuePrese, Complexity complexity) throws Exception {
+	public void createLexemeGrammar(Long lexemeId, String valuePrese, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.GRAMMAR);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createLexemeFreeform(ActivityEntity.GRAMMAR, lexemeId, freeform);
+		createLexemeFreeform(ActivityEntity.GRAMMAR, lexemeId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createLexemeNote(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+	public void createLexemeNote(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.NOTE);
@@ -995,13 +1043,14 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createLexemeFreeform(ActivityEntity.LEXEME_NOTE, lexemeId, freeform);
+		createLexemeFreeform(ActivityEntity.LEXEME_NOTE, lexemeId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String oppositeRelationType) throws Exception {
+	public void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String oppositeRelationType, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		ActivityLogData activityLog;
-		activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId1, ActivityOwner.LEXEME);
+		activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId1, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long relationId = cudDbService.createLexemeRelation(lexemeId1, lexemeId2, relationType);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.LEXEME_RELATION);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
@@ -1009,23 +1058,25 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 			if (oppositeRelationExists) {
 				return;
 			}
-			activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId2, ActivityOwner.LEXEME);
+			activityLog = activityLogService.prepareActivityLog("createLexemeRelation", lexemeId2, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			Long oppositeRelationId = cudDbService.createLexemeRelation(lexemeId2, lexemeId1, oppositeRelationType);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.LEXEME_RELATION);
 		}
 	}
 
 	@Transactional
-	public void createMeaningDomain(Long meaningId, Classifier domain) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, ActivityOwner.MEANING);
+	public void createMeaningDomain(Long meaningId, Classifier domain, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningDomain", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long meaningDomainId = cudDbService.createMeaningDomain(meaningId, domain);
 		activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 	}
 
 	@Transactional
-	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, String oppositeRelationType) throws Exception {
+	public void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType, String oppositeRelationType, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		ActivityLogData activityLog;
-		activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId1, ActivityOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId1, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long relationId = cudDbService.createMeaningRelation(meaningId1, meaningId2, relationType);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
 		if (StringUtils.isNotEmpty(oppositeRelationType)) {
@@ -1033,14 +1084,14 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 			if (oppositeRelationExists) {
 				return;
 			}
-			activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId2, ActivityOwner.MEANING);
+			activityLog = activityLogService.prepareActivityLog("createMeaningRelation", meaningId2, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			Long oppositeRelationId = cudDbService.createMeaningRelation(meaningId2, meaningId1, oppositeRelationType);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
 		}
 	}
 
 	@Transactional
-	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String lang) throws Exception {
+	public void createMeaningLearnerComment(Long meaningId, String valuePrese, String lang, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.LEARNER_COMMENT);
@@ -1048,11 +1099,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setComplexity(Complexity.SIMPLE);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createMeaningFreeform(ActivityEntity.LEARNER_COMMENT, meaningId, freeform);
+		createMeaningFreeform(ActivityEntity.LEARNER_COMMENT, meaningId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createMeaningNote(Long meaningId, String valuePrese, String lang, Complexity complexity, boolean isPublic) throws Exception {
+	public void createMeaningNote(Long meaningId, String valuePrese, String lang, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.NOTE);
@@ -1061,12 +1112,13 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createMeaningFreeform(ActivityEntity.MEANING_NOTE, meaningId, freeform);
+		createMeaningFreeform(ActivityEntity.MEANING_NOTE, meaningId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createMeaningSemanticType(Long meaningId, String semanticTypeCode) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningSemanticType", meaningId, ActivityOwner.MEANING);
+	public void createMeaningSemanticType(Long meaningId, String semanticTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningSemanticType", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long meaningSemanticTypeId = cudDbService.createMeaningSemanticType(meaningId, semanticTypeCode);
 		activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
 
@@ -1074,16 +1126,18 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 
 	@Transactional
 	public void createDefinition(
-			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic) throws Exception {
+			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic,
+			boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity, isPublic);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 	}
 
 	@Transactional
-	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic) throws Exception {
+	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.NOTE);
@@ -1091,42 +1145,42 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createDefinitionFreeform(ActivityEntity.DEFINITION_NOTE, definitionId, freeform);
+		createDefinitionFreeform(ActivityEntity.DEFINITION_NOTE, definitionId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createMeaningImage(Long meaningId, String valuePrese, Complexity complexity) throws Exception {
+	public void createMeaningImage(Long meaningId, String valuePrese, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.IMAGE_FILE);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-		createMeaningFreeform(ActivityEntity.IMAGE_FILE, meaningId, freeform);
+		createMeaningFreeform(ActivityEntity.IMAGE_FILE, meaningId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createImageTitle(Long imageFreeformId, String valuePrese) throws Exception {
+	public void createImageTitle(Long imageFreeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setParentId(imageFreeformId);
 		freeform.setType(FreeformType.IMAGE_TITLE);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createMeaningFreeformChildFreeform(ActivityEntity.IMAGE_FILE, freeform);
+		createMeaningFreeformChildFreeform(ActivityEntity.IMAGE_FILE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createMeaningMedia(Long meaningId, String valuePrese, Complexity complexity) throws Exception {
+	public void createMeaningMedia(Long meaningId, String valuePrese, Complexity complexity, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.MEDIA_FILE);
 		freeform.setComplexity(complexity);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-		createMeaningFreeform(ActivityEntity.MEDIA_FILE, meaningId, freeform);
+		createMeaningFreeform(ActivityEntity.MEDIA_FILE, meaningId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createOdWordRecommendation(Long wordId, String valuePrese) throws Exception {
+	public void createOdWordRecommendation(Long wordId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.OD_WORD_RECOMMENDATION);
@@ -1134,11 +1188,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(true);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform);
+		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createOdLexemeRecommendation(Long lexemeId, String valuePrese) throws Exception {
+	public void createOdLexemeRecommendation(Long lexemeId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.OD_LEXEME_RECOMMENDATION);
@@ -1146,34 +1200,34 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		freeform.setPublic(true);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createLexemeFreeform(ActivityEntity.OD_LEXEME_RECOMMENDATION, lexemeId, freeform);
+		createLexemeFreeform(ActivityEntity.OD_LEXEME_RECOMMENDATION, lexemeId, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createOdUsageDefinition(Long usageId, String valuePrese) throws Exception {
+	public void createOdUsageDefinition(Long usageId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setParentId(usageId);
 		freeform.setType(FreeformType.OD_USAGE_DEFINITION);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createUsageChildFreeform(ActivityEntity.OD_USAGE_DEFINITION, freeform);
+		createUsageChildFreeform(ActivityEntity.OD_USAGE_DEFINITION, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
-	public void createOdUsageAlternative(Long usageId, String valuePrese) throws Exception {
+	public void createOdUsageAlternative(Long usageId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setParentId(usageId);
 		freeform.setType(FreeformType.OD_USAGE_ALTERNATIVE);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createUsageChildFreeform(ActivityEntity.OD_USAGE_ALTERNATIVE, freeform);
+		createUsageChildFreeform(ActivityEntity.OD_USAGE_ALTERNATIVE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
 	public void createWordAndSynRelation(
-			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr) throws Exception {
+			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
@@ -1187,8 +1241,8 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();
 		tagDbService.createLexemeAutomaticTags(createdLexemeId);
 
-		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD);
+		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		moveCreatedWordRelationToFirst(existingWordId, createdRelationId, RAW_RELATION_TYPE);
 		BigDecimal weight = new BigDecimal(weightStr);
@@ -1197,13 +1251,13 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void createSynWordRelation(Long targetWordId, Long sourceWordId, String weightStr, String datasetCode) throws Exception {
+	public void createSynWordRelation(Long targetWordId, Long sourceWordId, String weightStr, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		boolean word2DatasetLexemeExists = lookupDbService.wordLexemeExists(sourceWordId, datasetCode);
 		if (!word2DatasetLexemeExists) {
-			createLexeme(sourceWordId, datasetCode, null);
+			createLexeme(sourceWordId, datasetCode, null, isManualEventOnUpdateEnabled);
 		}
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
 		moveCreatedWordRelationToFirst(targetWordId, createdRelationId, RAW_RELATION_TYPE);
 		BigDecimal weight = new BigDecimal(weightStr);
@@ -1211,55 +1265,55 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
 	}
 
-	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, FreeForm freeform) throws Exception {
+	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long wordFreeformId = cudDbService.createWordFreeform(wordId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, wordFreeformId, activityEntity);
 	}
 
-	private void createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform) throws Exception {
+	private void createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeFreeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, lexemeFreeformId, activityEntity);
 	}
 
-	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, FreeForm freeform) throws Exception {
+	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningFreeform", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long meaningFreeformId = cudDbService.createMeaningFreeform(meaningId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, meaningFreeformId, activityEntity);
 	}
 
-	private void createDefinitionFreeform(ActivityEntity activityEntity, Long definitionId, FreeForm freeform) throws Exception {
+	private void createDefinitionFreeform(ActivityEntity activityEntity, Long definitionId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionFreeform", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionFreeform", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long definitionFreeformId = cudDbService.createDefinitionFreeform(definitionId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, definitionFreeformId, activityEntity);
 	}
 
-	private void createMeaningFreeformChildFreeform(ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+	private void createMeaningFreeformChildFreeform(ActivityEntity activityEntity, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long meaningFreeformId = freeform.getParentId();
 		Long meaningId = activityLogService.getOwnerId(meaningFreeformId, activityEntity);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createChildFreeform", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createChildFreeform", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long childFreeformId = cudDbService.createChildFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, childFreeformId, activityEntity);
 	}
 
-	private void createUsageChildFreeform(ActivityEntity activityEntity, FreeForm freeform) throws Exception {
+	private void createUsageChildFreeform(ActivityEntity activityEntity, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		Long usageId = freeform.getParentId();
 		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageChildFreeform", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageChildFreeform", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long usageChildFreeformId = cudDbService.createChildFreeform(freeform, userName);
 		activityLogService.createActivityLog(activityLog, usageChildFreeformId, activityEntity);
 	}
@@ -1267,40 +1321,43 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	// --- DELETE ---
 
 	@Transactional
-	public void deleteWord(Long wordId) throws Exception {
-		activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD);
+	public void deleteWord(Long wordId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		activityLogService.createActivityLog("deleteWord", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		SimpleWord word = lookupDbService.getSimpleWord(wordId);
 		cudDbService.deleteWord(word);
 	}
 
 	@Transactional
-	public void deleteWordType(Long wordId, String typeCode) throws Exception {
+	public void deleteWordType(Long wordId, String typeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(typeCode)) {
 			Long wordWordTypeId = lookupDbService.getWordWordTypeId(wordId, typeCode);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordType", wordId, ActivityOwner.WORD);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordType", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 			cudDbService.deleteWordWordType(wordWordTypeId);
 			activityLogService.createActivityLog(activityLog, wordWordTypeId, ActivityEntity.WORD_TYPE);
 		}
 	}
 
 	@Transactional
-	public void deleteWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole) throws Exception {
+	public void deleteWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String datasetCode = userRole.getDatasetCode();
 		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
 		if (isWordCrudGrant) {
-			deleteWordType(wordId, typeCode);
+			deleteWordType(wordId, typeCode, isManualEventOnUpdateEnabled);
 		} else {
-			Long duplicateWordId = duplicateWordData(wordId);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode);
-			deleteWordType(duplicateWordId, typeCode);
+			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
+			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
+			deleteWordType(duplicateWordId, typeCode, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void deleteWordRelation(Long relationId) throws Exception {
+	public void deleteWordRelation(Long relationId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordRelation", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordRelation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long groupId = lookupDbService.getWordRelationGroupId(relationId);
 		if (groupId == null) {
 			cudDbService.deleteWordRelation(relationId);
@@ -1315,50 +1372,54 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void deleteWordNote(Long wordNoteId) throws Exception {
+	public void deleteWordNote(Long wordNoteId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long wordId = activityLogService.getOwnerId(wordNoteId, ActivityEntity.WORD_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordNote", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordNote", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(wordNoteId);
 		activityLogService.createActivityLog(activityLog, wordNoteId, ActivityEntity.WORD_NOTE);
 	}
 
 	@Transactional
-	public void deleteDefinition(Long definitionId) throws Exception {
+	public void deleteDefinition(Long definitionId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinition", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinition", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteDefinition(definitionId);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
 	}
 
 	@Transactional
-	public void deleteDefinitionNote(Long definitionNoteId) throws Exception {
+	public void deleteDefinitionNote(Long definitionNoteId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(definitionNoteId, ActivityEntity.DEFINITION_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionNote", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionNote", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(definitionNoteId);
 		activityLogService.createActivityLog(activityLog, definitionNoteId, ActivityEntity.DEFINITION_NOTE);
 	}
 
 	@Transactional
-	public void deleteLexeme(Long lexemeId) throws Exception {
+	public void deleteLexeme(Long lexemeId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
 		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
-		updateLexemeLevels(lexemeId, "delete");
-		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME);
+		updateLexemeLevels(lexemeId, "delete", isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("deleteLexeme", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteLexeme(lexemeId);
 		if (isOnlyLexemeForMeaning) {
-			deleteMeaning(meaningId);
+			deleteMeaning(meaningId, isManualEventOnUpdateEnabled);
 		}
 		if (isOnlyLexemeForWord) {
-			deleteWord(wordId);
+			deleteWord(wordId, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void deleteLexemeAndMeaningLexemes(Long lexemeId, String meaningLexemesLang, String datasetCode) throws Exception {
+	public void deleteLexemeAndMeaningLexemes(Long lexemeId, String meaningLexemesLang, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = lookupDbService.getLexemeMeaningId(lexemeId);
 		List<Long> lexemeIdsToDelete = lookupDbService.getMeaningLexemeIds(meaningId, meaningLexemesLang, datasetCode);
 		if (!lexemeIdsToDelete.contains(lexemeId)) {
@@ -1366,128 +1427,142 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		}
 
 		for (Long lexemeIdToDelete : lexemeIdsToDelete) {
-			deleteLexeme(lexemeIdToDelete);
+			deleteLexeme(lexemeIdToDelete, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void deleteUsage(Long usageId) throws Exception {
+	public void deleteUsage(Long usageId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(usageId, ActivityEntity.USAGE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsage", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsage", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(usageId);
 		activityLogService.createActivityLog(activityLog, usageId, ActivityEntity.USAGE);
 	}
 
 	@Transactional
-	public void deleteUsageTranslation(Long usageTranslationId) throws Exception {
+	public void deleteUsageTranslation(Long usageTranslationId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageTranslation", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageTranslation", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(usageTranslationId);
 		activityLogService.createActivityLog(activityLog, usageTranslationId, ActivityEntity.USAGE_TRANSLATION);
 	}
 
 	@Transactional
-	public void deleteUsageDefinition(Long usageDefinitionId) throws Exception {
+	public void deleteUsageDefinition(Long usageDefinitionId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteUsageDefinition", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(usageDefinitionId);
 		activityLogService.createActivityLog(activityLog, usageDefinitionId, ActivityEntity.USAGE_DEFINITION);
 	}
 
 	@Transactional
-	public void deleteLexemeGovernment(Long governmentId) throws Exception {
+	public void deleteLexemeGovernment(Long governmentId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(governmentId, ActivityEntity.GOVERNMENT);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGovernment", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGovernment", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(governmentId);
 		activityLogService.createActivityLog(activityLog, governmentId, ActivityEntity.GOVERNMENT);
 	}
 
 	@Transactional
-	public void deleteLexemeGrammar(Long grammarId) throws Exception {
+	public void deleteLexemeGrammar(Long grammarId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(grammarId, ActivityEntity.GRAMMAR);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGrammar", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeGrammar", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(grammarId);
 		activityLogService.createActivityLog(activityLog, grammarId, ActivityEntity.GRAMMAR);
 	}
 
 	@Transactional
-	public void deleteLexemeNote(Long lexemeNoteId) throws Exception {
+	public void deleteLexemeNote(Long lexemeNoteId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(lexemeNoteId, ActivityEntity.LEXEME_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeNote", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeNote", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(lexemeNoteId);
 		activityLogService.createActivityLog(activityLog, lexemeNoteId, ActivityEntity.GRAMMAR);
 	}
 
 	@Transactional
-	public void deleteLexemePos(Long lexemeId, String posCode) throws Exception {
+	public void deleteLexemePos(Long lexemeId, String posCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(posCode)) {
 			Long lexemePosId = lookupDbService.getLexemePosId(lexemeId, posCode);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemePos", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemePos", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.deleteLexemePos(lexemePosId);
 			activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 		}
 	}
 
 	@Transactional
-	public void deleteLexemeTag(Long lexemeId, String tagName) throws Exception {
+	public void deleteLexemeTag(Long lexemeId, String tagName, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(tagName)) {
 			Long lexemeTagId = lookupDbService.getLexemeTagId(lexemeId, tagName);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeTag", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeTag", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.deleteLexemeTag(lexemeTagId);
 			activityLogService.createActivityLog(activityLog, lexemeTagId, ActivityEntity.TAG);
 		}
 	}
 
 	@Transactional
-	public void deleteMeaningTag(Long meaningId, String tagName) throws Exception {
+	public void deleteMeaningTag(Long meaningId, String tagName, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(tagName)) {
 			Long meaningTagId = lookupDbService.getMeaningTagId(meaningId, tagName);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningTag", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningTag", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.deleteMeaningTag(meaningTagId);
 			activityLogService.createActivityLog(activityLog, meaningTagId, ActivityEntity.TAG);
 		}
 	}
 
 	@Transactional
-	public void deleteLexemeDeriv(Long lexemeId, String derivCode) throws Exception {
+	public void deleteLexemeDeriv(Long lexemeId, String derivCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(derivCode)) {
 			Long lexemeDerivId = lookupDbService.getLexemeDerivId(lexemeId, derivCode);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeDeriv", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeDeriv", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.deleteLexemeDeriv(lexemeDerivId);
 			activityLogService.createActivityLog(activityLog, lexemeDerivId, ActivityEntity.DERIV);
 		}
 	}
 
 	@Transactional
-	public void deleteLexemeRegister(Long lexemeId, String registerCode) throws Exception {
+	public void deleteLexemeRegister(Long lexemeId, String registerCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(registerCode)) {
 			Long lexemeRegisterId = lookupDbService.getLexemeRegisterId(lexemeId, registerCode);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegister", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegister", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.deleteLexemeRegister(lexemeRegisterId);
 			activityLogService.createActivityLog(activityLog, lexemeRegisterId, ActivityEntity.REGISTER);
 		}
 	}
 
 	@Transactional
-	public void deleteLexemeRegion(Long lexemeId, String regionCode) throws Exception {
+	public void deleteLexemeRegion(Long lexemeId, String regionCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(regionCode)) {
 			Long lexemeRegionId = lookupDbService.getLexemeRegionId(lexemeId, regionCode);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegion", lexemeId, ActivityOwner.LEXEME);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRegion", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 			cudDbService.deleteLexemeRegion(lexemeRegionId);
 			activityLogService.createActivityLog(activityLog, lexemeRegionId, ActivityEntity.REGION);
 		}
 	}
 
 	@Transactional
-	public void deleteLexemeRelation(Long relationId) throws Exception {
+	public void deleteLexemeRelation(Long relationId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(relationId, ActivityEntity.LEXEME_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRelation", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeRelation", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteLexemeRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.LEXEME_RELATION);
 	}
 
 	@Transactional
-	public void deleteMeaningAndLexemes(Long meaningId, String datasetCode) throws Exception {
+	public void deleteMeaningAndLexemes(Long meaningId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		boolean isSuperiorPermission = StringUtils.equals(DATASET_XXX, datasetCode);
 		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
 		if (isSuperiorPermission) {
@@ -1497,137 +1572,152 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		}
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
-			deleteLexeme(lexemeId);
+			deleteLexeme(lexemeId, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public void deleteMeaning(Long meaningId) throws Exception {
-		activityLogService.createActivityLog("deleteMeaning", meaningId, ActivityOwner.MEANING);
+	public void deleteMeaning(Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		activityLogService.createActivityLog("deleteMeaning", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaning(meaningId);
 	}
 
 	@Transactional
-	public void deleteMeaningDomain(Long meaningId, Classifier domain) throws Exception {
+	public void deleteMeaningDomain(Long meaningId, Classifier domain, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (domain != null) {
 			Long meaningDomainId = lookupDbService.getMeaningDomainId(meaningId, domain);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.deleteMeaningDomain(meaningDomainId);
 			activityLogService.createActivityLog(activityLog, meaningDomainId, ActivityEntity.DOMAIN);
 		}
 	}
 
 	@Transactional
-	public void deleteMeaningSemanticType(Long meaningId, String semanticTypeCode) throws Exception {
+	public void deleteMeaningSemanticType(Long meaningId, String semanticTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		if (StringUtils.isNotBlank(semanticTypeCode)) {
 			Long meaningSemanticTypeId = lookupDbService.getMeaningSemanticTypeId(meaningId, semanticTypeCode);
-			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, ActivityOwner.MEANING);
+			ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningDomain", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.deleteMeaningSemanticType(meaningSemanticTypeId);
 			activityLogService.createActivityLog(activityLog, meaningSemanticTypeId, ActivityEntity.SEMANTIC_TYPE);
 		}
 	}
 
 	@Transactional
-	public void deleteMeaningRelation(Long relationId) throws Exception {
+	public void deleteMeaningRelation(Long relationId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
 	}
 
 	@Transactional
-	public void deleteSynMeaningRelation(Long relationId) throws Exception {
+	public void deleteSynMeaningRelation(Long relationId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		ActivityLogData activityLog;
 		Long oppositeRelationId = lookupDbService.getMeaningRelationSameTypeOppositeRelationId(relationId);
 		if (oppositeRelationId != null) {
 			Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
-			activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, ActivityOwner.MEANING);
+			activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.deleteMeaningRelation(oppositeRelationId);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
 		}
 
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
-		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, ActivityOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
 	}
 
 	@Transactional
-	public void deleteMeaningLearnerComment(Long learnerCommentId) throws Exception {
+	public void deleteMeaningLearnerComment(Long learnerCommentId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(learnerCommentId, ActivityEntity.LEARNER_COMMENT);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningLearnerComment", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningLearnerComment", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(learnerCommentId);
 		activityLogService.createActivityLog(activityLog, learnerCommentId, ActivityEntity.LEARNER_COMMENT);
 	}
 
 	@Transactional
-	public void deleteMeaningNote(Long meaningNoteId) throws Exception {
+	public void deleteMeaningNote(Long meaningNoteId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(meaningNoteId, ActivityEntity.MEANING_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNote", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNote", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(meaningNoteId);
 		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
 	}
 
 	@Transactional
-	public void deleteImageTitle(Long imageId) throws Exception {
+	public void deleteImageTitle(Long imageId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(imageId, ActivityEntity.IMAGE_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteImageTitle", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteImageTitle", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long imageTitleId = cudDbService.deleteImageTitle(imageId);
 		activityLogService.createActivityLog(activityLog, imageTitleId, ActivityEntity.IMAGE_TITLE);
 	}
 
 	@Transactional
-	public void deleteMeaningImage(Long imageId) throws Exception {
+	public void deleteMeaningImage(Long imageId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(imageId, ActivityEntity.IMAGE_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningImage", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningImage", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(imageId);
 		activityLogService.createActivityLog(activityLog, imageId, ActivityEntity.IMAGE_FILE);
 	}
 
 	@Transactional
-	public void deleteMeaningMedia(Long mediaId) throws Exception {
+	public void deleteMeaningMedia(Long mediaId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(mediaId, ActivityEntity.MEDIA_FILE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningMedia", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(mediaId);
 		activityLogService.createActivityLog(activityLog, mediaId, ActivityEntity.MEDIA_FILE);
 	}
 
 	@Transactional
-	public void deleteOdWordRecommendation(Long freeformId) throws Exception {
+	public void deleteOdWordRecommendation(Long freeformId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long wordId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdWordRecommendation", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdWordRecommendation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
 	}
 
 	@Transactional
-	public void deleteOdLexemeRecommendation(Long freeformId) throws Exception {
+	public void deleteOdLexemeRecommendation(Long freeformId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdLexemeRecommendation", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdLexemeRecommendation", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
 	}
 
 	@Transactional
-	public void deleteOdUsageDefinition(Long freeformId) throws Exception {
+	public void deleteOdUsageDefinition(Long freeformId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageDefinition", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageDefinition", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_DEFINITION);
 	}
 
 	@Transactional
-	public void deleteOdUsageAlternative(Long freeformId) throws Exception {
+	public void deleteOdUsageAlternative(Long freeformId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageAlternative", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageAlternative", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
 	}
 
 	@Transactional
-	public void deleteParadigm(Long paradigmId) throws Exception {
+	public void deleteParadigm(Long paradigmId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long wordId = activityLogService.getOwnerId(paradigmId, ActivityEntity.PARADIGM);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteParadigm", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteParadigm", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.deleteParadigm(paradigmId);
 		activityLogService.createActivityLog(activityLog, paradigmId, ActivityEntity.PARADIGM);
 	}

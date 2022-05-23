@@ -139,42 +139,42 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public void changeRelationStatus(Long relationId, String relationStatus) throws Exception {
+	public void changeRelationStatus(Long relationId, String relationStatus, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (StringUtils.equals(RelationStatus.DELETED.name(), relationStatus)) {
 			moveChangedRelationToLast(relationId);
 		}
 		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		synSearchDbService.changeRelationStatus(relationId, relationStatus);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 	}
 
 	@Transactional
-	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId) throws Exception {
+	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(wordRelationId);
 		Float meaningRelationWeight = getCalculatedMeaningRelationWeight(typeWordRelParams);
-		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight);
+		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, isManualEventOnUpdateEnabled);
 
 		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, ActivityOwner.WORD);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		synSearchDbService.changeRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
 		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
 	}
 
 	@Transactional
-	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, String weightStr) throws Exception {
+	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, String weightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Float meaningRelationWeight = NumberUtils.toFloat(weightStr);
-		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight);
+		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, isManualEventOnUpdateEnabled);
 	}
 
-	private void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Float meaningRelationWeight) throws Exception {
+	private void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Float meaningRelationWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;
 		Long meaningRelationId;
-		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, ActivityOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		meaningRelationId = cudDbService.createMeaningRelation(targetMeaningId, sourceMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 
@@ -183,7 +183,7 @@ public class SynSearchService extends AbstractWordSearchService {
 			return;
 		}
 
-		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, ActivityOwner.MEANING);
+		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		meaningRelationId = cudDbService.createMeaningRelation(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 	}

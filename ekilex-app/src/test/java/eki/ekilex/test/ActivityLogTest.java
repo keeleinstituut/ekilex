@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.GlobalConstant;
 import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.app.EkilexApplication;
 import eki.ekilex.data.ActivityLogData;
@@ -28,7 +29,7 @@ import eki.ekilex.service.db.CudDbService;
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
 @ContextConfiguration(classes = EkilexApplication.class)
 @Transactional
-public class ActivityLogTest extends AbstractTest {
+public class ActivityLogTest extends AbstractTest implements GlobalConstant {
 
 	@Autowired
 	private TestEnvInitialiser testEnvInitialiser;
@@ -51,10 +52,10 @@ public class ActivityLogTest extends AbstractTest {
 
 		final Long ownerId = 123456L;
 
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.LEXEME);
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.WORD);
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.MEANING);
-		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.SOURCE);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.WORD, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		activityLogService.createActivityLog("dummy", ownerId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
 	}
 
 	@Test
@@ -77,7 +78,7 @@ public class ActivityLogTest extends AbstractTest {
 		String originalLang = "est";
 		String modifiedLang = "eng";
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		cudDbService.updateWordLang(wordId, modifiedLang);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
@@ -95,7 +96,7 @@ public class ActivityLogTest extends AbstractTest {
 		entityName = ActivityEntity.WORD_TYPE;
 		modifiedWordTypeCode = "vv";
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		entityId = cudDbService.createWordType(wordId, modifiedWordTypeCode);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
@@ -111,7 +112,7 @@ public class ActivityLogTest extends AbstractTest {
 		entityName = ActivityEntity.WORD_TYPE;
 		modifiedWordTypeCode = "rs";
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		entityId = cudDbService.createWordType(wordId, modifiedWordTypeCode);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 
@@ -124,7 +125,7 @@ public class ActivityLogTest extends AbstractTest {
 		entityId = Long.valueOf(10001L);
 		entityName = ActivityEntity.WORD_TYPE;
 
-		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName);
+		activityLog = activityLogService.prepareActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		cudDbService.deleteWordWordType(entityId);
 		activityLogService.createActivityLog(activityLog, entityId, entityName);
 

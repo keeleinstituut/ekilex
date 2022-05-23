@@ -24,6 +24,10 @@ public interface GlobalConstant {
 
 	boolean PUBLICITY_PRIVATE = false;
 
+	boolean MANUAL_EVENT_ON_UPDATE_DISABLED = false;
+
+	boolean MANUAL_EVENT_ON_UPDATE_ENABLED = true;
+
 	String VALUE_STATE_MOST_PREFERRED = "eelistatud";
 
 	String VALUE_STATE_LEAST_PREFERRED = "väldi";

@@ -404,7 +404,7 @@ public class DatasetImporterRunner extends AbstractLoaderCommons {
 
 	private void createActivityLogs(String functName, List<Long> ownerIds, ActivityOwner ownerName) throws Exception {
 		for (Long ownerId : ownerIds) {
-			activityLogService.createActivityLog(functName, ownerId, ownerName);
+			activityLogService.createActivityLog(functName, ownerId, ownerName, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		}
 	}
 

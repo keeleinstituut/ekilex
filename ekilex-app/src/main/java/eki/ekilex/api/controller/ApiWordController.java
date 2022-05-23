@@ -37,7 +37,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestBody Word word) {
 
 		try {
-			Long wordId = wordService.createWord(word);
+			Long wordId = wordService.createWord(word, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			if (wordId == null) {
 				return getOpFailResponse("Invalid or unsupported word composition");
 			}
@@ -58,7 +58,7 @@ public class ApiWordController extends AbstractApiController {
 		try {
 			Long wordId = wordType.getWordId();
 			String typeCode = wordType.getClassifierCode();
-			cudService.createWordType(wordId, typeCode);
+			cudService.createWordType(wordId, typeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -78,7 +78,7 @@ public class ApiWordController extends AbstractApiController {
 			Long targetWordId = wordRelation.getTargetWordId();
 			String relationTypeCode = wordRelation.getRelationTypeCode();
 			String oppositeRelationTypeCode = wordRelation.getOppositeRelationTypeCode();
-			cudService.createWordRelation(wordId, targetWordId, relationTypeCode, oppositeRelationTypeCode);
+			cudService.createWordRelation(wordId, targetWordId, relationTypeCode, oppositeRelationTypeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -97,7 +97,7 @@ public class ApiWordController extends AbstractApiController {
 			Long wordId = wordNote.getWordId();
 			String valuePrese = wordNote.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.createWordNote(wordId, valuePrese);
+			cudService.createWordNote(wordId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -116,7 +116,7 @@ public class ApiWordController extends AbstractApiController {
 			Long wordId = odWordRecommendation.getWordId();
 			String valuePrese = odWordRecommendation.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.createOdWordRecommendation(wordId, valuePrese);
+			cudService.createOdWordRecommendation(wordId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -132,7 +132,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestBody Word word) {
 
 		try {
-			wordService.updateWord(word);
+			wordService.updateWord(word, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -151,7 +151,7 @@ public class ApiWordController extends AbstractApiController {
 			Long wordNoteId = wordNote.getFreeformId();
 			String valuePrese = wordNote.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.updateWordNote(wordNoteId, valuePrese);
+			cudService.updateWordNote(wordNoteId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -170,7 +170,7 @@ public class ApiWordController extends AbstractApiController {
 			Long freeformId = odWordRecommendation.getFreeformId();
 			String valuePrese = odWordRecommendation.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.updateOdWordRecommendation(freeformId, valuePrese);
+			cudService.updateOdWordRecommendation(freeformId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -186,7 +186,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestParam("lexemeId") Long lexemeId) {
 
 		try {
-			cudService.deleteLexeme(lexemeId);
+			cudService.deleteLexeme(lexemeId, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -204,7 +204,7 @@ public class ApiWordController extends AbstractApiController {
 	   try {
 		   Long wordId = wordType.getWordId();
 		   String typeCode = wordType.getClassifierCode();
-		   cudService.deleteWordType(wordId, typeCode);
+		   cudService.deleteWordType(wordId, typeCode, MANUAL_EVENT_ON_UPDATE_ENABLED);
 		   return getOpSuccessResponse();
 	   } catch (Exception e) {
 		   return getOpFailResponse(e);
@@ -220,7 +220,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestParam("relationId") Long relationId) {
 
 		try {
-			cudService.deleteWordRelation(relationId);
+			cudService.deleteWordRelation(relationId, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -236,7 +236,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestParam("wordNoteId") Long wordNoteId) {
 
 		try {
-			cudService.deleteWordNote(wordNoteId);
+			cudService.deleteWordNote(wordNoteId, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -252,7 +252,7 @@ public class ApiWordController extends AbstractApiController {
 			@RequestParam("odWordRecommendationId") Long odWordRecommendationId) {
 
 		try {
-			cudService.deleteOdWordRecommendation(odWordRecommendationId);
+			cudService.deleteOdWordRecommendation(odWordRecommendationId, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

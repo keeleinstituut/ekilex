@@ -56,9 +56,10 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String language = wordDetails.getLanguage();
+			boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 			sessionBean.setRecentLanguage(language);
 			searchUri = searchHelper.composeSearchUri(limitedDatasets, wordValue);
-			cudService.createWord(wordDetails);
+			cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
 		}
 		return "redirect:" + LIM_TERM_SEARCH_URI + searchUri;
 	}
@@ -88,9 +89,13 @@ public class LimitedTermEditController extends AbstractMutableDataPageController
 	}
 
 	@PostMapping(LIM_TERM_MEANING_JOIN_URI)
-	public String joinMeanings(@RequestParam("targetMeaningId") Long targetMeaningId, @RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds) throws Exception {
+	public String joinMeanings(
+			@RequestParam("targetMeaningId") Long targetMeaningId,
+			@RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds, isManualEventOnUpdateEnabled);
 
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, limitedDatasets);
 		String searchUri = searchHelper.composeSearchUriAndAppendId(limitedDatasets, wordValue, targetMeaningId);

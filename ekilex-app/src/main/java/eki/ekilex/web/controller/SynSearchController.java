@@ -209,19 +209,25 @@ public class SynSearchController extends AbstractPrivateSearchController {
 	@PostMapping(SYN_CHANGE_RELATION_STATUS)
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
-	public String changeRelationStatus(@RequestParam Long id, @RequestParam String status) throws Exception {
+	public String changeRelationStatus(@RequestParam Long id, @RequestParam String status, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		logger.debug("Changing syn relation status id {}, new status {}", id, status);
-		synSearchService.changeRelationStatus(id, status);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		synSearchService.changeRelationStatus(id, status, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping(SYN_CREATE_MEANING_RELATION + "/{targetMeaningId}/{sourceMeaningId}/{wordRelationId}")
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
-	public String createSynMeaningRelation(@PathVariable Long targetMeaningId, @PathVariable Long sourceMeaningId, @PathVariable Long wordRelationId) throws Exception {
+	public String createSynMeaningRelation(
+			@PathVariable Long targetMeaningId,
+			@PathVariable Long sourceMeaningId,
+			@PathVariable Long wordRelationId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		synSearchService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		synSearchService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 

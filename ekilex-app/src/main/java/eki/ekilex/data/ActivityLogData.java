@@ -8,6 +8,8 @@ public class ActivityLogData extends ActivityLog {
 
 	private WordLexemeMeaningIds currWlmIds;
 
+	private boolean isManualEventOnUpdateEnabled;
+
 	public WordLexemeMeaningIds getPrevWlmIds() {
 		return prevWlmIds;
 	}
@@ -24,4 +26,11 @@ public class ActivityLogData extends ActivityLog {
 		this.currWlmIds = currWlmIds;
 	}
 
+	public boolean isManualEventOnUpdateEnabled() {
+		return isManualEventOnUpdateEnabled;
+	}
+
+	public void setManualEventOnUpdateEnabled(boolean manualEventOnUpdateEnabled) {
+		this.isManualEventOnUpdateEnabled = manualEventOnUpdateEnabled;
+	}
 }

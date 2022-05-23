@@ -158,4 +158,7 @@ $(function() {
 		alignAndFocus(e, $(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=editWordManualEventOnDlg_]", function() {
+		initGenericTextEditDlg($(this));
+	});
 });
