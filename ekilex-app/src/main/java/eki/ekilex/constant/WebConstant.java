@@ -296,6 +296,8 @@ public interface WebConstant {
 
 	String CHANGE_ROLE_URI = "/change_role";
 
+	String MANUAL_EVENT_ON_UPDATE_URI = "/manual_event_on_update";
+
 	String SYN_SEARCH_PAGE = "synsearch";
 
 	String SYN_SEARCH_URI = "/synsearch";

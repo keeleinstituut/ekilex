@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -710,6 +712,13 @@ public class EditController extends AbstractMutableDataPageController {
 			}
 		}
 		return RESPONSE_OK_VER1;
+	}
+
+	@GetMapping(MANUAL_EVENT_ON_UPDATE_URI + "/{isEnabled}")
+	public String setAdmin(@PathVariable("isEnabled") boolean isEnabled, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		sessionBean.setManualEventOnUpdateEnabled(isEnabled);
+		return "search" + PAGE_FRAGMENT_ELEM + "manual_event_on_chk";
 	}
 
 }
