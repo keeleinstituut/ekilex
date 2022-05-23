@@ -28,7 +28,7 @@ public enum SearchEntity {
 	MEANING(new SearchKey[] {SearchKey.DOMAIN, SearchKey.ID, SearchKey.MEANING_RELATION, SearchKey.SEMANTIC_TYPE, SearchKey.MEANING_NOTE}),
 	CONCEPT(new SearchKey[] {
 			SearchKey.DOMAIN, SearchKey.ID, SearchKey.ATTRIBUTE_NAME, SearchKey.ATTRIBUTE_VALUE, SearchKey.MEANING_RELATION, SearchKey.MEANING_NOTE,
-			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON}),
+			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON, SearchKey.LAST_MANUAL_UPDATE_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
 	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID}),

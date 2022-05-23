@@ -16,6 +16,7 @@ import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -149,6 +150,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				wherem = searchFilterHelper.applyMeaningRelationExistsFilters(searchCriteria, m1.ID, wherem);
 				wherem = searchFilterHelper.applyMeaningFreeformFilters(SearchKey.MEANING_NOTE, FreeformType.NOTE, searchCriteria, m1.ID, wherem);
 				wherem = applyMeaningActivityLogFilters(searchCriteria, m1.ID, wherem);
+				wherem = applyMeaningLastManualEventOnFilters(searchCriteria, m1.MANUAL_EVENT_ON, wherem);
 
 			} else if (SearchEntity.TAG.equals(searchEntity)) {
 
@@ -643,6 +645,22 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				}
 				wherem = wherem.andExists(DSL.select(mlal.ID).from(mlal, al).where(where1));		
 			}
+		}
+
+		return wherem;
+	}
+
+	private Condition applyMeaningLastManualEventOnFilters(List<SearchCriterion> searchCriteria, Field<Timestamp> meaningManualEventOn, Condition wherem) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKey(searchCriteria, SearchKey.LAST_MANUAL_UPDATE_ON);
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return wherem;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			String searchValueStr = criterion.getSearchValue().toString();
+			wherem = searchFilterHelper.applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), meaningManualEventOn, wherem, false);
 		}
 
 		return wherem;

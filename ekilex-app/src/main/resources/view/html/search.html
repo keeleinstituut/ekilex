@@ -334,6 +334,19 @@
                   </div>
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
+                <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'LAST_MANUAL_UPDATE_ON'}">
+                  <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                    <input type="text" class="form-control"
+                           th:value="${criteria.searchValue}"
+                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                    <div class="input-group-addon input-group-append">
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar fa-lg"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DATASET_USAGE'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
                     <option th:each="dataset : ${userVisibleDatasets}"
@@ -628,6 +641,16 @@
               </div>
             </div>
             <div name="LAST_UPDATE_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
+              <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
+                <input type="text" class="form-control">
+                <div class="input-group-addon input-group-append">
+                  <div class="input-group-text">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div name="LAST_MANUAL_UPDATE_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
               <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                 <input type="text" class="form-control">
                 <div class="input-group-addon input-group-append">
