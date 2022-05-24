@@ -15,6 +15,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.common.constant.DatasetType;
 import eki.wordweb.data.CollocationTuple;
+import eki.wordweb.data.Dataset;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeWord;
 import eki.wordweb.data.LinkedWordSearchElement;
@@ -109,6 +110,22 @@ public class UnifSearchService extends AbstractSearchService {
 			return word;
 		}
 		return null;
+	}
+
+	@Transactional
+	public boolean isTermDatasetsOnly(List<String> datasetCodes) {
+
+		for (String datasetCode : datasetCodes) {
+			if (StringUtils.equals(datasetCode, DATASET_ALL)) {
+				return false;
+			}
+			Dataset dataset = commonDataDbService.getDataset(datasetCode);
+			DatasetType datasetType = dataset.getType();
+			if (!DatasetType.TERM.equals(datasetType)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

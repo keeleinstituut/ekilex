@@ -193,6 +193,7 @@ dblink(
 	gender_code varchar(100),
 	aspect_code varchar(100),
 	vocal_form text,
+  manual_event_on timestamp,
 	last_activity_event_on timestamp,
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
@@ -246,6 +247,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning') as meaning(
 	meaning_id bigint,
+  manual_event_on timestamp,
 	last_approve_or_edit_event_on timestamp,
 	domain_codes type_domain array,
 	image_files type_media_file array,

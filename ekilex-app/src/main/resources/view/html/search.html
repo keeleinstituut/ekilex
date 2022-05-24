@@ -334,7 +334,7 @@
                   </div>
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
-                <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'LAST_MANUAL_UPDATE_ON'}">
+                <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'MANUAL_UPDATE_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
@@ -650,7 +650,7 @@
                 </div>
               </div>
             </div>
-            <div name="LAST_MANUAL_UPDATE_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
+            <div name="MANUAL_UPDATE_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
               <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                 <input type="text" class="form-control">
                 <div class="input-group-addon input-group-append">

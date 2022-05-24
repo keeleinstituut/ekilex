@@ -23,7 +23,7 @@
               </th:block>
               <span th:title="#{label.tooltip.last_modified}" class="ml-auto content-title-date" data-toggle="tooltip" >
                 <i class="fa fa-edit"></i>
-                <span th:text="${#dates.format(lexeme.meaningLastActivityEventOn, 'dd.MM.yyyy')}"></span>
+                <span th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
               </span>
             </div>
             <th:block th:if="${lexeme.reliability != null}">

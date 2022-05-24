@@ -17,6 +17,8 @@ public class Word extends WordTypeData {
 
 	private String alternativeWord;
 
+	private Timestamp manualEventOn;
+
 	private Timestamp lastActivityEventOn;
 
 	private List<TypeMeaningWord> meaningWords;
@@ -69,6 +71,14 @@ public class Word extends WordTypeData {
 
 	public void setAlternativeWord(String alternativeWord) {
 		this.alternativeWord = alternativeWord;
+	}
+
+	public Timestamp getManualEventOn() {
+		return manualEventOn;
+	}
+
+	public void setManualEventOn(Timestamp manualEventOn) {
+		this.manualEventOn = manualEventOn;
 	}
 
 	public Timestamp getLastActivityEventOn() {

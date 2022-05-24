@@ -111,9 +111,9 @@
       <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
         <span class="tag my-1" th:text="${summarisedPos.value}"></span>
       </th:block>
-      <div th:title="#{label.tooltip.last_modified}" class="ml-auto content-title-date d-none d-md-block" data-toggle="tooltip" >
+      <div th:title="#{label.tooltip.last_modified}" class="ml-auto content-title-date d-none d-md-block" data-toggle="tooltip" th:unless="${isTermDatasetsOnly}">
         <i class="fa fa-edit"></i>
-        <span th:text="${#dates.format(wordData.word.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
+        <span th:text="${#dates.format(wordData.word.manualEventOn, 'dd.MM.yyyy')}"></span>
       </div>
     </div>
   </th:block>

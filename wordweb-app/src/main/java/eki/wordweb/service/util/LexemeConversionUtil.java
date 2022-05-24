@@ -426,6 +426,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		List<TypeMediaFile> mediaFiles = tuple.getMediaFiles();
 		List<TypeMediaFile> filteredMediaFiles = filter(mediaFiles, lexComplexity);
 
+		lexemeWord.setMeaningManualEventOn(tuple.getMeaningManualEventOn());
 		lexemeWord.setMeaningLastActivityEventOn(tuple.getMeaningLastActivityEventOn());
 		lexemeWord.setMeaningNotes(notes);
 		lexemeWord.setMeaningNotesByLang(notesByLangOrdered);

@@ -107,7 +107,7 @@ function displayNotOperandChk() {
 	const disabledSearchEntities = ["TAG", "CLUELESS"];
 	const disabledSearchKeys = [
 		"ID", "FREQUENCY", "RANK", "CREATED_OR_UPDATED_BY", "CREATED_OR_UPDATED_ON", "CREATED_BY", "CREATED_ON", "UPDATED_BY", "UPDATED_ON", "LAST_UPDATE_ON",
-		"LAST_MANUAL_UPDATE_ON", "ATTRIBUTE_NAME"];
+		"MANUAL_UPDATE_ON", "ATTRIBUTE_NAME"];
 
 	let notChks = $('#detail_search_filter').find('[name$="not"]');
 	notChks.each(function () {
