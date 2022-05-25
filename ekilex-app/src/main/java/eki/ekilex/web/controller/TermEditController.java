@@ -264,7 +264,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 			wordMeaningRelationsDetails.setUserName(userName);
 			wordMeaningRelationsDetails.setUserPermDatasetCodes(userPermDatasetCodes);
 
-			compositionService.createWordAndMeaningAndRelations(wordMeaningRelationsDetails, isManualEventOnUpdateEnabled);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = compositionService
+					.createWordAndMeaningAndRelations(wordMeaningRelationsDetails, isManualEventOnUpdateEnabled);
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(datasetCode)) {
@@ -272,7 +273,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
 			if (meaningId == null) {
+				Long createdMeaningId = wordLexemeMeaningId.getMeaningId();
 				searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+				searchUri = searchUri + "?id=" + createdMeaningId;
 			} else {
 				searchUri = backUri + "?id=" + meaningId;
 			}

@@ -56,7 +56,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	private TextDecorationService textDecorationService;
 
 	@Transactional
-	public void createWordAndMeaningAndRelations(WordMeaningRelationsDetails wordMeaningRelationsDetails, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public WordLexemeMeaningIdTuple createWordAndMeaningAndRelations(WordMeaningRelationsDetails wordMeaningRelationsDetails, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String wordValue = wordMeaningRelationsDetails.getWordValue();
 		String language = wordMeaningRelationsDetails.getLanguage();
@@ -65,6 +65,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		String dataset = wordMeaningRelationsDetails.getDataset();
 		boolean importMeaningData = wordMeaningRelationsDetails.isImportMeaningData();
 		boolean createRelation = wordMeaningRelationsDetails.isCreateRelation();
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = null;
 
 		if (meaningId == null) {
 			if (importMeaningData) {
@@ -77,13 +78,17 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		}
 
 		if (!importMeaningData) {
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-					.createWordAndLexeme(wordValue, wordValue, null, language, dataset, PUBLICITY_PUBLIC, meaningId);
+			wordLexemeMeaningId = cudDbService.createWordAndLexeme(wordValue, wordValue, null, language, dataset, PUBLICITY_PUBLIC, meaningId);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
 			tagDbService.createLexemeAutomaticTags(lexemeId);
 			activityLogService.createActivityLog("createWordAndMeaningAndRelations", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 			activityLogService.createActivityLog("createWordAndMeaningAndRelations", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
+		}
+
+		if (wordLexemeMeaningId == null) {
+			wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
+			wordLexemeMeaningId.setMeaningId(meaningId);
 		}
 
 		if (createRelation) {
@@ -96,13 +101,15 @@ public class CompositionService extends AbstractService implements GlobalConstan
 			if (StringUtils.isNotEmpty(oppositeRelationType)) {
 				boolean oppositeRelationExists = lookupDbService.meaningRelationExists(relatedMeaningId, meaningId, oppositeRelationType);
 				if (oppositeRelationExists) {
-					return;
+					return wordLexemeMeaningId;
 				}
 				activityLog = activityLogService.prepareActivityLog("createWordAndMeaningAndRelations", relatedMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 				Long oppositeRelationId = cudDbService.createMeaningRelation(relatedMeaningId, meaningId, oppositeRelationType);
 				activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
 			}
 		}
+
+		return wordLexemeMeaningId;
 	}
 
 	@Transactional
