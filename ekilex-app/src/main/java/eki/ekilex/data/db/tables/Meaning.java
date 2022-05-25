@@ -4,19 +4,22 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row1;
+import org.jooq.Row2;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -32,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Meaning extends TableImpl<MeaningRecord> {
 
-    private static final long serialVersionUID = -1009894426;
+    private static final long serialVersionUID = 1691912138;
 
     /**
      * The reference instance of <code>public.meaning</code>
@@ -51,6 +54,11 @@ public class Meaning extends TableImpl<MeaningRecord> {
      * The column <code>public.meaning.id</code>.
      */
     public final TableField<MeaningRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
+     * The column <code>public.meaning.manual_event_on</code>.
+     */
+    public final TableField<MeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
     /**
      * Create a <code>public.meaning</code> table reference
@@ -88,6 +96,11 @@ public class Meaning extends TableImpl<MeaningRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.MEANING_MANUAL_EVENT_ON_IDX);
     }
 
     @Override
@@ -132,11 +145,11 @@ public class Meaning extends TableImpl<MeaningRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row1 type methods
+    // Row2 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row1<Long> fieldsRow() {
-        return (Row1) super.fieldsRow();
+    public Row2<Long, Timestamp> fieldsRow() {
+        return (Row2) super.fieldsRow();
     }
 }

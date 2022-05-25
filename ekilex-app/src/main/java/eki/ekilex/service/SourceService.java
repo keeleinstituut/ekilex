@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.SourceType;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.data.ActivityLogData;
@@ -28,7 +29,7 @@ import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
-public class SourceService extends AbstractSourceService {
+public class SourceService extends AbstractSourceService implements GlobalConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
 
@@ -141,7 +142,7 @@ public class SourceService extends AbstractSourceService {
 	@Transactional
 	public void createSourceProperty(Long sourceId, FreeformType freeformType, String valueText) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSourceProperty", sourceId, ActivityOwner.SOURCE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSourceProperty", sourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		Long sourcePropertyId = sourceDbService.createSourceProperty(sourceId, freeformType, valueText);
 		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformType);
 	}
@@ -154,7 +155,8 @@ public class SourceService extends AbstractSourceService {
 			throw new OperationDeniedException();
 		}
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
+		ActivityLogData activityLog = activityLogService
+				.prepareActivityLog("updateSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.updateSourceProperty(sourcePropertyId, valueText);
 		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformOwnerDescr.getEntityName());
 	}
@@ -167,7 +169,8 @@ public class SourceService extends AbstractSourceService {
 			throw new OperationDeniedException();
 		}
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformOwnerDescr(sourcePropertyId);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
+		ActivityLogData activityLog = activityLogService
+				.prepareActivityLog("deleteSourceProperty", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.deleteSourceProperty(sourcePropertyId);
 		activityLogService.createActivityLog(activityLog, sourcePropertyId, freeformOwnerDescr.getEntityName());
 	}
@@ -175,7 +178,7 @@ public class SourceService extends AbstractSourceService {
 	@Transactional
 	public void updateSource(Long sourceId, SourceType type) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateSource", sourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.updateSourceType(sourceId, type);
 		activityLogService.createActivityLog(activityLog, sourceId, ActivityEntity.SOURCE);
 	}
@@ -188,15 +191,15 @@ public class SourceService extends AbstractSourceService {
 	@Transactional
 	public void deleteSource(Long sourceId) throws Exception {
 
-		activityLogService.createActivityLog("deleteSource", sourceId, ActivityOwner.SOURCE);
+		activityLogService.createActivityLog("deleteSource", sourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		sourceDbService.deleteSource(sourceId);
 	}
 
 	@Transactional
 	public void joinSources(Long targetSourceId, Long originSourceId) throws Exception {
 
-		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinMeanings", originSourceId, ActivityOwner.SOURCE);
-		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinMeanings", targetSourceId, ActivityOwner.SOURCE);
+		ActivityLogData activityLog1 = activityLogService.prepareActivityLog("joinSources", originSourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ActivityLogData activityLog2 = activityLogService.prepareActivityLog("joinSources", targetSourceId, ActivityOwner.SOURCE, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
 		sourceDbService.joinSources(targetSourceId, originSourceId);
 

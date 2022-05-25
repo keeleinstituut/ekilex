@@ -321,6 +321,7 @@ select w.word_id,
        w.gender_code,
        w.aspect_code,
        w.vocal_form,
+       w.manual_event_on,
        w.last_activity_event_on,
        lc.lang_complexities,
        mw.meaning_words,
@@ -345,6 +346,7 @@ from (select w.id as word_id,
              w.gender_code,
              w.aspect_code,
              w.vocal_form,
+             w.manual_event_on,
              (select al.event_on
               from word_last_activity_log wlal,
                    activity_log al
@@ -703,6 +705,7 @@ order by w.id,
 create view view_ww_meaning 
 as
 select m.id meaning_id,
+       m.manual_event_on,
        m.last_approve_or_edit_event_on,
        m_dom.domain_codes,
        m_img.image_files,
@@ -713,6 +716,7 @@ select m.id meaning_id,
        m_pnt.notes,
        d.definitions
 from (select m.id,
+             m.manual_event_on,
             (select al.event_on
              from meaning_last_activity_log mlal,
                   activity_log al

@@ -143,7 +143,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 								.and(LANGUAGE_LABEL.TYPE.eq(CLASSIF_LABEL_TYPE_DESCRIP))))
 				.where(DATASET_PERMISSION.USER_ID.eq(userId))
 				.orderBy(
-						DATASET.ORDER_BY,
+						DATASET.NAME,
 						DATASET_PERMISSION.AUTH_OPERATION,
 						DATASET_PERMISSION.AUTH_ITEM,
 						DATASET_PERMISSION.AUTH_LANG)
@@ -190,7 +190,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
 				.where(DSL.or(DATASET.IS_VISIBLE.isTrue(), userIsAdminCond, userIsMasterCond, datasetPermCond))
-				.orderBy(DATASET.ORDER_BY)
+				.orderBy(DATASET.NAME)
 				.fetchInto(Dataset.class);
 	}
 
@@ -214,7 +214,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
 				.where(DSL.or(userIsAdminCond, userIsMasterCond, datasetPermCond))
-				.orderBy(DATASET.ORDER_BY)
+				.orderBy(DATASET.NAME)
 				.fetchInto(Dataset.class);
 	}
 
@@ -236,7 +236,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.select(DATASET.CODE, DATASET.NAME)
 				.from(DATASET)
 				.where(DSL.or(userIsAdminCond, datasetPermCond))
-				.orderBy(DATASET.ORDER_BY)
+				.orderBy(DATASET.NAME)
 				.fetchInto(Dataset.class);
 	}
 

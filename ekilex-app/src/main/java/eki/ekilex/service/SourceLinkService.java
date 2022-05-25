@@ -11,6 +11,7 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
+import eki.common.constant.GlobalConstant;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
@@ -21,7 +22,7 @@ import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.api.FreeformOwner;
 
 @Component
-public class SourceLinkService extends AbstractSourceService {
+public class SourceLinkService extends AbstractSourceService implements GlobalConstant {
 
 	@Transactional
 	public SourceLink getSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner) {
@@ -54,7 +55,7 @@ public class SourceLinkService extends AbstractSourceService {
 	}
 
 	@Transactional
-	public Long createSourceLink(SourceLink sourceLink) throws Exception {
+	public Long createSourceLink(SourceLink sourceLink, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ReferenceOwner sourceLinkOwner = sourceLink.getOwner();
 		Long ownerId = sourceLink.getOwnerId();
@@ -66,32 +67,32 @@ public class SourceLinkService extends AbstractSourceService {
 			FreeformOwner freeformOwner = sourceLinkDbService.getFreeformOwner(ownerId);
 			boolean isSupportedOwner = isSupportedSourceLink(freeformOwner);
 			if (isSupportedOwner) {
-				return createFreeformSourceLink(ownerId, sourceId, refType, value, name);
+				return createFreeformSourceLink(ownerId, sourceId, refType, value, name, isManualEventOnUpdateEnabled);
 			}
 		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
-			return createDefinitionSourceLink(ownerId, sourceId, refType, value, name);
+			return createDefinitionSourceLink(ownerId, sourceId, refType, value, name, isManualEventOnUpdateEnabled);
 		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
-			return createLexemeSourceLink(ownerId, sourceId, refType, value, name);
+			return createLexemeSourceLink(ownerId, sourceId, refType, value, name, isManualEventOnUpdateEnabled);
 		}
 		return null;
 	}
 
     @Transactional
     public void createSourceAndSourceLink(
-    		SourceType sourceType, List<SourceProperty> sourceProperties, Long sourceLinkOwnerId, String sourceLinkOwnerCode) throws Exception {
+			SourceType sourceType, List<SourceProperty> sourceProperties, Long sourceLinkOwnerId, String sourceLinkOwnerCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-        Long sourceId = createSource(sourceType, sourceProperties);
+        Long sourceId = createSource(sourceType, sourceProperties, MANUAL_EVENT_ON_UPDATE_DISABLED);
 
 		String sourceLinkValue = sourceProperties.get(0).getValueText();
 		ReferenceType sourceLinkRefType = ReferenceType.ANY;
         String sourceLinkName = null;
 
 		if (ContentKey.DEFINITION_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
-            createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+            createDefinitionSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, isManualEventOnUpdateEnabled);
         } else if (ContentKey.LEXEME_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
-        	createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+        	createLexemeSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, isManualEventOnUpdateEnabled);
 		} else if (ContentKey.FREEFORM_SOURCE_LINK.equals(sourceLinkOwnerCode)) {
-			createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName);
+			createFreeformSourceLink(sourceLinkOwnerId, sourceId, sourceLinkRefType, sourceLinkValue, sourceLinkName, isManualEventOnUpdateEnabled);
 		}
     }
 
@@ -116,88 +117,96 @@ public class SourceLinkService extends AbstractSourceService {
 	}
 
 	@Transactional
-	public void deleteSourceLink(ReferenceOwner sourceLinkOwner, Long sourceLinkId) throws Exception {
+	public void deleteSourceLink(ReferenceOwner sourceLinkOwner, Long sourceLinkId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (ReferenceOwner.FREEFORM.equals(sourceLinkOwner)) {
-			deleteFreeformSourceLink(sourceLinkId);
+			deleteFreeformSourceLink(sourceLinkId, isManualEventOnUpdateEnabled);
 		} else if (ReferenceOwner.DEFINITION.equals(sourceLinkOwner)) {
-			deleteDefinitionSourceLink(sourceLinkId);
+			deleteDefinitionSourceLink(sourceLinkId, isManualEventOnUpdateEnabled);
 		} else if (ReferenceOwner.LEXEME.equals(sourceLinkOwner)) {
-			deleteLexemeSourceLink(sourceLinkId);
+			deleteLexemeSourceLink(sourceLinkId, isManualEventOnUpdateEnabled);
 		}
 	}
 
 	@Transactional
-	public Long createLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) throws Exception {
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, ActivityOwner.LEXEME);
+	public Long createLexemeSourceLink(
+			Long lexemeId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long sourceLinkId = sourceLinkDbService.createLexemeSourceLink(lexemeId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 		return sourceLinkId;
 	}
 
 	@Transactional
-	public void updateLexemeSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) throws Exception {
+	public void updateLexemeSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName, boolean isManualEventOnUpdateEnabled) throws Exception {
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeSourceLink", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.updateLexemeSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
 	@Transactional
-	public void deleteLexemeSourceLink(Long sourceLinkId) throws Exception {
+	public void deleteLexemeSourceLink(Long sourceLinkId, boolean isManualEventOnUpdateEnabled) throws Exception {
 		Long lexemeId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeSourceLink", lexemeId, ActivityOwner.LEXEME);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteLexemeSourceLink", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.deleteLexemeSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.LEXEME_SOURCE_LINK);
 	}
 
 	@Transactional
 	public Long createFreeformSourceLink(
-			Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) throws Exception {
+			Long freeformId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrByFreeform(freeformId);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
+		ActivityLogData activityLog = activityLogService
+				.prepareActivityLog("createFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), isManualEventOnUpdateEnabled);
 		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(freeformId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
 		return sourceLinkId;
 	}
 
 	@Transactional
-	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) throws Exception {
+	public void updateFreeformSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName, boolean isManualEventOnUpdateEnabled) throws Exception {
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrBySourceLink(sourceLinkId);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
+		ActivityLogData activityLog = activityLogService
+				.prepareActivityLog("updateFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), isManualEventOnUpdateEnabled);
 		sourceLinkDbService.updateFreeformSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
 	}
 
 	@Transactional
-	public void deleteFreeformSourceLink(Long sourceLinkId) throws Exception {
+	public void deleteFreeformSourceLink(Long sourceLinkId, boolean isManualEventOnUpdateEnabled) throws Exception {
 		ActivityLogOwnerEntityDescr freeformOwnerDescr = activityLogService.getFreeformSourceLinkOwnerDescrBySourceLink(sourceLinkId);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName());
+		ActivityLogData activityLog = activityLogService
+				.prepareActivityLog("deleteFreeformSourceLink", freeformOwnerDescr.getOwnerId(), freeformOwnerDescr.getOwnerName(), isManualEventOnUpdateEnabled);
 		sourceLinkDbService.deleteFreeformSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, freeformOwnerDescr.getEntityName());
 	}
 
 	@Transactional
-	public Long createDefinitionSourceLink(Long definitionId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName) throws Exception {
+	public Long createDefinitionSourceLink(
+			Long definitionId, Long sourceId, ReferenceType refType, String sourceLinkValue, String sourceLinkName, boolean isManualEventOnUpdateEnabled) throws Exception {
+
 		Long meaningId = activityLogService.getOwnerId(definitionId, ActivityEntity.DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 		return sourceLinkId;
 	}
 
 	@Transactional
-	public void updateDefinitionSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName) throws Exception {
+	public void updateDefinitionSourceLink(Long sourceLinkId, String sourceLinkValue, String sourceLinkName, boolean isManualEventOnUpdateEnabled) throws Exception {
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionSourceLink", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateDefinitionSourceLink", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.updateDefinitionSourceLink(sourceLinkId, sourceLinkValue, sourceLinkName);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 
 	@Transactional
-	public void deleteDefinitionSourceLink(Long sourceLinkId) throws Exception {
+	public void deleteDefinitionSourceLink(Long sourceLinkId, boolean isManualEventOnUpdateEnabled) throws Exception {
 		Long meaningId = activityLogService.getOwnerId(sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionSourceLink", meaningId, ActivityOwner.MEANING);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteDefinitionSourceLink", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		sourceLinkDbService.deleteDefinitionSourceLink(sourceLinkId);
 		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}

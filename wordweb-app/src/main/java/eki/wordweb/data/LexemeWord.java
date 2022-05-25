@@ -25,6 +25,8 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Long meaningId;
 
+	private Timestamp meaningManualEventOn;
+
 	private Timestamp meaningLastActivityEventOn;
 
 	private String datasetCode;
@@ -165,6 +167,14 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public Timestamp getMeaningManualEventOn() {
+		return meaningManualEventOn;
+	}
+
+	public void setMeaningManualEventOn(Timestamp meaningManualEventOn) {
+		this.meaningManualEventOn = meaningManualEventOn;
 	}
 
 	public Timestamp getMeaningLastActivityEventOn() {

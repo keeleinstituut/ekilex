@@ -595,7 +595,8 @@ create table word
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
   aspect_code varchar(100) references aspect(code) null,
-  vocal_form text null
+  vocal_form text null,
+  manual_event_on timestamp null
 );
 alter sequence word_id_seq restart with 10000;
 
@@ -735,7 +736,8 @@ alter sequence form_id_seq restart with 10000;
 -- tähendus
 create table meaning
 (
-  id bigserial primary key
+  id bigserial primary key,
+  manual_event_on timestamp null
 );
 alter sequence meaning_id_seq restart with 10000;
 
@@ -1248,6 +1250,7 @@ create index word_value_lower_prefix_idx on word(lower(value) text_pattern_ops);
 create index word_value_as_word_idx on word(value_as_word);
 create index word_value_as_word_lower_idx on word(lower(value_as_word));
 create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) text_pattern_ops);
+create index word_manual_event_on_idx on word(manual_event_on);
 create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_etym_rel_word_etym_id_idx on word_etymology_relation(word_etym_id);
@@ -1259,6 +1262,7 @@ create index word_group_member_group_id_idx on word_group_member(word_group_id);
 create index word_group_member_word_id_idx on word_group_member(word_id);
 create index word_word_type_word_id_idx on word_word_type(word_id);
 create index word_word_type_idx on word_word_type(word_type_code);
+create index meaning_manual_event_on_idx on meaning(manual_event_on);
 create index meaning_nr_meaning_id_idx on meaning_nr(meaning_id);
 create index meaning_nr_dataset_code_idx on meaning_nr(dataset_code);
 create index meaning_nr_mnr_idx on meaning_nr(mnr);

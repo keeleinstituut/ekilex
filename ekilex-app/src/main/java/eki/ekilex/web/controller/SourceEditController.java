@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +32,7 @@ import eki.ekilex.data.SourceRequest;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
+import eki.ekilex.web.bean.SessionBean;
 import eki.ekilex.web.util.ValueUtil;
 
 @ConditionalOnWebApplication
@@ -155,22 +157,23 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		logger.debug("Creating new source, source name: {}", sourceName);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		Long sourceId = sourceService.createSource(sourceType, sourceProperties);
+		Long sourceId = sourceService.createSource(sourceType, sourceProperties, MANUAL_EVENT_ON_UPDATE_DISABLED);
 		return String.valueOf(sourceId);
 	}
 
 	@PostMapping(CREATE_SOURCE_AND_SOURCE_LINK_URI)
 	@ResponseBody
-	public String createSourceAndSourceLink(@RequestBody SourceRequest source) throws Exception {
+	public String createSourceAndSourceLink(@RequestBody SourceRequest source, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		String sourceName = source.getName();
 		SourceType sourceType = source.getType();
 		Long sourceLinkOwnerId = source.getId();
 		String sourceLinkOwnerCode = source.getOpCode();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		logger.debug("Creating new source and source link, source name: {}", sourceName);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
-		sourceLinkService.createSourceAndSourceLink(sourceType, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode);
+		sourceLinkService.createSourceAndSourceLink(sourceType, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}

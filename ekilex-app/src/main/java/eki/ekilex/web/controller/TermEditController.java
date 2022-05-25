@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.WebConstant;
@@ -132,9 +131,13 @@ public class TermEditController extends AbstractMutableDataPageController {
 	}
 
 	@PostMapping(MEANING_JOIN_URI)
-	public String joinMeanings(@RequestParam("targetMeaningId") Long targetMeaningId, @RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds) throws Exception {
+	public String joinMeanings(
+			@RequestParam("targetMeaningId") Long targetMeaningId,
+			@RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		compositionService.joinMeanings(targetMeaningId, sourceMeaningIds, isManualEventOnUpdateEnabled);
 
 		List<String> datasets = getUserPreferredDatasetCodes();
 		String wordValue = termSearchService.getMeaningFirstWordValue(targetMeaningId, datasets);
@@ -145,11 +148,12 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@ResponseBody
 	@PostMapping("/duplicatemeaning/{meaningId}")
-	public String duplicateMeaning(@PathVariable("meaningId") Long meaningId) throws JsonProcessingException {
+	public String duplicateMeaning(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
-			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId);
+			clonedMeaning = compositionService.optionalDuplicateMeaningWithLexemes(meaningId, isManualEventOnUpdateEnabled);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
@@ -187,6 +191,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			Long userId = userContext.getUserId();
 			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
 			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+			boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 			WordLexemeMeaningIdTuple wordLexemeMeaningId = null;
 
 			sessionBean.setRecentLanguage(language);
@@ -203,7 +208,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 					attributes.addFlashAttribute("backUri", backUri);
 					return "redirect:" + MEANING_REL_SELECT_URI;
 				} else {
-					wordLexemeMeaningId = cudService.createWord(wordDetails);
+					wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
 				}
 			}
 
@@ -235,11 +240,14 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@PostMapping(CREATE_WORD_AND_MEANING_AND_REL_URI)
 	@ResponseBody
-	public String createWordAndMeaningAndRelations(@RequestBody WordMeaningRelationsDetails wordMeaningRelationsDetails) throws Exception {
+	public String createWordAndMeaningAndRelations(
+			@RequestBody WordMeaningRelationsDetails wordMeaningRelationsDetails,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordMeaningRelationsDetails);
 
 		Map<String, String> response = new HashMap<>();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String wordValue = wordMeaningRelationsDetails.getWordValue();
 		Long meaningId = wordMeaningRelationsDetails.getMeaningId();
 		String datasetCode = wordMeaningRelationsDetails.getDataset();
@@ -256,7 +264,8 @@ public class TermEditController extends AbstractMutableDataPageController {
 			wordMeaningRelationsDetails.setUserName(userName);
 			wordMeaningRelationsDetails.setUserPermDatasetCodes(userPermDatasetCodes);
 
-			compositionService.createWordAndMeaningAndRelations(wordMeaningRelationsDetails);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = compositionService
+					.createWordAndMeaningAndRelations(wordMeaningRelationsDetails, isManualEventOnUpdateEnabled);
 
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(datasetCode)) {
@@ -264,7 +273,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 			}
 			if (meaningId == null) {
+				Long createdMeaningId = wordLexemeMeaningId.getMeaningId();
 				searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+				searchUri = searchUri + "?id=" + createdMeaningId;
 			} else {
 				searchUri = backUri + "?id=" + meaningId;
 			}
@@ -297,24 +308,26 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@PostMapping(UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI + "/{meaningId}")
 	@ResponseBody
-	public String updateMeaningLexemesActiveTagComplete(@PathVariable Long meaningId) throws Exception {
+	public String updateMeaningLexemesActiveTagComplete(@PathVariable Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		UserContextData userContextData = getUserContextData();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		Tag activeTag = userContextData.getActiveTag();
 		String activeTagName = activeTag.getName();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
 		logger.debug("Updating meaning (id: {}} lexemes active tag \"{}\" complete", meaningId, activeTagName);
-		cudService.updateMeaningLexemesTagComplete(meaningId, userRoleDatasetCode, activeTag);
+		cudService.updateMeaningLexemesTagComplete(meaningId, userRoleDatasetCode, activeTag, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}
 
 	@PostMapping(APPROVE_MEANING)
 	@ResponseBody
-	public String approveMeaning(@RequestParam("meaningId") Long meaningId, Model model) throws Exception {
+	public String approveMeaning(@RequestParam("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		compositionService.approveMeaning(meaningId);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		compositionService.approveMeaning(meaningId, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}

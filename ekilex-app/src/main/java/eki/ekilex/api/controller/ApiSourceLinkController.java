@@ -38,7 +38,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 			String value = sourceLink.getValue();
 			value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
 			sourceLink.setValue(value);
-			Long sourceLinkId = sourceLinkService.createSourceLink(sourceLink);
+			Long sourceLinkId = sourceLinkService.createSourceLink(sourceLink, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			if (sourceLinkId == null) {
 				return getOpFailResponse("Invalid or unsupported source link composition");
 			}
@@ -58,7 +58,7 @@ public class ApiSourceLinkController extends AbstractApiController {
 			@RequestParam("sourceLinkId") Long sourceLinkId) {
 
 		try {
-			sourceLinkService.deleteSourceLink(sourceLinkOwner, sourceLinkId);
+			sourceLinkService.deleteSourceLink(sourceLinkOwner, sourceLinkId, MANUAL_EVENT_ON_UPDATE_ENABLED);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

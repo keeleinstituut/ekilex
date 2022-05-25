@@ -154,7 +154,8 @@ public class LexEditController extends AbstractPrivatePageController {
 			@RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		compositionService.joinLexemes(targetLexemeId, sourceLexemeIds, isManualEventOnUpdateEnabled);
 		SimpleWord lexemeSimpleWord = lookupService.getLexemeSimpleWord(targetLexemeId);
 		String lexemeWordValue = lexemeSimpleWord.getWordValue();
 		Long lexemeWordId = lexemeSimpleWord.getWordId();
@@ -166,11 +167,12 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@ResponseBody
 	@PostMapping(LEX_DUPLICATE_URI + "/{lexemeId}")
-	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
+	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
-			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId);
+			clonedLexemeIds = compositionService.duplicateLexemeAndMeaningWithSameDatasetLexemes(lexemeId, isManualEventOnUpdateEnabled);
 		} catch (Exception ignore) {
 			logger.error("", ignore);
 		}
@@ -190,9 +192,10 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@ResponseBody
 	@PostMapping(EMPTY_LEX_DUPLICATE_URI + "/{lexemeId}")
-	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId) throws Exception {
+	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, isManualEventOnUpdateEnabled);
 
 		Map<String, String> response = new HashMap<>();
 		response.put("message", "Uus tähendus loodud");
@@ -204,9 +207,10 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@ResponseBody
 	@PostMapping(MEANING_WORD_AND_LEX_DUPLICATE_URI + "/{lexemeId}")
-	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId) throws Exception {
+	public String duplicateMeaningWordAndLexeme(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		compositionService.duplicateLexemeAndWord(lexemeId);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		compositionService.duplicateLexemeAndWord(lexemeId, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER1;
 	}
 
@@ -230,9 +234,13 @@ public class LexEditController extends AbstractPrivatePageController {
 	}
 
 	@PostMapping(WORD_JOIN_URI)
-	public String joinWords(@RequestParam("targetWordId") Long targetWordId, @RequestParam("sourceWordIds") List<Long> sourceWordIds) throws Exception {
+	public String joinWords(
+			@RequestParam("targetWordId") Long targetWordId,
+			@RequestParam("sourceWordIds") List<Long> sourceWordIds,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		Long joinedWordId = compositionService.joinWords(targetWordId, sourceWordIds);
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		Long joinedWordId = compositionService.joinWords(targetWordId, sourceWordIds, isManualEventOnUpdateEnabled);
 		return "redirect:" + WORD_BACK_URI + "/" + joinedWordId;
 	}
 
@@ -256,7 +264,8 @@ public class LexEditController extends AbstractPrivatePageController {
 
 			int wordCount = lexSearchService.countWords(wordValue, allDatasets);
 			if (wordCount == 0) {
-				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails);
+				boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+				WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
 				wordId = wordLexemeMeaningId.getWordId();
 			} else {
 				attributes.addFlashAttribute("wordDetails", wordDetails);
@@ -285,7 +294,8 @@ public class LexEditController extends AbstractPrivatePageController {
 		String searchUri = "";
 		if (StringUtils.isNotBlank(wordValue)) {
 			String dataset = wordDetails.getDataset();
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails);
+			boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
 			Long wordId = wordLexemeMeaningId.getWordId();
 			List<String> selectedDatasets = getUserPreferredDatasetCodes();
 			if (!selectedDatasets.contains(dataset)) {
@@ -300,10 +310,13 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@PostMapping(UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI)
 	@ResponseBody
-	public String updateWordDataAndLexemeWeight(@RequestBody WordLexemeMeaningDetails wordDataAndLexemeWeight) throws Exception {
+	public String updateWordDataAndLexemeWeight(
+			@RequestBody WordLexemeMeaningDetails wordDataAndLexemeWeight,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		valueUtil.trimAndCleanAndRemoveHtml(wordDataAndLexemeWeight);
-		cudService.updateWordDataAndLexemeWeight(wordDataAndLexemeWeight);
+		cudService.updateWordDataAndLexemeWeight(wordDataAndLexemeWeight, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}
@@ -337,8 +350,9 @@ public class LexEditController extends AbstractPrivatePageController {
 			@PathVariable("meaningId") String meaningIdCode,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
-		cudService.createLexeme(wordId, dataset, meaningId);
+		cudService.createLexeme(wordId, dataset, meaningId, isManualEventOnUpdateEnabled);
 		Word word = lexSearchService.getWord(wordId);
 		String wordValue = word.getWordValue();
 		List<String> selectedDatasets = getUserPreferredDatasetCodes();
@@ -353,15 +367,16 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@PostMapping(UPDATE_WORD_ACTIVE_TAG_COMPLETE_URI + "/{wordId}")
 	@ResponseBody
-	public String updateWordLexemesActiveTagComplete(@PathVariable Long wordId) throws Exception {
+	public String updateWordLexemesActiveTagComplete(@PathVariable Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		UserContextData userContextData = getUserContextData();
 		String userRoleDatasetCode = userContextData.getUserRoleDatasetCode();
 		Tag activeTag = userContextData.getActiveTag();
 		String activeTagName = activeTag.getName();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 
 		logger.debug("Updating word (id: {}} lexemes active tag \"{}\" complete", wordId, activeTagName);
-		cudService.updateWordLexemesTagComplete(wordId, userRoleDatasetCode, activeTag);
+		cudService.updateWordLexemesTagComplete(wordId, userRoleDatasetCode, activeTag, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
 	}

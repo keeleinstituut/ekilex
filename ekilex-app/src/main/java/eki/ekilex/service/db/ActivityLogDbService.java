@@ -166,6 +166,15 @@ public class ActivityLogDbService implements GlobalConstant {
 				.fetchInto(eki.ekilex.data.ActivityLog.class);
 	}
 
+	public Timestamp getActivityLogEventOn(Long activityLogId) {
+
+		return create
+				.select(ACTIVITY_LOG.EVENT_ON)
+				.from(ACTIVITY_LOG)
+				.where(ACTIVITY_LOG.ID.eq(activityLogId))
+				.fetchOneInto(Timestamp.class);
+	}
+
 	public Long create(eki.ekilex.data.ActivityLog activityLog) {
 
 		return create.insertInto(
@@ -232,7 +241,7 @@ public class ActivityLogDbService implements GlobalConstant {
 		}
 	}
 
-	public void createOrUpdateWordLastActivityLog(Long wordId) {
+	public Long createOrUpdateWordLastActivityLog(Long wordId) {
 
 		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
 		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
@@ -250,7 +259,7 @@ public class ActivityLogDbService implements GlobalConstant {
 				.fetchOptionalInto(Long.class).orElse(null);
 
 		if (activityLogId == null) {
-			return;
+			return null;
 		}
 
 		create
@@ -268,6 +277,8 @@ public class ActivityLogDbService implements GlobalConstant {
 								.from(wlal)
 								.where(wlal.WORD_ID.eq(wordId))))
 				.execute();
+
+		return activityLogId;
 	}
 
 	public void createOrUpdateMeaningLastActivityLog(Long meaningId, LastActivityType lastActivityType) {
@@ -367,6 +378,24 @@ public class ActivityLogDbService implements GlobalConstant {
 				.select(DSL
 						.select(DSL.val(sourceId), DSL.val(activityLogId))
 						.whereExists(DSL.select(SOURCE.ID).from(SOURCE).where(SOURCE.ID.eq(sourceId))))
+				.execute();
+	}
+
+	public void updateWordManualEventOn(Long wordId, Timestamp eventOn) {
+
+		create
+				.update(WORD)
+				.set(WORD.MANUAL_EVENT_ON, eventOn)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
+	public void updateMeaningManualEventOn(Long meaningId, Timestamp eventOn) {
+
+		create
+				.update(MEANING)
+				.set(MEANING.MANUAL_EVENT_ON, eventOn)
+				.where(MEANING.ID.eq(meaningId))
 				.execute();
 	}
 

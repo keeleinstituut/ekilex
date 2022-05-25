@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +17,7 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.DatasetDbService;
 import eki.ekilex.service.db.PermissionDbService;
+import eki.ekilex.service.util.DatasetUtil;
 import eki.ekilex.web.util.ClassifierUtil;
 
 @Component
@@ -36,12 +36,16 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 	private ClassifierUtil classifierUtil;
 
 	@Autowired
+	private DatasetUtil datasetUtil;
+
+	@Autowired
 	private MaintenanceService maintenanceService;
 
 	@Transactional
 	public List<Dataset> getDatasets() {
 		List<Dataset> datasets = datasetDbService.getDatasets();
-		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
+		datasets = datasetUtil.removePlaceholderDataset(datasets);
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		return datasets;
 	}
 

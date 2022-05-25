@@ -31,6 +31,7 @@ import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
 import eki.ekilex.service.db.UserProfileDbService;
+import eki.ekilex.service.util.DatasetUtil;
 
 @Component
 public class UserService implements WebConstant, GlobalConstant {
@@ -68,6 +69,9 @@ public class UserService implements WebConstant, GlobalConstant {
 
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private DatasetUtil datasetUtil;
 
 	public void updateUserSecurityContext() {
 
@@ -349,13 +353,14 @@ public class UserService implements WebConstant, GlobalConstant {
 	@Transactional
 	public List<EkiUserApplication> getUserApplications(Long userId) {
 		List<EkiUserApplication> userApplications = userDbService.getUserApplications(userId);
-		List<Dataset> allDatasets = commonDataDbService.getVisibleDatasets();
+		List<Dataset> datasets = commonDataDbService.getVisibleDatasets();
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		for (EkiUserApplication userApplication : userApplications) {
 			List<String> userApplicationDatasetCodes = userApplication.getDatasetCodes();
 			if (CollectionUtils.isNotEmpty(userApplicationDatasetCodes)) {
 				List<Dataset> userApplicationDatasets = new ArrayList<>();
 				userApplication.setDatasets(userApplicationDatasets);
-				for (Dataset dataset : allDatasets) {
+				for (Dataset dataset : datasets) {
 					if (userApplicationDatasetCodes.contains(dataset.getCode())) {
 						userApplicationDatasets.add(dataset);
 					}

@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = 582798969;
+    private static final long serialVersionUID = -1427860208;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -80,6 +80,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.inflection_type</code>.
      */
     public final TableField<MviewWwFormRecord, String> INFLECTION_TYPE = createField(DSL.name("inflection_type"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.inflection_type_nr</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_form.form_id</code>.

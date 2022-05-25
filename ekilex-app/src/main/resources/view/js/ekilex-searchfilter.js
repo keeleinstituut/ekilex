@@ -107,7 +107,7 @@ function displayNotOperandChk() {
 	const disabledSearchEntities = ["TAG", "CLUELESS"];
 	const disabledSearchKeys = [
 		"ID", "FREQUENCY", "RANK", "CREATED_OR_UPDATED_BY", "CREATED_OR_UPDATED_ON", "CREATED_BY", "CREATED_ON", "UPDATED_BY", "UPDATED_ON", "LAST_UPDATE_ON",
-		"ATTRIBUTE_NAME"];
+		"MANUAL_UPDATE_ON", "ATTRIBUTE_NAME"];
 
 	let notChks = $('#detail_search_filter').find('[name$="not"]');
 	notChks.each(function () {
@@ -157,6 +157,30 @@ function initialiseSearchForm() {
 			tempCopyField.remove();			
 		}
 	});
+
+	$.fn.manualEventOnUpdateCheck = function() {
+		var main = $(this);
+		main.on('click', function(e) {
+			e.preventDefault();
+			openWaitDlg();
+			let checked = main.is(':checked');
+			let manualEventOnUpdateUrl;
+			if (checked == true) {
+				manualEventOnUpdateUrl = applicationUrl + 'manual_event_on_update/false';
+			} else {
+				manualEventOnUpdateUrl = applicationUrl + 'manual_event_on_update/true';
+			}
+			$.get(manualEventOnUpdateUrl).done(function(data) {
+				$('#manualEventOnDiv').replaceWith(data);
+				$wpm.bindObjects();
+			}).fail(function(data) {
+				console.log(data);
+				openAlertDlg('Viga!');
+			}).always(function() {
+				closeWaitDlg();
+			});
+		});
+	}
 };
 
 function validateAndSubmitSimpleSearch() {

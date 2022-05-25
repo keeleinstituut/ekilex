@@ -304,9 +304,9 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		throw new IllegalParamException("Unable to locate owner of the freeform");
 	}
 
-	public ActivityLogData prepareActivityLog(String functName, Long ownerId, ActivityOwner ownerName) throws Exception {
+	public ActivityLogData prepareActivityLog(String functName, Long ownerId, ActivityOwner ownerName, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLogData = initCore(functName, ownerId, ownerName);
+		ActivityLogData activityLogData = initCore(functName, ownerId, ownerName, isManualEventOnUpdateEnabled);
 
 		WordLexemeMeaningIds prevWlmIds;
 		String prevData;
@@ -337,13 +337,13 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		return activityLogData;
 	}
 
-	public void createActivityLog(String functName, Long ownerId, ActivityOwner ownerName) throws Exception {
+	public void createActivityLog(String functName, Long ownerId, ActivityOwner ownerName, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long entityId = Long.valueOf(ownerId);
 		ActivityEntity entityName = ActivityEntity.valueOf(ownerName.name());
 		ActivityLogData activityLogData;
 		if (StringUtils.startsWith(functName, "delete")) {
-			activityLogData = prepareActivityLog(functName, ownerId, ownerName);
+			activityLogData = prepareActivityLog(functName, ownerId, ownerName, isManualEventOnUpdateEnabled);
 			activityLogData.setEntityId(entityId);
 			activityLogData.setEntityName(entityName);
 			activityLogData.setCurrData(EMPTY_CONTENT_JSON);
@@ -358,7 +358,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 				handleSourceActivityLog(activityLogData);
 			}
 		} else {
-			activityLogData = initCore(functName, ownerId, ownerName);
+			activityLogData = initCore(functName, ownerId, ownerName, isManualEventOnUpdateEnabled);
 			activityLogData.setPrevData(EMPTY_CONTENT_JSON);
 			activityLogData.setPrevWlmIds(new WordLexemeMeaningIds());
 			createActivityLog(activityLogData, entityId, entityName);
@@ -437,18 +437,20 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		}
 	}
 
-	private ActivityLogData initCore(String functName, Long ownerId, ActivityOwner ownerName) {
+	private ActivityLogData initCore(String functName, Long ownerId, ActivityOwner ownerName, boolean isManualEventOnUpdateEnabled) {
 		String userName = userContext.getUserName();
 		ActivityLogData activityLogData = new ActivityLogData();
 		activityLogData.setEventBy(userName);
 		activityLogData.setFunctName(functName);
 		activityLogData.setOwnerId(ownerId);
 		activityLogData.setOwnerName(ownerName);
+		activityLogData.setManualEventOnUpdateEnabled(isManualEventOnUpdateEnabled);
 		return activityLogData;
 	}
 
 	private void handleWlmActivityLog(ActivityLogData activityLogData) throws Exception {
 
+		boolean isManualEventOnUpdateEnabled = activityLogData.isManualEventOnUpdateEnabled();
 		calcDiffs(activityLogData);
 
 		WordLexemeMeaningIds prevWlmIds = activityLogData.getPrevWlmIds();
@@ -459,15 +461,22 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		Long[] meaningIds = collect(prevWlmIds.getMeaningIds(), currWlmIds.getMeaningIds());
 
 		Long activityLogId = activityLogDbService.create(activityLogData);
+		Timestamp eventOn = activityLogDbService.getActivityLogEventOn(activityLogId);
 		activityLogDbService.createLexemesActivityLogs(activityLogId, lexemeIds);
 		activityLogDbService.createWordsActivityLogs(activityLogId, wordIds);
 		activityLogDbService.createMeaningsActivityLogs(activityLogId, meaningIds);
 
 		for (Long wordId : wordIds) {
 			activityLogDbService.createOrUpdateWordLastActivityLog(wordId);
+			if (isManualEventOnUpdateEnabled) {
+				activityLogDbService.updateWordManualEventOn(wordId, eventOn);
+			}
 		}
 		for (Long meaningId : meaningIds) {
 			activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.EDIT);
+			if (isManualEventOnUpdateEnabled) {
+				activityLogDbService.updateMeaningManualEventOn(meaningId, eventOn);
+			}
 		}
 
 		handleApproveMeaningEvent(activityLogData);

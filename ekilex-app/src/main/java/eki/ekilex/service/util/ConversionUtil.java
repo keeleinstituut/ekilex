@@ -3,10 +3,12 @@ package eki.ekilex.service.util;
 import static java.util.stream.Collectors.groupingBy;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1156,5 +1158,13 @@ public class ConversionUtil implements GlobalConstant {
 		} else {
 			return lexemes.stream().allMatch(lexeme -> lexeme.getTags().stream().anyMatch(lexemeTagName -> StringUtils.equals(lexemeTagName, activeTagName)));
 		}
+	}
+
+	public Timestamp dateStrToTimestamp(String dateStr) throws Exception {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+		Date date = dateFormat.parse(dateStr);
+		Timestamp timestamp = new Timestamp(date.getTime());
+		return timestamp;
 	}
 }

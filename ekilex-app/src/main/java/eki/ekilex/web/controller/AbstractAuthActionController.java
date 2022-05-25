@@ -98,6 +98,7 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 		if (sessionBean == null) {
 			sessionBean = new SessionBean();
+			sessionBean.setManualEventOnUpdateEnabled(true);
 			model.addAttribute(SESSION_BEAN, sessionBean);
 		}
 		return sessionBean;

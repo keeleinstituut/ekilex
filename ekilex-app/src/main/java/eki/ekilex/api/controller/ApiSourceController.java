@@ -79,7 +79,7 @@ public class ApiSourceController extends AbstractApiController {
 		});
 
 		try {
-			Long sourceId = sourceService.createSource(sourceType, completeSourceProperties);
+			Long sourceId = sourceService.createSource(sourceType, completeSourceProperties, MANUAL_EVENT_ON_UPDATE_DISABLED);
 			return getOpSuccessResponse(sourceId);
 		} catch (Exception e) {
 			return getOpFailResponse(e);

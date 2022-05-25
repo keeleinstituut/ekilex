@@ -23,6 +23,7 @@ import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserPermData;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;
+import eki.ekilex.service.util.DatasetUtil;
 
 @Component
 public class PermissionService implements SystemConstant, GlobalConstant {
@@ -35,6 +36,9 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private EmailService emailService;
+
+	@Autowired
+	private DatasetUtil datasetUtil;
 
 	@Transactional
 	public List<EkiUserPermData> getEkiUserPermissions(
@@ -57,7 +61,8 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 			return Collections.emptyList();
 		}
 		List<Dataset> datasets = permissionDbService.getUserVisibleDatasets(userId);
-		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
+		datasets = datasetUtil.removePlaceholderDataset(datasets);
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		return datasets;
 	}
 
@@ -67,7 +72,8 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 			return Collections.emptyList();
 		}
 		List<Dataset> datasets = permissionDbService.getUserVisibleDatasets(userId);
-		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
+		datasets = datasetUtil.removePlaceholderDataset(datasets);
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		List<String> datasetCodes = datasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 		return datasetCodes;
 	}
@@ -79,7 +85,8 @@ public class PermissionService implements SystemConstant, GlobalConstant {
 			return Collections.emptyList();
 		}
 		List<Dataset> datasets = permissionDbService.getUserPermDatasets(userId);
-		datasets = datasets.stream().filter(dataset -> !StringUtils.equals(DATASET_XXX, dataset.getCode())).collect(Collectors.toList());
+		datasets = datasetUtil.removePlaceholderDataset(datasets);
+		datasets = datasetUtil.resortPriorityDatasets(datasets);
 		List<String> datasetCodes = datasets.stream().map(Dataset::getCode).collect(Collectors.toList());
 		return datasetCodes;
 	}
