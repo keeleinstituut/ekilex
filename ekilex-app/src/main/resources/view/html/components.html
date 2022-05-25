@@ -190,23 +190,32 @@
   </th:block>
   <th:block th:fragment="paging(pagingResult)">
     <hr/>
-    <form th:action="@{/update_paging}" method="post">
+    <form th:action="@{/update_paging}" method="post" id="pagingForm">
       <input type="hidden" name="offset" th:value="${pagingResult.offset}">
       <input type="hidden" name="searchUri" th:value="${searchUri}">
       <input type="hidden" name="direction">
-      <div class="d-flex justify-content-center">
-        <button name="pagingBtn" type="button" class="btn badge mr-2"
+      <input type="hidden" name="userInputPage">
+      <div class="d-flex justify-content-start">
+        <button name="pagingBtn" type="button" class="btn badge ml-2 mr-2"
                 title="Eelmine lehekülg"
                 data-direction="previous"
                 th:if="${pagingResult.previousPageExists}">
           <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
         </button>
-        <span th:text="${pagingResult.currentPage + ' / ' + pagingResult.totalPages}"></span>
+        <div class="mr-2 ml-4" th:if="${!pagingResult.previousPageExists}"></div>
+        <span class="d-flex align-items-center" th:text="${pagingResult.currentPage + ' / ' + pagingResult.totalPages}"></span>
         <button name="pagingBtn" type="button" class="btn badge ml-2"
                 title="Järgmine lehekülg"
                 data-direction="next"
                 th:if="${pagingResult.nextPageExists}">
           <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
+        </button>
+        <span class="paging-page-number d-flex align-items-center ml-auto">Mine lehele</span>
+        <input class="paging-input" type="text" data-plugin="pagingInputPlugin">
+        <button name="pagingBtn" type="button" class="paging-submit btn btn-link p-0" 
+               title="Vali lehekülg"
+               data-direction="page">
+          <i class="paging-submit-icon fa fa-arrow-right"></i>
         </button>
       </div>
     </form>

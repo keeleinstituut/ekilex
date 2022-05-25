@@ -262,15 +262,31 @@ function initializeSynSearch() {
 		});
 	});
 }
+	//$(document).on('keydown', '.paging-input', function(e) {
+	$('#synSearchResultsDiv').on('keydown', '.paging-input', function (e) {
+		if (e.which === 13) {
+			e.preventDefault();
+			console.log(e);
+			$('[name="pagingBtn"]').last().trigger('click');
+		}
+	});
 
-	$(document).on('click', '[name="pagingBtn"]', function() {
+	$('#synSearchResultsDiv').on('click', '[name="pagingBtn"]', function () {
+	//$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg();
 		let url = applicationUrl + "syn_paging";
 		let button = $(this);
 		let direction = button.data("direction");
 		let form = button.closest('form');
-		form.find('input[name="direction"]').val(direction);
-
+		if (direction === "page") {
+			//form.find('input[name="direction"]').val('next');
+			//let inputPageValue = $(".paging-input").val().trim();
+			//let tulemus = ((inputPageValue - 1) * 50) - 50;
+			//form.find('input[name="offset"]').val(tulemus);
+			//form.find('input[name="userInputPage"]').val(inputPageValue)
+		} else {
+			form.find('input[name="direction"]').val(direction);
+		}
 		$.ajax({
 			url: url,
 			data: form.serialize(),
@@ -530,7 +546,7 @@ function handleEscapeKeyPress(currentActivePanelIndex) {
 		$(this).removeAttr('data-marked-meaning-id');
 		$(this).removeAttr('data-active-panel');
 		$(this).removeClass('keyboard-nav-list-active');
-		$(this).find('[data-navigate-index]').each(function() {
+		$(this).find('[data-navigate-index]').each(function () {
 			unActivateItem($(this), true);
 		});
 		$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
@@ -655,6 +671,11 @@ function refreshSynDetails() {
 	let selectedWordId = $('#syn-details-area').data('id');
 	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
 
-	refreshButton.trigger('click');
+	refreshButton.each(function () {
+		if ($(this).is(":hidden")) {
+			$(this).trigger('click');
+		}
+	});
+
 	refreshButton.parent().addClass('active');
 }

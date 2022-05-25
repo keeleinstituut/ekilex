@@ -1,5 +1,17 @@
 var viewType = '';
 
+$.fn.pagingInputPlugin = function () {
+	let obj = $(this);
+	obj.on('input', function () {
+		let inputPageChkLength = obj.val().trim().length;
+		if (inputPageChkLength > 0) {
+			$('.paging-submit').css("visibility", "visible");
+		} else {
+			$('.paging-submit').css("visibility", "hidden");
+		}
+	});
+}
+
 $.fn.identificator = function() {
 	var main = $(this);
 	var parent = main.parents('.card-body:first');
@@ -190,7 +202,17 @@ function initializeSearch(type) {
 		});
 	});
 
-	$(document).on('click', '[name="pagingBtn"]', function() {
+	//$(document).on('keydown', '.paging-input', function(e) {
+	$('#results_div').on('keydown', '.paging-input', function (e) {
+		if (e.which === 13) {
+			e.preventDefault();
+			console.log(e);
+			$('[name="pagingBtn"]').last().trigger('click');
+		}
+	});
+
+	$('#results_div').on('click', '[name="pagingBtn"]', function () {
+		//$(document).on('click', '[name="pagingBtn"]', function() {
 		openWaitDlg();
 
 		let url = applicationUrl + "lex_paging";
@@ -202,25 +224,32 @@ function initializeSearch(type) {
 		let button = $(this);
 		let direction = button.data("direction");
 		let form = button.closest('form');
-		form.find('input[name="direction"]').val(direction);
-
+		if (direction === "page") {
+			//form.find('input[name="direction"]').val('next');
+			//let inputPageValue = $(".paging-input").val().trim();
+			//let tulemus = ((inputPageValue - 1) * 50) - 50;
+			//form.find('input[name="offset"]').val(tulemus);
+			//
+			//form.find('input[name="userInputPage"]').val(inputPageValue)
+		} else {
+			form.find('input[name="direction"]').val(direction);
+		}
 		$.ajax({
 			url: url,
 			data: form.serialize(),
 			method: 'POST',
-		}).done(function(data) {
+		}).done(function (data) {
 			$('#results_div').html(data);
 			$('#results_div').parent().scrollTop(0);
 			$wpm.bindObjects();
-		}).fail(function(data) {
+		}).fail(function (data) {
 			console.log(data);
 			openAlertDlg('Lehekülje muutmine ebaõnnestus');
-		}).always(function() {
+		}).always(function () {
 			closeWaitDlg();
-		});
-
+		})
 	});
-
+	//};
 	$(document).on("click", "#activeTagCompleteBtn", function() {
 		const obj = $(this);
 		let wordId = obj.data('word-id');
@@ -236,6 +265,7 @@ function initializeSearch(type) {
 			console.log(data);
 		});
 	});
+
 
 	let detailButtons = $('#results').find('[name="details-btn"]');
 	if (QueryParams.get('id')) {

@@ -214,14 +214,16 @@ class ckLink {
 	toggle(state) {
 		if (state === 'show') {
 			this.addTemplate();
-			this.parent.hide();
+			//this.parent.hide();
+			this.parent.addClass('size-zero');
 		} else {
 			this.linkContent.find('.formItem').removeClass('formItem--error');
 			this.linkContent.find('input').val('');
 			this.changeInternalType('meaning');
 			this.changeLayout('external');
 			this.linkContent.remove();
-			this.parent.show();
+			//this.parent.show();
+			this.parent.removeClass('size-zero');
 		}
 	}
 
