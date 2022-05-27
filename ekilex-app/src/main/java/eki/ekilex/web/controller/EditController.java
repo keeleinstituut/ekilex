@@ -156,6 +156,9 @@ public class EditController extends AbstractMutableDataPageController {
 		case "word_display_morph":
 			cudService.updateWordDisplayMorph(itemData.getId3(), itemValue, isManualEventOnUpdateEnabled);
 			break;
+		case "word_morphophono_form":
+			cudService.updateWordMorphophonoForm(itemData.getId3(), itemValue, isManualEventOnUpdateEnabled);
+			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(itemData.getId3(), itemValue, isManualEventOnUpdateEnabled);
 			break;
@@ -310,6 +313,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "word_display_morph":
 			cudService.updateWordDisplayMorph(itemId, itemValue, isManualEventOnUpdateEnabled);
+			break;
+		case "word_morphophono_form":
+			cudService.updateWordMorphophonoForm(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(itemId, itemValue, isManualEventOnUpdateEnabled);
@@ -628,6 +634,9 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "word_display_morph":
 			cudService.updateWordDisplayMorph(id, null, isManualEventOnUpdateEnabled);
+			break;
+		case "word_morphophono_form":
+			cudService.updateWordMorphophonoForm(id, null, isManualEventOnUpdateEnabled);
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null, isManualEventOnUpdateEnabled);

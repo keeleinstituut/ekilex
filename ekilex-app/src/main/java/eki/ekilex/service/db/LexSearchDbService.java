@@ -383,6 +383,7 @@ public class LexSearchDbService extends AbstractDataDbService {
 						w.GENDER_CODE,
 						w.ASPECT_CODE,
 						w.DISPLAY_MORPH_CODE,
+						w.MORPHOPHONO_FORM,
 						w.MANUAL_EVENT_ON,
 						wff.as("word_frequency"),
 						wtf.as("word_type_codes"),

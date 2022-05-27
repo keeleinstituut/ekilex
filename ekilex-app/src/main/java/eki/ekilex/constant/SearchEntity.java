@@ -7,8 +7,8 @@ import static java.util.Arrays.asList;
 public enum SearchEntity {
 
 	HEADWORD(new SearchKey[] {
-			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.ASPECT, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME,
-			SearchKey.SECONDARY_MEANING_WORD, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT, SearchKey.LEXEME_POS,
+			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.ASPECT, SearchKey.MORPHOPHONO_FORM, SearchKey.SOURCE_REF,
+			SearchKey.SOURCE_NAME, SearchKey.SECONDARY_MEANING_WORD, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT, SearchKey.LEXEME_POS,
 			SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_VALUE_STATE, SearchKey.LEXEME_PROFICIENCY_LEVEL, SearchKey.COMPLEXITY, SearchKey.OD_RECOMMENDATION,
 			SearchKey.WORD_NOTE, SearchKey.LEXEME_NOTE, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON,
 			SearchKey.FREQUENCY, SearchKey.RANK, SearchKey.WORD_RELATION}),

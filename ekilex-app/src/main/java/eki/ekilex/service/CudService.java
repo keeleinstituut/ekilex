@@ -147,6 +147,14 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
+	public void updateWordMorphophonoForm(Long wordId, String morphophonoForm, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordMorphophonoForm", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordMorphophonoForm(wordId, morphophonoForm);
+		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
+	}
+
+	@Transactional
 	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWordType", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
@@ -816,7 +824,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 			valueAsWord = cleanValue;
 		}
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, value, valueAsWord, language, dataset, PUBLICITY_PUBLIC, meaningId);
+				.createWordAndLexeme(value, value, valueAsWord, value, language, dataset, PUBLICITY_PUBLIC, meaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
@@ -1236,7 +1244,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 			valueAsWord = cleanValue;
 		}
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, valuePrese, valueAsWord, language, datasetCode, PUBLICITY_PRIVATE, null);
+				.createWordAndLexeme(value, valuePrese, valueAsWord, value, language, datasetCode, PUBLICITY_PRIVATE, null);
 		Long createdWordId = wordLexemeMeaningId.getWordId();
 		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();
 		tagDbService.createLexemeAutomaticTags(createdLexemeId);

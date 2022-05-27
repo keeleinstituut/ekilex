@@ -355,6 +355,7 @@ public class CudDbService extends AbstractDataDbService {
 		String genderCode = word.getGenderCode();
 		String aspectCode = word.getAspectCode();
 		String vocalForm = word.getVocalForm();
+		String morphophonoForm = word.getMorphophonoForm();
 
 		create.update(WORD)
 				.set(WORD.VALUE, value)
@@ -365,6 +366,7 @@ public class CudDbService extends AbstractDataDbService {
 				.set(WORD.GENDER_CODE, genderCode)
 				.set(WORD.ASPECT_CODE, aspectCode)
 				.set(WORD.VOCAL_FORM, vocalForm)
+				.set(WORD.MORPHOPHONO_FORM, morphophonoForm)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
@@ -372,6 +374,13 @@ public class CudDbService extends AbstractDataDbService {
 	public void updateWordVocalForm(Long wordId, String vocalForm) {
 		create.update(WORD)
 				.set(WORD.VOCAL_FORM, vocalForm)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
+	public void updateWordMorphophonoForm(Long wordId, String morphophonoForm) {
+		create.update(WORD)
+				.set(WORD.MORPHOPHONO_FORM, morphophonoForm)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
@@ -546,7 +555,7 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexeme(
-			String value, String valuePrese, String valueAsWord, String lang, String dataset, boolean isPublic, Long meaningId) throws Exception {
+			String value, String valuePrese, String valueAsWord, String morphophonoForm, String lang, String dataset, boolean isPublic, Long meaningId) throws Exception {
 
 		if (StringUtils.equals(dataset, DATASET_XXX)) {
 			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
@@ -556,8 +565,8 @@ public class CudDbService extends AbstractDataDbService {
 		int homonymNr = getNextHomonymNr(value, lang);
 
 		Long wordId = create
-				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.HOMONYM_NR, WORD.LANG)
-				.values(value, valuePrese, valueAsWord, homonymNr, lang)
+				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.MORPHOPHONO_FORM, WORD.HOMONYM_NR, WORD.LANG)
+				.values(value, valuePrese, valueAsWord, morphophonoForm, homonymNr, lang)
 				.returning(WORD.ID).fetchOne().getId();
 
 		if (meaningId == null) {
@@ -591,6 +600,7 @@ public class CudDbService extends AbstractDataDbService {
 		String genderCode = word.getGenderCode();
 		String aspectCode = word.getAspectCode();
 		String vocalForm = word.getVocalForm();
+		String morphophonoForm = word.getMorphophonoForm();
 		int homonymNr = getNextHomonymNr(value, lang);
 
 		WordRecord wordRecord = create.newRecord(WORD);
@@ -603,6 +613,7 @@ public class CudDbService extends AbstractDataDbService {
 		wordRecord.setGenderCode(genderCode);
 		wordRecord.setAspectCode(aspectCode);
 		wordRecord.setVocalForm(vocalForm);
+		wordRecord.setMorphophonoForm(morphophonoForm);
 		wordRecord.store();
 		Long wordId = wordRecord.getId();
 

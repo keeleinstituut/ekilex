@@ -26,6 +26,8 @@ public class Word extends AbstractDataObject {
 
 	private String vocalForm;
 
+	private String morphophonoForm;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -104,5 +106,13 @@ public class Word extends AbstractDataObject {
 
 	public void setVocalForm(String vocalForm) {
 		this.vocalForm = vocalForm;
+	}
+
+	public String getMorphophonoForm() {
+		return morphophonoForm;
+	}
+
+	public void setMorphophonoForm(String morphophonoForm) {
+		this.morphophonoForm = morphophonoForm;
 	}
 }

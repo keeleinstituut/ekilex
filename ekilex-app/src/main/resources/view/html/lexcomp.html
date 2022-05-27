@@ -515,6 +515,39 @@
       </div>
     </th:block>
   </div>
+  <div class="mr-1" th:fragment="word_morphophono_form">
+    <th:block th:if="${#strings.isEmpty(details.word.morphophonoForm)}">
+      <button type="button" class="btn btn-secondary btn-compact btn-sm"
+              data-toggle="modal"
+              th:data-target="${'#addWordMorphophonoFormDlg_' + wordId}"
+              sec:authorize="#vars.details.word.crudGrant">
+        <i class="fa fa-plus action-icon mr-1" aria-hidden="true"></i>MF kuju
+      </button>
+    </th:block>
+    <th:block th:unless="${#strings.isEmpty(details.word.morphophonoForm)}">
+      <div class="hover-actions-container hover-actions-container-outline">
+        <span th:text="${details.word.morphophonoForm}" data-toggle="tooltip" data-boundary="window" data-placement="top" title="MF kuju"></span>
+        <div class="hover-actions hover-actions-bottom-right">
+          <div class="btn-group">
+            <button type="button" class="btn btn-secondary btn-sm" title="Muuda"
+                    data-toggle="modal"
+                    th:data-target="${'#editWordMorphophonoFormDlg_' + wordId}"
+                    sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-pencil action-icon" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-secondary btn-sm"
+                    th:data-id="${wordId}"
+                    data-op-code="word_morphophono_form"
+                    data-toggle="delete-confirm"
+                    data-placement="right"
+                    sec:authorize="#vars.details.word.crudGrant">
+              <i class="fa fa-remove action-icon" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </th:block>
+  </div>
   <div class="mr-1" th:fragment="word_gender">
     <th:block th:if="${details.word.genderCode == null}">
       <button type="button" class="btn btn-secondary btn-compact btn-sm"

@@ -596,6 +596,7 @@ create table word
   gender_code varchar(100) references gender(code) null,
   aspect_code varchar(100) references aspect(code) null,
   vocal_form text null,
+  morphophono_form text null,
   manual_event_on timestamp null
 );
 alter sequence word_id_seq restart with 10000;
@@ -1251,6 +1252,8 @@ create index word_value_as_word_idx on word(value_as_word);
 create index word_value_as_word_lower_idx on word(lower(value_as_word));
 create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) text_pattern_ops);
 create index word_manual_event_on_idx on word(manual_event_on);
+create index word_morphophono_form_idx on word(morphophono_form);
+create index word_morphophono_form_lower_idx on word(lower(morphophono_form));
 create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_etym_rel_word_etym_id_idx on word_etymology_relation(word_etym_id);

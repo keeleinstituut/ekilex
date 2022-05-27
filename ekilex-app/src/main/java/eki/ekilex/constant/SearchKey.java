@@ -10,6 +10,7 @@ public enum SearchKey {
 	LANGUAGE(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_CONTAINS}, SearchValueType.TEXTUAL),
 	WORD_TYPE(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	ASPECT(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.EXISTS}, SearchValueType.TEXTUAL),
+	MORPHOPHONO_FORM(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	TAG_NAME(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.NOT_CONTAINS, SearchOperand.HAS_BEEN}, SearchValueType.TEXTUAL),
 	DOMAIN(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	SEMANTIC_TYPE(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),

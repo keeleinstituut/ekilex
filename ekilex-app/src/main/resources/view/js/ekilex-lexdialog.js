@@ -104,6 +104,14 @@ $(function() {
 		initGenericTextEditDlg($(this));
 	});
 
+	$(document).on("show.bs.modal", "[id^=addWordMorphophonoFormDlg_]", function() {
+		initGenericTextEditDlg($(this));
+	});
+
+	$(document).on("show.bs.modal", "[id^=editWordMorphophonoFormDlg_]", function() {
+		initGenericTextEditDlg($(this));
+	});
+
 	$(document).on("show.bs.modal", "[id^=addWordGenderDlg_]", function() {
 		initSelectDlg($(this));
 	});

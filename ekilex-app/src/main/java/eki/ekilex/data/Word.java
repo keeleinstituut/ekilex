@@ -27,6 +27,8 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private String vocalForm;
 
+	private String morphophonoForm;
+
 	private String displayMorphCode;
 
 	private String wordFrequency;
@@ -129,6 +131,14 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	public void setVocalForm(String vocalForm) {
 		this.vocalForm = vocalForm;
+	}
+
+	public String getMorphophonoForm() {
+		return morphophonoForm;
+	}
+
+	public void setMorphophonoForm(String morphophonoForm) {
+		this.morphophonoForm = morphophonoForm;
 	}
 
 	public String getDisplayMorphCode() {
