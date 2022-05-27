@@ -176,6 +176,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 			@RequestParam("offset") int offset,
 			@RequestParam("searchUri") String searchUri,
 			@RequestParam("direction") String direction,
+			@RequestParam(name = "userInputPage", required = false) Integer userInputPage,
 			Model model) throws Exception {
 
 		SearchUriData searchUriData = searchHelper.parseSearchUri(TERM_SEARCH_PAGE, searchUri);
@@ -188,10 +189,12 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		String resultLang = searchUriData.getResultLang();
 		boolean noLimit = false;
 
-		if ("next".equals(direction)) {
+		if (StringUtils.equals("next", direction)) {
 			offset += DEFAULT_MAX_RESULTS_LIMIT;
-		} else if ("previous".equals(direction)) {
+		} else if (StringUtils.equals("previous", direction)) {
 			offset -= DEFAULT_MAX_RESULTS_LIMIT;
+		} else if (StringUtils.equals("page", direction)) {
+			offset = (userInputPage - 1) * DEFAULT_MAX_RESULTS_LIMIT;
 		}
 
 		TermSearchResult termSearchResult;
