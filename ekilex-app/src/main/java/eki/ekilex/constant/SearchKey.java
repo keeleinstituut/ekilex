@@ -34,7 +34,6 @@ public enum SearchKey {
 	LEXEME_REGISTER(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	LEXEME_VALUE_STATE(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.EXISTS}, SearchValueType.TEXTUAL),
 	LEXEME_PROFICIENCY_LEVEL(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
-	OD_RECOMMENDATION(OperandSets.VALUE_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	WORD_RELATION(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	MEANING_RELATION(OperandSets.CLASSIFIER_AND_EXISTS_OPERANDS, SearchValueType.TEXTUAL),
 	COMPLEXITY(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),

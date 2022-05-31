@@ -8,8 +8,8 @@ public enum SearchEntity {
 
 	HEADWORD(new SearchKey[] {
 			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.ASPECT, SearchKey.MORPHOPHONO_FORM, SearchKey.SOURCE_REF,
-			SearchKey.SOURCE_NAME, SearchKey.SECONDARY_MEANING_WORD, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT, SearchKey.LEXEME_POS,
-			SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_VALUE_STATE, SearchKey.LEXEME_PROFICIENCY_LEVEL, SearchKey.COMPLEXITY, SearchKey.OD_RECOMMENDATION,
+			SearchKey.SOURCE_NAME, SearchKey.SECONDARY_MEANING_WORD, SearchKey.PUBLICITY, SearchKey.LEXEME_GRAMMAR, SearchKey.LEXEME_GOVERNMENT,
+			SearchKey.LEXEME_POS, SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_VALUE_STATE, SearchKey.LEXEME_PROFICIENCY_LEVEL, SearchKey.COMPLEXITY,
 			SearchKey.WORD_NOTE, SearchKey.LEXEME_NOTE, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON,
 			SearchKey.FREQUENCY, SearchKey.RANK, SearchKey.WORD_RELATION}),
 	WORD(new SearchKey[] {
@@ -31,6 +31,7 @@ public enum SearchEntity {
 			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON, SearchKey.LAST_UPDATE_ON, SearchKey.MANUAL_UPDATE_ON}),
 	NOTE(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	TAG(new SearchKey[] {SearchKey.TAG_NAME, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.CREATED_OR_UPDATED_ON}),
+	OD_RECOMMENDATION(new SearchKey[] {SearchKey.VALUE_AND_EXISTS, SearchKey.UPDATED_ON}),
 	CLUELESS(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_ID}),
 	SOURCE(new SearchKey[] {SearchKey.VALUE, SearchKey.DATASET_USAGE, SearchKey.CREATED_BY, SearchKey.CREATED_ON, SearchKey.UPDATED_BY, SearchKey.UPDATED_ON})
 	;
@@ -46,7 +47,7 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getLexEntities() {
-		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, NOTE, CLUELESS);
+		return asList(HEADWORD, WORD, TAG, FORM, MEANING, DEFINITION, USAGE, NOTE, OD_RECOMMENDATION, CLUELESS);
 	}
 
 	public static List<SearchEntity> getTermEntities() {

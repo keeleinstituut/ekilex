@@ -6,6 +6,7 @@ package eki.ekilex.data.db.tables.records;
 
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
+import eki.ekilex.data.db.udt.records.TypeFreeformRecord;
 import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
 import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 
@@ -21,7 +22,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = 854484795;
+    private static final long serialVersionUID = -543913284;
 
     /**
      * Setter for <code>public.view_ww_word.word_id</code>.
@@ -264,15 +265,15 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     /**
      * Setter for <code>public.view_ww_word.od_word_recommendations</code>.
      */
-    public void setOdWordRecommendations(String[] value) {
+    public void setOdWordRecommendations(TypeFreeformRecord[] value) {
         set(17, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.od_word_recommendations</code>.
      */
-    public String[] getOdWordRecommendations() {
-        return (String[]) get(17);
+    public TypeFreeformRecord[] getOdWordRecommendations() {
+        return (TypeFreeformRecord[]) get(17);
     }
 
     /**
@@ -359,7 +360,7 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     /**
      * Create a detached, initialised ViewWwWordRecord
      */
-    public ViewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, TypeMeaningWordRecord[] meaningWords, TypeDefinitionRecord[] definitions, String[] odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy) {
+    public ViewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, TypeMeaningWordRecord[] meaningWords, TypeDefinitionRecord[] definitions, TypeFreeformRecord[] odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy) {
         super(ViewWwWord.VIEW_WW_WORD);
 
         set(0, wordId);

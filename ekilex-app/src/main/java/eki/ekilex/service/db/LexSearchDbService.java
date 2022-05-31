@@ -602,7 +602,8 @@ public class LexSearchDbService extends AbstractDataDbService {
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY,
 						FREEFORM.ORDER_BY,
-						FREEFORM.MODIFIED_BY)
+						FREEFORM.MODIFIED_BY,
+						FREEFORM.MODIFIED_ON)
 				.from(FREEFORM, WORD_FREEFORM)
 				.where(
 						WORD_FREEFORM.WORD_ID.eq(wordId)

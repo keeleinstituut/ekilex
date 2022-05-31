@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -2082904312;
+    private static final long serialVersionUID = -70014535;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -188,7 +188,7 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.od_lexeme_recommendations</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> OD_LEXEME_RECOMMENDATIONS = createField(DSL.name("od_lexeme_recommendations"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, TypeFreeformRecord[]> OD_LEXEME_RECOMMENDATIONS = createField(DSL.name("od_lexeme_recommendations"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_lexeme</code> table reference

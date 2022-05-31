@@ -83,7 +83,9 @@ create type type_freeform as (
 				lang char(3),
 				complexity varchar(100),
 				created_by text,
-				created_on timestamp);
+				created_on timestamp,
+        modified_by text,
+        modified_on timestamp);
 create type type_colloc_member as (
 				lexeme_id bigint,
 				word_id bigint,
@@ -198,7 +200,7 @@ dblink(
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
 	definitions type_definition array,
-	od_word_recommendations text array,
+	od_word_recommendations type_freeform array,
 	freq_value numeric(12,7),
 	freq_rank bigint,
 	forms_exist boolean,
@@ -291,7 +293,7 @@ dblink(
 	grammars type_freeform array,
 	governments type_freeform array,
 	usages type_usage array,
-	od_lexeme_recommendations text array
+	od_lexeme_recommendations type_freeform array
 );
 
 create materialized view mview_ww_collocation as

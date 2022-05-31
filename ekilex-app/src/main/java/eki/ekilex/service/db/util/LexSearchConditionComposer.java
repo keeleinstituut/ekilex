@@ -164,7 +164,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 				where = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where, false);
-				where = searchFilterHelper.applyWordOdRecommendationFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordAspectFilters(searchCriteria, w1.ASPECT_CODE, where);
 				where = searchFilterHelper.applyWordMorphophonoFormFilters(searchCriteria, w1.MORPHOPHONO_FORM, where);
 				where = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, where);
@@ -441,6 +440,11 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				} else {
 					where = where.andExists(DSL.select(n1.field("word_id")).from(n1).where(n1.field("word_id", Long.class).eq(w1.ID)));
 				}
+
+			} else if (SearchEntity.OD_RECOMMENDATION.equals(searchEntity)) {
+
+				where = searchFilterHelper.applyWordOdRecommendationValueFilters(searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordOdRecommendationModificationFilters(searchCriteria, w1.ID, where);
 
 			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
 

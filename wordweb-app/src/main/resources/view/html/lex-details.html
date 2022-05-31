@@ -198,7 +198,8 @@
                         <i class="fa fa-book mr-1"></i>
                         <span class="label-text" th:text="#{label.od.recommend}">ÕS soovitab</span>
                       </span>
-                      <span th:utext="${odLexemeRecommendation}"></span>
+                      <span th:utext="${odLexemeRecommendation.value}"></span>
+                      <span th:text="'(' + ${#dates.format(odLexemeRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odLexemeRecommendation.modifiedOn != null}"></span>
                     </div>
                   </th:block>
                 </div>

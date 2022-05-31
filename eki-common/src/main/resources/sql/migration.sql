@@ -24,3 +24,21 @@ from (select p.word_id, f.display_form morphophono_form
       group by p.word_id, f.display_form) wmpf
 where w.id = wmpf.word_id
   and w.lang = 'rus';
+
+-- ÕS soovitab kuupäev
+update freeform ff
+set modified_on = ffmod.modified_on
+from (select id freeform_id, (regexp_matches(value_text, '\d\d\.\d\d\.20\d\d'))[1]::timestamp modified_on
+      from freeform
+      where type like 'OD_%'
+        and value_text like '% (__.__.20__)%'
+        and modified_on is null) ffmod
+where ff.id = ffmod.freeform_id;
+
+update freeform
+set value_text = regexp_replace(value_text, '\s\(\d\d\.\d\d\.20\d\d\)', '')
+where type like 'OD_%';
+
+update freeform
+set value_prese = regexp_replace(value_prese, '\s\(\d\d\.\d\d\.20\d\d\)', '')
+where type like 'OD_%';

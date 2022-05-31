@@ -36,6 +36,8 @@ public class FreeForm extends AbstractDataObject {
 
 	private String modifiedBy;
 
+	private Timestamp modifiedOn;
+
 	public Long getId() {
 		return id;
 	}
@@ -130,5 +132,13 @@ public class FreeForm extends AbstractDataObject {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public Timestamp getModifiedOn() {
+		return modifiedOn;
+	}
+
+	public void setModifiedOn(Timestamp modifiedOn) {
+		this.modifiedOn = modifiedOn;
 	}
 }

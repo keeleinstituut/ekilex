@@ -8,6 +8,7 @@ import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
+import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 548210337;
+    private static final long serialVersionUID = -312216347;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -138,7 +139,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     /**
      * The column <code>public.mview_ww_word.od_word_recommendations</code>.
      */
-    public final TableField<MviewWwWordRecord, String[]> OD_WORD_RECOMMENDATIONS = createField(DSL.name("od_word_recommendations"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, TypeFreeformRecord[]> OD_WORD_RECOMMENDATIONS = createField(DSL.name("od_word_recommendations"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word.freq_value</code>.

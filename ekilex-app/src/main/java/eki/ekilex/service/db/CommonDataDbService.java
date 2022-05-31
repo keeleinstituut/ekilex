@@ -1065,7 +1065,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM.LANG,
 						FREEFORM.COMPLEXITY,
 						FREEFORM.ORDER_BY,
-						FREEFORM.MODIFIED_BY)
+						FREEFORM.MODIFIED_BY,
+						FREEFORM.MODIFIED_ON)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(
 						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)

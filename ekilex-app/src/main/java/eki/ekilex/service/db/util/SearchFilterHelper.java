@@ -418,10 +418,10 @@ public class SearchFilterHelper implements GlobalConstant {
 		return where;
 	}
 
-	public Condition applyWordOdRecommendationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
+	public Condition applyWordOdRecommendationValueFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
 
 		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.OD_RECOMMENDATION))
+				.filter(c -> c.getSearchKey().equals(SearchKey.VALUE_AND_EXISTS))
 				.collect(toList());
 
 		if (CollectionUtils.isEmpty(filteredCriteria)) {
@@ -434,7 +434,7 @@ public class SearchFilterHelper implements GlobalConstant {
 				.and(wff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
 
-		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.OD_RECOMMENDATION, filteredCriteria);
+		boolean isNotExistsSearch = isNotExistsSearch(SearchKey.VALUE_AND_EXISTS, filteredCriteria);
 		if (isNotExistsSearch) {
 			where = where.and(DSL.notExists(DSL.select(wff.ID).from(wff, ff).where(wordFreeformCondition)));
 		} else {
@@ -446,6 +446,32 @@ public class SearchFilterHelper implements GlobalConstant {
 			}
 			where = where.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
 		}
+		return where;
+	}
+
+	public Condition applyWordOdRecommendationModificationFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.UPDATED_ON))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		WordFreeform wff = WORD_FREEFORM.as("wff");
+		Freeform ff = FREEFORM.as("ff");
+		Condition wordFreeformCondition = wff.WORD_ID.eq(wordIdField)
+				.and(wff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name()));
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			if (criterion.getSearchValue() != null) {
+				String searchValueStr = criterion.getSearchValue().toString();
+				wordFreeformCondition = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), ff.MODIFIED_ON, wordFreeformCondition, false);
+			}
+		}
+		where = where.andExists(DSL.select(wff.WORD_ID).from(wff, ff).where(wordFreeformCondition));
 		return where;
 	}
 

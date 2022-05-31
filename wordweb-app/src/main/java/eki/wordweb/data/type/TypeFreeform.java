@@ -27,6 +27,10 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 
 	private Timestamp createdOn;
 
+	private String modifiedBy;
+
+	private Timestamp modifiedOn;
+
 	private List<TypeSourceLink> sourceLinks;
 
 	@Override
@@ -89,6 +93,22 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 
 	public void setCreatedOn(Timestamp createdOn) {
 		this.createdOn = createdOn;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
+	}
+
+	public Timestamp getModifiedOn() {
+		return modifiedOn;
+	}
+
+	public void setModifiedOn(Timestamp modifiedOn) {
+		this.modifiedOn = modifiedOn;
 	}
 
 	@Override

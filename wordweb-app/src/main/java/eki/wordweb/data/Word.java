@@ -5,6 +5,7 @@ import java.util.List;
 
 import eki.common.data.Classifier;
 import eki.wordweb.data.type.TypeDefinition;
+import eki.wordweb.data.type.TypeFreeform;
 import eki.wordweb.data.type.TypeMeaningWord;
 import eki.wordweb.data.type.TypeSourceLink;
 import eki.wordweb.data.type.TypeWordRelation;
@@ -43,7 +44,7 @@ public class Word extends WordTypeData {
 
 	private List<WordGroup> wordGroups;
 
-	private List<String> odWordRecommendations;
+	private List<TypeFreeform> odWordRecommendations;
 
 	private boolean wordMatch;
 
@@ -177,11 +178,11 @@ public class Word extends WordTypeData {
 		this.wordGroups = wordGroups;
 	}
 
-	public List<String> getOdWordRecommendations() {
+	public List<TypeFreeform> getOdWordRecommendations() {
 		return odWordRecommendations;
 	}
 
-	public void setOdWordRecommendations(List<String> odWordRecommendations) {
+	public void setOdWordRecommendations(List<TypeFreeform> odWordRecommendations) {
 		this.odWordRecommendations = odWordRecommendations;
 	}
 

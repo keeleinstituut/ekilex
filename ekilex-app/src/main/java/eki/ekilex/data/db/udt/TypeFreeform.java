@@ -22,7 +22,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
 
-    private static final long serialVersionUID = -694973090;
+    private static final long serialVersionUID = -1861685553;
 
     /**
      * The reference instance of <code>public.type_freeform</code>
@@ -71,6 +71,16 @@ public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
      * The attribute <code>public.type_freeform.created_on</code>.
      */
     public static final UDTField<TypeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP, TYPE_FREEFORM, "");
+
+    /**
+     * The attribute <code>public.type_freeform.modified_by</code>.
+     */
+    public static final UDTField<TypeFreeformRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), org.jooq.impl.SQLDataType.CLOB, TYPE_FREEFORM, "");
+
+    /**
+     * The attribute <code>public.type_freeform.modified_on</code>.
+     */
+    public static final UDTField<TypeFreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), org.jooq.impl.SQLDataType.TIMESTAMP, TYPE_FREEFORM, "");
 
     /**
      * No further instances allowed

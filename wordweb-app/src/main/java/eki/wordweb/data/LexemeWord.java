@@ -105,7 +105,7 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private List<String> learnerComments;
 
-	private List<String> odLexemeRecommendations;
+	private List<TypeFreeform> odLexemeRecommendations;
 
 	private List<TypeDefinition> definitions;
 
@@ -495,11 +495,11 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 		this.learnerComments = learnerComments;
 	}
 
-	public List<String> getOdLexemeRecommendations() {
+	public List<TypeFreeform> getOdLexemeRecommendations() {
 		return odLexemeRecommendations;
 	}
 
-	public void setOdLexemeRecommendations(List<String> odLexemeRecommendations) {
+	public void setOdLexemeRecommendations(List<TypeFreeform> odLexemeRecommendations) {
 		this.odLexemeRecommendations = odLexemeRecommendations;
 	}
 
