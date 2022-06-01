@@ -184,7 +184,8 @@
                 title="Tee duplikaat mõistest ja kõigist tema ilmikutest"
                 class="btn btn-secondary mr-1"
                 th:data-meaning-id="${meaningId}"
-                sec:authorize="#vars.meaning.crudGrant">Dubleeri</button>
+                sec:authorize="#vars.meaning.crudGrant"
+                data-plugin="duplicateLimTermMeaningPlugin">Dubleeri</button>
         <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
              data-original-title="Viimati muudetud">
           <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>

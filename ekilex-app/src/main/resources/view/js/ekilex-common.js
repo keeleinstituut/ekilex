@@ -563,10 +563,11 @@ function initMultiselectRelationDlg(dlg) {
 		changeOppositeRelationSelectData(relationTypeSelect);
 	});
 
-	$(document).on("change", "select[name='relationType']", function() {
-		let relationTypeSelect = $(this);
-		changeOppositeRelationSelectData(relationTypeSelect);
-	});
+	// Moved to end of file
+	// $(document).on("change", "select[name='relationType']", function() {
+	// 	let relationTypeSelect = $(this);
+	// 	changeOppositeRelationSelectData(relationTypeSelect);
+	// });
 };
 
 function changeOppositeRelationSelectData(relationTypeSelect) {
@@ -914,6 +915,36 @@ $.fn.pagingBtnPlugin = function() {
 				closeWaitDlg();
 				openAlertDlg('Lehekülje muutmine ebaõnnestus');
 			});
+		});
+	});
+}
+
+$.fn.pagingInputPlugin = function () {
+	this.each(function() {
+		const input = $(this);
+		input.on('input', function () {
+			const inputPageChkLength = input.val().trim().length;
+			if (inputPageChkLength > 0) {
+				$('.paging-submit').css("visibility", "visible");
+			} else {
+				$('.paging-submit').css("visibility", "hidden");
+			}
+		});
+	
+		input.on('keydown', function(e) {
+			if (e.which === 13 || e.keyCode === 13) {
+				e.preventDefault();
+				input.siblings('.paging-submit').click();
+			}
+		})
+	})
+}
+
+$.fn.changeOppositeRelationSelectDataPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('change', function() {
+			changeOppositeRelationSelectData(obj);
 		});
 	});
 }

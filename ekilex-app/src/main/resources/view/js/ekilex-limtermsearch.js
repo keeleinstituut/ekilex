@@ -1,21 +1,45 @@
-$(document).on('click', '#duplicateLimTermMeaningBtn', function() {
-	let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
-	$.post(url).done(function(data) {
-		let response = JSON.parse(data);
-		if (response.status === 'ok') {
-			openMessageDlg(response.message);
-			let duplicateMeaningId = response.duplicateMeaningId;
-			setTimeout(function() {
-				window.location = applicationUrl + 'limtermmeaningback/' + duplicateMeaningId;
-			}, 1500);
-		} else {
-			openAlertDlg(response.message);
-		}
-	}).fail(function(data) {
-		openAlertDlg("Mõiste dubleerimine ebaõnnestus");
-		console.log(data);
+$.fn.duplicateLimTermMeaningPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const url = applicationUrl + 'duplicatemeaning/' + obj.data('meaning-id');
+			$.post(url).done(function(data) {
+				const response = JSON.parse(data);
+				if (response.status === 'ok') {
+					openMessageDlg(response.message);
+					const duplicateMeaningId = response.duplicateMeaningId;
+					setTimeout(function() {
+						window.location = applicationUrl + 'limtermmeaningback/' + duplicateMeaningId;
+					}, 1500);
+				} else {
+					openAlertDlg(response.message);
+				}
+			}).fail(function(data) {
+				openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+				console.log(data);
+			});
+		});
 	});
-});
+}
+
+// $(document).on('click', '#duplicateLimTermMeaningBtn', function() {
+// 	let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
+// 	$.post(url).done(function(data) {
+// 		let response = JSON.parse(data);
+// 		if (response.status === 'ok') {
+// 			openMessageDlg(response.message);
+// 			let duplicateMeaningId = response.duplicateMeaningId;
+// 			setTimeout(function() {
+// 				window.location = applicationUrl + 'limtermmeaningback/' + duplicateMeaningId;
+// 			}, 1500);
+// 		} else {
+// 			openAlertDlg(response.message);
+// 		}
+// 	}).fail(function(data) {
+// 		openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+// 		console.log(data);
+// 	});
+// });
 
 function initNewLimTermWordDlg() {
 	let newWordDlg = $('#newLimTermWordDlg');
@@ -41,12 +65,26 @@ function initNewLimTermWordDlg() {
 			$(this).addClass('is-invalid');
 		}
 	});
-	$(document).on("click", "#limTermWordFormSubmitBtn", function() {
-		var addWordForm = $("#addLimTermWordForm");
-		var isValid = checkRequiredFields(addWordForm);
-		if (!isValid) {
-			return;
-		}
-		addWordForm.submit();
+	// $(document).on("click", "#limTermWordFormSubmitBtn", function() {
+	// 	var addWordForm = $("#addLimTermWordForm");
+	// 	var isValid = checkRequiredFields(addWordForm);
+	// 	if (!isValid) {
+	// 		return;
+	// 	}
+	// 	addWordForm.submit();
+	// });
+}
+
+$.fn.limTermWordFormSubmitPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const addWordForm = obj.closest('#addLimTermWordForm');
+			const isValid = checkRequiredFields(addWordForm);
+			if (!isValid) {
+				return;
+			}
+			addWordForm.submit();
+		});
 	});
 }

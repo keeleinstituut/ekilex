@@ -35,6 +35,8 @@ $(function() {
 			})
 		})
 	}
+
+	// Anything generic beyond this point was moved to ekilex-dialog.js as a plugin
 	
 	//addLexemeDataDlg_ select
 	// $(document).on("change", "select.lex-data-select[name='opCode']", function() {

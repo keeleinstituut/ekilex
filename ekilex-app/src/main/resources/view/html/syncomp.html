@@ -34,13 +34,23 @@
             <button type="button" th:hidden="${relationIter.last}" class="btn btn-xs  btn-secondary order-down " title="Muuda järjestust">
               <i class="fa fa-arrow-down" aria-hidden="true"></i>
             </button>
-            <button type="button" class="btn  btn-xs btn-secondary rel-status-btn" th:data-id="${synRelation.id}" data-status="UNDEFINED" title="Märgi mittetegeletuks">
+            <button type="button" class="btn  btn-xs btn-secondary rel-status-btn" th:data-id="${synRelation.id}"
+                  data-status="UNDEFINED"
+                  title="Märgi mittetegeletuks"
+                  data-plugin="changeSynRelationPlugin">
               <i class="fa fa-question" aria-hidden="true"></i>
             </button>
-            <button type="button" class="btn btn-xs btn-success rel-status-btn" th:data-id="${synRelation.id}" data-status="PROCESSED" title="Märgi kinnitatuks">
+            <button type="button" class="btn btn-xs btn-success rel-status-btn" th:data-id="${synRelation.id}"
+                  data-status="PROCESSED"
+                  title="Märgi kinnitatuks"
+                  data-plugin="changeSynRelationPlugin">
               <i class="fa fa-check" aria-hidden="true"></i>
             </button>
-            <button type="button" class="btn btn-xs btn-danger rel-status-btn" th:data-id="${synRelation.id}" data-status="DELETED" data-placement="right" title="Kustuta">
+            <button type="button" class="btn btn-xs btn-danger rel-status-btn" th:data-id="${synRelation.id}"
+                  data-status="DELETED"
+                  data-placement="right"
+                  title="Kustuta"
+                  data-plugin="changeSynRelationPlugin">
               <i class="fa fa-remove" aria-hidden="true"></i>
             </button>
           </div>

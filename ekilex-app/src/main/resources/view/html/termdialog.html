@@ -631,7 +631,7 @@
             <input type="hidden" name="opCode" value="lexeme_relation">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control required-field" name="relationType">
+                <select required class="form-control required-field" name="relationType" data-plugin="changeOppositeRelationSelectDataPlugin">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${lexemeRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -1296,7 +1296,7 @@
             <input type="hidden" name="opCode" value="meaning_relation">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control required-field" name="relationType">
+                <select required class="form-control required-field" name="relationType" data-plugin="changeOppositeRelationSelectDataPlugin">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
@@ -1722,7 +1722,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button id="limTermWordFormSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
+            <button id="limTermWordFormSubmitBtn" type="button" class="btn btn-primary" data-plugin="limTermWordFormSubmitPlugin">Lisa</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

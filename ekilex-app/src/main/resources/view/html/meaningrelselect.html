@@ -30,7 +30,7 @@
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <div class="row mb-2">
               <div class="form-check mt-1 ml-4">
-                <input id="chkNoRelation" type="checkbox" class="form-check-input" value="true"/>
+                <input id="chkNoRelation" type="checkbox" class="form-check-input" value="true" data-plugin="chkNoRelationPlugin"/>
                 <label for="chkNoRelation" class="form-check-label">Ära tee seost</label>
               </div>
             </div>
@@ -39,7 +39,7 @@
               <div class="col-md-2">
                 <label class="col-form-label">
                   tähenduse seose tüüp
-                  <select required class="form-control required-field" name="relationType">
+                  <select required class="form-control required-field" name="relationType" data-plugin="changeOppositeRelationSelectDataPlugin">
                     <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == defaultMeaningRelation}">value</option>
                   </select>
                 </label>
@@ -56,16 +56,19 @@
             </div>
             <div id="submitWithRelationDiv" class="row mt-2">
               <div class="col">
-                <button th:if="${meaningId == null}" type="button" class="btn btn-primary" disabled>Loo uus termin ja mõiste ning seos</button>
-                <button th:if="${meaningId == null}" type="button" name="importDataBtn" class="btn btn-primary ml-2" disabled>Loo uus termin ja mõiste kopeeritud andmetega ning seos</button>
-                <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-2" disabled>Loo uus termin</button>
+                <button th:if="${meaningId == null}" type="button" class="btn btn-primary"
+                    disabled data-plugin="submitWithRelationPlugin">Loo uus termin ja mõiste ning seos</button>
+                <button th:if="${meaningId == null}" type="button" name="importDataBtn" class="btn btn-primary ml-2"
+                    disabled data-plugin="submitWithRelationPlugin">Loo uus termin ja mõiste kopeeritud andmetega ning seos</button>
+                <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-2"
+                    disabled data-plugin="submitWithRelationPlugin">Loo uus termin</button>
                 <a th:if="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
                 <a th:unless="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{'/termsearch' + ${backUri}}">Tühista</a>
               </div>
             </div>
             <div id="submitDiv" class="row" style="display: none">
-              <button th:if="${meaningId == null}" type="button" class="btn btn-primary ml-4">Loo uus termin ja mõiste</button>
-              <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-4">Loo uus termin</button>
+              <button th:if="${meaningId == null}" type="button" class="btn btn-primary ml-4" data-plugin="submitFormMeaningPlugin">Loo uus termin ja mõiste</button>
+              <button th:if="${meaningId != null}" type="button" class="btn btn-primary ml-4" data-plugin="submitFormMeaningPlugin">Loo uus termin</button>
               <a th:if="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{/termsearch}">Tühista</a>
               <a th:unless="${#strings.isEmpty(backUri)}" class="btn btn-secondary ml-2" th:href="@{'/termsearch' + ${backUri}}">Tühista</a>
             </div>
@@ -74,7 +77,10 @@
         <div id="meanings" class="card-body" th:if="${not #lists.isEmpty(relationCandidates)}">
           <div style="width: 95%" class="border border-dark rounded mb-2 p-2" th:each="meaning : ${relationCandidates}">
             <div class="row mb-2">
-              <input type="radio" name="relatedMeaningId" class="ml-3" th:value="${meaning.meaningId}" th:checked="${#lists.size(relationCandidates) == 1}">
+              <input type="radio" name="relatedMeaningId" class="ml-3"
+                    th:value="${meaning.meaningId}"
+                    th:checked="${#lists.size(relationCandidates) == 1}"
+                    data-plugin="checkEnableSubmitButtonsPlugin">
             </div>
             <div class="row" th:if="${not #lists.isEmpty(meaning.definitionLangGroups)}">
               <div class="col-1 pr-0">

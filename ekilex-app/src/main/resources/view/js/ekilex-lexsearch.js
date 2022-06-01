@@ -1,26 +1,5 @@
 var viewType = '';
 
-$.fn.pagingInputPlugin = function () {
-	this.each(function() {
-		const input = $(this);
-		input.on('input', function () {
-			const inputPageChkLength = input.val().trim().length;
-			if (inputPageChkLength > 0) {
-				$('.paging-submit').css("visibility", "visible");
-			} else {
-				$('.paging-submit').css("visibility", "hidden");
-			}
-		});
-	
-		input.on('keydown', function(e) {
-			if (e.which === 13 || e.keyCode === 13) {
-				e.preventDefault();
-				input.siblings('.paging-submit').click();
-			}
-		})
-	})
-}
-
 $.fn.identificator = function() {
 	var main = $(this);
 	var parent = main.parents('.card-body:first');
@@ -287,13 +266,13 @@ function initializeSearch(type) {
 	// });
 
 	//$(document).on('keydown', '.paging-input', function(e) {
-	$('#results_div').on('keydown', '.paging-input', function (e) {
-		if (e.which === 13) {
-			e.preventDefault();
-			console.log(e);
-			$('[name="pagingBtn"]').last().trigger('click');
-		}
-	});
+		// $('#results_div').on('keydown', '.paging-input', function (e) {
+		// 	if (e.which === 13) {
+		// 		e.preventDefault();
+		// 		console.log(e);
+		// 		$('[name="pagingBtn"]').last().trigger('click');
+		// 	}
+		// });
 
 	// $('#results_div').on('click', '[name="pagingBtn"]', function () {
 	// 	//$(document).on('click', '[name="pagingBtn"]', function() {

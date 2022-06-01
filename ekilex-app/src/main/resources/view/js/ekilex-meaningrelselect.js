@@ -3,39 +3,44 @@ function initializeMeaningRelSelect() {
 	changeOppositeRelationSelectData(relationTypeSelect);
 	checkEnableSubmitButtons();
 
-	$('#chkNoRelation').change(function() {
-		if (this.checked) {
-			hideRelationSelect();
-		} else {
-			showRelationSelect();
-		}
-	});
+	// Moved to bottom of file as plugin
+	// $('#chkNoRelation').change(function() {
+	// 	if (this.checked) {
+	// 		hideRelationSelect();
+	// 	} else {
+	// 		showRelationSelect();
+	// 	}
+	// });
 
-	$(document).on("change", "select[name='relationType']", function() {
-		let relationTypeSelect = $(this);
-		changeOppositeRelationSelectData(relationTypeSelect);
-	});
+	// Moved to common as changeOppositeRelationSelectDataPlugin
+	// $(document).on("change", "select[name='relationType']", function() {
+	// 	let relationTypeSelect = $(this);
+	// 	changeOppositeRelationSelectData(relationTypeSelect);
+	// });
 
-	$(document).on("click", "[name='relatedMeaningId']", function() {
-		checkEnableSubmitButtons();
-	});
+	// Moved to bottom of file as plugin
+	// $(document).on("click", "[name='relatedMeaningId']", function() {
+	// 	checkEnableSubmitButtons();
+	// });
 
-	$("#submitDiv").find("button").click(function() {
-		submitFormMeaning();
-	});
+	// Moved to bottom of file as plugin
+	// $("#submitDiv").find("button").click(function() {
+	// 	submitFormMeaning();
+	// });
 
-	$("#submitWithRelationDiv").find("button").click(function() {
-		let createWordForm = $("#createWordForm");
-		if (checkRequiredFields(createWordForm)) {
-			createWordForm.find('select[name="oppositeRelationType"]').prop('disabled', false);
-			if ($(this).attr("name") === "importDataBtn") {
-				createWordForm.find('input[name="importMeaningData"]').val("true");
-				validateMeaningDataImportAndSubmitForm();
-			} else {
-				submitFormMeaning();
-			}
-		}
-	});
+	// Moved to bottom of file as plugin
+	// $("#submitWithRelationDiv").find("button").click(function() {
+	// 	let createWordForm = $("#createWordForm");
+	// 	if (checkRequiredFields(createWordForm)) {
+	// 		createWordForm.find('select[name="oppositeRelationType"]').prop('disabled', false);
+	// 		if ($(this).attr("name") === "importDataBtn") {
+	// 			createWordForm.find('input[name="importMeaningData"]').val("true");
+	// 			validateMeaningDataImportAndSubmitForm();
+	// 		} else {
+	// 			submitFormMeaning();
+	// 		}
+	// 	}
+	// });
 };
 
 function validateMeaningDataImportAndSubmitForm() {
@@ -108,3 +113,52 @@ function checkEnableSubmitButtons() {
 		$("#submitWithRelationDiv").find("button").removeAttr("disabled");
 	}
 };
+
+$.fn.chkNoRelationPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('change', function() {
+			if (this.checked) {
+				hideRelationSelect();
+			} else {
+				showRelationSelect();
+			}
+		});
+	});
+}
+
+$.fn.checkEnableSubmitButtonsPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			checkEnableSubmitButtons();
+		});
+	});
+}
+
+$.fn.submitFormMeaningPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			submitFormMeaning()
+		});
+	});
+}
+
+$.fn.submitWithRelationPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const createWordForm = obj.closest('#createWordForm');
+			if (checkRequiredFields(createWordForm)) {
+				createWordForm.find('select[name="oppositeRelationType"]').prop('disabled', false);
+				if (obj.attr("name") === "importDataBtn") {
+					createWordForm.find('input[name="importMeaningData"]').val("true");
+					validateMeaningDataImportAndSubmitForm();
+				} else {
+					submitFormMeaning();
+				}
+			}
+		});
+	});
+}

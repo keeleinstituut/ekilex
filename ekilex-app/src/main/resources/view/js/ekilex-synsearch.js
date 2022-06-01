@@ -34,18 +34,7 @@ function initializeSynSearch() {
 
 	// });
 
-	$.fn.updateTagCompletePlugin = function() {
-		this.each(function() {
-			const button = $(this);
-			button.on('click', function() {
-				let wordId = button.data('word-id');
-				let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
-				let callbackFunc = () => refreshSynDetails();
-				doPostRelationChange(actionUrl, callbackFunc);
-			})
-		})
-	}
-	
+	// Moved to end of file as a plugin
 	// $(document).on("click", "#activeTagCompleteBtn", function() {
 	// 	let wordId = $(this).data('word-id');
 	// 	let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
@@ -231,17 +220,19 @@ function initializeSynSearch() {
 		});
 	});
 
-	$(document).on("click", ".rel-status-btn", function() {
-		let status = $(this).data('status');
-		let id = $(this).data('id');
-		let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
+	// Moved to end of file as a plugin
+	// $(document).on("click", ".rel-status-btn", function() {
+	// 	let status = $(this).data('status');
+	// 	let id = $(this).data('id');
+	// 	let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
 
-		let callbackFunc = () => refreshSynDetails();
+	// 	let callbackFunc = () => refreshSynDetails();
 
-		doPostRelationChange(actionUrl, callbackFunc);
+	// 	doPostRelationChange(actionUrl, callbackFunc);
 
-	});
-
+	// });
+	
+	// Now in common file as changeItemOrderingPlugin
 	// $(document).on('click', '.order-up', function() {
 	// 	let orderingBtn = $(this);
 	// 	let orderingData = changeItemOrdering(orderingBtn, -1);
@@ -251,6 +242,7 @@ function initializeSynSearch() {
 	// 	}
 	// });
 
+	// Now in common file as changeItemOrderingPlugin
 	// $(document).on('click', '.order-down', function() {
 	// 	let orderingBtn = $(this);
 	// 	let orderingData = changeItemOrdering(orderingBtn, 1);
@@ -726,4 +718,29 @@ function updateWordSynRelationsStatusDeleted() {
 	let callbackFunc = () => refreshSynDetails();
 
 	doPostRelationChange(actionUrl, callbackFunc);
+}
+
+$.fn.updateTagCompletePlugin = function() {
+	this.each(function() {
+		const button = $(this);
+		button.on('click', function() {
+			let wordId = button.data('word-id');
+			let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+			let callbackFunc = () => refreshSynDetails();
+			doPostRelationChange(actionUrl, callbackFunc);
+		})
+	})
+}
+
+$.fn.changeSynRelationPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const status = obj.data('status');
+			const id = obj.data('id');
+			const actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
+			const callbackFunc = () => refreshSynDetails();
+			doPostRelationChange(actionUrl, callbackFunc);
+		})
+	});
 }
