@@ -96,20 +96,24 @@ const $wpm = {
       }
 
       plugin = plugin.replace(/ *\([^)]*\) */g, "");
-
-      $root.resizeArray.push( plugin );
-
-
-      try {
-          obj[plugin](attributes);
-      }
-      catch(err){
-          if( $wpm.debug ){
-             console.info("The plugin '"+plugin+"' does not exist! Maybe there's a typo in the plugin name?");
-             console.log(err);
-          }
-      }
-
+      
+      // Allows for adding multiple plugins to the same element
+      // Example syntax: data-plugin="examplePlugin, secondExamplePlugin,thirdExamplePlugin"
+      // Can use a space next to comma or leave it out
+      plugin.split(',').forEach(str => {
+         // Remove all whitespace
+         const splitPlugin = str.replace(/\s/g, '');
+         $root.resizeArray.push( splitPlugin );
+         try {
+            obj[splitPlugin](attributes);
+         }
+         catch(err){
+            if( $wpm.debug ){
+               console.info("The plugin '"+splitPlugin+"' does not exist! Maybe there's a typo in the plugin name?");
+               console.log(err);
+            }
+         }
+      })
    },
    
    
