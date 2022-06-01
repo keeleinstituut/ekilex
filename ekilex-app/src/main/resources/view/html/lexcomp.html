@@ -106,22 +106,6 @@
       </button>
     </div>
   </div>
-  <div class="hidden-buttons row" th:fragment="lexeme_publicity">
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl">Avalikkus</span>
-    </div>
-    <div class="col pl-0">
-      <span th:if="${lexeme.public}">avalik</span>
-      <span th:unless="${lexeme.public}">mitteavalik</span>
-      <button type="button" class="btn badge badge-primary"
-              title="Muuda"
-              data-toggle="modal"
-              th:data-target="${'#editLexemePublicityDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.crudGrant">
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
   <div class="hidden-buttons row" th:if="${lexeme.lexemeValueState != null}" th:fragment="lexeme_value_state">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Väärtusolek</span>

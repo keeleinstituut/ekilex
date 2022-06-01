@@ -4,6 +4,7 @@
 <body>
   <th:block th:fragment="lexeme_details_lite">
     <div class="px-3 pb-2 pt-2 border-bottom border-light details-closed">
+      <div th:replace="lexdialog :: edit_lexeme_publicity_dlg"></div>
       <div class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-4': ''">
         <div class="d-flex flex-row flex-nowrap align-items-start">
           <span th:if="${lexeme.levels != null}"
@@ -12,8 +13,15 @@
                 th:data-level2="${lexeme.level2}"
                 class="px-2 py-0 bg-light rounded font-weight-bold mr-2 levels-handle"
                 th:text="${lexeme.levels}"> </span>
+          <button class="btn text-gray" data-plugin="lexemePublicity"
+                  th:data-target="${'#editLexemePublicityDlg_' + lexeme.lexemeId}"
+                  th:data-edit-enabled="${#vars.lexeme.crudGrant}"
+                  th:data-public="${lexeme.public}"
+                  th:data-label="#{'boolean.public.' + ${lexeme.public}}">
+            <span name="icon-span"></span>
+          </button>
           <div>
-            <div class="d-flex flex-row"  th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
+            <div class="d-flex flex-row" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}">
               <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
               <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
               <div class="sorter-wrapper">
@@ -122,6 +130,13 @@
                 <span th:text="${lexeme.levels}"></span>
               </span>
             </span>
+            <button class="btn text-gray" data-plugin="lexemePublicity"
+                    th:data-target="${'#editLexemePublicityDlg_' + lexeme.lexemeId}"
+                    th:data-edit-enabled="${#vars.lexeme.crudGrant}"
+                    th:data-public="${lexeme.public}"
+                    th:data-label="#{'boolean.public.' + ${lexeme.public}}">
+              <span name="icon-span"></span>
+            </button>
             <div class="w-100" style="margin-top:5px;">
               <div th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" class="orderable d-flex flex-row mr-2 w-100">
                 <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2 flex-shrink-0" style="width: 55px; white-space: nowrap;">
@@ -283,7 +298,6 @@
           <th:block th:replace="lexcomp :: lexeme_tags"></th:block>
           <th:block th:replace="lexcomp :: lexeme_complexity"></th:block>
           <th:block th:replace="lexcomp :: lexeme_proficiency_level"></th:block>
-          <th:block th:replace="lexcomp :: lexeme_publicity"></th:block>
           <th:block th:replace="lexcomp :: lexeme_value_state"></th:block>
           <th:block th:replace="lexcomp :: lexeme_grammar"></th:block>
           <th:block th:replace="lexcomp :: lexeme_weight"></th:block>

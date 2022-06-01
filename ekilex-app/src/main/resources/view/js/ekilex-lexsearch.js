@@ -26,22 +26,26 @@ $.fn.identificator = function() {
 	main.tooltip();
 }
 
-$.fn.status = function() {
-	var main = $(this);
-	var parent = main.parents('.card-body:first');
-	var source = parent.find('[data-id="status"]');
-	var label = source.children('span').text();
-	var target = source.attr('data-target');
-	if (label === 'avalik') {
-		main.find('span').addClass('fa-unlock');
+$.fn.lexemePublicity = function() {
+	let publicityBtn = $(this);
+	let iconSpan = publicityBtn.find('span[name="icon-span"]');
+	let label = publicityBtn.data('label');
+	let target = publicityBtn.data('target');
+	let isEditEnabled = publicityBtn.data('edit-enabled');
+	let isPublic = publicityBtn.data('public');
+
+	if (isPublic) {
+		iconSpan.addClass('fa fa-unlock');
 	} else {
-		main.find('span').addClass('fa-lock');
+		iconSpan.addClass('fa fa-lock');
 	}
-	main.on('click', function(e) {
+	publicityBtn.attr('title', label).tooltip();
+	publicityBtn.on('click', function(e) {
 		e.preventDefault();
-		$(target).modal('show', main);
+		if (isEditEnabled) {
+			$(target).modal('show', publicityBtn);
+		}
 	});
-	main.attr('title', label).tooltip();
 }
 
 $.fn.valueStatus = function() {
