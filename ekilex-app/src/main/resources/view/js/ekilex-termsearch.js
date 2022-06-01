@@ -119,32 +119,6 @@ $.fn.queueTermSearchResults = function() {
 	});
 }
 
-// TODO not in use?
-// function loadMeaningDetails(meaningId) {
-// 	$("[id^='meaning_select_point_']").hide();
-// 	$("[id^='select_wait_']").hide();
-// 	$("#select_wait_" + meaningId).show();
-// 	openWaitDlg();
-// 	var meaningDetailsUrl = applicationUrl + 'meaningdetails/' + meaningId;
-// 	$.get(meaningDetailsUrl).done(function(data) {
-// 		var detailsDiv = $('#details-area');
-// 		var scrollPos = detailsDiv.scrollTop();
-// 		detailsDiv.replaceWith(data);
-// 		detailsDiv = $('#details-area');
-// 		decorateSourceLinks(detailsDiv);
-// 		initClassifierAutocomplete();
-// 		detailsDiv.scrollTop(scrollPos);
-// 		$("#select_wait_" + meaningId).hide();
-// 		$("#meaning_select_point_" + meaningId).show();
-// 		closeWaitDlg();
-// 		$('[data-toggle="tooltip"]').tooltip();
-// 	}).fail(function(data) {
-// 		console.log(data);
-// 		closeWaitDlg();
-// 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
-// 	});
-// };
-
 function refreshDetailsTermsSearch() {
 	var refreshButton = $('#refresh-details');
 	refreshButton.trigger('click');
@@ -168,11 +142,9 @@ function dublicateMeaning() {
 	$.post(url).done(function(data) {
 		let response = JSON.parse(data);
 		if (response.status === 'ok') {
-			openMessageDlg(response.message);
 			let duplicateMeaningId = response.duplicateMeaningId;
-			setTimeout(function() {
-				window.location = applicationUrl + 'meaningback/' + duplicateMeaningId;
-			}, 1500);
+			loadDetails(duplicateMeaningId, 'compare');
+			openMessageDlg(response.message);
 		} else {
 			openAlertDlg(response.message);
 		}
