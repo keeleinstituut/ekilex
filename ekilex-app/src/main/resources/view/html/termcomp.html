@@ -215,7 +215,7 @@
           th:classappend="${resultRowIter.last} ? '' : 'border-bottom'" >
           <button
             type="button"
-            data-plugin="contextmenu"
+            data-plugin="contextmenu, loadDetailsPlugin"
             data-contextmenu:compare="Ava uues paneelis"
             name="details-btn" th:data-id="${resultRow.meaningId}" class="btn btn-block ml-n1" style="color: inherit; text-decoration: none;">
             <span th:text="${resultRow.meaningId}" class="text-monospace float-right"></span>
@@ -370,7 +370,8 @@
           <span th:text="${viewUtil.getLangIso2(definitionLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${definitionLangGroup.lang}"
-                  th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  data-plugin="langCollapsePlugin">
             <i th:class="${definitionLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
           </button>
         </div>
@@ -568,7 +569,8 @@
           <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  data-plugin="langCollapsePlugin">
             <i th:class="${noteLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
           </button>
         </div>
@@ -673,7 +675,8 @@
           <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  data-plugin="langCollapsePlugin">
             <i th:class="${noteLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
           </button>
         </div>
@@ -989,7 +992,9 @@
           </td>
           <td class="pr-3">
             <th:block th:each="relation, relIter : ${relations}">
-              <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="details-btn" data-behaviour="replace">
+              <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="details-btn"
+                    data-behaviour="replace"
+                    data-plugin="loadDetailsPlugin">
                 <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                 <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
                 <th:block th:each="datasetCode, dsIter : ${relation.datasetCodes}">
@@ -1518,7 +1523,9 @@
             <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.lexeme.crudGrant"></th:block>
           </td>
           <td class="pr-3 invisible-buttons">
-            <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="details-btn" data-behaviour="replace">
+            <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="details-btn"
+                  data-behaviour="replace"
+                  data-plugin="loadDetailsPlugin">
               <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
             </button>
             <button type="button" class="btn badge badge-warning"
@@ -1557,7 +1564,8 @@
           <span th:text="${viewUtil.getLangIso2(noteLangGroup.lang)}" class="mr-2"></span>
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  data-plugin="langCollapsePlugin">
             <i th:class="${noteLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
           </button>
         </div>

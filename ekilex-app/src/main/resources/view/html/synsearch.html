@@ -34,7 +34,9 @@
   </div>
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="syn-details-area" class="h-100" data-rel="details-area">
-      <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn" data-refresh></button>
+      <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn"
+            data-refresh
+            data-plugin="loadDetailsPlugin"></button>
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="px-2 d-flex flex-row align-items-center py-2">
@@ -44,6 +46,7 @@
                     th:data-word-id="${wordId}"
                     th:disabled="${details.activeTagComplete}"
                     th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
+                    data-plugin="updateTagCompletePlugin"
                     sec:authorize="#vars.details.word.subGrant">Märgi tehtuks
             </button>
             <div th:replace="syncomp :: syn_logdata"></div>
@@ -150,7 +153,9 @@
                       </span>
                     </button>
                     <span class="border-left py-2"></span>
-                    <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0" th:disabled="${markedSynMeaningId != null}">
+                    <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0"
+                        th:disabled="${markedSynMeaningId != null}"
+                        data-plugin="enableKeyboardModePlugin">
                       <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
                         <i class="action-icon fa fa-keyboard-o" aria-hidden="true"></i>
                       </span>

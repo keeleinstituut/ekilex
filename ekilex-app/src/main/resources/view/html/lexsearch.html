@@ -36,7 +36,10 @@
   </div>
   <th:block th:fragment="word_details" th:if="${details != null}">
     <div th:data-id="${wordId}" id="details-area" class="h-100" data-rel="details-area" th:data-word="${details.word.wordValue}">
-      <button id="refresh-details" hidden th:data-id="${wordId}" name="details-btn" data-behaviour="replace" data-refresh></button>
+      <button id="refresh-details" hidden th:data-id="${wordId}" name="details-btn"
+            data-behaviour="replace"
+            data-refresh
+            data-plugin="loadDetailsPlugin"></button>
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="border-bottom px-2  py-2">
@@ -185,8 +188,7 @@
                           <div class="action-buttons-anchor">
                             <span th:utext="${odWordRecommendation.valuePrese}"></span>
                             <span class="ctxt" th:text="'[' + ${odWordRecommendation.modifiedBy} + ']'" th:if="${odWordRecommendation.modifiedBy != null}"></span>
-                            <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'" data-plugin="complexity"></span>
-                            <span class="ctxt" th:text="'(' + ${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odWordRecommendation.modifiedOn != null}"></span>
+                            <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'"></span>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"
                                       title="Muuda"
@@ -332,7 +334,7 @@
                                 <button type="button"
                                         class="btn btn-link btn-xs"
                                         th:data-id="${relation.wordId}"
-                                        data-plugin="contextmenu"
+                                        data-plugin="contextmenu, loadDetailsPlugin"
                                         data-contextmenu:compare="Ava uues paneelis"
                                         data-behaviour="replace"
                                         name="details-btn">
@@ -365,7 +367,7 @@
                               <button type="button"
                                       class="btn btn-link btn-text-wrap btn-xs"
                                       th:data-id="${relation.wordId}"
-                                      data-plugin="contextmenu"
+                                      data-plugin="contextmenu, loadDetailsPlugin"
                                       data-contextmenu:compare="Ava uues paneelis"
                                       data-behaviour="replace"
                                       name="details-btn">
@@ -420,7 +422,7 @@
                             <button type="button"
                               class="btn btn-link btn-text-wrap btn-xs"
                               th:data-id="${relation.wordId}"
-                              data-plugin="contextmenu"
+                              data-plugin="contextmenu, loadDetailsPlugin"
                               data-contextmenu:compare="Ava uues paneelis"
                               data-behaviour="replace"
                               name="details-btn">
@@ -462,7 +464,7 @@
                             <button type="button"
                                     class="btn btn-link btn-xs"
                                     th:data-id="${wordEtymRel.relatedWordId}"
-                                    data-plugin="contextmenu"
+                                    data-plugin="contextmenu, loadDetailsPlugin"
                                     data-contextmenu:compare="Ava uues paneelis"
                                     data-behaviour="replace"
                                     name="details-btn">

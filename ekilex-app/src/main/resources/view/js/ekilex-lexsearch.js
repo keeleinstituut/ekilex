@@ -1,15 +1,24 @@
 var viewType = '';
 
 $.fn.pagingInputPlugin = function () {
-	let obj = $(this);
-	obj.on('input', function () {
-		let inputPageChkLength = obj.val().trim().length;
-		if (inputPageChkLength > 0) {
-			$('.paging-submit').css("visibility", "visible");
-		} else {
-			$('.paging-submit').css("visibility", "hidden");
-		}
-	});
+	this.each(function() {
+		const input = $(this);
+		input.on('input', function () {
+			const inputPageChkLength = input.val().trim().length;
+			if (inputPageChkLength > 0) {
+				$('.paging-submit').css("visibility", "visible");
+			} else {
+				$('.paging-submit').css("visibility", "hidden");
+			}
+		});
+	
+		input.on('keydown', function(e) {
+			if (e.which === 13 || e.keyCode === 13) {
+				e.preventDefault();
+				input.siblings('.paging-submit').click();
+			}
+		})
+	})
 }
 
 $.fn.identificator = function() {
@@ -73,138 +82,209 @@ function initializeSearch(type) {
 		}
 	});
 
+	// This seems to be for a display: none element
 	$(document).on('change', '[name="resultLang"]', function() {
 		$(this).closest('form').submit();
 	});
 
+	// Same as resultLang
 	$(document).on('change', '[name="resultMode"]', function() {
 		$(this).closest('form').submit();
 	});
+	
+	// Moved to common under loadDetailsPlugin
+	// $(document).on("click", ":button[name='details-btn'], #refresh-details", function() {
+	// 	const wordId = $(this).data('id');
+	// 	const behaviour = $(this).data('behaviour') || false;
+	// 	const lastWordId = behaviour === 'replace' ? $(this).parents('#details-area:first').attr('data-id') : false;
+	// 	loadDetails(wordId, behaviour, lastWordId);
+	// });
 
-	$(document).on("click", ":button[name='details-btn'], #refresh-details", function() {
-		const wordId = $(this).data('id');
-		const behaviour = $(this).data('behaviour') || false;
-		const lastWordId = behaviour === 'replace' ? $(this).parents('#details-area:first').attr('data-id') : false;
-		loadDetails(wordId, behaviour, lastWordId);
-	});
-
-	$(document).on("click", "#refresh-open", function(e) {
-		e.preventDefault();
-		const lexemeId = $(this).data('id');
-		const lexemeLevels = $(this).data('lex-levels');
-		loadLexemeDetails(lexemeId, lexemeLevels, 'full');
-	});
-
-	$(document).on("click", ":button[name='lexeme-details-btn']", function() {
-		let lexemeId = $(this).data('id');
-		let lexemeLevels = $(this).data('lex-levels');
-		let composition = $(this).data('composition');
-		loadLexemeDetails(lexemeId, lexemeLevels, composition);
-	});
-
-	$(document).on('click', '.order-up', function() {
-		let orderingBtn = $(this);
-		let orderingData = changeItemOrdering(orderingBtn, -1);
-		postJson(applicationUrl + 'update_ordering', orderingData);
-		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
-		}
-	});
-
-	$(document).on('click', '.order-down', function() {
-		let orderingBtn = $(this);
-		let orderingData = changeItemOrdering(orderingBtn, 1);
-		postJson(applicationUrl + 'update_ordering', orderingData);
-		if (orderingBtn.hasClass('do-refresh')) {
-			refreshDetailsSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
-		}
-	});
-
-	$(document).on('click', '[name="lang-collapse-btn"]', function() {
-		const btn = $(this);
-		let lang = btn.attr("data-lang");
-		let itemData = {
-			opCode: "user_lang_selection",
-			code: lang
-		};
-		let successCallbackName = $(this).attr("data-callback");
-		let successCallbackFunc = () => eval(successCallbackName);
-		postJson(applicationUrl + 'update_item', itemData).done(function() {
-
-			if (viewType === 'term') {
-				refreshDetailsSearch(btn.parents('[data-rel="details-area"]').attr('data-id'));
-			} else {
-				successCallbackFunc();
-			}
+	$.fn.refreshOpenPlugin = function() {
+		this.each(function() {
+			const obj = $(this);
+			obj.on('click', function(e) {
+				e.preventDefault();
+				const lexemeId = obj.data('id');
+				const lexemeLevels = obj.data('lex-levels');
+				loadLexemeDetails(lexemeId, lexemeLevels, 'full');
+			});
 		});
-	});
+	}
+	
+	// $(document).on("click", "#refresh-open", function(e) {
+	// 	e.preventDefault();
+	// 	const lexemeId = $(this).data('id');
+	// 	const lexemeLevels = $(this).data('lex-levels');
+	// 	loadLexemeDetails(lexemeId, lexemeLevels, 'full');
+	// });
+	
+	$.fn.openLexemeDetailsPlugin = function() {
+		this.each(function() {
+			const obj = $(this);
+			obj.on('click', function() {
+				const lexemeId = obj.data('id');
+				const lexemeLevels = obj.data('lex-levels');
+				const composition = obj.data('composition');
+				loadLexemeDetails(lexemeId, lexemeLevels, composition);
+			})
+		})
+	}
 
-	$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
-		let dlg = $(this);
-		let link = $(e.relatedTarget);
-		let url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
-		});
-	});
+	// $(document).on("click", ":button[name='lexeme-details-btn']", function() {
+	// 	let lexemeId = $(this).data('id');
+	// 	let lexemeLevels = $(this).data('lex-levels');
+	// 	let composition = $(this).data('composition');
+	// 	loadLexemeDetails(lexemeId, lexemeLevels, composition);
+	// });
+		
+	// Both order functions moved to common under the same plugin
+	// $(document).on('click', '.order-up', function() {
+	// 	let orderingBtn = $(this);
+	// 	let orderingData = changeItemOrdering(orderingBtn, -1);
+	// 	postJson(applicationUrl + 'update_ordering', orderingData);
+	// 	if (orderingBtn.hasClass('do-refresh')) {
+	// 		refreshDetailsSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
+	// 	}
+	// });
 
-	$(document).on('show.bs.modal', '#meaningActivityLogDlg', function(e) {
-		var dlg = $(this);
-		var link = $(e.relatedTarget);
-		var url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
-		});
-	});
+	// $(document).on('click', '.order-down', function() {
+	// 	let orderingBtn = $(this);
+	// 	let orderingData = changeItemOrdering(orderingBtn, 1);
+	// 	postJson(applicationUrl + 'update_ordering', orderingData);
+	// 	if (orderingBtn.hasClass('do-refresh')) {
+	// 		refreshDetailsSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
+	// 	}
+	// });
 
-	$(document).on('click', '[id^=duplicateLexemeBtn_]', function() {
-		const obj = $(this);
-		var lexemeId = obj.data('lexeme-id');
-		let url = applicationUrl + 'lexduplicate/' + lexemeId;
-		$.post(url).done(function(data) {
-			let response = JSON.parse(data);
-			if (response.status === 'ok') {
-				openMessageDlg(response.message);
-				refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
-			} else {
-				openAlertDlg(response.message);
-			}
-		}).fail(function(data) {
-			openAlertDlg("Tähenduse dubleerimine ebaõnnestus");
-			console.log(data);
-		});
-	});
+	// Plugin moved to common under langCollapsePlugin
+	// $(document).on('click', '[name="lang-collapse-btn"]', function() {
+	// 	const btn = $(this);
+	// 	let lang = btn.attr("data-lang");
+	// 	let itemData = {
+	// 		opCode: "user_lang_selection",
+	// 		code: lang
+	// 	};
+	// 	let successCallbackName = $(this).attr("data-callback");
+	// 	let successCallbackFunc = () => eval(successCallbackName);
+	// 	postJson(applicationUrl + 'update_item', itemData).done(function() {
 
-	$(document).on('click', '[id^=duplicateEmptyLexemeBtn_]', function() {
-		const obj = $(this);
-		var lexemeId = obj.data('lexeme-id');
-		var url = applicationUrl + 'emptylexduplicate/' + lexemeId;
-		$.post(url).done(function(data) {
-			var response = JSON.parse(data);
-			openMessageDlg(response.message);
-			refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
-		}).fail(function(data) {
-			openAlertDlg("Tähenduse lisamine ebaõnnestus");
-			console.log(data);
-		});
-	});
+	// 		if (viewType === 'term') {
+	// 			refreshDetailsSearch(btn.parents('[data-rel="details-area"]').attr('data-id'));
+	// 		} else {
+	// 			successCallbackFunc();
+	// 		}
+	// 	});
+	// });
 
-	$(document).on('click', '[id^=duplicateMeaningWordAndLexemeBtn_]', function() {
-		let lexemeId = $(this).data('lexeme-id');
-		let successCallbackName = $(this).data("callback");
-		let successCallbackFunc = () => eval(successCallbackName);
-		let url = applicationUrl + 'meaningwordandlexduplicate/' + lexemeId;
-		$.post(url).done(function() {
-			successCallbackFunc();
-		}).fail(function(data) {
-			console.log(data);
-			openAlertDlg("Vaste dubleerimine ebaõnnestus");
+	// Plugin moved to common under activityLogDlgPlugin
+	// $(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
+	// 	let dlg = $(this);
+	// 	let link = $(e.relatedTarget);
+	// 	let url = link.attr('href');
+	// 	dlg.find('.close').focus();
+	// 	dlg.find('.modal-body').html(null);
+	// 	$.get(url).done(function(data) {
+	// 		dlg.find('.modal-body').html(data);
+	// 	});
+	// });
+
+	// Plugin moved to common under activityLogDlgPlugin
+	// $(document).on('show.bs.modal', '#meaningActivityLogDlg', function(e) {
+	// 	var dlg = $(this);
+	// 	var link = $(e.relatedTarget);
+	// 	var url = link.attr('href');
+	// 	dlg.find('.close').focus();
+	// 	dlg.find('.modal-body').html(null);
+	// 	$.get(url).done(function(data) {
+	// 		dlg.find('.modal-body').html(data);
+	// 	});
+	// });
+	$.fn.duplicateLexemePlugin = function() {
+		this.each(function() {
+			const obj = $(this);
+			obj.on('click', function() {
+				// Check whether id contains the string Empty
+				const urlString = obj.attr('id').indexOf('Empty') !== -1 ? 'emptylexduplicate/' : 'lexduplicate/';
+				const lexemeId = obj.data('lexeme-id');
+				const url = applicationUrl + urlString + lexemeId;
+				$.post(url).done(function(data) {
+					const response = JSON.parse(data);
+					if (response.status === 'ok') {
+						openMessageDlg(response.message);
+						refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+					} else {
+						openAlertDlg(response.message);
+					}
+				}).fail(function(data) {
+					openAlertDlg("Tähenduse dubleerimine ebaõnnestus");
+					console.log(data);
+				});
+			});
 		});
-	});
+	}
+
+	// $(document).on('click', '[id^=duplicateLexemeBtn_]', function() {
+	// 	const obj = $(this);
+	// 	var lexemeId = obj.data('lexeme-id');
+	// 	let url = applicationUrl + 'lexduplicate/' + lexemeId;
+	// 	$.post(url).done(function(data) {
+	// 		let response = JSON.parse(data);
+	// 		if (response.status === 'ok') {
+	// 			openMessageDlg(response.message);
+	// 			refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+	// 		} else {
+	// 			openAlertDlg(response.message);
+	// 		}
+	// 	}).fail(function(data) {
+	// 		openAlertDlg("Tähenduse dubleerimine ebaõnnestus");
+	// 		console.log(data);
+	// 	});
+	// });
+
+	// $(document).on('click', '[id^=duplicateEmptyLexemeBtn_]', function() {
+	// 	const obj = $(this);
+	// 	var lexemeId = obj.data('lexeme-id');
+	// 	var url = applicationUrl + 'emptylexduplicate/' + lexemeId;
+	// 	$.post(url).done(function(data) {
+	// 		var response = JSON.parse(data);	
+	// 		openMessageDlg(response.message);
+	// 		refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+	// 	}).fail(function(data) {
+	// 		openAlertDlg("Tähenduse lisamine ebaõnnestus");
+	// 		console.log(data);
+	// 	});
+	// });
+
+	$.fn.duplicateMeaningWordAndLexemePlugin = function() {
+		this.each(function() {
+			const obj = $(this);
+			obj.on('click', function() {
+				const successCallbackName = obj.data("callback");
+				const successCallbackFunc = () => eval(successCallbackName);
+				const url = applicationUrl + 'meaningwordandlexduplicate/' + lexemeId;
+				$.post(url).done(function() {
+					successCallbackFunc();
+				}).fail(function(data) {
+					console.log(data);
+					openAlertDlg("Vaste dubleerimine ebaõnnestus");
+				});
+			})
+		});
+	}
+
+	// $(document).on('click', '[id^=duplicateMeaningWordAndLexemeBtn_]', function() {
+	// 	let lexemeId = $(this).data('lexeme-id');
+	// 	let successCallbackName = $(this).data("callback");
+	// 	let successCallbackFunc = () => eval(successCallbackName);
+	// 	let url = applicationUrl + 'meaningwordandlexduplicate/' + lexemeId;
+	// 	$.post(url).done(function() {
+	// 		successCallbackFunc();
+	// 	}).fail(function(data) {
+	// 		console.log(data);
+	// 		openAlertDlg("Vaste dubleerimine ebaõnnestus");
+	// 	});
+	// });
 
 	//$(document).on('keydown', '.paging-input', function(e) {
 	$('#results_div').on('keydown', '.paging-input', function (e) {
@@ -215,44 +295,43 @@ function initializeSearch(type) {
 		}
 	});
 
-	$('#results_div').on('click', '[name="pagingBtn"]', function () {
-		//$(document).on('click', '[name="pagingBtn"]', function() {
-		openWaitDlg();
-
-		let url = applicationUrl + "lex_paging";
-		if (viewType === 'term') {
-			url = applicationUrl + "term_paging";
-		} else if (viewType === 'lim_term') {
-			url = applicationUrl + "lim_term_paging";
-		}
-		let button = $(this);
-		let direction = button.data("direction");
-		let form = button.closest('form');
-		if (direction === "page") {
-			//form.find('input[name="direction"]').val('next');
-			//let inputPageValue = $(".paging-input").val().trim();
-			//let tulemus = ((inputPageValue - 1) * 50) - 50;
-			//form.find('input[name="offset"]').val(tulemus);
-			//
-			//form.find('input[name="userInputPage"]').val(inputPageValue)
-		} else {
-			form.find('input[name="direction"]').val(direction);
-		}
-		$.ajax({
-			url: url,
-			data: form.serialize(),
-			method: 'POST',
-		}).done(function (data) {
-			$('#results_div').html(data);
-			$('#results_div').parent().scrollTop(0);
-			$wpm.bindObjects();
-		}).fail(function (data) {
-			console.log(data);
-			openAlertDlg('Lehekülje muutmine ebaõnnestus');
-		}).always(function () {
-			closeWaitDlg();
-		})
-	});
+	// $('#results_div').on('click', '[name="pagingBtn"]', function () {
+	// 	//$(document).on('click', '[name="pagingBtn"]', function() {
+	// 	openWaitDlg();
+	// 	let url = applicationUrl + "lex_paging";
+	// 	if (viewType === 'term') {
+	// 		url = applicationUrl + "term_paging";
+	// 	} else if (viewType === 'lim_term') {
+	// 		url = applicationUrl + "lim_term_paging";
+	// 	}
+	// 	let button = $(this);
+	// 	let direction = button.data("direction");
+	// 	let form = button.closest('form');
+	// 	if (direction === "page") {
+	// 		//form.find('input[name="direction"]').val('next');
+	// 		//let inputPageValue = $(".paging-input").val().trim();
+	// 		//let tulemus = ((inputPageValue - 1) * 50) - 50;
+	// 		//form.find('input[name="offset"]').val(tulemus);
+	// 		//
+	// 		//form.find('input[name="userInputPage"]').val(inputPageValue)
+	// 	} else {
+	// 		form.find('input[name="direction"]').val(direction);
+	// 	}
+	// 	$.ajax({
+	// 		url: url,
+	// 		data: form.serialize(),
+	// 		method: 'POST',
+	// 	}).done(function (data) {
+	// 		$('#results_div').html(data);
+	// 		$('#results_div').parent().scrollTop(0);
+	// 		$wpm.bindObjects();
+	// 	}).fail(function (data) {
+	// 		console.log(data);
+	// 		openAlertDlg('Lehekülje muutmine ebaõnnestus');
+	// 	}).always(function () {
+	// 		closeWaitDlg();
+	// 	})
+	// });
 	//};
 	$(document).on("click", "#activeTagCompleteBtn", function() {
 		const obj = $(this);

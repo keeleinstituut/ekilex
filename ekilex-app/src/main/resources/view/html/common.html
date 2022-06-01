@@ -209,14 +209,18 @@
     </nav>
   </th:block>
   <th:block th:fragment="ordering_buttons(itemIter)">
-    <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left" title="Muuda järjestust">
+    <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left"
+          title="Muuda järjestust"
+          data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>
     </button>
-    <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right" title="Muuda järjestust">
+    <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right"
+          title="Muuda järjestust"
+          data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-down" aria-hidden="true"></i>
     </button>
   </th:block>
-  <div id="wordActivityLogDlg" class="modal" role="dialog">
+  <div id="wordActivityLogDlg" class="modal" role="dialog" data-plugin="activityLogDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -226,7 +230,7 @@
       </div>
     </div>
   </div>
-  <div id="meaningActivityLogDlg" class="modal" role="dialog">
+  <div id="meaningActivityLogDlg" class="modal" role="dialog" data-plugin="activityLogDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">

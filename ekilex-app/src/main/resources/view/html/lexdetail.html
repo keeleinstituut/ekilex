@@ -39,7 +39,7 @@
                           th:data-id="${synWord.wordId}"
                           name="details-btn"
                           data-behaviour="replace"
-                          data-plugin="contextmenu"
+                          data-plugin="contextmenu, loadDetailsPlugin"
                           data-contextmenu:compare="Ava uues paneelis">
                           <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
                           <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
@@ -58,7 +58,8 @@
             <b th:text="${lexeme.datasetName}" class="mr-2"></b>
             <button type="button" name="lexeme-details-btn"
                     class="btn btn-secondary btn-sm btn-toggle" title="Näita detaile"
-                    th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="full">
+                    th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="full"
+                    data-plugin="openLexemeDetailsPlugin">
               <i class="fa fa-angle-down" aria-hidden="true"></i>
             </button>
           </div>
@@ -105,11 +106,15 @@
       <div th:replace="lexdialog :: edit_lexeme_levels_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_complexity_dlg"></div>
       <div th:replace="lexdialog :: edit_lexeme_weight_dlg"></div>
-      <button th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" style="display: none;" id="refresh-open"></button>
+      <button th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}"
+            style="display: none;"
+            id="refresh-open"
+            data-plugin="refreshOpenPlugin"></button>
       <div class="card-body">
         <button type="button" name="lexeme-details-btn"
                 class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
-                th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="lite">
+                th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="lite"
+                data-plugin="openLexemeDetailsPlugin">
           <i class="fa fa-angle-up" aria-hidden="true"></i>
         </button>
         <div class="d-flex flex-row align-items-center flex-wrap">
@@ -177,7 +182,7 @@
                                   th:data-id="${synWord.wordId}"
                                   name="details-btn"
                                   data-behaviour="replace"
-                                  data-plugin="contextmenu"
+                                  data-plugin="contextmenu, loadDetailsPlugin"
                                   data-contextmenu:compare="Ava uues paneelis">
                             <small class="font-weight-bold text-dark" th:text="${synWord.lexemeLevels}" th:if="${not #strings.isEmpty(synWord.lexemeLevels)}"></small>
                             <span th:utext="${viewUtil.getWordValueMarkup(synWord)}" th:styleappend="${isMeaningRelSyn ? 'color: #00874F' : ''}"></span>
@@ -200,7 +205,8 @@
                                       th:data-lexeme-id="${synWord.lexemeId}"
                                       class="btn badge badge-primary"
                                       title="Tee vastest duplikaat"
-                                      sec:authorize="#vars.lexeme.crudGrant">
+                                      sec:authorize="#vars.lexeme.crudGrant"
+                                      data-plugin="duplicateMeaningWordAndLexemePlugin">
                                 <i class="fa fa-clone" aria-hidden="true"></i>
                               </button>
                               <button type="button" class="btn badge badge-warning"
@@ -245,15 +251,17 @@
             <button th:id="${'duplicateLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
                     title="Tee duplikaat ilmikust ja temaga seotud elementidest"
                     th:data-lexeme-id="${lexeme.lexemeId}"
-                    sec:authorize="#vars.lexeme.crudGrant">Duplikaat</button>
+                    sec:authorize="#vars.lexeme.crudGrant"
+                    data-plugin="duplicateLexemePlugin">Duplikaat</button>
             <button class="btn btn-sm btn-primary" data-toggle="modal"
                     data-target="#newWordDlg"
                     th:data-meaning-id="${lexeme.meaningId}"
                     sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Uus keelend</button>
             <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
-                    title="Loo uus ilmik ja tähendus"
+                    title="Loo uus ilmik ja tähendus" 
                     th:data-lexeme-id="${lexeme.lexemeId}"
-                    sec:authorize="#vars.lexeme.crudGrant">Uus tähendus</button>
+                    sec:authorize="#vars.lexeme.crudGrant"
+                    data-plugin="duplicateLexemePlugin">Uus tähendus</button>
             <span class="dropdown" sec:authorize="#vars.lexeme.crudGrant">
               <button class="btn btn-warning font-weight-bold btn-sm" id="deleteButton" type="button" data-toggle="dropdown" aria-haspopup="true"
                       aria-expanded="false">Kustuta</button>

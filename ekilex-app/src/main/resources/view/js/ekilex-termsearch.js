@@ -1,42 +1,41 @@
 /*redundant*/
 // add on click handlers to details buttons in search result table
 function initializeTermSearch() {
+	// $(document).on('click', '[name="lang-collapse-btn"]', function() {
+	// 	let lang = $(this).attr("data-lang");
+	// 	let itemData = {
+	// 		opCode: "user_lang_selection",
+	// 		code: lang
+	// 	};
+	// 	postJson(applicationUrl + 'update_item', itemData).done(function(data) {
+	// 		refreshDetailsTermsSearch();
+	// 	});
+	// });
 
-	$(document).on('click', '[name="lang-collapse-btn"]', function() {
-		let lang = $(this).attr("data-lang");
-		let itemData = {
-			opCode: "user_lang_selection",
-			code: lang
-		};
-		postJson(applicationUrl + 'update_item', itemData).done(function(data) {
-			refreshDetailsTermsSearch();
-		});
-	});
+	// $(document).on('click', '[name="pagingBtn"]', function() {
+	// 	openWaitDlg();
+	// 	let url = applicationUrl + "term_paging";
+	// 	let button = $(this);
+	// 	let direction = button.data("direction");
+	// 	let form = button.closest('form');
+	// 	form.find('input[name="direction"]').val(direction);
 
-	$(document).on('click', '[name="pagingBtn"]', function() {
-		openWaitDlg();
-		let url = applicationUrl + "term_paging";
-		let button = $(this);
-		let direction = button.data("direction");
-		let form = button.closest('form');
-		form.find('input[name="direction"]').val(direction);
+	// 	$.ajax({
+	// 		url: url,
+	// 		data: form.serialize(),
+	// 		method: 'POST',
+	// 	}).done(function (data) {
+	// 		closeWaitDlg();
+	// 		$('#results_div').html(data);
+	// 		$('#results_div').parent().scrollTop(0);
+	// 		$('#details-area').empty();
+	// 	}).fail(function (data) {
+	// 		console.log(data);
+	// 		closeWaitDlg();
+	// 		openAlertDlg('Lehekülje muutmine ebaõnnestus');
+	// 	});
 
-		$.ajax({
-			url: url,
-			data: form.serialize(),
-			method: 'POST',
-		}).done(function (data) {
-			closeWaitDlg();
-			$('#results_div').html(data);
-			$('#results_div').parent().scrollTop(0);
-			$('#details-area').empty();
-		}).fail(function (data) {
-			console.log(data);
-			closeWaitDlg();
-			openAlertDlg('Lehekülje muutmine ebaõnnestus');
-		});
-
-	});
+	// });
 
 	$(document).on("click", "#activeTagCompleteBtn", function() {
 		let meaningId = $(this).data('meaning-id');

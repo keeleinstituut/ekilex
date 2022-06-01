@@ -15,7 +15,7 @@
           <li th:id="${'word-result-' + word.wordId}" class="list-group-item search-result-item border-left-0 border-right-0 rounded-0 p-0">
             <button
               type="button"
-              data-plugin="contextmenu"
+              data-plugin="contextmenu, loadDetailsPlugin"
               data-contextmenu:compare="Ava uues paneelis"
               class="search-result-btn btn btn-block p-2 text-left position-relative rounded-0"
               th:data-id="${word.wordId}"
@@ -661,7 +661,8 @@
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${definitionLangGroup.lang}"
-                  th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  data-plugin="langCollapsePlugin">
             <i th:class="${definitionLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>
         </div>
@@ -858,7 +859,6 @@
                 <span th:utext="${odLexemeRecommendation.valuePrese}"></span>
                 <span class="ctxt" th:text="'[' + ${odLexemeRecommendation.modifiedBy} + ']'" th:if="${odLexemeRecommendation.modifiedBy != null}"></span>
                 <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odLexemeRecommendation.complexity}} + ')'" data-plugin="complexity"></span>
-                <span class="ctxt" th:text="'(' + ${#dates.format(odLexemeRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odLexemeRecommendation.modifiedOn != null}"></span>
               </div>
               <div class="action-buttons-2">
                 <button type="button" class="btn badge badge-primary"
@@ -1206,7 +1206,7 @@
                 th:data-id="${relation.wordId}"
                 name="details-btn"
                 data-behaviour="replace"
-                data-plugin="contextmenu"
+                data-plugin="contextmenu, loadDetailsPlugin"
                 data-contextmenu:compare="Ava uues paneelis">
                 <span th:utext="${viewUtil.getWordValueMarkup(relation)}"></span>
                 <span th:text="${'(' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
@@ -1608,7 +1608,8 @@
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  data-plugin="langCollapsePlugin">
             <i th:class="${noteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>
         </div>
@@ -1670,7 +1671,8 @@
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}">
+                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  data-plugin="langCollapsePlugin">
             <i th:class="${noteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>
         </div>
@@ -1754,7 +1756,7 @@
               class="btn btn-link btn-xs"
               th:data-id="${relation.wordId}"
               name="details-btn"
-              data-plugin="contextmenu"
+              data-plugin="contextmenu, loadDetailsPlugin"
               data-contextmenu:compare="Ava uues paneelis"
               data-behaviour="replace">
               <span th:utext="${viewUtil.getWordValueMarkup(relation) + ' (' + viewUtil.getLangIso2(relation.wordLang) + ')'}"></span>
@@ -1808,7 +1810,7 @@
                       class="btn btn-link"
                       th:data-id="${collocMember.wordId}"
                       name="details-btn"
-                      data-plugin="contextmenu"
+                      data-plugin="contextmenu, loadDetailsPlugin"
                       data-contextmenu:compare="Ava uues paneelis"
                       data-behaviour="replace">
                       <span th:text="${collocMember.word}"></span>
@@ -1859,7 +1861,7 @@
                 class="btn btn-link"
                 th:data-id="${collocMember.wordId}"
                 name="details-btn"
-                data-plugin="contextmenu"
+                data-plugin="contextmenu, loadDetailsPlugin"
                 data-contextmenu:compare="Ava uues paneelis"
                 data-behaviour="replace">
                 <span th:text="${collocMember.word}"></span>

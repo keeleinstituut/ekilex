@@ -57,7 +57,9 @@
       <div th:replace="termdialog :: add_meaning_semantic_type_dlg"></div>
       <div th:replace="termdialog :: add_meaning_image_dlg"></div>
       <div th:replace="termdialog :: add_meaning_media_dlg"></div>
-      <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn" data-behaviour="replace"></button>
+      <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn"
+            data-behaviour="replace"
+            data-plugin="loadDetailsPlugin"></button>
       <div class="navigate-panel term-panel card shadow h-100">
         <div class="card border-0 mb-2">
           <div class="card-body">
@@ -88,7 +90,8 @@
             <div class="block-title">
               <button name="lang-collapse-btn" type="button" class="btn-lang"
                       th:data-lang="${lexemeLangGroup.lang}"
-                      th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}">
+                      th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}"
+                      data-plugin="langCollapsePlugin">
                 <i th:class="${lexemeLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
               </button>
               <span th:text="${viewUtil.getLangIso2(lexemeLangGroup.lang)}" class="ml-2"></span>

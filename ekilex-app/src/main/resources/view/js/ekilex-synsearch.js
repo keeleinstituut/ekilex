@@ -9,23 +9,49 @@ function initializeSynSearch() {
 	var sidebarScrollPosition = {};
 
 	//Enter keyboard edit mode
-	$(document).on("click", "#keyboardEditBtn", function() {
-		IS_KEYBOARD_MODE = true;
-		console.log('IS_KEYBOARD_MODE: ' + IS_KEYBOARD_MODE);
-		$('body').addClass('keyboard-edit-mode-active');
+	$.fn.enableKeyboardModePlugin = function() {
+		this.each(function() {
+			const button = $(this);
+			button.on('click', function() {
+				IS_KEYBOARD_MODE = true;
+				console.log('IS_KEYBOARD_MODE: ' + IS_KEYBOARD_MODE);
+				$('body').addClass('keyboard-edit-mode-active');
 
-		activateSynCandidatesList();
+				activateSynCandidatesList();
 
-		$(this).attr('disabled', true);
+				$(this).attr('disabled', true);
+			})
+		})
+	}
+	// $(document).on("click", "#keyboardEditBtn", function() {
+	// 	IS_KEYBOARD_MODE = true;
+	// 	console.log('IS_KEYBOARD_MODE: ' + IS_KEYBOARD_MODE);
+	// 	$('body').addClass('keyboard-edit-mode-active');
 
-	});
+	// 	activateSynCandidatesList();
 
-	$(document).on("click", "#activeTagCompleteBtn", function() {
-		let wordId = $(this).data('word-id');
-		let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
-		let callbackFunc = () => refreshSynDetails();
-		doPostRelationChange(actionUrl, callbackFunc);
-	});
+	// 	$(this).attr('disabled', true);
+
+	// });
+
+	$.fn.updateTagCompletePlugin = function() {
+		this.each(function() {
+			const button = $(this);
+			button.on('click', function() {
+				let wordId = button.data('word-id');
+				let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+				let callbackFunc = () => refreshSynDetails();
+				doPostRelationChange(actionUrl, callbackFunc);
+			})
+		})
+	}
+	
+	// $(document).on("click", "#activeTagCompleteBtn", function() {
+	// 	let wordId = $(this).data('word-id');
+	// 	let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+	// 	let callbackFunc = () => refreshSynDetails();
+	// 	doPostRelationChange(actionUrl, callbackFunc);
+	// });
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 
@@ -216,23 +242,23 @@ function initializeSynSearch() {
 
 	});
 
-	$(document).on('click', '.order-up', function() {
-		let orderingBtn = $(this);
-		let orderingData = changeItemOrdering(orderingBtn, -1);
-		postJson(applicationUrl + 'update_ordering', orderingData);
-		if (orderingBtn.hasClass('do-refresh')) {
-			refreshSynDetails();
-		}
-	});
+	// $(document).on('click', '.order-up', function() {
+	// 	let orderingBtn = $(this);
+	// 	let orderingData = changeItemOrdering(orderingBtn, -1);
+	// 	postJson(applicationUrl + 'update_ordering', orderingData);
+	// 	if (orderingBtn.hasClass('do-refresh')) {
+	// 		refreshSynDetails();
+	// 	}
+	// });
 
-	$(document).on('click', '.order-down', function() {
-		let orderingBtn = $(this);
-		let orderingData = changeItemOrdering(orderingBtn, 1);
-		postJson(applicationUrl + 'update_ordering', orderingData);
-		if (orderingBtn.hasClass('do-refresh')) {
-			refreshSynDetails();
-		}
-	});
+	// $(document).on('click', '.order-down', function() {
+	// 	let orderingBtn = $(this);
+	// 	let orderingData = changeItemOrdering(orderingBtn, 1);
+	// 	postJson(applicationUrl + 'update_ordering', orderingData);
+	// 	if (orderingBtn.hasClass('do-refresh')) {
+	// 		refreshSynDetails();
+	// 	}
+	// });
 
 	$(document).find('.draggable-synonym').draggable();
 	$(document).find('.draggable-syn-rel').draggable();
@@ -248,63 +274,75 @@ function initializeSynSearch() {
 		detailButtons.trigger('click');
 	}
 
-	$.fn.wordActivityLogDlgPlugin = function() {
-		var el = $(this);
-		el.on('show.bs.modal', function(e) {
-	//$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
-		let dlg = $(this);
-		let link = $(e.relatedTarget);
-		let url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
-		});
-	});
-}
+	// Replaced by activityLogDlgPlugin under common
+	// $.fn.wordActivityLogDlgPlugin = function() {
+	// 	var el = $(this);
+	// 	el.on('show.bs.modal', function(e) {
+	// //$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
+	// 		let dlg = $(this);
+	// 		let link = $(e.relatedTarget);
+	// 		let url = link.attr('href');
+	// 		dlg.find('.close').focus();
+	// 		dlg.find('.modal-body').html(null);
+	// 		$.get(url).done(function(data) {
+	// 			dlg.find('.modal-body').html(data);
+	// 		});
+	// 	});
+	// }
+
+	// $.fn.pagingInputPlugin = function() {
+	// 	const input = $(this);
+	// 	input.on('keydown', function (e) {
+	// 		if (e.which === 13 || e.keyCode === 13) {
+	// 			console.log(e);
+	// 			e.preventDefault();
+	// 			input.closest('form').find('.paging-submit').click();
+	// 		}
+	// 	})
+	// }
 	//$(document).on('keydown', '.paging-input', function(e) {
-	$('#synSearchResultsDiv').on('keydown', '.paging-input', function (e) {
-		if (e.which === 13) {
-			e.preventDefault();
-			console.log(e);
-			$('[name="pagingBtn"]').last().trigger('click');
-		}
-	});
+	// $('#synSearchResultsDiv').on('keydown', '.paging-input', function (e) {
+	// 	if (e.which === 13) {
+	// 		e.preventDefault();
+	// 		console.log(e);
+	// 		$('[name="pagingBtn"]').last().trigger('click');
+	// 	}
+	// });
 
-	$('#synSearchResultsDiv').on('click', '[name="pagingBtn"]', function () {
-	//$(document).on('click', '[name="pagingBtn"]', function() {
-		openWaitDlg();
-		let url = applicationUrl + "syn_paging";
-		let button = $(this);
-		let direction = button.data("direction");
-		let form = button.closest('form');
-		if (direction === "page") {
-			//form.find('input[name="direction"]').val('next');
-			//let inputPageValue = $(".paging-input").val().trim();
-			//let tulemus = ((inputPageValue - 1) * 50) - 50;
-			//form.find('input[name="offset"]').val(tulemus);
-			//form.find('input[name="userInputPage"]').val(inputPageValue)
-		} else {
-			form.find('input[name="direction"]').val(direction);
-		}
-		$.ajax({
-			url: url,
-			data: form.serialize(),
-			method: 'POST',
-		}).done(function (data) {
-			closeWaitDlg();
-			$('#synSearchResultsDiv').html(data);
-			$('#synSearchResultsDiv').parent().scrollTop(0);
-			$('#syn-details-area').empty();
-			$wpm.bindObjects();
+	// $('#synSearchResultsDiv').on('click', '[name="pagingBtn"]', function () {
+	// //$(document).on('click', '[name="pagingBtn"]', function() {
+	// 	openWaitDlg();
+	// 	let url = applicationUrl + "syn_paging";
+	// 	let button = $(this);
+	// 	let direction = button.data("direction");
+	// 	let form = button.closest('form');
+	// 	if (direction === "page") {
+	// 		//form.find('input[name="direction"]').val('next');
+	// 		//let inputPageValue = $(".paging-input").val().trim();
+	// 		//let tulemus = ((inputPageValue - 1) * 50) - 50;
+	// 		//form.find('input[name="offset"]').val(tulemus);
+	// 		//form.find('input[name="userInputPage"]').val(inputPageValue)
+	// 	} else {
+	// 		form.find('input[name="direction"]').val(direction);
+	// 	}
+	// 	$.ajax({
+	// 		url: url,
+	// 		data: form.serialize(),
+	// 		method: 'POST',
+	// 	}).done(function (data) {
+	// 		closeWaitDlg();
+	// 		$('#synSearchResultsDiv').html(data);
+	// 		$('#synSearchResultsDiv').parent().scrollTop(0);
+	// 		$('#syn-details-area').empty();
+	// 		$wpm.bindObjects();
 			
-		}).fail(function (data) {
-			console.log(data);
-			closeWaitDlg();
-			openAlertDlg('Lehekülje muutmine ebaõnnestus');
-		});
+	// 	}).fail(function (data) {
+	// 		console.log(data);
+	// 		closeWaitDlg();
+	// 		openAlertDlg('Lehekülje muutmine ebaõnnestus');
+	// 	});
 
-	});
+	// });
 	 detailSearchBtn();  
 }
 

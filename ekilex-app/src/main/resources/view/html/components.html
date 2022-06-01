@@ -176,7 +176,7 @@
     <form method="post" id="changeRoleForm" th:action="@{change_role}">
       <div class="row">
         <label class="col-form-label col-auto">Vali roll:</label>
-        <select class="form-control col-2" id="changeRoleSelect" name="permissionId">
+        <select class="form-control col-2" id="changeRoleSelect" name="permissionId" data-plugin="changeSubmitFormPlugin">
           <option value="" hidden disabled th:selected="${!userRoleData.roleSelected}"></option>
           <th:block th:each="datasetPermission : ${userDatasetPermissions}">
             <option th:with="permissionName=#{|authorityoperation.${datasetPermission.authOperation}|}"
@@ -199,7 +199,8 @@
         <button name="pagingBtn" type="button" class="btn badge ml-2 mr-2"
                 title="Eelmine lehekülg"
                 data-direction="previous"
-                th:if="${pagingResult.previousPageExists}">
+                th:if="${pagingResult.previousPageExists}"
+                data-plugin="pagingBtnPlugin">
           <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
         </button>
         <div class="mr-2 ml-4" th:if="${!pagingResult.previousPageExists}"></div>
@@ -207,14 +208,16 @@
         <button name="pagingBtn" type="button" class="btn badge ml-2"
                 title="Järgmine lehekülg"
                 data-direction="next"
-                th:if="${pagingResult.nextPageExists}">
+                th:if="${pagingResult.nextPageExists}"
+                data-plugin="pagingBtnPlugin">
           <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
         </button>
         <span class="paging-page-number d-flex align-items-center ml-auto">Mine lehele</span>
         <input class="paging-input" type="text" data-plugin="pagingInputPlugin">
         <button name="pagingBtn" type="button" class="paging-submit btn btn-link p-0" 
                title="Vali lehekülg"
-               data-direction="page">
+               data-direction="page"
+               data-plugin="pagingBtnPlugin">
           <i class="paging-submit-icon fa fa-arrow-right"></i>
         </button>
       </div>

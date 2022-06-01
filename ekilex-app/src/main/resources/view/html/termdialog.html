@@ -2,7 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div th:id="${'addLexemeDataDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_data_dlg">
+  <div th:id="${'addLexemeDataDlg_' + lexeme.lexemeId}" class="modal"
+        role="dialog"
+        th:fragment="add_lexeme_data_dlg"
+        data-plugin="initAddMultiDataDlgAndBindPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -13,7 +16,7 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-6">
-                <select class="form-control lex-data-select required-field" name="opCode">
+                <select class="form-control lex-data-select required-field" name="opCode" data-plugin="lexDataSelectPlugin">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="lexeme_value_state" sec:authorize="#vars.lexeme.crudGrant">Väärtusolek</option>
                   <option value="addUsageDlg" sec:authorize="#vars.lexeme.crudGrant">Kasutusnäide</option>
@@ -114,7 +117,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningDataDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_data_dlg">
+  <div th:id="${'addMeaningDataDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_data_dlg"
+        data-plugin="initAddMultiDataDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -125,7 +131,7 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control meaning-data-select required-field" name="opCode">
+                <select required class="form-control meaning-data-select required-field" name="opCode" data-plugin="meaningDataSelectPlugin">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
@@ -168,7 +174,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLimTermMeaningDataDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_lim_term_meaning_data_dlg">
+  <div th:id="${'addLimTermMeaningDataDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_lim_term_meaning_data_dlg"
+        data-plugin="initAddMultiDataDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -179,7 +188,9 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-6">
-                <select required class="form-control lim-term-meaning-data-select required-field" name="opCode">
+                <select required class="form-control lim-term-meaning-data-select required-field"
+                      name="opCode"
+                      data-plugin="limTermMeaningDataSelectPlugin">
                   <option value="" hidden disabled selected>vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
@@ -221,7 +232,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemePublicityDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_publicity_dlg">
+  <div th:id="${'editLexemePublicityDlg_' + lexeme.lexemeId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_lexeme_publicity_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -237,7 +251,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_value_state_dlg">
+  <div th:id="${'editLexemeValueStateCodeDlg_' + lexeme.lexemeId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_lexeme_value_state_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -252,7 +269,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_pos_dlg">
+  <div th:id="${'editLexemePosDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_lexeme_pos_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -268,7 +288,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_deriv_dlg">
+  <div th:id="${'editLexemeDerivDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_lexeme_deriv_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -284,7 +307,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_register_dlg">
+  <div th:id="${'editLexemeRegisterDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_lexeme_register_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -300,7 +326,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeRegionDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_region_dlg">
+  <div th:id="${'editLexemeRegionDlg_' + lexeme.lexemeId + '_' + classifIter.index}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_lexeme_region_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -316,7 +345,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeReliabilityDlg_' + lexeme.lexemeId}" class="modal select-dlg" role="dialog" th:fragment="edit_lexeme_reliability_dlg">
+  <div th:id="${'editLexemeReliabilityDlg_' + lexeme.lexemeId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_lexeme_reliability_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -331,7 +363,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordGenderDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_gender_dlg">
+  <div th:id="${'editWordGenderDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_word_gender_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -346,7 +381,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_lang_dlg">
+  <div th:id="${'editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_word_lang_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -361,7 +399,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningDomainDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_domain_dlg">
+  <div th:id="${'addMeaningDomainDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_domain_dlg"
+        data-plugin="initAddMultiDataDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -389,7 +430,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningDomainDlg_' + meaningId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_meaning_domain_dlg">
+  <div th:id="${'editMeaningDomainDlg_' + meaningId + '_' + classifIter.index}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_meaning_domain_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -412,7 +456,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningSemanticTypeDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_semantic_type_dlg">
+  <div th:id="${'addMeaningSemanticTypeDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_semantic_type_dlg"
+        data-plugin="initAddMultiDataDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -437,7 +484,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningSemanticTypeDlg_' + meaningId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_meaning_semantic_type_dlg">
+  <div th:id="${'editMeaningSemanticTypeDlg_' + meaningId + '_' + classifIter.index}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_meaning_semantic_type_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -453,7 +503,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeSourceLinkDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_source_link_dlg">
+  <div th:id="${'addLexemeSourceLinkDlg_' + lexeme.lexemeId}" class="modal"
+        role="dialog"
+        th:fragment="add_lexeme_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -473,7 +526,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addUsageSourceLinkDlg_' + usage.id}" class="modal" role="dialog" th:fragment="add_usage_source_link_dlg">
+  <div th:id="${'addUsageSourceLinkDlg_' + usage.id}" class="modal"
+        role="dialog"
+        th:fragment="add_usage_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -493,7 +549,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addUsageDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_usage_dlg">
+  <div th:id="${'addUsageDlg_' + lexeme.lexemeId}" class="modal"
+        role="dialog"
+        th:fragment="add_usage_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -518,7 +577,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}" class="modal" role="dialog" th:fragment="edit_usage_dlg">
+  <div th:id="${'editUsageDlg_' + lexeme.lexemeId + '_' + usage.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_usage_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -542,7 +604,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeRelationDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_relation_dlg">
+  <div th:id="${'addLexemeRelationDlg_' + lexeme.lexemeId}" class="modal"
+        role="dialog"
+        th:fragment="add_lexeme_relation_dlg"
+        data-plugin="initMultiselectRelationDlgPlugin">
     <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -589,7 +654,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeTagDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_tag_dlg">
+  <div th:id="${'addLexemeTagDlg_' + lexeme.lexemeId}" class="modal"
+        role="dialog"
+        th:fragment="add_lexeme_tag_dlg"
+        data-plugin="initAddMultiDataDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -618,7 +686,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningTagDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_tag_dlg">
+  <div th:id="${'addMeaningTagDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_tag_dlg"
+        data-plugin="initAddMultiDataDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -647,7 +718,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_lexeme_note_dlg">
+  <div th:id="${'addLexemeNoteDlg_' + lexeme.lexemeId}" class="modal"
+        role="dialog"
+        th:fragment="add_lexeme_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -682,7 +756,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeNoteDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_lexeme_note_dlg">
+  <div th:id="${'editLexemeNoteDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_lexeme_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -717,7 +794,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addWordNoteDlg_' + lexeme.lexemeId}" class="modal" role="dialog" th:fragment="add_word_note_dlg">
+  <div th:id="${'addWordNoteDlg_' + lexeme.lexemeId}" class="modal"
+        role="dialog"
+        th:fragment="add_word_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -741,7 +821,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordNoteDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_word_note_dlg">
+  <div th:id="${'editWordNoteDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_word_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -765,7 +848,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLexemeNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal" role="dialog" th:fragment="add_lexeme_note_source_link_dlg">
+  <div th:id="${'addLexemeNoteSourceLinkDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="add_lexeme_note_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -785,7 +871,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_note_dlg">
+  <div th:id="${'addMeaningNoteDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -821,7 +910,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addLimTermMeaningNoteDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_lim_term_meaning_note_dlg">
+  <div th:id="${'addLimTermMeaningNoteDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_lim_term_meaning_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -853,7 +945,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_meaning_note_dlg">
+  <div th:id="${'editMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_meaning_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -888,7 +983,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLimTermMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_lim_term_meaning_note_dlg">
+  <div th:id="${'editLimTermMeaningNoteDlg_' + meaningId + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_lim_term_meaning_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -919,7 +1017,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}" class="modal" role="dialog" th:fragment="add_meaning_note_source_link_dlg">
+  <div th:id="${'addMeaningNoteSourceLinkDlg_' + meaningId + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_note_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -939,7 +1040,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_definition_dlg">
+  <div th:id="${'addDefinitionDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_definition_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -1000,7 +1104,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editDefinitionDlg_' + definition.id}" class="modal" role="dialog" th:fragment="edit_definition_dlg">
+  <div th:id="${'editDefinitionDlg_' + definition.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_definition_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1042,7 +1149,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionSourceLinkDlg_' + definition.id}" class="modal" role="dialog" th:fragment="add_definition_source_link_dlg">
+  <div th:id="${'addDefinitionSourceLinkDlg_' + definition.id}" class="modal"
+        role="dialog"
+        th:fragment="add_definition_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -1062,7 +1172,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionNoteDlg_' + definition.id}" class="modal" role="dialog" th:fragment="add_definition_note_dlg">
+  <div th:id="${'addDefinitionNoteDlg_' + definition.id}" class="modal"
+        role="dialog"
+        th:fragment="add_definition_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -1096,7 +1209,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editDefinitionNoteDlg_' + definition.id + '_' + note.id}" class="modal" role="dialog" th:fragment="edit_definition_note_dlg">
+  <div th:id="${'editDefinitionNoteDlg_' + definition.id + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_definition_note_dlg"
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1130,7 +1246,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}" class="modal" role="dialog" th:fragment="add_definition_note_source_link_dlg">
+  <div th:id="${'addDefinitionNoteSourceLinkDlg_' + definition.id + '_' + note.id}" class="modal"
+        role="dialog"
+        th:fragment="add_definition_note_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -1150,7 +1269,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningRelationDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_relation_dlg">
+  <div th:id="${'addMeaningRelationDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_relation_dlg"
+        data-plugin="initMultiselectRelationDlgPlugin">
     <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -1197,7 +1319,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordTypeDlg_' + lexeme.lexemeId + '_' + lexeme.wordId + '_' + classifIter.index}" class="modal select-dlg" role="dialog" th:fragment="edit_word_type_dlg">
+  <div th:id="${'editWordTypeDlg_' + lexeme.lexemeId + '_' + lexeme.wordId + '_' + classifIter.index}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_word_type_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1213,7 +1338,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordDisplayMorphDlg_' + lexeme.wordId}" class="modal select-dlg" role="dialog" th:fragment="edit_word_display_morph_dlg">
+  <div th:id="${'editWordDisplayMorphDlg_' + lexeme.wordId}" class="modal select-dlg"
+        role="dialog"
+        th:fragment="edit_word_display_morph_dlg"
+        data-plugin="initSelectDlgPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1228,7 +1356,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordValueDlg_' + lexeme.wordId}" class="modal" role="dialog" th:fragment="edit_word_value_dlg">
+  <div th:id="${'editWordValueDlg_' + lexeme.wordId}" class="modal"
+        role="dialog"
+        th:fragment="edit_word_value_dlg"
+        data-plugin="initWordValueEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <form th:action="@{/update_word_value}" method="post">
@@ -1260,7 +1391,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addImageSourceLinkDlg_' + image.id}" class="modal" role="dialog" th:fragment="add_image_source_link_dlg">
+  <div th:id="${'addImageSourceLinkDlg_' + image.id}" class="modal"
+        role="dialog"
+        th:fragment="add_image_source_link_dlg"
+        data-plugin="initAddSourceLinkWithAutocompletePlugin">
     <div class="modal-dialog" role="document" style="max-width: 1000px;">
       <div class="modal-content">
         <div class="modal-body">
@@ -1280,7 +1414,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningImageDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_image_dlg">
+  <div th:id="${'addMeaningImageDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_image_dlg"
+        data-plugin="initGenericTextAddDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -1303,7 +1440,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningImageDlg_' + image.id}" class="modal" role="dialog" th:fragment="edit_meaning_image_dlg">
+  <div th:id="${'editMeaningImageDlg_' + image.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_meaning_image_dlg"
+        data-plugin="initGenericTextEditDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1325,7 +1465,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addImageTitleDlg_' + image.id}" class="modal" role="dialog" th:fragment="add_image_title_dlg">
+  <div th:id="${'addImageTitleDlg_' + image.id}" class="modal"
+        role="dialog"
+        th:fragment="add_image_title_dlg"
+        data-plugin="initGenericTextAddDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -1347,7 +1490,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editImageTitleDlg_' + image.id}" class="modal" role="dialog" th:fragment="edit_image_title_dlg">
+  <div th:id="${'editImageTitleDlg_' + image.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_image_title_dlg"
+        data-plugin="initGenericTextEditDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1369,7 +1515,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addMeaningMediaDlg_' + meaningId}" class="modal" role="dialog" th:fragment="add_meaning_media_dlg">
+  <div th:id="${'addMeaningMediaDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="add_meaning_media_dlg"
+        data-plugin="initGenericTextAddDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
@@ -1392,7 +1541,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningMediaDlg_' + media.id}" class="modal" role="dialog" th:fragment="edit_meaning_media_dlg">
+  <div th:id="${'editMeaningMediaDlg_' + media.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_meaning_media_dlg"
+        data-plugin="initGenericTextEditDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
@@ -1414,7 +1566,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editFreeformSourceLinkDlg_' + sourceLink.id}" class="modal" role="dialog" th:fragment="edit_freeform_source_link_dlg">
+  <div th:id="${'editFreeformSourceLinkDlg_' + sourceLink.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_freeform_source_link_dlg"
+        data-plugin="initEditSourceLinkDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
@@ -1429,7 +1584,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editDefinitionSourceLinkDlg_' + sourceLink.id}" class="modal" role="dialog" th:fragment="edit_definition_source_link_dlg">
+  <div th:id="${'editDefinitionSourceLinkDlg_' + sourceLink.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_definition_source_link_dlg"
+        data-plugin="initEditSourceLinkDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
@@ -1444,7 +1602,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editLexemeSourceLinkDlg_' + sourceLink.id}" class="modal" role="dialog" th:fragment="edit_lexeme_source_link_dlg">
+  <div th:id="${'editLexemeSourceLinkDlg_' + sourceLink.id}" class="modal"
+        role="dialog"
+        th:fragment="edit_lexeme_source_link_dlg"
+        data-plugin="initEditSourceLinkDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form name="sourceLinkForm" th:action="@{/update_item}" method="post">
@@ -1459,7 +1620,10 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editMeaningManualEventOnDlg_' + meaningId}" class="modal" role="dialog" th:fragment="edit_meaning_manual_event_on_dlg">
+  <div th:id="${'editMeaningManualEventOnDlg_' + meaningId}" class="modal"
+        role="dialog"
+        th:fragment="edit_meaning_manual_event_on_dlg"
+        data-plugin="initGenericTextEditDlgPlugin">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">

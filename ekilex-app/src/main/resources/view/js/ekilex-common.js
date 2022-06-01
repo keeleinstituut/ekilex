@@ -792,3 +792,128 @@ function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 		openAlertDlg(failMessage);
 	});
 };
+
+$.fn.changeSubmitFormPlugin = function() {
+	this.each(function() {
+		$(this).on('change', function() {
+			this.form.submit();
+		});
+	});
+}
+
+$.fn.loadDetailsPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const wordId = obj.data('id');
+			const behaviour = obj.data('behaviour') || false;
+			const lastWordId = behaviour === 'replace' ? obj.parents('#details-area:first').attr('data-id') : false;
+			loadDetails(wordId, behaviour, lastWordId);
+		})
+	})
+}
+
+$.fn.activityLogDlgPlugin = function() {
+	this.each(function() {
+		const dlg = $(this);
+		dlg.on('show.bs.modal', function(e) {
+			const link = $(e.relatedTarget);
+			const url = link.attr('href');
+			dlg.find('.close').focus();
+			dlg.find('.modal-body').html(null);
+			$.get(url).done(function(data) {
+				dlg.find('.modal-body').html(data);
+			});
+		});
+	});
+}
+
+$.fn.langCollapsePlugin = function() {
+	this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const lang = btn.attr("data-lang");
+			const itemData = {
+				opCode: "user_lang_selection",
+				code: lang
+			};
+			const successCallbackName = btn.attr("data-callback");
+			const successCallbackFunc = () => eval(successCallbackName);
+			postJson(applicationUrl + 'update_item', itemData).done(function() {
+				if (viewType === 'term') {
+					refreshDetailsSearch(btn.parents('[data-rel="details-area"]').attr('data-id'));
+				} else {
+					successCallbackFunc();
+				}
+			});
+		})
+	})
+}
+
+$.fn.changeItemOrderingPlugin = function() {
+	this.each(function() {
+		const orderingBtn = $(this);
+		orderingBtn.on('click', function() {
+			let orderingData;
+			if (orderingBtn.hasClass('order-up')) {
+				orderingData = changeItemOrdering(orderingBtn, -1);
+			} else {
+				orderingData = changeItemOrdering(orderingBtn, 1);
+			}
+
+			postJson(applicationUrl + 'update_ordering', orderingData);
+			if (orderingBtn.hasClass('do-refresh')) {
+				refreshDetailsSearch(orderingBtn.parents('[data-rel="details-area"]').attr('data-id'));
+			}
+		});
+	});
+}
+
+$.fn.pagingBtnPlugin = function() {
+	// Allows for adding plugin to an array
+	this.each(function() {
+		const button = $(this);
+		button.on('click', function() {
+			openWaitDlg();
+			let url;
+			const form = button.closest('form');
+			const direction = button.data("direction");
+			const syn = button.closest('#synSearchResultsDiv');
+			if (syn.length) {
+				url = applicationUrl + 'syn_paging';
+			} else if (viewType.length) {
+				url = applicationUrl + viewType + '_paging';
+			}
+
+			if (direction === 'page') {
+				const inputPageValue = form.find('.paging-input').val().trim();
+				form.find('input[name="direction"]').val('page');
+				form.find('input[name="userInputPage"]').val(inputPageValue)
+			} else {
+				form.find('input[name="direction"]').val(direction);
+			}
+
+			$.ajax({
+				url: url,
+				data: form.serialize(),
+				method: 'POST',
+			}).done(function (data) {
+				closeWaitDlg();
+				if (syn.length) {
+					$('#synSearchResultsDiv').html(data);
+					$('#synSearchResultsDiv').parent().scrollTop(0);
+					$('#syn-details-area').empty();
+				} else {
+					$('#results_div').html(data);
+					$('#results_div').parent().scrollTop(0);
+				}
+				
+				$wpm.bindObjects();
+			}).fail(function (data) {
+				console.log(data);
+				closeWaitDlg();
+				openAlertDlg('Lehekülje muutmine ebaõnnestus');
+			});
+		});
+	});
+}
