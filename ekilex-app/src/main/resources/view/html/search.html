@@ -33,7 +33,8 @@
             </label>
           </div>
         </th:block>
-        <button type="button" id="share-details-link" th:data-details-uri="${detailsUri}" class="btn btn-light ml-2">Otselink</button>
+        <button type="button" id="share-details-link" th:data-details-uri="${detailsUri}"
+            class="btn btn-light ml-2" data-plugin="shareDetailsLinkPlugin">Otselink</button>
       </div>
     </div>
     <script th:inline="javascript">
@@ -49,7 +50,7 @@
     </div>
   </th:block>
   <th:block th:fragment="detail_search(searchPageName)">
-    <div class="tab-pane fade" th:classappend="${searchMode =='DETAIL'} ? 'show active':''" id="detail_search_filter">
+    <div class="tab-pane fade" th:classappend="${searchMode =='DETAIL'} ? 'show active':''" id="detail_search_filter" data-plugin="searchDetailOperationsPlugin">
       <div class="d-flex flex-row flex-nowrap align-items-start">
         <div class="flex-grow-1 border-left border-right border-light my-n3 pt-3 pr-3 detail-search-filter-items">
           <div class="detail-search-group d-flex flex-row align-items-start pb-2"
@@ -480,20 +481,20 @@
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="col-auto">
-                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus" data-plugin="addDetailConditionBtn">
+                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda" data-plugin="removeDetailConditionBtn">
+                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda">
                     <i class="action-icon fa fa-minus" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
             </div>
             <div class="flex-grow-0 flex-shrink-0 d-flex pl-3 pt-1">
-              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" title="Lisa uus otsitav" data-plugin="addDetailGroupBtn">
+              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" title="Lisa uus otsitav">
                 <i class="action-icon fa fa-plus" aria-hidden="true"></i>
               </button>
-              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" title="Eemalda" data-plugin="removeDetailGroupBtn">
+              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" title="Eemalda">
                 <i class="action-icon fa fa-minus" aria-hidden="true"></i>
               </button>
             </div>
@@ -744,7 +745,8 @@
         <button type="submit" class="btn btn-primary px-5 ml-3 detail-search-filter-items">Otsi</button>
         <div class="d-flex flex-row detail-search-mode-less justify-content-center">
           <div class="detail-search-mode-less-border d-none">
-            <button class="d-flex flex-column btn btn-secondary shadow-none align-items-center detail-search-mode-less-btn" data-plugin="detailSearchModeBtn" type="button">
+            <button class="d-flex flex-column btn btn-secondary shadow-none align-items-center detail-search-mode-less-btn"
+                  data-plugin="detailSearchModePlugin" type="button">
               <i class="d-flex flex-row align-items-center fa fa-sort-asc  detail-search-mode-less-btn-i" aria-hidden="true"></i>
             </button>
           </div>
@@ -762,12 +764,12 @@
       <span th:if="${not #lists.isEmpty(userProfile.preferredDatasets)}" th:text="${#lists.size(userProfile.preferredDatasets)}"></span>
       <i class="fa fa-book" aria-hidden="true"></i>
     </button>
-    <div id="datasetSelectDlg" class="modal" role="dialog">
+    <div id="datasetSelectDlg" class="modal" role="dialog" data-plugin="selectDataSetsPlugin, datasetDlgFocusBtnPlugin">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body">
-            <button class="btn btn-secondary btn-sm" type="button" data-plugin="selectDatasets" name="selectAll">Vali kõik</button>
-            <button class="btn btn-secondary btn-sm" type="button" data-plugin="selectDatasets" name="selectNone">Eemalda valikud</button>
+            <button class="btn btn-secondary btn-sm" type="button" name="selectAll">Vali kõik</button>
+            <button class="btn btn-secondary btn-sm" type="button" name="selectNone">Eemalda valikud</button>
             <div class="mt-3" style="max-height: calc(100vh - 14rem); overflow-y: auto;">
               <div class="form-check mt-1" th:each="dataset : ${userVisibleDatasets}">
                 <label class="form-check-label">

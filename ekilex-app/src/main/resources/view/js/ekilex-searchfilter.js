@@ -1,14 +1,26 @@
-$.fn.selectDatasets = function () {
-
-	$('[name=selectAll]').on("click", function () {
-		$('#datasetSelectDlg').find(':checkbox').prop('checked', true)
+$.fn.selectDataSetsPlugin = function() {
+	this.each(function() {
+		const obj = $(this);
+		const buttons = obj.find('[name=selectAll], [name=selectNone]');
+		const checkboxes = obj.find(':checkbox');
+		buttons.on('click', function() {
+			const chkAll = this.name === 'selectAll' ? true : false;
+			checkboxes.prop('checked', chkAll);
+		});
 	});
+}
 
-	$('[name=selectNone]').on("click", function () {
-		$('#datasetSelectDlg').find(':checkbox').prop('checked', false)
-	});
+// $.fn.selectDatasets = function () {
 
-};
+// 	$('[name=selectAll]').on("click", function () {
+// 		$('#datasetSelectDlg').find(':checkbox').prop('checked', true)
+// 	});
+
+// 	$('[name=selectNone]').on("click", function () {
+// 		$('#datasetSelectDlg').find(':checkbox').prop('checked', false)
+// 	});
+
+// };
 
 function detailSearchBtn() {
 
@@ -19,22 +31,44 @@ function detailSearchBtn() {
 	}
 }
 
-$.fn.detailSearchModeBtn = function () {
-
-	$('.detail-search-mode-less-btn').on("click", function () {
-		let icon = $('.detail-search-mode-less-btn').find("i");
-		if (icon.hasClass("fa-sort-desc")) {
-			icon.addClass("fa-sort-asc").removeClass("fa-sort-desc");
-			$('.detail-search-filter-items').show();
-			$('.detail-search-box-less').hide();
-		} else {
-			icon.addClass("fa-sort-desc").removeClass("fa-sort-asc");
-			$('.detail-search-filter-items').hide();
-			$('.detail-search-box-less').show();
-		}
+$.fn.detailSearchModePlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const icon = obj.children("i");
+			// Get the button's ancestor div that is siblings with other relevant elements
+			const searchModeDiv = obj.closest('.detail-search-mode-less');
+			const searchBoxDiv = searchModeDiv.siblings('.detail-search-box-less');
+			const searchFilterItems = searchModeDiv.siblings('.detail-search-filter-items');
+			if (icon.hasClass("fa-sort-desc")) {
+				icon.addClass("fa-sort-asc").removeClass("fa-sort-desc");
+				searchFilterItems.show();
+				searchBoxDiv.hide();
+			} else {
+				icon.addClass("fa-sort-desc").removeClass("fa-sort-asc");
+				searchFilterItems.hide();
+				searchBoxDiv.show();
+			}
+		});
 	});
+}
 
-};
+// $.fn.detailSearchModeBtn = function () {
+
+// 	$('.detail-search-mode-less-btn').on("click", function () {
+// 		let icon = $('.detail-search-mode-less-btn').find("i");
+// 		if (icon.hasClass("fa-sort-desc")) {
+// 			icon.addClass("fa-sort-asc").removeClass("fa-sort-desc");
+// 			$('.detail-search-filter-items').show();
+// 			$('.detail-search-box-less').hide();
+// 		} else {
+// 			icon.addClass("fa-sort-desc").removeClass("fa-sort-asc");
+// 			$('.detail-search-filter-items').hide();
+// 			$('.detail-search-box-less').show();
+// 		}
+// 	});
+
+// };
 
 function detailSearchModeBtnValue() {
 	let finalOutput = "";
@@ -126,12 +160,13 @@ function displayNotOperandChk() {
 }
 
 function initialiseSearchForm() {
-	$('#simpleSearchModeBtn').on('click',displaySimpleSearch);
-	$('#detailSearchModeBtn').on('click',displayDetailSearch);
-	let datasetDlg = $('#datasetSelectDlg');
-	datasetDlg.on('shown.bs.modal', () => {
-		datasetDlg.find('.btn').first().focus();
-	});
+	// Moved to bottom of file as plugins
+	// $('#simpleSearchModeBtn').on('click',displaySimpleSearch);
+	// $('#detailSearchModeBtn').on('click',displayDetailSearch);
+	// let datasetDlg = $('#datasetSelectDlg');
+	// datasetDlg.on('shown.bs.modal', () => {
+	// 	datasetDlg.find('.btn').first().focus();
+	// });
 	detailSearchModeBtnValue();
 
 	$('#searchForm').submit(function(e){
@@ -144,19 +179,20 @@ function initialiseSearchForm() {
 		}
 	});
 
-	$(document).on("click", "#share-details-link", function() {
-		let searchParams = new URLSearchParams(window.location.search);
-		let idParam = searchParams.get("id");
-		let detailsUri = $(this).data('details-uri');
-		if (idParam) {
-			let shareLink = applicationBaseUrl + '/' + detailsUri + '?id=' + idParam;
-			let tempCopyField = $("<input>");
-			$("body").append(tempCopyField);
-			tempCopyField.val(shareLink).select();
-			document.execCommand('copy');
-			tempCopyField.remove();			
-		}
-	});
+	// Moved to bottom of file as plugin
+	// $(document).on("click", "#share-details-link", function() {
+	// 	let searchParams = new URLSearchParams(window.location.search);
+	// 	let idParam = searchParams.get("id");
+	// 	let detailsUri = $(this).data('details-uri');
+	// 	if (idParam) {
+	// 		let shareLink = applicationBaseUrl + '/' + detailsUri + '?id=' + idParam;
+	// 		let tempCopyField = $("<input>");
+	// 		$("body").append(tempCopyField);
+	// 		tempCopyField.val(shareLink).select();
+	// 		document.execCommand('copy');
+	// 		tempCopyField.remove();			
+	// 	}
+	// });
 
 	$.fn.manualEventOnUpdateCheck = function() {
 		var main = $(this);
@@ -198,23 +234,24 @@ function initialiseDetailSearch() {
 	displayDetailGroupButtons();
 	displayNotOperandChk();
 
-	$.fn.removeDetailConditionBtn = function () {
-		var block = $("#detail_search_filter");
-		block.off("click.removeDetailConditionBtn").on("click.removeDetailConditionBtn", ":button[name='removeDetailConditionBtn']", function () {
-			//$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
-			$(this).closest('[name="detailCondition"]').remove();
-			displayDetailConditionButtons();
-		});
-	};
+	// Combined and moved to bottom of page
+	// $.fn.removeDetailConditionBtn = function () {
+	// 	var block = $("#detail_search_filter");
+	// 	block.off("click.removeDetailConditionBtn").on("click.removeDetailConditionBtn", ":button[name='removeDetailConditionBtn']", function () {
+	// 		//$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
+	// 		$(this).closest('[name="detailCondition"]').remove();
+	// 		displayDetailConditionButtons();
+	// 	});
+	// };
 
-	$.fn.removeDetailGroupBtn = function () {
-		var block = $("#detail_search_filter");
-		block.off("click.removeDetailGroupBtn").on("click.removeDetailGroupBtn", ":button[name='removeDetailGroupBtn']", function () {
-			//$(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
-			$(this).closest('[name="detailGroup"]').remove();
-			displayDetailGroupButtons();
-		});
-	};
+	// $.fn.removeDetailGroupBtn = function () {
+	// 	var block = $("#detail_search_filter");
+	// 	block.off("click.removeDetailGroupBtn").on("click.removeDetailGroupBtn", ":button[name='removeDetailGroupBtn']", function () {
+	// 		//$(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
+	// 		$(this).closest('[name="detailGroup"]').remove();
+	// 		displayDetailGroupButtons();
+	// 	});
+	// };
 
 	$("#detail_search_filter").on("change", "select[name$='entity']", function () {
 		//$(document).on("change", "select[name$='entity']", function() {
@@ -320,29 +357,29 @@ function initialiseDetailSearch() {
 			copyOfValueTemplate.selectpicker({width: '100%'})
 		}
 	};
+	// Combined and moved to bottom of page
+	// $.fn.addDetailConditionBtn = function () {
+	// 	var block = $("#detail_search_filter");
+	// 	block.off("click.addDetailConditionBtn").on("click.addDetailConditionBtn", ":button[name='addDetailConditionBtn']", function () {
+	// 		//$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
 
-	$.fn.addDetailConditionBtn = function () {
-		var block = $("#detail_search_filter");
-		block.off("click.addDetailConditionBtn").on("click.addDetailConditionBtn", ":button[name='addDetailConditionBtn']", function () {
-			//$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
+	// 		let detailGroupElement = $(this).closest('[name="detailGroup"]');
+	// 		let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
+	// 		initCondition(addedConditionElement);
+	// 		displayNotOperandChk();
+	// 	});
+	// };
 
-			let detailGroupElement = $(this).closest('[name="detailGroup"]');
-			let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
-			initCondition(addedConditionElement);
-			displayNotOperandChk();
-		});
-	};
-
-	$.fn.addDetailGroupBtn = function () {
-		var block = $("#detail_search_filter");
-		block.off("click.addDetailGroupBtn").on("click.addDetailGroupBtn", ":button[name='addDetailGroupBtn']", function () {
-			let detailSearchElement = block;
-			//$(document).on("click", ":button[name='addDetailGroupBtn']", function() {	
-			let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
-			initConditionGroup(addedGroupElement);
-			displayNotOperandChk();
-		});
-	};
+	// $.fn.addDetailGroupBtn = function () {
+	// 	var block = $("#detail_search_filter");
+	// 	block.off("click.addDetailGroupBtn").on("click.addDetailGroupBtn", ":button[name='addDetailGroupBtn']", function () {
+	// 		let detailSearchElement = block;
+	// 		//$(document).on("click", ":button[name='addDetailGroupBtn']", function() {	
+	// 		let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
+	// 		initConditionGroup(addedGroupElement);
+	// 		displayNotOperandChk();
+	// 	});
+	// };
 	$('[data-live-search="true"]:not(:hidden)').each(function () {
 		$(this).selectpicker({width: '100%'});
 	})
@@ -396,3 +433,84 @@ function validateSearchFilter(searchFilter) {
 	}
 	return true;
 };
+
+$.fn.shareDetailsLinkPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const searchParams = new URLSearchParams(window.location.search);
+			const idParam = searchParams.get("id");
+			const detailsUri = obj.data('details-uri');
+			if (idParam) {
+				const shareLink = applicationBaseUrl + '/' + detailsUri + '?id=' + idParam;
+				const tempCopyField = $("<input>");
+				$("body").append(tempCopyField);
+				tempCopyField.val(shareLink).select();
+				document.execCommand('copy');
+				tempCopyField.remove();			
+			}
+		});
+	});
+}
+
+$.fn.searchDetailOperationsPlugin = function() {
+	// mainObj refers to the #detail_search_filter element
+	function attachClickHandlers(obj, mainObj) {
+		// Get buttons with name ending in either of two choices
+		const buttons = obj.find('button[name$="DetailConditionBtn"], button[name$="DetailGroupBtn"]');
+		buttons.on('click', function() {
+			const clickedButton = $(this);
+			switch (this.name) {
+				case 'addDetailConditionBtn':
+					const detailGroupElement = clickedButton.closest('[name="detailGroup"]');
+					const addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
+					initCondition(addedConditionElement);
+					displayNotOperandChk();
+					attachClickHandlers(addedConditionElement, mainObj);
+					break;
+				case 'addDetailGroupBtn':
+					const addedGroupElement = createAndAttachCopyFromLastItem(mainObj, 'detailGroup', 'criteriaGroups');
+					initConditionGroup(addedGroupElement);
+					displayNotOperandChk();
+					attachClickHandlers(addedGroupElement, mainObj);
+					break;
+				case 'removeDetailConditionBtn':
+					clickedButton.closest('[name="detailCondition"]').remove();
+					displayDetailConditionButtons();
+					break;
+				case 'removeDetailGroupBtn':
+					clickedButton.closest('[name="detailGroup"]').remove();
+					displayDetailGroupButtons();
+					break;
+			}
+		});
+	}
+	return this.each(function() {
+		const obj = $(this);
+		// Giving the same element as both arguments on first call
+		// The first argument will change on subsequent calls
+		attachClickHandlers(obj, obj);
+	});
+}
+
+$.fn.chooseSearchModePlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			if (obj.attr('id') === 'simpleSearchModeBtn') {
+				displaySimpleSearch();
+			} else {
+				displayDetailSearch();
+			}
+		});
+	});
+}
+
+$.fn.datasetDlgFocusBtnPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('shown.bs.modal', function() {
+			obj.find('.btn').first().focus();
+		});
+	});
+}

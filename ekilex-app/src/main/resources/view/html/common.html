@@ -111,7 +111,8 @@
             href="#simple_search_filter"
             role="tab"
             aria-controls="simple_search_filter"
-            aria-selected="true">Lihtotsing</a>
+            aria-selected="true"
+            data-plugin="chooseSearchModePlugin">Lihtotsing</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active':''"
@@ -121,7 +122,8 @@
             href="#detail_search_filter"
             role="tab"
             aria-controls="simple_search_filter"
-            aria-selected="true">Detailotsing</a>
+            aria-selected="true"
+            data-plugin="chooseSearchModePlugin">Detailotsing</a>
         </li>
       </ul>
       <th:block th:if="${activeItem == 'syn'}">
