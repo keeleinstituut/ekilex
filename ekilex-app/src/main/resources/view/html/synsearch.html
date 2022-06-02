@@ -139,6 +139,17 @@
                   <span th:text="#{syn.candidates.title}">Sünonüümide kandidaadid</span>
                   <div class="ml-auto d-flex flex-row align-items-center">
                     <span class="border-left py-2"></span>
+                    <button type="button"
+                            class="btn btn-light mr-1"
+                            data-toggle="delete-word-syn-relations-confirm"
+                            data-placement="bottom"
+                            th:data-word-id="${wordId}"
+                            sec:authorize="#vars.details.word.subGrant">
+                      <span th:title="#{syn.delete.all}" data-toggle="tooltip">
+                        <i class="action-icon fa fa-remove" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                    <span class="border-left py-2"></span>
                     <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0" th:disabled="${markedSynMeaningId != null}">
                       <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
                         <i class="action-icon fa fa-keyboard-o" aria-hidden="true"></i>
@@ -170,6 +181,12 @@
           btnCancelLabel : 'Ei',
           title : 'Kinnita kustutamine',
           onConfirm : executeDelete
+        });
+        $('[data-toggle=delete-word-syn-relations-confirm]').confirmation({
+          btnOkLabel : 'Jah',
+          btnCancelLabel : 'Ei',
+          title : 'Kustuta kõik kinnitamata kandidaadid',
+          onConfirm : updateWordSynRelationsStatusDeleted
         });
     </script>
   </th:block>

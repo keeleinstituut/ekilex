@@ -679,3 +679,13 @@ function refreshSynDetails() {
 
 	refreshButton.parent().addClass('active');
 }
+
+function updateWordSynRelationsStatusDeleted() {
+
+	let wordId = $(this).data('word-id');
+	let actionUrl = applicationUrl + 'syn_relation_status/delete?wordId=' + wordId;
+
+	let callbackFunc = () => refreshSynDetails();
+
+	doPostRelationChange(actionUrl, callbackFunc);
+}

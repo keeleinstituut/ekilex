@@ -139,15 +139,31 @@ public class SynSearchService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public void changeRelationStatus(Long relationId, String relationStatus, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateRelationStatus(Long relationId, String relationStatus, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		if (StringUtils.equals(RelationStatus.DELETED.name(), relationStatus)) {
 			moveChangedRelationToLast(relationId);
 		}
 		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		synSearchDbService.changeRelationStatus(relationId, relationStatus);
+		synSearchDbService.updateRelationStatus(relationId, relationStatus);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
+	}
+
+	@Transactional
+	public void updateWordSynRelationsStatusDeleted(
+			Long wordId, String datasetCode, List<String> synCandidateLangCodes, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		List<SynRelation> wordSynRelations = synSearchDbService
+				.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
+				.filter(synRelation -> synRelation.getRelationStatus() == null || synRelation.getRelationStatus().equals(RelationStatus.UNDEFINED))
+				.collect(Collectors.toList());
+
+		for (SynRelation synRelation : filteredWordSynRelations) {
+			Long relationId = synRelation.getId();
+			updateRelationStatus(relationId, RelationStatus.DELETED.name(), isManualEventOnUpdateEnabled);
+		}
 	}
 
 	@Transactional
@@ -159,7 +175,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		synSearchDbService.changeRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
+		synSearchDbService.updateRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
 		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
 	}
 

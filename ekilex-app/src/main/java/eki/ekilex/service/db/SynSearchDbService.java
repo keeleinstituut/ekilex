@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.Record1;
 import org.jooq.Record18;
 import org.jooq.Record4;
 import org.jooq.Table;
@@ -225,23 +224,11 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetchInto(WordLexeme.class);
 	}
 
-	public void changeRelationStatus(Long id, String status) {
+	public void updateRelationStatus(Long id, String status) {
 		create.update(WORD_RELATION)
 				.set(WORD_RELATION.RELATION_STATUS, status)
 				.where(WORD_RELATION.ID.eq(id))
 				.execute();
-	}
-
-	public Long getRelationId(Long word1Id, Long word2Id, String relationType) {
-		Record1<Long> relationRecord = create.select(WORD_RELATION.ID)
-				.from(WORD_RELATION)
-				.where(WORD_RELATION.WORD1_ID.eq(word1Id)
-						.and(WORD_RELATION.WORD2_ID.eq(word2Id))
-						.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relationType)))
-				.fetchOne();
-
-		return relationRecord != null ? relationRecord.get(WORD_RELATION.ID) : null;
-
 	}
 
 	public eki.ekilex.data.Word getWord(Long wordId) {

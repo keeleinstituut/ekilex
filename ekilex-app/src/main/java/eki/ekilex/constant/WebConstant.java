@@ -308,11 +308,11 @@ public interface WebConstant {
 
 	String SYN_WORD_DETAILS_URI = "/syn_worddetails";
 
-	String SYN_CHANGE_RELATION_STATUS = "/syn_relation_status";
+	String SYN_RELATION_STATUS_URI = "/syn_relation_status";
 
-	String SYN_CREATE_MEANING_RELATION = "/syn_create_meaning_relation";
+	String SYN_CREATE_MEANING_RELATION_URI = "/syn_create_meaning_relation";
 
-	String SYN_SEARCH_WORDS = "/syn_search_words";
+	String SYN_SEARCH_WORDS_URI = "/syn_search_words";
 
 	String USER_PROFILE_PAGE = "userprofile";
 
