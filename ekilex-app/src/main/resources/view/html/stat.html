@@ -9,7 +9,7 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'stat')"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 mb-4 shadow">
-      <form name="getStatForm" th:action="@{/ww_stat}" method="get">
+      <form name="getStatForm" th:action="@{/ww_stat}" method="get" data-plugin="statisticsFormPlugin">
         <div class="card-header">
           <span>Sõnaveebi otsingute statistika (top 100)</span>
         </div>
@@ -81,7 +81,8 @@
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
-	  initializeStat();
+    // Currently unnecessary due to use of plugin
+	  // initializeStat();
   </script>
 </body>
 </html>

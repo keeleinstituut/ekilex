@@ -9,7 +9,7 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'limterm')"></th:block>
   <div class="card shadow rounded-0 border-0">
     <div class="card-body px-2 py-3">
-      <form id="searchForm" th:action="@{/limtermsearch}" method="post">
+      <form id="searchForm" th:action="@{/limtermsearch}" method="post" data-plugin="searchFormSubmitPlugin">
         <th:block th:replace="search :: search_form('lim_term_search', false)"></th:block>
       </form>
     </div>

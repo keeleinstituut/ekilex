@@ -45,6 +45,8 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 			dlg.modal('hide');
 			$('#sourceSearchResult_' + sourceId).replaceWith(data);
 			initDeleteConfirmations();
+			// Reattach plugins after elements change
+			$wpm.bindObjects();
 		}).fail(function (data) {
 			console.log(data);
 			openAlertDlg('Salvestamine ebaõnnestus');
@@ -90,6 +92,8 @@ function submitAndUpdateSourceType(selectDlg) {
 		selectDlg.modal('hide');
 		$('#sourceSearchResult_' + sourceId).replaceWith(data);
 		initDeleteConfirmations();
+		// Reattach plugins after change
+		$wpm.bindObjects();
 	}).fail(function (data) {
 		console.log(data);
 		openAlertDlg('Muutmine ebaõnnestus');
@@ -118,10 +122,25 @@ $.fn.addSourcePropertyGroup = function() {
 	});
 };
 
-$(document).on("click", ":button[name='removePropertyGroupBtn']", function() {
-	$(this).closest('[name="sourcePropertyGroup"]').remove();
-	displayRemoveButtons();
-});
+$.fn.removePropertyGroupPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const btn = $(this);
+			const elements = btn.closest('#source_property_element').find('[name="sourcePropertyGroup"]');
+			// Do not remove unless there's more than one as otherwise the entire section is gone from that source
+			if (elements.length > 1) {
+				btn.closest('[name="sourcePropertyGroup"]').remove();
+				displayRemoveButtons();
+			}
+		});
+	});
+}
+
+// $(document).on("click", ":button[name='removePropertyGroupBtn']", function() {
+// 	$(this).closest('[name="sourcePropertyGroup"]').remove();
+// 	displayRemoveButtons();
+// });
 
 function displayRemoveButtons() {
 	$('[name="removePropertyGroupBtn"]').each(function (i, v) {
@@ -222,25 +241,40 @@ function addSourceAndSourceLink(addSourceForm) {
 	});
 }
 
-$(function(){
+// $(function(){
 
-	$(document).on('show.bs.modal', '#sourceActivityLogDlg', function(e) {
-		var dlg = $(this);
-		var link = $(e.relatedTarget);
-		var url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
+	// Attached same plugin from common.js
+	// $(document).on('show.bs.modal', '#sourceActivityLogDlg', function(e) {
+	// 	var dlg = $(this);
+	// 	var link = $(e.relatedTarget);
+	// 	var url = link.attr('href');
+	// 	dlg.find('.close').focus();
+	// 	dlg.find('.modal-body').html(null);
+	// 	$.get(url).done(function(data) {
+	// 		dlg.find('.modal-body').html(data);
+	// 	});
+	// });
+
+	// $(document).on("click", "#addSourceSubmitBtn", function() {
+	// 	let addSourceForm = $(this).closest('form');
+	// 	if (viewType === 'source') {
+	// 		addSource(addSourceForm);
+	// 	} else {
+	// 		addSourceAndSourceLink(addSourceForm);
+	// 	}
+	// });
+// });
+
+$.fn.addSourceSubmitPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const addSourceForm = obj.closest('form');
+			if (viewType === 'source') {
+				addSource(addSourceForm);
+			} else {
+				addSourceAndSourceLink(addSourceForm);
+			}
 		});
 	});
-
-	$(document).on("click", "#addSourceSubmitBtn", function() {
-		let addSourceForm = $(this).closest('form');
-		if (viewType === 'source') {
-			addSource(addSourceForm);
-		} else {
-			addSourceAndSourceLink(addSourceForm);
-		}
-	});
-});
+}

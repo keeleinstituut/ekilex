@@ -58,7 +58,7 @@
                name="detailGroup"
                th:data-index="${critGroupStat.index}">
             <div class="col-auto">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'" data-plugin="entitySelectChangePlugin">
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}"
                         th:value="${entity}" th:selected="${group.entity == entity}"
                         th:text="#{|lex.search.entity.${entity.name()}|}"
@@ -88,12 +88,14 @@
                          th:checked="${criteria.not}"/>
                 </div>
                 <div class="col-2">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'"
+                        data-plugin="searchKeySelectChangePlugin">
                     <option th:each="key : ${group.entity.keys}" th:value="${key}" th:selected="${criteria.searchKey == key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
                   </select>
                 </div>
                 <div class="col-2">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchOperand'">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchOperand'"
+                        data-plugin="searchOperandSelectChangePlugin">
                     <option th:each="operand : ${criteria.searchKey.getOperands()}"
                             th:value="${operand}"
                             th:selected="${criteria.searchOperand == operand}"

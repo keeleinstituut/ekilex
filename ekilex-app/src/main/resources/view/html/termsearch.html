@@ -9,7 +9,7 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'term')"></th:block>
   <div class="card shadow rounded-0 border-0">
     <div class="card-body px-2 py-3">
-      <form id="searchForm" th:action="@{/termsearch}" method="post">
+      <form id="searchForm" th:action="@{/termsearch}" method="post" data-plugin="searchFormSubmitPlugin">
         <th:block th:replace="search :: search_form('term_search', true)"></th:block>
         <div class="form-row pt-3 align-items-center border-top border-light mt-3" style="display: none;">
           <div class="col-auto">
