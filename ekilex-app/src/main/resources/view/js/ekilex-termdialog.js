@@ -1,5 +1,5 @@
 $.fn.meaningDataSelectPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const select = $(this);
 		select.on('change', function() {
 			const opCode = select.val();
@@ -18,7 +18,7 @@ $.fn.meaningDataSelectPlugin = function() {
 }
 
 $.fn.limTermMeaningDataSelectPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const select = $(this);
 		select.on('change', function() {
 			const opCode = select.val();

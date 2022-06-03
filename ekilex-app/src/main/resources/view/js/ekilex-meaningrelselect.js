@@ -115,7 +115,7 @@ function checkEnableSubmitButtons() {
 };
 
 $.fn.chkNoRelationPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('change', function() {
 			if (this.checked) {
@@ -128,7 +128,7 @@ $.fn.chkNoRelationPlugin = function() {
 }
 
 $.fn.checkEnableSubmitButtonsPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			checkEnableSubmitButtons();
@@ -137,7 +137,7 @@ $.fn.checkEnableSubmitButtonsPlugin = function() {
 }
 
 $.fn.submitFormMeaningPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			submitFormMeaning()
@@ -146,7 +146,7 @@ $.fn.submitFormMeaningPlugin = function() {
 }
 
 $.fn.submitWithRelationPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const createWordForm = obj.closest('#createWordForm');

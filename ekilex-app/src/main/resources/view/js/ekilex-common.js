@@ -795,7 +795,7 @@ function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 };
 
 $.fn.changeSubmitFormPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		$(this).on('change', function() {
 			this.form.submit();
 		});
@@ -803,7 +803,7 @@ $.fn.changeSubmitFormPlugin = function() {
 }
 
 $.fn.loadDetailsPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const wordId = obj.data('id');
@@ -815,7 +815,7 @@ $.fn.loadDetailsPlugin = function() {
 }
 
 $.fn.activityLogDlgPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const dlg = $(this);
 		dlg.on('show.bs.modal', function(e) {
 			const link = $(e.relatedTarget);
@@ -830,7 +830,7 @@ $.fn.activityLogDlgPlugin = function() {
 }
 
 $.fn.langCollapsePlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const btn = $(this);
 		btn.on('click', function() {
 			const lang = btn.attr("data-lang");
@@ -852,7 +852,7 @@ $.fn.langCollapsePlugin = function() {
 }
 
 $.fn.changeItemOrderingPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const orderingBtn = $(this);
 		orderingBtn.on('click', function() {
 			let orderingData;
@@ -872,7 +872,7 @@ $.fn.changeItemOrderingPlugin = function() {
 
 $.fn.pagingBtnPlugin = function() {
 	// Allows for adding plugin to an array
-	this.each(function() {
+	return this.each(function() {
 		const button = $(this);
 		button.on('click', function() {
 			openWaitDlg();
@@ -920,7 +920,7 @@ $.fn.pagingBtnPlugin = function() {
 }
 
 $.fn.pagingInputPlugin = function () {
-	this.each(function() {
+	return this.each(function() {
 		const input = $(this);
 		input.on('input', function () {
 			const inputPageChkLength = input.val().trim().length;
@@ -941,7 +941,7 @@ $.fn.pagingInputPlugin = function () {
 }
 
 $.fn.changeOppositeRelationSelectDataPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('change', function() {
 			changeOppositeRelationSelectData(obj);

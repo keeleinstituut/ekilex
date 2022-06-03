@@ -9,7 +9,7 @@
 // };
 
 $.fn.passwordRecoveryPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const passRecoveryForm = obj.closest("#passRecoveryForm");

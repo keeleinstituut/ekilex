@@ -1,6 +1,6 @@
 $(function() {
 	$.fn.initUsageAuthorDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initUsageAuthorDlg(obj);
@@ -9,7 +9,7 @@ $(function() {
 	}
 
 	$.fn.addUsageMemberDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function(e) {
 				initEkiEditorDlg(obj);
@@ -19,7 +19,7 @@ $(function() {
 	}
 
 	$.fn.initLexemeLevelsDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initLexemeLevelsDlg(obj);
@@ -28,7 +28,7 @@ $(function() {
 	}
 
 	$.fn.initEditMeaningWordAndLexemeWeightDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initEditMeaningWordAndLexemeWeightDlg(obj);

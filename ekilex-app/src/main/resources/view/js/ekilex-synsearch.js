@@ -721,7 +721,7 @@ function updateWordSynRelationsStatusDeleted() {
 }
 
 $.fn.updateTagCompletePlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const button = $(this);
 		button.on('click', function() {
 			let wordId = button.data('word-id');
@@ -733,7 +733,7 @@ $.fn.updateTagCompletePlugin = function() {
 }
 
 $.fn.changeSynRelationPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const status = obj.data('status');

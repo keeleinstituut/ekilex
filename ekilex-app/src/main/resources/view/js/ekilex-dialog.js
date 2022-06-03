@@ -1,6 +1,6 @@
 $(function() {
 	$.fn.lexDataSelectPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const select = $(this);
 			select.on('change', function() {
 				const opCode = select.val();
@@ -19,7 +19,7 @@ $(function() {
 	}
 
 	$.fn.initAddMultiDataDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initAddMultiDataDlg(obj);
@@ -28,7 +28,7 @@ $(function() {
 	}
 
 	$.fn.initAddMultiDataDlgAndBindPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initAddMultiDataDlg(obj);
@@ -38,7 +38,7 @@ $(function() {
 	}
 
 	$.fn.initEkiEditorDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initEkiEditorDlg(obj);
@@ -47,7 +47,7 @@ $(function() {
 	}
 
 	$.fn.initEkiEditorDlgAndFocusPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function(e) {
 				initEkiEditorDlg(obj);
@@ -57,7 +57,7 @@ $(function() {
 	}
 
 	$.fn.initAddSourceLinkWithAutocompletePlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function(e) {
 				initAddSourceLinkDlg(obj);
@@ -67,7 +67,7 @@ $(function() {
 	}
 
 	$.fn.initEditSourceLinkDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initEditSourceLinkDlg(obj);
@@ -76,7 +76,7 @@ $(function() {
 	}
 
 	$.fn.initMultiselectRelationDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initMultiselectRelationDlg(obj);
@@ -85,7 +85,7 @@ $(function() {
 	}
 
 	$.fn.initWordValueEditorDlgAndFocusPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function(e) {
 				initWordValueEditorDlg(obj);
@@ -95,7 +95,7 @@ $(function() {
 	}
 
 	$.fn.initSelectDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initSelectDlg(obj);
@@ -104,7 +104,7 @@ $(function() {
 	}
 
 	$.fn.initGenericTextAddDlgAndFocusPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function(e) {
 				initGenericTextAddDlg(obj);
@@ -114,7 +114,7 @@ $(function() {
 	}
 
 	$.fn.initGenericTextEditDlgAndFocusPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function(e) {
 				initGenericTextEditDlg(obj);
@@ -124,7 +124,7 @@ $(function() {
 	}
 
 	$.fn.initGenericTextEditDlgPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('show.bs.modal', function() {
 				initGenericTextEditDlg(obj);

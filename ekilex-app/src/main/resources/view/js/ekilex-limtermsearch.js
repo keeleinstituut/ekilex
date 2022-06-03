@@ -1,5 +1,5 @@
 $.fn.duplicateLimTermMeaningPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const url = applicationUrl + 'duplicatemeaning/' + obj.data('meaning-id');
@@ -76,7 +76,7 @@ function initNewLimTermWordDlg() {
 }
 
 $.fn.limTermWordFormSubmitPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const addWordForm = obj.closest('#addLimTermWordForm');

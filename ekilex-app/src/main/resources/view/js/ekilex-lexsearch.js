@@ -80,7 +80,7 @@ function initializeSearch(type) {
 	// });
 
 	$.fn.refreshOpenPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('click', function(e) {
 				e.preventDefault();
@@ -99,7 +99,7 @@ function initializeSearch(type) {
 	// });
 	
 	$.fn.openLexemeDetailsPlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('click', function() {
 				const lexemeId = obj.data('id');
@@ -180,7 +180,7 @@ function initializeSearch(type) {
 	// 	});
 	// });
 	$.fn.duplicateLexemePlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('click', function() {
 				// Check whether id contains the string Empty
@@ -236,7 +236,7 @@ function initializeSearch(type) {
 	// });
 
 	$.fn.duplicateMeaningWordAndLexemePlugin = function() {
-		this.each(function() {
+		return this.each(function() {
 			const obj = $(this);
 			obj.on('click', function() {
 				const successCallbackName = obj.data("callback");

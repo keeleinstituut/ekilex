@@ -20,7 +20,7 @@
 // };
 
 $.fn.registerClickPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const registerForm = obj.closest("#registerForm");
@@ -35,7 +35,7 @@ $.fn.registerClickPlugin = function() {
 }
 
 $.fn.agreementChkPlugin = function() {
-	this.each(function() {
+	return this.each(function() {
 		const obj = $(this);
 		obj.on('change', function() {
 			if (this.checked) {
