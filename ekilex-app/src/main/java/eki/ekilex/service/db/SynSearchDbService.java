@@ -2,7 +2,9 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -15,7 +17,7 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record18;
-import org.jooq.Record4;
+import org.jooq.Record5;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,9 @@ import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.Word;
@@ -58,6 +62,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 		LexemePos lp = LEXEME_POS.as("lp");
 		LexemeRegister lr = LEXEME_REGISTER.as("lr");
 		Definition d = DEFINITION.as("d");
+		Freeform u = FREEFORM.as("u");
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 
 		Field<TypeWordRelParamRecord[]> relp = DSL
 				.select(DSL.field("array_agg(row(rp.name, rp.value)::type_word_rel_param)", TypeWordRelParamRecord[].class))
@@ -66,8 +72,15 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(rp.WORD_RELATION_ID)
 				.asField();
 
+		Field<String[]> usages = DSL
+				.select(DSL.arrayAgg(u.VALUE_PRESE).orderBy(u.ORDER_BY))
+				.from(u, lff)
+				.where(lff.LEXEME_ID.eq(l2.ID).and(lff.FREEFORM_ID.eq(u.ID)))
+				.groupBy(l2.ID)
+				.asField("usages");
+
 		Field<String[]> definitions = DSL
-				.select(DSL.arrayAgg(d.VALUE).orderBy(d.ORDER_BY))
+				.select(DSL.arrayAgg(d.VALUE_PRESE).orderBy(d.ORDER_BY))
 				.from(d)
 				.where(d.MEANING_ID.eq(l2.MEANING_ID).and(d.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.groupBy(l2.MEANING_ID)
@@ -87,10 +100,11 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(l2.ID)
 				.asField("lex_pos_codes");
 
-		Table<Record4<Long, String[], String[], String[]>> relmt = DSL
+		Table<Record5<Long, String[], String[], String[], String[]>> relmt = DSL
 				.select(
 						l2.MEANING_ID,
 						definitions,
+						usages,
 						lexRegisterCodes,
 						lexPosCodes)
 				.from(l2)
@@ -101,7 +115,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.asTable("relmt");
 
 		Field<TypeWordRelMeaningRecord[]> relm = DSL
-				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions, relmt.lex_register_codes, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions, relmt.usages, relmt.lex_register_codes, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
 				.from(relmt)
 				.asField("relm");
 

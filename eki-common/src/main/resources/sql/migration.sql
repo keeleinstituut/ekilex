@@ -42,3 +42,13 @@ where type like 'OD_%';
 update freeform
 set value_prese = regexp_replace(value_prese, '\s\(\d\d\.\d\d\.20\d\d\)', '')
 where type like 'OD_%';
+
+-- vastete kandidaatide kasutusnäited
+drop type if exists type_word_rel_meaning;
+create type type_word_rel_meaning as (
+  meaning_id bigint,
+  definitions text array,
+  usages text array,
+  lex_register_codes varchar(100) array,
+  lex_pos_codes varchar(100) array
+);
