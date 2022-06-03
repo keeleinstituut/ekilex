@@ -140,14 +140,38 @@ CKEDITOR.plugins.add('removeEkilink', {
 	init: function( editor ) {
 		editor.addCommand( 'removeEkilink', {
       exec: function( editor ) {
-				try {
+				const range = editor.getSelection().getRanges()[0];
+				// Collapsed means there's nothing selected
+				if (range.collapsed) {
+					const root = editor.document.getBody();
+					const newRange = editor.createRange();
+					newRange.selectNodeContents(root);
+					const rangeEnd = range.endContainer.$.parentNode;
+					const newRangeEnd = newRange.getBoundaryNodes().endNode.$.parentNode;
 
-					let element = getSelectedElement(editor.getSelection(), 'eki-link');
+					// Add an empty space inside the editor if the link is the last element
+					if (newRangeEnd === rangeEnd) {
+						root.appendHtml('&nbsp;');
+						newRange.selectNodeContents(root);
+						newRange.collapse(false);
+						editor.getSelection().selectRanges([newRange]);
+					} else {
+						// Add an usable empty space after the link
+						// Currently doesn't focus the cursor on that space
+						const activeElement = $(range.endContainer.$.parentNode);
+						activeElement.after('&nbsp;');
+					}
+				} else {
+					try {
+					const element = getSelectedElement(editor.getSelection(), 'eki-link');
 					if (element.getName() === 'eki-link') {
 						const native = $(element.$);
 						native.replaceWith(native.text());
 					}
-				} catch(err) {}
+					} catch(err) {
+						console.log('err', err);
+					}
+				}
       }
     });
     editor.ui.addButton( 'removeEkilink', {
@@ -344,19 +368,20 @@ class ckLink {
 			if (!this.valid.external) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="_blank">${this.outerLink.title.val()}</eki-link> `);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="_blank">${this.outerLink.title.val()}</eki-link>`);
 			this.editor.insertElement(content);
-
 			this.toggle('hide');
 		} else {
 			if (!this.valid.internal) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link> `);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
 			console.log(content);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		}
+		// Add a non-breaking space after the link
+		this.editor.insertHtml('&nbsp;');
 	}
 
 	init() {
