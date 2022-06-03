@@ -12,6 +12,8 @@ public class TypeWordRelMeaning extends AbstractDataObject {
 
 	private List<String> definitions;
 
+	private List<String> usages;
+
 	private List<String> lexRegisterCodes;
 
 	private List<String> lexPosCodes;
@@ -30,6 +32,14 @@ public class TypeWordRelMeaning extends AbstractDataObject {
 
 	public void setDefinitions(List<String> definitions) {
 		this.definitions = definitions;
+	}
+
+	public List<String> getUsages() {
+		return usages;
+	}
+
+	public void setUsages(List<String> usages) {
+		this.usages = usages;
 	}
 
 	public List<String> getLexRegisterCodes() {

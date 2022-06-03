@@ -107,8 +107,11 @@
               </span>
             </span>
           </div>
-          <div class="d-flex flex-row" th:each="definition : ${meaning.definitions}">
-            <span class="small" th:text="${definition}"></span>
+          <div class="d-flex flex-row" data-toggle="tooltip" title="Definitsioon" th:each="definition : ${meaning.definitions}">
+            <span class="small" th:utext="${definition}"></span>
+          </div>
+          <div class="d-flex flex-row" data-toggle="tooltip" title="Kasutusnäide" th:each="usage : ${meaning.usages}">
+            <span class="small text-info" th:utext="${usage}"></span>
           </div>
         </div>
       </li>
