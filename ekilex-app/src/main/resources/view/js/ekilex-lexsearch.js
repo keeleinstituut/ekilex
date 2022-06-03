@@ -252,6 +252,7 @@ function initializeSearch(type) {
 		});
 	}
 
+	// Moved to common
 	// $(document).on('click', '[id^=duplicateMeaningWordAndLexemeBtn_]', function() {
 	// 	let lexemeId = $(this).data('lexeme-id');
 	// 	let successCallbackName = $(this).data("callback");
@@ -265,6 +266,7 @@ function initializeSearch(type) {
 	// 	});
 	// });
 
+	// Moved to common
 	//$(document).on('keydown', '.paging-input', function(e) {
 		// $('#results_div').on('keydown', '.paging-input', function (e) {
 		// 	if (e.which === 13) {
@@ -274,6 +276,7 @@ function initializeSearch(type) {
 		// 	}
 		// });
 
+	// Moved to common
 	// $('#results_div').on('click', '[name="pagingBtn"]', function () {
 	// 	//$(document).on('click', '[name="pagingBtn"]', function() {
 	// 	openWaitDlg();
@@ -312,21 +315,23 @@ function initializeSearch(type) {
 	// 	})
 	// });
 	//};
-	$(document).on("click", "#activeTagCompleteBtn", function() {
-		const obj = $(this);
-		let wordId = obj.data('word-id');
-		let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
-		$.post(actionUrl).done(function(data) {
-			if (data !== "{}") {
-				openAlertDlg("Andmete muutmine ebaõnnestus.");
-				console.log(data);
-			}
-			refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
-		}).fail(function(data) {
-			openAlertDlg("Andmete muutmine ebaõnnestus.");
-			console.log(data);
-		});
-	});
+
+	// Moved to common as plugin
+	// $(document).on("click", "#activeTagCompleteBtn", function() {
+	// 	const obj = $(this);
+	// 	let wordId = obj.data('word-id');
+	// 	let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+	// 	$.post(actionUrl).done(function(data) {
+	// 		if (data !== "{}") {
+	// 			openAlertDlg("Andmete muutmine ebaõnnestus.");
+	// 			console.log(data);
+	// 		}
+	// 		refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+	// 	}).fail(function(data) {
+	// 		openAlertDlg("Andmete muutmine ebaõnnestus.");
+	// 		console.log(data);
+	// 	});
+	// });
 
 
 	let detailButtons = $('#results').find('[name="details-btn"]');

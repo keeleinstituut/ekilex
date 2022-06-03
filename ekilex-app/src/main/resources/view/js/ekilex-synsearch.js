@@ -720,7 +720,7 @@ function updateWordSynRelationsStatusDeleted() {
 	doPostRelationChange(actionUrl, callbackFunc);
 }
 
-$.fn.updateTagCompletePlugin = function() {
+$.fn.updateSynTagCompletePlugin = function() {
 	return this.each(function() {
 		const button = $(this);
 		button.on('click', function() {

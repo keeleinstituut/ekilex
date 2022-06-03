@@ -96,7 +96,8 @@
                         th:data-meaning-id="${meaningId}"
                         th:disabled="${meaning.activeTagComplete}"
                         th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
-                        sec:authorize="#vars.meaning.subGrant">Märgi tehtuks
+                        sec:authorize="#vars.meaning.subGrant"
+                        data-plugin="updateTagCompletePlugin">Märgi tehtuks
                 </button>
               </div>
               <div class="col-auto form-inline">

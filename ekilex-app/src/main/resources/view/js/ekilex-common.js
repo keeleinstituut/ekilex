@@ -948,3 +948,25 @@ $.fn.changeOppositeRelationSelectDataPlugin = function() {
 		});
 	});
 }
+
+// Perhaps possible to combine the plugin with the one from syn page
+// They currently have minor differences in execution, which would require a way to check which page it is
+$.fn.updateTagCompletePlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			const wordId = obj.data('word-id');
+			const actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
+			$.post(actionUrl).done(function(data) {
+				if (data !== "{}") {
+					openAlertDlg("Andmete muutmine ebaõnnestus.");
+					console.log(data);
+				}
+				refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
+			}).fail(function(data) {
+				openAlertDlg("Andmete muutmine ebaõnnestus.");
+				console.log(data);
+			});
+		});
+	});
+}

@@ -37,20 +37,21 @@ function initializeTermSearch() {
 
 	// });
 
-	$(document).on("click", "#activeTagCompleteBtn", function() {
-		let meaningId = $(this).data('meaning-id');
-		let actionUrl = applicationUrl + "update_meaning_active_tag_complete/" + meaningId;
-		$.post(actionUrl).done(function(data) {
-			if (data !== "{}") {
-				openAlertDlg("Andmete muutmine ebaõnnestus.");
-				console.log(data);
-			}
-			refreshDetailsTermsSearch();
-		}).fail(function(data) {
-			openAlertDlg("Andmete muutmine ebaõnnestus.");
-			console.log(data);
-		});
-	});
+	// Moved to common as plugin
+	// $(document).on("click", "#activeTagCompleteBtn", function() {
+	// 	let meaningId = $(this).data('meaning-id');
+	// 	let actionUrl = applicationUrl + "update_meaning_active_tag_complete/" + meaningId;
+	// 	$.post(actionUrl).done(function(data) {
+	// 		if (data !== "{}") {
+	// 			openAlertDlg("Andmete muutmine ebaõnnestus.");
+	// 			console.log(data);
+	// 		}
+	// 		refreshDetailsTermsSearch();
+	// 	}).fail(function(data) {
+	// 		openAlertDlg("Andmete muutmine ebaõnnestus.");
+	// 		console.log(data);
+	// 	});
+	// });
 
 	$(document).on('change', '[name="resultLang"]', function() {
 		$(this).closest('form').submit();
@@ -60,16 +61,17 @@ function initializeTermSearch() {
 		$(this).closest('form').submit();
 	});
 
-	$(document).on('show.bs.modal', '#meaningActivityLogDlg', function(e) {
-		var dlg = $(this);
-		var link = $(e.relatedTarget);
-		var url = link.attr('href');
-		dlg.find('.close').focus();
-		dlg.find('.modal-body').html(null);
-		$.get(url).done(function(data) {
-			dlg.find('.modal-body').html(data);
-		});
-	});
+	// Replaced by plugin from common
+	// $(document).on('show.bs.modal', '#meaningActivityLogDlg', function(e) {
+	// 	var dlg = $(this);
+	// 	var link = $(e.relatedTarget);
+	// 	var url = link.attr('href');
+	// 	dlg.find('.close').focus();
+	// 	dlg.find('.modal-body').html(null);
+	// 	$.get(url).done(function(data) {
+	// 		dlg.find('.modal-body').html(data);
+	// 	});
+	// });
 
 	var detailsButtons = $('#results').find('[name="meaning-details-btn"]');
 	if (detailsButtons.length > 0) {

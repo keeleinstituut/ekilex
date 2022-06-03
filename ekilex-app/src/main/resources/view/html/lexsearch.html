@@ -75,7 +75,8 @@
                         th:data-word-id="${details.word.wordId}"
                         th:disabled="${details.activeTagComplete}"
                         th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
-                        sec:authorize="#vars.details.word.subGrant">Märgi tehtuks
+                        sec:authorize="#vars.details.word.subGrant"
+                        data-plugin="updateTagCompletePlugin">Märgi tehtuks
                 </button>
               </div>
               <div class="hover-actions-container hover-actions-container-outline ml-2">
