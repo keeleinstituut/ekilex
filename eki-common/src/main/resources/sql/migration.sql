@@ -52,3 +52,6 @@ create type type_word_rel_meaning as (
   lex_register_codes varchar(100) array,
   lex_pos_codes varchar(100) array
 );
+
+-- ilma sisuta seletuste kustutamine
+delete from definition where value = '';
