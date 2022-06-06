@@ -562,12 +562,6 @@ function initMultiselectRelationDlg(dlg) {
 		let relationTypeSelect = dlg.find("select[name='relationType']");
 		changeOppositeRelationSelectData(relationTypeSelect);
 	});
-
-	// Moved to end of file
-	// $(document).on("change", "select[name='relationType']", function() {
-	// 	let relationTypeSelect = $(this);
-	// 	changeOppositeRelationSelectData(relationTypeSelect);
-	// });
 };
 
 function changeOppositeRelationSelectData(relationTypeSelect) {

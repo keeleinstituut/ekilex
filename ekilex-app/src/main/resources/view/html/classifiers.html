@@ -9,14 +9,14 @@
   <th:block th:replace="common :: nav_bar(activeItem = 'classifiers')"></th:block>
   <div class="container-fluid">
     <div class="card mt-4 mb-4 shadow">
-      <form name="getClassifierForm" th:action="@{/classifiers}" method="get">
+      <form name="getClassifierForm" th:action="@{/classifiers}" method="get" data-plugin="getClassifierFormPlugin">
         <div class="card-header">
           <span>Vali klassifikaator</span>
         </div>
         <div class="card-body">
           <div class="form-group row">
             <div class="col-md-3">
-              <select class="form-control value-select" name="classifierName">
+              <select class="form-control value-select" name="classifierName" data-plugin="classifierNameSelectPlugin">
                 <option th:each="classifName : ${allClassifierNames}"
                         th:value="${classifName}"
                         th:text="#{|classifier.${classifName}|}"
@@ -109,13 +109,16 @@
                   </button>
                 </div>
                 <div>
-                  <button type="button" class="btn btn-primary btn-compact mt-2" title="Muuda" name="editClassifBtn">Muuda</button>
+                  <button type="button" class="btn btn-primary btn-compact mt-2" title="Muuda"
+                          name="editClassifBtn"
+                          data-plugin="editClassifierPlugin">Muuda
+                  </button>
                   <button type="button" class="btn btn-warning btn-compact mt-2"
                           name="deleteClassifBtn"
-                          data-toggle="deleteClassifier"
                           th:data-classif-code="${classifier.code}"
                           th:data-classif-name="${classifierName}"
-                          th:data-domain-origin="${domainOriginCode}">Kustuta
+                          th:data-domain-origin="${domainOriginCode}"
+                          data-plugin="deleteClassifierPlugin">Kustuta
                   </button>
                 </div>
                 <div>
@@ -131,11 +134,17 @@
                           name="saveRowBtn"
                           th:data-classif-code="${classifier.code}"
                           th:data-classif-name="${classifierName}"
-                          th:data-domain-origin="${domainOriginCode}">Salvesta
+                          th:data-domain-origin="${domainOriginCode}"
+                          data-plugin="saveClassifierChangesPlugin">Salvesta
                   </button>
                 </div>
                 <div>
-                  <button type="button" class="btn btn-secondary btn-compact mt-2" title="Katkesta" style="display: none" name="cancelBtn">Katkesta</button>
+                  <button type="button" class="btn btn-secondary btn-compact mt-2"
+                      title="Katkesta"
+                      style="display: none"
+                      name="cancelBtn"
+                      data-plugin="cancelClassifierEditPlugin">Katkesta
+                  </button>
                 </div>
               </td>
             </tr>
@@ -148,12 +157,6 @@
   <div th:replace="common :: #alertDlg"></div>
   <script th:inline="javascript">
 	  initializeClassifiers();
-    $('[data-toggle=deleteClassifier]').confirmation({
-      btnOkLabel : 'Jah',
-      btnCancelLabel : 'Ei',
-      title : 'Klassifikaatorit on võimalik kustutada siis, kui see ei ole kasutuses. Kas soovid kustutada?',
-      onConfirm : deleteClassifier
-    });
   </script>
 </body>
 </html>

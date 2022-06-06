@@ -2,10 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head></head>
 <body>
-  <div id="addClassifierCodeDlg" class="modal" role="dialog" th:fragment="add_classifier_code_dialog">
+  <div id="addClassifierCodeDlg" class="modal" role="dialog"
+        th:fragment="add_classifier_code_dialog"
+        data-plugin="addClassifierCodePlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <form name="createClassifierForm" th:action="@{/create_classifier}" method="post">
+        <form name="createClassifierForm" th:action="@{/create_classifier}" method="post" data-plugin="createClassifierPlugin">
           <input type="hidden" name="name" th:value="${classifierName}">
           <input type="hidden" name="origin" th:value="${domainOriginCode}">
           <input type="hidden" name="order">

@@ -8,94 +8,12 @@ String.prototype.trunc = function(n, useWordBoundary) {
 
 
 function initializeDatasets() {
-	$(document).on("click", "#addDatasetSubmitBtn", function(e) {
-		e.preventDefault();
-
-		let thisForm = $("#addDatasetForm");
-		let fieldsFilled = checkRequiredFields(thisForm)
-
-		if (fieldsFilled) {
-			checkAndAddDataset(thisForm);
-		}
-	});
-
-	$(document).on("click", ".dataset-save-btn", function(e) {
-		e.preventDefault();
-		openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
-		let thisForm = $(this).closest('form');
-		thisForm.submit();
-	});
-
-	$('.delete-dataset-confirm').confirmation({
-		btnOkLabel : 'Jah',
-		btnCancelLabel : 'Ei',
-		title : 'Kas kustutame sõnakogu?',
-		onConfirm : function() {
-			let code = $(this).data('code');
-			deleteDataset(code);
-		}
-	});
 
 	$('#addDatasetForm').find('input[name="code"]').on('blur', function(e) {
 		$('#codeExistsError').hide();
 	});
 
 	initClassifierAutocomplete();
-
-	// selector by class does not work for some reason
-	$(document).on("changed.bs.select", "#datasetEditOriginsSelect, #datasetAddOriginsSelect", function(e, clickedIndex, isSelected, oldValue) {
-		let selectedOriginCode = $(this).find('option').eq(clickedIndex).val();
-		let isOriginSelected = isSelected;
-
-		let domainsSelect = $(this).closest('form').find('[name="domains"]');
-		let previousDomainsValue = domainsSelect.val();
-
-		if (isOriginSelected) {
-			domainsSelect.attr('disabled', false);
-			populateDomains(domainsSelect, selectedOriginCode, previousDomainsValue);
-
-		} else {
-			domainsSelect.find("option[data-subtext='" + selectedOriginCode + "']").remove();
-			if ($(this).find(':selected').length == 0) {
-				domainsSelect.attr('disabled', true);
-			}
-			domainsSelect.selectpicker('refresh');
-		}
-	});
-
-	$(document).on('hide.bs.modal ', ".edit-dataset-dialog", function(e) {
-		emptyClassifSelect($(this), "languages");
-		emptyClassifSelect($(this), "origins");
-
-		let domains = $(this).find('select[name="domains"]');
-		emptyAndDisableSelect(domains);
-	});
-
-	$(document).on('show.bs.modal', ".edit-dataset-dialog", function(e) {
-		var datasetCode = $(e.relatedTarget).data('dataset-code');
-		let fetchUrl = applicationUrl + 'dataset/' + datasetCode;
-		let thisForm = $(this).find('form');
-
-		$.get(fetchUrl).done(function(dataset) {
-		
-			thisForm.find('input[name="code"]').val(dataset.code);
-			thisForm.find('input[name="name"]').val(dataset.name);
-			thisForm.find('select[name="type"]').val(dataset.type);
-			thisForm.find('textarea[name="description"]').val(dataset.description);
-			thisForm.find('textarea[name="contact"]').val(dataset.contact);
-			thisForm.find('textarea[name="imageUrl"]').val(dataset.imageUrl);
-			thisForm.find('input[name="public"]').attr('checked', dataset.public);
-			thisForm.find('input[name="visible"]').attr('checked', dataset.visible);
-
-			markSelectedClassifiers(thisForm, "languages", dataset.languages);
-			markClassifierDomains(thisForm, dataset);
-
-		}).fail(function(data) {
-			openAlertDlg("Sõnakogu andmete päring ebaõnnestus.");
-			console.log(data);
-		});
-
-	});
 
 	$('.dataset-domain-select').selectpicker({width : '100%'});
 	$('.dataset-origin-select').selectpicker();
@@ -228,3 +146,107 @@ function checkAndAddDataset(addDatasetForm) {
 		console.log(data);
 	});
 };
+
+$.fn.addDatasetSubmitPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function(e) {
+			e.preventDefault();
+			const thisForm = obj.closest("#addDatasetForm");
+			const fieldsFilled = checkRequiredFields(thisForm);
+
+			if (fieldsFilled) {
+				checkAndAddDataset(thisForm);
+			}
+		});
+	});
+}
+
+$.fn.saveDatasetPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function(e) {
+			e.preventDefault();
+			openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
+			const thisForm = obj.closest('form');
+			thisForm.submit();
+		});
+	});
+}
+
+$.fn.datasetOriginsPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('changed.bs.select', function(e, clickedIndex, isSelected, oldValue) {
+			const selectedOriginCode = obj.find('option').eq(clickedIndex).val();
+			const isOriginSelected = isSelected;
+
+			const domainsSelect = obj.closest('form').find('[name="domains"]');
+			const previousDomainsValue = domainsSelect.val();
+
+			if (isOriginSelected) {
+				domainsSelect.attr('disabled', false);
+				populateDomains(domainsSelect, selectedOriginCode, previousDomainsValue);
+
+			} else {
+				domainsSelect.find("option[data-subtext='" + selectedOriginCode + "']").remove();
+				if (obj.find(':selected').length == 0) {
+					domainsSelect.attr('disabled', true);
+				}
+				domainsSelect.selectpicker('refresh');
+			}
+		});
+	});
+}
+
+$.fn.editDatasetDlgPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('hide.bs.modal', function() {
+			emptyClassifSelect(obj, "languages");
+			emptyClassifSelect(obj, "origins");
+
+			const domains = obj.find('select[name="domains"]');
+			emptyAndDisableSelect(domains);
+		});
+
+		obj.on('show.bs.modal', function(e) {
+			const datasetCode = $(e.relatedTarget).data('dataset-code');
+			const fetchUrl = applicationUrl + 'dataset/' + datasetCode;
+			const form = obj.find('form');
+
+			$.get(fetchUrl).done(function(dataset) {
+			
+				form.find('input[name="code"]').val(dataset.code);
+				form.find('input[name="name"]').val(dataset.name);
+				form.find('select[name="type"]').val(dataset.type);
+				form.find('textarea[name="description"]').val(dataset.description);
+				form.find('textarea[name="contact"]').val(dataset.contact);
+				form.find('textarea[name="imageUrl"]').val(dataset.imageUrl);
+				form.find('input[name="public"]').attr('checked', dataset.public);
+				form.find('input[name="visible"]').attr('checked', dataset.visible);
+				markSelectedClassifiers(form, "languages", dataset.languages);
+				markClassifierDomains(form, dataset);
+
+			}).fail(function(data) {
+				openAlertDlg("Sõnakogu andmete päring ebaõnnestus.");
+				console.log(data);
+			});
+		});
+	});
+}
+
+$.fn.deleteDatasetConfirmPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.confirmation({
+			btnOkLabel : 'Jah',
+			btnCancelLabel : 'Ei',
+			title : 'Kas kustutame sõnakogu?',
+			onConfirm : function() {
+				const code = obj.data('code');
+				deleteDataset(code);
+			}
+		});
+	});
+}

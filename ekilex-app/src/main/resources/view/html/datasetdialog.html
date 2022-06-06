@@ -47,7 +47,10 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Valdkonna klassifikaatori päritolu</label>
               <div class="col-md-12">
-                <select name="origins" id="datasetAddOriginsSelect" class="dataset-origin-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.origin}">
+                <select name="origins" id="datasetAddOriginsSelect" class="dataset-origin-select"
+                      multiple data-live-search="true"
+                      th:title="#{datasets.dataset.select.origin}"
+                      data-plugin="datasetOriginsPlugin">
                   <option disabled value=""></option>
                   <option th:each="origin : ${origins}" th:data-subtext="${origin.code}" th:value="${origin.code}" th:text="${origin.label}" />
                 </select>
@@ -86,14 +89,14 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button id="addDatasetSubmitBtn" type="submit" class="btn btn-primary">Salvesta</button>
+            <button id="addDatasetSubmitBtn" type="submit" class="btn btn-primary" data-plugin="addDatasetSubmitPlugin">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>
       </div>
     </div>
   </div>
-  <div id="editDatasetDlg" class="modal edit-dataset-dialog" role="dialog" th:fragment="edit_dataset_dialog">
+  <div id="editDatasetDlg" class="modal edit-dataset-dialog" role="dialog" th:fragment="edit_dataset_dialog" data-plugin="editDatasetDlgPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_dataset}" method="post" th:object="${datasetData}">
@@ -133,7 +136,10 @@
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.origins}">Päritolu</label>
               <div class="col-md-12">
-                <select name="origins" id="datasetEditOriginsSelect" class="dataset-origin-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.origin}">
+                <select name="origins" id="datasetEditOriginsSelect" class="dataset-origin-select"
+                      multiple data-live-search="true"
+                      th:title="#{datasets.dataset.select.origin}"
+                      data-plugin="datasetOriginsPlugin">
                   <option disabled value=""></option>
                   <option th:each="origin : ${origins}" th:data-subtext="${origin.code}" th:value="${origin.code}" th:text="${origin.label}" />
                 </select>
@@ -172,7 +178,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary dataset-save-btn">Salvesta</button>
+            <button type="submit" class="btn btn-primary dataset-save-btn" data-plugin="saveDatasetPlugin">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
           </div>
         </form>

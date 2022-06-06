@@ -63,7 +63,10 @@
                       <button type="button" class="btn badge badge-primary" th:data-dataset-code="${dataset.code}" title="Muuda" data-toggle="modal" data-target="#editDatasetDlg">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
-                      <button type="button" class="btn badge badge-warning delete-dataset-confirm" th:data-code="${dataset.code}" data-toggle="datasetDeleteConfirm">
+                      <button type="button" class="btn badge badge-warning delete-dataset-confirm"
+                            th:data-code="${dataset.code}"
+                            data-toggle="datasetDeleteConfirm"
+                            data-plugin="deleteDatasetConfirmPlugin">
                         <i class="fa fa-remove" aria-hidden="true"></i>
                       </button>
                     </th:block>
