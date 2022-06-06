@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
   <th:block th:fragment="lexeme-data">
-    <div th:id="|lexeme-section-${lexeme.lexemeId}|">
+    <div th:id="|lexeme-section-${lexeme.lexemeId}|" class="w-100">
       <div th:classappend="${lexeme.levels != null && lexeme.levels.length() == 3} ? 'pl-lg-4 pl-3': ''">
         <th:block th:if="${lexeme.correctMeaningWord != null}">
           <div>
@@ -30,7 +30,7 @@
             <th:block th:if="${wordData.multipleLexLexemesExist}">
               <strong class="lexeme-level mr-2 definition-value font-weight-bold" th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></strong>
             </th:block>
-            <div>
+            <div class="w-100">
               <div class="meaning">
                 <div class="definition-row definition-area">
                   <div class="mb-3" th:if="${lexeme.showSection1}">
