@@ -39,7 +39,7 @@ function () {
       closeText: '&times;',
       swipeClose: true,
       showCounter: true,
-      fileExt: 'png|jpg|jpeg|gif|webp',
+      fileExt: 'png|jpg|jpeg|gif|webp|svg',
       animationSlide: true,
       animationSpeed: 250,
       preloading: true,
@@ -523,10 +523,9 @@ function () {
         if (_this5.loadedImages.indexOf(_this5.currentImage.getAttribute('src')) === -1) {
           _this5.loadedImages.push(_this5.currentImage.getAttribute('src'));
         }
-
-        var imageWidth = event.target.width,
-            imageHeight = event.target.height;
-
+        // 300 and 185 are fallback dimensions in case an svg does not include dimensions
+        var imageWidth = event.target.width || 300,
+            imageHeight = event.target.height || 185;
         if (_this5.options.scaleImageToRatio || imageWidth > windowWidth || imageHeight > windowHeight) {
           var ratio = imageWidth / imageHeight > windowWidth / windowHeight ? imageWidth / windowWidth : imageHeight / windowHeight;
           imageWidth /= ratio;
@@ -537,6 +536,8 @@ function () {
         _this5.domNodes.image.style.left = (window.innerWidth - imageWidth - _this5.globalScrollbarWidth) / 2 + 'px';
         _this5.domNodes.image.style.width = imageWidth + 'px';
         _this5.domNodes.image.style.height = imageHeight + 'px';
+        // Add a background color in case an svg with transparent background is used
+        _this5.domNodes.image.style.backgroundColor = 'white';
         _this5.domNodes.spinner.style.display = 'none';
 
         _this5.fadeIn(_this5.currentImage, 300);
