@@ -49,13 +49,13 @@
       <div th:text="#{term.search.invalid}"></div>
     </div>
     <div class="row no-gutters pt-3 h-100">
-      <div class="mt-4 float-left" th:if="${noResults == true}">
-        <div th:text="#{term.not.found}">Not found.</div>
-      </div>
       <div class="col-3 pr-2 pb-2 h-100" style="align-self: stretch;" id="searchColumn" th:if="${isSearchResult}">
-        <div id="results_div" class="card shadow" th:if="${termSearchResult.resultExist}" style="height: 100%;">
+        <div id="results_div" class="card shadow" style="height: 100%;">
           <div th:replace="termcomp :: term_search_result"></div>
         </div>
+      </div>
+      <div class="mt-4 float-left" th:if="${noResults == true}">
+        <div th:text="#{term.not.found}">Not found.</div>
       </div>
       <div class="h-100 d-flex flex-column" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
         <div class="scrollable-area" data-plugin="ekiSortable">
