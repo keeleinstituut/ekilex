@@ -179,7 +179,7 @@ function executeValidateSourceDelete() {
 
 function deleteSourceAndUpdateSearch(deleteUrl) {
 	$.get(deleteUrl).done(function () {
-		window.location = applicationUrl + 'sourcesearch';
+		window.location.reload();
 	}).fail(function (data) {
 		openAlertDlg("Allika eemaldamine ebaõnnestus.");
 		console.log(data);
