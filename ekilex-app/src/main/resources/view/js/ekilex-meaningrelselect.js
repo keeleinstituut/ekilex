@@ -77,10 +77,10 @@ function submitFormMeaning() {
 		dataType: 'json',
 		contentType: 'application/json'
 	}).done(function(response) {
-		if (response.status === 'valid') {
-			let searchUri = response.searchUri;
+		if (response.status === 'VALID') {
+			let searchUri = response.uri;
 			window.location = applicationUrl + 'termsearch' + searchUri;
-		} else if (response.status === 'invalid') {
+		} else if (response.status === 'INVALID') {
 			openAlertDlg(response.message);
 		} else {
 			openAlertDlg(failMessage);

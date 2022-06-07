@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import eki.common.constant.Complexity;
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceType;
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -30,6 +31,7 @@ import eki.ekilex.data.DeleteItemRequest;
 import eki.ekilex.data.LexemeDeleteConfirmation;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningDeleteConfirmation;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.UpdateItemRequest;
 import eki.ekilex.data.UpdateLexemeLevelsRequest;
@@ -508,7 +510,7 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@ResponseBody
 	@PostMapping(DELETE_ITEM_URI)
-	public String deleteItem(
+	public Response deleteItem(
 			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
 			@RequestParam(value = "value", required = false) String valueToDelete,
@@ -516,13 +518,17 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
 
+		Response response = new Response();
 		Long userId = userContext.getUserId();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
-			return "NOK";
+			response.setStatus(ResponseStatus.ERROR);
+			return response;
 		}
+
 		String datasetCode = userRole.getDatasetCode();
+		response.setStatus(ResponseStatus.OK);
 
 		switch (opCode) {
 		case "definition":
@@ -609,10 +615,10 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteMeaningNote(id, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_relation":
-			cudService.deleteMeaningRelation(id, isManualEventOnUpdateEnabled);
+			response = cudService.deleteMeaningRelation(id, response, isManualEventOnUpdateEnabled);
 			break;
 		case "syn_meaning_relation":
-			cudService.deleteSynMeaningRelation(id, isManualEventOnUpdateEnabled);
+			response = cudService.deleteMeaningRelation(id, response, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(id, null, userId, userRole, isManualEventOnUpdateEnabled);
@@ -666,7 +672,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteParadigm(id, isManualEventOnUpdateEnabled);
 			break;
 		}
-		return RESPONSE_OK_VER1;
+		return response;
 	}
 
 	@PostMapping(UPDATE_WORD_VALUE_URI)

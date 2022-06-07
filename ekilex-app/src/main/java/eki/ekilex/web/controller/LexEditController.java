@@ -1,7 +1,6 @@
 package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +26,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.MeaningWordCandidates;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
@@ -109,11 +108,9 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@PostMapping(VALIDATE_LEX_JOIN_URI)
 	@ResponseBody
-	public String validateJoin(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds)
-			throws Exception {
+	public Response validateJoin(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) {
 
-		Map<String, String> response = new HashMap<>();
-
+		Response response = new Response();
 		List<Long> meaningIds = new ArrayList<>();
 		Long targeLexemeMeaningId = lookupService.getMeaningId(targetLexemeId);
 		meaningIds.add(targeLexemeMeaningId);
@@ -139,13 +136,12 @@ public class LexEditController extends AbstractPrivatePageController {
 			}
 
 			message += " Palun ühendage enne tähenduste ühendamist need homonüümid.";
-			response.put("status", "invalid");
-			response.put("message", message);
+			response.setStatus(ResponseStatus.INVALID);
+			response.setMessage(message);
 		} else {
-			response.put("status", "valid");
+			response.setStatus(ResponseStatus.VALID);
 		}
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return response;
 	}
 
 	@PostMapping(LEX_JOIN_URI)
@@ -167,7 +163,7 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@ResponseBody
 	@PostMapping(LEX_DUPLICATE_URI + "/{lexemeId}")
-	public String duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public Response duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		List<Long> clonedLexemeIds = new ArrayList<>();
@@ -177,32 +173,28 @@ public class LexEditController extends AbstractPrivatePageController {
 			logger.error("", ignore);
 		}
 
-		Map<String, String> response = new HashMap<>();
+		Response response = new Response();
 		if (CollectionUtils.isNotEmpty(clonedLexemeIds)) {
-			response.put("message", "Lekseemi duplikaat lisatud");
-			response.put("status", "ok");
+			response.setStatus(ResponseStatus.OK);
+			response.setMessage("Lekseemi duplikaat lisatud");
 		} else {
-			response.put("message", "Duplikaadi lisamine ebaõnnestus");
-			response.put("status", "error");
+			response.setStatus(ResponseStatus.ERROR);
+			response.setMessage("Duplikaadi lisamine ebaõnnestus");
 		}
-
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return response;
 	}
 
 	@ResponseBody
 	@PostMapping(EMPTY_LEX_DUPLICATE_URI + "/{lexemeId}")
-	public String duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public Response duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, isManualEventOnUpdateEnabled);
 
-		Map<String, String> response = new HashMap<>();
-		response.put("message", "Uus tähendus loodud");
-		response.put("status", "ok");
-
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		Response response = new Response();
+		response.setStatus(ResponseStatus.OK);
+		response.setMessage("Uus tähendus loodud");
+		return response;
 	}
 
 	@ResponseBody

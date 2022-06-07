@@ -1,8 +1,6 @@
 package eki.ekilex.web.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceProperty;
 import eki.ekilex.data.SourceRequest;
@@ -180,19 +177,18 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	@GetMapping(VALIDATE_DELETE_SOURCE_URI + "/{sourceId}")
 	@ResponseBody
-	public String validateSourceDelete(@PathVariable("sourceId") Long sourceId) throws JsonProcessingException {
+	public Response validateSourceDelete(@PathVariable("sourceId") Long sourceId) {
 
 		logger.debug("Validating source delete, source id: {}", sourceId);
 
-		Map<String, String> response = new HashMap<>();
+		Response response = new Response();
 		if (sourceService.validateSourceDelete(sourceId)) {
-			response.put("status", "ok");
+			response.setStatus(ResponseStatus.OK);
 		} else {
-			response.put("status", "invalid");
-			response.put("message", "Allikat ei saa kustutada, sest sellele on viidatud.");
+			response.setStatus(ResponseStatus.INVALID);
+			response.setMessage("Allikat ei saa kustutada, sest sellele on viidatud.");
 		}
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return response;
 	}
 
 	@GetMapping(DELETE_SOURCE_URI + "/{sourceId}")

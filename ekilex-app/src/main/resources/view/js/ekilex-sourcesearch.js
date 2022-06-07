@@ -162,11 +162,10 @@ function executeValidateSourceDelete() {
 	let sourceId = $(this).data('sourceId');
 	let validateUrl = applicationUrl + 'validate_delete_source/' + sourceId;
 	let deleteUrl = applicationUrl + 'delete_source/' + sourceId;
-	$.get(validateUrl).done(function (data) {
-		let response = JSON.parse(data);
-		if (response.status === 'ok') {
+	$.get(validateUrl).done(function (response) {
+		if (response.status === 'OK') {
 			deleteSourceAndUpdateSearch(deleteUrl);
-		} else if (response.status === 'invalid') {
+		} else if (response.status === 'INVALID') {
 			openAlertDlg(response.message);
 		} else {
 			openAlertDlg("Allika eemaldamine ebaõnnestus.");

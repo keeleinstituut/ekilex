@@ -28,6 +28,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.WordLexeme;
@@ -1614,30 +1615,26 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void deleteMeaningRelation(Long relationId, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-		cudDbService.deleteMeaningRelation(relationId);
-		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
-	}
-
-	@Transactional
-	public void deleteSynMeaningRelation(Long relationId, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Response deleteMeaningRelation(Long relationId, Response response, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;
-		Long oppositeRelationId = lookupDbService.getMeaningRelationSameTypeOppositeRelationId(relationId);
-		if (oppositeRelationId != null) {
+		List<Long> oppositeRelationIds = lookupDbService.getMeaningRelationOppositeRelationIds(relationId);
+		if (oppositeRelationIds.size() == 1) {
+			Long oppositeRelationId = oppositeRelationIds.get(0);
 			Long oppositeMeaningId = activityLogService.getOwnerId(oppositeRelationId, ActivityEntity.MEANING_RELATION);
-			activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", oppositeMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+			activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", oppositeMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 			cudDbService.deleteMeaningRelation(oppositeRelationId);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
+		} else if (oppositeRelationIds.size() > 1) {
+			response.setMessage("Vastaspoole seost ei kustutatud, sest leidub mitu seost.");
 		}
 
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);
-		activityLog = activityLogService.prepareActivityLog("deleteSynMeaningRelation", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+		activityLog = activityLogService.prepareActivityLog("deleteMeaningRelation", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteMeaningRelation(relationId);
 		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.MEANING_RELATION);
+
+		return response;
 	}
 
 	@Transactional

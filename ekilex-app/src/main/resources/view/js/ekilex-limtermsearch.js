@@ -3,11 +3,10 @@ $.fn.duplicateLimTermMeaningPlugin = function() {
 		const obj = $(this);
 		obj.on('click', function() {
 			const url = applicationUrl + 'duplicatemeaning/' + obj.data('meaning-id');
-			$.post(url).done(function(data) {
-				const response = JSON.parse(data);
-				if (response.status === 'ok') {
+			$.post(url).done(function(response) {
+				if (response.status === "OK") {
 					openMessageDlg(response.message);
-					const duplicateMeaningId = response.duplicateMeaningId;
+					const duplicateMeaningId = response.id;
 					setTimeout(function() {
 						window.location = applicationUrl + 'limtermmeaningback/' + duplicateMeaningId;
 					}, 1500);

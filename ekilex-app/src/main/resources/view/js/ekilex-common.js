@@ -29,8 +29,11 @@ function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.', c
 
 function doPostDelete(deleteUrl, callback, force) {
 	Cookies.set('details-open', $('.details-open').parent().attr('id'));
-	$.post(deleteUrl).done(function(data) {
-		if (data === "OK") {
+	$.post(deleteUrl).done(function(response) {
+		if (response.status === "OK") {
+			if (response.message != null) {
+				openMessageDlg(response.message);
+			}
 
 			if (QueryParams.parseParams(deleteUrl).id && !force) {
 				if (QueryParams.parseParams(deleteUrl).opCode === 'syn_meaning_relation') {
@@ -65,7 +68,7 @@ function doPostDelete(deleteUrl, callback, force) {
 			}
 		} else {
 			openAlertDlg("Andmete eemaldamine ebaõnnestus.");
-			console.log(data);
+			console.log(response);
 		}
 	}).fail(function(data) {
 		openAlertDlg("Andmete eemaldamine ebaõnnestus.");
@@ -773,11 +776,10 @@ function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
 		url: validateJoinUrl,
 		data: joinForm.serialize(),
 		method: 'POST',
-	}).done(function(data) {
-		let response = JSON.parse(data);
-		if (response.status === 'valid') {
+	}).done(function(response) {
+		if (response.status === "VALID") {
 			joinForm.submit();
-		} else if (response.status === 'invalid') {
+		} else if (response.status === "INVALID") {
 			openAlertDlg(response.message);
 		} else {
 			openAlertDlg(failMessage);

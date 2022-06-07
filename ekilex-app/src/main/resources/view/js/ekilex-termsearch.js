@@ -140,10 +140,9 @@ function deleteMeaningAndLexemesAndWords() {
 
 function dublicateMeaning() {
 	let url = applicationUrl + 'duplicatemeaning/' + $(this).data('meaning-id');
-	$.post(url).done(function(data) {
-		let response = JSON.parse(data);
-		if (response.status === 'ok') {
-			let duplicateMeaningId = response.duplicateMeaningId;
+	$.post(url).done(function(response) {
+		if (response.status === "OK") {
+			let duplicateMeaningId = response.id;
 			loadDetails(duplicateMeaningId, 'compare');
 			openMessageDlg(response.message);
 		} else {

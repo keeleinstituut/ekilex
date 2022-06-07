@@ -187,9 +187,8 @@ function initializeSearch(type) {
 				const urlString = obj.attr('id').indexOf('Empty') !== -1 ? 'emptylexduplicate/' : 'lexduplicate/';
 				const lexemeId = obj.data('lexeme-id');
 				const url = applicationUrl + urlString + lexemeId;
-				$.post(url).done(function(data) {
-					const response = JSON.parse(data);
-					if (response.status === 'ok') {
+				$.post(url).done(function(response) {
+					if (response.status === "OK") {
 						openMessageDlg(response.message);
 						refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 					} else {

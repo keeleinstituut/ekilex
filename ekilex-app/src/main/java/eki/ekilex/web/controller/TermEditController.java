@@ -1,7 +1,6 @@
 package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,13 +26,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.Response;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexemeMeaningDetails;
@@ -97,10 +96,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@PostMapping(VALIDATE_MEANING_JOIN_URI)
 	@ResponseBody
-	public String validateMeaningJoin(@RequestParam("targetMeaningId") Long targetMeaningId, @RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds)
-			throws Exception {
+	public Response validateMeaningJoin(@RequestParam("targetMeaningId") Long targetMeaningId, @RequestParam("sourceMeaningIds") List<Long> sourceMeaningIds) {
 
-		Map<String, String> response = new HashMap<>();
+		Response response = new Response();
 		List<Long> allMeaningIds = new ArrayList<>(sourceMeaningIds);
 		allMeaningIds.add(targetMeaningId);
 		Map<String, Integer[]> invalidWords = lookupService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
@@ -121,13 +119,12 @@ public class TermEditController extends AbstractMutableDataPageController {
 			}
 
 			message += " Palun ühendage enne tähenduste ühendamist need homonüümid.";
-			response.put("status", "invalid");
-			response.put("message", message);
+			response.setStatus(ResponseStatus.INVALID);
+			response.setMessage(message);
 		} else {
-			response.put("status", "valid");
+			response.setStatus(ResponseStatus.VALID);
 		}
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return response;
 	}
 
 	@PostMapping(MEANING_JOIN_URI)
@@ -148,7 +145,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@ResponseBody
 	@PostMapping("/duplicatemeaning/{meaningId}")
-	public String duplicateMeaning(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public Response duplicateMeaning(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		Optional<Long> clonedMeaning = Optional.empty();
@@ -158,19 +155,17 @@ public class TermEditController extends AbstractMutableDataPageController {
 			logger.error("", ignore);
 		}
 
-		Map<String, String> response = new HashMap<>();
+		Response response = new Response();
 		if (clonedMeaning.isPresent()) {
 			Long duplicateMeaningId = clonedMeaning.get();
-			response.put("message", "Mõiste duplikaat lisatud");
-			response.put("duplicateMeaningId", String.valueOf(duplicateMeaningId));
-			response.put("status", "ok");
+			response.setStatus(ResponseStatus.OK);
+			response.setMessage("Mõiste duplikaat lisatud");
+			response.setId(duplicateMeaningId);
 		} else {
-			response.put("message", "Duplikaadi lisamine ebaõnnestus");
-			response.put("status", "error");
+			response.setStatus(ResponseStatus.ERROR);
+			response.setMessage("Duplikaadi lisamine ebaõnnestus");
 		}
-
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return response;
 	}
 
 	@PostMapping(TERM_CREATE_WORD_URI)
@@ -240,13 +235,13 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@PostMapping(CREATE_WORD_AND_MEANING_AND_REL_URI)
 	@ResponseBody
-	public String createWordAndMeaningAndRelations(
+	public Response createWordAndMeaningAndRelations(
 			@RequestBody WordMeaningRelationsDetails wordMeaningRelationsDetails,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		valueUtil.trimAndCleanAndRemoveHtml(wordMeaningRelationsDetails);
 
-		Map<String, String> response = new HashMap<>();
+		Response response = new Response();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		String wordValue = wordMeaningRelationsDetails.getWordValue();
 		Long meaningId = wordMeaningRelationsDetails.getMeaningId();
@@ -279,15 +274,14 @@ public class TermEditController extends AbstractMutableDataPageController {
 			} else {
 				searchUri = backUri + "?id=" + meaningId;
 			}
-			response.put("status", "valid");
-			response.put("searchUri", searchUri);
+			response.setStatus(ResponseStatus.VALID);
+			response.setUri(searchUri);
 		} else {
-			response.put("status", "invalid");
-			response.put("message", "Viga! Terminil puudub väärtus");
+			response.setStatus(ResponseStatus.INVALID);
+			response.setMessage("Viga! Terminil puudub väärtus");
 		}
 
-		ObjectMapper jsonMapper = new ObjectMapper();
-		return jsonMapper.writeValueAsString(response);
+		return response;
 	}
 
 	@GetMapping(VALIDATE_MEANING_DATA_IMPORT_URI + "/{meaningId}")
