@@ -369,7 +369,6 @@ function loadDetails(wordId, task, lastWordId) {
 	if (!task) {
 		$('#results_div .list-group-item').removeClass('active');
 	}
-	$("#word-result-" + wordId).addClass('active');
 	openWaitDlg();
 
 	let wordDetailsUrl;
@@ -455,7 +454,7 @@ function loadDetails(wordId, task, lastWordId) {
 		$('#results_div .list-group-item').removeClass('active');
 		$('#resultColumn:first').find('[data-rel="details-area"]').each((index, element) => {
 			const id = $(element).attr('data-id');
-			$("#word-result-" + id).addClass('active');
+			$(`#results button[data-id=${id}]`).parent().addClass('active');
 		});
 
 		$('#results_div .list-group-item').each((index, element) => {
