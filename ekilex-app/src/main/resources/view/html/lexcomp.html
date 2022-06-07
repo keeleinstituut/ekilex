@@ -1337,7 +1337,7 @@
               <div class="action-column">
                 <th:block th:replace="common :: ordering_buttons(${usageIter})" sec:authorize="#vars.usage.crudGrant"></th:block>
               </div>
-              <div class="col invisible-buttons">
+              <div class="col invisible-buttons pl-0 ml-3">
                 <div class="action-buttons-anchor">
                   <div class="d-inline-block" th:utext="${usage.value}"></div>
                   <div class="d-inline-block" th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></div>
