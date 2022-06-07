@@ -966,3 +966,56 @@ $.fn.updateTagCompletePlugin = function() {
 		});
 	});
 }
+
+// Using a document event listener to make sure link clicks are always caught
+$(document).on('click', 'eki-link', function() {
+	const link = $(this);
+	const href = link.attr('href');
+	const id = link.attr('id');
+	if (href) {
+		const target = link.attr('target');
+		// Perhaps a good idea to add a regex check for valid url?
+		if (href.startsWith('https://')) {
+			window.open(href, target);
+		} else {
+			window.open(`https://${href}`, target);
+		}
+	} else if (id) {
+		const linkType = link.attr('link-type');
+		const form = $('#searchForm');
+		const formDetails = form.find('div[name="detailGroup"]');
+		
+		switch(linkType) {
+			case 'word':
+				if (viewType === 'lex') {
+					// Open in new panel
+					loadDetails(id, 'compare');
+				} else {
+					// Submit detailed search
+					form.find('#searchMode').val('DETAIL');
+					formDetails.find('select[name$="searchKey"]').val('ID');
+					formDetails.find('select[name$="searchOperand"]').val('EQUALS');
+					formDetails.find('input[name$="searchValue"]').val(id);
+					form.submit();
+				}
+				break;
+			case 'meaning':
+				if (viewType === 'term') {
+					loadDetails(id, 'compare');
+				} else {
+					form.find('#searchMode').val('DETAIL');
+					formDetails.find('select[name$="entity"]').val('MEANING');
+					formDetails.find('select[name$="searchKey"]').val('ID');
+					formDetails.find('select[name$="searchOperand"]').val('EQUALS');
+					formDetails.find('input[name$="searchValue"]').val(id);
+					form.submit();
+				}
+				break;
+			default:
+				openAlertDlg('Vigane link.');
+				break;
+		}
+	} else {
+		openAlertDlg('Vigane link.');
+	}
+});

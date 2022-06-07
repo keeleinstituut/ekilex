@@ -503,7 +503,9 @@
   <div th:replace="lexdialog :: new_word_dlg"></div>
   <div th:replace="sourcedialog :: add_source_dlg"></div>
   <script th:inline="javascript">
-	  initializeSearch('lex');
+    $(function() {
+      initializeSearch('lex');
+    });
   </script>
 </body>
 </html>

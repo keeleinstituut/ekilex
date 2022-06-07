@@ -368,7 +368,7 @@ class ckLink {
 			if (!this.valid.external) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="_blank">${this.outerLink.title.val()}</eki-link>`);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="ekiLinkTarget">${this.outerLink.title.val()}</eki-link>`);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		} else {
@@ -407,7 +407,7 @@ function initCkEditor(elem) {
 			},
 			{ name: 'mode' },
 		],
-		extraAllowedContent: 'eki-link',
+		extraAllowedContent: 'eki-link[*]',
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
 	});
 
