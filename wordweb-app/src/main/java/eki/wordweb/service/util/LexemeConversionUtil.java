@@ -136,6 +136,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			populateRelatedMeanings(lexemeWord, wordLang, meaning, langOrderByMap, lexComplexity, displayLang);
 			setValueStateFlags(lexemeWord, wordLang);
 			populateMeaningLexemes(lexemeWord, langOrderByMap);
+			setWordTypeFlags(lexemeWord);
 		}
 	}
 
