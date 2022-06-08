@@ -141,7 +141,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}
-		String cleanText = RegExUtils.removePattern(originalText, "<[/]?eki-[^>]*>");
+		String cleanText = RegExUtils.removePattern(originalText, "<[/]?eki-[^>]*>|<[/]?ext-link[^>]*>");
 		return cleanText;
 	}
 
@@ -149,7 +149,7 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
 		}
-		String cleanText = RegExUtils.removePattern(originalText, "(?!<[/]?eki-[^>]*>)<[^>]*>");
+		String cleanText = RegExUtils.removePattern(originalText, "(?!<[/]?eki-[^>]*>)(?!<[/]?ext-link[^>]*>)<[^>]*>");
 		return cleanText;
 	}
 
