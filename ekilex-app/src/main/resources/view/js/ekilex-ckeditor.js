@@ -95,7 +95,7 @@ CKEDITOR.plugins.add('ekiStyles', {
 	}
 });
 
-CKEDITOR.addCss('eki-link{color:blue; text-decoration: underline;}');
+CKEDITOR.addCss('eki-link{color:blue; text-decoration: underline;} ext-link{color:blue; text-decoration: underline;}');
 CKEDITOR.plugins.addExternal('sourcedialog', '/view/js/sourcedialog/plugin.js');
 
 CKEDITOR.plugins.add('ekiLink', {
@@ -116,10 +116,10 @@ CKEDITOR.plugins.add('ekiLink', {
 	}
 });
 
-function getSelectedElement( selection, tag) {
+function getSelectedElement( selection, tags) {
 	var range = selection.getRanges()[ 0 ],
 		element = selection.getSelectedElement();
-
+	let isTag = false;
 	// In case of table cell selection, we want to shrink selection from td to a element.
 	range.shrink( CKEDITOR.SHRINK_ELEMENT );
 	element = range.getEnclosedNode();
@@ -129,7 +129,13 @@ function getSelectedElement( selection, tag) {
 		element = element.getParent();
 	}
 
-	if ( element && element.type === CKEDITOR.NODE_ELEMENT && element.is(tag) ) {
+	tags.forEach(tag => {
+		if (element.is(tag)) {
+			isTag = true;
+		}
+	});
+
+	if ( element && element.type === CKEDITOR.NODE_ELEMENT && isTag ) {
 		return element;
 	}
 }
@@ -163,8 +169,9 @@ CKEDITOR.plugins.add('removeEkilink', {
 					}
 				} else {
 					try {
-					const element = getSelectedElement(editor.getSelection(), 'eki-link');
-					if (element.getName() === 'eki-link') {
+					const element = getSelectedElement(editor.getSelection(), ['eki-link', 'ext-link']);
+					const elementName = element.getName();
+					if (elementName === 'eki-link' || elementName === 'ext-link') {
 						const native = $(element.$);
 						native.replaceWith(native.text());
 					}
@@ -368,7 +375,7 @@ class ckLink {
 			if (!this.valid.external) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link href="${this.outerLink.url.val()}" target="ekiLinkTarget">${this.outerLink.title.val()}</eki-link>`);
+			const content = CKEDITOR.dom.element.createFromHtml(`<ext-link href="${this.outerLink.url.val()}" target="ext-link">${this.outerLink.title.val()}</ext-link>`);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		} else {
@@ -376,7 +383,6 @@ class ckLink {
 				return false;
 			}
 			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
-			console.log(content);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		}
@@ -407,7 +413,7 @@ function initCkEditor(elem) {
 			},
 			{ name: 'mode' },
 		],
-		extraAllowedContent: 'eki-link[*]',
+		extraAllowedContent: 'eki-link[*]; ext-link[*];',
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
 	});
 

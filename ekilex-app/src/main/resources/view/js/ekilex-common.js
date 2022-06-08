@@ -967,11 +967,80 @@ $.fn.updateTagCompletePlugin = function() {
 	});
 }
 
+// Example input:
+// {
+// 	'searchKey': 'ID',
+// 	'searchOperand': 'EQUALS',
+// 	'searchValue': '3123'
+// }
+function submitDetailedSearch(options) {
+	const form = $('#searchForm');
+	if (!form) {
+		return;
+	}
+
+	// Could also use selectors directly
+	const searchParameters = {
+		'entity': 'select[name$="entity"]',
+		'not': 'input[name$=".not"]:checkbox',
+		'searchKey' : 'select[name$="searchKey"]',
+		'searchOperand': 'select[name$="searchOperand"]',
+		'searchValue': 'input[name$="searchValue"]'
+	}
+
+	form.find('#searchMode').val('DETAIL');
+	const formDetails = form.find('div[name="detailGroup"]');
+	for (const option in options) {
+		formDetails.find(searchParameters[option]).val(options[option]);
+	}
+
+	form.submit();
+}
+
 // Using a document event listener to make sure link clicks are always caught
 $(document).on('click', 'eki-link', function() {
 	const link = $(this);
-	const href = link.attr('href');
 	const id = link.attr('id');
+	if (id) {
+		const linkType = link.attr('link-type');
+		
+		switch(linkType) {
+			case 'word':
+				if (viewType === 'lex') {
+					// Open in new panel
+					loadDetails(id, 'compare');
+				} else {
+					submitDetailedSearch({
+						'searchKey': 'ID',
+						'searchOperand': 'EQUALS',
+						'searchValue': id
+					});
+				}
+				break;
+			case 'meaning':
+				if (viewType === 'term') {
+					loadDetails(id, 'compare');
+				} else {
+					submitDetailedSearch({
+						'entity': 'MEANING',
+						'searchKey': 'ID',
+						'searchOperand': 'EQUALS',
+						'searchValue': id
+					});
+				}
+				break;
+			default:
+				openAlertDlg('Vigane link.');
+				break;
+		}
+	} else {
+		openAlertDlg('Vigane link.');
+	}
+});
+
+$(document).on('click', 'ext-link', function() {
+	const link = $(this);
+	const href = link.attr('href');
 	if (href) {
 		const target = link.attr('target');
 		// Perhaps a good idea to add a regex check for valid url?
@@ -980,42 +1049,7 @@ $(document).on('click', 'eki-link', function() {
 		} else {
 			window.open(`https://${href}`, target);
 		}
-	} else if (id) {
-		const linkType = link.attr('link-type');
-		const form = $('#searchForm');
-		const formDetails = form.find('div[name="detailGroup"]');
-		
-		switch(linkType) {
-			case 'word':
-				if (viewType === 'lex') {
-					// Open in new panel
-					loadDetails(id, 'compare');
-				} else {
-					// Submit detailed search
-					form.find('#searchMode').val('DETAIL');
-					formDetails.find('select[name$="searchKey"]').val('ID');
-					formDetails.find('select[name$="searchOperand"]').val('EQUALS');
-					formDetails.find('input[name$="searchValue"]').val(id);
-					form.submit();
-				}
-				break;
-			case 'meaning':
-				if (viewType === 'term') {
-					loadDetails(id, 'compare');
-				} else {
-					form.find('#searchMode').val('DETAIL');
-					formDetails.find('select[name$="entity"]').val('MEANING');
-					formDetails.find('select[name$="searchKey"]').val('ID');
-					formDetails.find('select[name$="searchOperand"]').val('EQUALS');
-					formDetails.find('input[name$="searchValue"]').val(id);
-					form.submit();
-				}
-				break;
-			default:
-				openAlertDlg('Vigane link.');
-				break;
-		}
-	} else {
+	} else  {
 		openAlertDlg('Vigane link.');
 	}
 });
