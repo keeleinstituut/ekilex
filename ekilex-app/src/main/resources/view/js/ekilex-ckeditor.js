@@ -116,6 +116,24 @@ CKEDITOR.plugins.add('ekiLink', {
 	}
 });
 
+CKEDITOR.plugins.add('ekiMedia', {
+	hidpi: true,
+	init: function(editor) {
+		editor.addCommand('ekimedia', {
+			exec: function(editor) {
+				const media = new ckMedia(editor);
+				media.init();
+			}
+		});
+		editor.ui.addButton('ekimedia', {
+			label: 'Eki-media',
+			icon: 'ekimedia',
+			command: 'ekimedia',
+			toolbar: 'ekiMedia'
+		});
+	}
+});
+
 function getSelectedElement( selection, tags) {
 	var range = selection.getRanges()[ 0 ],
 		element = selection.getSelectedElement();
@@ -218,7 +236,6 @@ class ckLink {
 	addTemplate() {
 		const template = linkTemplate.replace('{{parentTop}}', this.parentTop);
 		this.parent.after(this.linkContent = $(template));
-
 		this.linkContent.css('marginBottom', (parseInt(this.parentTop) + this.parentHeight) - this.linkContent.outerHeight());
 
 		this.outerLink = {
@@ -259,7 +276,6 @@ class ckLink {
 	}
 
 	bindEvents() {
-		console.log(this.linkContent);
 		this.linkContent.find('[data-role="cancel"]').on('click', (e) => {
 			e.preventDefault();
 			this.toggle('hide');
@@ -396,16 +412,92 @@ class ckLink {
 	}
 }
 
+class ckMedia {
+	constructor(editor) {
+		this.editor = editor;
+		this.parent = $(this.editor.element.$).parents('.modal-content:first');
+		this.parentTop = this.parent.css('top');
+		this.parentHeight = this.parent.outerHeight();
+		this.isValid = true;
+	}
+
+	addTemplate() {
+		const template = mediaTemplate.replace('{{parentTop}}', this.parentTop);
+		this.mediaContent = $(template);
+		this.url = this.mediaContent.find('input[name="url"]');
+		this.parent.after(this.mediaContent);
+	}
+
+	toggleWindow(state) {
+		if (state === 'show') {
+			this.addTemplate();
+			this.parent.addClass('size-zero');
+		} else {
+			this.mediaContent.find('.formItem').removeClass('formItem--error');
+			this.mediaContent.find('input').val('');
+			this.mediaContent.remove();
+			this.parent.removeClass('size-zero');
+		}
+	}
+
+	validateField() {
+		if (this.url.val() === '') {
+			this.url.parents('.formItem:first').addClass('formItem--error');
+			this.isValid = false;
+		} else {
+			this.isValid = true;
+		}
+	}
+
+	insertMedia() {
+		this.validateField();
+		if (!this.isValid) {
+			return;
+		}
+		
+		const content = CKEDITOR.dom.element.createFromHtml(`<eki-media src="${this.url.val()}" alt=""></eki-media>`);
+		this.editor.insertElement(content);
+		// Add a non-breaking space after the image
+		this.editor.insertHtml('&nbsp;');
+		this.toggleWindow('hide');
+	}
+
+	bindEvents() {
+		this.mediaContent.find('[data-role="cancel"]').on('click', (e) => {
+			e.preventDefault();
+			this.toggleWindow('hide');
+		});
+		
+		this.mediaContent.parents('.modal:first').on('click', (e) => {
+			if ($(e.target).is('.modal')) {
+				this.toggleWindow('hide');
+			}
+		});
+
+		this.mediaContent.find('[data-role="save"]').on('click', (e) => {
+			e.preventDefault();
+			this.insertMedia();
+		});
+	}
+
+	init() {
+		this.toggleWindow('show');
+		this.bindEvents();
+	}
+}
+
 function initCkEditor(elem) {
 	elem.ckeditor(function( textarea ) {
 		// Callback function code.
+		const iframe = elem.siblings('#cke_editor1').find('iframe');
+		registerEkiMedia(iframe);
 	}, {
 		enterMode: CKEDITOR.ENTER_BR,
-		extraPlugins: 'ekiStyles,ekiLink,removeEkilink',
+		extraPlugins: 'ekiStyles,ekiLink,removeEkilink,ekiMedia',
 		toolbarGroups: [
 			{
 				name: "eki-styles",
-				groups: ["ekiStyles", 'ekiLink','removeEkilink'],
+				groups: ["ekiStyles", 'ekiLink','removeEkilink', 'ekiMedia'],
 			},
 			{
 				name: 'eki-tools',
@@ -413,7 +505,7 @@ function initCkEditor(elem) {
 			},
 			{ name: 'mode' },
 		],
-		extraAllowedContent: 'eki-link[*]; ext-link[*];',
+		extraAllowedContent: 'eki-link[*]; ext-link[*]; eki-media[*];',
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
 	});
 
@@ -490,3 +582,33 @@ const linkTemplate = /*html*/`
 	</div>
 </div>
 `
+
+const mediaTemplate = /*html*/`
+<div class="modal-content ekimediaEditor" style="top:{{parentTop}};">
+	<div class="modal-header">
+		<button class="btn btn-secondary" data-role="cancel">Tagasi</button>
+		<button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+			<span aria-hidden="true">×</span>
+		</button>
+	</div><!--/modal-header-->
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-12 position-relative">
+				<div>
+					<div class="formItem">
+						<div class="formItem--title">
+							Lisa pildi address
+						</div><!--/formItem--title-->
+						<input type="text" name="url" />
+						<div class="formItem__error">Välja täitmine kohustuslik!</div>
+					</div><!--/formItem-->
+				</div><!--/div-->
+			</div><!--/col-12-->
+		</div><!--/row-->
+	</div><!--/modal-body-->
+	<div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal" data-role="cancel">Katkesta</button>
+		<button type="submit" class="btn btn-primary" data-role="save">Valmis</button>
+	</div>
+</div>
+`;
