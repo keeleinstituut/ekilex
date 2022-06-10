@@ -489,7 +489,7 @@ class ckMedia {
 function initCkEditor(elem) {
 	elem.ckeditor(function( textarea ) {
 		// Callback function code.
-		const iframe = elem.siblings('#cke_editor1').find('iframe');
+		const iframe = elem.siblings('[id^="cke_editor"]').find('iframe');
 		registerEkiMedia(iframe);
 	}, {
 		enterMode: CKEDITOR.ENTER_BR,
