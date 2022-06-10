@@ -730,10 +730,13 @@ public class EditController extends AbstractMutableDataPageController {
 	}
 
 	@GetMapping(MANUAL_EVENT_ON_UPDATE_URI + "/{isEnabled}")
-	public String setAdmin(@PathVariable("isEnabled") boolean isEnabled, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+	public String updateManualEventOnEnabled(
+			@PathVariable("isEnabled") boolean isEnabled,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		logger.debug("Updating manual event enabled to {}", isEnabled);
 		sessionBean.setManualEventOnUpdateEnabled(isEnabled);
-		return "search" + PAGE_FRAGMENT_ELEM + "manual_event_on_chk";
+		return SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "manual_event_on_chk";
 	}
 
 }
