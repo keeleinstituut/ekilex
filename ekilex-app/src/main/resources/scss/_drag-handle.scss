@@ -1,3 +1,8 @@
 .drag-handle{
   cursor: move;
 }
+
+// Class used by jquery.sorter.js on draggable elements
+.ui-sortable-handle{
+  cursor: move;
+}

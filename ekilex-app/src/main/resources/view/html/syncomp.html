@@ -6,9 +6,12 @@
        class="overflow-auto h-100"
        data-panel-index="3"
        th:fragment="syn_candidate_list">
-    <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" width="100%" class="orderable list-unstyled p-0" data-op-code="word_relation">
+    <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" width="100%" class="orderable list-unstyled p-0"
+          data-op-code="word_relation"
+          data-sorter:type="relations"
+          data-plugin="sorter">
       <li th:each="synRelation,relationIter : ${details.wordRelationDetails.wordSynRelations}"
-          class="border"
+          class="border w-100"
           th:data-id="${synRelation.id}"
           th:data-orderby="${synRelation.orderBy}">
         <div class="d-flex flex-row hover-actions-container align-items-center pl-1 bg-light"
@@ -28,10 +31,14 @@
             </p>
           </div>
           <div class="hover-actions">
-            <button type="button" th:hidden="${relationIter.first}" class="btn btn-xs btn-secondary order-up " title="Muuda järjestust">
+            <button type="button" th:hidden="${relationIter.first}" class="btn btn-xs btn-secondary order-up "
+                  title="Muuda järjestust"
+                  data-plugin="changeItemOrderingPlugin">
               <i class="fa fa-arrow-up" aria-hidden="true"></i>
             </button>
-            <button type="button" th:hidden="${relationIter.last}" class="btn btn-xs  btn-secondary order-down " title="Muuda järjestust">
+            <button type="button" th:hidden="${relationIter.last}" class="btn btn-xs  btn-secondary order-down "
+                  title="Muuda järjestust"
+                  data-plugin="changeItemOrderingPlugin">
               <i class="fa fa-arrow-down" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn  btn-xs btn-secondary rel-status-btn" th:data-id="${synRelation.id}"
