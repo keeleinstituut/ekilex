@@ -195,8 +195,16 @@ function initialiseSearchForm() {
 	// 	}
 	// });
 
+	$.fn.manualEventOnDivView = function() {
+		const obj = $(this);
+		const dataViewType = $("#searchForm").attr('action');
+		if((dataViewType ===  "/lexsearch")||(dataViewType === "/termsearch"  )){
+			obj.removeClass("d-none");
+			};
+	};
+
 	function manualEventOnUpdateCheckCheckboxValueUpdate() {
-		let data = $(document).find(".date-check-input");
+		let data = $("#manualEventOnDiv").find(".date-check-input");
 		if (data.is(':checked')) {
 			$(".date-check-i").addClass("fa fa-check");
 		} else {
