@@ -195,6 +195,33 @@ function initialiseSearchForm() {
 	// 	}
 	// });
 
+	function manualEventOnUpdateCheckCheckboxValueUpdate() {
+		let data = $(document).find(".date-check-input");
+		if (data.is(':checked')) {
+			$(".date-check-i").addClass("fa fa-check");
+		} else {
+			$(".date-check-i").removeClass("fa fa-check");
+		}
+	};
+	manualEventOnUpdateCheckCheckboxValueUpdate();
+
+	$.fn.mouseManualEventOnUpdateCheck = function (e) {
+		let obj = $(this);
+
+		obj.on("click", function (e) { //box on click does not do activate check-box "checked"
+			e.preventDefault();
+		});
+
+		obj.on("mouseenter", function () {
+			obj.stop();
+			obj.animate({ width: "168", marginLeft: 0 }, { duration: 500 });
+		});
+
+		obj.on("mouseleave", function () {
+			obj.animate({ width: "32", marginLeft: 0 }, { duration: 500 });
+		});
+	};
+
 	$.fn.manualEventOnUpdateCheck = function() {
 		var main = $(this);
 		main.on('click', function(e) {
@@ -214,6 +241,7 @@ function initialiseSearchForm() {
 				console.log(data);
 				openAlertDlg('Viga!');
 			}).always(function() {
+				manualEventOnUpdateCheckCheckboxValueUpdate();
 				closeWaitDlg();
 			});
 		});

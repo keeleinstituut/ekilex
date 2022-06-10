@@ -866,12 +866,13 @@ $.fn.changeItemOrderingPlugin = function() {
 	});
 }
 
-$.fn.pagingBtnPlugin = function() {
+$.fn.pagingBtnPlugin = function () {
 	// Allows for adding plugin to an array
-	return this.each(function() {
+	return this.each(function () {
 		const button = $(this);
-		button.on('click', function() {
+		button.on('click', function () {
 			openWaitDlg();
+			let run = true;
 			let url;
 			const form = button.closest('form');
 			const direction = button.data("direction");
@@ -884,33 +885,49 @@ $.fn.pagingBtnPlugin = function() {
 
 			if (direction === 'page') {
 				const inputPageValue = form.find('.paging-input').val().trim();
-				form.find('input[name="direction"]').val('page');
-				form.find('input[name="userInputPage"]').val(inputPageValue)
+				const totalPages = form.find('input[name="totalPages"]').val();
+
+				if (($.isNumeric(inputPageValue)) && ($.isNumeric(totalPages))) {
+					const inputPageValueInt = parseInt(inputPageValue);
+					const totalPagesInt = parseInt(totalPages);
+					if (1 <= inputPageValueInt && inputPageValueInt <= totalPagesInt) {
+						form.find('input[name="direction"]').val(direction);
+						form.find('input[name="userInputPage"]').val(inputPageValueInt);
+						console.log(inputPageValue);
+					} else {
+						run = false;
+					}
+				} else {
+					run = false;
+				}
 			} else {
 				form.find('input[name="direction"]').val(direction);
 			}
+			if (run) {
+				$.ajax({
+					url: url,
+					data: form.serialize(),
+					method: 'POST',
+				}).done(function (data) {
+					closeWaitDlg();
+					if (syn.length) {
+						$('#synSearchResultsDiv').html(data);
+						$('#synSearchResultsDiv').parent().scrollTop(0);
+						$('#syn-details-area').empty();
+					} else {
+						$('#results_div').html(data);
+						$('#results_div').parent().scrollTop(0);
+					}
 
-			$.ajax({
-				url: url,
-				data: form.serialize(),
-				method: 'POST',
-			}).done(function (data) {
+					$wpm.bindObjects();
+				}).fail(function (data) {
+					console.log(data);
+					closeWaitDlg();
+					openAlertDlg('Lehekülje muutmine ebaõnnestus');
+				});
+			} else {
 				closeWaitDlg();
-				if (syn.length) {
-					$('#synSearchResultsDiv').html(data);
-					$('#synSearchResultsDiv').parent().scrollTop(0);
-					$('#syn-details-area').empty();
-				} else {
-					$('#results_div').html(data);
-					$('#results_div').parent().scrollTop(0);
-				}
-				
-				$wpm.bindObjects();
-			}).fail(function (data) {
-				console.log(data);
-				closeWaitDlg();
-				openAlertDlg('Lehekülje muutmine ebaõnnestus');
-			});
+			}
 		});
 	});
 }

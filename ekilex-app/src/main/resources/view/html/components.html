@@ -192,6 +192,7 @@
     <hr/>
     <form th:action="@{/update_paging}" method="post" id="pagingForm">
       <input type="hidden" name="offset" th:value="${pagingResult.offset}">
+      <input type="hidden" name="totalPages" th:value="${pagingResult.totalPages}" disabled="disabled">
       <input type="hidden" name="searchUri" th:value="${searchUri}">
       <input type="hidden" name="direction">
       <input type="hidden" name="userInputPage">
