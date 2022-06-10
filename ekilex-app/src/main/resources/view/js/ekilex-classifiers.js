@@ -59,7 +59,7 @@ $.fn.getClassifierFormPlugin = function() {
 		form.on('submit', function(e) {
 			e.preventDefault();
 			const classifierName = form.find('select[name="classifierName"]').val();
-			const url = applicationUrl + "classifiers/" + classifierName;
+			let url = applicationUrl + "classifiers/" + classifierName;
 			if (classifierName === "DOMAIN") {
 				const domainOriginCode = form.find('select[name="domainOriginCode"]').val();
 				url = url + "/" + domainOriginCode;
