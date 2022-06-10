@@ -65,7 +65,7 @@
     </div>
   </div>
   <th:block th:fragment="details" th:if="${meaning != null}">
-    <div style="height:100%; overflow:auto;"
+    <div style="height:100%;"
          th:data-id="${meaningId}"
          id="details-area"
          data-rel="details-area"
@@ -85,7 +85,7 @@
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="details-btn"
             data-behaviour="replace"
             data-plugin="loadDetailsPlugin"></button>
-      <div class="navigate-panel term-panel card shadow h-100">
+      <div class="navigate-panel term-panel card shadow h-100 overflow-auto">
         <div class="card border-0 mb-2">
           <div class="card-body">
             <div th:replace="termcomp :: meaning_header"></div>
