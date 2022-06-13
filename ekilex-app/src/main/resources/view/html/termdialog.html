@@ -17,7 +17,7 @@
             <div class="form-group row">
               <div class="col-md-6">
                 <select class="form-control lex-data-select required-field" name="opCode" data-plugin="lexDataSelectPlugin">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option value="lexeme_value_state" sec:authorize="#vars.lexeme.crudGrant">Väärtusolek</option>
                   <option value="addUsageDlg" sec:authorize="#vars.lexeme.crudGrant">Kasutusnäide</option>
                   <option value="lexeme_pos" sec:authorize="#vars.lexeme.crudGrant">Sõnaliik</option>
@@ -39,7 +39,7 @@
             <div th:id="${'lexeme_value_state_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-4">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="item : ${lexemeValueStates}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
               </div>
@@ -47,7 +47,7 @@
             <div th:id="${'lexeme_pos_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="pos : ${allLexemePos}" th:value="${pos.code}" th:text="${pos.value}">pos</option>
                 </select>
               </div>
@@ -55,7 +55,7 @@
             <div th:id="${'lexeme_deriv_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="deriv : ${allLexemeDerivs}" th:value="${deriv.code}" th:text="${deriv.value}">deriv</option>
                 </select>
               </div>
@@ -63,7 +63,7 @@
             <div th:id="${'lexeme_register_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="register : ${allLexemeRegisters}" th:value="${register.code}" th:text="${register.value}">register</option>
                 </select>
               </div>
@@ -71,7 +71,7 @@
             <div th:id="${'lexeme_region_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="region : ${allLexemeRegions}" th:value="${region.code}" th:text="${region.value}">region</option>
                 </select>
               </div>
@@ -79,7 +79,7 @@
             <div th:id="${'lexeme_reliability_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="lexemeReliability : ${lexemeReliabilities}" th:value="${lexemeReliability}" th:text="#{|lexeme.reliability.${lexemeReliability}|}">reliability</option>
                 </select>
               </div>
@@ -87,7 +87,7 @@
             <div th:id="${'word_gender_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-4">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="gender : ${wordGenders}" th:value="${gender.code}" th:text="${gender.value}">gender</option>
                 </select>
               </div>
@@ -95,7 +95,7 @@
             <div th:id="${'word_type_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="item : ${wordTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
               </div>
@@ -103,7 +103,7 @@
             <div th:id="${'word_display_morph_' + lexeme.lexemeId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="item : ${wordDisplayMorphs}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
               </div>
@@ -132,7 +132,7 @@
             <div class="form-group row">
               <div class="col-md-6">
                 <select required class="form-control meaning-data-select required-field" name="opCode" data-plugin="meaningDataSelectPlugin">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
                   <option value="addMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant">Märkus</option>
@@ -147,7 +147,7 @@
             <div th:id="${'meaning_domain_' + meaningId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
                 <select required class="form-control classifier-select required-field term-domain-select" data-live-search="true">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
                             th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
@@ -160,7 +160,7 @@
             <div th:id="${'meaning_semantic_type_' + meaningId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}">semanticType</option>
                 </select>
               </div>
@@ -191,7 +191,7 @@
                 <select required class="form-control lim-term-meaning-data-select required-field"
                       name="opCode"
                       data-plugin="limTermMeaningDataSelectPlugin">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
                   <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
                   <option value="addLimTermMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant">Arutelu kommentaar</option>
@@ -205,7 +205,7 @@
             <div th:id="${'meaning_domain_' + meaningId}" class="form-group row value-group" style="display: none">
               <div class="col-md-12">
                 <select required class="form-control classifier-select required-field term-domain-select" data-live-search="true">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                     <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
                             th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
@@ -218,7 +218,7 @@
             <div th:id="${'meaning_semantic_type_' + meaningId}" class="form-group row value-group" style="display: none">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}">semanticType</option>
                 </select>
               </div>
@@ -412,7 +412,7 @@
             <input type="hidden" name="opCode" value="meaning_domain">
             <div class="col-md-12">
               <select required class="form-control classifier-select" data-live-search="true">
-                <option value="" hidden disabled selected>vali väärtus...</option>
+                <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                 <optgroup th:each="origin : ${datasetDomains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}" th:value="${domain.toIdString()}"
                           th:text="${#strings.abbreviate(domain.origin + ' - ' + domain.code + ' - ' + domain.value, 100)}"
@@ -470,7 +470,7 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="semanticType : ${semanticTypes}" th:value="${semanticType.code}" th:text="${semanticType.code}">semanticType</option>
                 </select>
               </div>
@@ -632,7 +632,7 @@
             <div class="form-group row">
               <div class="col-md-6">
                 <select required class="form-control required-field" name="relationType" data-plugin="changeOppositeRelationSelectDataPlugin">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="item : ${lexemeRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
               </div>
@@ -672,7 +672,7 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="tag : ${lexemeTags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(lexeme.tags, tag)}">tag</option>
                 </select>
               </div>
@@ -704,7 +704,7 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="tag : ${meaningTags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(meaning.tags, tag)}">tag</option>
                 </select>
               </div>
@@ -1297,7 +1297,7 @@
             <div class="form-group row">
               <div class="col-md-6">
                 <select required class="form-control required-field" name="relationType" data-plugin="changeOppositeRelationSelectDataPlugin">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="item : ${meaningRelationTypes}" th:value="${item.code}" th:text="${item.value}">value</option>
                 </select>
               </div>

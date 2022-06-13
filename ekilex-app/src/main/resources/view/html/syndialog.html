@@ -58,7 +58,7 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control value-select required-field">
-                  <option value="" hidden disabled selected>vali väärtus...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
                   <option th:each="tag : ${lexemeTags}" th:value="${tag}" th:text="${tag}" th:unless="${#lists.contains(lexeme.tags, tag)}">tag</option>
                 </select>
               </div>

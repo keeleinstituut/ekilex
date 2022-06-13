@@ -65,7 +65,8 @@
                   <input type="hidden" name="wordId" th:value="${details.word.wordId}">
                   <button type="submit" class="btn btn-secondary btn-compact"
                           title="Ühenda keelendid"
-                          sec:authorize="#vars.details.word.crudGrant">Ühenda
+                          sec:authorize="#vars.details.word.crudGrant"
+                          th:text="#{lex.join}">Ühenda
                   </button>
                 </form>
               </div>
@@ -76,11 +77,12 @@
                         th:disabled="${details.activeTagComplete}"
                         th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
                         sec:authorize="#vars.details.word.subGrant"
-                        data-plugin="updateTagCompletePlugin">Märgi tehtuks
+                        data-plugin="updateTagCompletePlugin"
+                        th:text="#{lex.update.tag.complete}">Märgi tehtuks
                 </button>
               </div>
               <div class="hover-actions-container hover-actions-container-outline ml-2">
-                <div class="date-modified" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Viimane sisuline muudatus">
+                <div class="date-modified" data-toggle="tooltip" data-boundary="window" data-placement="top" th:title="#{lex.manual.event.on}">
                   <i class="fa fa-calendar"></i>
                   <span th:text="${#dates.format(details.word.manualEventOn, 'dd.MM.yyyy')}" class="ml-n1"></span>
                 </div>
@@ -96,7 +98,7 @@
               </div>
               <div class="ml-auto d-flex align-items-center flex-row">
                 <div class="mr-2">
-                  <div class="date-modified" title="Viimati muudetud" data-toggle="tooltip" data-placement="top">
+                  <div class="date-modified" th:title="#{lex.activity.event.on}" data-toggle="tooltip" data-placement="top">
                     <i class="fa fa-edit"></i>
                     <span th:text="${#dates.format(details.word.lastActivityEventOn, 'dd.MM.yyyy')}" class="ml-n1"></span>
                   </div>
@@ -171,16 +173,16 @@
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.odWordRecommendations)}">•</span>
-                      <span>ÕS soovitab</span>
+                      <span th:text="#{lex.word.od.recommendation}">ÕS soovitab</span>
                       <button type="button" class="ekiAccordion__add"
-                              title="Lisa ÕS soovitab" data-toggle="modal"
+                              th:title="#{common.add.new}" data-toggle="modal"
                               th:data-target="${'#addOdWordRecommendationDlg_' + wordId}"
                               sec:authorize="#vars.details.word.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.odWordRecommendations)}">
+                      <div th:if="${#lists.isEmpty(details.odWordRecommendations)}" th:text="#{lex.no.content}">
                         Sisu puudub...
                       </div>
                       <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
@@ -193,7 +195,7 @@
                             <span class="ctxt" th:text="'(' + ${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odWordRecommendation.modifiedOn != null}"></span>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"
-                                      title="Muuda"
+                                      th:title="#{common.edit}"
                                       data-toggle="modal"
                                       th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
                                       sec:authorize="#vars.details.word.crudGrant">
@@ -216,16 +218,16 @@
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.word.notes)}">•</span>
-                      <span>Keelendi märkused</span>
+                      <span th:text="#{lex.word.note}">Keelendi märkus</span>
                       <button type="button" class="ekiAccordion__add"
-                              title="Lisa uus" data-toggle="modal"
+                              th:title="#{common.add.new}" data-toggle="modal"
                               th:data-target="${'#addWordNoteDlg_' + wordId}"
                               sec:authorize="#vars.details.word.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.word.notes)}">
+                      <div th:if="${#lists.isEmpty(details.word.notes)}" th:text="#{lex.no.content}">
                         Sisu puudub...
                       </div>
                       <div th:each="note : ${details.word.notes}">
@@ -237,7 +239,7 @@
                             <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
                             <div class="action-buttons-2">
                               <button type="button" class="btn badge badge-primary"
-                                      title="Muuda"
+                                      th:title="#{common.edit}"
                                       data-toggle="modal"
                                       th:data-target="${'#editWordNoteDlg_' + note.id}"
                                       sec:authorize="#vars.details.word.crudGrant">
@@ -260,10 +262,10 @@
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.paradigms)}">•</span>
-                      <span>Sõnavormid</span>
+                      <span th:text="#{lex.paradigms}">Sõnavormid</span>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.paradigms)}">
+                      <div th:if="${#lists.isEmpty(details.paradigms)}" th:text="#{lex.no.content}">
                         Sisu puudub...
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
@@ -316,9 +318,9 @@
                   <div class="ekiAccordion__instance">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:if="${details.wordRelationDetails.groupRelationExists}">•</span>
-                      <span>Sõna seosed</span>
+                      <span th:text="#{lex.word.relation}">Sõna seos</span>
                       <button type="button" class="ekiAccordion__add"
-                              title="Lisa seos" data-toggle="modal"
+                              th:title="#{common.add.new}" data-toggle="modal"
                               th:data-target="${'#addGroupWordRelationDlg_' + wordId}"
                               sec:authorize="#vars.details.word.crudGrant">
                         <i class="fa fa-plus" aria-hidden="true"></i>
@@ -326,7 +328,7 @@
                     </div>
                     <div class="ekiAccordion__content">
                       <div>
-                        <span th:unless="${details.wordRelationDetails.groupRelationExists}">
+                        <span th:unless="${details.wordRelationDetails.groupRelationExists}" th:text="#{lex.no.content}">
                           Sisu puudub...
                         </span>
                         <table th:unless="${#lists.isEmpty(details.wordRelationDetails.wordGroups)}">
@@ -405,10 +407,9 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(relationGroup.members)}">
+                      <div th:if="${#lists.isEmpty(relationGroup.members)}" th:text="#{lex.no.content}">
                         Sisu puudub...
                       </div>
-                      
                       <ul
                         th:unless="${#lists.isEmpty(relationGroup.members)}"
                         class="sidebar-ordering"
@@ -439,8 +440,8 @@
                                 sec:authorize="#vars.details.word.crudGrant">
                                 <i class="fa fa-remove" aria-hidden="true"></i>
                               </button>
-                            </div><!--/sidebar-ordering__buttons-->
-                          </div><!--/sidebar-ordering__item-->
+                            </div>
+                          </div>
                         </li>
                       </ul>
 
@@ -449,7 +450,7 @@
                   <div class="ekiAccordion__instance" th:unless="${#lists.isEmpty(details.wordEtymology)}">
                     <div class="ekiAccordion__title">
                       <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(details.wordEtymology)}">•</span>
-                      <span>Päritolu</span>
+                      <span th:text="#{lex.word.etymology}">Päritolu</span>
                     </div>
                     <div class="ekiAccordion__content">
                       <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">

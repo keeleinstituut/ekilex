@@ -148,7 +148,7 @@
                   <span th:text="#{syn.abbreviation}"></span>
                   <button type="button" class="btn btn-secondary btn-compact btn-sm position-relative"
                       style="margin-left: 5px;"
-                      title="Lisa uus sünonüümi seos"
+                      th:title="#{lex.add.syn.meaning.relation}"
                       data-toggle="modal"
                       th:data-target="${'#addSynMeaningRelationDlg_' + lexeme.lexemeId}"
                       sec:authorize="#vars.lexeme.meaning.crudGrant">
@@ -194,7 +194,7 @@
                             <div th:replace="lexdialog :: edit_meaning_word_and_lexeme_weight_dlg"></div>
                             <div class="meaning_buttons">
                               <button type="button" class="btn badge badge-primary"
-                                      title="Muuda vastet"
+                                      th:title="#{lex.edit.meaning.word}"
                                       data-toggle="modal"
                                       th:data-target="${'#editMeaningWordAndLexemeWeightDlg_' + synWord.lexemeId}"
                                       sec:authorize="#vars.lexeme.crudGrant">
@@ -204,7 +204,7 @@
                                       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                                       th:data-lexeme-id="${synWord.lexemeId}"
                                       class="btn badge badge-primary"
-                                      title="Tee vastest duplikaat"
+                                      th:title="#{lex.add.meaning.word.duplicate}"
                                       sec:authorize="#vars.lexeme.crudGrant"
                                       data-plugin="duplicateMeaningWordAndLexemePlugin">
                                 <i class="fa fa-clone" aria-hidden="true"></i>
@@ -214,9 +214,9 @@
                                       data-callback="refreshDetailsSearch"
                                       data-toggle="deleteLexemeAndWordAndMeaning"
                                       sec:authorize="#vars.lexeme.crudGrant">
-                                <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste"></i>
+                                <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{lex.delete.syn}"></i>
                               </button>
-                            </div><!--/meaning_buttons-->
+                            </div>
                           </th:block>
                         </th:block>
                       </span>
@@ -224,7 +224,7 @@
                         <div th:replace="lexdialog :: edit_syn_meaning_relation_weight_dlg"></div>
                         <div class="meaning_buttons">
                           <button type="button" class="btn badge badge-primary"
-                                  title="Muuda vaste seose kaalu"
+                                  th:title="#{lex.edit.syn.relation.weight}"
                                   data-toggle="modal"
                                   th:data-target="${'#editSynMeaningRelationWeightDlg_' + syn.relationId}"
                                   sec:authorize="#vars.lexeme.crudGrant">
@@ -235,36 +235,43 @@
                                   data-op-code="syn_meaning_relation"
                                   data-toggle="delete-confirm"
                                   sec:authorize="#vars.lexeme.crudGrant">
-                            <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Kustuta vaste seos"></i>
+                            <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{lex.delete.syn.relation}"></i>
                           </button>
                         </div>
                       </th:block>
                       <span th:unless="${synIter.last}">|</span>
                     </div>
-                  </div><!--/sorter-more-->
-                </div><!--/sorter-wrapper-->
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           <div>
-            <a class="btn btn-sm btn-primary" title="Ühenda tähendused" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}" sec:authorize="#vars.lexeme.crudGrant">Ühenda</a>
+            <a class="btn btn-sm btn-primary"
+               th:title="#{lex.join.meanings}"
+               th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}"
+               sec:authorize="#vars.lexeme.crudGrant"
+               th:text="#{lex.join}">Ühenda</a>
             <button th:id="${'duplicateLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
-                    title="Tee duplikaat ilmikust ja temaga seotud elementidest"
+                    th:title="#{lex.duplicate.lexeme}"
                     th:data-lexeme-id="${lexeme.lexemeId}"
                     sec:authorize="#vars.lexeme.crudGrant"
-                    data-plugin="duplicateLexemePlugin">Duplikaat</button>
+                    data-plugin="duplicateLexemePlugin"
+                    th:text="#{lex.duplicate}">Duplikaat</button>
             <button class="btn btn-sm btn-primary" data-toggle="modal"
                     data-target="#newWordDlg"
                     th:data-meaning-id="${lexeme.meaningId}"
-                    sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected">Uus keelend</button>
+                    sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected"
+                    th:text="#{lex.new.word}">Uus keelend</button>
             <button th:id="${'duplicateEmptyLexemeBtn_' + lexeme.lexemeId}" class="btn btn-sm btn-primary"
-                    title="Loo uus ilmik ja tähendus" 
+                    th:title="#{lex.add.lexeme.and.meaning}"
                     th:data-lexeme-id="${lexeme.lexemeId}"
                     sec:authorize="#vars.lexeme.crudGrant"
-                    data-plugin="duplicateLexemePlugin">Uus tähendus</button>
+                    data-plugin="duplicateLexemePlugin"
+                    th:text="#{lex.add.meaning}">Uus tähendus</button>
             <span class="dropdown" sec:authorize="#vars.lexeme.crudGrant">
               <button class="btn btn-warning font-weight-bold btn-sm" id="deleteButton" type="button" data-toggle="dropdown" aria-haspopup="true"
-                      aria-expanded="false">Kustuta</button>
+                      aria-expanded="false" th:text="#{common.delete}">Kustuta</button>
               <span class="dropdown-menu" aria-labelledby="deleteButton">
                 <a class="btn btn-secondary font-weight-bold btn-sm"
                    href="#"
@@ -272,14 +279,16 @@
                    data-callback="doNewSearchLexDetail"
                    data-toggle="deleteLexemeAndWordAndMeaning"
                    data-id="${lexeme.meaningId}}"
-                   sec:authorize="#vars.lexeme.crudGrant">Kustuta koos tähendusega</a>
+                   sec:authorize="#vars.lexeme.crudGrant"
+                   th:text="#{lex.delete.lexeme.and.word.and.meaning}">Kustuta koos tähendusega</a>
                 <a class="btn btn-secondary font-weight-bold btn-sm"
                    href="#"
                    th:data-id="${lexeme.lexemeId}"
                    data-callback="doNewSearchLexDetail"
                    data-toggle="deleteLexemeAndRusMeaningLexemes"
                    data-id="${lexeme.meaningId}}"
-                   sec:authorize="#vars.lexeme.crudGrant">Kustuta koos tähenduse ja venekeelsete vastetega</a>
+                   sec:authorize="#vars.lexeme.crudGrant"
+                   th:text="#{lex.delete.lexeme.and.rus.meaning.lexemes}">Kustuta koos tähenduse ja venekeelsete vastetega</a>
               </span>
             </span>
             <a th:href="@{'/meaningactivitylog:' + ${lexeme.meaningId}}" data-toggle="modal"
@@ -292,10 +301,10 @@
         </div>
         <div>
           <hr/>
-          <span class="lbl" th:unless="${lexeme.lexemeOrMeaningClassifiersExist}">Ilmiku omadused</span>
+          <span class="lbl" th:unless="${lexeme.lexemeOrMeaningClassifiersExist}" th:text="#{lex.lexeme.data}">Ilmiku omadused</span>
           <div class="text-right">
             <button type="button" class="btn badge badge-success"
-                    title="Lisa andmeid"
+                    th:title="#{lex.add.data}"
                     data-toggle="modal"
                     th:data-target="${'#addLexemeDataDlg_' + lexeme.lexemeId}"
                     sec:authorize="#vars.lexeme.crudGrant">
@@ -333,17 +342,17 @@
         <th:block th:replace="lexcomp :: secondary_colloc"></th:block>
       </div>
       <script th:replace="common :: confirmations"></script>
-      <script>
+      <script th:inline="javascript">
         $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm : deleteLexemeAndWordAndMeaning
         });
         $('[data-toggle=deleteLexemeAndRusMeaningLexemes]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm : deleteLexemeAndRusMeaningLexemes
         });
       </script>
