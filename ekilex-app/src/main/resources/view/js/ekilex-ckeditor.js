@@ -134,6 +134,25 @@ CKEDITOR.plugins.add('ekiMedia', {
 	}
 });
 
+CKEDITOR.plugins.add('removeEkiMedia', {
+	hidpi: true,
+	init: function(editor) {
+		editor.addCommand('removeEkiMedia', {
+			exec: function(editor) {
+				const contents = $(editor.document.getBody().$);
+				// Find all selected images and delete them
+				contents.find('eki-media.eki-selected').remove();
+			}
+		});
+		editor.ui.addButton('removeEkiMedia', {
+			label: 'Eemalda valitud pildid',
+			icon: 'removeekimedia',
+			command: 'removeEkiMedia',
+			toolbar: 'removeEkiMedia'
+		});
+	}
+});
+
 function getSelectedElement( selection, tags) {
 	var range = selection.getRanges()[ 0 ],
 		element = selection.getSelectedElement();
@@ -455,7 +474,7 @@ class ckMedia {
 			return;
 		}
 		
-		const content = CKEDITOR.dom.element.createFromHtml(`<eki-media src="${this.url.val()}" alt=""></eki-media>`);
+		const content = CKEDITOR.dom.element.createFromHtml(`<eki-media src="${this.url.val()}" alt="" contenteditable='false'></eki-media>`);
 		this.editor.insertElement(content);
 		// Add a non-breaking space after the image
 		this.editor.insertHtml('&nbsp;');
@@ -491,13 +510,17 @@ function initCkEditor(elem) {
 		// Callback function code.
 		const iframe = elem.siblings('[id^="cke_editor"]').find('iframe');
 		registerEkiMedia(iframe);
+		// Mark clicked images as selected
+		iframe.contents().find('body').on('click', 'eki-media', function(e) {
+			$(e.currentTarget).toggleClass('eki-selected');
+		});
 	}, {
 		enterMode: CKEDITOR.ENTER_BR,
-		extraPlugins: 'ekiStyles,ekiLink,removeEkilink,ekiMedia',
+		extraPlugins: 'ekiStyles,ekiLink,removeEkilink,ekiMedia,removeEkiMedia',
 		toolbarGroups: [
 			{
 				name: "eki-styles",
-				groups: ["ekiStyles", 'ekiLink','removeEkilink', 'ekiMedia'],
+				groups: ["ekiStyles", 'ekiLink','removeEkilink', 'ekiMedia', 'removeEkiMedia'],
 			},
 			{
 				name: 'eki-tools',

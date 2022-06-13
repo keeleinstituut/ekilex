@@ -72,7 +72,7 @@
     background-image: url('../img/ckeditor/removeekilink.png') !important;
 }
 
-.cke_button__ekimedia_icon {
+.cke_button_icon.cke_button__ekimedia_icon {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -82,6 +82,19 @@
         content: "\f03e";
         font-family: 'FontAwesome';
         color: #2c5ec0;
+    }
+}
+
+.cke_button_icon.cke_button__removeekimedia_icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    // Currently using FontAwesome, image would be in this form:
+    // background: 0 0/16px url('../img/ckeditor/ekilink.png') !important;
+    &:after {
+        content: "\f03e";
+        font-family: 'FontAwesome';
+        color: red;
     }
 }
 

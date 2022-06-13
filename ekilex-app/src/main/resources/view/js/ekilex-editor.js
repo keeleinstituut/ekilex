@@ -28,7 +28,7 @@ function initEkiEditorDlg(editDlg) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		if (modifyFld.val()) {
 			let content = modifyFld.val();
-			content = content.replace("<br>", "").replaceAll("&nbsp;", " ");
+			content = content.replace("<br>", "").replaceAll("&nbsp;", " ").replaceAll('class="eki-selected"', '');
 			editDlg.find('[name=value]').val(content);
 			modifyFld.removeClass('is-invalid');
 			submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.');

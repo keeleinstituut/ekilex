@@ -13,8 +13,13 @@ class ekiMedia extends HTMLElement {
 		// :host refers to the eki-media element
 		style.textContent = `
 		:host {
+			cursor: default;
 			display: inline-block;
-			height: 50px;
+			height: 20px;
+		}
+
+		:host(.eki-selected) img {
+			outline: solid 1px blue;
 		}
 
 		img {
@@ -62,8 +67,13 @@ function registerEkiMedia(iframe) {
 				// :host refers to the eki-media element
 				style.textContent = \`
 				:host {
+					cursor: default;
 					display: inline-block;
-					height: 50px;
+					height: 20px;
+				}
+		
+				:host(.eki-selected) img {
+					outline: solid 1px blue;
 				}
 		
 				img {
