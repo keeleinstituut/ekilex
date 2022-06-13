@@ -305,125 +305,116 @@ function initialiseDetailSearch() {
 	displayDetailGroupButtons();
 	displayNotOperandChk();
 
-	// Combined and moved to bottom of page
-	// $.fn.removeDetailConditionBtn = function () {
-	// 	var block = $("#detail_search_filter");
-	// 	block.off("click.removeDetailConditionBtn").on("click.removeDetailConditionBtn", ":button[name='removeDetailConditionBtn']", function () {
-	// 		//$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
-	// 		$(this).closest('[name="detailCondition"]').remove();
-	// 		displayDetailConditionButtons();
-	// 	});
-	// };
+	$.fn.removeDetailConditionBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.removeDetailConditionBtn").on("click.removeDetailConditionBtn", ":button[name='removeDetailConditionBtn']", function () {
+			//$(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
+			$(this).closest('[name="detailCondition"]').remove();
+			displayDetailConditionButtons();
+		});
+	};
 
-	// $.fn.removeDetailGroupBtn = function () {
-	// 	var block = $("#detail_search_filter");
-	// 	block.off("click.removeDetailGroupBtn").on("click.removeDetailGroupBtn", ":button[name='removeDetailGroupBtn']", function () {
-	// 		//$(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
-	// 		$(this).closest('[name="detailGroup"]').remove();
-	// 		displayDetailGroupButtons();
-	// 	});
-	// };
+	$.fn.removeDetailGroupBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.removeDetailGroupBtn").on("click.removeDetailGroupBtn", ":button[name='removeDetailGroupBtn']", function () {
+			//$(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
+			$(this).closest('[name="detailGroup"]').remove();
+			displayDetailGroupButtons();
+		});
+	};
 
-	// Moved to bottom of file as plugin
-	// $("#detail_search_filter").on("change", "select[name$='entity']", function () {
-	// 	//$(document).on("change", "select[name$='entity']", function() {
+	$("#detail_search_filter").on("change", "select[name$='entity']", function () {
+		//$(document).on("change", "select[name$='entity']", function() {
+		let searchEntityVal = $(this).val();
+		let detailGroupElement = $(this).closest('[name="detailGroup"]');
+		while (detailGroupElement.find('[name="detailCondition"]').length > 1) {
+			detailGroupElement.find('[name="detailCondition"]').last().remove();
+		}
+		let conditionElement = detailGroupElement.find('[name="detailCondition"]').first();
+		let searchKeyElement = conditionElement.find('[name$="searchKey"]');
+		let keyTemplate = $('#searchKeyTemplates').find('[name="' + searchEntityVal + '"]');
+		searchKeyElement.find('option').remove();
+		searchKeyElement.append(keyTemplate.html());
+		searchKeyElement.val(searchKeyElement.find('option').first().val());
+		initCondition(conditionElement);
+		displayNotOperandChk();
+	});
 
-	// 	let searchEntityVal = $(this).val();
-	// 	let detailGroupElement = $(this).closest('[name="detailGroup"]');
-	// 	while (detailGroupElement.find('[name="detailCondition"]').length > 1) {
-	// 		detailGroupElement.find('[name="detailCondition"]').last().remove();
-	// 	}
-	// 	let conditionElement = detailGroupElement.find('[name="detailCondition"]').first();
-	// 	let searchKeyElement = conditionElement.find('[name$="searchKey"]');
-	// 	let keyTemplate = $('#searchKeyTemplates').find('[name="' + searchEntityVal + '"]');
-	// 	searchKeyElement.find('option').remove();
-	// 	searchKeyElement.append(keyTemplate.html());
-	// 	searchKeyElement.val(searchKeyElement.find('option').first().val());
-	// 	initCondition(conditionElement);
-	// 	displayNotOperandChk();
-	// });
+	$("#detail_search_filter").on("change", "select[name$='searchKey']", function () {
+		//$(document).on("change", "select[name$='searchKey']", function() {
+		let detailConditionElement = $(this).closest('[name="detailCondition"]');
+		let pageName = detailConditionElement.attr("data-page");
+		let searchKey = $(this).val();
+		let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
+		let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
+		let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
+		// NOT_CONTAINS is not implemented everywhere
+		if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
+			operandTemplate.find('option[value="NOT_CONTAINS"]').remove();
+		}
+		searchOperandElement.find('option').remove();
+		searchOperandElement.append(operandTemplate.html());
+		searchOperandElement.val(searchOperandElement.find('option').first().val());
 
-	// Moved to bottom of file as plugin
-	// $("#detail_search_filter").on("change", "select[name$='searchKey']", function () {
-	// 	//$(document).on("change", "select[name$='searchKey']", function() {
-	// 	let detailConditionElement = $(this).closest('[name="detailCondition"]');
-	// 	let pageName = detailConditionElement.attr("data-page");
-	// 	let searchKey = $(this).val();
-	// 	let searchEntity = $(this).closest('[name="detailGroup"]').find('[name$="entity"]').val();
-	// 	let searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
-	// 	let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
-	// 	// NOT_CONTAINS is not implemented everywhere
-	// 	if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
-	// 		operandTemplate.find('option[value="NOT_CONTAINS"]').remove();
-	// 	}
-	// 	searchOperandElement.find('option').remove();
-	// 	searchOperandElement.append(operandTemplate.html());
-	// 	searchOperandElement.val(searchOperandElement.find('option').first().val());
-
-	// 	// should lookup by search key + operand
-	// 	let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
-	// 	replaceSearchValueElement(searchKey, searchValueElement);
-	// 	displayNotOperandChk();
-	// });
+		// should lookup by search key + operand
+		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
+		replaceSearchValueElement(searchKey, searchValueElement);
+		displayNotOperandChk();
+	});
 
 
-	// Moved to bottom of file as plugin
-	// $("#detail_search_filter").on("change", "select[name$='searchOperand']", function () {
-	// 	//$(document).on("change", "select[name$='searchOperand']", function() {
+	$("#detail_search_filter").on("change", "select[name$='searchOperand']", function () {
 
-	// 	const textTypeSearchKeys = [
-	// 		"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "ATTRIBUTE_VALUE", "MORPHOPHONO_FORM",
-	// 		"WORD_NOTE", "LEXEME_NOTE", "MEANING_NOTE", "DEFINITION_NOTE"];
-	// 	const selectTypeSearchKeys = [
-	// 		"DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "LEXEME_VALUE_STATE", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE", "ATTRIBUTE_NAME", "WORD_RELATION", "MEANING_RELATION"];
-	// 	const nonValueSearchOperands = ["EXISTS", "SINGLE", "MULTIPLE"];
+		const textTypeSearchKeys = [
+			"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "ATTRIBUTE_VALUE", "MORPHOPHONO_FORM",
+			"WORD_NOTE", "LEXEME_NOTE", "MEANING_NOTE", "DEFINITION_NOTE"];
+		const selectTypeSearchKeys = [
+			"DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "LEXEME_VALUE_STATE", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE", "ATTRIBUTE_NAME", "WORD_RELATION", "MEANING_RELATION"];
+		const nonValueSearchOperands = ["EXISTS", "SINGLE", "MULTIPLE"];
 
-	// 	let detailConditionElement = $(this).closest('[name="detailCondition"]');
-	// 	let searchOperand = $(this).val();
-	// 	let searchKeyElement = detailConditionElement.find('[name$="searchKey"] option:selected');
-	// 	let searchKey = searchKeyElement.val();
-	// 	let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
+		let detailConditionElement = $(this).closest('[name="detailCondition"]');
+		let searchOperand = $(this).val();
+		let searchKeyElement = detailConditionElement.find('[name$="searchKey"] option:selected');
+		let searchKey = searchKeyElement.val();
+		let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
 
-	// 	let isTextTypeSearch = textTypeSearchKeys.includes(searchKey);
-	// 	let isSelectTypeSearch = selectTypeSearchKeys.includes(searchKey);
-	// 	let isNonValueSearch = nonValueSearchOperands.includes(searchOperand);
+		let isTextTypeSearch = textTypeSearchKeys.includes(searchKey);
+		let isSelectTypeSearch = selectTypeSearchKeys.includes(searchKey);
+		let isNonValueSearch = nonValueSearchOperands.includes(searchOperand);
 
-	// 	if (isTextTypeSearch && isNonValueSearch) {
-	// 		searchValueElement.empty();
-	// 		searchValueElement.prop('hidden', true);
-	// 	} else if (isSelectTypeSearch && isNonValueSearch) {
-	// 		searchValueElement.empty();
-	// 		searchValueElement.parent().prop('hidden', true);
-	// 		searchValueElement.selectpicker('refresh');
-	// 	} else {
-	// 		searchValueElement.prop('hidden', false);
-	// 		replaceSearchValueElement(searchKey, searchValueElement);
-	// 	}
-	// });
+		if (isTextTypeSearch && isNonValueSearch) {
+			searchValueElement.empty();
+			searchValueElement.prop('hidden', true);
+		} else if (isSelectTypeSearch && isNonValueSearch) {
+			searchValueElement.empty();
+			searchValueElement.parent().prop('hidden', true);
+			searchValueElement.selectpicker('refresh');
+		} else {
+			searchValueElement.prop('hidden', false);
+			replaceSearchValueElement(searchKey, searchValueElement);
+		}
+	});
 	
-	// Combined and moved to bottom of page
-	// $.fn.addDetailConditionBtn = function () {
-	// 	var block = $("#detail_search_filter");
-	// 	block.off("click.addDetailConditionBtn").on("click.addDetailConditionBtn", ":button[name='addDetailConditionBtn']", function () {
-	// 		//$(document).on("click", ":button[name='addDetailConditionBtn']", function() {
+	$.fn.addDetailConditionBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.addDetailConditionBtn").on("click.addDetailConditionBtn", ":button[name='addDetailConditionBtn']", function () {
+			let detailGroupElement = $(this).closest('[name="detailGroup"]');
+			let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
+			initCondition(addedConditionElement);
+			displayNotOperandChk();
+		});
+	};
 
-	// 		let detailGroupElement = $(this).closest('[name="detailGroup"]');
-	// 		let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
-	// 		initCondition(addedConditionElement);
-	// 		displayNotOperandChk();
-	// 	});
-	// };
+	$.fn.addDetailGroupBtn = function () {
+		var block = $("#detail_search_filter");
+		block.off("click.addDetailGroupBtn").on("click.addDetailGroupBtn", ":button[name='addDetailGroupBtn']", function () {
+			let detailSearchElement = block;
+			let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
+			initConditionGroup(addedGroupElement);
+			displayNotOperandChk();
+		});
+	};
 
-	// $.fn.addDetailGroupBtn = function () {
-	// 	var block = $("#detail_search_filter");
-	// 	block.off("click.addDetailGroupBtn").on("click.addDetailGroupBtn", ":button[name='addDetailGroupBtn']", function () {
-	// 		let detailSearchElement = block;
-	// 		//$(document).on("click", ":button[name='addDetailGroupBtn']", function() {	
-	// 		let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
-	// 		initConditionGroup(addedGroupElement);
-	// 		displayNotOperandChk();
-	// 	});
-	// };
 	$('[data-live-search="true"]:not(:hidden)').each(function () {
 		$(this).selectpicker({width: '100%'});
 	})
@@ -443,12 +434,10 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 	});
 	copyOfLastElement.find('div.invalid-feedback').empty();
 	let inputCopy = copyOfLastElement.find('input');
-	inputCopy.each(function() {
-		const input = $(this);
-		if (!input.is(':checkbox')) {
-			input.val(null);
-		}
-	});
+	let isCheckbox = inputCopy.is(':checkbox');
+	if (!isCheckbox) {
+		inputCopy.val(null);
+	}
 	lastElement.after(copyOfLastElement);
 	return parentElement.find('[name="' + itemName + '"]').last();
 };
@@ -499,46 +488,6 @@ $.fn.shareDetailsLinkPlugin = function() {
 	});
 }
 
-$.fn.searchDetailOperationsPlugin = function() {
-	// mainObj refers to the #detail_search_filter element
-	function attachClickHandlers(obj, mainObj) {
-		// Get buttons with name ending in either of two choices
-		const buttons = obj.find('button[name$="DetailConditionBtn"], button[name$="DetailGroupBtn"]');
-		buttons.on('click', function() {
-			const clickedButton = $(this);
-			switch (this.name) {
-				case 'addDetailConditionBtn':
-					const detailGroupElement = clickedButton.closest('[name="detailGroup"]');
-					const addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
-					initCondition(addedConditionElement);
-					displayNotOperandChk();
-					attachClickHandlers(addedConditionElement, mainObj);
-					break;
-				case 'addDetailGroupBtn':
-					const addedGroupElement = createAndAttachCopyFromLastItem(mainObj, 'detailGroup', 'criteriaGroups');
-					initConditionGroup(addedGroupElement);
-					displayNotOperandChk();
-					attachClickHandlers(addedGroupElement, mainObj);
-					break;
-				case 'removeDetailConditionBtn':
-					clickedButton.closest('[name="detailCondition"]').remove();
-					displayDetailConditionButtons();
-					break;
-				case 'removeDetailGroupBtn':
-					clickedButton.closest('[name="detailGroup"]').remove();
-					displayDetailGroupButtons();
-					break;
-			}
-		});
-	}
-	return this.each(function() {
-		const obj = $(this);
-		// Giving the same element as both arguments on first call
-		// The first argument will change on subsequent calls
-		attachClickHandlers(obj, obj);
-	});
-}
-
 $.fn.chooseSearchModePlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
@@ -571,87 +520,6 @@ $.fn.searchFormSubmitPlugin = function() {
 			if (currentSearchMode === 'SIMPLE' && isSearchFilterValid === 'false') {
 				e.preventDefault();
 				validateAndSubmitSimpleSearch();
-			}
-		});
-	});
-}
-
-
-$.fn.entitySelectChangePlugin = function() {
-	return this.each(function() {
-		const obj = $(this);
-		obj.on('change', function() {
-			const searchEntityVal = obj.val();
-			const detailGroupElement = obj.closest('[name="detailGroup"]');
-			detailGroupElement.find('[name="detailCondition"]').not(':first').remove();
-			const conditionElement = detailGroupElement.find('[name="detailCondition"]').first();
-			const searchKeyElement = conditionElement.find('[name$="searchKey"]');
-			const keyTemplate = $('#searchKeyTemplates').find('[name="' + searchEntityVal + '"]');
-			searchKeyElement.find('option').remove();
-			searchKeyElement.append(keyTemplate.html());
-			searchKeyElement.val(searchKeyElement.find('option').first().val());
-			initCondition(conditionElement);
-			displayNotOperandChk();
-		});
-	});
-}
-
-$.fn.searchKeySelectChangePlugin = function() {
-	return this.each(function() {
-		const obj = $(this);
-		obj.on('change', function() {
-			const detailConditionElement = obj.closest('[name="detailCondition"]');
-			const pageName = detailConditionElement.attr("data-page");
-			const searchKey = obj.val();
-			const searchEntity = obj.closest('[name="detailGroup"]').find('[name$="entity"]').val();
-			const searchOperandElement = detailConditionElement.find('[name$="searchOperand"]');
-			const operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKey + '"]').clone();
-			// NOT_CONTAINS is not implemented everywhere
-			if (pageName == 'lex_search' && searchEntity == 'HEADWORD' && searchKey == 'LANGUAGE') {
-				operandTemplate.find('option[value="NOT_CONTAINS"]').remove();
-			}
-			searchOperandElement.find('option').remove();
-			searchOperandElement.append(operandTemplate.html());
-			searchOperandElement.val(searchOperandElement.find('option').first().val());
-
-			// should lookup by search key + operand
-			let searchValueElement = detailConditionElement.find('[name$="searchValue"]');
-			replaceSearchValueElement(searchKey, searchValueElement);
-			displayNotOperandChk();
-		});
-	});
-}
-
-$.fn.searchOperandSelectChangePlugin = function() {
-	const textTypeSearchKeys = [
-		"SOURCE_REF", "VALUE_AND_EXISTS", "SECONDARY_MEANING_WORD", "LEXEME_GRAMMAR", "LEXEME_GOVERNMENT", "ATTRIBUTE_VALUE", "MORPHOPHONO_FORM",
-		"WORD_NOTE", "LEXEME_NOTE", "MEANING_NOTE", "DEFINITION_NOTE"];
-	const selectTypeSearchKeys = [
-		"DOMAIN", "LEXEME_POS", "LEXEME_REGISTER", "LEXEME_VALUE_STATE", "WORD_TYPE", "ASPECT", "SEMANTIC_TYPE", "ATTRIBUTE_NAME", "WORD_RELATION", "MEANING_RELATION"];
-	const nonValueSearchOperands = ["EXISTS", "SINGLE", "MULTIPLE"];
-
-	return this.each(function() {
-		const obj = $(this);
-		obj.on('change', function() {
-			const detailConditionElement = obj.closest('[name="detailCondition"]');
-			const searchOperand = obj.val();
-			const searchKeyElement = detailConditionElement.find('[name$="searchKey"] option:selected');
-			const searchKey = searchKeyElement.val();
-			const searchValueElement = detailConditionElement.find('[name$="searchValue"]');
-			const isTextTypeSearch = textTypeSearchKeys.includes(searchKey);
-			const isSelectTypeSearch = selectTypeSearchKeys.includes(searchKey);
-			const isNonValueSearch = nonValueSearchOperands.includes(searchOperand);
-
-			if (isTextTypeSearch && isNonValueSearch) {
-				searchValueElement.empty();
-				searchValueElement.prop('hidden', true);
-			} else if (isSelectTypeSearch && isNonValueSearch) {
-				searchValueElement.empty();
-				searchValueElement.parent().prop('hidden', true);
-				searchValueElement.selectpicker('refresh');
-			} else {
-				searchValueElement.prop('hidden', false);
-				replaceSearchValueElement(searchKey, searchValueElement);
 			}
 		});
 	});

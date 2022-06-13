@@ -55,7 +55,7 @@
     </div>
   </th:block>
   <th:block th:fragment="detail_search(searchPageName)">
-    <div class="tab-pane fade" th:classappend="${searchMode =='DETAIL'} ? 'show active':''" id="detail_search_filter" data-plugin="searchDetailOperationsPlugin">
+    <div class="tab-pane fade" th:classappend="${searchMode =='DETAIL'} ? 'show active':''" id="detail_search_filter">
       <div class="d-flex flex-row flex-nowrap align-items-start">
         <div class="flex-grow-1 border-left border-right border-light my-n3 pt-3 pr-3 detail-search-filter-items">
           <div class="detail-search-group d-flex flex-row align-items-start pb-2"
@@ -63,7 +63,7 @@
                name="detailGroup"
                th:data-index="${critGroupStat.index}">
             <div class="col-auto">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'" data-plugin="entitySelectChangePlugin">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'">
                 <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}"
                         th:value="${entity}" th:selected="${group.entity == entity}"
                         th:text="#{|lex.search.entity.${entity.name()}|}"
@@ -93,14 +93,12 @@
                          th:checked="${criteria.not}"/>
                 </div>
                 <div class="col-2">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'"
-                        data-plugin="searchKeySelectChangePlugin">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
                     <option th:each="key : ${group.entity.keys}" th:value="${key}" th:selected="${criteria.searchKey == key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
                   </select>
                 </div>
                 <div class="col-2">
-                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchOperand'"
-                        data-plugin="searchOperandSelectChangePlugin">
+                  <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchOperand'">
                     <option th:each="operand : ${criteria.searchKey.getOperands()}"
                             th:value="${operand}"
                             th:selected="${criteria.searchOperand == operand}"
@@ -488,20 +486,20 @@
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="col-auto">
-                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
+                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus" data-plugin="addDetailConditionBtn">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda">
+                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda" data-plugin="removeDetailConditionBtn">
                     <i class="action-icon fa fa-minus" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
             </div>
             <div class="flex-grow-0 flex-shrink-0 d-flex pl-3 pt-1">
-              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" title="Lisa uus otsitav">
+              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" title="Lisa uus otsitav" data-plugin="addDetailGroupBtn">
                 <i class="action-icon fa fa-plus" aria-hidden="true"></i>
               </button>
-              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" title="Eemalda">
+              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" title="Eemalda" data-plugin="removeDetailGroupBtn">
                 <i class="action-icon fa fa-minus" aria-hidden="true"></i>
               </button>
             </div>
