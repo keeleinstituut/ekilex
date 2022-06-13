@@ -443,10 +443,12 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 	});
 	copyOfLastElement.find('div.invalid-feedback').empty();
 	let inputCopy = copyOfLastElement.find('input');
-	let isCheckbox = inputCopy.is(':checkbox');
-	if (!isCheckbox) {
-		inputCopy.val(null);
-	}
+	inputCopy.each(function() {
+		const input = $(this);
+		if (!input.is(':checkbox')) {
+			input.val(null);
+		}
+	});
 	lastElement.after(copyOfLastElement);
 	return parentElement.find('[name="' + itemName + '"]').last();
 };
