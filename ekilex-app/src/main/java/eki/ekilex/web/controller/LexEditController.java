@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,6 +73,9 @@ public class LexEditController extends AbstractPrivatePageController {
 	@Autowired
 	private CudService cudService;
 
+	@Autowired
+	private MessageSource messageSource;
+
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String lexJoin(
 			@PathVariable("targetLexemeId") Long targetLexemeId,
@@ -111,6 +117,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	public Response validateJoin(@RequestParam("targetLexemeId") Long targetLexemeId, @RequestParam("sourceLexemeIds") List<Long> sourceLexemeIds) {
 
 		Response response = new Response();
+		Locale locale = LocaleContextHolder.getLocale();
 		List<Long> meaningIds = new ArrayList<>();
 		Long targeLexemeMeaningId = lookupService.getMeaningId(targetLexemeId);
 		meaningIds.add(targeLexemeMeaningId);
@@ -121,7 +128,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		Map<String, Integer[]> invalidWords = lookupService.getMeaningsWordsWithMultipleHomonymNumbers(meaningIds);
 
 		if (MapUtils.isNotEmpty(invalidWords)) {
-			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";
+			String message = messageSource.getMessage("lexjoin.validation.homonyms.exist", new Object[0], locale);
 
 			Iterator<Map.Entry<String, Integer[]>> wordIterator = invalidWords.entrySet().iterator();
 			while (wordIterator.hasNext()) {
@@ -135,7 +142,8 @@ public class LexEditController extends AbstractPrivatePageController {
 				}
 			}
 
-			message += " Palun ühendage enne tähenduste ühendamist need homonüümid.";
+			String messageEnd = messageSource.getMessage("lexjoin.validation.join.homonyms", new Object[0], locale);
+			message += " " + messageEnd;
 			response.setStatus(ResponseStatus.INVALID);
 			response.setMessage(message);
 		} else {

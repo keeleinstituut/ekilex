@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{lexeme.join.title}">EKILEX tähenduste ühendamine</title>
+<title th:text="#{lexjoin.title}">Tähenduste ühendamine</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,12 +10,12 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary" th:href="@{'/lexback/' + ${targetLexeme.lexemeId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{'/lexback/' + ${targetLexeme.lexemeId}}" th:text="#{common.back}">Tagasi</a>
       </p>
     </div>
     <div class="card shadow mt-4">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{lexeme.join.title}">Tähenduste ühendamine</h5>
+        <h5 class="card-title" th:text="#{lexjoin.title}">Tähenduste ühendamine</h5>
       </div>
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
@@ -24,7 +24,7 @@
       </div>
       <div class="card-body" th:if="${not #lists.isEmpty(validationMessages)}">
         <div class="alert alert-danger w-50" role="alert">
-          <strong>Tähenduste ühendamine ebaõnnestus</strong>
+          <strong th:text="#{lexjoin.fail}">Tähenduste ühendamine ebaõnnestus</strong>
           <ul>
             <li th:each="validationMessage : ${validationMessages}">
               <span th:text="${validationMessage}"></span>
@@ -38,12 +38,12 @@
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsi ühendatavat tähendust</label>
+                  <label class="col-auto col-form-label" th:text="#{lexjoin.search.meaning}">Otsi ühendatavat tähendust</label>
                   <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
+                    <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" th:placeholder="#{lexjoin.search.placeholder}">
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
+                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
                   </div>
                 </div>
               </div>
@@ -51,14 +51,16 @@
           </form>
         </div>
         <div class="card-body" th:if="${#lists.isEmpty(sourceLexemes) && (searchFilter != null)}">
-          <span th:text="#{lexjoin.not.found}">Not found.</span>
+          <span th:text="#{lexjoin.not.found}">Ühtegi tähendust ei leitud.</span>
         </div>
         <div class="card-body" th:if="${not #lists.isEmpty(sourceLexemes)}">
           <form th:action="@{/lexjoin}" method="post">
             <input type="hidden" name="targetLexemeId" th:value="${targetLexeme.lexemeId}">
             <div class="row mb-4">
               <div class="col">
-                <button type="button" class="btn btn-primary" id="joinLexemesBtn" data-toggle="join-confirm" data-placement="right" disabled>Ühenda valitud tähendused</button>
+                <button type="button" class="btn btn-primary" id="joinLexemesBtn" data-toggle="join-confirm" data-placement="right" disabled
+                        th:text="#{lexjoin.join}">Ühenda valitud tähendused
+                </button>
               </div>
             </div>
             <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="sourceLexeme : ${sourceLexemes}">
@@ -100,7 +102,7 @@
     </div>
     <div th:if="${not #lists.isEmpty(lexeme.meaning.definitions)}">
       <hr />
-      <span class="lbl">Seletused</span>
+      <span class="lbl" th:text="#{lex.definitions}">Seletused</span>
       <table>
         <tr th:each="definition : ${lexeme.meaning.definitions}">
           <td th:utext="${definition.value}"></td>
@@ -109,7 +111,7 @@
     </div>
     <div th:if="${not #lists.isEmpty(lexeme.usages)}">
       <hr />
-      <span class="lbl">Kasutusnäited, tõlked, seletused</span>
+      <span class="lbl" th:text="#{lexjoin.usages}">Kasutusnäited, tõlked, seletused</span>
       <table th:each="usage,usageIter : ${lexeme.usages}" class="border">
         <tr>
           <td>
@@ -153,9 +155,9 @@
   <script th:inline="javascript">
   	initializeLexJoin();
   	$('[data-toggle=join-confirm]').confirmation({
-  		btnOkLabel : 'Jah',
-  		btnCancelLabel : 'Ei',
-  		title : 'Kas olete kindel, et soovite tähendused ühendada?',
+      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+      btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+		  title : /*[[#{lexjoin.confirm.join}]]*/'Kas olete kindel?',
   		onConfirm : joinLexemes
   	});
   </script>
