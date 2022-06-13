@@ -182,3 +182,33 @@
 .syn-handle {
 	white-space:nowrap;
 }
+.update-date-manually {
+  height: 32px;
+
+  &-input {
+    height: 32px;
+    padding: 6px 8px 5px 8px;
+    width: 98px !important;
+    text-align: center;
+    border: 1px solid $gray-300;
+    border-radius: 2px;
+  }
+
+  &-box {
+    height: 32px;
+    width: 32px;
+    margin-left: 16px;
+    background: $blue-400;
+    border-radius: 2px;
+
+    &-text {
+      border: none;
+      background-color: transparent;
+      color: $white;
+
+      &>i {
+        color: $white;
+      }
+    }
+  }
+}
