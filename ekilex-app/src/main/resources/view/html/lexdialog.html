@@ -597,7 +597,7 @@
   </div>
   <div th:id="${'editGovernmentDlg_' + lexeme.lexemeId + '_' + government.id}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_government_dlg" data-plugin="initFocusedGenericTextEditDlgPlugin">
+       class="modal" role="dialog" th:fragment="edit_government_dlg" data-plugin="initGenericTextEditDlgAndFocusPlugin">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
