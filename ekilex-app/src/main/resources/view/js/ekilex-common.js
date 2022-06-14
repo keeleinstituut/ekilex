@@ -892,7 +892,7 @@ $.fn.pagingBtnPlugin = function () {
 					const totalPagesInt = parseInt(totalPages);
 					if (1 <= inputPageValueInt && inputPageValueInt <= totalPagesInt) {
 						form.find('input[name="direction"]').val(direction);
-						form.find('input[name="userInputPage"]').val(inputPageValueInt);
+						form.find('input[name="pageNum"]').val(inputPageValueInt);
 					} else {
 						run = false;
 					}
