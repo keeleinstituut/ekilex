@@ -16,6 +16,7 @@ class ekiMedia extends HTMLElement {
 			cursor: default;
 			display: inline-block;
 			height: 20px;
+			max-height: 50px;
 		}
 
 		:host(.eki-selected) img {
@@ -25,7 +26,7 @@ class ekiMedia extends HTMLElement {
 		img {
 			width: 100%;
 			height: 100%;
-			max-height: 50px;
+			max-height: inherit;
 			object-fit: cover;
 		}
 		`;
@@ -70,6 +71,7 @@ function registerEkiMedia(iframe) {
 					cursor: default;
 					display: inline-block;
 					height: 20px;
+					max-height: 50px;
 				}
 		
 				:host(.eki-selected) img {
@@ -79,7 +81,7 @@ function registerEkiMedia(iframe) {
 				img {
 					width: 100%;
 					height: 100%;
-					max-height: 50px;
+					max-height: inherit;
 					object-fit: cover;
 				}
 				\`;
