@@ -874,7 +874,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mrel.field("order_by"),
 						whe.as("homonyms_exist"))
 				.from(mrel)
-				.orderBy(mrel.field("order_by"), mrel.field("word_value"))
+				.orderBy(mrel.field("order_by"))
 				.fetchInto(eki.ekilex.data.MeaningRelation.class);
 	}
 
