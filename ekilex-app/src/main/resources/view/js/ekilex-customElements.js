@@ -47,8 +47,8 @@ customElements.define('eki-media', ekiMedia);
 
 // CKEditor content is shown inside an iframe when the editor is open,
 // which means custom elements defined on the main page are not available and need to be defined inside the iframe
-function registerEkiMedia(iframe) {
-	const head = iframe.contents().find('head').first();
+function registerEkiMedia(document) {
+	const head = document.find('head').first();
 	// Only define the new element if it doesn't already exist
 	const script = `
 	<script>
