@@ -16,6 +16,7 @@ class ekiMedia extends HTMLElement {
 			cursor: default;
 			display: inline-block;
 			height: 20px;
+			max-height: 50px;
 		}
 
 		:host(.eki-selected) img {
@@ -25,7 +26,7 @@ class ekiMedia extends HTMLElement {
 		img {
 			width: 100%;
 			height: 100%;
-			max-height: 50px;
+			max-height: inherit;
 			object-fit: cover;
 		}
 		`;
@@ -46,8 +47,8 @@ customElements.define('eki-media', ekiMedia);
 
 // CKEditor content is shown inside an iframe when the editor is open,
 // which means custom elements defined on the main page are not available and need to be defined inside the iframe
-function registerEkiMedia(iframe) {
-	const head = iframe.contents().find('head').first();
+function registerEkiMedia(document) {
+	const head = document.find('head').first();
 	// Only define the new element if it doesn't already exist
 	const script = `
 	<script>
@@ -70,6 +71,7 @@ function registerEkiMedia(iframe) {
 					cursor: default;
 					display: inline-block;
 					height: 20px;
+					max-height: 50px;
 				}
 		
 				:host(.eki-selected) img {
@@ -79,7 +81,7 @@ function registerEkiMedia(iframe) {
 				img {
 					width: 100%;
 					height: 100%;
-					max-height: 50px;
+					max-height: inherit;
 					object-fit: cover;
 				}
 				\`;

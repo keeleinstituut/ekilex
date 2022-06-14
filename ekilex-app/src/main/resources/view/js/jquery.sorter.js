@@ -102,7 +102,7 @@ class Sorter {
 
 
     const main = this.main;
-    this.main.on('sortstop', function(event, ui){
+    this.main.on('sortupdate', function(event, ui){
 
       if (!main.find('.details-open').length) {      
         const items = main.find('[data-level1]');
@@ -139,7 +139,7 @@ class Sorter {
       originalOrder.push($(this).attr('data-orderby'));
     });
 
-    main.on('sortstop', function(event, ui) {
+    main.on('sortupdate', function(event, ui) {
       const data = {
         opCode: 'word_relation',
         items: [],
@@ -150,7 +150,6 @@ class Sorter {
           orderby: originalOrder[index],
         })
       });
-
       postJson(applicationUrl + 'update_ordering', data).done(function() {
         main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
       });
@@ -176,7 +175,7 @@ class Sorter {
       meaningRelSynOriginalOrder.push($(this).attr('data-orderby'));
     });
 
-    main.on('sortstop', function(event, ui) {
+    main.on('sortupdate', function(event, ui) {
       setTimeout(function() {
         const orderingBtn = ui.item;
         const synType = orderingBtn.attr('data-syn-type');

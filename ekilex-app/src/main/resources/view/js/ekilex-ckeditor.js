@@ -119,6 +119,23 @@ CKEDITOR.plugins.add('ekiLink', {
 CKEDITOR.plugins.add('ekiMedia', {
 	hidpi: true,
 	init: function(editor) {
+		editor.on('instanceReady', function() {
+			const document = $(editor.document.$);
+			registerEkiMedia(document);
+			// Mark clicked images as selected
+			document.find('body').on('click', 'eki-media', function(e) {
+				$(e.currentTarget).toggleClass('eki-selected');
+			});
+
+			editor.on('mode', function(e) {
+				// Re-register media element when switching off source mode.
+				if (this.mode === 'wysiwyg') {
+					const document = $(e.editor.document.$);
+					registerEkiMedia(document);
+				}
+			});
+		})
+
 		editor.addCommand('ekimedia', {
 			exec: function(editor) {
 				const media = new ckMedia(editor);
@@ -508,12 +525,6 @@ class ckMedia {
 function initCkEditor(elem) {
 	elem.ckeditor(function( textarea ) {
 		// Callback function code.
-		const iframe = elem.siblings('[id^="cke_editor"]').find('iframe');
-		registerEkiMedia(iframe);
-		// Mark clicked images as selected
-		iframe.contents().find('body').on('click', 'eki-media', function(e) {
-			$(e.currentTarget).toggleClass('eki-selected');
-		});
 	}, {
 		enterMode: CKEDITOR.ENTER_BR,
 		extraPlugins: 'ekiStyles,ekiLink,removeEkilink,ekiMedia,removeEkiMedia',
