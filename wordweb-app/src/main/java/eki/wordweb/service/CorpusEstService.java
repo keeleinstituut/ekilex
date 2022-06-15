@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -83,17 +84,28 @@ public class CorpusEstService extends AbstractCorpusService {
 	private List<CorpusSentence> parseResponse(Map<String, Object> response) {
 
 		List<CorpusSentence> sentences = new ArrayList<>();
-		if (response.isEmpty() || (response.containsKey("hits") && (int) response.get("hits") == 0) || !response.containsKey("kwic")) {
+		if (MapUtils.isEmpty(response)) {
 			return sentences;
 		}
-		for (Map<String, Object> kwic : (List<Map<String, Object>>) response.get("kwic")) {
+		if (response.containsKey("hits") && (int) response.get("hits") == 0) {
+			return sentences;
+		}
+		if (!response.containsKey("kwic")) {
+			return sentences;
+		}
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> kwics = (List<Map<String, Object>>) response.get("kwic");
+		for (Map<String, Object> kwic : kwics) {
+			@SuppressWarnings("unchecked")
 			Map<String, Object> match = (Map<String, Object>) kwic.get("match");
 			int middlePartStartPos = (int) match.get("start");
 			int middlePartEndPos = (int) match.get("end");
 			int currentWordPos = 0;
 			boolean skipSpaceBeforeWord = false;
 			CorpusSentence sentence = new CorpusSentence();
-			for (Map<String, Object> token : (List<Map<String, Object>>) kwic.get("tokens")) {
+			@SuppressWarnings("unchecked")
+			List<Map<String, Object>> tokens = (List<Map<String, Object>>) kwic.get("tokens");
+			for (Map<String, Object> token : tokens) {
 				String word = parseWord(token, skipSpaceBeforeWord);
 				if (currentWordPos < middlePartStartPos) {
 					sentence.setLeftPart(sentence.getLeftPart() + word);

@@ -49,7 +49,7 @@
   <th:block th:fragment="simple_search">
     <div class="tab-pane fade " th:classappend="${searchMode =='SIMPLE' ? 'show active' : ''}" id="simple_search_filter">
       <div class="d-flex flex-row align-items-center">
-        <input type="text" class="form-control col-2" name="simpleSearchFilter" th:value="${simpleSearchFilter}" th:placeholder="#{|search.placeholder.${searchPageName}|}">
+        <input type="text" class="form-control col-2" name="simpleSearchFilter" th:value="${simpleSearchFilter}" th:placeholder="#{|search.placeholder.${searchPageName}|}" autocomplete="off">
         <button type="submit" class="btn btn-primary px-5 ml-2">Otsi</button>
       </div>
     </div>
@@ -216,78 +216,90 @@
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'FREQUENCY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'RANK'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ATTRIBUTE_VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'VALUE_AND_EXISTS'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'SOURCE_ID'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'MORPHOPHONO_FORM'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_OR_UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
-                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                           autocomplete="off">
                     <div class="input-group-addon input-group-append">
                       <div class="input-group-text">
                         <i class="fa fa-calendar fa-lg"></i>
@@ -299,14 +311,16 @@
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'CREATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
-                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                           autocomplete="off">
                     <div class="input-group-addon input-group-append">
                       <div class="input-group-text">
                         <i class="fa fa-calendar fa-lg"></i>
@@ -318,14 +332,16 @@
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_BY'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-0 mr-auto flex-shrink-1" th:if="${criteria.searchKey.name() == 'UPDATED_ON'}">
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
-                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                           autocomplete="off">
                     <div class="input-group-addon input-group-append">
                       <div class="input-group-text">
                         <i class="fa fa-calendar fa-lg"></i>
@@ -338,7 +354,8 @@
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
-                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                           autocomplete="off">
                     <div class="input-group-addon input-group-append">
                       <div class="input-group-text">
                         <i class="fa fa-calendar fa-lg"></i>
@@ -351,7 +368,8 @@
                   <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
                     <input type="text" class="form-control"
                            th:value="${criteria.searchValue}"
-                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                           th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                           autocomplete="off">
                     <div class="input-group-addon input-group-append">
                       <div class="input-group-text">
                         <i class="fa fa-calendar fa-lg"></i>
@@ -372,7 +390,8 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'PUBLICITY'}">
@@ -385,21 +404,24 @@
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GRAMMAR'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_GOVERNMENT'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
-                         th:hidden="${isExistsOperand}">
+                         th:hidden="${isExistsOperand}"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_POS'}">
@@ -464,25 +486,29 @@
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_NOTE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LEXEME_NOTE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'MEANING_NOTE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'DEFINITION_NOTE'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
-                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="col-auto">
@@ -531,22 +557,22 @@
           </div>
           <div id="searchValueTemplates" hidden>
             <div name="FREQUENCY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="RANK" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="ATTRIBUTE_VALUE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="VALUE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="VALUE_AND_EXISTS" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="ID" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="LANGUAGE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
@@ -602,24 +628,24 @@
               </select>
             </div>
             <div name="SOURCE_REF" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="SOURCE_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="SOURCE_ID" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="MORPHOPHONO_FORM" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="CREATED_OR_UPDATED_BY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div class="value-input-container col-auto mr-auto flex-grow-0 flex-shrink-1">
               <div name="CREATED_OR_UPDATED_ON" class="col-auto mr-auto flex-grow-0 flex-shrink-1">
                 <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                  <input type="text" class="form-control">
+                  <input type="text" class="form-control" autocomplete="off">
                   <div class="input-group-addon input-group-append">
                     <div class="input-group-text">
                       <i class="fa fa-calendar"></i>
@@ -629,12 +655,12 @@
               </div>
             </div>
             <div name="CREATED_BY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div class="col-auto flex-grow-1 flex-shrink-1 ">
               <div name="CREATED_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
                 <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                  <input type="text" class="form-control">
+                  <input type="text" class="form-control" autocomplete="off">
                   <div class="input-group-addon input-group-append">
                     <div class="input-group-text">
                       <i class="fa fa-calendar"></i>
@@ -644,11 +670,11 @@
               </div>
             </div>
             <div name="UPDATED_BY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="UPDATED_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
               <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" autocomplete="off">
                 <div class="input-group-addon input-group-append">
                   <div class="input-group-text">
                     <i class="fa fa-calendar"></i>
@@ -658,7 +684,7 @@
             </div>
             <div name="LAST_UPDATE_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
               <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" autocomplete="off">
                 <div class="input-group-addon input-group-append">
                   <div class="input-group-text">
                     <i class="fa fa-calendar"></i>
@@ -668,7 +694,7 @@
             </div>
             <div name="MANUAL_UPDATE_ON" class="value-input-container col-auto flex-grow-0 flex-shrink-1 mr-auto">
               <div class="input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
-                <input type="text" class="form-control">
+                <input type="text" class="form-control" autocomplete="off">
                 <div class="input-group-addon input-group-append">
                   <div class="input-group-text">
                     <i class="fa fa-calendar"></i>
@@ -682,7 +708,7 @@
               </select>
             </div>
             <div name="SECONDARY_MEANING_WORD" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="PUBLICITY" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-style="btn-outline-secondary">
@@ -691,13 +717,13 @@
               </select>
             </div>
             <div name="OD_RECOMMENDATION" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="LEXEME_GRAMMAR" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="LEXEME_GOVERNMENT" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="LEXEME_POS" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
@@ -725,22 +751,22 @@
               </select>
             </div>
             <div name="WORD_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="LEXEME_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="MEANING_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="DEFINITION_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
-              <input type="text" class="form-control">
+              <input type="text" class="form-control" autocomplete="off">
             </div>
           </div>
         </div>
         <div class="flex-grow-1 border-left border-light my-n3 pt-3 pr-3 pb-3 pl-3 detail-search-box-less">
           <div class="col-auto mb-1 p-0">
-            <input class="form-control detail-search-box-less-value" type="text" placeholder="Sisesta otsitav vorm" disabled="disabled">
+            <input class="form-control detail-search-box-less-value" type="text" placeholder="Sisesta otsitav vorm" disabled="disabled" autocomplete="off">
             <div class="d-flex flex-row w-100 justify-content-end">
               <div class="over-flow-opacity-box">
               </div>

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -55,13 +56,16 @@ public class CorpusTranslationService extends AbstractCorpusService {
 	private List<CorpusTranslation> parseResponse(Map<String, Object> response) {
 
 		List<CorpusTranslation> translations = new ArrayList<>();
-		if (response.isEmpty()) {
+		if (MapUtils.isEmpty(response)) {
 			return translations;
 		}
 
-		for (Map<String, Object> examples : (List<Map<String, Object>>) response.get("examples")) {
-			String sourceLangSentence = (String) examples.get("source");
-			String targetLangSentence = (String) examples.get("target");
+		@SuppressWarnings("unchecked")
+		List<Map<String, Object>> examples = (List<Map<String, Object>>) response.get("examples");
+
+		for (Map<String, Object> example : examples) {
+			String sourceLangSentence = (String) example.get("source");
+			String targetLangSentence = (String) example.get("target");
 			translations.add(new CorpusTranslation(sourceLangSentence, targetLangSentence));
 		}
 		return translations;

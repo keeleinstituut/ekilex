@@ -62,34 +62,32 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
-		if (modelAndView == null) {
-			return;
-		}
-		if (isTraditionalMicrosoftUser(request, modelAndView)) {
-			return;
-		}
-
-		ModelMap modelMap = modelAndView.getModelMap();
-		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
-			AppData appData = appDataHolder.getAppData();
-			modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
-		}
-		if (!modelMap.containsKey(VIEW_UTIL_KEY)) {
-			modelMap.addAttribute(VIEW_UTIL_KEY, viewUtil);
-		}
-		if (!modelMap.containsKey(PERM_DATA_UTIL_KEY)) {
-			modelMap.addAttribute(PERM_DATA_UTIL_KEY, permDataUtil);
-		}
-		if (!modelMap.containsKey(CLASSIFIER_UTIL_KEY)) {
-			modelMap.addAttribute(CLASSIFIER_UTIL_KEY, classifierUtil);
-		}
-		if (!modelMap.containsKey(USER_PROFILE_KEY)) {
-			EkiUserProfile userProfile = userProfileUtil.getUserProfile();
-			modelMap.addAttribute(USER_PROFILE_KEY, userProfile);
-		}
-		if (!modelMap.containsKey(USER_ROLE_DATA_KEY)) {
-			EkiUserRoleData roleData = userProfileUtil.getUserRoleData();
-			modelMap.addAttribute(USER_ROLE_DATA_KEY, roleData);
+		if (modelAndView != null) {
+			if (isTraditionalMicrosoftUser(request, modelAndView)) {
+				return;
+			}
+			ModelMap modelMap = modelAndView.getModelMap();
+			if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
+				AppData appData = appDataHolder.getAppData();
+				modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
+			}
+			if (!modelMap.containsKey(VIEW_UTIL_KEY)) {
+				modelMap.addAttribute(VIEW_UTIL_KEY, viewUtil);
+			}
+			if (!modelMap.containsKey(PERM_DATA_UTIL_KEY)) {
+				modelMap.addAttribute(PERM_DATA_UTIL_KEY, permDataUtil);
+			}
+			if (!modelMap.containsKey(CLASSIFIER_UTIL_KEY)) {
+				modelMap.addAttribute(CLASSIFIER_UTIL_KEY, classifierUtil);
+			}
+			if (!modelMap.containsKey(USER_PROFILE_KEY)) {
+				EkiUserProfile userProfile = userProfileUtil.getUserProfile();
+				modelMap.addAttribute(USER_PROFILE_KEY, userProfile);
+			}
+			if (!modelMap.containsKey(USER_ROLE_DATA_KEY)) {
+				EkiUserRoleData roleData = userProfileUtil.getUserRoleData();
+				modelMap.addAttribute(USER_ROLE_DATA_KEY, roleData);
+			}			
 		}
 
 		logRequestProcessTime(request);
@@ -111,6 +109,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 		String servletPath = request.getServletPath();
 		if (StringUtils.equals(servletPath, "/")) {
+			return;
+		}
+		if (StringUtils.startsWith(servletPath, VIEW_RESOURCES_URI)) {
 			return;
 		}
 		Object requestStartTimeObj = request.getAttribute(REQUEST_START_TIME_KEY);
