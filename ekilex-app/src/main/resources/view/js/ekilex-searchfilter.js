@@ -216,21 +216,48 @@ function manualEventOnUpdateCheckCheckboxValueUpdate() {
 	}
 };
 
+function manualEventOnUpdateItemsShow(obj) {
+	obj.find(".date-text").removeClass("d-none");
+	obj.find(".date-check").removeClass("d-none");
+	obj.find(".date-i-edit").removeClass("date-i-edit-small");
+	obj.find(".date-i-edit").addClass("date-i-edit-big");
+}
+function manualEventOnUpdateItemsHide(obj) {
+	obj.find(".date-text").addClass("d-none");
+	obj.find(".date-check").addClass("d-none");
+	obj.find(".date-i-edit").addClass("date-i-edit-small");
+	obj.find(".date-i-edit").removeClass("date-i-edit-big");
+}
+
 $.fn.mouseManualEventOnUpdateCheck = function (e) {
 	let obj = $(this);
-
+	let data = obj.find(".date-check-input");
 	obj.on("click", function (e) { //box on click does not do activate check-box "checked"
 		e.preventDefault();
 	});
 
-	obj.on("mouseenter", function () {
-		obj.stop();
+	if (data.is(':checked')) {
 		obj.animate({ width: "168", marginLeft: 0 }, { duration: 500 });
-	});
+		manualEventOnUpdateItemsShow(obj);
+	} else {
+		var timeout;
+		obj.on("mouseenter", function () {
+			if (timeout != null) { clearTimeout(timeout); }
+			timeout = setTimeout(function () {
+				obj.animate({ width: "168", marginLeft: 0 }, { duration: 500 });
+				manualEventOnUpdateItemsShow(obj);
+			}, 500);
+		});
 
-	obj.on("mouseleave", function () {
-		obj.animate({ width: "32", marginLeft: 0 }, { duration: 500 });
-	});
+		obj.on("mouseleave", function () {
+			if (timeout != null) {
+				clearTimeout(timeout);
+				obj.animate({ width: "32", marginLeft: 0 }, { duration: 500 });
+				manualEventOnUpdateItemsHide(obj);
+				timeout = null;
+			}
+		});
+	}
 };
 
 $.fn.manualEventOnUpdateCheck = function () {

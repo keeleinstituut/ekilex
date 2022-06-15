@@ -29,11 +29,11 @@
       </div>
     </div>
     <th:block th:fragment="manual_event_on_chk">
-      <div id="manualEventOnDiv"class="d-none" data-toggle="tooltip" data-placement="top" title="Pisiparanduste sisse/välja lülitamiseks." data-plugin="manualEventOnDivView">
+      <div id="manualEventOnDiv" class="d-none" data-plugin="manualEventOnDivView">
         <label class="form-check-label btn btn-primary date-check-box d-flex flex-row align-items-center m-0 p-0 shadow-none" data-plugin="mouseManualEventOnUpdateCheck">
-          <i class="date-i-edit fa fa-edit d-flex flex-row"></i>
-          <span class="date-text">Pisiparandused</span>
-          <span class="date-check">
+          <i class="date-i-edit date-i-edit-small fa fa-edit d-flex flex-row"></i>
+          <span class="date-text d-none">Pisiparandused</span>
+          <span class="date-check d-none">
             <input class="date-check-input" type="checkbox"
                    data-plugin="manualEventOnUpdateCheck"
                    th:checked="${sessionBean.manualEventOnUpdateEnabled == false}">

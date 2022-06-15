@@ -81,78 +81,62 @@
       font-weight: 900;
       font-size: $font-size-sm;
       line-height: 14px;
-      margin: 8px 8px 10px 10px;
-    }
 
-    .date-text {
-      display: none;
-    }
-
-    .date-check {
-      display: none;
-
-      &-input {
-        display: none;
+      &-small {
+        margin: 8px 8px 10px 10px;
       }
 
-      &-i {
-        display: none;
-      }
-    }
-
-    &:hover {
-
-      .date-i-edit {
+      &-big {
         margin: 8px 0 10px 8px;
         order: 1;
         text-align: center;
       }
-
-      .date-text {
-        display: block;
-        font-style: normal;
-        font-weight: 400;
-        font-size: $font-size-base;
-        line-height: 16px;
-        margin: 10px;
-        order: 2;
-      }
-
-      .date-check {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        cursor: pointer !important;
-        background-color: $white;
-        z-index: 1;
-        width: 16px;
-        height: 16px;
-        background: $white;
-        border: 1.08417px solid $gray-300  !important;
-        border-radius: 4.33667px !important;
-        order: 3 !important;
-        position: relative;
-
-        input[type="checkbox"] {
-          cursor: pointer !important;
-          display: flex;
-          position: absolute;
-          z-index: 2;
-          outline: none;
-          opacity: 0;
-        }
-
-        &-i {
-          display: block;
-          cursor: pointer !important;
-          position: absolute;
-          color: $blue-400;
-          top: 0;
-          left: 0;
-          z-index: 1;
-        }
-      }
-
     }
+
+    .date-text {
+      display: block;
+      font-style: normal;
+      font-weight: 400;
+      font-size: $font-size-base;
+      line-height: 16px;
+      margin: 10px;
+      order: 2;
+    }
+
+    .date-check {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      cursor: pointer !important;
+      background-color: $white;
+      z-index: 1;
+      width: 16px;
+      height: 16px;
+      background: $white;
+      border: 1.08417px solid $gray-300  !important;
+      border-radius: 4.33667px !important;
+      order: 3 !important;
+      position: relative;
+
+      input[type="checkbox"] {
+        cursor: pointer !important;
+        display: flex;
+        position: absolute;
+        z-index: 2;
+        outline: none;
+        opacity: 0;
+      }
+
+      &-i {
+        display: block;
+        cursor: pointer !important;
+        position: absolute;
+        color: $blue-400;
+        top: 0;
+        left: 0;
+        z-index: 1;
+      }
+    }
+
   }
 }
