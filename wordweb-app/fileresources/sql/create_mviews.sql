@@ -23,7 +23,6 @@ drop type if exists type_freeform;
 drop type if exists type_lang_complexity;
 drop type if exists type_definition;
 drop type if exists type_domain;
-drop type if exists type_image_file;  --TODO remove later
 drop type if exists type_media_file;
 drop type if exists type_usage;
 drop type if exists type_source_link;

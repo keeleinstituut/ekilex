@@ -1,1 +1,8 @@
 Märkused ver 1.25.0 tarne kohta:
+
+* Tarnega kaasnev andmebaasi igratsiooni skript:
+  /eki-common/src/main/resources/sql/delivery.sql
+
+* Eelmise tarnega osaliselt varjatud "sisulise muudatuse kuupäeva" funktsionaalsus on nüüd valmis ja avatud
+
+* Ohtrasti kasutajaliidese parandusi ja täiendusi uute arendajate poolt

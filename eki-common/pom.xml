@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>eki.ekilex</groupId>
 		<artifactId>eki-root</artifactId>
-		<version>1.25-SNAPSHOT</version>
+		<version>1.25.0</version>
 	</parent>
 
 	<groupId>eki.common</groupId>
 	<artifactId>eki-common</artifactId>
-	<version>1.25-SNAPSHOT</version>
+	<version>1.25.0</version>
 	<packaging>jar</packaging>
 
 	<name>Ekilex/Wordweb/Ekistat Commons</name>
