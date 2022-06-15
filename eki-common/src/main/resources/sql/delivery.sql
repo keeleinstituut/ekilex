@@ -1,1 +1,1 @@
--- upgrade from ver 1.24.0 to 1.25.0
+-- upgrade from ver 1.25.0 to 1.26.0
