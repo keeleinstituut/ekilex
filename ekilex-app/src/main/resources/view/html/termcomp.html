@@ -118,7 +118,7 @@
                 sec:authorize="#vars.isMeaningLexemeCrudGranted">Kustuta</button>
         <div style="display:inline-block" class="hover-actions-container hover-actions-container-outline ml-2">
           <div class="date-modified" data-toggle="tooltip" data-boundary="window" data-placement="top" title="Viimane sisuline muudatus">
-            <i class="fa fa-calendar"></i>
+            <i class="fa fa-edit"></i>
             <span th:text="${#dates.format(meaning.manualEventOn, 'dd.MM.yyyy')}" class="ml-n1"></span>
           </div>
           <div class="hover-actions hover-actions-bottom-right">
@@ -136,7 +136,6 @@
       <div class="ml-auto d-flex align-items-center flex-row">
         <div style="display:inline-block">
           <span class="date-modified mr-2" data-toggle="tooltip" data-placement="top" data-original-title="Viimati muudetud">
-            <i class="fa fa-edit"></i>
             <span class="ml-n1" th:text="${#dates.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
           </span>
         </div>
