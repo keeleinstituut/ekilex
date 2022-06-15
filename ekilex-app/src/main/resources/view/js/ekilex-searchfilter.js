@@ -237,22 +237,22 @@ $.fn.mouseManualEventOnUpdateCheck = function (e) {
 	});
 
 	if (data.is(':checked')) {
-		obj.animate({ width: "168", marginLeft: 0 }, { duration: 500 });
+		obj.animate({ width: "168", marginLeft: 0 }, { duration: 225 });
 		manualEventOnUpdateItemsShow(obj);
 	} else {
 		var timeout;
 		obj.on("mouseenter", function () {
 			if (timeout != null) { clearTimeout(timeout); }
 			timeout = setTimeout(function () {
-				obj.animate({ width: "168", marginLeft: 0 }, { duration: 500 });
+				obj.animate({ width: "168", marginLeft: 0 }, { duration: 225 });
 				manualEventOnUpdateItemsShow(obj);
-			}, 500);
+			}, 225);
 		});
 
 		obj.on("mouseleave", function () {
 			if (timeout != null) {
 				clearTimeout(timeout);
-				obj.animate({ width: "32", marginLeft: 0 }, { duration: 500 });
+				obj.animate({ width: "32", marginLeft: 0 }, { duration: 225 });
 				manualEventOnUpdateItemsHide(obj);
 				timeout = null;
 			}
