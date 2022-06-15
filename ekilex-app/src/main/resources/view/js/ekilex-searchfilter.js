@@ -200,11 +200,13 @@ function initialiseSearchForm() {
 $.fn.manualEventOnDivView = function () {
 	const obj = $(this);
 	const dataViewType = $("#searchForm").attr('action');
+	/*
 	if (dataViewType) {
 		if ((dataViewType.includes("/lexsearch")) || (dataViewType.includes("/termsearch"))) {
 			obj.removeClass("d-none");
 		};
 	};
+*/
 };
 
 function manualEventOnUpdateCheckCheckboxValueUpdate() {
