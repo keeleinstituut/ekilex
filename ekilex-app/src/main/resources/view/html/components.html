@@ -5,7 +5,8 @@
   <div data-name="dialogContent" th:fragment="word_search_result">
     <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
       <div class="card-body p-2">
-        <span th:text="${'Kokku leiti : ' + totalCount}"></span>
+        <span th:text="#{lex.results.found}">Kokku leiti:</span>
+        <span th:text="${totalCount}"></span>
         <div style="max-height: 70vh; overflow: auto;">
           <table class="table table-striped mb-0">
             <tr th:each="word : ${wordsFoundBySearch}">
@@ -25,7 +26,7 @@
             </tr>
           </table>
         </div>
-        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud seosed</button>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled th:text="#{common.add.relations}">Lisa valitud seosed</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
@@ -59,7 +60,7 @@
             </tr>
           </table>
         </div>
-        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud seosed</button>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled th:text="#{common.add.relations}">Lisa valitud seosed</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">
@@ -101,7 +102,7 @@
             </tr>
           </table>
         </div>
-        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud seosed</button>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled th:text="#{common.add.relations}">Lisa valitud seosed</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">
@@ -115,7 +116,7 @@
           <table class="table table-striped mb-0">
             <tr th:each="source : ${sourcesFoundBySearch}">
               <td>
-                <button type="button" class="btn btn-primary float-right btn-sm mr-2" th:data-source-id="${source.id}">Lisa</button>
+                <button type="button" class="btn btn-primary float-right btn-sm mr-2" th:data-source-id="${source.id}" th:text="#{common.add}">Lisa</button>
                 <div th:text="${source.sourceNames.get(0)}" th:if="${not #lists.isEmpty(source.sourceNames)}"></div>
               </td>
             </tr>
@@ -132,16 +133,18 @@
       <td style="width: 50px"></td>
       <td>
         <div class="row mb-1">
-          <table style="background-color: #ececec; font-weight: bold;">
-            <tr>
-              <td>allika id &nbsp;</td>
-              <td th:text="${source.id}"></td>
-            </tr>
-            <tr>
-              <td>tüüp</td>
-              <td th:text="#{|source.type.${source.type}|}"></td>
-            </tr>
-          </table>
+          <div class="col-3">
+            <table class="table" style="background-color: #ececec; font-weight: bold">
+              <tr>
+                <td th:text="#{source.id}">allika id</td>
+                <td th:text="${source.id}"></td>
+              </tr>
+              <tr>
+                <td th:text="#{source.type}">tüüp</td>
+                <td th:text="#{|source.type.${source.type}|}"></td>
+              </tr>
+            </table>
+          </div>
         </div>
       </td>
     </tr>

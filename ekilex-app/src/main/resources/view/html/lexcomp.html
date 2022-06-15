@@ -695,7 +695,7 @@
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${definitionLangGroup.lang}"
-                  th:title="${definitionLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  th:title="${definitionLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                   data-plugin="langCollapsePlugin">
             <i th:class="${definitionLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>
@@ -1639,7 +1639,7 @@
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                   data-plugin="langCollapsePlugin">
             <i th:class="${noteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>
@@ -1700,7 +1700,7 @@
           <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary btn-toggle"
                   th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                   th:data-lang="${noteLangGroup.lang}"
-                  th:title="${noteLangGroup.selected ? 'Peida keele grupp' : 'Näita keele grupp'}"
+                  th:title="${noteLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                   data-plugin="langCollapsePlugin">
             <i th:class="${noteLangGroup.selected ? 'fa fa-angle-down' : 'fa fa-angle-right'}" aria-hidden="true"></i>
           </button>

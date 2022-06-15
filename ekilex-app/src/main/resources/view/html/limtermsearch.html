@@ -90,7 +90,7 @@
             <div class="block-title">
               <button name="lang-collapse-btn" type="button" class="btn-lang"
                       th:data-lang="${lexemeLangGroup.lang}"
-                      th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}"
+                      th:title="${lexemeLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                       data-plugin="langCollapsePlugin">
                 <i th:class="${lexemeLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
               </button>

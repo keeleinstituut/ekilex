@@ -55,29 +55,29 @@
             Ekilex <small class="text-secondary ml-auto" th:text="${'v.' + appData.appVersion}">1.0.0</small>
           </a>
           <div>
-            <div class="dropdown-header">Rakenduse valik</div>
+            <div class="dropdown-header" th:text="#{menu.dropdown.header}">Rakenduse valik</div>
             <div>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}" th:text="#{menu.lex}">Leksikograafid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}"
-                 sec:authorize="#vars.userRoleData.crudRoleSelected">Vasted</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}">Võrgustiku otsing</a>
+                 sec:authorize="#vars.userRoleData.crudRoleSelected" th:text="#{menu.syn}">Vasted</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}">Kustutatud andmed</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
-                 sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.morphology}">Morfoloogia haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}"
-                 sec:authorize="#vars.userRoleData.admin">FedTerm liidestus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'classifiers' ? 'active' : ''}" th:href="@{/classifiers}"
-                 sec:authorize="#vars.userRoleData.admin">Klassifikaatorite haldus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'tags' ? 'active' : ''}" th:href="@{/tags}"
-                 sec:authorize="#vars.userRoleData.admin">Siltide haldus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.tags}">Siltide haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" th:href="@{/permissions}"
-                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">Kasutajaõiguste haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}">Sõnaveebi statistika</a>
+                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:text="#{menu.permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>
             </div>
           </div>
@@ -263,16 +263,18 @@
           </td>
           <td>
             <div class="row mb-1">
-              <table style="background-color: #ececec; font-weight: bold">
-                <tr>
-                  <td>allika id &nbsp;</td>
-                  <td th:text="${source.id}"></td>
-                </tr>
-                <tr>
-                  <td>tüüp</td>
-                  <td th:text="#{|source.type.${source.type}|}"></td>
-                </tr>
-              </table>
+              <div class="col-3">
+                <table class="table" style="background-color: #ececec; font-weight: bold">
+                  <tr>
+                    <td th:text="#{source.id}">allika id</td>
+                    <td th:text="${source.id}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.type}">tüüp</td>
+                    <td th:text="#{|source.type.${source.type}|}"></td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </td>
         </tr>
@@ -299,12 +301,12 @@
             <div class="row">
               <div class="col-12">
                 <div class="form-group row">
-                  <label class="col-auto col-form-label">Siseviide</label>
+                  <label class="col-auto col-form-label" th:text="#{source.link.name}">Siseviide</label>
                   <div class="col-8">
                     <input type="text" class="form-control">
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}">Vali</button>
+                    <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}" th:text="#{common.select}">Vali</button>
                   </div>
                 </div>
               </div>
@@ -316,23 +318,25 @@
   </div>
   <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="edit_source_link_dlg">
     <div class="row m-1 float-right">
-      <a th:href="@{'/sourcesearch/' + ${source.id}}" class="btn btn-secondary btn-compact">Muuda allikat</a>
+      <a th:href="@{'/sourcesearch/' + ${source.id}}" class="btn btn-secondary btn-compact" th:text="#{source.edit.source}">Muuda allikat</a>
     </div>
     <table>
       <tr>
         <td style="width: 70px;"></td>
         <td>
           <div class="row m-1">
-            <table style="background-color: #ececec; font-weight: bold">
-              <tr>
-                <td>allika id &nbsp;</td>
-                <td th:text="${source.id}"></td>
-              </tr>
-              <tr>
-                <td>tüüp</td>
-                <td th:text="#{|source.type.${source.type}|}"></td>
-              </tr>
-            </table>
+            <div class="col-3">
+              <table class="table" style="background-color: #ececec; font-weight: bold">
+                <tr>
+                  <td th:text="#{source.id}">allika id</td>
+                  <td th:text="${source.id}"></td>
+                </tr>
+                <tr>
+                  <td th:text="#{source.type}">tüüp</td>
+                  <td th:text="#{|source.type.${source.type}|}"></td>
+                </tr>
+              </table>
+            </div>
           </div>
         </td>
       </tr>
@@ -359,7 +363,7 @@
           <div class="row">
             <div class="col-12">
               <div class="form-group row">
-                <label class="col-auto col-form-label">Siseviide</label>
+                <label class="col-auto col-form-label" th:text="#{source.link.name}">Siseviide</label>
                 <div class="col-8">
                   <input type="text" class="form-control" name="value" th:value="${sourceLink.name}">
                 </div>
@@ -372,13 +376,13 @@
   </div>
   <script th:inline="javascript" th:fragment="confirmations">
   	$('[data-toggle=confirmation]').confirmation({
-  		btnOkLabel : 'Jah',
-  		btnCancelLabel : 'Ei'
+      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+      btnCancelLabel : /*[[#{common.no}]]*/'Ei'
   	});
   	$('[data-toggle=delete-confirm]').confirmation({
-  		btnOkLabel : 'Jah',
-  		btnCancelLabel : 'Ei',
-  		title : 'Kinnita kustutamine',
+      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+      btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+  		title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
   		onConfirm : executeDelete
   	});
   </script>
@@ -407,7 +411,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{word.join.title}"></title>
+<title th:text="#{wordjoin.title}"></title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,12 +10,12 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary" th:href="@{'/wordback/' + ${targetWordDetails.word.wordId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{'/wordback/' + ${targetWordDetails.word.wordId}}" th:text="#{common.back}">Tagasi</a>
       </p>
     </div>
     <div class="card shadow mt-4 w-75">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{word.join.title}"></h5>
+        <h5 class="card-title" th:text="#{wordjoin.title}"></h5>
       </div>
       <div class="card-body">
         <div class="border rounded p-2">
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="card-body" th:if="${#lists.isEmpty(sourceWordDetailsList)}">
-        <span th:text="#{word.join.not.found}">Not found.</span>
+        <span th:text="#{wordjoin.not.found}">Not found.</span>
       </div>
       <div class="card-body" th:if="${not #lists.isEmpty(sourceWordDetailsList)}">
         <form th:action="@{/wordjoin}" method="post">
@@ -43,7 +43,8 @@
             <button type="button" class="btn btn-primary" id="joinWordsBtn"
                     data-toggle="join-confirm"
                     data-placement="right"
-                    disabled>Ühenda valitud keelendid
+                    disabled
+                    th:text="#{wordjoin.join}">Ühenda valitud keelendid
             </button>
           <div class="border border-dark rounded mt-2 mb-2 p-2" th:each="sourceWordDetails : ${sourceWordDetailsList}">
             <div th:if="${sourceWordDetails != null}">
@@ -84,7 +85,7 @@
                 </div>
                 <div class="row">
                   <div class="col pr-0 col-w13rem">
-                    <span class="lbl">Identifikaatorid</span>
+                    <span class="lbl" th:text="#{lex.data.ids}">Identifikaatorid</span>
                   </div>
                   <div class="col pl-0">
                     <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
@@ -94,7 +95,7 @@
                 </div>
                 <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}">
                   <div class="col pr-0 col-w13rem">
-                    <span class="lbl">Sõna liik</span>
+                    <span class="lbl" th:text="#{lex.lexeme.pos}">Sõnaliik</span>
                   </div>
                   <div class="col pl-0">
                     <span th:each="classif,classifIter : ${lexeme.pos}" class="hidden-buttons">
@@ -117,7 +118,7 @@
   <th:block th:fragment="gender(details)" th:if="${details != null}">
     <div class="row" th:if="${details.word.genderCode != null}">
       <div class="col pr-0 col-w13rem">
-        <span class="lbl">Sugu</span>
+        <span class="lbl" th:text="#{lex.word.gender}">Sugu</span>
       </div>
       <div class="col pl-0">
         <span th:text="${viewUtil.getClassifierValue(details.word.genderCode, wordGenders)}"></span>
@@ -127,7 +128,7 @@
   <th:block th:fragment="word_types(details)" th:if="${details != null}">
     <div class="row" th:if="${not #lists.isEmpty(details.wordTypes)}">
       <div class="col pr-0 col-w13rem">
-        <span class="lbl">Keelendi tüüp</span>
+        <span class="lbl" th:text="#{lex.word.type}">Keelendi tüüp</span>
       </div>
       <div class="col pl-0">
         <span th:each="classif,classifIter : ${details.wordTypes}" class="hidden-buttons">
@@ -143,7 +144,7 @@
   <th:block th:fragment="aspect_code(details)" th:if="${details != null}">
     <div class="row" th:if="${details.word.aspectCode != null}">
       <div class="col pr-0 col-w13rem">
-        <span class="lbl">Aspekt</span>
+        <span class="lbl" th:text="#{lex.word.aspect}">Aspekt</span>
       </div>
       <div class="col pl-0">
         <span th:text="${viewUtil.getClassifierValue(details.word.aspectCode, wordAspects)}"></span>
@@ -153,7 +154,7 @@
   <th:block th:fragment="etymology(details)" th:if="${details != null}">
     <div class="row mb-2" th:if="${not #lists.isEmpty(details.wordEtymology)}">
       <div class="col pr-0 col-w13rem">
-        <span class="lbl">Keelendi etümoloogia</span>
+        <span class="lbl" th:text="#{lex.word.etymology}">Päritolu</span>
       </div>
       <div class="col pl-0 small" style="line-height: 0.8rem;">
         <th:block th:each="wordEtym, itemIter : ${details.wordEtymology}">
@@ -186,9 +187,9 @@
   <script th:inline="javascript">
 	  initializeWordJoin();
 	  $('[data-toggle=join-confirm]').confirmation({
-		  btnOkLabel: 'Jah',
-		  btnCancelLabel: 'Ei',
-		  title: 'Kas olete kindel, et soovite keelendid ühendada?',
+      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+      btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+      title : /*[[#{wordjoin.confirm.join}]]*/'Kas olete kindel?',
 		  onConfirm: function() {
 			  $(this).closest('form').submit();
 		  }

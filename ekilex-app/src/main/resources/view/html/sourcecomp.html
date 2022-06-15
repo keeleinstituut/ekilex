@@ -46,11 +46,11 @@
           <div class="row mb-1">
             <table style="background-color: #ececec; font-weight: bold">
               <tr>
-                <td>allika id</td>
+                <td th:text="#{source.id}">allika id</td>
                 <td th:text="${source.id}"></td>
               </tr>
               <tr>
-                <td>tüüp</td>
+                <td th:text="#{source.type}">tüüp</td>
                 <td>
                   <div class="hidden-buttons">
                     <div class="col pl-0">
@@ -109,16 +109,18 @@
           <td style="width: 50px"></td>
           <td>
             <div class="row mb-1">
-              <table style="background-color: #ececec; font-weight: bold;">
-                <tr>
-                  <td>allika id &nbsp;</td>
-                  <td th:text="${source.id}"></td>
-                </tr>
-                <tr>
-                  <td>tüüp</td>
-                  <td th:text="#{|source.type.${source.type}|}"></td>
-                </tr>
-              </table>
+              <div class="col-3">
+                <table class="table" style="background-color: #ececec; font-weight: bold">
+                  <tr>
+                    <td th:text="#{source.id}">allika id</td>
+                    <td th:text="${source.id}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.type}">tüüp</td>
+                    <td th:text="#{|source.type.${source.type}|}"></td>
+                  </tr>
+                </table>
+              </div>
               <div class="ml-4">
                 <form th:action="@{/join_sources}" method="post">
                   <input type="hidden" name="targetSourceId" th:value="${targetSource.id}">

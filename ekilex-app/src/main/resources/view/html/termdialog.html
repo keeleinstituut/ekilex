@@ -18,21 +18,21 @@
               <div class="col-md-6">
                 <select class="form-control lex-data-select required-field" name="opCode" data-plugin="lexDataSelectPlugin">
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <option value="lexeme_value_state" sec:authorize="#vars.lexeme.crudGrant">Väärtusolek</option>
-                  <option value="addUsageDlg" sec:authorize="#vars.lexeme.crudGrant">Kasutusnäide</option>
-                  <option value="lexeme_pos" sec:authorize="#vars.lexeme.crudGrant">Sõnaliik</option>
-                  <option value="lexeme_deriv" sec:authorize="#vars.lexeme.crudGrant">Tuletuskood</option>
-                  <option value="lexeme_register" sec:authorize="#vars.lexeme.crudGrant">Register</option>
-                  <option value="lexeme_region" sec:authorize="#vars.lexeme.crudGrant">Regioon</option>
-                  <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.lexeme.crudGrant">Allikaviide</option>
-                  <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku seos</option>
-                  <option value="addLexemeNoteDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku märkus</option>
-                  <option value="addLexemeTagDlg" sec:authorize="#vars.lexeme.crudGrant">Ilmiku silt</option>
-                  <option value="lexeme_reliability" sec:authorize="#vars.lexeme.crudGrant">Ilmiku usaldusväärsus</option>
-                  <option value="word_gender" sec:authorize="#vars.lexeme.word.subGrant">Sugu</option>
-                  <option value="word_type" sec:authorize="#vars.lexeme.word.subGrant">Keelendi tüüp</option>
-                  <option value="word_display_morph" sec:authorize="#vars.lexeme.word.subGrant">Vormikood</option>
-                  <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.subGrant">Keelendi märkus</option>
+                  <option value="lexeme_value_state" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.value.state}">Väärtusolek</option>
+                  <option value="addUsageDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.usage}">Kasutusnäide</option>
+                  <option value="lexeme_pos" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.pos}">Sõnaliik</option>
+                  <option value="lexeme_deriv" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.deriv}">Tuletuskood</option>
+                  <option value="lexeme_register" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.register}">Register</option>
+                  <option value="lexeme_region" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.region}">Regioon</option>
+                  <option value="addLexemeSourceLinkDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.source.link}">Allikaviide</option>
+                  <option value="addLexemeRelationDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.relation}">Ilmiku seos</option>
+                  <option value="addLexemeNoteDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.note}">Ilmiku märkus</option>
+                  <option value="addLexemeTagDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.tag}">Ilmiku silt</option>
+                  <option value="lexeme_reliability" sec:authorize="#vars.lexeme.crudGrant" th:text="#{term.lexeme.reliability}">Ilmiku usaldusväärsus</option>
+                  <option value="word_gender" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.gender}">Sugu</option>
+                  <option value="word_type" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.type}">Keelendi tüüp</option>
+                  <option value="word_display_morph" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.display.morph}">Vormikood</option>
+                  <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.note}">Keelendi märkus</option>
                 </select>
               </div>
             </div>
@@ -110,8 +110,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -133,14 +133,14 @@
               <div class="col-md-6">
                 <select required class="form-control meaning-data-select required-field" name="opCode" data-plugin="meaningDataSelectPlugin">
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
-                  <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
-                  <option value="addMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant">Märkus</option>
-                  <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse seos</option>
-                  <option value="addMeaningTagDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse silt</option>
-                  <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant">Semantiline tüüp</option>
-                  <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Pilt</option>
-                  <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Videod ja muu meedia</option>
+                  <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.domain}">Valdkond</option>
+                  <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.definition}">Mõiste seletus</option>
+                  <option value="addMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.note}">Märkus</option>
+                  <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.relation}">Tähenduse seos</option>
+                  <option value="addMeaningTagDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.tag}">Tähenduse silt</option>
+                  <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.semantic.type}">Semantiline tüüp</option>
+                  <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.image}">Pilt</option>
+                  <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.media}">Videod ja muu meedia</option>
                 </select>
               </div>
             </div>
@@ -167,8 +167,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -192,13 +192,13 @@
                       name="opCode"
                       data-plugin="limTermMeaningDataSelectPlugin">
                   <option value="" hidden disabled selected th:text="#{common.select.value}">vali väärtus...</option>
-                  <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant">Valdkond</option>
-                  <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Mõiste seletus</option>
-                  <option value="addLimTermMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant">Arutelu kommentaar</option>
-                  <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant">Tähenduse seos</option>
-                  <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant">Semantiline tüüp</option>
-                  <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Pilt</option>
-                  <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted">Videod ja muu meedia</option>
+                  <option value="meaning_domain" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.domain}">Valdkond</option>
+                  <option value="addDefinitionDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.definition}">Mõiste seletus</option>
+                  <option value="addLimTermMeaningNoteDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.lim.term.meaning.note}">Arutelu kommentaar</option>
+                  <option value="addMeaningRelationDlg" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.relation}">Tähenduse seos</option>
+                  <option value="meaning_semantic_type" sec:authorize="#vars.meaning.crudGrant" th:text="#{term.meaning.semantic.type}">Semantiline tüüp</option>
+                  <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.image}">Pilt</option>
+                  <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{term.meaning.media}">Videod ja muu meedia</option>
                 </select>
               </div>
             </div>
@@ -225,8 +225,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -243,8 +243,8 @@
             <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
             <input type="hidden" name="opCode" value="lexeme_publicity">
             <select class="form-control" name="public">
-              <option value="true" th:selected="${lexeme.public}">avalik</option>
-              <option value="false" th:selected="${!lexeme.public}">mitteavalik</option>
+              <option value="true" th:selected="${lexeme.public}" th:text="#{boolean.public.true}">avalik</option>
+              <option value="false" th:selected="${!lexeme.public}" th:text="#{boolean.public.false}">mitteavalik</option>
             </select>
           </div>
         </form>
@@ -423,8 +423,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -477,8 +477,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -521,7 +521,7 @@
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -544,7 +544,7 @@
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -565,13 +565,14 @@
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -592,13 +593,14 @@
             <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${usage.public}" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -617,10 +619,10 @@
               <div class="col-12">
                 <div class="form-group row">
                   <div class="col-8">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                    <input type="text" class="form-control" name="searchFilter" th:placeholder="#{term.placeholder.word.search}">
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
+                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
                   </div>
                 </div>
               </div>
@@ -639,7 +641,8 @@
             </div>
             <div data-name="oppositeRelation" data-entity="LEXEME" class="form-group row" style="display: none">
               <div class="col-md-6">
-                <label class="col-form-label">vastassuuna seose tüüp
+                <label class="col-form-label">
+                  <span th:text="#{term.opposite.relation.type}">Vastassuuna seose tüüp</span>
                   <select required class="form-control required-field" name="oppositeRelationType">
                   </select>
                 </label>
@@ -649,7 +652,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -662,7 +665,7 @@
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title">Ilmiku silt</h5>
+            <h5 class="modal-title" th:text="#{term.lexeme.tag}">Ilmiku silt</h5>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -679,8 +682,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -694,7 +697,7 @@
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title">Tähenduse silt</h5>
+            <h5 class="modal-title" th:text="#{term.meaning.tag}">Tähenduse silt</h5>
             <button type="button" class="close" data-dismiss="modal">&times;</button>
           </div>
           <div class="modal-body">
@@ -711,8 +714,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -744,13 +747,14 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -782,13 +786,14 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -802,7 +807,7 @@
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title">Lisa keelendi märkus</h5>
+            <h5 class="modal-title" th:text="#{term.add.word.note}">Lisa keelendi märkus</h5>
             <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -814,8 +819,8 @@
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -829,7 +834,7 @@
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title">Muuda keelendi märkust</h5>
+            <h5 class="modal-title" th:text="#{term.edit.word.note}">Muuda keelendi märkust</h5>
             <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -841,8 +846,8 @@
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -866,7 +871,7 @@
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -887,7 +892,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}" th:text="#{common.select.language}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.recentNoteLanguage}"
@@ -898,13 +903,14 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -927,7 +933,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentNoteLanguage)}" th:text="#{common.select.language}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.recentNoteLanguage}"
@@ -938,8 +944,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -971,13 +977,14 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1010,8 +1017,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1035,7 +1042,7 @@
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -1057,7 +1064,7 @@
             <div class="form-group row">
               <div class="col-md-8" th:if="${userRoleData.userRole.superiorPermission}">
                 <select name="dataset" required class="form-control required-field classifier-select" data-live-search="true">
-                  <option value="" hidden disabled th:selected="${userRoleData.userRole.superiorPermission}">vali sõnakogu...</option>
+                  <option value="" hidden disabled th:selected="${userRoleData.userRole.superiorPermission}" th:text="#{common.select.dataset}">vali sõnakogu...</option>
                   <option th:each="dataset : ${userVisibleDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}">
@@ -1073,7 +1080,7 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control classifier-select required-field" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.recentLanguage}"
@@ -1085,20 +1092,21 @@
             <div class="form-group row">
               <div class="col-md-4">
                 <select required class="form-control value-select required-field" name="itemType">
-                  <option value="" hidden disabled selected>vali tüüp...</option>
+                  <option value="" hidden disabled selected th:text="#{common.select.type}">vali tüüp...</option>
                   <option th:each="type : ${definitionTypes}" th:value="${type.code}" th:text="${type.value}">type</option>
                 </select>
               </div>
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1137,13 +1145,14 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${definition.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${definition.public}" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1167,7 +1176,7 @@
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -1197,13 +1206,14 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" checked="checked" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1234,13 +1244,14 @@
             </div>
             <div class="form-group form-check">
               <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">Avalik
+                <input class="form-check-input" type="checkbox" name="public" th:checked="${note.public}" value="true">
+                <span th:text="#{boolean.public.true}">Avalik</span>
               </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1264,7 +1275,7 @@
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -1282,10 +1293,10 @@
               <div class="col-12">
                 <div class="form-group row">
                   <div class="col-8">
-                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                    <input type="text" class="form-control" name="searchFilter" th:placeholder="#{term.placeholder.word.search}">
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
+                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
                   </div>
                 </div>
               </div>
@@ -1304,7 +1315,8 @@
             </div>
             <div data-name="oppositeRelation" data-entity="MEANING" class="form-group row" style="display: none">
               <div class="col-md-6">
-                <label class="col-form-label">vastassuuna seose tüüp
+                <label class="col-form-label">
+                  <span th:text="#{term.opposite.relation.type}">Vastassuuna seose tüüp</span>
                   <select required class="form-control required-field" name="oppositeRelationType">
                   </select>
                 </label>
@@ -1314,7 +1326,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -1369,8 +1381,8 @@
             <div class="form-group row eki-editor">
               <div class="col-md-12 pb-3">
                 <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-success" data-btn-menu>Lisa märgendus</button>
-                  <button type="button" class="btn btn-sm btn-success" data-btn-remove>Eemalda märgendus</button>
+                  <button type="button" class="btn btn-sm btn-success" data-btn-menu th:text="#{term.add.markup}">Lisa märgendus</button>
+                  <button type="button" class="btn btn-sm btn-success" data-btn-remove th:text="#{term.delete.markup}">Eemalda märgendus</button>
                 </div>
               </div>
               <div class="col-md-12">
@@ -1384,8 +1396,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button name="saveWordValueBtn" type="button" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button name="saveWordValueBtn" type="button" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1409,7 +1421,7 @@
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
@@ -1428,12 +1440,12 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" placeholder="sisesta pildi url" name="value"></textarea>
+                <textarea class="form-control" rows="1" th:placeholder="#{term.placeholder.image.url}" name="value"></textarea>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+              <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
             </div>
           </div>
         </form>
@@ -1457,8 +1469,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Salvesta</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+              <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
             </div>
           </div>
         </form>
@@ -1483,8 +1495,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1508,8 +1520,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1529,12 +1541,12 @@
             <input type="hidden" name="value">
             <div class="form-group row">
               <div class="col-md-12">
-                <textarea class="form-control" rows="1" placeholder="sisesta meedia url" name="value"></textarea>
+                <textarea class="form-control" rows="1" th:placeholder="#{term.placeholder.media.url}" name="value"></textarea>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+              <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
             </div>
           </div>
         </form>
@@ -1558,8 +1570,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary">Salvesta</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+              <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
             </div>
           </div>
         </form>
@@ -1577,8 +1589,8 @@
           <input type="hidden" name="opCode" value="ff_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1595,8 +1607,8 @@
           <input type="hidden" name="opCode" value="def_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1613,8 +1625,8 @@
           <input type="hidden" name="opCode" value="lex_source_link">
           <div class="modal-body" data-name="sourceLinkDlgContent"></div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink">Muuda</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" data-plugin="updateSourceLink" th:text="#{common.edit}">Muuda</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1640,8 +1652,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1656,13 +1668,13 @@
             <input type="hidden" name="backUri" th:value="${searchUri}">
             <div class="form-group row">
               <div class="col-md-12">
-                <input class="form-control required-field" name="wordValue" placeholder="uus termin">
+                <input class="form-control required-field" name="wordValue" th:placeholder="#{term.placeholder.new.word}">
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-12" th:if="${userRoleData.userRole.superiorPermission}">
                 <select name="dataset" required class="form-control required-field classifier-select" data-live-search="true">
-                  <option value="" hidden disabled th:selected="${userRoleData.userRole.superiorPermission}">vali sõnakogu...</option>
+                  <option value="" hidden disabled th:selected="${userRoleData.userRole.superiorPermission}" th:text="#{common.select.dataset}">vali sõnakogu...</option>
                   <option th:each="dataset : ${userVisibleDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}">
@@ -1678,7 +1690,7 @@
             <div class="form-group row">
               <div class="col-md-8">
                 <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.recentLanguage}"
@@ -1689,8 +1701,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button id="addWordSubmitBtn" type="button" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button id="addWordSubmitBtn" type="button" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -1705,13 +1717,13 @@
             <input type="hidden" name="dataset" th:value="${T(eki.common.constant.GlobalConstant).DATASET_LIMITED}">
             <div class="form-group row">
               <div class="col-md-12">
-                <input class="form-control required-field" name="wordValue" placeholder="uus termin">
+                <input class="form-control required-field" name="wordValue" th:placeholder="#{term.placeholder.new.word}">
               </div>
             </div>
             <div class="form-group row">
               <div class="col-md-8">
                 <select required class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}">vali keel...</option>
+                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
                   <option th:each="language : ${userRoleLanguages}"
                           th:value="${language.code}"
                           th:selected="${language.code == sessionBean.recentLanguage}"
@@ -1722,8 +1734,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button id="limTermWordFormSubmitBtn" type="button" class="btn btn-primary" data-plugin="limTermWordFormSubmitPlugin">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button id="limTermWordFormSubmitBtn" type="button" class="btn btn-primary" data-plugin="limTermWordFormSubmitPlugin" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
