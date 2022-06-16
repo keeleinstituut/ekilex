@@ -6,7 +6,7 @@
     <div class="col-auto form-inline">
       <div class="ml-auto">
         <button type="button" class="btn badge badge-success float-right"
-                title="Lisa allikale uus atribuut"
+                th:title="#{source.add.property}"
                 data-toggle="modal"
                 th:data-target="${'#addSourcePropertyDlg_' + source.id}"
                 sec:authorize="#vars.source.crudGrant">
@@ -17,27 +17,34 @@
         <form th:action="@{/source_join}" method="post">
           <input type="hidden" name="previousSearch" th:value="${simpleSearchFilter}">
           <input type="hidden" name="sourceId" th:value="${source.id}">
-          <button type="submit" class="btn btn-primary btn-sm" sec:authorize="#vars.source.crudGrant">Ühenda</button>
+          <button type="submit" class="btn btn-primary btn-sm" sec:authorize="#vars.source.crudGrant" th:text="#{source.join}">Ühenda</button>
         </form>
       </div>
       <div class="ml-2">
         <button type="button" class="btn btn-warning font-weight-bold btn-sm"
                 th:data-source-id="${source.id}"
                 data-toggle="delete-source-confirm"
-                sec:authorize="#vars.source.crudGrant">Eemalda allikas</button>
+                sec:authorize="#vars.source.crudGrant"
+                th:text="#{source.delete}">Eemalda allikas</button>
       </div>
       <div class="dropdown">
-        <button class="btn btn-secondary btn-sm ml-4" id="detailSearchButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Otsi viiteid</button>
+        <button class="btn btn-secondary btn-sm ml-4" id="detailSearchButton" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                th:text="#{source.search.source.links}">Otsi viiteid</button>
         <div class="dropdown-menu" aria-labelledby="detailSearchButton">
-          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" th:href="@{'/sourcedetailsearch/lexsearch/' + ${source.id}}">Leks otsing</a>
-          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm" th:href="@{'/sourcedetailsearch/termsearch/' + ${source.id}}">Term otsing</a>
+          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
+             th:href="@{'/sourcedetailsearch/lexsearch/' + ${source.id}}"
+             th:text="#{source.lex.search}">Leks otsing</a>
+          <a class="dropdown-item btn btn-secondary font-weight-bold btn-sm"
+             th:href="@{'/sourcedetailsearch/termsearch/' + ${source.id}}"
+             th:text="#{source.term.search}">Term otsing</a>
         </div>
       </div>
       <a th:href="@{'/sourceactivitylog:' + ${source.id}}"
          data-toggle="modal"
          data-target="#sourceActivityLogDlg"
          class="btn btn-secondary btn-sm ml-2"
-         sec:authorize="${#authentication.principal.datasetPermissionsExist}">Logi</a>
+         sec:authorize="${#authentication.principal.datasetPermissionsExist}"
+         th:text="#{source.activity.log}">Logi</a>
     </div>
     <table class="w-100">
       <tr>
@@ -56,7 +63,7 @@
                     <div class="col pl-0">
                       <span th:text="#{|source.type.${source.type}|}"></span>
                       <button type="button" class="btn badge badge-primary"
-                              title="Muuda"
+                              th:title="#{common.edit}"
                               data-toggle="modal"
                               th:data-target="${'#editSourceTypeDlg_' + source.id}"
                               sec:authorize="#vars.source.crudGrant">
@@ -129,7 +136,8 @@
                           data-toggle="join-confirm"
                           data-placement="right"
                           th:if="${source.id != targetSourceId}"
-                          sec:authorize="#vars.source.crudGrant">Ühenda</button>
+                          sec:authorize="#vars.source.crudGrant"
+                          th:text="#{source.join}">Ühenda</button>
                 </form>
               </div>
             </div>
@@ -155,9 +163,9 @@
     </div>
     <script th:inline="javascript">
       $('[data-toggle=join-confirm]').confirmation({
-        btnOkLabel: 'Jah',
-        btnCancelLabel: 'Ei',
-        title: 'Kas olete kindel, et soovite allikad ühendada?',
+        btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+        btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+        title : /*[[#{source.confirm.join}]]*/'Kas olete kindel, et soovite allikad ühendada?',
         onConfirm: function() {
           $(this).closest('form').submit();
         }

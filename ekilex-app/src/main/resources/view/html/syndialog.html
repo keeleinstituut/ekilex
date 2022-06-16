@@ -18,10 +18,10 @@
                     <input type="hidden" name="language" th:value="${language}"/>
                     <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}"/>
                     <div class="col-8">
-                      <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                      <input type="text" class="form-control" name="searchFilter" th:placeholder="#{lex.placeholder.word.search}">
                     </div>
                     <div class="col-2">
-                      <button type="submit" class="btn btn-primary">Otsi</button>
+                      <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
                     </div>
                   </div>
                 </div>
@@ -38,7 +38,7 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </div>
       </div>
@@ -65,8 +65,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -89,8 +89,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -100,7 +100,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Kasutusjuhend</h5>
+          <h5 class="modal-title" th:text="#{syn.manual}">Kasutusjuhend</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -123,7 +123,7 @@
           </p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
         </div>
       </div>
     </div>
@@ -142,8 +142,8 @@
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -163,8 +163,8 @@
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>

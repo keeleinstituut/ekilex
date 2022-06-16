@@ -97,7 +97,7 @@
               sec:authorize="#vars.userRoleData.crudRoleSelected"
               th:if="${activeItem == 'limterm'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
-        <span th:text="#{limterm.new.word}">Uus keelend</span>
+        <span th:text="#{term.lim.term.new.word}">Uus keelend</span>
       </button>
       <div th:if="${appData.devEnv}" class="bg-warning ml-2">
         <strong class="px-5" th:text="${appData.envName}">TEST</strong>

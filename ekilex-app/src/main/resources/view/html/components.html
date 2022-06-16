@@ -176,9 +176,9 @@
   </div>
   <th:block th:fragment="change_role">
     <hr/>
-    <form method="post" id="changeRoleForm" th:action="@{change_role}">
+    <form method="post" id="changeRoleForm" th:action="@{/change_role}">
       <div class="row">
-        <label class="col-form-label col-auto">Vali roll:</label>
+        <label class="col-form-label col-auto" th:text="#{common.select.role}">Vali roll:</label>
         <select class="form-control col-2" id="changeRoleSelect" name="permissionId" data-plugin="changeSubmitFormPlugin">
           <option value="" hidden disabled th:selected="${!userRoleData.roleSelected}"></option>
           <th:block th:each="datasetPermission : ${userDatasetPermissions}">
@@ -201,7 +201,7 @@
       <input type="hidden" name="pageNum">
       <div class="d-flex justify-content-start">
         <button name="pagingBtn" type="button" class="btn badge ml-2 mr-2"
-                title="Eelmine lehekülg"
+                th:title="#{common.previous.page}"
                 data-direction="previous"
                 th:if="${pagingResult.previousPageExists}"
                 data-plugin="pagingBtnPlugin">
@@ -210,16 +210,16 @@
         <div class="mr-2 ml-4" th:if="${!pagingResult.previousPageExists}"></div>
         <span class="d-flex align-items-center" th:text="${pagingResult.currentPage + ' / ' + pagingResult.totalPages}"></span>
         <button name="pagingBtn" type="button" class="btn badge ml-2"
-                title="Järgmine lehekülg"
+                th:title="#{common.next.page}"
                 data-direction="next"
                 th:if="${pagingResult.nextPageExists}"
                 data-plugin="pagingBtnPlugin">
           <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
         </button>
-        <span class="paging-page-number d-flex align-items-center ml-auto">Mine lehele</span>
+        <span class="paging-page-number d-flex align-items-center ml-auto" th:text="#{common.navigate.to}">Mine lehele</span>
         <input class="paging-input" type="text" data-plugin="pagingInputPlugin">
         <button name="pagingBtn" type="button" class="paging-submit btn btn-link p-0" 
-               title="Vali lehekülg"
+               th:title="#{common.select.page}"
                data-direction="page"
                data-plugin="pagingBtnPlugin">
           <i class="paging-submit-icon fa fa-arrow-right"></i>
@@ -231,12 +231,12 @@
     <div class="form-row">
       <div class="col-12">
         <div class="form-group row ui-front">
-          <label class="col-auto col-form-label">Otsing</label>
+          <label class="col-auto col-form-label" th:text="#{source.search}">Otsing</label>
           <div class="col-5">
-            <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+            <input type="text" class="form-control" name="searchFilter" th:placeholder="#{source.search.placeholder}">
           </div>
           <div class="col-2">
-            <button type="submit" class="btn btn-primary">Otsi</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
           </div>
         </div>
       </div>
@@ -249,7 +249,7 @@
           <div class="border rounded">
             <div class="form-group row p-2 m-2">
               <div class="col-md-12">
-                <input class="form-control required-field" name="name" placeholder="allika nimetus">
+                <input class="form-control required-field" name="name" th:placeholder="#{source.name.placeholder}">
               </div>
             </div>
             <div class="form-group row p-2 m-2">
@@ -258,7 +258,7 @@
                   <div class="col-auto">
                     <label title="Tüüp">
                       <select required class="form-control required-field" name="type">
-                        <option value="" hidden disabled selected>vali allika tüüp</option>
+                        <option value="" hidden disabled selected th:text="#{source.select.type}">vali allika tüüp</option>
                         <option th:each="type : ${sourceTypes}" th:value="${type}" th:text="#{|source.type.${type}|}">value</option>
                       </select>
                     </label>
@@ -274,7 +274,7 @@
           <div class="border rounded" name="sourcePropertyGroup">
             <div class="form-group row p-2 m-2">
               <div class="col-auto">
-                <label title="Allika atribuudi nimetus">
+                <label th:title="#{source.property.name}">
                   <select required class="form-control" name="properties[][type]">
                     <option th:each="type : ${sourcePropertyTypes}" th:value="${type}" th:text="#{|source.property.${type.name()}|}">value</option>
                   </select>
@@ -299,25 +299,26 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button id="addSourceSubmitBtn" type="button" class="btn btn-primary" data-plugin="addSourceSubmitPlugin">Lisa</button>
-      <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+      <button id="addSourceSubmitBtn" type="button" class="btn btn-primary" data-plugin="addSourceSubmitPlugin" th:text="#{common.add}">Lisa</button>
+      <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
     </div>
   </form>
   <div class="modal-dialog modal-dialog-centered" role="document" th:fragment="meaning_delete_confirmation">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Palun kinnita kustutamine</h5>
+        <h5 class="modal-title" th:text="#{delete.confirmation.title}">Palun kinnita kustutamine</h5>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
         <div class="alert alert-primary" role="alert">
           <th:block th:unless="${meaningDeleteConfirmation.userRoleExist}">
-            <span>Mõiste kustutamine pole ilma rollita õigustatud.</span>
+            <span th:text="#{delete.meaning.role.exists}">Mõiste kustutamine pole ilma rollita õigustatud.</span>
           </th:block>
           <ul th:if="${meaningDeleteConfirmation.userRoleExist}">
-            <li th:if="${meaningDeleteConfirmation.meaningDelete}">Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine.</li>
+            <li th:if="${meaningDeleteConfirmation.meaningDelete}"
+                th:text="#{delete.meaning.confirmation}">Valitud mõistel pole rohkem kasutust. Palun kinnita mõiste kustutamine.</li>
             <th:block th:if="${not #maps.isEmpty(meaningDeleteConfirmation.relatedMeaningsDatasetsMap)}">
-              <li>Koos mõistega kustuvad ka seosed järgnevate mõistetega:</li>
+              <li th:text="#{delete.meaning.related.meanings}">Koos mõistega kustuvad ka seosed järgnevate mõistetega:</li>
               <ul>
                 <li th:each="relatedMeaningEntry : ${meaningDeleteConfirmation.relatedMeaningsDatasetsMap}"
                     th:with="datasets=${#strings.arrayJoin(relatedMeaningEntry.value,', ')}">
@@ -326,7 +327,7 @@
               </ul>
             </th:block>
             <th:block th:if="${not #lists.isEmpty(meaningDeleteConfirmation.wordValues)}">
-              <li>Koos mõistega kustuvad ka järgmised keelendid:</li>
+              <li th:text="#{delete.meaning.related.words}">Koos mõistega kustuvad ka järgmised keelendid:</li>
               <ul>
                 <li th:each="wordValue : ${meaningDeleteConfirmation.wordValues}" th:text="${wordValue}"></li>
               </ul>
@@ -335,28 +336,30 @@
         </div>
       </div>
       <div class="modal-footer" th:if="${meaningDeleteConfirmation.userRoleExist}">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok" th:text="#{common.yes}">Jah</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel" th:text="#{common.no}">Ei</button>
       </div>
     </div>
   </div>
   <div class="modal-dialog modal-dialog-centered" role="document" th:fragment="lexeme_delete_confirmation">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Palun kinnita kustutamine</h5>
+        <h5 class="modal-title" th:text="#{delete.confirmation.title}">Palun kinnita kustutamine</h5>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body" th:if="${lexemeDeleteConfirmation.showConfirmation}">
         <div class="alert alert-primary" role="alert">
           <th:block th:unless="${lexemeDeleteConfirmation.userRoleExist}">
-            <span>Ilmiku kustutamine pole ilma rollita õigustatud.</span>
+            <span th:text="#{delete.lexeme.role.exists}">Ilmiku kustutamine pole ilma rollita õigustatud.</span>
           </th:block>
           <ul th:if="${lexemeDeleteConfirmation.userRoleExist}">
-            <li>Palun kinnita kustutamine</li>
-            <li th:if="${lexemeDeleteConfirmation.meaningDelete}">Ilmiku(te) kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine.</li>
-            <li th:if="${lexemeDeleteConfirmation.wordDelete}">Ilmiku(te) kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita keelendi(te) kustutamine.</li>
+            <li th:text="#{delete.confirmation.title}">Palun kinnita kustutamine</li>
+            <li th:if="${lexemeDeleteConfirmation.meaningDelete}"
+                th:text="#{delete.lexeme.related.meanings}">Ilmiku(te) kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine.</li>
+            <li th:if="${lexemeDeleteConfirmation.wordDelete}"
+                th:text="#{delete.lexeme.related.words}">Ilmiku(te) kustutamisega kaasneb ka keelendi(te) kustutamine. Palun kinnita keelendi(te) kustutamine.</li>
             <th:block th:if="${not #lists.isEmpty(lexemeDeleteConfirmation.lexemesWordValues)}">
-              <li>Kustuvad järgmised ilmikud:</li>
+              <li th:text="#{delete.lexeme.lexemes.to.delete}">Kustuvad järgmised ilmikud:</li>
               <ul>
                 <li th:each="wordValue : ${lexemeDeleteConfirmation.lexemesWordValues}" th:text="${wordValue}"></li>
               </ul>
@@ -365,8 +368,8 @@
         </div>
       </div>
       <div class="modal-footer" th:if="${lexemeDeleteConfirmation.userRoleExist}">
-        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok">Jah</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel">Ei</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" name="ok" th:text="#{common.yes}">Jah</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" name="cancel" th:text="#{common.no}">Ei</button>
       </div>
     </div>
   </div>

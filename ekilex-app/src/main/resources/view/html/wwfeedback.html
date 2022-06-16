@@ -37,11 +37,11 @@
         </div>
         <hr />
         <div class="d-flex justify-content-center mb-2">
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{feedback.previous.page}" class="btn badge mr-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
           <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{feedback.next.page}" class="btn badge ml-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}" class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>
         </div>
@@ -62,7 +62,7 @@
             <tr th:each="feedbackLog : ${feedbackLogResult.feedbackLogs}">
               <td>
                 <span class="text-nowrap font-weight-light" th:text="${#dates.format(feedbackLog.createdOn, 'dd.MM.yyyy HH:mm')}"></span>
-                <span class="badge badge-info" th:text="#{'wwfeedback.type.' + ${feedbackLog.feedbackType}}"></span>
+                <span class="badge badge-info" th:text="#{'feedback.type.' + ${feedbackLog.feedbackType}}"></span>
               </td>
               <td>
                 <div class="text-primary" th:text="${feedbackLog.senderEmail}"></div>
@@ -153,11 +153,11 @@
         </table>
         <hr />
         <div class="d-flex justify-content-center mb-2">
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{feedback.previous.page}" class="btn badge mr-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum - 1}}" th:hidden="${feedbackLogResult.pageNum == 1}" th:title="#{common.previous.page}" class="btn badge mr-2">
             <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
           </a>
           <span class="mt-1" th:text="${feedbackLogResult.pageNum + ' / ' + feedbackLogResult.pageCount}"></span>
-          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{feedback.next.page}" class="btn badge ml-2">
+          <a th:href="@{'/wwfeedback/page/' + ${feedbackLogResult.pageNum + 1}}" th:hidden="${feedbackLogResult.pageNum == feedbackLogResult.pageCount}" th:title="#{common.next.page}" class="btn badge ml-2">
             <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
           </a>
         </div>

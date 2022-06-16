@@ -9,7 +9,7 @@
     <div class="d-flex flex-row mt-2">
       <form th:action="@{/sourcesearch}" method="post">
         <input type="hidden" name="simpleSearchFilter" th:value="${previousSearch}">
-        <button type="submit" class="btn btn-sm btn-secondary">Tagasi</button>
+        <button type="submit" class="btn btn-sm btn-secondary" th:text="#{common.back}">Tagasi</button>
       </form>
     </div>
     <div class="card shadow mt-4">
@@ -28,12 +28,12 @@
           <div class="form-row">
             <div class="col-12">
               <div class="form-group row">
-                <label class="col-auto col-form-label">Otsing</label>
+                <label class="col-auto col-form-label" th:text="#{source.search}">Otsing</label>
                 <div class="col-5">
-                  <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav allikas">
+                  <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" th:placeholder="#{source.search.placeholder}">
                 </div>
                 <div class="col-2">
-                  <button type="submit" class="btn btn-primary">Otsi</button>
+                  <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
                 </div>
               </div>
             </div>
