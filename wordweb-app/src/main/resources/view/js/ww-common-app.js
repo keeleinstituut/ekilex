@@ -208,7 +208,7 @@ $(document).on('click', '[data-toggle="collapse-text"]', function() {
 	const targetText = $(btn.attr('data-target'));
 	let targetTextBaseHeight = targetText.attr('data-base-height');
 	const targetTextMaxHeight = targetText.attr('data-max-height');
-	const addedData = btn.siblings('.large-text-container');
+	const addedData = targetText.siblings('.large-text-container');
 	const addedText = addedData.find('.large-text-addition');
 	const placeholder = addedData.find('.large-text-placeholder');
 	if (!targetTextBaseHeight) {

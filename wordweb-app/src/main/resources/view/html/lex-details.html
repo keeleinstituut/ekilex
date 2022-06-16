@@ -59,9 +59,9 @@
                           <th:block th:if="${!definition.subDataExists}">    
                             <div th:id="${'definition-entry-' + definition.definitionId}">
                               <th:block th:if="${isCollapsable}">
-                                <span class="definition-value mb-2 text-weight-medium text-dark collapse-text"
+                                <div class="definition-value mb-2 text-weight-medium text-dark collapse-text"
                                       th:utext="${#strings.substring(definition.valuePrese, 0, 500)}">
-                                </span>
+                                </div>
                                 <div class="large-text-container">
                                   <span 
                                     class="large-text-addition"
