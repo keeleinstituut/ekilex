@@ -62,7 +62,9 @@ function () {
       doubleTapZoom: 2,
       maxZoom: 10,
       htmlClass: 'has-lightbox',
-      rtl: false
+      rtl: false,
+      svgWidth: 400,
+      svgHeight: 285
     });
 
     _defineProperty(this, "transitionPrefix", void 0);
@@ -523,9 +525,15 @@ function () {
         if (_this5.loadedImages.indexOf(_this5.currentImage.getAttribute('src')) === -1) {
           _this5.loadedImages.push(_this5.currentImage.getAttribute('src'));
         }
-        // 300 and 185 are fallback dimensions in case an svg does not include dimensions
-        var imageWidth = event.target.width || 300,
-            imageHeight = event.target.height || 185;
+        // svg is specified to have the same dimensions between browsers
+        if (event.target.src.endsWith('svg')) {
+          var imageWidth = _this5.options.svgWidth,
+            imageHeight = _this5.options.svgHeight;
+        } else {
+          var imageWidth = event.target.width,
+            imageHeight = event.target.height;
+        }
+        
         if (_this5.options.scaleImageToRatio || imageWidth > windowWidth || imageHeight > windowHeight) {
           var ratio = imageWidth / imageHeight > windowWidth / windowHeight ? imageWidth / windowWidth : imageHeight / windowHeight;
           imageWidth /= ratio;
@@ -1142,6 +1150,10 @@ function () {
       this.currentImage.dataset.scale = 1;
       this.currentImage.dataset.translateX = 0;
       this.currentImage.dataset.translateY = 0;
+      if (targetURL.endsWith('svg')) {
+        this.currentImage.style.width = `${this.options.svgWidth}px`;
+        this.currentImage.style.height = `${this.options.svgHeight}px`;
+      }
 
       if (this.loadedImages.indexOf(targetURL) === -1) {
         this.loadedImages.push(targetURL);
