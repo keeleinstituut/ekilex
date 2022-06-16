@@ -16467,9 +16467,9 @@ body.hidden-scroll {
   line-height: 1.4;
   color: #5d606e;
   text-align: center;
-  cursor: default;
   background: #ecf0f2;
   border-radius: 4px;
+  cursor: default;
 }
 
 /* stylelint-disable */
@@ -17201,14 +17201,6 @@ body {
   .level-3-panel {
     padding-right: 2.5rem;
   }
-}
-
-.level-3-panel:not(.expand) .label,
-.level-3-panel:not(.expand) .label-md,
-.level-3-panel .corp-panel:not(.expand) div:nth-child(n+5),
-.level-3-panel .dependencies:not(.expand) .dependence {
-  display: none;
-  opacity: 0;
 }
 
 .level-3-panel .dependencies .expand .dependence {
@@ -18163,6 +18155,18 @@ body {
   transition: transform ease-in-out .32s;
 }
 
+.btn-collapse[aria-expanded=false] .see-less-content {
+  display: none;
+}
+
+.btn-collapse[aria-expanded=true] .see-more-content {
+  display: none;
+}
+
+.btn-collapse[aria-expanded=true] .see-less-content {
+  display: block;
+}
+
 .btn-ellipsis .collapse-icon {
   margin-bottom: 2px;
 }
@@ -18635,6 +18639,15 @@ body {
   .wordmodal .table-legend__item {
     display: block;
   }
+}
+
+.collapse-text {
+  transition: height 250ms ease-in-out;
+  overflow: hidden;
+}
+
+.large-text-container {
+  display: none;
 }
 
 /* stylelint-disable */

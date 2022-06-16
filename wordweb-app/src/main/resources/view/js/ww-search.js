@@ -63,8 +63,6 @@ function fetchCorpSentences() {
   var corpSentencesUrl = corpUrl + '/' + currentWordLang + '/' + encodeURIComponent(currentWord);
   $.get(corpSentencesUrl).done(function(data) {
     corpDiv.replaceWith(data);
-    //Activate collapse button after last bit of data is loaded
-    activateCollapseBtn();
   }).fail(function(data) {
   })
 }
@@ -74,7 +72,6 @@ function fetchCorpTranslations() {
   var corpTranslationsUrl = corpTransUrl + '/' + currentWordId + '/' + currentWordLang + '/' + encodeURIComponent(currentWord);
   $.get(corpTranslationsUrl).done(function(data) {
     corpTransDiv.replaceWith(data);
-    activateCollapseBtn();
   }).fail(function(data) {
   })
 }
@@ -104,53 +101,6 @@ $(document).on("click", ".menu-btn", function() {
     $(this).attr('aria-expanded', 'false');
   } else {
     $(this).attr('aria-expanded', 'true');
-  }
-});
-
-function activateCollapseBtn() {
-  $(".btn-collapse").on("click", function() {
-    $(this).toggleClass('show');
-
-    if ($(this).data("see-less") && $(this).data("see-more")) {
-      let _txt;
-      if ($(this).hasClass('show')) {
-        _txt = $(this).data("see-less");
-      } else {
-        _txt = $(this).data("see-more");
-      }
-
-      $(this).find('.btn-txt').text(_txt);
-    }
-    if ($(this).data("dynamic-text")) {
-      $(this).find('.btn-content').toggleClass('d-none');
-      $(this).find('.see-more-content').tooltip('hide');
-    }
-    if ($(this).data("toggle-container")) {
-      $($(this).data("toggle-container")).toggleClass("expanded");
-    }
-  });
-}
-
-$(document).on("click", ".show-more", function() {
-
-  // button behaviour
-  let buttonText = '';
-  if ($(this).attr('aria-expanded') === 'false') {
-    $(this).attr('aria-expanded', 'true');
-    $(this).find("i").removeClass("fa-angle-down").addClass("fa-angle-up");
-    buttonText = $(this).data("see-less");
-  } else {
-    $(this).attr('aria-expanded', 'false');
-    $(this).find("i").removeClass("fa-angle-up").addClass("fa-angle-down");
-    buttonText = $(this).data("see-more");
-  }
-  $(this).find("span").text(buttonText);
-
-  if ($(this).data("target") !== undefined) {
-    $($(this).data("target")).toggleClass('collapse');
-  } else {
-    // TODO: Refactor all of this selector mess
-    $(this).parents(".dependencies, .collocations-section, .corp-panel").toggleClass("expand");
   }
 });
 

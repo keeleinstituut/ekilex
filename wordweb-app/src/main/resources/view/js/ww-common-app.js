@@ -201,3 +201,53 @@ $.fn.scrollableTable = function() {
 		}, 30);
 	});
 }
+
+// Custom collapse for expandable text
+$(document).on('click', '[data-toggle="collapse-text"]', function() {
+	const btn = $(this);
+	const targetText = $(btn.attr('data-target'));
+	let targetTextBaseHeight = targetText.attr('data-base-height');
+	const targetTextMaxHeight = targetText.attr('data-max-height');
+	const addedData = btn.siblings('.large-text-container');
+	const addedText = addedData.find('.large-text-addition');
+	const placeholder = addedData.find('.large-text-placeholder');
+	if (!targetTextBaseHeight) {
+		const targetHeight = targetText.prop('offsetHeight');
+		targetText.attr('data-base-height', targetHeight);
+		targetTextBaseHeight = targetHeight;
+	}
+
+	if (btn.attr('aria-expanded') === 'true') {
+			targetText.css('height', `${targetTextBaseHeight}px`);
+			btn.attr('aria-expanded', false);
+			// Delay removal of text until the animation is done
+			setTimeout(() => {
+				targetText.html(targetText.html().substring(0, 500));
+			}, 250);
+	} else {
+			if (targetTextMaxHeight) {
+				targetText.css('height', `${targetTextMaxHeight}px`);
+			} else {
+				// Create a temp div to get the resulting height
+				const tempDiv = $("<div/>").css({
+					position: 'absolute',
+					visibility: 'hidden',
+					width: targetText.width()
+				}).addClass(targetText.attr('class'))
+					.html(targetText.html() + addedText.html())
+					.append(placeholder.clone());
+				targetText.after(tempDiv);
+				
+				const tempDivHeight = tempDiv.prop('offsetHeight');
+				targetText.attr('data-max-height', tempDivHeight);
+				targetText.css('height', `${targetTextBaseHeight}px`);
+				// Delay the second height change to allow for animation
+				setTimeout(() => {
+					targetText.css('height', `${tempDivHeight}px`);
+				}, 0);
+			}
+			// Combine the two texts and add placeholder at the end
+			targetText.html(targetText.html() + addedText.html()).append(placeholder.clone());
+			btn.attr('aria-expanded', true);
+	}
+});
