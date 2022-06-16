@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>Sildid</title>
+<title th:text="#{tag.title}">Siltide haldus</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,9 +10,9 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Siltide haldus</h5>
+        <h5 class="card-title" th:text="#{tag.title}">Siltide haldus</h5>
         <div class="ml-auto pull-right">
-          <button class="btn btn-primary" title="Lisa uus silt" data-toggle="modal" data-target="#addTagDlg">Lisa uus</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#addTagDlg" th:text="#{tag.add}">Lisa uus silt</button>
         </div>
       </div>
       <div class="card-body">

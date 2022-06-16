@@ -21,42 +21,42 @@
           <span th:if="${synRelation.relationStatus}" th:title="#{|relationstatus.${synRelation.relationStatus}|}" data-toggle="tooltip" class="px-2">
             <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
           </span>
-          <span th:unless="${synRelation.relationStatus}" title="Seos puudub" data-toggle="tooltip" class="px-2">
+          <span th:unless="${synRelation.relationStatus}" th:title="#{syn.no.relation}" data-toggle="tooltip" class="px-2">
             <i class="fa fa-exclamation-triangle text-muted" aria-hidden="true"></i>
           </span>
           <div class="mr-auto pl-0 d-flex flex-row flex-nowrap align-items-center">
             <p class="py-2 pr-1 m-0 list-item-value" th:inline="text">
               <span th:utext="${viewUtil.getWordValueMarkup(synRelation)}"></span>
-              <sup th:if="${synRelation.homonymsExist}" title="Homonüümi number" th:text="${synRelation.wordHomonymNr}">1</sup>
+              <sup th:if="${synRelation.homonymsExist}" th:title="#{syn.homonym.num}" th:text="${synRelation.wordHomonymNr}">1</sup>
             </p>
           </div>
           <div class="hover-actions">
             <button type="button" th:hidden="${relationIter.first}" class="btn btn-xs btn-secondary order-up "
-                  title="Muuda järjestust"
+                  th:title="#{syn.update.ordering}"
                   data-plugin="changeItemOrderingPlugin">
               <i class="fa fa-arrow-up" aria-hidden="true"></i>
             </button>
             <button type="button" th:hidden="${relationIter.last}" class="btn btn-xs  btn-secondary order-down "
-                  title="Muuda järjestust"
+                    th:title="#{syn.update.ordering}"
                   data-plugin="changeItemOrderingPlugin">
               <i class="fa fa-arrow-down" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn  btn-xs btn-secondary rel-status-btn" th:data-id="${synRelation.id}"
                   data-status="UNDEFINED"
-                  title="Märgi mittetegeletuks"
+                  th:title="#{syn.update.undefined}"
                   data-plugin="changeSynRelationPlugin">
               <i class="fa fa-question" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-xs btn-success rel-status-btn" th:data-id="${synRelation.id}"
                   data-status="PROCESSED"
-                  title="Märgi kinnitatuks"
+                  th:title="#{syn.update.processed}"
                   data-plugin="changeSynRelationPlugin">
               <i class="fa fa-check" aria-hidden="true"></i>
             </button>
             <button type="button" class="btn btn-xs btn-danger rel-status-btn" th:data-id="${synRelation.id}"
                   data-status="DELETED"
                   data-placement="right"
-                  title="Kustuta"
+                  th:title="#{syn.update.deleted}"
                   data-plugin="changeSynRelationPlugin">
               <i class="fa fa-remove" aria-hidden="true"></i>
             </button>
@@ -66,7 +66,7 @@
           </button>
           <div class="syn-stats-content d-none">
             <div th:if="${not #lists.isEmpty(synRelation.wordLexemesPoses)}">
-              <span>Sõnaliik: </span>
+              <span th:text="#{syn.lexeme.pos}">Sõnaliik:</span>
               <th:block th:each="lexemePos,lexemePosIter : ${synRelation.wordLexemesPoses}">
                 <span th:text="${lexemePos}"></span>
                 <span th:unless="${lexemePosIter.last}">, </span>
@@ -80,7 +80,7 @@
                   <span class="col-6" th:text="${relationParam.value}">Value</span>
                 </li>
               </ul>
-              <p th:if="${#lists.isEmpty(synRelation.relationParams)}">Seosetugevuste andmed puuduvad</p>
+              <p th:if="${#lists.isEmpty(synRelation.relationParams)}" th:text="#{syn.no.relation.params}">Seosetugevuste andmed puuduvad</p>
             </div>
           </div>
           <span th:if="${synRelation.oppositeRelationStatus != null}"
@@ -89,7 +89,7 @@
                 class="border-left border-light px-2">
             <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>
           </span>
-          <span th:if="${synRelation.oppositeRelationStatus == null}" title="Seos puudub" data-toggle="tooltip" class="border-left border-light px-2">
+          <span th:if="${synRelation.oppositeRelationStatus == null}" th:title="#{syn.no.relation}" data-toggle="tooltip" class="border-left border-light px-2">
             <i class="fa fa-exclamation-triangle text-muted" aria-hidden="true"></i>
           </span>
         </div>
@@ -106,7 +106,7 @@
             <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
               <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
             </span>
-            <span class="small">Tähenduse id: </span>
+            <span class="small" th:text="#{syn.meaning.id}">Tähenduse id:</span>
             <span class="small" th:text="${meaning.meaningId}"></span>
             <span class="pr-2 small" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
               <span th:each="posCode : ${meaning.lexPosCodes}">
@@ -114,20 +114,23 @@
               </span>
             </span>
           </div>
-          <div class="d-flex flex-row" data-toggle="tooltip" title="Definitsioon" th:each="definition : ${meaning.definitions}">
+          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
             <span class="small" th:utext="${definition}"></span>
           </div>
-          <div class="d-flex flex-row" data-toggle="tooltip" title="Kasutusnäide" th:each="usage : ${meaning.usages}">
+          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
             <span class="small text-info" th:utext="${usage}"></span>
           </div>
         </div>
       </li>
     </ul>
-    <p th:unless="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" class="text-secondary font-italic p-3">Vastete kandidaadid puuduvad valitud keeltes</p>
+    <p th:unless="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}"
+       class="text-secondary font-italic p-3"
+       th:text="#{syn.no.word.syn.relations}">Vastete kandidaadid puuduvad valitud keeltes</p>
   </div>
   <div class="card-body p-0 d-flex flex-column h-100" th:fragment="search_result">
     <div class="bg-light rounded-top px-2 py-1">
-      <small th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></small>
+      <small th:text="#{syn.results.found}">Kokku leiti:</small>
+      <small th:text="${wordsResult.totalCount}"></small>
     </div>
     <div class="overflow-auto h-100 keyboard-nav-list" data-panel-index="1">
       <ul id="results" class="mb-0 pb-3 list-group ">
@@ -166,7 +169,7 @@
       <div class="card-body p-2">
         <div class="form-group row">
           <div class="col-md-4 ml-2">
-            <label>Kandidaadi kaal</label>
+            <label th:text="#{syn.candidate.weight}">Kandidaadi kaal</label>
             <input name="weight" id="weightInput" type="number" min="0" max="0.9" step=".1" class="form-control required-field required-range" value="0.7">
           </div>
         </div>
@@ -174,7 +177,8 @@
     </div>
     <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
       <div class="card-body p-2">
-        <span th:text="${'Kokku leiti : ' + totalCount}"></span>
+        <span th:text="#{syn.results.found}">Kokku leiti:</span>
+        <span th:text="${totalCount}"></span>
         <div style="max-height: 50vh; overflow: auto;">
           <table class="table table-striped mb-0">
             <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${existingIds != null && #lists.contains(existingIds, word.wordId)}">
@@ -187,7 +191,7 @@
                 <input name="ids" type="checkbox" class="float-right mt-2 mr-2"
                        th:value="${word.wordId}"
                        th:disabled="${wordExists}"
-                       th:title="${wordExists ? 'Keelend on juba sünonüümide hulgas' : ''}"/>
+                       th:title="${wordExists} ? #{syn.candidate.exists} : ''"/>
                 <div class="ml-3 mb-2" style="margin-top: -6px;">
                   <small>
                     <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
@@ -197,7 +201,7 @@
             </tr>
           </table>
         </div>
-        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled>Lisa valitud kandidaadid</button>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled th:text="#{syn.add.selected.candidates}">Lisa valitud kandidaadid</button>
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
@@ -213,7 +217,7 @@
         <div class="form-group row">
           <div class="col-md-9 ml-2">
             <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
-              <option value="" selected disabled>vali keel...</option>
+              <option value="" selected disabled th:text="#{common.select.language}">vali keel...</option>
               <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
             </select>
           </div>
@@ -223,7 +227,7 @@
             <input class="form-control required-field" readonly name="value" th:value="${searchedWord}"/>
           </div>
           <div class="col-md-3">
-            <button type="button" id="addSynRelationWord" class="btn btn-sm btn-success" data-btn-menu>Lisa uus keelend</button>
+            <button type="button" id="addSynRelationWord" class="btn btn-sm btn-success" data-btn-menu th:text="#{syn.add.syn.relation.word}">Lisa uus keelend</button>
           </div>
         </div>
       </div>
@@ -274,7 +278,7 @@
             <th:block th:if="${isMeaningRelSyn}">
               <div th:replace="syndialog :: edit_syn_meaning_relation_weight_dlg"></div>
               <button type="button" class="btn badge badge-secondary btn-xs"
-                      title="Muuda vaste seose kaalu"
+                      th:title="#{syn.edit.meaning.rel.weight}"
                       data-toggle="modal"
                       th:data-target="${'#editSynMeaningRelationWeightDlg_' + syn.relationId}"
                       sec:authorize="#vars.lexeme.crudGrant">
@@ -285,7 +289,7 @@
                       data-op-code="syn_meaning_relation"
                       data-toggle="delete-confirm"
                       sec:authorize="#vars.lexeme.crudGrant">
-                <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" title="Eemalda vaste seos"></i>
+                <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.meaning.rel}"></i>
               </button>
             </th:block>
             <span th:unless="${synIter.last}">|</span>
@@ -298,7 +302,8 @@
     <a th:href="@{'/wordactivitylog:' + ${wordId}}" data-toggle="modal"
        data-target="#wordActivityLogDlg"
        class="btn btn-secondary btn-compact ml-2"
-       sec:authorize="#vars.details.word.readGrant">Logi</a>
+       sec:authorize="#vars.details.word.readGrant"
+       th:text="#{syn.log}">Logi</a>
     <div id="wordActivityLogDlg" class="modal" role="dialog" data-plugin="activityLogDlgPlugin">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">

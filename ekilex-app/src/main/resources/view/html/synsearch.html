@@ -40,14 +40,15 @@
       <div class="navigate-panel card shadow h-100">
         <div class="card-body p-0 d-flex flex-column h-100">
           <div class="px-2 d-flex flex-row align-items-center py-2">
-            <h1 th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mr-3 mb-0">Aktiivne sõna</h1>
+            <h1 th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mr-3 mb-0" th:text="#{syn.active.word}">Aktiivne sõna</h1>
             <button type="button" class="btn btn-secondary btn-compact"
                     id="activeTagCompleteBtn"
                     th:data-word-id="${wordId}"
                     th:disabled="${details.activeTagComplete}"
                     th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
                     data-plugin="updateSynTagCompletePlugin"
-                    sec:authorize="#vars.details.word.subGrant">Märgi tehtuks
+                    sec:authorize="#vars.details.word.subGrant"
+                    th:text="#{syn.update.tag.complete}">Märgi tehtuks
             </button>
             <div th:replace="syncomp :: syn_logdata"></div>
           </div>
@@ -56,9 +57,9 @@
               <div class="border-bottom pb-2">
                 <div class="col-12">
                   <div>
-                    <span class="lbl">Keelendi märkused</span>
+                    <span class="lbl" th:text="#{syn.word.notes}">Keelendi märkused</span>
                     <button type="button" class="btn btn-light badge"
-                            title="Lisa uus" data-toggle="modal"
+                            th:title="#{common.add.new}" data-toggle="modal"
                             th:data-target="${'#addWordNoteDlg_' + wordId}"
                             sec:authorize="#vars.details.word.crudGrant">
                       <i class="action-icon fa fa-plus" aria-hidden="true"></i>
@@ -73,7 +74,7 @@
                         <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
                         <div class="action-buttons-2">
                           <button type="button" class="btn badge badge-primary"
-                                  title="Muuda"
+                                  th:title="#{common.edit}"
                                   data-toggle="modal"
                                   th:data-target="${'#editWordNoteDlg_' + note.id}"
                                   sec:authorize="#vars.details.word.crudGrant">
@@ -108,9 +109,9 @@
                     <th:block th:replace="syncomp :: pos_data"></th:block>
                     <th:block th:replace="syncomp :: registers_data"></th:block>
                     <span class="pl-0 pr-2">
-                      <span class="lbl">Ilmiku sildid</span>
+                      <span class="lbl" th:text="#{syn.lexeme.tags}">Ilmiku sildid</span>
                       <button type="button" class="btn btn-light badge"
-                              title="Lisa uus" data-toggle="modal"
+                              th:title="#{common.add.new}" data-toggle="modal"
                               th:data-target="${'#addLexemeTagDlg_' + lexeme.lexemeId}"
                               sec:authorize="#vars.lexeme.crudGrant">
                         <i class="action-icon fa fa-plus" aria-hidden="true"></i>
@@ -182,15 +183,15 @@
     </div>
     <script>
         $('[data-toggle=delete-confirm]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm : executeDelete
         });
         $('[data-toggle=delete-word-syn-relations-confirm]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kustuta kõik kinnitamata kandidaadid',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{syn.confirm.delete.all}]]*/'Kustuta kõik kinnitamata kandidaadid',
           onConfirm : updateWordSynRelationsStatusDeleted
         });
     </script>

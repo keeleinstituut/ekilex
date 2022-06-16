@@ -14,7 +14,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" th:text="#{tag.type}"></label>
               <select required class="form-control required-field col-md-8" name="tagType">
-                <option value="" hidden disabled selected>vali sildi tüüp</option>
+                <option value="" hidden disabled selected th:text="#{tag.select.type}">vali sildi tüüp</option>
                 <option th:each="tagType : ${tagTypes}" th:value="${tagType}" th:text="#{|enum.tag.type.${tagType}|}">tagType</option>
               </select>
             </div>
@@ -32,8 +32,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-plugin="saveTag">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" data-plugin="saveTag" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -46,7 +46,7 @@
           <input type="hidden" name="currentTagName">
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-3 col-form-label">Järjekord</label>
+              <label class="col-md-3 col-form-label" th:text="#{tag.order}">Järjekord</label>
               <input type="text" name="tagOrder" class="col-md-1 form-control required-field"/>
             </div>
             <div class="form-group row">
@@ -71,8 +71,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" data-plugin="saveTag">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" data-plugin="saveTag" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
