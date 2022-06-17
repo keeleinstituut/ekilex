@@ -12,7 +12,7 @@
             <div class="form-group row">
               <div class="col-10">
                 <select class="form-control perm-dataset-code" name="datasetCode" data-plugin="permDatasetCodeSelect">
-                  <option value="" disabled selected>Vali</option>
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
                   <option th:each="dataset : ${userOwnedDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}">name</option>
@@ -22,7 +22,7 @@
             <div class="form-group row">
               <div class="col-5">
                 <select class="form-control" name="authItem">
-                  <option value="" disabled selected>Vali</option>
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
                   <option th:each="authItem : ${T(eki.common.constant.AuthorityItem).values()}"
                           th:value="${authItem}" 
                           th:text="${authItem}"
@@ -32,7 +32,7 @@
               </div>
               <div class="col-5">
                 <select class="form-control" name="authOp">
-                  <option value="" disabled selected>Vali</option>
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
                   <option th:each="authOp : ${T(eki.common.constant.AuthorityOperation).values()}"
                           th:value="${authOp}"
                           th:text="${authOp}">
@@ -43,7 +43,7 @@
             <div class="form-group row">
               <div class="col-10">
                 <select class="form-control" name="authLang">
-                  <option value="" disabled selected>Vali</option>
+                  <option value="" disabled selected th:text="#{common.select}">Vali</option>
                   <option th:each="language : ${allLanguages}"
                           th:value="${language.code}"
                           th:text="${language.value}">language</option>
@@ -51,8 +51,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-plugin="addDatasetPermPlugin">Lisa</button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+              <button type="button" class="btn btn-primary" data-plugin="addDatasetPermPlugin" th:text="#{common.add}">Lisa</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
             </div>
           </div>
         </form>
@@ -73,8 +73,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-plugin="editPermReviewCommentPlugin">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="button" class="btn btn-primary" data-plugin="editPermReviewCommentPlugin" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>

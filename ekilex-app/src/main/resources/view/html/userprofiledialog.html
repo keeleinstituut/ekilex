@@ -57,8 +57,8 @@
               <div class="col-md-12">
                 <select name="meaningRelationWordLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
                         th:title="#{userprofile.select.meaning.rel.languages}"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${allLanguages}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${#lists.contains(userProfile.preferredMeaningRelationWordLangs, language.code)}"/>
                   </th:block>
@@ -94,8 +94,8 @@
               <div class="col-md-12">
                 <select name="meaningWordLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
                         th:title="#{userprofile.select.pref.meaning.word.langs}"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${userRoleLanguages}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynLexMeaningWordLangs != null && #lists.contains(userProfile.preferredSynLexMeaningWordLangs, language.code)}"/>
                   </th:block>
@@ -107,8 +107,8 @@
               <div class="col-md-12">
                 <select name="synCandidateLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
                         th:title="#{userprofile.select.pref.syn.candidate.langs}"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${userRoleLanguages}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynCandidateLangs != null && #lists.contains(userProfile.preferredSynCandidateLangs, language.code)}"/>
                   </th:block>

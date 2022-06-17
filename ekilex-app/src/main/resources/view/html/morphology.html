@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>Morfoloogia laadimine</title>
+<title th:text="#{morphology.title}">Morfoloogia haldus</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,27 +10,27 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Morfoloogia haldus</h5>
+        <h5 class="card-title" th:text="#{morphology.title}">Morfoloogia haldus</h5>
       </div>
       <div class="card-body">
         <div class="alert alert-warning" role="alert" th:if="${validationMessages}">
           <div th:each="validationMessage : ${validationMessages}" th:text="${validationMessage}"></div>
         </div>
         <div class="alert alert-info" role="alert" th:if="${loadSuccess}">
-          <div>Morfoloogia on uuendatud</div>
+          <div th:text="#{morphology.load.success}">Morfoloogia on uuendatud</div>
         </div>
         <div class="float-left mt-3 w-100">
           <div>
             <form method="POST" th:action="@{/morphology/upload}" enctype="multipart/form-data">
               <div class="form-group row">
                 <div class="col-1">
-                  <span class="lbl">Morfoloogia fail</span>
+                  <span class="lbl" th:text="#{morphology.file}">Morfoloogia fail</span>
                 </div>
                 <div class="col-3">
                   <input name="morphFile" type="file" class="form-control required-field" />
                 </div>
                 <div class="col-1">
-                  <button type="submit" class="btn btn-primary">Lae fail</button>
+                  <button type="submit" class="btn btn-primary" th:text="#{morphology.upload.file}">Lae fail</button>
                 </div>
               </div>
             </form>
