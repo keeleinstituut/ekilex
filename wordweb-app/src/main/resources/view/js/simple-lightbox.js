@@ -544,8 +544,6 @@ function () {
         _this5.domNodes.image.style.left = (window.innerWidth - imageWidth - _this5.globalScrollbarWidth) / 2 + 'px';
         _this5.domNodes.image.style.width = imageWidth + 'px';
         _this5.domNodes.image.style.height = imageHeight + 'px';
-        // Add a background color in case an svg with transparent background is used
-        _this5.domNodes.image.style.backgroundColor = 'white';
         _this5.domNodes.spinner.style.display = 'none';
 
         _this5.fadeIn(_this5.currentImage, 300);
