@@ -5,7 +5,7 @@ class Sorter {
     this.draggable = $(this.main.attr('data-dropper:draggable'));
     this.type = this.main.attr('data-sorter:type');
     this.handle = this.main.attr('data-sorter:handle') || false;
-    this.id = Math.random().toString().substr(2);
+    this.id = Math.random().toString().substring(2);
   }
 
   /* Unified sunctionality */
@@ -124,7 +124,7 @@ class Sorter {
           dataType: 'json',
           contentType: 'application/json',
           complete: function(){
-            main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
+            main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').click();
           },
         });
       }
@@ -191,39 +191,40 @@ class Sorter {
 
         if (isMeaningWordDirectMatchOrdering) {
           main.find('.sortable-first-group').each(function(index) {
-            let lexemeId = $(this).find('input[name="synword-lexeme-id"]').val();
+            const elem = $(this);
+            const lexemeId = elem.find('input[name="synword-lexeme-id"]').val();
             data.items.push({
               id: lexemeId,
               orderby: meaningWordDirectMatchSynOriginalOrder[index],
-              text: $(this).find('button:first').text(),
+              text: elem.find('button:first').text(),
             });
           });
         } else if (isMeaningWordOrdering) {
           main.find('.sortable-second-group').each(function(index) {
-            let lexemeId = $(this).find('input[name="synword-lexeme-id"]').val();
+            const elem = $(this);
+            const lexemeId = elem.find('input[name="synword-lexeme-id"]').val();
             data.items.push({
               id: lexemeId,
               orderby: meaningWordSynOriginalOrder[index],
-              text: $(this).find('button:first').text(),
+              text: elem.find('button:first').text(),
             });
           });
         } else {
           main.find('.sortable-third-group').each(function(index) {
+            const elem = $(this);
             data.items.push({
-              id: $(this).attr('data-relation-id'),
+              id: elem.attr('data-relation-id'),
               orderby: meaningRelSynOriginalOrder[index],
-              text: $(this).find('button:first').text(),
+              text: elem.find('button:first').text(),
             });
           });
         }
 
         openWaitDlg();
         postJson(applicationUrl + 'update_ordering', data).done(function() {
-          console.log(viewType);
           if (viewType === 'lex') {
-            let successCallbackName = orderingBtn.attr("data-callback");
-            let successCallbackFunc = () => eval(successCallbackName);
-            console.log(successCallbackName);
+            const successCallbackName = orderingBtn.attr("data-callback");
+            const successCallbackFunc = () => window[successCallbackName]();
             successCallbackFunc();
           } else {
             refreshSynDetails();
@@ -286,13 +287,14 @@ class Sorter {
 
   differentiateSynType() {
     this.main.children().each(function() {
-      let synType = $(this).attr('data-syn-type');
+      const $this = $(this);
+      let synType = $this.attr('data-syn-type');
       if (synType === 'MEANING_WORD_DIRECT_MATCH') {
-        $(this).addClass('sortable-first-group');
+        $this.addClass('sortable-first-group');
       } else if (synType === 'MEANING_WORD') {
-        $(this).addClass('sortable-second-group');
+        $this.addClass('sortable-second-group');
       } else if (synType === 'MEANING_REL') {
-        $(this).addClass('sortable-third-group');
+        $this.addClass('sortable-third-group');
       }
     });
     this.main.find('.sortable-first-group').wrapAll('<span class="first-group-items">');

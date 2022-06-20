@@ -10,8 +10,8 @@ class MultiSelect {
 
   getElements() {
     this.elements = this.main.find('[id*="lexeme-details-"]');
-    this.elements.each((index, e) => {
-      const element = $(e);
+    this.elements.each(function() {
+      const element = $(this);
       const id = element.attr('id').split('-');
       element.attr('data-id', id[id.length-1]);
     });

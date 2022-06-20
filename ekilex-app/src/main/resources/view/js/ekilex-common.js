@@ -19,9 +19,7 @@ function postJson(url, dataObject, failMessage = messages["common.save.error"], 
 				callback();
 			}
 		},
-	})
-	
-	.fail(function(data) {
+	}).fail(function(data) {
 		console.log(data);
 		openAlertDlg(failMessage);
 	});
@@ -30,36 +28,37 @@ function postJson(url, dataObject, failMessage = messages["common.save.error"], 
 function doPostDelete(deleteUrl, callback, force) {
 	Cookies.set('details-open', $('.details-open').parent().attr('id'));
 	$.post(deleteUrl).done(function(response) {
+		const parsedParams = QueryParams.parseParams(deleteUrl);
 		if (response.status === "OK") {
 			if (response.message != null) {
 				openMessageDlg(response.message);
 			}
 
-			if (QueryParams.parseParams(deleteUrl).id && !force) {
-				if (QueryParams.parseParams(deleteUrl).opCode === 'syn_meaning_relation') {
-					const word = $(`[data-id="${QueryParams.parseParams(deleteUrl).id}"]:first`);
-					word.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
+			if (parsedParams.id && !force) {
+				if (parsedParams.opCode === 'syn_meaning_relation') {
+					const word = $(`[data-id="${parsedParams.id}"]:first`);
+					word.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').click();
 				}
-				else if ($(`#lexeme-details-${QueryParams.parseParams(deleteUrl).id}`).length) {
-					let elem = $(`#lexeme-details-${QueryParams.parseParams(deleteUrl).id}`);
-					let parent = elem.parents('[data-rel="details-area"]');
-					parent.find('[name="details-btn"]:first').trigger('click');
+				else if ($(`#lexeme-details-${parsedParams.id}`).length) {
+					const elem = $(`#lexeme-details-${parsedParams.id}`);
+					const parent = elem.parents('[data-rel="details-area"]');
+					parent.find('[name="details-btn"]:first').click();
 				} else {
 
-					let elem = $(`#resultColumn [data-id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
+					let elem = $(`#resultColumn [data-id*="${parsedParams.id}"]:first`);
 					if (!elem.length) {
-						elem = $(`#resultColumn [id*="${QueryParams.parseParams(deleteUrl).id}"]:first`);
+						elem = $(`#resultColumn [id*="${parsedParams.id}"]:first`);
 					}
 					let parent = elem.parents('.details-open:first');
 
 					if (elem.is('[data-rel="details-area"]')) {
-						elem.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
+						elem.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').click();
 					}
 					else if (!parent.length) {
 						parent = elem.parents('[data-rel="details-area"]:first');
-						parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').trigger('click');
+						parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').click();
 					} else {
-						parent.find('#refresh-open:first').trigger('click');
+						parent.find('#refresh-open:first').click();
 					}
 				}
 
@@ -78,38 +77,39 @@ function doPostDelete(deleteUrl, callback, force) {
 
 function submitDialog(e, dlg, failMessage) {
 	e.preventDefault();
-	let theForm = dlg.find('form');
-	if (!checkRequiredFields(theForm)) {
+	const form = dlg.find('form');
+	if (!checkRequiredFields(form)) {
 		return;
 	}
 
-	var successCallbackName = dlg.attr("data-callback");
-	var successCallbackFunc = undefined;
-	if (successCallbackName) {
-		successCallbackFunc = () => eval(successCallbackName);
+	const successCallbackName = dlg.attr("data-callback");
+	let successCallbackFunc = undefined;
+	if (window[successCallbackName]) {
+		successCallbackFunc = () => window[successCallbackName]();
 	}
 
-	submitForm(theForm, failMessage, successCallbackFunc).always(function() {
+	submitForm(form, failMessage, successCallbackFunc).always(function() {
 		dlg.modal('hide');
 	});
 };
 
-function submitForm(theForm, failMessage, callback) {
-	var data = JSON.stringify(theForm.serializeJSON());
+function submitForm(form, failMessage, callback) {
+	const data = JSON.stringify(form.serializeJSON());
 	return $.ajax({
-		url: theForm.attr('action'),
+		url: form.attr('action'),
 		data: data,
 		method: 'POST',
 		dataType: 'json',
 		contentType: 'application/json'
-	}).done(function(data) {
+	}).done(function() {
 		if (typeof callback === 'function') {
 			callback();
 		} else {
-			if ($('.details-open').length) {
-				Cookies.set('details-open', $('.details-open').parent().attr('id'));
+			const detailsOpen = $('.details-open');
+			if (detailsOpen.length) {
+				Cookies.set('details-open', detailsOpen.parent().attr('id'));
 			}
-			theForm.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').trigger('click');
+			form.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').click();
 		}
 	}).fail(function(data) {
 		console.log(data);
@@ -130,19 +130,19 @@ function alignAndFocus(e, dlg) {
 
 // Do not change the selector to '.required-field' as it causes selectpicker to fire change event twice
 $(document).on("change", "input.required-field, select.required-field, textarea.required-field", function() {
-	let isSelectPicker = $(this).hasClass('classifier-select');
-	let markableField = isSelectPicker ? $(this).parent() : $(this);
+	const requiredField = $(this);
+	let isSelectPicker = requiredField.hasClass('classifier-select');
+	let markableField = isSelectPicker ? requiredField.parent() : requiredField;
 
-	if ($(this).val()) {
+	if (requiredField.val()) {
 		markableField.removeClass('is-invalid');
 	} else {
 		markableField.addClass('is-invalid');
 	}
 
-	let errorSmallElem = $(this).closest('.form-group').find('.field-error');
+	let errorSmallElem = requiredField.closest('.form-group').find('.field-error');
 	if (errorSmallElem.length) {
-		errorSmallElem.html('');
-		errorSmallElem.hide();
+		errorSmallElem.html('').hide();
 	}
 });
 
@@ -153,10 +153,9 @@ $(document).on("change", "input.required-field, select.required-field, textarea.
  * @param errorText
  */
 function showFieldError(field, errorText) {
-	let errorSmallElem = field.closest('.form-group').find('.field-error');
+	const errorSmallElem = field.closest('.form-group').find('.field-error');
 	if (errorSmallElem.length) {
-		errorSmallElem.html(errorText);
-		errorSmallElem.show();
+		errorSmallElem.html(errorText).show();
 		field.addClass('is-invalid');
 	}
 };
@@ -167,29 +166,33 @@ function changeItemOrdering(target, delta) {
 	let itemToMove = target.closest('[data-orderby]');
 	let additionalInfo = orderBlock.attr('data-additional-info');
 	let items = orderBlock.find('[data-orderby]');
-	items = $.grep(items, function(item, index) {
+	items = $.grep(items, function(item) {
 		return $(item).parent().attr("data-op-code") === opCode;
 	});
 	items = $(items);
 	let itemToMovePos = items.index(itemToMove);
 	let orderedItems = [];
 	if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {
-		let orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
-		$(items.get(itemToMovePos + delta)).attr('data-orderby', $(items.get(itemToMovePos)).attr('data-orderby'));
-		$(items.get(itemToMovePos)).attr('data-orderby', orderby);
+		// Named with dollar sign as I'm not sure what the contents are
+		const $itemToMovePosDelta = $(items.get(itemToMovePos + delta));
+		const $itemToMovePos = $(items.get(itemToMovePos));
+		let orderby = $itemToMovePosDelta.attr('data-orderby');
+		$itemToMovePosDelta.attr('data-orderby', $itemToMovePos.attr('data-orderby'));
+		$itemToMovePos.attr('data-orderby', orderby);
 		if (delta > 0) {
-			$(items.get(itemToMovePos + delta)).after($(items.get(itemToMovePos)));
+			$itemToMovePosDelta.after($itemToMovePos);
 		} else {
-			$(items.get(itemToMovePos + delta)).before($(items.get(itemToMovePos)));
+			$itemToMovePosDelta.before($itemToMovePos);
 		}
 		items = orderBlock.find('[data-orderby]');
-		items.each(function(indx, item) {
-			$(item).find('.order-up').prop('hidden', indx == 0);
-			$(item).find('.order-down').prop('hidden', indx == items.length - 1);
+		items.each(function(indx) {
+			const item = $(this);
+			item.find('.order-up').prop('hidden', indx == 0);
+			item.find('.order-down').prop('hidden', indx == items.length - 1);
 			let itemData = {};
-			itemData.id = $(item).attr('data-id');
-			itemData.code = $(item).attr('data-code');
-			itemData.orderby = $(item).attr('data-orderby');
+			itemData.id = item.attr('data-id');
+			itemData.code = item.attr('data-code');
+			itemData.orderby = item.attr('data-orderby');
 			orderedItems.push(itemData);
 		});
 	}
@@ -201,43 +204,45 @@ function changeItemOrdering(target, delta) {
 };
 
 function executeDelete(deleteUrl) {
+	const $this = $(this);
 	if (deleteUrl === undefined) {
-		var opCode = $(this).attr("data-op-code");
-		var id = $(this).attr("data-id");
-		var value = $(this).attr("data-value");
-		deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
+		const opCode = $this.attr("data-op-code");
+		const id = $this.attr("data-id");
+		const value = $this.attr("data-value");
+		deleteUrl = `${applicationUrl}delete_item?opCode=${opCode}&id=${id}`;
 		if (value !== undefined) {
-			deleteUrl = deleteUrl + '&value=' + encodeURIComponent(value);
+			deleteUrl = `${deleteUrl}&value=${encodeURIComponent(value)}`;
 		}
 	}
-	var successCallbackName = $(this).attr("data-callback");
-	var successCallbackFunc = undefined;
-	if (successCallbackName) {
-		successCallbackFunc = () => eval(successCallbackName);
+	const successCallbackName = $this.attr("data-callback");
+	let successCallbackFunc = undefined;
+	if (window[successCallbackName]) {
+		successCallbackFunc = () => window[successCallbackName]();
 	} else {
-		successCallbackFunc = () => $('#refresh-details').trigger('click');
+		successCallbackFunc = () => $('#refresh-details').click();
 	}
 	doPostDelete(deleteUrl, successCallbackFunc);
 };
 
 function initAddMultiDataDlg(theDlg) {
 
-	theDlg.find('select.classifier-select').off('changed.bs.select').on('changed.bs.select', function(e) {
+	theDlg.find('select.classifier-select').off('changed.bs.select').on('changed.bs.select', function() {
 		theDlg.find('[name=value]').val($(this).val());
 	});
 
-	theDlg.find('.value-select').off('change').on('change', function(e) {
+	theDlg.find('.value-select').off('change').on('change', function() {
 		theDlg.find('[name=value]').val($(this).val());
 	});
 	theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitDialog(e, theDlg, messages["common.data.add.error"]);
 	});
 	theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		theDlg.find('.form-control').each(function(indx, item) {
-			$(item).val(null);
+		theDlg.find('.form-control').each(function() {
+			$(this).val(null);
 		});
-		theDlg.find('select').each(function(indx, item) {
-			$(item).val($(item).find('option').first().val());
+		theDlg.find('select').each(function() {
+			const item = $(this);
+			item.val(item.find('option').first().val());
 		});
 		alignAndFocus(e, theDlg);
 	});
@@ -245,8 +250,9 @@ function initAddMultiDataDlg(theDlg) {
 
 function initGenericTextAddDlg(addDlg) {
 	addDlg.find('[name=value]').val(null);
-	addDlg.find('select').each(function(indx, item) {
-		$(item).val($(item).find('option').first().val());
+	addDlg.find('select').each(function() {
+		const item = $(this);
+		item.val(item.find('option').first().val());
 	});
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitDialog(e, addDlg, messages["common.data.add.error"]);
@@ -280,19 +286,19 @@ function initSelectDlg(selectDlg) {
 
 function configureSelectDlg(selectControl, selectDlg) {
 	let maxItemLength = 0;
-	selectControl.find('option').each(function(indx, item) {
-		let itemLenght = $(item).text().length;
-		if (itemLenght > maxItemLength) {
-			maxItemLength = itemLenght;
+	selectControl.find('option').each(function() {
+		let itemLength = $(this).text().length;
+		if (itemLength > maxItemLength) {
+			maxItemLength = itemLength;
 		}
 	});
-	let dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
-	let numberOfOptins = selectControl.find('option').length;
-	selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
+	let dlgWidth = maxItemLength > 80 ? '85ch' : `${maxItemLength + 5}ch`;
+	let numberOfOptions = selectControl.find('option').length;
+	selectControl.attr('size', numberOfOptions > 20 ? 20 : numberOfOptions);
 	selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-		console.log(e.relatedTarget);
-		let dlgTop = $(e.relatedTarget).offset().top - $(window).scrollTop();
-		let dlgLeft = $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
+		const dlg = $(e.relatedTarget);
+		let dlgTop = dlg.offset().top - $(window).scrollTop();
+		let dlgLeft = dlg.offset().left - selectDlg.find('.modal-dialog').offset().left;
 		let modalContent = selectDlg.find('.modal-content');
 		modalContent.css('top', dlgTop - 30);
 		modalContent.css('left', dlgLeft);
@@ -307,53 +313,53 @@ function configureSelectDlg(selectControl, selectDlg) {
 };
 
 function initNewWordDlg() {
-	let newWordDlg = $('#newWordDlg');
+	const newWordDlg = $('#newWordDlg');
+	const formControl = newWordDlg.find('.form-control');
 	newWordDlg.on('shown.bs.modal', function(e) {
-		newWordDlg.find('.form-control').first().focus();
-		newWordDlg.find('.form-control').each(function() {
+		formControl.first().focus();
+		formControl.each(function() {
 			$(this).removeClass('is-invalid');
 		});
-		let searchValue = $("input[name='simpleSearchFilter']").val() || '';
-		if (!searchValue.includes('*') && !searchValue.includes('?')) {
-			newWordDlg.find('[name=wordValue]').val();
-		} else {
+		const searchValue = $("input[name='simpleSearchFilter']").val() || '';
+		if (searchValue.includes('*') && searchValue.includes('?')) {
 			newWordDlg.find('[name=wordValue]').val(null);
 		}
-		let meaningId = $(e.relatedTarget).data('meaning-id');
+		const meaningId = $(e.relatedTarget).data('meaning-id');
 		$('[name=meaningId]').val(meaningId);
 	});
 
-	newWordDlg.find('.form-control').on('change', function() {
-		if ($(this).val()) {
-			$(this).removeClass('is-invalid');
+	formControl.on('change', function() {
+		const dlg = $(this);
+		if (dlg.val()) {
+			dlg.removeClass('is-invalid');
 		} else {
-			$(this).addClass('is-invalid');
+			dlg.addClass('is-invalid');
 		}
 	});
+
 	$(document).on("click", "#addWordSubmitBtn", function() {
-		var addWordForm = $("#addWordForm");
-		var isValid = checkRequiredFields(addWordForm);
-		if (!isValid) {
+		const addWordForm = $("#addWordForm");
+		if (!checkRequiredFields(addWordForm)) {
 			return;
 		}
 		addWordForm.submit();
 	});
 };
 
-function checkRequiredFields(thisForm) {
+function checkRequiredFields(form) {
 
 	let isValid = true;
 
 	// Do not change the selector to '.required-field' as it causes selectpicker to fire change event twice
-	let requiredFields = thisForm.find('input.required-field:not(:hidden), select.required-field:not(:hidden), textarea.required-field:not(:hidden)');
+	const requiredFields = form.find('input.required-field:not(:hidden), select.required-field:not(:hidden), textarea.required-field:not(:hidden)');
 
 	requiredFields.each(function() {
-		let isRequiredRange = $(this).hasClass('required-range');
-		let isSelectPicker = $(this).hasClass('classifier-select');
-		let isMultiselect = isSelectPicker && $(this).hasClass('multi-select');
-		let markableField = isSelectPicker ? $(this).parent() : $(this);
-
-		let fldVal = $(this).val();
+		const requiredField = $(this);
+		const isRequiredRange = requiredField.hasClass('required-range');
+		const isSelectPicker = requiredField.hasClass('classifier-select');
+		const isMultiselect = isSelectPicker && requiredField.hasClass('multi-select');
+		const markableField = isSelectPicker ? requiredField.parent() : requiredField;
+		const fldVal = requiredField.val();
 
 		if (!fldVal) {
 			markableField.addClass('is-invalid');
@@ -363,8 +369,8 @@ function checkRequiredFields(thisForm) {
 		}
 
 		if (isValid && isRequiredRange) {
-			let minValue = $(this).attr('min');
-			let maxValue = $(this).attr('max');
+			const minValue = requiredField.attr('min');
+			const maxValue = requiredField.attr('max');
 			if (!($.isNumeric(fldVal) && parseFloat(fldVal) >= minValue && parseFloat(fldVal) <= maxValue)) {
 				markableField.addClass('is-invalid');
 				isValid = false;
@@ -385,36 +391,36 @@ function initAddSourceLinkDlg(addDlg) {
 
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
-		let searchInput = addDlg.find("input[name='searchFilter']");
+		const searchInput = addDlg.find("input[name='searchFilter']");
 		if (searchInput.autocomplete('instance')) {
 			searchInput.autocomplete('close');
 		}
-		let button = $(this);
-		let content = button.html();
+		const button = $(this);
+		const content = button.html();
 		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-		let theForm = $(this).closest('form');
-		let url = theForm.attr('action') + '?' + theForm.serialize();
+		const form = button.closest('form');
+		const url = form.attr('action') + '?' + form.serialize();
 		$.get(url).done(function(data) {
 			addDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
 			$wpm.bindObjects();
 			addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
 				e.preventDefault();
-				let button = $(e.target);
-				let sourceName = button.closest('.form-group').find('.form-control').val();
-				let sourceId = button.data('source-id');
-				let selectedSourceNameId = $("[name='source_" + sourceId + "']:checked").val();
+				const button = $(e.target);
+				const sourceName = button.closest('.form-group').find('.form-control').val();
+				const sourceId = button.data('source-id');
+				const selectedSourceNameId = $(`[name='source_${sourceId}']:checked`).val();
 				addDlg.find('[name=id2]').val(sourceId);
 				addDlg.find('[name=id3]').val(selectedSourceNameId);
 				addDlg.find('[name=value]').val(sourceName);
-				let theForm = button.closest('form');
+				const form = button.closest('form');
 
-				if (checkRequiredFields(theForm)) {
-					var successCallbackName = addDlg.attr("data-callback");
-					var successCallbackFunc = undefined;
-					if (successCallbackName) {
-						successCallbackFunc = () => eval(successCallbackName);
+				if (checkRequiredFields(form)) {
+					const successCallbackName = addDlg.attr("data-callback");
+					let successCallbackFunc = undefined;
+					if (window[successCallbackName]) {
+						successCallbackFunc = () => window[successCallbackName]();
 					}
-					submitForm(theForm, messages["common.data.update.error"], successCallbackFunc).always(function() {
+					submitForm(form, messages["common.data.update.error"], successCallbackFunc).always(function() {
 						addDlg.modal('hide');
 					});
 				}
@@ -427,15 +433,15 @@ function initAddSourceLinkDlg(addDlg) {
 		});
 	});
 
-	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+	addDlg.off('shown.bs.modal').on('shown.bs.modal', function() {
 		addDlg.find('.form-control').first().focus();
 	});
 };
 
 function initEditSourceLinkDlg(editDlg) {
-	let sourceLinkContentKey = editDlg.find('input[name="opCode"]').val();
-	let sourceLinkId = editDlg.find('input[name="id"]').val();
-	let getSourceAndSourceLinkUrl = applicationUrl + 'source_and_source_link/' + sourceLinkContentKey + '/' + sourceLinkId;
+	const sourceLinkContentKey = editDlg.find('input[name="opCode"]').val();
+	const sourceLinkId = editDlg.find('input[name="id"]').val();
+	const getSourceAndSourceLinkUrl = `${applicationUrl}source_and_source_link/${sourceLinkContentKey}/${sourceLinkId}`;
 
 	$.get(getSourceAndSourceLinkUrl).done(function(data) {
 		editDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
@@ -446,15 +452,15 @@ function initEditSourceLinkDlg(editDlg) {
 }
 
 $.fn.updateSourceLink = function() {
-	var main = $(this);
+	const main = $(this);
 	main.on('click', function(e) {
 		e.preventDefault();
-		let updateSourceLinkForm = main.closest('form[name="sourceLinkForm"]');
-		let updateSourceLinkModal = updateSourceLinkForm.closest('.modal');
-		let successCallbackName = updateSourceLinkModal.attr("data-callback");
+		const updateSourceLinkForm = main.closest('form[name="sourceLinkForm"]');
+		const updateSourceLinkModal = updateSourceLinkForm.closest('.modal');
+		const successCallbackName = updateSourceLinkModal.attr("data-callback");
 		let successCallbackFunc = undefined;
-		if (successCallbackName) {
-			successCallbackFunc = () => eval(successCallbackName);
+		if (window[successCallbackName]) {
+			successCallbackFunc = () => window[successCallbackName]();
 		}
 		submitForm(updateSourceLinkForm, messages["common.data.update.error"], successCallbackFunc).always(function() {
 			updateSourceLinkModal.modal('hide');
@@ -465,20 +471,20 @@ $.fn.updateSourceLink = function() {
 function initRelationDialogLogic(addDlg, idElementName) {
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
-		let button = $(this);
-		let content = button.html();
+		const button = $(this);
+		const content = button.html();
 		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-		let theForm = $(this).closest('form');
-		let url = theForm.attr('action') + '?' + theForm.serialize();
+		const form = button.closest('form');
+		const url = form.attr('action') + '?' + form.serialize();
 		$.get(url).done(function(data) {
 			addDlg.find('[data-name=dialogContent]').replaceWith(data);
-			addDlg.find('button[data-' + idElementName + ']').off('click').on('click', function(e) {
+			addDlg.find(`button[data-${idElementName}]`).off('click').on('click', function(e) {
 				e.preventDefault();
-				let button = $(e.target);
+				const button = $(e.target);
 				addDlg.find('[name=id2]').val(button.data(idElementName));
-				let theForm = button.closest('form');
-				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, messages["common.data.update.error"]).always(function() {
+				const form = button.closest('form');
+				if (checkRequiredFields(form)) {
+					submitForm(form, messages["common.data.update.error"]).always(function() {
 						addDlg.modal('hide');
 					});
 				}
@@ -491,7 +497,7 @@ function initRelationDialogLogic(addDlg, idElementName) {
 		});
 	});
 
-	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+	addDlg.off('shown.bs.modal').on('shown.bs.modal', function() {
 		addDlg.find('.form-control').first().focus();
 	});
 };
@@ -501,50 +507,44 @@ function initMultiselectRelationDlg(dlg) {
 	dlg.find('.form-control').val(null);
 	dlg.find('[data-name=dialogContent]').html(null);
 	dlg.find('[data-name=oppositeRelation]').hide();
-	let selectElem = dlg.find('select');
+	const selectElem = dlg.find('select');
 	selectElem.val(selectElem.find('option').first().val());
 
 	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
-		let searchBtn = $(this);
-		let content = searchBtn.html();
+		const searchBtn = $(this);
+		const content = searchBtn.html();
 		searchBtn.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-		let searchForm = $(this).closest('form');
-		let searchUrl = searchForm.attr('action') + '?' + searchForm.serialize();
+		const searchForm = searchBtn.closest('form');
+		const searchUrl = searchForm.attr('action') + '?' + searchForm.serialize();
 		const id = searchForm.parents('[data-id]:first').attr('data-id');
 
 		$.get(searchUrl).done(function(data) {
 			dlg.find('[data-name=dialogContent]').replaceWith(data);
-			let addRelationsBtn = dlg.find('button[name="addRelationsBtn"]');
+			const addRelationsBtn = dlg.find('button[name="addRelationsBtn"]');
 
-			let idsChk = dlg.find('input[name="ids"]');
+			const idsChk = dlg.find('input[name="ids"]');
 			idsChk.on('change', function() {
 				addRelationsBtn.prop('disabled', !idsChk.filter(":checked").length);
 			});
 
 			addRelationsBtn.off('click').on('click', function(e) {
 				e.preventDefault();
-				let selectRelationsForm = addRelationsBtn.closest('form');
+				const selectRelationsForm = addRelationsBtn.closest('form');
 				if (checkRequiredFields(selectRelationsForm)) {
 					selectRelationsForm.find('select[name="oppositeRelationType"]').prop('disabled', false);
 					$.ajax({
 						url: selectRelationsForm.attr('action'),
 						data: selectRelationsForm.serialize(),
 						method: 'POST',
-					}).done(function(data) {
-						var successCallbackName = dlg.attr("data-callback");
-						if (successCallbackName) {
-							var successCallbackFunc = undefined;
-							if (successCallbackName) {
-								successCallbackFunc = () => eval(successCallbackName);
-								successCallbackFunc();
-							}
-						}else{
+					}).done(function() {
+						const successCallbackName = dlg.attr("data-callback");
+						if (window[successCallbackName]) {
+							window[successCallbackName]();
+						} else {
 							refreshDetailsSearch(id);
 						}
 						dlg.modal('hide');
-
-
 					}).fail(function(data) {
 						dlg.modal('hide');
 						console.log(data);
@@ -560,20 +560,20 @@ function initMultiselectRelationDlg(dlg) {
 		});
 	});
 
-	dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+	dlg.off('shown.bs.modal').on('shown.bs.modal', function() {
 		dlg.find('.form-control').first().focus();
-		let relationTypeSelect = dlg.find("select[name='relationType']");
+		const relationTypeSelect = dlg.find("select[name='relationType']");
 		changeOppositeRelationSelectData(relationTypeSelect);
 	});
 };
 
 function changeOppositeRelationSelectData(relationTypeSelect) {
-	let relationTypeValue = relationTypeSelect.find('option:selected').val();
-	let form = relationTypeSelect.closest('form');
-	let oppositeRelationDiv = form.find('[data-name=oppositeRelation]');
-	let entity = oppositeRelationDiv.data('entity');
-	let oppositeRelationSelect = oppositeRelationDiv.find('select[name="oppositeRelationType"]');
-	let getOppositeClassifiersUrl = applicationUrl + "oppositerelations";
+	const relationTypeValue = relationTypeSelect.find('option:selected').val();
+	const form = relationTypeSelect.closest('form');
+	const oppositeRelationDiv = form.find('[data-name=oppositeRelation]');
+	const entity = oppositeRelationDiv.data('entity');
+	const oppositeRelationSelect = oppositeRelationDiv.find('select[name="oppositeRelationType"]');
+	const getOppositeClassifiersUrl = applicationUrl + "oppositerelations";
 
 	$.ajax({
 		url: getOppositeClassifiersUrl,
@@ -581,20 +581,24 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 		method: 'GET',
 	}).done(function(classifiers) {
 		oppositeRelationSelect.children().remove();
-		if (classifiers.length === 0) {
-			oppositeRelationDiv.hide();
-		} else if (classifiers.length === 1) {
-			oppositeRelationSelect.append(new Option(classifiers[0].value, classifiers[0].code));
-			oppositeRelationSelect.attr('disabled', 'disabled');
-			oppositeRelationDiv.show();
-		} else {
-			oppositeRelationSelect.append(new Option('vali väärtus...', '', true, true));
-			oppositeRelationSelect.children("option:selected").attr('disabled', 'disabled').attr('hidden', 'hidden');
-			$.each(classifiers, function(index, classifier) {
-				oppositeRelationSelect.append(new Option(classifier.value, classifier.code));
-			});
-			oppositeRelationSelect.removeAttr('disabled');
-			oppositeRelationDiv.show();
+		switch (classifiers.length) {
+			case 0:
+				oppositeRelationDiv.hide();
+				break;
+			case 1:
+				oppositeRelationSelect.append(new Option(classifiers[0].value, classifiers[0].code));
+				oppositeRelationSelect.attr('disabled', 'disabled');
+				oppositeRelationDiv.show();
+				break;
+			default:
+				oppositeRelationSelect.append(new Option('vali väärtus...', '', true, true));
+				oppositeRelationSelect.children("option:selected").attr('disabled', 'disabled').attr('hidden', 'hidden');
+				$.each(classifiers, function(index, classifier) {
+					oppositeRelationSelect.append(new Option(classifier.value, classifier.code));
+				});
+				oppositeRelationSelect.removeAttr('disabled');
+				oppositeRelationDiv.show();
+				break;
 		}
 	}).fail(function(data) {
 		console.log(data);
@@ -603,13 +607,13 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 };
 
 function decorateSourceLinks(detailsDiv) {
-	detailsDiv.find('a[href]').each(function(indx, item) {
-		let theLink = $(item);
-		let href = theLink.attr('href');
+	detailsDiv.find('a[href]').each(function() {
+		const link = $(this);
+		const href = link.attr('href');
 		if (href.includes('_source_link:')) {
-			theLink.attr('data-target', '#sourceDetailsDlg');
-			theLink.attr('data-toggle', 'modal');
-			theLink.on('click', function(e) {
+			link.attr('data-target', '#sourceDetailsDlg');
+			link.attr('data-toggle', 'modal');
+			link.on('click', function(e) {
 				openSourceDetails(e.target);
 			});
 		}
@@ -617,8 +621,9 @@ function decorateSourceLinks(detailsDiv) {
 };
 
 function openSourceDetails(elem) {
-	let dlg = $($(elem).data('target'));
-	let url = $(elem).attr('href');
+	const $elem = $(elem);
+	const dlg = $($elem.data('target'));
+	const url = $elem.attr('href');
 	dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		dlg.find('.close').focus();
 		dlg.find('.modal-body').html(null);
@@ -633,7 +638,7 @@ function openMessageDlg(message) {
 };
 
 function openAlertDlg(alertMessage, showAsAlert = true) {
-	let alertDlg = $('#alertDlg');
+	const alertDlg = $('#alertDlg');
 	alertDlg.find(('[name=alert_message]')).text(alertMessage);
 	alertDlg.find('.alert-warning').prop('hidden', !showAsAlert);
 	alertDlg.find('.alert-success').prop('hidden', showAsAlert);
@@ -653,22 +658,23 @@ function openWaitDlg(message) {
 }
 
 function closeWaitDlg() {
-	let isModalOpened = $("#waitDlg").hasClass('show');
+	const waitDlg = $("#waitDlg");
+	const isModalOpened = waitDlg.hasClass('show');
 	let timeout = 100;
 	if (!isModalOpened) {
 		timeout = 500;
 	}
 	setTimeout(function() {
-		$("#waitDlg").modal("hide");
+		waitDlg.modal("hide");
 		$("body").css("cursor", "default");
 	}, timeout);
 };
 
 function openConfirmDlg(confirmDlgHtml, callback, ...callbackArgs) {
-	$('#confirmDlg').html(confirmDlgHtml);
-	var confirmDlg = $('#confirmDlg');
+	const confirmDlg = $('#confirmDlg');
+	confirmDlg.html(confirmDlgHtml);
 	confirmDlg.modal('show');
-	let okBtn = confirmDlg.find('.modal-footer [name=ok]');
+	const okBtn = confirmDlg.find('.modal-footer [name=ok]');
 	okBtn.focus();
 	okBtn.off('click').on('click', function() {
 		confirmDlg.modal('hide');
@@ -677,15 +683,15 @@ function openConfirmDlg(confirmDlgHtml, callback, ...callbackArgs) {
 };
 
 function initWordValueEditorDlg(dlg) {
-	let editFld = dlg.find('[data-name=editFld]');
-	let valueInput = dlg.find('[name=value]');
-	let ekiEditorElem = dlg.find('.eki-editor');
+	const editFld = dlg.find('[data-name=editFld]');
+	const valueInput = dlg.find('[name=value]');
+	const ekiEditorElem = dlg.find('.eki-editor');
 	editFld.removeClass('is-invalid');
 	editFld.html(valueInput.val());
 	initEkiEditor(ekiEditorElem);
 
 	dlg.find('button[name="saveWordValueBtn"]').off('click').on('click', function() {
-		let form = dlg.find('form');
+		const form = dlg.find('form');
 		if (editFld.html()) {
 			let wordValue = editFld.html();
 			wordValue = wordValue.replaceAll("&nbsp;", " ")
@@ -696,8 +702,8 @@ function initWordValueEditorDlg(dlg) {
 				method: 'POST',
 			}).done(function(data) {
 				dlg.modal('hide');
-				let wordId = dlg.find('[name=wordId]').val();
-				let wordValueSpan = $('#word-value-' + wordId);
+				const wordId = dlg.find('[name=wordId]').val();
+				const wordValueSpan = $('#word-value-' + wordId);
 				wordValueSpan.html(data);
 			}).fail(function(data) {
 				dlg.modal('hide');
@@ -711,22 +717,23 @@ function initWordValueEditorDlg(dlg) {
 };
 
 function deleteLexemeAndWordAndMeaning() {
-	var opName = "delete";
-	var opCode = "lexeme";
-	var lexemeId = $(this).attr("data-id");
-	var successCallbackName = $(this).attr("data-callback");
-	let successCallbackFunc = () => eval(successCallbackName)($(this));
+	const opName = "delete";
+	const opCode = "lexeme";
+	const element = $(this);
+	const lexemeId = element.attr("data-id");
+	const successCallbackName = element.attr("data-callback");
+	const successCallbackFunc = () => window[successCallbackName](element);
 
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
 };
 
 function deleteLexemeAndRusMeaningLexemes() {
-	var opName = "delete";
-	var opCode = "rus_meaning_lexemes";
-	var element = $(this);
-	var lexemeId = element.attr("data-id");
-	var successCallbackName = $(this).attr("data-callback");
-	let successCallbackFunc = () => eval(successCallbackName)($(this));
+	const opName = "delete";
+	const opCode = "rus_meaning_lexemes";
+	const element = $(this);
+	const lexemeId = element.attr("data-id");
+	const successCallbackName = element.attr("data-callback");
+	const successCallbackFunc = () => window[successCallbackName](element);
 
 
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, function() {
@@ -740,9 +747,9 @@ function deleteLexemeAndRusMeaningLexemes() {
 };
 
 function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc, force) {
-	let deleteUrl = applicationUrl + 'delete_item?opCode=' + opCode + '&id=' + id;
-	var confirmationOpUrl = applicationUrl + "confirm_op";
-	var dataObj = {
+	const deleteUrl = `${applicationUrl}delete_item?opCode=${opCode}&id=${id}`;
+	const confirmationOpUrl = applicationUrl + "confirm_op";
+	const dataObj = {
 		opName: opName,
 		opCode: opCode,
 		id: id
@@ -768,7 +775,7 @@ function initClassifierAutocomplete() {
 };
 
 function refreshDetails() {
-	$('#refresh-details').trigger('click');
+	$('#refresh-details').click();
 }
 
 function validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage) {
@@ -835,7 +842,7 @@ $.fn.langCollapsePlugin = function() {
 				code: lang
 			};
 			const successCallbackName = btn.attr("data-callback");
-			const successCallbackFunc = () => eval(successCallbackName);
+			const successCallbackFunc = () => window[successCallbackName]();
 			postJson(applicationUrl + 'update_item', itemData).done(function() {
 				if (viewType === 'term') {
 					refreshDetailsSearch(btn.parents('[data-rel="details-area"]').attr('data-id'));
@@ -851,12 +858,8 @@ $.fn.changeItemOrderingPlugin = function() {
 	return this.each(function() {
 		const orderingBtn = $(this);
 		orderingBtn.on('click', function() {
-			let orderingData;
-			if (orderingBtn.hasClass('order-up')) {
-				orderingData = changeItemOrdering(orderingBtn, -1);
-			} else {
-				orderingData = changeItemOrdering(orderingBtn, 1);
-			}
+			const delta = orderingBtn.hasClass('order-up') ? -1 : 1;
+			const orderingData = changeItemOrdering(orderingBtn, delta);
 
 			postJson(applicationUrl + 'update_ordering', orderingData);
 			if (orderingBtn.hasClass('do-refresh')) {
@@ -910,12 +913,16 @@ $.fn.pagingBtnPlugin = function () {
 				}).done(function (data) {
 					closeWaitDlg();
 					if (syn.length) {
-						$('#synSearchResultsDiv').html(data);
-						$('#synSearchResultsDiv').parent().scrollTop(0);
+						$('#synSearchResultsDiv')
+							.html(data)
+							.parent()
+							.scrollTop(0);
 						$('#syn-details-area').empty();
 					} else {
-						$('#results_div').html(data);
-						$('#results_div').parent().scrollTop(0);
+						$('#results_div')
+							.html(data)
+							.parent()
+							.scrollTop(0);
 					}
 
 					$wpm.bindObjects();
@@ -1069,3 +1076,185 @@ $(document).on('click', 'ext-link', function() {
 		openAlertDlg('Vigane link.');
 	}
 });
+
+function initializeSearch(type) {
+	viewType = type;
+	$(window).on('update:wordId', () => {
+		const idList = [];
+		$('#resultColumn').find('[data-rel="details-area"]').each(function() {
+			idList.push($(this).attr('data-id'));
+		});
+		const idString = idList.join(',');
+		if (idList.length === 0) {
+			QueryParams.delete('id');
+		} else {
+			QueryParams.set('id', idString);
+		}
+	});
+
+	// This seems to be for a display: none element
+	$(document).on('change', '[name="resultLang"]', function() {
+		$(this).closest('form').submit();
+	});
+
+	// Same as resultLang
+	$(document).on('change', '[name="resultMode"]', function() {
+		$(this).closest('form').submit();
+	});
+
+	let detailButtons = $('#results').find('[name="details-btn"]');
+	if (QueryParams.get('id')) {
+		const scrollableArea = $('#resultColumn .scrollable-area');
+		scrollableArea.empty();
+		const idList = QueryParams.get('id').split(',');
+		idList.forEach(value => {
+			scrollableArea.append(`<div data-id="${value}" id="details-area" class="h-100 ui-sortable-placeholder" data-rel="details-area"></div>`);
+			loadDetails(value, 'replace', value);
+		});
+	} else {
+		if (detailButtons.length > 0) {
+			detailButtons.eq(0).trigger('click');
+		}
+	}
+
+	if (viewType === 'lim_term') {
+		initNewLimTermWordDlg();
+	} else {
+		initNewWordDlg();
+	}
+	initClassifierAutocomplete();
+};
+
+function getBreadcrumbsData(detailsDiv, word) {
+	const crumbsData = detailsDiv.attr('data-breadcrumbs');
+	const crumbs = crumbsData ? JSON.parse(crumbsData) : [];
+	crumbs.push(word);
+	return crumbs;
+}
+
+function loadDetails(wordId, task, lastWordId) {
+	// Hide all existing loading spinners and show current one
+	$("[id^='select_wait_']").hide();
+	$("#select_wait_" + wordId).show();
+	if (!task) {
+		$('#results_div .list-group-item').removeClass('active');
+	}
+	openWaitDlg();
+
+	let wordDetailsUrl;
+	switch (viewType) {
+		case 'term':
+			wordDetailsUrl = applicationUrl + 'termmeaningdetails/' + wordId;
+			break;
+		case 'lim_term':
+			wordDetailsUrl = applicationUrl + 'limtermmeaningdetails/' + wordId;
+			break;
+		default:
+			wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
+			break;
+	}
+
+	$.get(wordDetailsUrl).done(function(data) {
+
+		closeWaitDlg();
+
+		let detailsDiv = $('#details-area');
+		const resultColumn = $('#resultColumn:first');
+		const dataObject = $(data);
+
+		if (!task) {
+			if (detailsDiv.length === 0) {
+				detailsDiv = $('<div data-rel="details-area"></div>');
+				resultColumn.find('.scrollable-area').append(detailsDiv);
+			}
+			resultColumn.find('[data-rel="details-area"]').slice(1).remove();
+			const breadCrumbs = getBreadcrumbsData(detailsDiv, {
+				id: parseInt(wordId),
+				word: dataObject.attr('data-word'),
+			});
+			dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
+			detailsDiv.replaceWith(dataObject[0].outerHTML);
+			detailsDiv = $('#details-area');
+		} else {
+			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordId}`);
+			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordId}`);
+			dataObject.find('[data-extendable="contentColumn"]').attr('data-extendable', `contentColumn-${wordId}`);
+			dataObject.find('#contentColumn').attr('id', `contentColumn-${wordId}`);
+			if (task === 'replace') {
+				detailsDiv = resultColumn.find(`[data-rel="details-area"][data-id="${lastWordId}"]`);
+				const retainScrollPosition = parseInt(dataObject.attr('data-id')) === parseInt(wordId);
+				const contentDiv = detailsDiv.find('.overflow-auto:first');
+				const scrollPosition = contentDiv.length 
+					&& retainScrollPosition 
+					? contentDiv[0].scrollTop 
+					: 0;
+				const breadCrumbs = getBreadcrumbsData(detailsDiv, {
+					id: parseInt(wordId),
+					word: dataObject.attr('data-word'),
+				});
+				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
+				const newDiv = $(dataObject[0].outerHTML);
+				detailsDiv.replaceWith(newDiv);
+				newDiv.find('.overflow-auto:first').scrollTop(scrollPosition);
+			} else {
+				const breadCrumbs = getBreadcrumbsData(dataObject, {
+					id: parseInt(wordId),
+					word: dataObject.attr('data-word'),
+				});
+				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
+				detailsDiv = $(dataObject[0].outerHTML);
+				resultColumn.find('.scrollable-area').append(detailsDiv);
+			}
+		}
+
+		decorateSourceLinks(detailsDiv);
+		initClassifierAutocomplete();
+
+		$(window).trigger('update:wordId');
+
+		$("#select_wait_" + wordId).hide();
+		$('.tooltip').remove();
+
+		$('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+
+		$('#results_div .list-group-item').removeClass('active');
+		resultColumn.find('[data-rel="details-area"]').each(function() {
+			const id = $(this).attr('data-id');
+			$(`#results button[data-id=${id}]`).parent().addClass('active');
+		});
+
+		$('#results_div .list-group-item').each(function() {
+			const elem = $(this);
+			const button = elem.find('button');
+			if (elem.is('.active')) {
+				button.removeAttr('data-contextmenu:compare');
+				button.attr('data-contextmenu:closePanel', 'Sulge paneel');
+			} else {
+				button.removeAttr('data-contextmenu:closePanel');
+				button.attr('data-contextmenu:compare', 'Ava uues paneelis');
+			}
+		});
+
+		detailSearchBtn();
+
+		$wpm.bindObjects();
+
+		setTimeout(() => {
+
+			if (Cookies.get('details-open')) {
+				
+				const block = $('#'+Cookies.get('details-open'));
+				if (block.children('.details-open').length == 0) {
+					block.find('[name="lexeme-details-btn"]').trigger('click');
+				}
+				Cookies.delete('details-open');
+			} else {
+				closeWaitDlg();
+			}
+		}, 60);
+
+	}).fail(function(data) {
+		alert('Keelendi detailide päring ebaõnnestus');
+		closeWaitDlg();
+	});
+};

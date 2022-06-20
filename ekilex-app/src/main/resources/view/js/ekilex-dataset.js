@@ -2,8 +2,9 @@ String.prototype.trunc = function(n, useWordBoundary) {
 	if (this.length <= n) {
 		return this;
 	}
-	var subString = this.substr(0, n - 1);
-	return (useWordBoundary ? subString.substr(0, subString.lastIndexOf(' ')) : subString) + "&hellip;";
+	// Using just n as substring is up to but not including
+	const subString = this.substring(0, n);
+	return (useWordBoundary ? subString.substring(0, subString.lastIndexOf(' ')) : subString) + "&hellip;";
 };
 
 
@@ -20,28 +21,28 @@ function initializeDatasets() {
 }
 
 function emptyClassifSelect(modal, classifSelectName) {
-	let thisForm = modal.find('form');
-	let classifSelect = thisForm.find('select[name="' + classifSelectName + '"]');
-	classifSelect.find("option").each(function (o) {
+	const form = modal.find('form');
+	const classifSelect = form.find(`select[name=${classifSelectName}]`);
+	classifSelect.find("option").each(function () {
 		$(this).removeAttr("selected");
 	});
 	classifSelect.selectpicker('refresh');
 };
 
 function populateDomains(domainsSelect, originCode, previousDomainsValue) {
-	let getOriginDomainsUrl = applicationUrl + 'origin_domains/' + originCode;
+	const getOriginDomainsUrl = applicationUrl + 'origin_domains/' + originCode;
 	$.get(getOriginDomainsUrl).done(function(response) {
-		var domainOrigins = JSON.parse(response);
+		const domainOrigins = JSON.parse(response);
 
 		$.each(domainOrigins, function(index, domain) {
+			const domainJson = domain.jsonStr;
 			let domainOptionText = domain.value;
-			let domainJson = domain.jsonStr;
 
 			if (domain.value != domain.code) {
-				domainOptionText += ' [' + domain.code + ']';
+				domainOptionText += ` [${domain.code}]`;
 			}
 			domainOptionText = domainOptionText.trunc(100);
-			let domainOption = $("<option></option>")
+			const domainOption = $("<option></option>")
 				.attr("value", domainJson)
 				.attr("data-subtext", originCode)
 				.text(domainOptionText);
@@ -58,12 +59,12 @@ function populateDomains(domainsSelect, originCode, previousDomainsValue) {
 	});
 };
 
-function markClassifierDomains(thisForm, dataset) {
+function markClassifierDomains(form, dataset) {
 
 	if (dataset.origins != null) {
-		let domainsSelect = thisForm.find('select[name="domains"]');
+		const domainsSelect = form.find('select[name="domains"]');
+		const originSelect = form.find('select[name="origins"]');
 		domainsSelect.attr("disabled", false);
-		let originSelect = thisForm.find('select[name="origins"]');
 		$.each(dataset.origins, function (key, origin) {
 			let originOption = originSelect.find("option[value='" + origin + "']");
 			originOption.attr("selected", "selected");
@@ -71,19 +72,19 @@ function markClassifierDomains(thisForm, dataset) {
 		});
 		originSelect.selectpicker('refresh');
 
-		let previousDomainsIds = dataset.domains.map(domain => domain.jsonStr);
+		const previousDomainsIds = dataset.domains.map(domain => domain.jsonStr);
 		originSelect.find('option:selected').each(function () {
-			let originCode = $(this).val();
+			const originCode = $(this).val();
 			populateDomains(domainsSelect, originCode, previousDomainsIds);
 		});
 	}
 };
 
 function markSelectedClassifiers(form, classifSelectName, classifArray) {
-	let classifSelect = form.find('select[name="' + classifSelectName + '"]');
+	const classifSelect = form.find('select[name="' + classifSelectName + '"]');
 
 	$.each(classifArray, function (key, classif) {
-		let classifOption = classifSelect.find("option[value='" + classif.jsonStr + "']");
+		const classifOption = classifSelect.find("option[value='" + classif.jsonStr + "']");
 		classifOption.attr("selected", "selected");
 	});
 
@@ -104,7 +105,7 @@ function isValidDatasetCodeFormat(code) {
 
 function deleteDataset(datasetCode) {
 	openWaitDlg("Palun oodake, sõnakogu kustutamine on pooleli");
-	let deleteUrl = applicationUrl + 'delete_dataset/' + datasetCode;
+	let deleteUrl = `${applicationUrl}delete_dataset/${datasetCode}`;
 
 	$.get(deleteUrl).done(function(data) {
 		closeWaitDlg();
@@ -121,8 +122,8 @@ function deleteDataset(datasetCode) {
 };
 
 function checkAndAddDataset(addDatasetForm) {
-	let newCodeField = addDatasetForm.find('input[name="code"]');
-	let validateUrl = applicationUrl + 'validate_create_dataset/' + newCodeField.val();
+	const newCodeField = addDatasetForm.find('input[name="code"]');
+	const validateUrl = applicationUrl + 'validate_create_dataset/' + newCodeField.val();
 
 	if (!isValidDatasetCodeFormat(newCodeField.val())) {
 		showFieldError(newCodeField, "Kood tohib sisaldada ainult tähti ja numbreid.");
@@ -130,7 +131,7 @@ function checkAndAddDataset(addDatasetForm) {
 	}
 
 	$.get(validateUrl).done(function(data) {
-		let responseCode = data;
+		const responseCode = data;
 
 		if (responseCode === 'OK') {
 			openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
@@ -139,7 +140,7 @@ function checkAndAddDataset(addDatasetForm) {
 		} else if (responseCode === 'CODE_EXISTS') {
 			showFieldError(newCodeField, "Sellise koodiga sõnakogu on olemas.");
 		} else {
-			openAlertDlg("Sõnakogu lisamine ebaõnnestus, veakood: '" + responseCode + "'");
+			openAlertDlg(`Sõnakogu lisamine ebaõnnestus, veakood: ${responseCode}`);
 		}
 	}).fail(function(data) {
 		openAlertDlg(messages["common.error"]);
@@ -168,8 +169,8 @@ $.fn.saveDatasetPlugin = function() {
 		obj.on('click', function(e) {
 			e.preventDefault();
 			openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
-			const thisForm = obj.closest('form');
-			thisForm.submit();
+			const form = obj.closest('form');
+			form.submit();
 		});
 	});
 }
@@ -189,7 +190,7 @@ $.fn.datasetOriginsPlugin = function() {
 				populateDomains(domainsSelect, selectedOriginCode, previousDomainsValue);
 
 			} else {
-				domainsSelect.find("option[data-subtext='" + selectedOriginCode + "']").remove();
+				domainsSelect.find(`option[data-subtext=${selectedOriginCode}]`).remove();
 				if (obj.find(':selected').length == 0) {
 					domainsSelect.attr('disabled', true);
 				}
@@ -212,7 +213,7 @@ $.fn.editDatasetDlgPlugin = function() {
 
 		obj.on('show.bs.modal', function(e) {
 			const datasetCode = $(e.relatedTarget).data('dataset-code');
-			const fetchUrl = applicationUrl + 'dataset/' + datasetCode;
+			const fetchUrl = `${applicationUrl}dataset/${datasetCode}`;
 			const form = obj.find('form');
 
 			$.get(fetchUrl).done(function(dataset) {

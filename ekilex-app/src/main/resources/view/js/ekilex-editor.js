@@ -87,8 +87,9 @@ function initEkiEditor(ekiEditorElem) {
 	});
 
 	editorElem.on('input', function() {
-		if ($(this).html()) {
-			$(this).removeClass('is-invalid');
+		const input = $(this);
+		if (input.html()) {
+			input.removeClass('is-invalid');
 		}
 	})
 };

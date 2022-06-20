@@ -1,15 +1,15 @@
 $.fn.editTag = function() {
-	var main = $(this);
+	const main = $(this);
 	main.on('click', function(e) {
 		e.preventDefault();
-		let tagName = main.data('tag-name');
-		let tagType = main.data('tag-type');
-		let tagOrder = main.data('tag-order');
-		let setAutomatically = main.data('tag-set-automatically');
-		let removeToComplete = main.data('tag-remove-to-complete');
+		const tagName = main.data('tag-name');
+		const tagType = main.data('tag-type');
+		const tagOrder = main.data('tag-order');
+		const setAutomatically = main.data('tag-set-automatically');
+		const removeToComplete = main.data('tag-remove-to-complete');
 
-		let editTagDlg = $("#editTagDlg");
-		let editTagForm = editTagDlg.find('form');
+		const editTagDlg = $("#editTagDlg");
+		const editTagForm = editTagDlg.find('form');
 		editTagForm.find('input[name="currentTagName"]').val(tagName);
 		editTagForm.find('input[name="tagName"]').val(tagName);
 		editTagForm.find('span[name="tagType"]').text(tagType);
@@ -22,11 +22,11 @@ $.fn.editTag = function() {
 };
 
 $.fn.saveTag = function() {
-	var main = $(this);
+	const main = $(this);
 	main.on('click', function(e) {
 		e.preventDefault();
-		let tagForm = main.closest('form');
-		let isValid = checkRequiredFields(tagForm);
+		const tagForm = main.closest('form');
+		const isValid = checkRequiredFields(tagForm);
 		if (isValid) {
 			$.ajax({
 				url: tagForm.attr('action'),
@@ -48,21 +48,20 @@ $.fn.saveTag = function() {
 };
 
 $.fn.tagDeleteConfirm = function() {
-	let isUsed = $(this).data('tag-used');
+	const tag = $(this);
 	let title;
-	if (isUsed) {
+	if (tag.data('tag-used')) {
 		title = 'Ettevaatust, silt on kasutusel. Kas oled kindel, et soovid kustutada?';
 	} else {
 		title = 'Kinnita sildi kustutamine';
 	}
-	$(this).confirmation({
+	tag.confirmation({
 		btnOkLabel : 'Jah',
 		btnCancelLabel : 'Ei',
 		title : title,
 		onConfirm : function() {
 			openWaitDlg();
-			let tagName = $(this).data('tag-name');
-			deleteTag(tagName);
+			deleteTag(tag.data('tag-name'));
 		}
 	});
 };

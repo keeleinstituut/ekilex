@@ -3,11 +3,11 @@ $.fn.ekiSortable = function() {
     $(this).sortable({
       handle: '.dragHandle',
       start: function(event, ui) {
-        var origEl = ui.item;
-        var cloneEl = ui.placeholder;
+        const origEl = $(ui.item);
+        const cloneEl = $(ui.placeholder);
 
-        $(cloneEl).css({
-          width: $(origEl).width()
+        cloneEl.css({
+          width: origEl.width()
         })
         //ui-sortable-placeholder;
       },
