@@ -41,7 +41,7 @@ $.fn.saveTag = function() {
 				}
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg("Salvestamine ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 			});
 		}
 	});
@@ -76,6 +76,6 @@ function deleteTag(tagName) {
 		location.reload();
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg("Kustutamine ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 	});
 }

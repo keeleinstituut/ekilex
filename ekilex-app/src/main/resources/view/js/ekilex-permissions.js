@@ -19,7 +19,7 @@ $(function() {
 				$wpm.bindObjects();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -45,7 +45,7 @@ $(function() {
 				$wpm.bindObjects();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -71,7 +71,7 @@ $(function() {
 				$wpm.bindObjects();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -97,7 +97,7 @@ $(function() {
 				$wpm.bindObjects();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -123,7 +123,7 @@ $(function() {
 				$wpm.bindObjects();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -149,7 +149,7 @@ $(function() {
 				$wpm.bindObjects();
 			}).fail(function(response) {
 				console.log(response);
-				openAlertDlg("Andmekogu keelte päring ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 			});
 		});
 	}
@@ -173,7 +173,7 @@ $(function() {
 			}).fail(function(data) {
 				$('#' + modalId).modal('hide');
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -199,7 +199,7 @@ $(function() {
 			}).fail(function(data) {
 				$('#' + modalId).modal('hide');
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -219,7 +219,7 @@ $(function() {
 				$wpm.bindObjects();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});
@@ -236,7 +236,7 @@ function deleteDatasetPermission(datasetPermId) {
 		$wpm.bindObjects();
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg('Õiguste muutmine ebaõnnestus!');
+		openAlertDlg(messages["common.error"]);
 	}).always(function() {
 		closeWaitDlg();
 	});
@@ -246,13 +246,13 @@ function sendPermissionsEmail(userEmail) {
 	let sendPermissionsEmailUrl = applicationUrl + 'permissions/sendpermissionsemail/' + userEmail;
 	$.get(sendPermissionsEmailUrl).done(function(response) {
 		if (response === "OK") {
-			openMessageDlg("Kiri saadetud");
+			openMessageDlg(messages["permissions.email.send.success"]);
 		} else {
 			console.log(response);
-			openAlertDlg("Kirja saatmine ebaõnnestus");
+			openAlertDlg(messages["permissions.email.send.fail"]);
 		}
 	}).fail(function(response) {
 		console.log(response);
-		openAlertDlg("Kirja saatmine ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 	});
 };

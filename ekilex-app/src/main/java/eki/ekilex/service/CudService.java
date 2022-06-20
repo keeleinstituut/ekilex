@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
@@ -76,6 +79,9 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	// --- UPDATE ---
 
@@ -1618,6 +1624,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	public Response deleteMeaningRelation(Long relationId, Response response, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog;
+		Locale locale = LocaleContextHolder.getLocale();
 		List<Long> oppositeRelationIds = lookupDbService.getMeaningRelationOppositeRelationIds(relationId);
 		if (oppositeRelationIds.size() == 1) {
 			Long oppositeRelationId = oppositeRelationIds.get(0);
@@ -1626,7 +1633,8 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 			cudDbService.deleteMeaningRelation(oppositeRelationId);
 			activityLogService.createActivityLog(activityLog, oppositeRelationId, ActivityEntity.MEANING_RELATION);
 		} else if (oppositeRelationIds.size() > 1) {
-			response.setMessage("Vastaspoole seost ei kustutatud, sest leidub mitu seost.");
+			String message = messageSource.getMessage("delete.meaning.relation.multiple.opposite", new Object[0], locale);
+			response.setMessage(message);
 		}
 
 		Long meaningId = activityLogService.getOwnerId(relationId, ActivityEntity.MEANING_RELATION);

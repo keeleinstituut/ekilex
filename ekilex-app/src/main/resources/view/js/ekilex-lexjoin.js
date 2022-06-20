@@ -10,6 +10,6 @@ function initializeLexJoin() {
 function joinLexemes() {
 	let joinForm = $(this).closest('form');
 	let validateJoinUrl = applicationUrl + "validatelexjoin";
-	let failMessage = /*[[#{lexjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus';
+	let failMessage = messages["lexjoin.fail"];
 	validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage);
 };

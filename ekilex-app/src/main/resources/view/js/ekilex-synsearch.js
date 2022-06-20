@@ -374,7 +374,7 @@ function initAddSynRelationDlg(addDlg) {
 					}).fail(function(data) {
 						addDlg.modal('hide');
 						console.log(data);
-						openAlertDlg('Kandidaatide lisamine ebaõnnestus');
+						openAlertDlg(messages["common.error"]);
 					});
 				}
 			});
@@ -397,7 +397,7 @@ function initAddSynRelationDlg(addDlg) {
 
 		}).fail(function(data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		}).always(function() {
 			button.html(content);
 		});
@@ -421,12 +421,12 @@ function doPostRelationChange(actionUrl, callbackFunc) {
 
 	$.post(actionUrl).done(function(data) {
 		if (data != '{}') {
-			openAlertDlg("Andmete muutmine ebaõnnestus.");
+			openAlertDlg(messages["common.error"]);
 			console.log(data);
 		}
 		callbackFunc();
 	}).fail(function(data) {
-		openAlertDlg("Andmete muutmine ebaõnnestus.");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 }

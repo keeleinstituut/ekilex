@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +30,9 @@ public class RegisterController extends AbstractPublicPageController {
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
 	private static final String BOT_PROTECTION_CODE = "botProtectionCode";
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private EmailService emailService;
@@ -59,40 +66,47 @@ public class RegisterController extends AbstractPublicPageController {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
 
+		Locale locale = LocaleContextHolder.getLocale();
 		String activeTerms = userService.getActiveTermsValue();
 		model.addAttribute("activeTerms", activeTerms);
 
 		if (!agreement) {
+			String message = messageSource.getMessage("register.no.agreement", new Object[0], locale);
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
-			model.addAttribute("error_message", "Registreeruda saab ainult tingimustega nõustudes.");
+			model.addAttribute("error_message", message);
 			return REGISTER_PAGE;
 		}
 
 		if (!userService.isValidName(name)) {
+			String message = messageSource.getMessage("register.invalid.name", new Object[0], locale);
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
-			model.addAttribute("error_message", "Nimi ei sobi. Kontrolli, et see ei oleks liiga lühike ning koosneks ees- ja perekonnanimest. Nimi ei tohi olla läbiva suurtähega.");
+			model.addAttribute("error_message", message);
 			return REGISTER_PAGE;
 		}
 
 		if (!userService.isValidPassword(password, password2)) {
+			String message = messageSource.getMessage("register.invalid.password", new Object[0], locale);
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
-			model.addAttribute("error_message", "Parool ei sobi, kas liiga lühike või väljade väärtused on erinevad.");
+			model.addAttribute("error_message", message);
 			return REGISTER_PAGE;
 		}
 
 		if (userService.isValidUser(email)) {
 			String activationLink = userService.createUser(email, name, password);
 			if (emailService.isEnabled()) {
-				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile: " + email);
+				String message = messageSource.getMessage("register.activation.link.sent", new Object[0], locale);
+				attributes.addFlashAttribute("success_message", message + " " + email);
 			} else {
-				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveeri: " + activationLink);
+				String message = messageSource.getMessage("register.activation.link", new Object[0], locale);
+				attributes.addFlashAttribute("success_message", message + " " + email);
 			}
 			return "redirect:" + LOGIN_PAGE_URI;
 		} else {
-			model.addAttribute("error_message", "Sellise nime või e-posti aadressiga kasutaja on juba registreeritud.");
+			String message = messageSource.getMessage("register.user.exists", new Object[0], locale);
+			model.addAttribute("error_message", message);
 			return REGISTER_PAGE;
 		}
 	}
@@ -108,13 +122,17 @@ public class RegisterController extends AbstractPublicPageController {
 
 	@GetMapping(REGISTER_PAGE_URI + ACTIVATE_PAGE_URI + "/{activationKey}")
 	public String activate(@PathVariable(name = "activationKey") String activationKey, Model model, RedirectAttributes attributes) {
+
 		EkiUser ekiUser = userService.activateUser(activationKey);
+		Locale locale = LocaleContextHolder.getLocale();
 		if (ekiUser == null) {
 			String activeTerms = userService.getActiveTermsValue();
+			String message = messageSource.getMessage("register.unknown.activation.key", new Object[0], locale);
 			model.addAttribute("activeTerms", activeTerms);
-			model.addAttribute("error_message", "Tundmatu aktiveerimise võti");
+			model.addAttribute("error_message", message);
 			return REGISTER_PAGE;
 		} else {
+			String message = messageSource.getMessage("register.activation.success", new Object[0], locale);
 			attributes.addFlashAttribute("success_message", "Kasutaja on aktiveeritud, head kasutamist.");
 			attributes.addFlashAttribute("userEmail", ekiUser.getEmail());
 			return "redirect:" + LOGIN_PAGE_URI;
@@ -139,26 +157,33 @@ public class RegisterController extends AbstractPublicPageController {
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
 
+		Locale locale = LocaleContextHolder.getLocale();
+
 		if (StringUtils.isNotBlank(email)) {
 			Long userId = userService.getUserIdByEmail(email);
 			if (userId != null) {
 				String passwordRecoveryLink = userService.handleUserPasswordRecovery(userId, email);
 				if (emailService.isEnabled()) {
-					model.addAttribute("message", "Kui sellise e-postiga kasutaja eksisteerib, siis on salasõna muutmise link on saadetud e-postile: " + email);
+					String message = messageSource.getMessage("register.recovery.link.sent", new Object[0], locale);
+					model.addAttribute("message", message + " " + email);
 				} else {
-					model.addAttribute("message", "Salasõna muutmise link:  " + passwordRecoveryLink);
+					String message = messageSource.getMessage("register.recovery.link", new Object[0], locale);
+					model.addAttribute("message", message + " " + email);
 				}
 			} else {
 				if (emailService.isEnabled()) {
-					model.addAttribute("message", "Kui sellise e-postiga kasutaja eksisteerib, siis on salasõna muutmise link on saadetud e-postile: " + email);
+					String message = messageSource.getMessage("register.recovery.link.sent", new Object[0], locale);
+					model.addAttribute("message", message + " " + email);
 				} else {
-					model.addAttribute("warning", "Salasõna lähtestamine ebaõnnestus");
+					String message = messageSource.getMessage("register.recovery.failed", new Object[0], locale);
+					model.addAttribute("warning", message);
 				}
 			}
 			return PASSWORD_RECOVERY_PAGE;
 		}
 
-		model.addAttribute("warning", "Salasõna lähtestamine ebaõnnestus");
+		String message = messageSource.getMessage("register.recovery.failed", new Object[0], locale);
+		model.addAttribute("warning", message);
 		return PASSWORD_RECOVERY_PAGE;
 	}
 
@@ -166,8 +191,10 @@ public class RegisterController extends AbstractPublicPageController {
 	public String setPasswordPage(@PathVariable(name = "recoveryKey") String recoveryKey, Model model) {
 
 		String userEmail = userService.getUserEmailByRecoveryKey(recoveryKey);
+		Locale locale = LocaleContextHolder.getLocale();
 		if (StringUtils.isBlank(userEmail)) {
-			model.addAttribute("warning", "Tundmatu salasõna lähtestamise võti.");
+			String message = messageSource.getMessage("register.unknown.recovery.key", new Object[0], locale);
+			model.addAttribute("warning", message);
 			return PASSWORD_RECOVERY_PAGE;
 		}
 		model.addAttribute("userEmail", userEmail);
@@ -183,19 +210,23 @@ public class RegisterController extends AbstractPublicPageController {
 			Model model,
 			RedirectAttributes attributes) {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		if (!userService.isValidPassword(password, password2)) {
-			model.addAttribute("error", "Parool ei sobi, kas liiga lühike või väljade väärtused on erinevad.");
+			String message = messageSource.getMessage("register.invalid.password", new Object[0], locale);
+			model.addAttribute("error", message);
 			model.addAttribute("recoveryKey", recoveryKey);
 			return PASSWORD_SET_PAGE;
 		}
 
 		String userEmail = userService.getUserEmailByRecoveryKey(recoveryKey);
 		if (StringUtils.isBlank(userEmail)) {
-			model.addAttribute("warning", "Tundmatu salasõna lähtestamise võti.");
+			String message = messageSource.getMessage("register.unknown.recovery.key", new Object[0], locale);
+			model.addAttribute("warning", message);
 			return PASSWORD_RECOVERY_PAGE;
 		}
 		userService.setUserPassword(userEmail, password);
-		attributes.addFlashAttribute("success_message", "Parool vahetatud. Logige sisse uue parooliga.");
+		String message = messageSource.getMessage("register.recovery.success", new Object[0], locale);
+		attributes.addFlashAttribute("success_message", message);
 		attributes.addFlashAttribute("userEmail", userEmail);
 		return "redirect:" + LOGIN_PAGE_URI;
 	}

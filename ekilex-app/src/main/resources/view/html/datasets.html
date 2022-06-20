@@ -10,9 +10,9 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Sõnakogude haldus</h5>
+        <h5 class="card-title" th:text="#{datasets.title}">Sõnakogude haldus</h5>
         <div class="ml-auto pull-right">
-          <button class="btn btn-primary" title="Lisa uus sõnakogu" data-toggle="modal" data-target="#addDatasetDlg" th:text="#{datasets.add}"></button>
+          <button class="btn btn-primary" th:title="#{datasets.add.new.dataset}" data-toggle="modal" data-target="#addDatasetDlg" th:text="#{common.add.new}"></button>
         </div>
       </div>
       <div class="card-body">
@@ -20,13 +20,13 @@
           <div id="datasetsArea" th:with="isAdmin=${#vars.userRoleData.admin}">
             <table class="table table-striped m-0 p-0 table-hover">
               <tr>
-                <th class="m-1 p-1" style="width: 5%">Kood</th>
-                <th class="m-1 p-1" style="width: 20%">Nimi</th>
-                <th class="m-1 p-1" style="width: 50%">Kirjeldus ja kontaktid (Sõnaveebis nähtav)</th>
-                <th class="m-1 p-1" style="width: 8%">Lisainfo ja kontaktid (Sõnaveebis mitteavalik)</th>
-                <th class="m-1 p-1 text-center" style="width: 4%">Nähtav</th>
-                <th class="m-1 p-1 text-center" style="width: 4%">Avalik</th>
-                <th class="m-1 p-1 text-center" style="width: 4%">Peremees</th>
+                <th class="m-1 p-1" style="width: 5%" th:text="#{datasets.dataset.code}">Kood</th>
+                <th class="m-1 p-1" style="width: 20%" th:text="#{datasets.dataset.name}">Nimi</th>
+                <th class="m-1 p-1" style="width: 50%" th:text="#{datasets.dataset.description}">Kirjeldus ja kontaktid (Sõnaveebis nähtav)</th>
+                <th class="m-1 p-1" style="width: 8%" th:text="#{datasets.dataset.contact}">Lisainfo ja kontaktid (Sõnaveebis mitteavalik)</th>
+                <th class="m-1 p-1 text-center" style="width: 4%" th:text="#{datasets.dataset.is.visible}">Nähtav</th>
+                <th class="m-1 p-1 text-center" style="width: 4%" th:text="#{datasets.dataset.is.public}">Avalik</th>
+                <th class="m-1 p-1 text-center" style="width: 4%" th:text="#{datasets.dataset.is.superior}">Peremees</th>
                 <th class="m-1 p-1" style="width: 4%"></th>
               </tr>
               <th:block th:each="dataset : ${datasets}">
@@ -46,21 +46,22 @@
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span class="text-secondary fa" th:classappend="${dataset.visible ? 'fa-check-square-o' : 'fa-square-o'}"
-                          th:title="|#{datasets.dataset.is.visible} : ${dataset.visible ? 'Jah' : 'Ei'}|">
+                          th:title="|#{datasets.dataset.is.visible}: | + (${dataset.visible} ? #{common.yes} : #{common.no})">
                     </span>
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span class="text-secondary fa" th:classappend="${dataset.public ? 'fa-check-square-o' : 'fa-square-o'}"
-                          th:title="|#{datasets.dataset.is.public} : ${dataset.public ? 'Jah' : 'Ei'}|">
+                          th:title="|#{datasets.dataset.is.public}: | + (${dataset.public} ? #{common.yes} : #{common.no})">
                     </span>
                   </td>
                   <td class="m-1 p-1 text-center">
                     <span class="text-secondary fa" th:classappend="${dataset.superior ? 'fa-check-square-o' : 'fa-square-o'}"
-                          th:title="|#{datasets.dataset.is.superior} : ${dataset.superior ? 'Jah' : 'Ei'}|"></span>
+                          th:title="|#{datasets.dataset.is.superior}: | + (${dataset.superior} ? #{common.yes} : #{common.no})"></span>
                   </td>
                   <td class="m-1 p-1">
                     <th:block th:if="${isAdmin || #lists.contains(ownedDatasetCodes, dataset.code)}">
-                      <button type="button" class="btn badge badge-primary" th:data-dataset-code="${dataset.code}" title="Muuda" data-toggle="modal" data-target="#editDatasetDlg">
+                      <button type="button" class="btn badge badge-primary" th:data-dataset-code="${dataset.code}" th:title="#{common.edit}"
+                              data-toggle="modal" data-target="#editDatasetDlg">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-warning delete-dataset-confirm"

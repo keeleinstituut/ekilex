@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{meaning.join.title}">EKILEX tähenduste ühendamine</title>
+<title th:text="#{meaningjoin.title}">EKILEX tähenduste ühendamine</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,12 +10,12 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary" th:href="@{'/meaningback/' + ${targetMeaningId}}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{'/meaningback/' + ${targetMeaningId}}" th:text="#{common.back}">Tagasi</a>
       </p>
     </div>
     <div class="card shadow mt-4" id="details-area">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{meaning.join.title}">Tähenduste ühendamine</h5>
+        <h5 class="card-title" th:text="#{meaningjoin.title}">Tähenduste ühendamine</h5>
       </div>
       <div class="card-body">
         <div style="width: 95%" class="border rounded p-2">
@@ -24,7 +24,7 @@
       </div>
       <div class="card-body" th:if="${not #lists.isEmpty(validationMessages)}">
         <div class="alert alert-danger w-50" role="alert">
-          <strong>Tähenduste ühendamine ebaõnnestus</strong>
+          <strong th:text="#{meaningjoin.fail}">Tähenduste ühendamine ebaõnnestus</strong>
           <ul>
             <li th:each="validationMessage : ${validationMessages}">
               <span th:text="${validationMessage}"></span>
@@ -38,12 +38,12 @@
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsing</label>
+                  <label class="col-auto col-form-label" th:text="#{meaningjoin.search}">Otsing</label>
                   <div class="col-5">
-                    <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
+                    <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" th:placeholder="#{meaningjoin.search.placeholder}">
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-primary">Otsi</button>
+                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
                   </div>
                 </div>
               </div>
@@ -51,14 +51,15 @@
           </form>
         </div>
         <div class="card-body" th:if="${(searchFilter != null) && #lists.isEmpty(sourceMeanings)}">
-          <span th:text="#{lexjoin.not.found}">Not found.</span>
+          <span th:text="#{meaningjoin.not.found}">Not found.</span>
         </div>
         <div class="card-body" th:if="${not #lists.isEmpty(sourceMeanings)}">
           <form th:action="@{/meaningjoin}" method="post">
             <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
             <div class="row mb-4">
               <div class="col">
-                <button type="button" class="btn btn-primary" id="joinMeaningsBtn" data-toggle="join-confirm" data-placement="right" disabled>Ühenda valitud tähendused</button>
+                <button type="button" class="btn btn-primary" id="joinMeaningsBtn" data-toggle="join-confirm" data-placement="right" disabled
+                        th:text="#{meaningjoin.join}">Ühenda valitud tähendused</button>
               </div>
             </div>
             <div style="width: 95%" class="border border-dark rounded mb-2 p-2" name="meaning" th:each="sourceMeaning : ${sourceMeanings}">
@@ -74,9 +75,9 @@
   <script th:inline="javascript">
   	initializeMeaningJoin();
   	$('[data-toggle=join-confirm]').confirmation({
-  		btnOkLabel : 'Jah',
-  		btnCancelLabel : 'Ei',
-  		title : 'Kas olete kindel, et soovite tähendused ühendada?',
+      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+      btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+      title : /*[[#{meaningjoin.confirm.join}]]*/'Kas olete kindel?',
   		onConfirm : joinMeanings
   	});
   </script>

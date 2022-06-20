@@ -67,7 +67,7 @@
             <div class="row">
               <div class="col">
                 <button type="button" class="btn badge badge-secondary float-right"
-                        title="Lisa andmeid"
+                        th:title="#{term.add.data}"
                         data-toggle="modal"
                         th:data-target="${'#addLimTermMeaningDataDlg_' + meaningId}"
                         sec:authorize="#vars.meaning.crudGrant">
@@ -145,15 +145,15 @@
       <script th:replace="common :: confirmations"></script>
       <script>
         $('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
-          btnOkLabel: 'Jah',
-          btnCancelLabel: 'Ei',
-          title: 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm: deleteMeaningAndLexemesAndWords
         });
         $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-          btnOkLabel: 'Jah',
-          btnCancelLabel: 'Ei',
-          title: 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm: deleteLexemeAndWordAndMeaning
         });
       </script>

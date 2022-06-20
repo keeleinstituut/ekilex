@@ -31,7 +31,7 @@ function initEkiEditorDlg(editDlg) {
 			content = content.replace("<br>", "").replaceAll("&nbsp;", " ").replaceAll('class="eki-selected"', '');
 			editDlg.find('[name=value]').val(content);
 			modifyFld.removeClass('is-invalid');
-			submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.');
+			submitDialog(e, editDlg, messages["common.data.update.error"]);
 		} else {
 			e.preventDefault();
 			modifyFld.addClass('is-invalid');

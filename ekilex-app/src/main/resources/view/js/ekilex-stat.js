@@ -34,7 +34,7 @@ $.fn.statisticsFormPlugin = function() {
 				$('#wwSearchStat').replaceWith(statFragment);
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg('Viga!');
+				openAlertDlg(messages["common.error"]);
 			}).always(function() {
 				closeWaitDlg();
 			});

@@ -25,11 +25,11 @@ function deleteClassifier() {
 			location.reload();
 		} else {
 			console.log(response);
-			openAlertDlg("Kustutamine ebaõnnestus. Kontrolli, kas klassifikaatorit on kusagil kasutatud.");
+			openAlertDlg(messages["common.error"]);
 		}
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg("Kustutamine ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 	});
 }
 
@@ -155,7 +155,7 @@ $.fn.saveClassifierChangesPlugin = function() {
 				location.reload();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg("Salvestamine ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 			});
 		});
 	});
@@ -186,7 +186,7 @@ $.fn.createClassifierPlugin = function() {
 				}
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg("Salvestamine ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 			});
 		});
 	});

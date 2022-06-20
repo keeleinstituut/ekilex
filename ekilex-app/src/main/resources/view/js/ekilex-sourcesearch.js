@@ -49,7 +49,7 @@ function validateAndSubmitAndUpdateSourcePropertyForm(dlg) {
 			$wpm.bindObjects();
 		}).fail(function (data) {
 			console.log(data);
-			openAlertDlg('Salvestamine ebaõnnestus');
+			openAlertDlg(messages["common.error"]);
 		});
 	});
 };
@@ -63,7 +63,7 @@ function deleteSourceProperty() {
 		initDeleteConfirmations();
 	}).fail(function (data) {
 		console.log(data);
-		openAlertDlg('Kustutamine ebaõnnestus');
+		openAlertDlg(messages["common.error"]);
 	});
 };
 
@@ -96,7 +96,7 @@ function submitAndUpdateSourceType(selectDlg) {
 		$wpm.bindObjects();
 	}).fail(function (data) {
 		console.log(data);
-		openAlertDlg('Muutmine ebaõnnestus');
+		openAlertDlg(messages["common.error"]);
 	});
 };
 
@@ -171,7 +171,7 @@ function executeValidateSourceDelete() {
 			openAlertDlg("Allika eemaldamine ebaõnnestus.");
 		}
 	}).fail(function (data) {
-		openAlertDlg("Allika eemaldamine ebaõnnestus.");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 };
@@ -180,7 +180,7 @@ function deleteSourceAndUpdateSearch(deleteUrl) {
 	$.get(deleteUrl).done(function () {
 		window.location.reload();
 	}).fail(function (data) {
-		openAlertDlg("Allika eemaldamine ebaõnnestus.");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 };
@@ -200,7 +200,7 @@ function addSource(addSourceForm) {
 		window.location = applicationUrl + 'sourcesearch/' + sourceId;
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg('Allika lisamine ebaõnnestus');
+		openAlertDlg(messages["common.error"]);
 	});
 }
 
@@ -236,7 +236,7 @@ function addSourceAndSourceLink(addSourceForm) {
 		successCallbackFunc();
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg('Allika lisamine ebaõnnestus');
+		openAlertDlg(messages["common.error"]);
 	});
 }
 

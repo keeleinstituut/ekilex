@@ -57,7 +57,7 @@
             </span>
           </div>
           <div class="mt-2" th:if="${not #lists.isEmpty(wordCandidate.definitions)}">
-            <span class="lbl" th:text="#{wordjoin.definitions}">Seletused</span>
+            <span class="lbl" th:text="#{lex.definition}">Seletus</span>
             <div th:each="definition : ${wordCandidate.definitions}" th:utext="${definition}"></div>
           </div>
         </div>

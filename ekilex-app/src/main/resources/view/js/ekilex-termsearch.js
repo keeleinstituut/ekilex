@@ -96,7 +96,7 @@ $.fn.approveMeaning = function() {
 			loadDetails(meaningId, 'replace', meaningId);			
 		}).fail(function(data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		});
 	});
 }
@@ -115,7 +115,7 @@ $.fn.queueTermSearchResults = function() {
 			$("#queueTermSearchResultsMsg").show();
 		}).fail(function(data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		});
 	});
 }
@@ -149,7 +149,7 @@ function dublicateMeaning() {
 			openAlertDlg(response.message);
 		}
 	}).fail(function(data) {
-		openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 }

@@ -24,6 +24,19 @@
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var applicationBaseUrl = /*[[${appData.baseUrl}]]*/'/';
+	const messages = {
+		'common.error': /*[[#{common.error}]]*/'Viga!',
+		'common.data.add.error': /*[[#{common.data.add.error}]]*/'Andmete muutmine ebaõnnestus.',
+		'common.data.update.error': /*[[#{common.data.update.error}]]*/'Andmete muutmine ebaõnnestus.',
+		'common.save.error': /*[[#{common.save.errorr}]]*/'Salvestamine ebaõnnestus',
+		'common.yes': /*[[#{common.yes}]]*/'Jah',
+		'common.no': /*[[#{common.no}]]*/'Ei',
+		'common.confirm.delete': /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+		'common.search.add.parameter': /*[[#{common.search.add.parameter}]]*/'Palun täiendage otsingu parameetrit.',
+		'permissions.email.send.success': /*[[#{permissions.email.send.success}]]*/'Kiri saadetud',
+		'permissions.email.send.fail': /*[[#{permissions.email.send.fail}]]*/'Kirja saatmine ebaõnnestus',
+		'lexjoin.fail': /*[[#{lexjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus',
+	};
 </script>
 </head>
 <body>
@@ -106,7 +119,7 @@
         <li class="nav-item">
           <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''"
             id="simpleSearchModeBtn"
-            th:text="#{'search.mode.SIMPLE'}"
+            th:text="#{common.search.mode.simple}"
             data-toggle="tab"
             href="#simple_search_filter"
             role="tab"
@@ -117,7 +130,7 @@
         <li class="nav-item">
           <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active':''"
             id="detailSearchModeBtn"
-            th:text="#{'search.mode.DETAIL'}"
+            th:text="#{common.search.mode.detail}"
             data-toggle="tab"
             href="#detail_search_filter"
             role="tab"
@@ -128,16 +141,17 @@
       </ul>
       <th:block th:if="${activeItem == 'syn'}">
         <button class="btn btn-primary mr-3" type="button" data-toggle="modal" data-target="#synTutorialDlg">
-          <i class="fa fa-question-circle-o" aria-hidden="true"></i> Kasutusjuhend
+          <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+          <span th:text="#{common.user.manual}">Kasutusjuhend</span>
         </button>
       </th:block>
       <div th:if="${activeItem != 'limterm'}" class="navbar-nav" th:classappend="${searchMode == null ? 'ml-auto' : ''}">
         <th:block sec:authorize="isAuthenticated()">
           <div class="btn mr-3" style="font-size: 16px">
-            <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" title="Kasutajatugi">
+            <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" th:title="#{common.user.support}">
               <i class="fa fa-fw fa-envelope" aria-hidden="true"></i>
             </a>
-            <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" title="Kasutusjuhend">
+            <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" th:title="#{common.user.manual}">
               <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
             </a>
           </div>
@@ -151,13 +165,13 @@
                   </small>
                 </th:block>
                 <th:block th:unless="${userRoleData.roleSelected}">
-                  <small class="w-100 text-truncate user-menu-active-role">Aktiivne roll valimata</small>
+                  <small class="w-100 text-truncate user-menu-active-role" th:text="#{common.active.role.unseleted}">Aktiivne roll valimata</small>
                 </th:block>
               </span>
             </button>
             <div class="dropdown-menu dropdown-menu-right user-menu-content">
               <div>
-                <div class="dropdown-header pb-0">Aktiivne roll</div>
+                <div class="dropdown-header pb-0" th:text="#{common.active.role}">Aktiivne roll</div>
                 <div class="px-3 d-flex flex-row">
                   <th:block th:if="${userRoleData.roleSelected}" th:with="selectedRole = ${userRoleData.userRole}">
                     <span class="pr-3"
@@ -166,19 +180,21 @@
                     </span>
                   </th:block>
                   <th:block th:unless="${userRoleData.roleSelected}">
-                    <span class="pr-3 text-danger">Aktiivne roll valimata</span>
+                    <span class="pr-3 text-danger" th:text="#{common.active.role.unseleted}">Aktiivne roll valimata</span>
                   </th:block>
                   <a th:href="@{/home}" class="text-nowrap">
-                    <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    <span th:text="#{common.switch.role}">Vaheta</span>
                   </a>
                 </div>
               </div>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" th:href="@{/userprofile}">
-                Kasutaja profiili haldus <i class="fa fa-user" aria-hidden="true"></i>
+                <span th:text="#{common.user.profile}">Kasutaja profiili haldus</span>
+                <i class="fa fa-user" aria-hidden="true"></i>
               </a>
               <a class="dropdown-item" th:href="@{/dologout}">
-                Logi välja
+                <span th:text="#{common.log.out}">Logi välja</span>
                 <i class="fa fa-sign-out" aria-hidden="true"></i>
               </a>
             </div>
@@ -187,10 +203,10 @@
       </div>
       <div th:if="${activeItem == 'limterm'}" class="navbar-nav ml-auto">
         <div class="btn mr-3" style="font-size: 16px">
-          <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" title="Kasutajatugi">
+          <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" th:title="#{common.user.support}">
             <i class="fa fa-fw fa-envelope" aria-hidden="true"></i>
           </a>
-          <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" title="Kasutusjuhend">
+          <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" th:title="#{common.user.manual}">
             <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
           </a>
         </div>
@@ -202,7 +218,7 @@
           </button>
           <div class="dropdown-menu dropdown-menu-right user-menu-content">
             <a class="dropdown-item" th:href="@{/dologout}">
-              Logi välja
+              <span th:text="#{common.log.out}">Logi välja</span>
               <i class="fa fa-sign-out" aria-hidden="true"></i>
             </a>
           </div>
@@ -212,12 +228,12 @@
   </th:block>
   <th:block th:fragment="ordering_buttons(itemIter)">
     <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left"
-          title="Muuda järjestust"
+          th:title="#{common.update.ordering}"
           data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>
     </button>
     <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right"
-          title="Muuda järjestust"
+            th:title="#{common.update.ordering}"
           data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-down" aria-hidden="true"></i>
     </button>
@@ -246,7 +262,7 @@
     <div id="noSourcesFoundDiv" th:if="${#lists.isEmpty(sources)}">
       <span th:text="#{source.search.not.found}">Nothing found</span>
       <button class="btn btn-primary ml-4"
-              title="Lisa uus allikas"
+              th:title="#{source.add.new}"
               data-plugin="addSourceAndSourceLinkPlugin"
               sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">Lisa uus allikas
       </button>

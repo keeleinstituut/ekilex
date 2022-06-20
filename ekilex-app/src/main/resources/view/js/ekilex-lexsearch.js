@@ -195,7 +195,7 @@ function initializeSearch(type) {
 						openAlertDlg(response.message);
 					}
 				}).fail(function(data) {
-					openAlertDlg("Tähenduse dubleerimine ebaõnnestus");
+					openAlertDlg(messages["common.error"]);
 					console.log(data);
 				});
 			});
@@ -245,7 +245,7 @@ function initializeSearch(type) {
 					successCallbackFunc();
 				}).fail(function(data) {
 					console.log(data);
-					openAlertDlg("Vaste dubleerimine ebaõnnestus");
+					openAlertDlg(messages["common.error"]);
 				});
 			})
 		});
@@ -562,7 +562,7 @@ function initEditMeaningWordAndLexemeWeightDlg(dlg) {
 		if (wordValueEditFld.html()) {
 			wordValueEditFld.removeClass('is-invalid');
 			wordValueInput.val(wordValueEditFld.html());
-			submitDialog(e, dlg, 'Andmete muutmine ebaõnnestus.');
+			submitDialog(e, dlg, messages["common.data.update.error"]);
 		} else {
 			wordValueEditFld.addClass('is-invalid');
 		}

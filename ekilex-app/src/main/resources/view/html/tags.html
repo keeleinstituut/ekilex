@@ -40,17 +40,17 @@
                 </td>
                 <td class="m-1 p-1 text-center">
                   <span class="text-secondary fa" th:classappend="${tag.setAutomatically ? 'fa-check-square-o' : 'fa-square-o'}"
-                        th:title="|#{tag.remove.to.complete} : ${tag.setAutomatically ? 'Jah' : 'Ei'}|">
+                        th:title="|#{tag.set.automatically}: | + (${tag.setAutomatically} ? #{common.yes} : #{common.no})">
                   </span>
                 </td>
                 <td class="m-1 p-1 text-center">
                   <span class="text-secondary fa" th:classappend="${tag.removeToComplete ? 'fa-check-square-o' : 'fa-square-o'}"
-                        th:title="|#{tag.remove.to.complete} : ${tag.removeToComplete ? 'Jah' : 'Ei'}|">
+                        th:title="|#{tag.remove.to.complete}: | + (${tag.remove.to.complete} ? #{common.yes} : #{common.no})">
                   </span>
                 </td>
                 <td class="m-1 p-1 text-center">
                   <span class="text-secondary fa" th:classappend="${tag.used ? 'fa-check-square-o' : 'fa-square-o'}"
-                        th:title="|#{tag.used} : ${tag.used ? 'Jah' : 'Ei'}|">
+                        th:title="|#{tag.used}: | + (${tag.used} ? #{common.yes} : #{common.no})">
                   </span>
                 </td>
                 <td class="m-1 p-1">

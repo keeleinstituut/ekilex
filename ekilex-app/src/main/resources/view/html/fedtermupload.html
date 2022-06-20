@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>FedTerm liidestus</title>
+<title th:text="#{fedterm.upload.title}">FedTerm liidestus</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -11,13 +11,13 @@
     <th:block th:if="${queueStats}">
       <div class="card mt-4 shadow">
         <div class="card-header">
-          <h5 class="card-title">Taustategevuste jada</h5>
+          <h5 class="card-title" th:text="#{fedterm.upload.queue}">Taustategevuste jada</h5>
         </div>
         <div class="card-body">
           <table class="table table-striped m-0 p-0">
             <tr>
-              <th class="m-1 p-1">Jada nimi</th>
-              <th class="m-1 p-1">Sammude arv</th>
+              <th class="m-1 p-1" th:text="#{fedterm.upload.queue.name}">Jada nimi</th>
+              <th class="m-1 p-1" th:text="#{fedterm.upload.queue.step.count}">Sammude arv</th>
             </tr>
             <th:block th:each="queueStat : ${queueStats}">
               <tr>
@@ -35,19 +35,19 @@
     </th:block>
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">FedTerm liidestus</h5>
+        <h5 class="card-title" th:text="#{fedterm.upload.title}">FedTerm liidestus</h5>
       </div>
       <div class="card-body">
-        <div class="alert alert-warning" role="alert" th:if="${!isFedTermAccessEnabled}">FedTerm liidestus puudub</div>
+        <div class="alert alert-warning" role="alert" th:if="${!isFedTermAccessEnabled}" th:text="#{fedterm.access.disabled}">FedTerm liidestus puudub</div>
         <th:block th:with="isAdmin=${#vars.userRoleData.admin}">
           <table class="table table-striped m-0 p-0 table-hover">
             <tr>
-              <th class="m-1 p-1" style="width: 5%">Kood</th>
-              <th class="m-1 p-1" style="width: 20%">Nimi</th>
-              <th class="m-1 p-1" style="width: 30%">Kirjeldus</th>
-              <th class="m-1 p-1" style="width: 10%">Kontaktid</th>
-              <th class="m-1 p-1" style="width: 5%">Domain ID</th>
-              <th class="m-1 p-1" style="width: 5%">Collection ID</th>
+              <th class="m-1 p-1" style="width: 5%" th:text="#{fedterm.code}">Kood</th>
+              <th class="m-1 p-1" style="width: 20%" th:text="#{fedterm.name}">Nimi</th>
+              <th class="m-1 p-1" style="width: 30%" th:text="#{fedterm.description}">Kirjeldus</th>
+              <th class="m-1 p-1" style="width: 10%" th:text="#{fedterm.contacts}">Kontaktid</th>
+              <th class="m-1 p-1" style="width: 5%" th:text="#{fedterm.domain.id}">Domain ID</th>
+              <th class="m-1 p-1" style="width: 5%" th:text="#{fedterm.collection.id}">Collection ID</th>
               <th class="m-1 p-1" style="width: 4%"></th>
             </tr>
             <th:block th:each="dataset : ${datasets}"
@@ -81,7 +81,7 @@
                   <th:block th:if="${isAdmin && dataset.public && isFedTermAccessEnabled && fedTermDomainExists}">
                     <form th:action="@{/fedtermupload}" method="post">
                       <input type="hidden" name="datasetCode" th:value="${dataset.code}">
-                      <button type="submit" class="btn badge badge-primary" title="Saada">
+                      <button type="submit" class="btn badge badge-primary" th:title="#{fedterm.send}">
                         <i class="fa fa-upload" aria-hidden="true"></i>
                       </button>
                     </form>

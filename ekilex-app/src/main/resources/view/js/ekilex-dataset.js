@@ -54,7 +54,7 @@ function populateDomains(domainsSelect, originCode, previousDomainsValue) {
 		domainsSelect.selectpicker('refresh');
 	}).fail(function(response) {
 		console.log(response);
-		openAlertDlg("Päritolu valdkondade päring ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 	});
 };
 
@@ -111,11 +111,11 @@ function deleteDataset(datasetCode) {
 		if (data === 'OK') {
 			window.location = applicationUrl + 'datasets';
 		} else {
-			openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
+			openAlertDlg(messages["common.error"]);
 		}
 	}).fail(function(data) {
 		closeWaitDlg();
-		openAlertDlg("Sõnakogu eemaldamine ebaõnnestus.");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 };
@@ -142,7 +142,7 @@ function checkAndAddDataset(addDatasetForm) {
 			openAlertDlg("Sõnakogu lisamine ebaõnnestus, veakood: '" + responseCode + "'");
 		}
 	}).fail(function(data) {
-		openAlertDlg("Sõnakogu lisamine ebaõnnestus.");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 };
@@ -229,7 +229,7 @@ $.fn.editDatasetDlgPlugin = function() {
 				markClassifierDomains(form, dataset);
 
 			}).fail(function(data) {
-				openAlertDlg("Sõnakogu andmete päring ebaõnnestus.");
+				openAlertDlg(messages["common.error"]);
 				console.log(data);
 			});
 		});

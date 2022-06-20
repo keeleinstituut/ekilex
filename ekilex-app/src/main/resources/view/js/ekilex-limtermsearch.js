@@ -14,7 +14,7 @@ $.fn.duplicateLimTermMeaningPlugin = function() {
 					openAlertDlg(response.message);
 				}
 			}).fail(function(data) {
-				openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 				console.log(data);
 			});
 		});

@@ -277,7 +277,7 @@ $.fn.manualEventOnUpdateCheck = function () {
 			$wpm.bindObjects();
 		}).fail(function (data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		}).always(function () {
 			manualEventOnUpdateCheckCheckboxValueUpdate();
 			closeWaitDlg();
@@ -380,7 +380,7 @@ function initCondition(conditionElement) {
 function validateSearchFilter(searchFilter) {
 	if (searchFilter === '*') {
 		closeWaitDlg();
-		openMessageDlg('Palun täiendage otsingu parameetrit.');
+		openMessageDlg(messages["common.search.add.parameter"]);
 		return false;
 	}
 	return true;

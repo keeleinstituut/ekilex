@@ -1,11 +1,14 @@
 package eki.ekilex.web.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +52,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	@Autowired
 	private ValueUtil valueUtil;
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@GetMapping(SOURCE_NAME_SEARCH_URI + "/{nameSearchFilter}")
 	@ResponseBody
@@ -180,13 +186,15 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	public Response validateSourceDelete(@PathVariable("sourceId") Long sourceId) {
 
 		logger.debug("Validating source delete, source id: {}", sourceId);
+		Locale locale = LocaleContextHolder.getLocale();
 
 		Response response = new Response();
 		if (sourceService.validateSourceDelete(sourceId)) {
 			response.setStatus(ResponseStatus.OK);
 		} else {
+			String message = messageSource.getMessage("delete.source.validation.fail", new Object[0], locale);
 			response.setStatus(ResponseStatus.INVALID);
-			response.setMessage("Allikat ei saa kustutada, sest sellele on viidatud.");
+			response.setMessage(message);
 		}
 		return response;
 	}

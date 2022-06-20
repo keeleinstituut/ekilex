@@ -8,29 +8,28 @@
     <div class="card mt-4 shadow">
       <div class="card-header">
         <h5 class="card-title">
-          Tere tulemast,
-          <span th:text="${#authentication.name}"></span>!
+          <span th:text="#{apply.welcome(${#authentication.name})}"></span>
         </h5>
       </div>
       <div class="card-body">
         <div class="alert alert-info" role="alert" th:if="${applicationNotSubmitted}">
-          <div>See on EKI sõnastiku- ja terminibaasisüsteem Ekilex. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust.</div>
+          <div th:text="#{apply.ekilex.application.title}">See on EKI sõnastiku- ja terminibaasisüsteem Ekilex. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust.</div>
         </div>
         <div class="alert alert-info" role="alert" th:if="${applicationReviewPending}">
-          <span>Sinu Ekilexi sõnakogude õiguste taotlus on vastu võetud ning ootab rahuldamist. Seni saad Ekilexi kasutada vaatamisõigusega</span>
+          <span th:text="#{apply.application.pending}">Sinu Ekilexi sõnakogude õiguste taotlus on vastu võetud ning ootab rahuldamist. Seni saad Ekilexi kasutada vaatamisõigusega</span>
           <form th:action="@{/apply_read}" method="post">
-            <button type="submit" class="btn btn-primary ml-3 mt-2">Hakka Ekilexi kasutama</button>
+            <button type="submit" class="btn btn-primary ml-3 mt-2" th:text="#{apply.start.using}">Hakka Ekilexi kasutama</button>
           </form>
         </div>
         <div class="alert alert-warning" role="alert" th:if="${applicationDenied}">
-          <div>Sinu Ekilexi kasutamise taotlus lükati tagasi.</div>
+          <div th:text="#{apply.denied}">Sinu Ekilexi kasutamise taotlus lükati tagasi.</div>
         </div>
         <div class="container float-left w-50" th:if="${applicationNotSubmitted}">
           <form th:action="@{/apply}" method="post">
             <div class="row no-gutters">
               <span class="col-10 mt-3 ml-5">
                 <a class="btn btn-outline-secondary" data-toggle="collapse" href="#datasetsSelection" role="button" aria-expanded="false" aria-controls="datasetsSelection">
-                  <span>Soovin sõnakogude muutmisõigust</span>
+                  <span th:text="#{apply.crud}">Soovin sõnakogude muutmisõigust</span>
                 </a>
               </span>
             </div>
@@ -48,7 +47,7 @@
             <div class="row no-gutters">
               <span class="col-10 mt-3 ml-5">
                 <a class="btn btn-outline-secondary" data-toggle="collapse" href="#commentSelection" role="button" aria-expanded="false" aria-controls="commentSelection">
-                  <span>Soovin põhjendada taotlust</span>
+                  <span th:text="#{apply.comment}">Soovin põhjendada taotlust</span>
                 </a>
               </span>
             </div>
@@ -59,14 +58,14 @@
             </div>
             <div class="row">
               <div class="col mt-3 ml-5">
-                <button type="submit" class="btn btn-primary">Saada taotlus</button>
+                <button type="submit" class="btn btn-primary" th:text="#{apply.submit.application}">Saada taotlus</button>
               </div>
             </div>
           </form>
         </div>
         <div class="container float-left w-50" th:if="${applicationReviewPending && not #lists.isEmpty(userApplications)}">
           <div>
-            <b>Sinu sõnakogude muutmisõiguse taotlused</b>
+            <b th:text="#{apply.user.applications}">Sinu sõnakogude muutmisõiguse taotlused</b>
           </div>
           <th:block th:each="userApplication,userApplicationIter : ${userApplications}">
             <div class="row no-gutters mt-3">
@@ -87,13 +86,13 @@
     <div class="card mt-4 shadow" th:if="${applicationNotSubmitted}">
       <div class="card-body">
         <div class="alert alert-info" role="alert">
-          <div>Kui soovid Ekilexi vaatamisõigust ja katsebaasi muutmisõigust:</div>
+          <div th:text="#{apply.read}">Kui soovid Ekilexi vaatamisõigust ja katsebaasi muutmisõigust:</div>
         </div>
         <div class="container float-left w-50">
           <form th:action="@{/apply_read}" method="post">
             <div class="row">
               <div class="col mt-3 ml-5">
-                <button type="submit" class="btn btn-primary">Hakka Ekilexi kasutama</button>
+                <button type="submit" class="btn btn-primary" th:text="#{apply.start.using}">Hakka Ekilexi kasutama</button>
               </div>
             </div>
           </form>
@@ -103,13 +102,13 @@
     <div class="card mt-4 shadow" th:if="${applicationNotSubmitted || applicationReviewPending}">
       <div class="card-body">
         <div class="alert alert-info" role="alert">
-          <div>Kui soovid hakata võrgustiku kasutajaks:</div>
+          <div th:text="#{apply.limited}">Kui soovid hakata võrgustiku kasutajaks:</div>
         </div>
         <div class="container float-left w-50">
           <form th:action="@{/apply_limited}" method="post">
             <div class="row">
               <div class="col mt-3 ml-5">
-                <button type="submit" class="btn btn-primary">Liitu võrgustikuga</button>
+                <button type="submit" class="btn btn-primary" th:text="#{apply.join.limited}">Liitu võrgustikuga</button>
               </div>
             </div>
           </form>

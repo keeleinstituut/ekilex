@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,6 +72,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 	@Autowired
 	private CudService cudService;
 
+	@Autowired
+	private MessageSource messageSource;
+
 	@RequestMapping(MEANING_JOIN_URI + "/{targetMeaningId}")
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,
 			Model model, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
@@ -102,9 +108,10 @@ public class TermEditController extends AbstractMutableDataPageController {
 		List<Long> allMeaningIds = new ArrayList<>(sourceMeaningIds);
 		allMeaningIds.add(targetMeaningId);
 		Map<String, Integer[]> invalidWords = lookupService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
+		Locale locale = LocaleContextHolder.getLocale();
 
 		if (MapUtils.isNotEmpty(invalidWords)) {
-			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";
+			String message = messageSource.getMessage("meaningjoin.invalid.words.1", new Object[0], locale);
 
 			Iterator<Map.Entry<String, Integer[]>> wordIterator = invalidWords.entrySet().iterator();
 			while (wordIterator.hasNext()) {
@@ -118,7 +125,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 				}
 			}
 
-			message += " Palun ühendage enne tähenduste ühendamist need homonüümid.";
+			message += " " + messageSource.getMessage("meaningjoin.invalid.words.2", new Object[0], locale);
 			response.setStatus(ResponseStatus.INVALID);
 			response.setMessage(message);
 		} else {
@@ -147,6 +154,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 	@PostMapping("/duplicatemeaning/{meaningId}")
 	public Response duplicateMeaning(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
@@ -157,13 +165,15 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 		Response response = new Response();
 		if (clonedMeaning.isPresent()) {
+			String message = messageSource.getMessage("term.duplicate.meaning.success", new Object[0], locale);
 			Long duplicateMeaningId = clonedMeaning.get();
 			response.setStatus(ResponseStatus.OK);
-			response.setMessage("Mõiste duplikaat lisatud");
+			response.setMessage(message);
 			response.setId(duplicateMeaningId);
 		} else {
+			String message = messageSource.getMessage("term.duplicate.meaning.fail", new Object[0], locale);
 			response.setStatus(ResponseStatus.ERROR);
-			response.setMessage("Duplikaadi lisamine ebaõnnestus");
+			response.setMessage(message);
 		}
 		return response;
 	}

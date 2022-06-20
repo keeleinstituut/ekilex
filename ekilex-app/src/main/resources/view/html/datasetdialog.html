@@ -89,8 +89,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button id="addDatasetSubmitBtn" type="submit" class="btn btn-primary" data-plugin="addDatasetSubmitPlugin">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button id="addDatasetSubmitBtn" type="submit" class="btn btn-primary" data-plugin="addDatasetSubmitPlugin" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -178,8 +178,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary dataset-save-btn" data-plugin="saveDatasetPlugin">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary dataset-save-btn" data-plugin="saveDatasetPlugin" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>

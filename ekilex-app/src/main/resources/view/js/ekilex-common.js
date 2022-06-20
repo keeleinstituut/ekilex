@@ -1,13 +1,13 @@
 $.fn.deleteConfirm = function() {
 	$(this).confirmation({
-		btnOkLabel : 'Jah',
-		btnCancelLabel : 'Ei',
-		title : 'Kinnita kustutamine',
+		btnOkLabel : messages["common.yes"],
+		btnCancelLabel : messages["common.no"],
+		title : messages["common.confirm.delete"],
 		onConfirm : executeDelete
 	});
 };
 
-function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.', callback) {
+function postJson(url, dataObject, failMessage = messages["common.save.error"], callback) {
 	return $.ajax({
 		url: url,
 		data: JSON.stringify(dataObject),
@@ -67,11 +67,11 @@ function doPostDelete(deleteUrl, callback, force) {
 				callback();
 			}
 		} else {
-			openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+			openAlertDlg(messages["common.error"]);
 			console.log(response);
 		}
 	}).fail(function(data) {
-		openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 };
@@ -230,7 +230,7 @@ function initAddMultiDataDlg(theDlg) {
 		theDlg.find('[name=value]').val($(this).val());
 	});
 	theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.');
+		submitDialog(e, theDlg, messages["common.data.add.error"]);
 	});
 	theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		theDlg.find('.form-control').each(function(indx, item) {
@@ -249,7 +249,7 @@ function initGenericTextAddDlg(addDlg) {
 		$(item).val($(item).find('option').first().val());
 	});
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+		submitDialog(e, addDlg, messages["common.data.add.error"]);
 	});
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		alignAndFocus(e, addDlg)
@@ -258,7 +258,7 @@ function initGenericTextAddDlg(addDlg) {
 
 function initGenericTextEditDlg(editDlg) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+		submitDialog(e, editDlg, messages["common.data.update.error"])
 	});
 };
 
@@ -266,14 +266,14 @@ function initSelectDlg(selectDlg) {
 	let selectControl = selectDlg.find('select');
 	configureSelectDlg(selectControl, selectDlg);
 	selectControl.off('click').on('click', function(e) {
-		submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+		submitDialog(e, selectDlg, messages["common.data.update.error"])
 	});
 	selectControl.off('changed.bs.select').on('changed.bs.select', function(e) {
-		submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+		submitDialog(e, selectDlg, messages["common.data.update.error"]);
 	});
 	selectControl.off('keydown').on('keydown', function(e) {
 		if (e.key === "Enter") {
-			submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+			submitDialog(e, selectDlg, messages["common.data.update.error"]);
 		}
 	});
 };
@@ -414,14 +414,14 @@ function initAddSourceLinkDlg(addDlg) {
 					if (successCallbackName) {
 						successCallbackFunc = () => eval(successCallbackName);
 					}
-					submitForm(theForm, 'Andmete muutmine ebaõnnestus.', successCallbackFunc).always(function() {
+					submitForm(theForm, messages["common.data.update.error"], successCallbackFunc).always(function() {
 						addDlg.modal('hide');
 					});
 				}
 			});
 		}).fail(function(data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		}).always(function() {
 			button.html(content);
 		});
@@ -441,7 +441,7 @@ function initEditSourceLinkDlg(editDlg) {
 		editDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg('Viga!');
+		openAlertDlg(messages["common.error"]);
 	});
 }
 
@@ -456,7 +456,7 @@ $.fn.updateSourceLink = function() {
 		if (successCallbackName) {
 			successCallbackFunc = () => eval(successCallbackName);
 		}
-		submitForm(updateSourceLinkForm, 'Andmete muutmine ebaõnnestus.', successCallbackFunc).always(function() {
+		submitForm(updateSourceLinkForm, messages["common.data.update.error"], successCallbackFunc).always(function() {
 			updateSourceLinkModal.modal('hide');
 		});
 	});
@@ -478,14 +478,14 @@ function initRelationDialogLogic(addDlg, idElementName) {
 				addDlg.find('[name=id2]').val(button.data(idElementName));
 				let theForm = button.closest('form');
 				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+					submitForm(theForm, messages["common.data.update.error"]).always(function() {
 						addDlg.modal('hide');
 					});
 				}
 			});
 		}).fail(function(data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		}).always(function() {
 			button.html(content);
 		});
@@ -548,13 +548,13 @@ function initMultiselectRelationDlg(dlg) {
 					}).fail(function(data) {
 						dlg.modal('hide');
 						console.log(data);
-						openAlertDlg('Seoste lisamine ebaõnnestus');
+						openAlertDlg(messages["common.error"]);
 					});
 				}
 			});
 		}).fail(function(data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		}).always(function() {
 			searchBtn.html(content);
 		});
@@ -598,7 +598,7 @@ function changeOppositeRelationSelectData(relationTypeSelect) {
 		}
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg("Viga vastassuuna andmete päringuga!");
+		openAlertDlg(messages["common.error"]);
 	});
 };
 
@@ -702,7 +702,7 @@ function initWordValueEditorDlg(dlg) {
 			}).fail(function(data) {
 				dlg.modal('hide');
 				console.log(data);
-				openAlertDlg('Salvestamine ebaõnnestus');
+				openAlertDlg(messages["common.error"]);
 			});
 		} else {
 			editFld.addClass('is-invalid');
@@ -756,7 +756,7 @@ function executeMultiConfirmPostDelete(opName, opCode, id, successCallbackFunc, 
 		openConfirmDlg(data, doPostDelete, deleteUrl, successCallbackFunc, force);
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg("Kustutamine ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 	});
 };
 
@@ -922,7 +922,7 @@ $.fn.pagingBtnPlugin = function () {
 				}).fail(function (data) {
 					console.log(data);
 					closeWaitDlg();
-					openAlertDlg('Lehekülje muutmine ebaõnnestus');
+					openAlertDlg(messages["common.error"]);
 				});
 			} else {
 				closeWaitDlg();
@@ -971,12 +971,12 @@ $.fn.updateTagCompletePlugin = function() {
 			const actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
 			$.post(actionUrl).done(function(data) {
 				if (data !== "{}") {
-					openAlertDlg("Andmete muutmine ebaõnnestus.");
+					openAlertDlg(messages["common.error"]);
 					console.log(data);
 				}
 				refreshDetailsSearch(obj.parents('[data-rel="details-area"]').attr('data-id'));
 			}).fail(function(data) {
-				openAlertDlg("Andmete muutmine ebaõnnestus.");
+				openAlertDlg(messages["common.error"]);
 				console.log(data);
 			});
 		});
