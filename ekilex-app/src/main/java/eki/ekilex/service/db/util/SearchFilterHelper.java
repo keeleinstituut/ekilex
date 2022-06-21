@@ -682,14 +682,14 @@ public class SearchFilterHelper implements GlobalConstant {
 		if (CollectionUtils.isNotEmpty(tagNameEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
-				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
 			}
 			where = where.andExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
 		if (CollectionUtils.isNotEmpty(tagNameNotEqualsCrit)) {
 			for (SearchCriterion criterion : tagNameNotEqualsCrit) {
 				String searchValueStr = criterion.getSearchValue().toString();
-				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, false);
+				where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), lt.TAG_NAME, where1, true);
 			}
 			where = where.andNotExists(DSL.select(lt.ID).from(l1, lt).where(where1));
 		}
