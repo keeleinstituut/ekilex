@@ -632,7 +632,7 @@ function openSourceDetails(elem) {
 		});
 	});
 };
-
+/*
 function openMessageDlg(message) {
 	openAlertDlg(message, false);
 };
@@ -644,6 +644,56 @@ function openAlertDlg(alertMessage, showAsAlert = true) {
 	alertDlg.find('.alert-success').prop('hidden', showAsAlert);
 	alertDlg.modal('show');
 	alertDlg.find('.modal-footer button').focus();
+};
+*/
+function openMessageDlg(message, smallAlert = false) {
+	openAlertDlg(message, smallAlert, false);
+};
+
+function openAlertDlg(alertMessage, smallAlert = false, showAsAlert = true) {
+	let warning = null;
+	let success = null;
+	let alertDlg = null;
+	if (smallAlert) {
+	
+		alertDlg = $('#alertSmall');
+		warning = '.alert-custom-warning-hide';
+		success = '.alert-custom-success-hide';
+	} else {
+	
+		alertDlg = $('#alertDlg');
+		warning = '.alert-warning';
+		success = '.alert-success';
+	}
+
+	alertDlg.find(('[name=alert_message]')).text(alertMessage);
+	alertDlg.find(warning).prop('hidden', !showAsAlert);
+	alertDlg.find(success).prop('hidden', showAsAlert);
+
+	if (smallAlert) {
+		let addCss = alertDlg.find(".alert-small-custom-content");
+		if (showAsAlert) {
+			addCss.addClass('border-color-red-400');
+			addCss.removeClass('border-color-green-400');
+		} else {
+		addCss.removeClass('border-color-red-400');
+			addCss.addClass('border-color-green-400');
+		}
+		alertDlg.show();
+		setTimeout(function () { alertDlg.hide(); }, 5000);
+	} else {
+	
+		alertDlg.modal('show');
+		alertDlg.find('.modal-footer button').focus();
+	}
+
+};
+
+$.fn.costomAlertClose = function () {
+	const obj = $(this);
+	obj.on('click', function () {
+		obj.closest('#alertSmall').hide();
+	});
 };
 
 function openWaitDlg(message) {
