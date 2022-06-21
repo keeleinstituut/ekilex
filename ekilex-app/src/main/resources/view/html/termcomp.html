@@ -11,8 +11,8 @@
       <div class="col-auto">
         <div class="btn-group btn-group-toggle btn-tabs" data-toggle="buttons">
           <label class="btn btn-secondary" th:classappend="${isWordResultMode ? 'active' : ''}">
-            <span th:if="${isWordResultMode}" th:text="#{term.terms.found} + ' ' + ${termSearchResult.wordCount}" data-toggle="tooltip" th:title="#{search.tooltip.terms}"></span>
-            <span th:if="${isMeaningResultMode}" th:text="#{term.terms.found} + ' ' + ${termSearchResult.wordCount}" data-toggle="tooltip" th:title="#{search.tooltip.meaning.terms}"></span>
+            <span th:if="${isWordResultMode}" th:text="#{term.terms.found} + ' ' + ${termSearchResult.wordCount}" data-toggle="tooltip" th:title="#{term.search.tooltip.terms}"></span>
+            <span th:if="${isMeaningResultMode}" th:text="#{term.terms.found} + ' ' + ${termSearchResult.wordCount}" data-toggle="tooltip" th:title="#{term.search.tooltip.meaning.terms}"></span>
             <input type="radio" name="resultMode" autocomplete="off"
                    data-plugin="relativeFormItem"
                    data-relativeFormItem:id="search-result-mode-1"
@@ -20,8 +20,8 @@
                    th:value="${T(eki.ekilex.constant.SearchResultMode).WORD}"/>
           </label>
           <label class="btn btn-secondary" th:classappend="${isMeaningResultMode ? 'active' : ''}">
-            <span th:if="${isMeaningResultMode}" th:text="#{term.meanings.found} + ' ' + ${termSearchResult.meaningCount}" data-toggle="tooltip" th:title="#{search.tooltip.meanings}"></span>
-            <span th:if="${isWordResultMode}" th:text="#{term.meanings.found} + ' ' + ${termSearchResult.meaningCount}" data-toggle="tooltip" th:title="#{search.tooltip.term.meanings}"></span>
+            <span th:if="${isMeaningResultMode}" th:text="#{term.meanings.found} + ' ' + ${termSearchResult.meaningCount}" data-toggle="tooltip" th:title="#{term.search.tooltip.meanings}"></span>
+            <span th:if="${isWordResultMode}" th:text="#{term.meanings.found} + ' ' + ${termSearchResult.meaningCount}" data-toggle="tooltip" th:title="#{term.search.tooltip.term.meanings}"></span>
             <input type="radio" name="resultMode" autocomplete="off"
                    data-plugin="relativeFormItem"
                    data-relativeFormItem:id="search-result-mode-2"

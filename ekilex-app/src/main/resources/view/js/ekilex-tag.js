@@ -37,7 +37,7 @@ $.fn.saveTag = function() {
 					location.reload();
 				} else {
 					console.log(response);
-					openAlertDlg("Salvestamine ebaõnnestus. Kontrolli, kas sellise nimega silt on juba olemas");
+					openAlertDlg(messages["tag.save.fail"]);
 				}
 			}).fail(function(data) {
 				console.log(data);
@@ -51,13 +51,13 @@ $.fn.tagDeleteConfirm = function() {
 	const tag = $(this);
 	let title;
 	if (tag.data('tag-used')) {
-		title = 'Ettevaatust, silt on kasutusel. Kas oled kindel, et soovid kustutada?';
+		title = messages["tag.in.use.confirm.delete"];
 	} else {
-		title = 'Kinnita sildi kustutamine';
+		title = messages["common.confirm.delete"];
 	}
 	tag.confirmation({
-		btnOkLabel : 'Jah',
-		btnCancelLabel : 'Ei',
+		btnOkLabel : messages["common.yes"],
+		btnCancelLabel : messages["common.no"],
 		title : title,
 		onConfirm : function() {
 			openWaitDlg();

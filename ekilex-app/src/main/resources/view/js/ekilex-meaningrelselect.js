@@ -28,9 +28,7 @@ function validateMeaningDataImportAndSubmitForm() {
 function submitFormMeaning() {
 	const createWordForm = $("#createWordForm");
 	const createRelation = !$("#chkNoRelation").is(":checked");
-	const failMessage = "Viga! Termini loomine ebaõnnestus";
 	createWordForm.find('input[name="createRelation"]').val(createRelation);
-
 
 	$.ajax({
 		url: createWordForm.attr('action'),
@@ -44,11 +42,11 @@ function submitFormMeaning() {
 		} else if (response.status === 'INVALID') {
 			openAlertDlg(response.message);
 		} else {
-			openAlertDlg(failMessage);
+			openAlertDlg(messages["common.error"]);
 		}
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg(failMessage);
+		openAlertDlg(messages["common.error"]);
 	});
 };
 

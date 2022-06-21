@@ -182,7 +182,7 @@ $.fn.createClassifierPlugin = function() {
 					location.reload();
 				} else {
 					console.log(response);
-					openAlertDlg("Salvestamine ebaõnnestus. Kontrolli, kas sellise koodiga klassifikaator on juba olemas");
+					openAlertDlg(messages["classifiers.save.fail"]);
 				}
 			}).fail(function(data) {
 				console.log(data);
@@ -196,9 +196,9 @@ $.fn.deleteClassifierPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Klassifikaatorit on võimalik kustutada siis, kui see ei ole kasutuses. Kas soovid kustutada?',
+			btnOkLabel : messages["common.yes"],
+			btnCancelLabel : messages["common.no"],
+			title : messages["classifiers.confirm.delete"],
 			onConfirm : deleteClassifier
 		});
 	});

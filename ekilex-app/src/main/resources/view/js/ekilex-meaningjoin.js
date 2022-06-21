@@ -13,6 +13,6 @@ function initializeMeaningJoin() {
 function joinMeanings() {
 	const joinForm = $(this).closest('form');
 	const validateJoinUrl = applicationUrl + "validatemeaningjoin";
-	const failMessage = "Tähenduste ühendamine ebaõnnestus";
+	const failMessage = messages["meaningjoin.fail"];
 	validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage);
 };

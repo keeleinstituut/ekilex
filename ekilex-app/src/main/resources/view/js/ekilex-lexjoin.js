@@ -8,8 +8,8 @@ function initializeLexJoin() {
 };
 
 function joinLexemes() {
-	let joinForm = $(this).closest('form');
-	let validateJoinUrl = applicationUrl + "validatelexjoin";
-	let failMessage = messages["lexjoin.fail"];
+	const joinForm = $(this).closest('form');
+	const validateJoinUrl = applicationUrl + "validatelexjoin";
+	const failMessage = messages["lexjoin.fail"];
 	validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage);
 };

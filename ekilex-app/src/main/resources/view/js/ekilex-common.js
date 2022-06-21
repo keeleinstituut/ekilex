@@ -1053,11 +1053,11 @@ $(document).on('click', 'eki-link', function() {
 				}
 				break;
 			default:
-				openAlertDlg('Vigane link.');
+				openAlertDlg(messages["common.broken.link"]);
 				break;
 		}
 	} else {
-		openAlertDlg('Vigane link.');
+		openAlertDlg(messages["common.broken.link"]);
 	}
 });
 
@@ -1073,7 +1073,7 @@ $(document).on('click', 'ext-link', function() {
 			window.open(`https://${href}`, target);
 		}
 	} else  {
-		openAlertDlg('Vigane link.');
+		openAlertDlg(messages["common.broken.link"]);
 	}
 });
 

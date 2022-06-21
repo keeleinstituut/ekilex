@@ -104,7 +104,7 @@ function isValidDatasetCodeFormat(code) {
 };
 
 function deleteDataset(datasetCode) {
-	openWaitDlg("Palun oodake, sõnakogu kustutamine on pooleli");
+	openWaitDlg(messages["common.please.wait"]);
 	let deleteUrl = `${applicationUrl}delete_dataset/${datasetCode}`;
 
 	$.get(deleteUrl).done(function(data) {
@@ -126,7 +126,7 @@ function checkAndAddDataset(addDatasetForm) {
 	const validateUrl = applicationUrl + 'validate_create_dataset/' + newCodeField.val();
 
 	if (!isValidDatasetCodeFormat(newCodeField.val())) {
-		showFieldError(newCodeField, "Kood tohib sisaldada ainult tähti ja numbreid.");
+		showFieldError(newCodeField, messages["datasets.code.format.validation"]);
 		return;
 	}
 
@@ -134,13 +134,13 @@ function checkAndAddDataset(addDatasetForm) {
 		const responseCode = data;
 
 		if (responseCode === 'OK') {
-			openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
+			openWaitDlg(messages["common.please.wait"]);
 			addDatasetForm.submit();
 			closeWaitDlg();
 		} else if (responseCode === 'CODE_EXISTS') {
-			showFieldError(newCodeField, "Sellise koodiga sõnakogu on olemas.");
+			showFieldError(newCodeField, messages["datasets.code.exists.validation"]);
 		} else {
-			openAlertDlg(`Sõnakogu lisamine ebaõnnestus, veakood: ${responseCode}`);
+			openAlertDlg(messages["common.error"]);
 		}
 	}).fail(function(data) {
 		openAlertDlg(messages["common.error"]);
@@ -168,7 +168,7 @@ $.fn.saveDatasetPlugin = function() {
 		const obj = $(this);
 		obj.on('click', function(e) {
 			e.preventDefault();
-			openWaitDlg("Palun oodake, sõnakogu salvestamine on pooleli");
+			openWaitDlg(messages["common.please.wait"]);
 			const form = obj.closest('form');
 			form.submit();
 		});
@@ -241,9 +241,9 @@ $.fn.deleteDatasetConfirmPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Kas kustutame sõnakogu?',
+			btnOkLabel : messages["common.yes"],
+			btnCancelLabel : messages["common.no"],
+			title : messages["common.confirm.delete"],
 			onConfirm : function() {
 				const code = obj.data('code');
 				deleteDataset(code);

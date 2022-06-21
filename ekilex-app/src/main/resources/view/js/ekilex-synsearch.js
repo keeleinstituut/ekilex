@@ -225,7 +225,7 @@ function initAddSynRelationDlg(addDlg) {
 
 				const form = button.closest('form');
 				if (checkRequiredFields(form)) {
-					submitForm(form, 'Keelendi lisamine ebaõnnestus.').always(function() {
+					submitForm(form, messages["syn.add.syn.relation.word.fail"]).always(function() {
 						refreshSynDetails();
 						addDlg.modal('hide');
 					});
@@ -468,11 +468,11 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 				doPostRelationChange(actionUrl, callbackFunc);
 
 			} else {
-				openAlertDlg("Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
+				openAlertDlg(messages["syn.press.enter.for.lexeme"]);
 			}
 
 		} else {
-			openAlertDlg("Ilmik on juba olemas.");
+			openAlertDlg(messages["syn.lexeme.exists"]);
 		}
 	} else if (currentActivePanelIndex == "1") {
 		$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');

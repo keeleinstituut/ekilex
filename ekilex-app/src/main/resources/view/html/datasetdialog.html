@@ -21,7 +21,7 @@
               <select class="col-md-3 form-control required-field" name="type">
                 <option th:each="datasetType : ${enabledDatasetTypes}"
                         th:value="${datasetType.name()}"
-                        th:text="#{|datasettype.${datasetType.name()}|}"
+                        th:text="#{|enum.datasettype.${datasetType.name()}|}"
                         th:selected="${T(eki.common.constant.DatasetType).TERM}">
                 </option>
               </select>
@@ -112,7 +112,7 @@
             <div class="form-group row">
               <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.type}">Sõnakogu tüüp</label>
               <select class="col-md-3 form-control required-field" name="type">
-                <option th:each="datasetType : ${enabledDatasetTypes}" th:value="${datasetType.name()}" th:text="#{|datasettype.${datasetType.name()}|}" />
+                <option th:each="datasetType : ${enabledDatasetTypes}" th:value="${datasetType.name()}" th:text="#{|enum.datasettype.${datasetType.name()}|}" />
               </select>
             </div>
             <div class="form-group row">

@@ -15,15 +15,15 @@ function initializeSourceSearch() {
 
 function initDeleteConfirmations() {
 	$('[data-toggle=delete-source-property-confirm]').confirmation({
-		btnOkLabel: 'Jah',
-		btnCancelLabel: 'Ei',
-		title: 'Palun kinnita allika atribuudi kustutamine',
+		btnOkLabel : messages["common.yes"],
+		btnCancelLabel : messages["common.no"],
+		title : messages["source.attribute.confirm.delete"],
 		onConfirm: deleteSourceProperty
 	});
 	$('[data-toggle=delete-source-confirm]').confirmation({
-		btnOkLabel: 'Jah',
-		btnCancelLabel: 'Ei',
-		title: 'Palun kinnita allika kustutamine',
+		btnOkLabel : messages["common.yes"],
+		btnCancelLabel : messages["common.no"],
+		title : messages["source.confirm.delete"],
 		onConfirm: executeValidateSourceDelete
 	});
 }
@@ -163,7 +163,7 @@ function executeValidateSourceDelete() {
 		} else if (response.status === 'INVALID') {
 			openAlertDlg(response.message);
 		} else {
-			openAlertDlg("Allika eemaldamine ebaõnnestus.");
+			openAlertDlg(messages["common.error"]);
 		}
 	}).fail(function (data) {
 		openAlertDlg(messages["common.error"]);
