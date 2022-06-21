@@ -273,8 +273,9 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 	const lastElement = parentElement.find(`[name="${itemName}"]`).last();
 	const copyOfLastElement = lastElement.clone();
 	const oldIndex = copyOfLastElement.data('index');
+	const newIndex = oldIndex + 1;
 	const oldIndexVal = `${indexName}[${oldIndex}]`;
-	const newIndexVal = `${indexName}[${oldIndex + 1}]`;
+	const newIndexVal = `${indexName}[${newIndex}]`;
 	copyOfLastElement.attr('data-index', newIndex);
 	copyOfLastElement.find('[name*="' + indexName + '["]').each(function() {
 		const element = $(this);
