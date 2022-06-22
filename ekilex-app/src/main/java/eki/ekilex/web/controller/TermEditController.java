@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,9 +70,6 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@Autowired
 	private CudService cudService;
-
-	@Autowired
-	private MessageSource messageSource;
 
 	@RequestMapping(MEANING_JOIN_URI + "/{targetMeaningId}")
 	public String search(@PathVariable("targetMeaningId") Long targetMeaningId, @RequestParam(name = "searchFilter", required = false) String searchFilter,

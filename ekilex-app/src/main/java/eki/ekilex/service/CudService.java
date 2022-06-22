@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -79,9 +78,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
-
-	@Autowired
-	private MessageSource messageSource;
 
 	// --- UPDATE ---
 

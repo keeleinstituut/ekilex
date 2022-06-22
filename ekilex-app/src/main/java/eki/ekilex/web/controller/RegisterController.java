@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,9 +29,6 @@ public class RegisterController extends AbstractPublicPageController {
 	private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
 
 	private static final String BOT_PROTECTION_CODE = "botProtectionCode";
-
-	@Autowired
-	private MessageSource messageSource;
 
 	@Autowired
 	private EmailService emailService;

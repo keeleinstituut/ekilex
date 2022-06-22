@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import eki.ekilex.constant.WebConstant;
@@ -26,6 +27,9 @@ public abstract class AbstractPublicPageController implements WebConstant {
 
 	@Autowired
 	protected PermissionService permissionService;
+
+	@Autowired
+	protected MessageSource messageSource;
 
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {

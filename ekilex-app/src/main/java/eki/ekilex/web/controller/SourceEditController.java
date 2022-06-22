@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,9 +51,6 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	@Autowired
 	private ValueUtil valueUtil;
-
-	@Autowired
-	private MessageSource messageSource;
 
 	@GetMapping(SOURCE_NAME_SEARCH_URI + "/{nameSearchFilter}")
 	@ResponseBody

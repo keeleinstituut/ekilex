@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
@@ -65,6 +66,9 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 
 	@Autowired
 	protected ValueUtil valueUtil;
+
+	@Autowired
+	protected MessageSource messageSource;
 
 	protected String getDatasetCodeFromRole() {
 		EkiUser user = userContext.getUser();
