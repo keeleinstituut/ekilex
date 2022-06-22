@@ -130,11 +130,16 @@
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
             <div class="col-8 h-100 d-flex flex-column" id="contentColumn">
-              <div class="overflow-auto pt-2 h-100" data-plugin="sorter" data-sorter:type="lex-details"  data-sorter:handle=".levels-handle">
+              <div class="overflow-auto pt-2 h-100" data-plugin="sorter" data-sorter:type="lex-details" data-sorter:handle=".levels-handle">
                 <th:block th:each="lexeme : ${details.lexemes}">
                   <div th:id="${'lexeme-details-' + lexeme.lexemeId}">
                     <th:block th:if="${#lists.size(details.lexemes) > 1}">
-                      <th:block th:replace="lexdetail :: lexeme_details_lite"></th:block>
+                      <th:block th:if="${lexeme.meaningId == lexMeaningIdSearchMeaningId}">
+                        <th:block th:replace="lexdetail :: lexeme_details_full"></th:block>
+                      </th:block>
+                      <th:block th:if="${lexeme.meaningId != lexMeaningIdSearchMeaningId}">
+                        <th:block th:replace="lexdetail :: lexeme_details_lite"></th:block>
+                      </th:block>
                     </th:block>
                     <th:block th:if="${#lists.size(details.lexemes) == 1}">
                       <th:block th:replace="lexdetail :: lexeme_details_full"></th:block>

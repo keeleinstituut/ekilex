@@ -1,6 +1,7 @@
 package eki.ekilex.web.util;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -433,6 +435,31 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		searchGroup.setSearchCriteria(asList(criterion));
 		detailSearchFilter.setCriteriaGroups(asList(searchGroup));
 		return detailSearchFilter;
+	}
+
+	public Long getMeaningIdSearchMeaningId(SearchFilter detailSearchFilter) {
+
+		List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
+		for (SearchCriterionGroup criteriaGroup : criteriaGroups) {
+			SearchEntity searchEntity = criteriaGroup.getEntity();
+			if (SearchEntity.MEANING.equals(searchEntity)) {
+				List<SearchCriterion> searchCriteria = criteriaGroup.getSearchCriteria();
+				List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+						.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
+						.collect(toList());
+				if (CollectionUtils.isNotEmpty(filteredCriteria)) {
+					for (SearchCriterion criterion : filteredCriteria) {
+						String meaningIdStr = criterion.getSearchValue().toString();
+						meaningIdStr = RegExUtils.replaceAll(meaningIdStr, "[^0-9.]", "");
+						if (StringUtils.isNotEmpty(meaningIdStr)) {
+							Long meaningId = Long.valueOf(meaningIdStr);
+							return meaningId;
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	private boolean validateSearchFilter(String simpleSearchFilter, SearchFilter detailSearchFilter) {
