@@ -87,8 +87,8 @@ $(document).on("click", "#clear-search-btn", function(e) {
 });
 
 $(document).on("click", "eki-link", function(e) {
-  var linkType = $(this).attr("link-type");
-  var linkId = $(this).attr("link-id");
+  var linkType = $(this).attr("data-link-type");
+  var linkId = $(this).attr("data-link-id");
   var searchLinkUrlWithParams = searchLinkUrl + "/" + linkType + "/" + linkId;
   $.get(searchLinkUrlWithParams).done(function(data) {
     if (data) {
