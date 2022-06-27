@@ -127,12 +127,12 @@
                   data-toggle="modal"
                   th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}"
                   sec:authorize="#vars.lexeme.crudGrant">
-              <span class="bubble" th:classappend="${lexMeaningIdSearchMeaningId != null ? 'bg-warning text-white' : ''}">
+              <span class="bubble" th:classappend="${lexMeaningIdSearchMeaningId == lexeme.meaningId ? 'bg-warning text-white' : ''}">
                 <span th:text="${lexeme.levels}"></span>
               </span>
             </span>
             <span class="pl-1 pr-1" th:if="${!lexeme.crudGrant}">
-              <span class="bubble" th:classappend="${lexMeaningIdSearchMeaningId != null ? 'bg-warning text-white' : ''}">
+              <span class="bubble" th:classappend="${lexMeaningIdSearchMeaningId == lexeme.meaningId ? 'bg-warning text-white' : ''}">
                 <span th:text="${lexeme.levels}"></span>
               </span>
             </span>
