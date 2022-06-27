@@ -33,6 +33,7 @@
                   <option value="word_type" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.type}">Keelendi tüüp</option>
                   <option value="word_display_morph" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.display.morph}">Vormikood</option>
                   <option value="addWordNoteDlg" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.note}">Keelendi märkus</option>
+                  <option value="addOdWordRecommendationDlg" sec:authorize="#vars.lexeme.word.subGrant" th:text="#{term.word.od.recommendation}">ÕS soovitab</option>
                 </select>
               </div>
             </div>
@@ -843,6 +844,60 @@
             <input type="hidden" name="id" th:value="${note.id}">
             <input type="hidden" name="opCode" value="word_note">
             <input type="hidden" name="value" th:value="${note.valuePrese}">
+            <div th:replace="components :: eki_editor_elem"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addOdWordRecommendationDlg_' + lexeme.lexemeId}" class="modal"
+       role="dialog"
+       th:fragment="add_od_word_recommendation_dlg"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.add.od.word.recommendation}">Lisa soovitus</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.wordId}">
+            <input type="hidden" name="opCode" value="od_word_recommendation">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editOdWordRecommendationDlg_' + lexeme.lexemeId + '_' + odWordRecommendation.id}" class="modal"
+       role="dialog"
+       th:fragment="edit_od_word_recommendation"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{term.edit.od.word.recommendation}">Muuda soovitust</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${odWordRecommendation.id}">
+            <input type="hidden" name="opCode" value="od_word_recommendation">
+            <input type="hidden" name="value" th:value="${odWordRecommendation.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">

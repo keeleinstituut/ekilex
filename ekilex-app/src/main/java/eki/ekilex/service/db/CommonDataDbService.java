@@ -1076,6 +1076,27 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(FreeForm.class);
 	}
 
+	public List<FreeForm> getOdWordRecommendations(Long wordId) {
+
+		return create
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
+						FREEFORM.LANG,
+						FREEFORM.COMPLEXITY,
+						FREEFORM.ORDER_BY,
+						FREEFORM.MODIFIED_BY,
+						FREEFORM.MODIFIED_ON)
+				.from(FREEFORM, WORD_FREEFORM)
+				.where(
+						WORD_FREEFORM.WORD_ID.eq(wordId)
+								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
+								.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetchInto(FreeForm.class);
+	}
+
 	public List<Government> getLexemeGovernments(Long lexemeId) {
 
 		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");

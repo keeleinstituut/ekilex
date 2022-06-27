@@ -91,7 +91,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		WordRelationDetails wordRelationDetails = conversionUtil.composeWordRelationDetails(wordRelations, wordGroups, wordLang, allWordRelationTypes);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
+		List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, wordNotes);

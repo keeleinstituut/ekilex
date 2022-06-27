@@ -634,7 +634,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
+		List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 

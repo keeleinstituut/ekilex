@@ -261,6 +261,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 			List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 			permCalculator.filterVisibility(userRole, wordNotes);
+			List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -278,6 +279,7 @@ public class TermSearchService extends AbstractSearchService {
 
 			Word word = lexeme.getWord();
 			word.setNotes(wordNotes);
+			word.setOdWordRecommendations(odWordRecommendations);
 			permCalculator.applyCrud(userRole, word);
 
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
