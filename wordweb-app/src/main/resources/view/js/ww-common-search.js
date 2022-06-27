@@ -87,15 +87,17 @@ $(document).on("click", "#clear-search-btn", function(e) {
 });
 
 $(document).on("click", "eki-link", function(e) {
-  var linkType = $(this).attr("data-link-type");
-  var linkId = $(this).attr("data-link-id");
-  var searchLinkUrlWithParams = searchLinkUrl + "/" + linkType + "/" + linkId;
+  const link = $(this);
+  const linkType = link.attr("data-link-type");
+  const linkId = link.attr("data-link-id");
+  const searchLinkUrlWithParams = `${searchLinkUrl}/${linkType}/${linkId}`;
   $.get(searchLinkUrlWithParams).done(function(data) {
     if (data) {
-      $("#hiddenSearchForm input[name='searchWord']").val(data.word);
-      $("#hiddenSearchForm input[name='selectedWordHomonymNr']").val(data.homonymNr);
-      $("#hiddenSearchForm input[name='linkedLexemeId']").val(data.lexemeId);
-      $("#hiddenSearchForm").submit();
+      const searchForm = $('#hiddenSearchForm');
+      searchForm.find("input[name='searchWord']").val(data.word);
+      searchForm.find("input[name='selectedWordHomonymNr']").val(data.homonymNr);
+      searchForm.find("input[name='linkedLexemeId']").val(data.lexemeId);
+      searchForm.submit();
     } else {
       //handle incorrect link?
     }

@@ -434,7 +434,7 @@ class ckLink {
 			if (!this.valid.internal) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link data-link-id="${this.activeID}" data-link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		}

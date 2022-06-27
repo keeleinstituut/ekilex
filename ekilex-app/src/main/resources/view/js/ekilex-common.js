@@ -1075,7 +1075,7 @@ $(document).on('click', 'eki-link', function() {
 	const link = $(this);
 	const id = link.attr('id');
 	if (id) {
-		const linkType = link.attr('link-type');
+		const linkType = link.attr('data-link-type');
 		
 		switch(linkType) {
 			case 'word':
