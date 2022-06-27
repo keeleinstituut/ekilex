@@ -110,7 +110,8 @@
             style="display: none;"
             id="refresh-open"
             data-plugin="refreshOpenPlugin"></button>
-      <div class="card-body">
+      <div class="card-body" th:id="${'lexeme-meaning-' + lexeme.meaningId}">
+        <div th:if="${lexMeaningIdSearchMeaningId}" hidden id="lex-meaning-id-search-meaning-id" th:data-result-id="${lexMeaningIdSearchMeaningId}"></div>
         <button type="button" name="lexeme-details-btn"
                 class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
                 th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="lite"

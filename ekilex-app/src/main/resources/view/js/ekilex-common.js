@@ -1182,6 +1182,21 @@ function getBreadcrumbsData(detailsDiv, word) {
 	return crumbs;
 }
 
+// Scroll to result when searching by id in lex view
+function scrollDetails(div, scrollPosition) {
+	if (viewType === 'lex') {
+		const searchedId = $('#lex-meaning-id-search-meaning-id');
+		const overflowDiv = div.find('.overflow-auto').first();
+		if (searchedId.length) {
+			const searchResult = div.find(`#lexeme-meaning-${searchedId.attr('data-result-id')}`);
+			const scrollOffset = searchResult.offset().top - overflowDiv.offset().top;
+			overflowDiv.scrollTop(scrollOffset);
+		} else {
+			overflowDiv.scrollTop(scrollPosition);
+		}
+	}
+}
+
 function loadDetails(wordId, task, lastWordId) {
 	// Hide all existing loading spinners and show current one
 	$("[id^='select_wait_']").hide();
@@ -1225,6 +1240,7 @@ function loadDetails(wordId, task, lastWordId) {
 			dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 			detailsDiv.replaceWith(dataObject[0].outerHTML);
 			detailsDiv = $('#details-area');
+			scrollDetails(detailsDiv, 0);
 		} else {
 			dataObject.find('[data-hideable="toolsColumn"]').attr('data-hideable', `toolsColumn-${wordId}`);
 			dataObject.find('#toolsColumn').attr('id', `toolsColumn-${wordId}`);
@@ -1245,7 +1261,7 @@ function loadDetails(wordId, task, lastWordId) {
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 				const newDiv = $(dataObject[0].outerHTML);
 				detailsDiv.replaceWith(newDiv);
-				newDiv.find('.overflow-auto:first').scrollTop(scrollPosition);
+				scrollDetails(newDiv, scrollPosition);
 			} else {
 				const breadCrumbs = getBreadcrumbsData(dataObject, {
 					id: parseInt(wordId),
