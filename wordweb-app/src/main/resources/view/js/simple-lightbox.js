@@ -1151,6 +1151,7 @@ function () {
       if (targetURL.endsWith('svg')) {
         this.currentImage.style.width = `${this.options.svgWidth}px`;
         this.currentImage.style.height = `${this.options.svgHeight}px`;
+        this.currentImage.style.backgroundColor = 'white';
       }
 
       if (this.loadedImages.indexOf(targetURL) === -1) {
