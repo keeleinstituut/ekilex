@@ -92,7 +92,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 	}
 
 	@GetMapping(value = LEX_SEARCH_URI + "/**")
-	public String lexSearch(Model model, HttpServletRequest request, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public String lexSearch(Model model, HttpServletRequest request) throws Exception {
 
 		final String searchPage = LEX_SEARCH_PAGE;
 
@@ -115,6 +115,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean noLimit = false;
 
+		SessionBean sessionBean = getSessionBean(model);
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
