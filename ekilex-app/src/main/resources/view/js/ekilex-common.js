@@ -1073,7 +1073,7 @@ function submitDetailedSearch(options) {
 // Using a document event listener to make sure link clicks are always caught
 $(document).on('click', 'eki-link', function() {
 	const link = $(this);
-	const id = link.attr('id');
+	const id = link.attr('data-link-id');
 	if (id) {
 		const linkType = link.attr('data-link-type');
 		
