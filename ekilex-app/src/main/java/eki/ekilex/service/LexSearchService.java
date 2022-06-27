@@ -68,7 +68,7 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public WordDetails getWordDetails(
-			Long wordId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUser user,
+			Long wordId, Long fullDataMeaningId, List<String> selectedDatasetCodes, List<ClassifierSelect> languagesOrder, EkiUser user,
 			EkiUserProfile userProfile, Tag activeTag, boolean isFullData) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes);
@@ -97,7 +97,16 @@ public class LexSearchService extends AbstractWordSearchService {
 		permCalculator.filterVisibility(userRole, wordNotes);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
+		boolean isFullDataByMeaningId = !isFullDataCorrection && fullDataMeaningId != null;
 		for (WordLexeme lexeme : lexemes) {
+			if (isFullDataByMeaningId) {
+				Long lexemeMeaningId = lexeme.getMeaningId();
+				if (fullDataMeaningId.equals(lexemeMeaningId)) {
+					populateLexeme(lexeme, languagesOrder, userRole, userProfile, true);
+					isFullDataByMeaningId = false;
+					continue;
+				}
+			}
 			populateLexeme(lexeme, languagesOrder, userRole, userProfile, isFullDataCorrection);
 		}
 		lexemeLevelPreseUtil.combineLevels(lexemes);

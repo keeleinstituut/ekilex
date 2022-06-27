@@ -222,20 +222,14 @@ public class LexSearchController extends AbstractPrivateSearchController {
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Long lexMeaningIdSearchMeaningId = sessionBean.getLexMeaningIdSearchMeaningId();
-		boolean isMeaningIdSearch = lexMeaningIdSearchMeaningId != null;
-		boolean isFullData = false;
-		if (isMeaningIdSearch) {
-			// TODO fullData only for a specific lexeme?
-			isFullData = true;
-			sessionBean.setLexMeaningIdSearchMeaningId(null);
-		}
+		sessionBean.setLexMeaningIdSearchMeaningId(null);
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> datasetCodes = userProfile.getPreferredDatasets();
 		UserContextData userContextData = getUserContextData();
 		Tag activeTag = userContextData.getActiveTag();
-		WordDetails details = lexSearchService.getWordDetails(wordId, datasetCodes, languagesOrder, user, userProfile, activeTag, isFullData);
+		WordDetails details = lexSearchService.getWordDetails(wordId, lexMeaningIdSearchMeaningId, datasetCodes, languagesOrder, user, userProfile, activeTag, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 		model.addAttribute("lexMeaningIdSearchMeaningId", lexMeaningIdSearchMeaningId);
