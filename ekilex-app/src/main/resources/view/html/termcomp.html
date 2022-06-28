@@ -322,7 +322,7 @@
       </div>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.semanticTypes)}" th:fragment="meaning_semantic_type">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.semanticTypes)}" th:fragment="meaning_semantic_type">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.semantic.type}">Semantiline tüüp</span>
       <button type="button" class="btn badge badge-secondary float-right mr-4" th:title="#{common.add.new}"
@@ -360,7 +360,7 @@
       </span>
     </div>
   </div>
-  <div class="row" th:fragment="meaning_definition">
+  <div class="row no-gutters" th:fragment="meaning_definition">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.definition}">Seletus</span>
       <button type="button" class="btn badge badge-secondary float-right mr-4"
@@ -766,7 +766,7 @@
     </div>
     <hr/>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.images)}" th:fragment="meaning_image">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.images)}" th:fragment="meaning_image">
     <hr>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.image}">Pilt</span>
@@ -960,7 +960,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.freeforms)}" th:fragment="meaning_freeform">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.freeforms)}" th:fragment="meaning_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.attributes}">Tähenduse atribuudid</span>
@@ -1053,7 +1053,7 @@
     </div>
   </div>
   <div class="block-subtitle" th:fragment="lexeme_header">
-    <div class="d-flex align-items-center flex-wrap">
+    <div class="d-flex align-items-center flex-wrap"> 
       <div class="hidden-buttons">
         <span class="ttl word-value"
               th:data-id="${lexeme.wordId}"
@@ -1133,7 +1133,7 @@
       <span class="pr-1" th:text="'M' + ${lexeme.meaningId}"></span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.tags)}" th:fragment="lexeme_tags">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.tags)}" th:fragment="lexeme_tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.tag}">Ilmiku silt</span>
       <button type="button" class="btn badge badge-secondary float-right mr-4"
@@ -1160,7 +1160,7 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.tags)}" th:fragment="meaning_tags">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.tags)}" th:fragment="meaning_tags">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.tag}">Tähenduse silt</span>
       <button type="button" class="btn badge badge-secondary float-right mr-4"
@@ -1187,7 +1187,7 @@
       </span>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.complexity != null}" th:fragment="lexeme_complexity">
+  <div class="hidden-buttons row no-gutters" th:if="${lexeme.complexity != null}" th:fragment="lexeme_complexity">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.complexity}">Detailsus</span>
     </div>
@@ -1228,7 +1228,7 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.pos)}" th:fragment="lexeme_pos">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.pos)}" th:fragment="lexeme_pos">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.pos}">Sõnaliik</span>
     </div>
@@ -1290,7 +1290,7 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}" th:fragment="lexeme_register">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.registers)}" th:fragment="lexeme_register">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.register}">Register</span>
     </div>
@@ -1680,7 +1680,7 @@
       </table>
     </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:if="${lexeme.word.genderCode != null}" th:fragment="word_gender">
+  <div class="row mr-0 hidden-buttons no-gutters" th:if="${lexeme.word.genderCode != null}" th:fragment="word_gender">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.word.gender}">Sugu</span>
     </div>
@@ -1701,7 +1701,7 @@
       </button>
     </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:if="${lexeme.word.lang != null}" th:fragment="word_lang">
+  <div class="row mr-0 hidden-buttons no-gutters" th:if="${lexeme.word.lang != null}" th:fragment="word_lang">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.word.language}">Sõna keel</span>
     </div>
@@ -1787,11 +1787,12 @@
       </div>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.word.odWordRecommendations)}" th:fragment="word_od_recommendation">
-    <hr/>
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{term.word.od.recommendation}">ÕS soovitab</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+  <div class="border-top px-0 w-100 ekiAccordion__instance"
+      th:fragment="word_od_recommendation">
+    <div class="ekiAccordion__title">
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.odWordRecommendations)}">•</span>
+      <span th:text="#{term.word.od.recommendation}">ÕS soovitab</span>
+      <button type="button" class="ekiAccordion__add"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addOdWordRecommendationDlg_' + lexeme.lexemeId}"
@@ -1799,31 +1800,35 @@
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
-    <div class="col pl-0">
+    <div class="ekiAccordion__content overflow-auto">
+      <div th:if="${#lists.isEmpty(lexeme.word.odWordRecommendations)}">
+        Sisu puudub...
+      </div>
       <div th:each="odWordRecommendation : ${lexeme.word.odWordRecommendations}">
-        <div th:replace="termdialog :: edit_od_word_recommendation"></div>
-        <div class="invisible-buttons action-buttons-anchor mw-80 ml-3">
-          <div style="display: list-item; position: absolute"></div>
-          <span th:utext="${odWordRecommendation.valuePrese}"></span>
-          <span class="ctxt" th:text="'[' + ${odWordRecommendation.modifiedBy} + ']'" th:if="${odWordRecommendation.modifiedBy != null}"></span>
-          <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'"></span>
-          <span class="ctxt" th:text="'(' + ${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odWordRecommendation.modifiedOn != null}"></span>
-          <div class="action-buttons-2">
-            <button type="button" class="btn badge badge-primary"
-                    th:title="#{common.edit}"
-                    data-toggle="modal"
-                    th:data-target="${'#editOdWordRecommendationDlg_' + lexeme.lexemeId + '_' + odWordRecommendation.id}"
-                    sec:authorize="#vars.lexeme.word.crudGrant">
-              <i class="fa fa-edit" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn badge badge-warning"
-                    th:data-id="${odWordRecommendation.id}"
-                    data-op-code="od_word_recommendation"
-                    data-toggle="delete-confirm"
-                    data-placement="right"
-                    sec:authorize="#vars.lexeme.word.crudGrant">
-              <i class="fa fa-remove" aria-hidden="true"></i>
-            </button>
+        <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
+        <div class="col hidden-buttons pr-5">
+          <div class="action-buttons-anchor">
+            <span th:utext="${odWordRecommendation.valuePrese}"></span>
+            <span class="ctxt" th:text="'[' + ${odWordRecommendation.modifiedBy} + ']'" th:if="${odWordRecommendation.modifiedBy != null}"></span>
+            <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odWordRecommendation.complexity}} + ')'"></span>
+            <span class="ctxt" th:text="'(' + ${#dates.format(odWordRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odWordRecommendation.modifiedOn != null}"></span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editOdWordRecommendationDlg_' + odWordRecommendation.id}"
+                      sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      th:data-id="${odWordRecommendation.id}"
+                      data-op-code="od_word_recommendation"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>

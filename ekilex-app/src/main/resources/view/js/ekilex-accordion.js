@@ -63,7 +63,9 @@ class EkiAccordion {
   handleResize() {
     const element = $(`#ekiAccordion-${this.id}:first`);
     if (element.length) {
-      this.calculateParameters();
+      if (!element.closest('div.card').length) {
+        this.calculateParameters();
+      }
     } else {
       this.unbindResize();
     }

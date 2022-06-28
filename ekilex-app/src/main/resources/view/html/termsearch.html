@@ -49,7 +49,7 @@
       <div th:text="#{term.search.invalid}"></div>
     </div>
     <div class="row no-gutters pt-3 h-100">
-      <div class="col-3 pr-2 pb-2 h-100" style="align-self: stretch;" id="searchColumn" th:if="${isSearchResult}">
+      <div class="col-3 pb-2 h-100" style="align-self: stretch;" id="searchColumn" th:if="${isSearchResult}">
         <div id="results_div" class="card shadow" style="height: 100%;">
           <div th:replace="termcomp :: term_search_result"></div>
         </div>
@@ -57,7 +57,7 @@
       <div class="mt-4 float-left" th:if="${noResults == true}">
         <div th:text="#{term.not.found}">Not found.</div>
       </div>
-      <div class="h-100 d-flex flex-column" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
+      <div class="h-100 d-flex flex-column pl-2" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
         <div class="scrollable-area" data-plugin="ekiSortable">
           <div id="details-area" data-rel="details-area" style="height: 100%; overflow: auto;"></div>
         </div>
@@ -89,7 +89,7 @@
         <div class="card border-0 mb-2">
           <div class="card-body">
             <div th:replace="termcomp :: meaning_header"></div>
-            <div class="row">
+            <div class="row no-gutters">
               <div class="col">
                 <button type="button" class="btn btn-secondary ml-2"
                         id="activeTagCompleteBtn"
@@ -138,7 +138,7 @@
                    th:if="${lexemeLangGroup.selected}"
                    th:data-id="${lexeme.lexemeId}"
                    th:data-orderby="${lexeme.orderBy}"
-                   class="card border-0 border-top-1">
+                   class="card border-0">
                 <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
                 <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
                 <div th:replace="termdialog :: add_usage_dlg"></div>
@@ -154,31 +154,40 @@
                 <div th:replace="termdialog :: edit_word_gender_dlg"></div>
                 <div th:replace="termdialog :: edit_word_lang_dlg"></div>
                 <div th:replace="termdialog :: edit_word_display_morph_dlg"></div>
-                <div class="card-body pb-4" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
-                  <div th:replace="termcomp :: lexeme_header"></div>
-                  <div>
-                    <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
-                    <div th:replace="termcomp :: data_ids"></div>
-                    <div th:replace="termcomp :: lexeme_tags"></div>
-                    <div th:replace="termcomp :: lexeme_complexity"></div>
-                    <div th:replace="termcomp :: lexeme_value_state"></div>
-                    <div th:replace="termcomp :: lexeme_reliability"></div>
-                    <div th:replace="termcomp :: word_gender"></div>
-                    <div th:replace="termcomp :: word_lang"></div>
-                    <div th:replace="termcomp :: word_type"></div>
-                    <div th:replace="termcomp :: lexeme_grammar"></div>
-                    <div th:replace="termcomp :: lexeme_pos"></div>
-                    <div th:replace="termcomp :: word_note"></div>
-                    <div th:replace="termcomp :: word_od_recommendation"></div>
-                    <div th:replace="termcomp :: lexeme_derivative"></div>
-                    <div th:replace="termcomp :: lexeme_register"></div>
-                    <div th:replace="termcomp :: lexeme_region"></div>
+                <div class="row w-100 no-gutters">
+                  <div class="card-body pb-4" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}" th:classappend="${not #lists.isEmpty(lexeme.word.odWordRecommendations) ? 'col-8' : ''}">
+                    <div th:replace="termcomp :: lexeme_header"></div>
+                    <div>
+                      <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
+                      <div th:replace="termcomp :: data_ids"></div>
+                      <div th:replace="termcomp :: lexeme_tags"></div>
+                      <div th:replace="termcomp :: lexeme_complexity"></div>
+                      <div th:replace="termcomp :: lexeme_value_state"></div>
+                      <div th:replace="termcomp :: lexeme_reliability"></div>
+                      <div th:replace="termcomp :: word_gender"></div>
+                      <div th:replace="termcomp :: word_lang"></div>
+                      <div th:replace="termcomp :: word_type"></div>
+                      <div th:replace="termcomp :: lexeme_grammar"></div>
+                      <div th:replace="termcomp :: lexeme_pos"></div>
+                      <div th:replace="termcomp :: word_note"></div>
+                      <div th:replace="termcomp :: lexeme_derivative"></div>
+                      <div th:replace="termcomp :: lexeme_register"></div>
+                      <div th:replace="termcomp :: lexeme_region"></div>
+                    </div>
+                    <div th:replace="termcomp :: lexeme_source_link"></div>
+                    <div th:replace="termcomp :: lexeme_usage"></div>
+                    <div th:replace="termcomp :: lexeme_relation"></div>
+                    <div th:replace="termcomp :: lexeme_note"></div>
+                    <div th:replace="termcomp :: lexeme_freeform"></div>
                   </div>
-                  <div th:replace="termcomp :: lexeme_source_link"></div>
-                  <div th:replace="termcomp :: lexeme_usage"></div>
-                  <div th:replace="termcomp :: lexeme_relation"></div>
-                  <div th:replace="termcomp :: lexeme_note"></div>
-                  <div th:replace="termcomp :: lexeme_freeform"></div>
+                  <div 
+                      class="col-4 no-gutters ekiAccordion"
+                      th:if="${not #lists.isEmpty(lexeme.word.odWordRecommendations)}"
+                      th:classappend="${itemIter.index > 0 ? 'mt-2' : ''}"
+                      data-plugin="ekiAccordion">
+                    <div th:replace="termcomp :: word_od_recommendation"></div>
+                    <div th:replace="termcomp :: word_od_recommendation"></div>
+                  </div>
                 </div>
               </div>
             </div>
