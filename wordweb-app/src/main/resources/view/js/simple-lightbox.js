@@ -5,6 +5,24 @@
 	Version 2.1.4
 */
 "use strict";
+const mediaQuery = window.matchMedia('(max-width: 1023.98px)');
+let svgWidth = 400;
+let svgHeight = 285;
+if (mediaQuery.matches) {
+  svgWidth = 300;
+  svgHeight = 185;
+} else {
+  mediaQuery.addEventListener('change', (e) => {
+    if (e.matches) {
+      svgWidth = 300;
+      svgHeight = 185;
+    } else {
+      svgWidth = 400;
+      svgHeight = 285;
+    }
+  })
+}
+
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -22,7 +40,7 @@ function () {
 
     _classCallCheck(this, SimpleLightbox);
 
-    _defineProperty(this, "defaultOptions", {
+    _defineProperty(this, "defaultOptions", { 
       sourceAttr: 'href',
       overlay: true,
       spinner: true,
@@ -63,8 +81,6 @@ function () {
       maxZoom: 10,
       htmlClass: 'has-lightbox',
       rtl: false,
-      svgWidth: 400,
-      svgHeight: 285
     });
 
     _defineProperty(this, "transitionPrefix", void 0);
@@ -527,8 +543,8 @@ function () {
         }
         // svg is specified to have the same dimensions between browsers
         if (event.target.src.endsWith('svg')) {
-          var imageWidth = _this5.options.svgWidth,
-            imageHeight = _this5.options.svgHeight;
+          var imageWidth = svgWidth,
+            imageHeight = svgHeight;
         } else {
           var imageWidth = event.target.width,
             imageHeight = event.target.height;
@@ -1149,8 +1165,8 @@ function () {
       this.currentImage.dataset.translateX = 0;
       this.currentImage.dataset.translateY = 0;
       if (targetURL.endsWith('svg')) {
-        this.currentImage.style.width = `${this.options.svgWidth}px`;
-        this.currentImage.style.height = `${this.options.svgHeight}px`;
+        this.currentImage.style.width = `${svgWidth}px`;
+        this.currentImage.style.height = `${svgHeight}px`;
         this.currentImage.style.backgroundColor = 'white';
       }
 
