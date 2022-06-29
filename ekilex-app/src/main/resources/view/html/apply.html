@@ -43,22 +43,16 @@
                   <span th:text="${dataset.name}" class="col-10"></span>
                 </div>
               </th:block>
-            </div>
-            <div class="row no-gutters">
-              <span class="col-10 mt-3 ml-5">
-                <a class="btn btn-outline-secondary" data-toggle="collapse" href="#commentSelection" role="button" aria-expanded="false" aria-controls="commentSelection">
-                  <span th:text="#{apply.comment}">Soovin põhjendada taotlust</span>
-                </a>
-              </span>
-            </div>
-            <div class="row collapse" id="commentSelection">
-              <div class="col-8 mt-3 ml-5">
-                <textarea class="form-control md-textarea" rows="3" name="applicationComment"></textarea>
+              <div class="row">
+                <div class="col-8 mt-3 ml-5">
+                  <label class="col-form-label" th:text="#{apply.comment}">Põhjendus</label>
+                  <textarea class="form-control" rows="3" name="applicationComment" required></textarea>
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col mt-3 ml-5">
-                <button type="submit" class="btn btn-primary" th:text="#{apply.submit.application}">Saada taotlus</button>
+              <div class="row">
+                <div class="col mt-3 ml-5">
+                  <button type="submit" class="btn btn-primary" th:text="#{apply.submit.application}">Saada taotlus</button>
+                </div>
               </div>
             </div>
           </form>

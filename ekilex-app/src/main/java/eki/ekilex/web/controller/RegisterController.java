@@ -97,7 +97,7 @@ public class RegisterController extends AbstractPublicPageController {
 				attributes.addFlashAttribute("success_message", message + " " + email);
 			} else {
 				String message = messageSource.getMessage("register.activation.link", new Object[0], locale);
-				attributes.addFlashAttribute("success_message", message + " " + email);
+				attributes.addFlashAttribute("success_message", message + " " + activationLink);
 			}
 			return "redirect:" + LOGIN_PAGE_URI;
 		} else {
