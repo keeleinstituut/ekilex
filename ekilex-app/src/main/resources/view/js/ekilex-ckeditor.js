@@ -522,10 +522,8 @@ class ckMedia {
 	}
 }
 
-function initCkEditor(elem) {
-	elem.ckeditor(function( textarea ) {
-		// Callback function code.
-	}, {
+function initCkEditor(elem, basic, resize) {
+	const config = {
 		enterMode: CKEDITOR.ENTER_BR,
 		extraPlugins: 'ekiStyles,ekiLink,removeEkilink,ekiMedia,removeEkiMedia',
 		toolbarGroups: [
@@ -541,10 +539,34 @@ function initCkEditor(elem) {
 		],
 		extraAllowedContent: 'eki-link[*]; ext-link[*]; eki-media[*];',
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
-	});
+	};
 
-	
+	if (basic) {
+		config.extraPlugins = 'ekiStyles';
+		config.extraAllowedContent = '';
+		config.removePlugins = 'sourcearea, elementspath';
+		config.resize_enabled = false;
+		config.toolbarGroups = [
+			{
+				name: 'eki-styles',
+				groups: ['ekiStyles']
+			}
+		];
+	}
 
+	if (resize) {
+		config.width = resize.width;
+		// Subtract toolbar height, as the height only applies to content
+		config.height = resize.height - 44;
+	}
+
+	// Save the editor instance after creation
+	const editor = elem.ckeditor(function( textarea ) {
+		// Callback function code.
+	}, config).editor;
+
+	// Return the editor instance for use in other functions
+	return editor;
 }
 
 const linkTemplate = /*html*/`

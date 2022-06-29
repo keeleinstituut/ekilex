@@ -131,4 +131,14 @@ $(function() {
 			})
 		})
 	}
+
+	$.fn.initBasicWrappedEkiEditorDlgPlugin = function() {
+		return this.each(function() {
+			const obj = $(this);
+			obj.on('click', function(e) {
+				initBasicWrappedEkiEditorOnContent(obj);
+				e.stopImmediatePropagation();
+			});
+		});
+	}
 });

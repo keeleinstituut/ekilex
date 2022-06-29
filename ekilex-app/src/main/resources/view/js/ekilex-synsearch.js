@@ -537,14 +537,9 @@ function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 
 function refreshSynDetails() {
 	const selectedWordId = $('#syn-details-area').data('id');
-	const refreshButton = $(`[name="synDetailsBtn"][data-id="${selectedWordId}"]`);
+	const refreshButton = $(`[name="synDetailsBtn"][data-id="${selectedWordId}"]`).first();
 
-	refreshButton.each(function () {
-		const button = $(this);
-		if (button.is(":hidden")) {
-			button.click();
-		}
-	});
+	refreshButton.click();
 
 	refreshButton.parent().addClass('active');
 }

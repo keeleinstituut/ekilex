@@ -1324,3 +1324,28 @@ function loadDetails(wordId, task, lastWordId) {
 		closeWaitDlg();
 	});
 };
+
+// Create an editor in place of the target
+function initBasicWrappedEkiEditorOnContent(obj) {
+	const resizeOptions = {
+		width: '100%',
+		height: obj.parent().height()
+	};
+
+	const editField = $('<textarea/>').val(obj.html());
+	obj.hide();
+	obj.after(editField);
+	// Leave only basic styling and pass in resize options
+	const editor = initCkEditor(editField, true, resizeOptions);
+	$(document).on('click.replace.eki.editor', function(e) {
+		const isObjParentClosest = $(e.target).closest(obj.parent()).length;
+		if (!isObjParentClosest) {
+			const content = editor.getData();
+			obj.html(content);
+			editor.destroy();
+			editField.remove();
+			obj.show();
+			$(document).off('click.replace.eki.editor');
+		}
+	});
+}
