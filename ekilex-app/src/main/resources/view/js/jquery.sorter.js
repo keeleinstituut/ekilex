@@ -150,7 +150,9 @@ class Sorter {
           orderby: originalOrder[index],
         })
       });
+      openWaitDlg();
       postJson(applicationUrl + 'update_ordering', data).done(function() {
+        closeWaitDlg();
         main.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
       });
     });
