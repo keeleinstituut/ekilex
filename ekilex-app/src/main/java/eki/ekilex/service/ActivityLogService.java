@@ -472,6 +472,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 				activityLogDbService.updateWordManualEventOn(wordId, eventOn);
 			}
 		}
+		// FIXME temp solution for better syn view ordering performance
+		if (activityLogData.getEntityName().equals(ActivityEntity.WORD_RELATION)) {
+			return;
+		}
 		for (Long meaningId : meaningIds) {
 			activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.EDIT);
 			if (isManualEventOnUpdateEnabled) {
