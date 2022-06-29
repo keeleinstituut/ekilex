@@ -150,7 +150,6 @@ public class UnifSearchController extends AbstractSearchController {
 		SearchFilter searchFilter = new SearchFilter(destinLangs, datasetCodes);
 		WordData wordData = unifSearchService.getWordData(wordId, searchFilter);
 		wordData.setLinkedLexemeId(linkedLexemeId);
-		boolean isTermDatasetsOnly = unifSearchService.isTermDatasetsOnly(datasetCodes);
 
 		String wordValue = wordData.getWord().getWord();
 		sessionBean.setRecentWord(wordValue);
@@ -160,7 +159,6 @@ public class UnifSearchController extends AbstractSearchController {
 		model.addAttribute("wordData", wordData);
 		model.addAttribute("searchMode", SEARCH_MODE_DETAIL);
 		model.addAttribute("ekilexLimTermSearchUrl", ekilexLimTermSearchUrl);
-		model.addAttribute("isTermDatasetsOnly", isTermDatasetsOnly);
 
 		return UNIF_SEARCH_PAGE + " :: worddetails";
 	}
