@@ -1746,11 +1746,11 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.word.notes)}" th:fragment="word_note">
-    <hr/>
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{term.word.note}">Keelendi märkus</span>
-      <button type="button" class="btn badge badge-secondary float-right mr-4"
+  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_note">
+    <div class="ekiAccordion__title">
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.notes)}">•</span>
+      <span th:text="#{term.word.note}">Keelendi märkus</span>
+      <button type="button" class="ekiAccordion__add"
               th:title="#{common.add.new}"
               data-toggle="modal"
               th:data-target="${'#addWordNoteDlg_' + lexeme.lexemeId}"
@@ -1758,37 +1758,40 @@
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
-    <div class="col pl-0">
+    <div class="ekiAccordion__content overflow-auto">
+      <div th:if="${#lists.isEmpty(lexeme.word.notes)}" th:text="#{common.no.content}">
+        Sisu puudub...
+      </div>
       <div th:each="note : ${lexeme.word.notes}">
         <div th:replace="termdialog :: edit_word_note_dlg"></div>
-        <div class="invisible-buttons action-buttons-anchor mw-80 ml-3">
-          <div style="display: list-item; position: absolute"></div>
-          <span th:utext="${note.valuePrese}"></span>
-          <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
-          <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.word.crudGrant}"></span>
-          <div class="action-buttons-2">
-            <button type="button" class="btn badge badge-primary"
-                    th:title="#{common.edit}"
-                    data-toggle="modal"
-                    th:data-target="${'#editWordNoteDlg_' + lexeme.lexemeId + '_' + note.id}"
-                    sec:authorize="#vars.lexeme.word.crudGrant">
-              <i class="fa fa-edit" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn badge badge-warning"
-                    th:data-id="${note.id}"
-                    data-op-code="word_note"
-                    data-toggle="delete-confirm"
-                    data-placement="right"
-                    sec:authorize="#vars.lexeme.word.crudGrant">
-              <i class="fa fa-remove" aria-hidden="true"></i>
-            </button>
+        <div class="col hidden-buttons pr-5">
+          <div class="action-buttons-anchor">
+            <span th:utext="${note.valuePrese}"></span>
+            <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
+            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.word.crudGrant}"></span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editWordNoteDlg_' + note.id}"
+                      sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      th:data-id="${note.id}"
+                      data-op-code="word_note"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.lexeme.word.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="border-top px-0 w-100 ekiAccordion__instance"
-      th:fragment="word_od_recommendation">
+  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_od_recommendation">
     <div class="ekiAccordion__title">
       <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.odWordRecommendations)}">•</span>
       <span th:text="#{term.word.od.recommendation}">ÕS soovitab</span>
@@ -1801,7 +1804,7 @@
       </button>
     </div>
     <div class="ekiAccordion__content overflow-auto">
-      <div th:if="${#lists.isEmpty(lexeme.word.odWordRecommendations)}">
+      <div th:if="${#lists.isEmpty(lexeme.word.odWordRecommendations)}" th:text="#{common.no.content}">
         Sisu puudub...
       </div>
       <div th:each="odWordRecommendation : ${lexeme.word.odWordRecommendations}">

@@ -169,7 +169,6 @@
                       <div th:replace="termcomp :: word_type"></div>
                       <div th:replace="termcomp :: lexeme_grammar"></div>
                       <div th:replace="termcomp :: lexeme_pos"></div>
-                      <div th:replace="termcomp :: word_note"></div>
                       <div th:replace="termcomp :: lexeme_derivative"></div>
                       <div th:replace="termcomp :: lexeme_register"></div>
                       <div th:replace="termcomp :: lexeme_region"></div>
@@ -180,13 +179,11 @@
                     <div th:replace="termcomp :: lexeme_note"></div>
                     <div th:replace="termcomp :: lexeme_freeform"></div>
                   </div>
-                  <div 
-                      class="col-4 no-gutters ekiAccordion"
-                      th:if="${not #lists.isEmpty(lexeme.word.odWordRecommendations)}"
-                      th:classappend="${itemIter.index > 0 ? 'mt-2' : ''}"
-                      data-plugin="ekiAccordion">
+                  <div class="col-4 no-gutters ekiAccordion"
+                       th:classappend="${itemIter.index > 0 ? 'mt-2' : ''}"
+                       data-plugin="ekiAccordion">
                     <div th:replace="termcomp :: word_od_recommendation"></div>
-                    <div th:replace="termcomp :: word_od_recommendation"></div>
+                    <div th:replace="termcomp :: word_note"></div>
                   </div>
                 </div>
               </div>

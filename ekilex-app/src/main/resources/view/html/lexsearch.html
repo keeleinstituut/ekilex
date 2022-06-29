@@ -186,7 +186,7 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.odWordRecommendations)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(details.odWordRecommendations)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
@@ -231,7 +231,7 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.word.notes)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(details.word.notes)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <div th:each="note : ${details.word.notes}">
@@ -269,7 +269,7 @@
                       <span th:text="#{lex.paradigms}">Sõnavormid</span>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.paradigms)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(details.paradigms)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
@@ -332,7 +332,7 @@
                     </div>
                     <div class="ekiAccordion__content">
                       <div>
-                        <span th:unless="${details.wordRelationDetails.groupRelationExists}" th:text="#{lex.no.content}">
+                        <span th:unless="${details.wordRelationDetails.groupRelationExists}" th:text="#{common.no.content}">
                           Sisu puudub...
                         </span>
                         <table th:unless="${#lists.isEmpty(details.wordRelationDetails.wordGroups)}">
@@ -411,7 +411,7 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(relationGroup.members)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(relationGroup.members)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <ul
