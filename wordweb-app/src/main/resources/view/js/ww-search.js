@@ -115,6 +115,10 @@ $(document).on("click", "a[id^='word-details-link']", function() {
   fetchDetails(wordId, wordSelectUrl);
 });
 
+$(document).on("click", "a[id^='feedback-link']", function() {
+  $("button[name='feedback-btn']").click();
+});
+
 $(document).on("click", ".homonym-item", function() {
   $(".homonym-list-item").removeClass("selected last-selected");
   $(".homonym-item:first").removeClass("animation-target").dequeue();
