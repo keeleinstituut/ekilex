@@ -215,7 +215,7 @@ from (
   (select lc.word,
           array_agg(distinct row (
                     case
-                      when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                      when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
                       else 'other'
                     end,
                     lc.dataset_code,
@@ -455,7 +455,7 @@ from (select w.id as word_id,
   inner join (select lc.word_id,
                      array_agg(distinct row (
                             case
-                              when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                              when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
                               else 'other'
                             end,
                             lc.dataset_code,
@@ -1046,7 +1046,7 @@ from lexeme l
   left outer join (select lc.id,
                           array_agg(distinct row (
                                  case 
-                                   when (lc.lang in ('est', 'rus', 'eng')) then lc.lang
+                                   when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
                                    else 'other'
                                  end,
                                  lc.dataset_code,
