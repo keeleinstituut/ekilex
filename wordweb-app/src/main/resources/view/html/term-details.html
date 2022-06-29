@@ -26,14 +26,6 @@
                 <span th:text="${#dates.format(lexeme.meaningManualEventOn, 'dd.MM.yyyy')}"></span>
               </span>
             </div>
-            <th:block th:if="${lexeme.reliability != null}">
-              <span th:text="#{label.lexeme.reliability}">Usaldusväärsus</span>
-              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 1} ? 'text-warning': ''"></span>
-              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 2} ? 'text-warning': ''"></span>
-              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 3} ? 'text-warning': ''"></span>
-              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 4} ? 'text-warning': ''"></span>
-              <span class="fa fa-star" th:classappend="${lexeme.reliability >= 5} ? 'text-warning': ''"></span>
-            </th:block>
             <th:block th:if="${not #lists.isEmpty(lexeme.domains)}">
               <div class="mb-2">
                 <span class="domain mr-1" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
@@ -121,7 +113,7 @@
                             </span>
                           </button>
                         </th:block>
-                        <span th:unless=${isCollapsable}
+                        <span th:unless="${isCollapsable}"
                               class="definition-value mb-2 mr-1 text-weight-medium text-dark"
                               th:utext="${definition.valuePrese}"></span>
                         <th:block th:if="${not #lists.isEmpty(definition.notes)}">
@@ -275,6 +267,16 @@
                             <span th:utext="${viewUtil.getWordValueMarkup(meaningLexeme)}">tee</span>
                           </a>
                           <span class="text-small" th:if="${meaningLexeme.valueState != null}" th:text="${meaningLexeme.valueState.value}"></span>
+                        </div>
+                      </div>
+                      <div class="row text-small" th:if="${lexeme.reliability != null}">
+                        <div class="col">
+                          <span th:text="#{label.lexeme.reliability}">Usaldusväärsus</span>
+                          <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 1} ? 'text-warning': ''"></span>
+                          <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 2} ? 'text-warning': ''"></span>
+                          <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 3} ? 'text-warning': ''"></span>
+                          <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 4} ? 'text-warning': ''"></span>
+                          <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 5} ? 'text-warning': ''"></span>
                         </div>
                       </div>
                       <div class="row" th:if="${not #lists.isEmpty(meaningLexeme.lexemeSourceLinks)}">
