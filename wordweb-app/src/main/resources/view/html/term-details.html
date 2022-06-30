@@ -269,7 +269,7 @@
                           <span class="text-small" th:if="${meaningLexeme.valueState != null}" th:text="${meaningLexeme.valueState.value}"></span>
                         </div>
                       </div>
-                      <div class="row text-small" th:if="${lexeme.reliability != null}">
+                      <div class="row text-small" th:if="${meaningLexeme.reliability != null}">
                         <div class="col">
                           <span th:text="#{label.lexeme.reliability}">Usaldusväärsus</span>
                           <span class="fa fa-star" th:classappend="${meaningLexeme.reliability >= 1} ? 'text-warning': ''"></span>
