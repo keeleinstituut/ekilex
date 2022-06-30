@@ -1261,7 +1261,8 @@ function loadDetails(wordId, task, lastWordId) {
 				dataObject.attr('data-breadcrumbs', JSON.stringify(breadCrumbs));
 				const newDiv = $(dataObject[0].outerHTML);
 				detailsDiv.replaceWith(newDiv);
-				scrollDetails(newDiv, scrollPosition);
+				detailsDiv = newDiv;
+				scrollDetails(detailsDiv, scrollPosition);
 			} else {
 				const breadCrumbs = getBreadcrumbsData(dataObject, {
 					id: parseInt(wordId),
