@@ -1808,7 +1808,7 @@
         Sisu puudub...
       </div>
       <div th:each="odWordRecommendation : ${lexeme.word.odWordRecommendations}">
-        <div th:replace="lexdialog :: edit_od_word_recommendation"></div>
+        <div th:replace="termdialog :: edit_od_word_recommendation"></div>
         <div class="col hidden-buttons pr-5">
           <div class="action-buttons-anchor">
             <span th:utext="${odWordRecommendation.valuePrese}"></span>

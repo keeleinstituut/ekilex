@@ -825,7 +825,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordNoteDlg_' + lexeme.lexemeId + '_' + note.id}" class="modal"
+  <div th:id="${'editWordNoteDlg_' + note.id}" class="modal"
         role="dialog"
         th:fragment="edit_word_note_dlg"
         data-plugin="initEkiEditorDlgAndFocusPlugin">
@@ -879,7 +879,7 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editOdWordRecommendationDlg_' + lexeme.lexemeId + '_' + odWordRecommendation.id}" class="modal"
+  <div th:id="${'editOdWordRecommendationDlg_' + odWordRecommendation.id}" class="modal"
        role="dialog"
        th:fragment="edit_od_word_recommendation"
        data-plugin="initEkiEditorDlgAndFocusPlugin">
