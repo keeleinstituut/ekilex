@@ -7,7 +7,7 @@
        th:with="
          isWordResultMode=${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD},
          isMeaningResultMode=${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING}">
-    <div class="row">
+    <div class="row no-gutters">
       <div class="col-auto">
         <div class="btn-group btn-group-toggle btn-tabs" data-toggle="buttons">
           <label class="btn btn-secondary" th:classappend="${isWordResultMode ? 'active' : ''}">
@@ -64,7 +64,7 @@
     <div th:replace="termcomp :: search_result_rows"></div>
   </div>
   <div class="card-body px-2 pt-1 pb-2" th:fragment="lim_term_search_result">
-    <div class="row">
+    <div class="row no-gutters">
       <div class="col-auto">
         <span th:text="#{term.meanings.found} + ' ' + ${termSearchResult.meaningCount}"></span>
       </div>
@@ -556,7 +556,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}" th:fragment="term_meaning_note">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}" th:fragment="term_meaning_note">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
@@ -663,7 +663,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:fragment="lim_term_meaning_note">
+  <div class="row no-gutters" th:fragment="lim_term_meaning_note">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
         Arutelu
@@ -920,7 +920,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.medias)}" th:fragment="meaning_media">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.medias)}" th:fragment="meaning_media">
     <hr>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.media}">Videod ja muu meedia</span>
@@ -979,7 +979,7 @@
       </table>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(meaning.viewRelations)}" th:fragment="meaning_relation">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(meaning.viewRelations)}" th:fragment="meaning_relation">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.meaning.relation}">Tähenduse seos</span>
@@ -1123,7 +1123,7 @@
       <th:block th:replace="common :: ordering_buttons(${itemIter})" sec:authorize="#vars.meaning.crudGrant"></th:block>
     </div>
   </div>
-  <div class="hidden-buttons row" th:fragment="data_ids" style="display: none;">
+  <div class="hidden-buttons row no-gutters" th:fragment="data_ids" style="display: none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.data.ids}">Identifikaatorid</span>
     </div>
@@ -1195,7 +1195,7 @@
       <span th:text="#{'enum.complexity.' + ${lexeme.complexity}}"></span>
     </div>
   </div>
-  <div class="hidden-buttons row" th:if="${lexeme.lexemeValueState != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display: none;">
+  <div class="hidden-buttons row no-gutters" th:if="${lexeme.lexemeValueState != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display: none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.value.state}">Väärtusolek</span>
     </div>
@@ -1217,7 +1217,7 @@
       </button>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.grammar}">Grammatika</span>
     </div>
@@ -1259,7 +1259,7 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.derivs)}" th:fragment="lexeme_derivative">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.derivs)}" th:fragment="lexeme_derivative">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.deriv}">Tuletuskood</span>
     </div>
@@ -1321,7 +1321,7 @@
       </span>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.regions)}" th:fragment="lexeme_region">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.regions)}" th:fragment="lexeme_region">
     <div class="col pr-0 col-w13rem">
       <span class="lbl">Regioon</span>
     </div>
@@ -1350,7 +1350,7 @@
       </span>
     </div>
   </div>
-  <div class="row mr-0 hidden-buttons" th:if="${lexeme.reliability != null}" th:fragment="lexeme_reliability">
+  <div class="row mr-0 hidden-buttons no-gutters" th:if="${lexeme.reliability != null}" th:fragment="lexeme_reliability">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.reliability}">Usaldusväärsus</span>
     </div>
@@ -1374,7 +1374,7 @@
       </button>
     </div>
   </div>
-  <div class="row mt-2" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}" th:fragment="lexeme_source_link">
+  <div class="row mt-2 no-gutters" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}" th:fragment="lexeme_source_link">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.source.link}">Allikaviide</span>
@@ -1415,7 +1415,7 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}" th:fragment="lexeme_usage">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.usages)}" th:fragment="lexeme_usage">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.usage}">Kasutusnäide</span>
@@ -1513,7 +1513,7 @@
       </div>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}" th:fragment="lexeme_relation">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}" th:fragment="lexeme_relation">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.relation}">Ilmiku seos</span>
@@ -1553,7 +1553,7 @@
       </table>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.noteLangGroups)}" th:fragment="lexeme_note">
+  <div class="row no-gutters" th:if="${not #lists.isEmpty(lexeme.noteLangGroups)}" th:fragment="lexeme_note">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl">
@@ -1661,7 +1661,7 @@
       </th:block>
     </div>
   </div>
-  <div th:if="${not #lists.isEmpty(lexeme.freeforms)}" class="row" th:fragment="lexeme_freeform">
+  <div th:if="${not #lists.isEmpty(lexeme.freeforms)}" class="row no-gutters" th:fragment="lexeme_freeform">
     <hr/>
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.attributes}">Ilmiku atribuudid</span>
@@ -1715,7 +1715,7 @@
       </button>
     </div>
   </div>
-  <div class="row mr-0" th:if="${not #lists.isEmpty(lexeme.wordTypes)}" th:fragment="word_type">
+  <div class="row mr-0 no-gutters" th:if="${not #lists.isEmpty(lexeme.wordTypes)}" th:fragment="word_type">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.word.type}">Keelendi tüüp</span>
     </div>

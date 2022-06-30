@@ -155,7 +155,7 @@
                 <div th:replace="termdialog :: edit_word_lang_dlg"></div>
                 <div th:replace="termdialog :: edit_word_display_morph_dlg"></div>
                 <div class="row w-100 no-gutters">
-                  <div class="card-body pb-4" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}" th:classappend="${not #lists.isEmpty(lexeme.word.odWordRecommendations) ? 'col-8' : ''}">
+                  <div class="card-body pb-4 col-8" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
                     <div th:replace="termcomp :: lexeme_header"></div>
                     <div>
                       <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
@@ -179,7 +179,7 @@
                     <div th:replace="termcomp :: lexeme_note"></div>
                     <div th:replace="termcomp :: lexeme_freeform"></div>
                   </div>
-                  <div class="col-4 no-gutters ekiAccordion"
+                  <div class="col-4 ekiAccordion"
                        th:classappend="${itemIter.index > 0 ? 'mt-2' : ''}"
                        data-plugin="ekiAccordion">
                     <div th:replace="termcomp :: word_od_recommendation"></div>
