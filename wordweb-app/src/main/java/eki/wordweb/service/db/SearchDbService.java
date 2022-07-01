@@ -280,7 +280,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						l.GRAMMARS,
 						l.GOVERNMENTS,
 						l.USAGES,
-						l.OD_LEXEME_RECOMMENDATIONS,
 						lsl.SOURCE_LINKS.as("lexeme_source_links"),
 						ffsl.SOURCE_LINKS.as("lexeme_freeform_source_links"),
 						lr.RELATED_LEXEMES)
@@ -340,7 +339,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						l2.GRAMMARS,
 						l2.GOVERNMENTS,
 						l2.USAGES,
-						l2.OD_LEXEME_RECOMMENDATIONS,
 						w2.WORD,
 						w2.WORD_PRESE,
 						w2.AS_WORD,

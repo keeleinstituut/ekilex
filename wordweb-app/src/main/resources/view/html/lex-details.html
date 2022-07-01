@@ -262,18 +262,6 @@
                     </th:block>
                   </div>
                 </div>
-                <div class="meaning-meta" th:if="${not #lists.isEmpty(lexeme.odLexemeRecommendations)}">
-                  <th:block th:each="odLexemeRecommendation : ${lexeme.odLexemeRecommendations}">
-                    <div>
-                      <span class="recommended-usage-label d-block">
-                        <i class="fa fa-book mr-1"></i>
-                        <span class="label-text" th:text="#{label.od.recommend}">ÕS soovitab</span>
-                      </span>
-                      <span th:utext="${odLexemeRecommendation.value}"></span>
-                      <span th:text="'(' + ${#dates.format(odLexemeRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odLexemeRecommendation.modifiedOn != null}"></span>
-                    </div>
-                  </th:block>
-                </div>
               </div>
               <div class="additional-meta mb-2" th:if="${lexeme.showSection2}">
                 <div class="d-flex related-lexemes flex-column" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
@@ -411,21 +399,6 @@
                             <span class="example-text-value" th:utext="${usageDefinition}"></span>
                           </span>
                         </th:block>
-                        <th:block th:if="${not #lists.isEmpty(usage.odUsageDefinitions)}">
-                          <div class="example-text">
-                            <span class="recommended-usage-label d-block">
-                              <i class="fa fa-book mr-1"></i>
-                              <span class="label-text" th:text="#{label.od.recommend}">ÕS soovitab</span>
-                            </span>
-                            <span th:each="odUsageDefinition : ${usage.odUsageDefinitions}" style="padding: .5rem .5rem .25rem" th:utext="${odUsageDefinition}"></span>
-                          </div>
-                        </th:block>
-                        <th:block th:if="${not #lists.isEmpty(usage.odUsageAlternatives)}">
-                          <div class="example-text">
-                            <span>=</span>
-                            <span th:each="odUsageAlternative : ${usage.odUsageAlternatives}" style="padding: .5rem .5rem .25rem" th:utext="${odUsageAlternative}"></span>
-                          </div>
-                        </th:block>
                       </div>
                     </div>
                   </th:block>
@@ -460,21 +433,6 @@
                               <span th:each="usageDefinition : ${usage.usageDefinitions}" class="example-text" >
                                 <span class="example-text-value" th:utext="${usageDefinition}"></span>
                               </span>
-                            </th:block>
-                            <th:block th:if="${not #lists.isEmpty(usage.odUsageDefinitions)}">
-                              <div class="example-text">
-                              <span class="recommended-usage-label d-block">
-                                <i class="fa fa-book mr-1"></i>
-                                <span class="label-text" th:text="#{label.od.recommend}">ÕS soovitab</span>
-                              </span>
-                              <span th:each="odUsageDefinition : ${usage.odUsageDefinitions}" style="padding: .5rem .5rem .25rem" th:utext="${odUsageDefinition}"></span>
-                              </div>
-                            </th:block>
-                            <th:block th:if="${not #lists.isEmpty(usage.odUsageAlternatives)}">
-                              <div class="example-text">
-                                <span>=</span>
-                                <span th:each="odUsageAlternative : ${usage.odUsageAlternatives}" style="padding: .5rem .5rem .25rem" th:utext="${odUsageAlternative}"></span>
-                              </div>
                             </th:block>
                           </div>
                         </div>

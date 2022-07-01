@@ -21,7 +21,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -653353467;
+    private static final long serialVersionUID = 86928941;
 
     /**
      * Setter for <code>public.mview_ww_lexeme.lexeme_id</code>.
@@ -401,20 +401,6 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
         return (TypeUsageRecord[]) get(26);
     }
 
-    /**
-     * Setter for <code>public.mview_ww_lexeme.od_lexeme_recommendations</code>.
-     */
-    public void setOdLexemeRecommendations(TypeFreeformRecord[] value) {
-        set(27, value);
-    }
-
-    /**
-     * Getter for <code>public.mview_ww_lexeme.od_lexeme_recommendations</code>.
-     */
-    public TypeFreeformRecord[] getOdLexemeRecommendations() {
-        return (TypeFreeformRecord[]) get(27);
-    }
-
     // -------------------------------------------------------------------------
     // Constructors
     // -------------------------------------------------------------------------
@@ -429,7 +415,7 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
     /**
      * Create a detached, initialised MviewWwLexemeRecord
      */
-    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, Long valueStateOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages, TypeFreeformRecord[] odLexemeRecommendations) {
+    public MviewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, Long valueStateOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages) {
         super(MviewWwLexeme.MVIEW_WW_LEXEME);
 
         set(0, lexemeId);
@@ -459,6 +445,5 @@ public class MviewWwLexemeRecord extends TableRecordImpl<MviewWwLexemeRecord> {
         set(24, grammars);
         set(25, governments);
         set(26, usages);
-        set(27, odLexemeRecommendations);
     }
 }

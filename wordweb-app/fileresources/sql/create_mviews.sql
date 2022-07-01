@@ -73,9 +73,7 @@ create type type_usage as (
 				complexity varchar(100),
 				usage_type_code varchar(100),
 				usage_translations text array,
-				usage_definitions text array,
-				od_usage_definitions text array,
-				od_usage_alternatives text array);
+				usage_definitions text array);
 create type type_freeform as (
 				freeform_id bigint,
 				type varchar(100),
@@ -292,8 +290,7 @@ dblink(
 	notes type_freeform array,
 	grammars type_freeform array,
 	governments type_freeform array,
-	usages type_usage array,
-	od_lexeme_recommendations type_freeform array
+	usages type_usage array
 );
 
 create materialized view mview_ww_collocation as

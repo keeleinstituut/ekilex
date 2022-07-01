@@ -26,10 +26,6 @@ public class Usage extends AbstractPublicEntity {
 
 	private List<UsageDefinition> definitions;
 
-	private List<OdUsageDefinition> odDefinitions;
-
-	private List<OdUsageAlternative> odAlternatives;
-
 	private List<SourceLink> authors;
 
 	private List<SourceLink> sourceLinks;
@@ -104,22 +100,6 @@ public class Usage extends AbstractPublicEntity {
 
 	public void setDefinitions(List<UsageDefinition> definitions) {
 		this.definitions = definitions;
-	}
-
-	public List<OdUsageDefinition> getOdDefinitions() {
-		return odDefinitions;
-	}
-
-	public void setOdDefinitions(List<OdUsageDefinition> odDefinitions) {
-		this.odDefinitions = odDefinitions;
-	}
-
-	public List<OdUsageAlternative> getOdAlternatives() {
-		return odAlternatives;
-	}
-
-	public void setOdAlternatives(List<OdUsageAlternative> odAlternatives) {
-		this.odAlternatives = odAlternatives;
 	}
 
 	public List<SourceLink> getAuthors() {

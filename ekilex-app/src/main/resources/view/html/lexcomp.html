@@ -871,54 +871,6 @@
       </th:block>
     </div>
   </div>
-  <div class="row" th:if="${not #lists.isEmpty(lexeme.odLexemeRecommendations)}" th:fragment="od_lexeme_recommendation">
-    <hr/>
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{lex.od.recommedation}">ÕS soovitab</span>
-      <button type="button" class="btn badge badge-success float-right mr-4"
-              th:title="#{common.add.new}"
-              data-toggle="modal"
-              th:data-target="${'#addOdLexemeRecommendationDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.crudGrant">
-        <i class="fa fa-plus" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="col pl-0">
-      <div th:each="odLexemeRecommendation, itemIter : ${lexeme.odLexemeRecommendations}">
-        <div th:replace="lexdialog :: edit_od_lexeme_recommendation"></div>
-        <div class="row">
-          <div class="col hidden-buttons">
-            <div class="action-buttons-anchor">
-              <div class="pr-3">
-                <span th:utext="${odLexemeRecommendation.valuePrese}"></span>
-                <span class="ctxt" th:text="'[' + ${odLexemeRecommendation.modifiedBy} + ']'" th:if="${odLexemeRecommendation.modifiedBy != null}"></span>
-                <span class="ctxt" th:text="'(' + #{'enum.complexity.' + ${odLexemeRecommendation.complexity}} + ')'" data-plugin="complexity"></span>
-                <span class="ctxt" th:text="'(' + ${#dates.format(odLexemeRecommendation.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${odLexemeRecommendation.modifiedOn != null}"></span>
-              </div>
-              <div class="action-buttons-2">
-                <button type="button" class="btn badge badge-primary"
-                        th:title="#{common.edit}"
-                        data-toggle="modal"
-                        th:data-target="${'#editOdLexemeRecommendationDlg_' + lexeme.lexemeId + '_' + odLexemeRecommendation.id}"
-                        sec:authorize="#vars.lexeme.crudGrant">
-                  <i class="fa fa-edit" aria-hidden="true"></i>
-                </button>
-                <button type="button" class="btn badge badge-warning"
-                        data-op-code="od_lexeme_recommendation"
-                        th:data-id="${odLexemeRecommendation.id}"
-                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                        data-toggle="delete-confirm"
-                        data-placement="right"
-                        sec:authorize="#vars.lexeme.crudGrant">
-                  <i class="fa fa-remove" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}" th:fragment="lexeme_source_link">
     <hr/>
     <div class="col pr-0 col-w13rem">
@@ -1518,82 +1470,6 @@
                       <button type="button" class="btn badge badge-warning"
                               data-op-code="usage_definition"
                               th:data-id="${usageDefinition.id}"
-                              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                              data-toggle="delete-confirm"
-                              data-placement="right"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-success"
-                              th:title="#{common.add.new}"
-                              data-toggle="modal"
-                              th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div th:if="${not #lists.isEmpty(usage.odDefinitions)}" class="col pl-0">
-              <div>
-                <span class="lbl" th:text="#{lex.usage.od.definition}">ÕSi sõnastussoovitus</span>
-              </div>
-              <div class="row" th:each="odUsageDefinition : ${usage.odDefinitions}">
-                <div th:replace="lexdialog :: edit_od_usage_definition_dlg"></div>
-                <div class="col hidden-buttons ml-2">
-                  <div class="action-buttons-anchor">
-                    <span th:utext="${odUsageDefinition.value}"></span>
-                    <div class="action-buttons-3">
-                      <button type="button" class="btn badge badge-primary"
-                              th:title="#{common.edit}"
-                              data-toggle="modal"
-                              th:data-target="${'#editOdUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageDefinition.id}"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-warning"
-                              data-op-code="od_usage_definition"
-                              th:data-id="${odUsageDefinition.id}"
-                              th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-                              data-toggle="delete-confirm"
-                              data-placement="right"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-success"
-                              th:title="#{common.add.new}"
-                              data-toggle="modal"
-                              th:data-target="${'#addUsageMemberDlg_' + lexeme.lexemeId + '_' + usage.id}"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-plus" aria-hidden="true"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div th:if="${not #lists.isEmpty(usage.odAlternatives)}" class="col pl-0">
-              <div>
-                <span class="lbl" th:text="#{lex.usage.od.alternative}">ÕSi variant</span>
-              </div>
-              <div class="row" th:each="odUsageAlternative : ${usage.odAlternatives}">
-                <div th:replace="lexdialog :: edit_od_usage_alternative_dlg"></div>
-                <div class="col hidden-buttons ml-2">
-                  <div class="action-buttons-anchor">
-                    <span th:utext="${odUsageAlternative.value}"></span>
-                    <div class="action-buttons-3">
-                      <button type="button" class="btn badge badge-primary"
-                              th:title="#{common.edit}"
-                              data-toggle="modal"
-                              th:data-target="${'#editOdUsageAlternativeDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageAlternative.id}"
-                              sec:authorize="#vars.usage.crudGrant">
-                        <i class="fa fa-edit" aria-hidden="true"></i>
-                      </button>
-                      <button type="button" class="btn badge badge-warning"
-                              data-op-code="od_usage_alternative"
-                              th:data-id="${odUsageAlternative.id}"
                               th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                               data-toggle="delete-confirm"
                               data-placement="right"

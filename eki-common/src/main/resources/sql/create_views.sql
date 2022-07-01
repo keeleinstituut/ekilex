@@ -37,9 +37,7 @@ create type type_usage as (
 				complexity varchar(100),
 				usage_type_code varchar(100),
 				usage_translations text array,
-				usage_definitions text array,
-				od_usage_definitions text array,
-				od_usage_alternatives text array);
+				usage_definitions text array);
 create type type_freeform as (
 				freeform_id bigint,
 				type varchar(100),
@@ -873,8 +871,7 @@ select l.id lexeme_id,
        pnote.notes,
        gramm.grammars,
        gov.governments,
-       usg.usages,
-       odlr.od_lexeme_recommendations
+       usg.usages
 from lexeme l
   inner join dataset ds on ds.code = l.dataset_code
   left outer join value_state l_vs on l_vs.code = l.value_state_code
@@ -911,13 +908,6 @@ from lexeme l
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GOVERNMENT'
                    group by lf.lexeme_id) gov on gov.lexeme_id = l.id
-  left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, null, null, null, null, ff.modified_by, ff.modified_on)::type_freeform order by ff.order_by) od_lexeme_recommendations
-                   from lexeme_freeform lf,
-                        freeform ff
-                   where lf.freeform_id = ff.id
-                   and   ff.type = 'OD_LEXEME_RECOMMENDATION'
-                   group by lf.lexeme_id) odlr on odlr.lexeme_id = l.id
   left outer join (select mw.lexeme_id,
                           array_agg(row (
                                 mw.lexeme_id,
@@ -996,9 +986,7 @@ from lexeme l
                                 u.complexity,
                                 u.usage_type_code,
                                 u.usage_translations,
-                                u.usage_definitions,
-                                u.od_usage_definitions,
-                                u.od_usage_alternatives)::type_usage
+                                u.usage_definitions)::type_usage
                                 order by u.order_by) usages
                    from (select lf.lexeme_id,
                                 u.id usage_id,
@@ -1009,9 +997,7 @@ from lexeme l
                                 u.order_by,
                                 utp.classif_code usage_type_code,
                                 ut.usage_translations,
-                                ud.usage_definitions,
-                                odud.od_usage_definitions,
-                                odua.od_usage_alternatives
+                                ud.usage_definitions
                          from lexeme_freeform lf
                            inner join freeform u
                                    on lf.freeform_id = u.id
@@ -1031,17 +1017,7 @@ from lexeme l
                                                    array_agg(ud.value_prese order by ud.order_by) usage_definitions
                                             from freeform ud
                                             where ud.type = 'USAGE_DEFINITION'
-                                            group by ud.parent_id) ud on ud.usage_id = u.id
-                           left outer join (select odud.parent_id usage_id,
-                                                   array_agg(odud.value_prese order by odud.order_by) od_usage_definitions
-                                            from freeform odud
-                                            where odud.type = 'OD_USAGE_DEFINITION'
-                                            group by odud.parent_id) odud on odud.usage_id = u.id
-                           left outer join (select odua.parent_id usage_id,
-                                                   array_agg(odua.value_prese order by odua.order_by) od_usage_alternatives
-                                            from freeform odua
-                                            where odua.type = 'OD_USAGE_ALTERNATIVE'
-                                            group by odua.parent_id) odua on odua.usage_id = u.id) u
+                                            group by ud.parent_id) ud on ud.usage_id = u.id) u
                    group by u.lexeme_id) usg on usg.lexeme_id = l.id
   left outer join (select lc.id,
                           array_agg(distinct row (

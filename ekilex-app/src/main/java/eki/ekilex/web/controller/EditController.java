@@ -208,15 +208,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "od_word_recommendation":
 			cudService.createOdWordRecommendation(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
 			break;
-		case "od_lexeme_recommendation":
-			cudService.createOdLexemeRecommendation(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_definition":
-			cudService.createOdUsageDefinition(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_alternative":
-			cudService.createOdUsageAlternative(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
-			break;
 		}
 		return RESPONSE_OK_VER2;
 	}
@@ -366,15 +357,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "od_word_recommendation":
 			cudService.updateOdWordRecommendation(itemId, itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_lexeme_recommendation":
-			cudService.updateOdLexemeRecommendation(itemId, itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_definition":
-			cudService.updateOdUsageDefinition(itemId, itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_alternative":
-			cudService.updateOdUsageAlternative(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.FREEFORM_SOURCE_LINK:
 			String ffSourceLinkValue = getSourcePropertyValue(itemData.getId2());
@@ -658,15 +640,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "od_word_recommendation":
 			cudService.deleteOdWordRecommendation(id, isManualEventOnUpdateEnabled);
-			break;
-		case "od_lexeme_recommendation":
-			cudService.deleteOdLexemeRecommendation(id, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_definition":
-			cudService.deleteOdUsageDefinition(id, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_alternative":
-			cudService.deleteOdUsageAlternative(id, isManualEventOnUpdateEnabled);
 			break;
 		case "paradigm":
 			cudService.deleteParadigm(id, isManualEventOnUpdateEnabled);

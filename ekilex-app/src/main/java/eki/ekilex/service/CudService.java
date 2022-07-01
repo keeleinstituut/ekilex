@@ -729,36 +729,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateOdLexemeRecommendation(Long freeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setId(freeformId);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_LEXEME_RECOMMENDATION, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
-	public void updateOdUsageDefinition(Long freeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setId(freeformId);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_DEFINITION, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
-	public void updateOdUsageAlternative(Long freeformId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setId(freeformId);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		updateFreeform(ActivityOwner.LEXEME, ActivityEntity.OD_USAGE_ALTERNATIVE, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
 	public void updateLexemeWeight(Long lexemeId, String lexemeWeightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeWeight", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
@@ -1200,40 +1170,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
-	public void createOdLexemeRecommendation(Long lexemeId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.OD_LEXEME_RECOMMENDATION);
-		freeform.setComplexity(Complexity.DETAIL);
-		freeform.setPublic(true);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		createLexemeFreeform(ActivityEntity.OD_LEXEME_RECOMMENDATION, lexemeId, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
-	public void createOdUsageDefinition(Long usageId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setParentId(usageId);
-		freeform.setType(FreeformType.OD_USAGE_DEFINITION);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		createUsageChildFreeform(ActivityEntity.OD_USAGE_DEFINITION, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
-	public void createOdUsageAlternative(Long usageId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setParentId(usageId);
-		freeform.setType(FreeformType.OD_USAGE_ALTERNATIVE);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		createUsageChildFreeform(ActivityEntity.OD_USAGE_ALTERNATIVE, freeform, isManualEventOnUpdateEnabled);
 	}
 
 	@Transactional
@@ -1693,33 +1629,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdWordRecommendation", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(freeformId);
 		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_WORD_RECOMMENDATION);
-	}
-
-	@Transactional
-	public void deleteOdLexemeRecommendation(Long freeformId, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdLexemeRecommendation", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(freeformId);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_LEXEME_RECOMMENDATION);
-	}
-
-	@Transactional
-	public void deleteOdUsageDefinition(Long freeformId, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_DEFINITION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageDefinition", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(freeformId);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_DEFINITION);
-	}
-
-	@Transactional
-	public void deleteOdUsageAlternative(Long freeformId, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long lexemeId = activityLogService.getOwnerId(freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteOdUsageAlternative", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(freeformId);
-		activityLogService.createActivityLog(activityLog, freeformId, ActivityEntity.OD_USAGE_ALTERNATIVE);
 	}
 
 	@Transactional

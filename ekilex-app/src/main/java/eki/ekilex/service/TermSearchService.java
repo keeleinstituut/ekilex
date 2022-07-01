@@ -211,7 +211,7 @@ public class TermSearchService extends AbstractSearchService {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
-				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
+				FreeformType.NOTE.name()};
 
 		DatasetPermission userRole = user.getRecentRole();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
