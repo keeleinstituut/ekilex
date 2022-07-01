@@ -1424,32 +1424,18 @@
   <div th:id="${'editWordValueDlg_' + lexeme.wordId}" class="modal"
         role="dialog"
         th:fragment="edit_word_value_dlg"
-        data-plugin="initWordValueEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-sm" role="document">
+        data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_word_value}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="wordId" th:value="${lexeme.wordId}">
+            <input type="hidden" name="id" th:value="${lexeme.wordId}">
+            <input type="hidden" name="opCode" value="word_value">
             <input type="hidden" name="value" th:value="${lexeme.word.wordValuePrese}">
-            <div class="form-group row eki-editor">
-              <div class="col-md-12 pb-3">
-                <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-success" data-btn-menu th:text="#{term.add.markup}">Lisa märgendus</button>
-                  <button type="button" class="btn btn-sm btn-success" data-btn-remove th:text="#{term.delete.markup}">Eemalda märgendus</button>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
-                <div class="eki-editor-menu">
-                  <select class="eki-tag-select" size="6">
-                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
-            <button name="saveWordValueBtn" type="button" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>

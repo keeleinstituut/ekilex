@@ -198,10 +198,6 @@ public interface WebConstant {
 
 	String UPDATE_LEXEME_LEVELS_URI = "/update_lexeme_levels";
 
-	String UPDATE_WORD_VALUE_URI = "/update_word_value";
-
-	String UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI = "/update_word_data_and_lexeme_weight";
-
 	String DELETE_ITEM_URI = "/delete_item";
 
 	String CONFIRM_OP_URI = "/confirm_op";

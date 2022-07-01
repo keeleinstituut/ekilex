@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -307,19 +306,6 @@ public class LexEditController extends AbstractPrivatePageController {
 			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
-	}
-
-	@PostMapping(UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI)
-	@ResponseBody
-	public String updateWordDataAndLexemeWeight(
-			@RequestBody WordLexemeMeaningDetails wordDataAndLexemeWeight,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		valueUtil.trimAndCleanAndRemoveHtml(wordDataAndLexemeWeight);
-		cudService.updateWordDataAndLexemeWeight(wordDataAndLexemeWeight, isManualEventOnUpdateEnabled);
-
-		return RESPONSE_OK_VER2;
 	}
 
 	@GetMapping(WORD_SELECT_URI)

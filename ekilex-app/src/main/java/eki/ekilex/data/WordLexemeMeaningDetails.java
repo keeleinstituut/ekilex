@@ -20,8 +20,6 @@ public class WordLexemeMeaningDetails extends AbstractDataObject {
 
 	private String dataset;
 
-	private String lexemeWeight;
-
 	public Long getWordId() {
 		return wordId;
 	}
@@ -78,11 +76,4 @@ public class WordLexemeMeaningDetails extends AbstractDataObject {
 		this.dataset = dataset;
 	}
 
-	public String getLexemeWeight() {
-		return lexemeWeight;
-	}
-
-	public void setLexemeWeight(String lexemeWeight) {
-		this.lexemeWeight = lexemeWeight;
-	}
 }

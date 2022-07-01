@@ -732,40 +732,6 @@ function openConfirmDlg(confirmDlgHtml, callback, ...callbackArgs) {
 	});
 };
 
-function initWordValueEditorDlg(dlg) {
-	const editFld = dlg.find('[data-name=editFld]');
-	const valueInput = dlg.find('[name=value]');
-	const ekiEditorElem = dlg.find('.eki-editor');
-	editFld.removeClass('is-invalid');
-	editFld.html(valueInput.val());
-	initEkiEditor(ekiEditorElem);
-
-	dlg.find('button[name="saveWordValueBtn"]').off('click').on('click', function() {
-		const form = dlg.find('form');
-		if (editFld.html()) {
-			let wordValue = editFld.html();
-			wordValue = wordValue.replaceAll("&nbsp;", " ")
-			valueInput.val(wordValue);
-			$.ajax({
-				url: form.attr('action'),
-				data: form.serialize(),
-				method: 'POST',
-			}).done(function(data) {
-				dlg.modal('hide');
-				const wordId = dlg.find('[name=wordId]').val();
-				const wordValueSpan = $('#word-value-' + wordId);
-				wordValueSpan.html(data);
-			}).fail(function(data) {
-				dlg.modal('hide');
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			});
-		} else {
-			editFld.addClass('is-invalid');
-		}
-	});
-};
-
 function deleteLexemeAndWordAndMeaning() {
 	const opName = "delete";
 	const opCode = "lexeme";

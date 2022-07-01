@@ -748,12 +748,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateWordDataAndLexemeWeight(WordLexemeMeaningDetails wordDataAndLexemeWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Long wordId = wordDataAndLexemeWeight.getWordId();
-		Long lexemeId = wordDataAndLexemeWeight.getLexemeId();
-		String lexemeWeight = wordDataAndLexemeWeight.getLexemeWeight();
-		String wordValuePrese = wordDataAndLexemeWeight.getWordValuePrese();
+	public void updateWordDataAndLexemeWeight(Long lexemeId, Long wordId, String wordValuePrese, String lexemeWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		updateWordValue(wordId, wordValuePrese, isManualEventOnUpdateEnabled);
 		updateLexemeWeight(lexemeId, lexemeWeight, isManualEventOnUpdateEnabled);

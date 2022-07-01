@@ -34,6 +34,8 @@ public class UpdateItemRequest extends AbstractDataObject {
 
 	private boolean isPublic;
 
+	private String lexemeWeight;
+
 	public String getTarget() {
 		return target;
 	}
@@ -136,5 +138,13 @@ public class UpdateItemRequest extends AbstractDataObject {
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
+	}
+
+	public String getLexemeWeight() {
+		return lexemeWeight;
+	}
+
+	public void setLexemeWeight(String lexemeWeight) {
+		this.lexemeWeight = lexemeWeight;
 	}
 }

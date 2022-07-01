@@ -165,27 +165,6 @@ function initUsageAuthorDlg(addDlg) {
 	initRelationDialogLogic(addDlg, 'source-id');
 };
 
-function initEditMeaningWordAndLexemeWeightDlg(dlg) {
-	const wordValueEditFld = dlg.find('[data-name=wordValueEditFld]');
-	const wordValueInput = dlg.find('[name=wordValuePrese]');
-	const ekiEditorElem = dlg.find('.eki-editor');
-	wordValueEditFld.removeClass('is-invalid');
-	wordValueEditFld.html(wordValueInput.val());
-	initEkiEditor(ekiEditorElem);
-
-	dlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		e.preventDefault();
-		const wordValueEditFldHtml = wordValueEditFld.html();
-		if (wordValueEditFldHtml) {
-			wordValueEditFld.removeClass('is-invalid');
-			wordValueInput.val(wordValueEditFldHtml);
-			submitDialog(e, dlg, messages["common.data.update.error"]);
-		} else {
-			wordValueEditFld.addClass('is-invalid');
-		}
-	});
-};
-
 function refreshDetailsSearch(id) {
 	const detailsOpen = $('.details-open');
 
