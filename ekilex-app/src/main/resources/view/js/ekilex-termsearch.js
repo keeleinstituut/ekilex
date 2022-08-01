@@ -62,7 +62,7 @@ $.fn.tableViewTermSearchResults = function() {
 		e.preventDefault();
 		const resultCount = main.data('result-count');
 		if (resultCount > 50) {
-			openAlertDlg(messages["term.table.view.max.meanings.exceeded"]);
+			openAlertDlg(messages["term.meaning.table.max.meanings.exceeded"]);
 		} else {
 			main.closest('form').submit();
 		}
