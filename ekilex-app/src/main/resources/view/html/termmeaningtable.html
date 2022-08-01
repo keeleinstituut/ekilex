@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{term.meaning.table.title}">Tabelivaade</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'term')"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-body">
+        <table class="table table-bordered">
+          <tr>
+            <th style="width: 10%" th:text="#{term.meaning.table.meaning.id}">mõiste id</th>
+            <th style="width: 30%" th:text="#{term.meaning.table.definitions}">seletused</th>
+            <th style="width: 30%" th:text="#{term.meaning.table.lexemes}">ilmikud</th>
+            <th style="width: 30%" th:text="#{term.meaning.table.usages}">kasutusnäited</th>
+          </tr>
+          <tr th:each="meaning : ${meanings}">
+            <td>
+              <span th:text="${meaning.meaningId}"></span>
+            </td>
+            <td>
+              <table class="table">
+                <tr th:each="definition : ${meaning.definitions}">
+                  <td>
+                    <span th:utext="${definition.value}"></span>
+                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${definition.public}} + ')'" data-plugin="complexity"></span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+            <td colspan="2">
+              <table class="table">
+                <tr th:each="lexeme : ${meaning.lexemes}">
+                  <td style="width: 50%">
+                    <span th:utext="${viewUtil.getWordValueMarkup(lexeme.word)}"></span>
+                    <span th:text="${'(' + viewUtil.getLangIso2(lexeme.word.lang) + ')'}" class="ml-1"></span>
+                    <span th:text="'(' + ${lexeme.datasetCode + ')'}" class="ml-1"></span>
+                    <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${lexeme.public}} + ')'" data-plugin="complexity"></span>
+                  </td>
+                  <td style="width: 50%">
+                    <table class="table">
+                      <tr th:each="usage : ${lexeme.usages}">
+                        <td>
+                          <span th:utext="${usage.value}"></span>
+                          <div class=" ctxt" th:text="'(' + #{'boolean.public.' + ${usage.public}} + ')'" data-plugin="complexity"></div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

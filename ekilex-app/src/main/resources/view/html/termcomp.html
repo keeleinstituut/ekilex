@@ -46,6 +46,12 @@
                 </form>
               </div>
             </th:block>
+            <div>
+              <form th:action="@{/termsearch_result_meaning_table}" method="post" target="_blank">
+                <input type="hidden" name="meaningIds" th:value="${#strings.listJoin(termSearchResult.resultMeaningIds, ',')}">
+                <button type="button" data-plugin="tableViewTermSearchResults" class="btn btn-secondary" th:data-result-count="${termSearchResult.meaningCount}" th:text="#{term.meaning.table.title}">Tabelivaade</button>
+              </form>
+            </div>
           </div>
         </th:block>
       </div>

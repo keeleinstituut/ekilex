@@ -56,6 +56,19 @@ $.fn.queueTermSearchResults = function() {
 	});
 }
 
+$.fn.tableViewTermSearchResults = function() {
+	const main = $(this);
+	main.on('click', function(e) {
+		e.preventDefault();
+		const resultCount = main.data('result-count');
+		if (resultCount > 50) {
+			openAlertDlg(messages["term.table.view.max.meanings.exceeded"]);
+		} else {
+			main.closest('form').submit();
+		}
+	});
+}
+
 function refreshDetailsTermsSearch() {
 	$('#refresh-details').click();
 };
