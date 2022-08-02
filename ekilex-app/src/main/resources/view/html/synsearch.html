@@ -178,9 +178,6 @@
     </div>
     <div th:replace="syndialog :: add_word_note_dlg"></div>
     <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.word.lang}, ${details.wordRelationDetails.wordSynRelations})"></div>
-    <div th:if="${!#lists.isEmpty(details.wordRelationDetails.wordSynRelations)}">
-      <div th:replace="syndialog :: syn_stats_dlg(${synRelation})"></div>
-    </div>
     <script>
         $('[data-toggle=delete-confirm]').confirmation({
           btnOkLabel : /*[[#{common.yes}]]*/'Jah',
