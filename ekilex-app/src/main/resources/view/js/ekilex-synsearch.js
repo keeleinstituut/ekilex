@@ -54,8 +54,8 @@ function initializeSynSearch() {
 		}
 
 		$.get(detailsUrl).done(function(data) {
-			let detailsDiv = $('#syn-details-area');
-			detailsDiv.replaceWith(data);
+			let detailsDivParent = $('#syn-details-area').parent();
+			detailsDivParent.html(data);
 			$('.tooltip').remove();
 			closeWaitDlg();
 			$(`#syn_select_wait_${id}`).hide();
