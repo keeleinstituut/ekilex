@@ -87,7 +87,6 @@ function submitDialog(e, dlg, failMessage) {
 	if (window[successCallbackName]) {
 		successCallbackFunc = () => window[successCallbackName]();
 	}
-
 	submitForm(form, failMessage, successCallbackFunc).always(function() {
 		dlg.modal('hide');
 	});
@@ -109,7 +108,7 @@ function submitForm(form, failMessage, callback) {
 			if (detailsOpen.length) {
 				Cookies.set('details-open', detailsOpen.parent().attr('id'));
 			}
-			form.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').click();
+			$('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').click();
 		}
 	}).fail(function(data) {
 		console.log(data);
