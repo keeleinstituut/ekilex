@@ -56,7 +56,13 @@ function doPostDelete(deleteUrl, callback, force) {
 					}
 					else if (!parent.length) {
 						parent = elem.parents('[data-rel="details-area"]:first');
-						parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first').click();
+
+						const results = parent.find('[name="details-btn"]:first, [name="synDetailsBtn"]:first');
+						if (results.length) {
+							results.click();
+						} else {
+							$('#refresh-details').click();
+						}
 					} else {
 						parent.find('#refresh-open:first').click();
 					}
