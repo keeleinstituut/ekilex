@@ -15,7 +15,7 @@ function toggleUsageMemberAdditionalFields(dlg, usageMemberType) {
 	dlg.find('[data-id=' + usageMemberType + ']').show();
 }
 
-function initEkiEditorDlg(editDlg) {
+function initEkiEditorDlg(editDlg, editorOptions) {
 	let modifyFld = editDlg.find('[data-id="editFld"]');
 	modifyFld.val(editDlg.find('[name=value]').val());
 
@@ -23,7 +23,7 @@ function initEkiEditorDlg(editDlg) {
 	if (complexityBtns.filter(':checked').length === 0){
 		complexityBtns.eq(complexityBtns.length-1).prop('checked', true);
 	}
-	initCkEditor(modifyFld);
+	initCkEditor(modifyFld, editorOptions);
 
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		if (modifyFld.val()) {

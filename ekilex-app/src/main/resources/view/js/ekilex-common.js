@@ -1298,7 +1298,7 @@ function loadDetails(wordId, task, lastWordId) {
 };
 
 // Create an editor in place of the target
-function initBasicWrappedEkiEditorOnContent(obj, callback) {
+function initBasicInlineEkiEditorOnContent(obj, callback) {
 	const options = {
 		width: '100%',
 		height: obj.parent().height() - 44,
@@ -1317,7 +1317,7 @@ function initBasicWrappedEkiEditorOnContent(obj, callback) {
 	const editField = $('<textarea/>').val(obj.html());
 	obj.hide();
 	obj.after(editField);
-	// Leave only basic styling and pass in editor options
+	// Leave only basic styling buttons
 	const editor = initCkEditor(editField, options);
 	$(document).on('click.replace.eki.editor', function(e) {
 		const isObjParentClosest = $(e.target).closest(obj.parent()).length;

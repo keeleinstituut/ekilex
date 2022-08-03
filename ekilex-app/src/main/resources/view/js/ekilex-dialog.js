@@ -122,11 +122,11 @@ $(function() {
 		})
 	}
 
-	$.fn.initBasicWrappedEkiEditorDlgPlugin = function() {
+	$.fn.initBasicInlineEkiEditorDlgOnClickPlugin = function() {
 		return this.each(function() {
 			const obj = $(this);
 			obj.on('click', function(e) {
-				initBasicWrappedEkiEditorOnContent(obj);
+				initBasicInlineEkiEditorOnContent(obj);
 				e.stopImmediatePropagation();
 			});
 		});
