@@ -1298,17 +1298,27 @@ function loadDetails(wordId, task, lastWordId) {
 };
 
 // Create an editor in place of the target
-function initBasicWrappedEkiEditorOnContent(obj) {
-	const resizeOptions = {
+function initBasicWrappedEkiEditorOnContent(obj, callback) {
+	const options = {
 		width: '100%',
-		height: obj.parent().height()
+		height: obj.parent().height() - 44,
+		extraPlugins: 'ekiStyles',
+		extraAllowedContent: '',
+		removePlugins: 'sourcearea, elementspath',
+		resize_enabled: false,
+		toolbarGroups: [
+			{
+				name: 'eki-styles',
+				groups: ['ekiStyles']
+			}
+		]
 	};
 
 	const editField = $('<textarea/>').val(obj.html());
 	obj.hide();
 	obj.after(editField);
-	// Leave only basic styling and pass in resize options
-	const editor = initCkEditor(editField, true, resizeOptions);
+	// Leave only basic styling and pass in editor options
+	const editor = initCkEditor(editField, options);
 	$(document).on('click.replace.eki.editor', function(e) {
 		const isObjParentClosest = $(e.target).closest(obj.parent()).length;
 		if (!isObjParentClosest) {
@@ -1318,6 +1328,10 @@ function initBasicWrappedEkiEditorOnContent(obj) {
 			editField.remove();
 			obj.show();
 			$(document).off('click.replace.eki.editor');
+
+			if (callback) {
+				callback();
+			}
 		}
 	});
 }
