@@ -3,47 +3,45 @@
 <head>
 </head>
 <body>
-  <th:block>
-    <div th:id="${'addSynRelationDlg_' + wordId}" class="modal"
-          role="dialog"
-          th:fragment="add_syn_relation_dlg(wordId, language, relations)"
-          data-plugin="initAddSynRelationDlgPlugin">
-      <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
-        <div class="modal-content">
-          <div class="modal-body">
-            <form th:action="@{/syn_search_words}">
-              <div class="form-row">
-                <div class="col-12">
-                  <div class="form-group row">
-                    <input type="hidden" name="language" th:value="${language}"/>
-                    <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}"/>
-                    <div class="col-8">
-                      <input type="text" class="form-control" name="searchFilter" th:placeholder="#{lex.placeholder.word.search}">
-                    </div>
-                    <div class="col-2">
-                      <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
-                    </div>
+  <div th:id="${'addSynRelationDlg_' + wordId}" class="modal"
+        role="dialog"
+        th:fragment="add_syn_relation_dlg(wordId, language, relations)"
+        data-plugin="initAddSynRelationDlgPlugin">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/syn_search_words}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <input type="hidden" name="language" th:value="${language}"/>
+                  <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}"/>
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" th:placeholder="#{lex.placeholder.word.search}">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
                   </div>
                 </div>
               </div>
-            </form>
-            <form th:action="@{/create_item}" method="post">
-              <input type="hidden" name="id" th:value="${wordId}"/>
-              <input type="hidden" name="opCode" value="raw_relation"/>
-              <input type="hidden" name="value2"/>
-              <div class="form-group row">
-                <div class="col-md-6"></div>
-              </div>
-              <div data-name="dialogContent"></div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
+            </div>
+          </form>
+          <form th:action="@{/create_item}" method="post">
+            <input type="hidden" name="id" th:value="${wordId}"/>
+            <input type="hidden" name="opCode" value="raw_relation"/>
+            <input type="hidden" name="value2"/>
+            <div class="form-group row">
+              <div class="col-md-6"></div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
         </div>
       </div>
     </div>
-  </th:block>
+  </div>
   <div th:id="${'addLexemeTagDlg_' + lexeme.lexemeId}" class="modal"
         role="dialog"
         th:fragment="add_lexeme_tag_dlg"

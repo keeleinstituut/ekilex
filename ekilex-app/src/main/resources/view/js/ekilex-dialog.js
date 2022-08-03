@@ -56,6 +56,30 @@ $(function() {
 		})
 	}
 
+	$.fn.initWordValueEditorDlgAndFocusPlugin = function() {
+		return this.each(function() {
+			const obj = $(this);
+			const options = {
+				width: '100%',
+				height: '5em',
+				extraPlugins: 'ekiStyles',
+				extraAllowedContent: '',
+				removePlugins: 'sourcearea, elementspath',
+				resize_enabled: false,
+				toolbarGroups: [
+					{
+						name: 'eki-styles',
+						groups: ['ekiStyles']
+					}
+				]
+			};
+			obj.on('show.bs.modal', function(e) {
+				initEkiEditorDlg(obj, options);
+				alignAndFocus(e, obj);
+			})
+		})
+	}
+
 	$.fn.initAddSourceLinkWithAutocompletePlugin = function() {
 		return this.each(function() {
 			const obj = $(this);

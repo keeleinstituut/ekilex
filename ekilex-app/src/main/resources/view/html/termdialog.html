@@ -1424,8 +1424,8 @@
   <div th:id="${'editWordValueDlg_' + lexeme.wordId}" class="modal"
         role="dialog"
         th:fragment="edit_word_value_dlg"
-        data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
+        data-plugin="initWordValueEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
