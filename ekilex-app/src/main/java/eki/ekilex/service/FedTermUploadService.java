@@ -360,8 +360,8 @@ public class FedTermUploadService implements InitializingBean {
 		String datasetCode = dataset.getCode();
 		String datasetName = dataset.getName();
 		String datasetDescription = dataset.getDescription();
-		datasetDescription = StringUtils.remove(datasetDescription, '\r');
-		datasetDescription = StringUtils.remove(datasetDescription, '\n');
+		datasetDescription = StringUtils.replaceChars(datasetDescription, '\r', ' ');
+		datasetDescription = StringUtils.replaceChars(datasetDescription, '\n', ' ');
 		String fedTermDomainId = dataset.getFedTermDomainId();
 		String datasetLandingPageUrlWithDatasetCode = StringUtils.replace(datasetLandingPageUrl, "{datasetCode}", datasetCode);
 
