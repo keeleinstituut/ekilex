@@ -115,7 +115,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			ActivityEntity.DESCRIBER,
 			ActivityEntity.DESCRIBING_YEAR,
 			ActivityEntity.OD_WORD_RECOMMENDATION,
-			ActivityEntity.OD_LEXEME_RECOMMENDATION,
 			ActivityEntity.WORD_NOTE,
 			ActivityEntity.MEANING_NOTE,
 			ActivityEntity.LEXEME_NOTE,
@@ -127,8 +126,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			ActivityEntity.GOVERNMENT_PLACEMENT,
 			ActivityEntity.GOVERNMENT_VARIANT,
 			ActivityEntity.GOVERNMENT_OPTIONAL,
-			ActivityEntity.OD_USAGE_DEFINITION,
-			ActivityEntity.OD_USAGE_ALTERNATIVE,
 			ActivityEntity.IMAGE_TITLE,
 			ActivityEntity.SEMANTIC_TYPE_GROUP,
 			ActivityEntity.USAGE_TRANSLATION,
@@ -472,6 +469,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 				activityLogDbService.updateWordManualEventOn(wordId, eventOn);
 			}
 		}
+		// FIXME temp solution for better syn view ordering performance
+		if (activityLogData.getEntityName().equals(ActivityEntity.WORD_RELATION)) {
+			return;
+		}
 		for (Long meaningId : meaningIds) {
 			activityLogDbService.createOrUpdateMeaningLastActivityLog(meaningId, LastActivityType.EDIT);
 			if (isManualEventOnUpdateEnabled) {
@@ -581,8 +582,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			return EMPTY_CONTENT_JSON;
 		}
 		final String[] excludeLexemeAttributeTypes = new String[] {
-				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
-				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
+				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
 
 		List<MeaningWord> meaningWords = commonDataDbService.getMeaningWords(lexemeId);
 		List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
@@ -595,7 +595,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
 		List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
 		List<NoteLangGroup> lexemeNoteLangGroups = conversionUtil.composeNoteLangGroups(lexemeNotes, null);
-		List<FreeForm> odLexemeRecommendations = commonDataDbService.getOdLexemeRecommendations(lexemeId);
 		List<LexemeRelation> lexemeRelations = commonDataDbService.getLexemeRelations(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.getLexemeSourceLinks(lexemeId);
 		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.getPrimaryCollocationTuples(lexemeId);
@@ -610,7 +609,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		lexeme.setUsages(usages);
 		lexeme.setLexemeFreeforms(lexemeFreeforms);
 		lexeme.setLexemeNoteLangGroups(lexemeNoteLangGroups);
-		lexeme.setOdLexemeRecommendations(odLexemeRecommendations);
 		lexeme.setLexemeRelations(lexemeRelations);
 		lexeme.setSourceLinks(lexemeSourceLinks);
 		lexeme.setCollocationPosGroups(collocationPosGroups);
@@ -634,7 +632,7 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<WordGroup> wordGroups = conversionUtil.composeWordGroups(wordGroupMembers, null);
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
-		List<FreeForm> odWordRecommendations = lexSearchDbService.getOdWordRecommendations(wordId);
+		List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 

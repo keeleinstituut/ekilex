@@ -12,7 +12,7 @@
         <form th:action="@{/reapply}" method="post">
           <div class="modal-body">
             <div class="row no-gutters">
-              <label class="col-10 ml-5 col-form-label">Taotluse kommentaar</label>
+              <label class="col-10 ml-5 col-form-label" th:text="#{userprofile.application.comment}">Taotluse kommentaar</label>
               <div class="col-10 ml-5">
                 <textarea class="form-control md-textarea" rows="3" name="applicationComment"></textarea>
               </div>
@@ -20,7 +20,7 @@
             <div class="row no-gutters">
               <span class="col-10 mt-3 ml-5">
                 <a class="btn btn-outline-secondary" data-toggle="collapse" href="#datasetsSelection" role="button" aria-expanded="false" aria-controls="datasetsSelection">
-                  <span>Märgi sõnakogud, millele soovid õigusi</span>
+                  <span th:text="#{userprofile.select.datasets}">Märgi sõnakogud, millele soovid õigusi</span>
                 </a>
               </span>
             </div>
@@ -37,8 +37,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Saada taotlus</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{userprofile.send.application}">Saada taotlus</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -53,12 +53,12 @@
         <form th:action="@{/update_meaning_rel_prefs}" method="post">
           <div class="modal-body">
             <div class="form-group row">
-              <label class="col-md-auto col-form-label">Tähenduse seose juures kuvatavate keelendite keeled</label>
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.meaning.rel.languages}">Tähenduse seose juures kuvatavate keelendite keeled</label>
               <div class="col-md-12">
                 <select name="meaningRelationWordLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
-                        title="Vali tähenduste seoste juures kuvatavate sõnade keeled"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:title="#{userprofile.select.meaning.rel.languages}"
+                        th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${allLanguages}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${#lists.contains(userProfile.preferredMeaningRelationWordLangs, language.code)}"/>
                   </th:block>
@@ -68,34 +68,34 @@
             <div class="row">
               <label class="col-md-auto col-form-label">
                 <input type="checkbox" name="showLexMeaningRelationSourceLangWords" th:checked="${userProfile.showLexMeaningRelationSourceLangWords}">
-                <span>Näita leksikograafide vaates ainult märksõna keelseid sõnu</span>
+                <span th:text="#{userprofile.show.lex.meaning.rel.source.lang.words}">Näita leksikograafide vaates ainult märksõna keelseid sõnu</span>
               </label>
             </div>
             <div class="row">
               <label class="col-md-auto col-form-label">
                 <input type="checkbox" name="showMeaningRelationFirstWordOnly" th:checked="${userProfile.showMeaningRelationFirstWordOnly}">
-                <span>Näita valitud keeltes ainult esimest sõna</span>
+                <span th:text="#{userprofile.show.meaning.rel.first.word.only}">Näita valitud keeltes ainult esimest sõna</span>
               </label>
             </div>
             <div class="row">
               <label class="col-md-auto col-form-label">
                 <input type="checkbox" name="showMeaningRelationMeaningId" th:checked="${userProfile.showMeaningRelationMeaningId}">
-                <span>Näita tähenduse id-d</span>
+                <span th:text="#{userprofile.show.meaning.rel.meaning.id}">Näita tähenduse id-d</span>
               </label>
             </div>
             <div class="row">
               <label class="col-md-auto col-form-label">
                 <input type="checkbox" name="showMeaningRelationWordDatasets" th:checked="${userProfile.showMeaningRelationWordDatasets}">
-                <span>Näita sõnakogude koode</span>
+                <span th:text="#{userprofile.show.meaning.rel.word.datasets}">Näita sõnakogude koode</span>
               </label>
             </div>
             <div class="row">
-              <label class="col-md-auto col-form-label">Kuvatavate täissünonüümide keeled</label>
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.meaning.word.langs}">Kuvatavate täissünonüümide keeled</label>
               <div class="col-md-12">
                 <select name="meaningWordLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
-                        title="Vali tähenduse juures kuvatavate täissünonüümide keeled"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:title="#{userprofile.select.pref.meaning.word.langs}"
+                        th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${userRoleLanguages}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynLexMeaningWordLangs != null && #lists.contains(userProfile.preferredSynLexMeaningWordLangs, language.code)}"/>
                   </th:block>
@@ -103,12 +103,12 @@
               </div>
             </div>
             <div class="row">
-              <label class="col-md-auto col-form-label">Vastete kandidaatide keeled</label>
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.syn.candidate.langs}">Vastete kandidaatide keeled</label>
               <div class="col-md-12">
                 <select name="synCandidateLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
-                        title="Vali vastete vaates kuvatavate kandidaatide keeled"
-                        th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:title="#{userprofile.select.pref.syn.candidate.langs}"
+                        th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${userRoleLanguages}">
                     <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynCandidateLangs != null && #lists.contains(userProfile.preferredSynCandidateLangs, language.code)}"/>
                   </th:block>
@@ -117,8 +117,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -133,11 +133,11 @@
         <form th:action="@{/update_tag_prefs}" method="post">
           <div class="modal-body">
             <div class="form-group row">
-                <label class="col-md-auto col-form-label">Otsingutulemustes nähtavad sildid (maksimum 3)</label>
+                <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.tag.names}">Otsingutulemustes nähtavad sildid (maksimum 3)</label>
               <div class="col-md-12">
                 <select name="preferredTagNames" multiple data-live-search="true"
                         data-max-options="3" data-max-options-text="lubatud on kuni 3 valikut"
-                        title="Vali otsingutulemustes nähtavad sildid">
+                        th:title="#{userprofile.select.pref.tag.names}">
                   <th:block th:each="tag : ${lexemeTags}">
                     <option th:value="${tag}" th:text="${tag}" th:selected="${userProfile.preferredTagNames != null && #lists.contains(userProfile.preferredTagNames, tag)}"/>
                   </th:block>
@@ -145,10 +145,10 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-auto col-form-label">Aktiivne silt</label>
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.active.tag}">Aktiivne silt</label>
               <div class="col-md-12">
                 <select name="activeTagName" class="form-control">
-                  <option value="" hidden disabled selected>vali aktiivne silt</option>
+                  <option value="" hidden disabled selected th:text="#{userprofile.select.active.tag}">vali aktiivne silt</option>
                   <option th:each="tag : ${lexemeTags}"
                           th:value="${tag}"
                           th:selected="${tag == userProfile.activeTagName}"
@@ -159,8 +159,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>

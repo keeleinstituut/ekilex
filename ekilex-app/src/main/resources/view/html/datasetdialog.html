@@ -21,7 +21,7 @@
               <select class="col-md-3 form-control required-field" name="type">
                 <option th:each="datasetType : ${enabledDatasetTypes}"
                         th:value="${datasetType.name()}"
-                        th:text="#{|datasettype.${datasetType.name()}|}"
+                        th:text="#{|enum.datasettype.${datasetType.name()}|}"
                         th:selected="${T(eki.common.constant.DatasetType).TERM}">
                 </option>
               </select>
@@ -60,7 +60,7 @@
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
                 <select name="domains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.domain}" data-actions-box="true" disabled
-                        th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:data-select-all-text="#{common.select.all}" th:data-deselect-all-text="#{common.unselect.all}">
                 </select>
               </div>
             </div>
@@ -68,7 +68,7 @@
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.languages}">Keeled</label>
               <div class="col-md-12">
                 <select name="languages" class="classifier-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.language}" data-actions-box="true"
-                        th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:data-select-all-text="#{common.select.all}" th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${languages}">
                     <option th:value="${classifierUtil.toJson(language)}" th:text="${language.value}" />
                   </th:block>
@@ -89,8 +89,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button id="addDatasetSubmitBtn" type="submit" class="btn btn-primary" data-plugin="addDatasetSubmitPlugin">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button id="addDatasetSubmitBtn" type="submit" class="btn btn-primary" data-plugin="addDatasetSubmitPlugin" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>
@@ -112,7 +112,7 @@
             <div class="form-group row">
               <label class="col-md-2 col-form-label" th:text="#{datasets.dataset.type}">Sõnakogu tüüp</label>
               <select class="col-md-3 form-control required-field" name="type">
-                <option th:each="datasetType : ${enabledDatasetTypes}" th:value="${datasetType.name()}" th:text="#{|datasettype.${datasetType.name()}|}" />
+                <option th:each="datasetType : ${enabledDatasetTypes}" th:value="${datasetType.name()}" th:text="#{|enum.datasettype.${datasetType.name()}|}" />
               </select>
             </div>
             <div class="form-group row">
@@ -149,15 +149,15 @@
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.domains}">Valdkonnad</label>
               <div class="col-md-12">
                 <select name="domains" class="dataset-domain-select" multiple data-live-search="true" th:title="#{datasets.dataset.select.domain}" disabled data-actions-box="true"
-                        th:data-select-all-text="#{button.select.all.text}" th:data-deselect-all-text="#{button.unselect.all.text}">
+                        th:data-select-all-text="#{common.select.all}" th:data-deselect-all-text="#{common.unselect.all}">
                 </select>
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-auto col-form-label" th:text="#{datasets.dataset.languages}">Keeled</label>
               <div class="col-md-12">
-                <select name="languages" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{button.select.all.text}"
-                        th:data-deselect-all-text="#{button.unselect.all.text}" th:title="#{datasets.dataset.select.language}">
+                <select name="languages" class="classifier-select" multiple data-live-search="true" data-actions-box="true" th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}" th:title="#{datasets.dataset.select.language}">
                   <th:block th:each="language: ${languages}">
                     <option th:value="${classifierUtil.toJson(language)}" th:text="${language.value}" />
                   </th:block>
@@ -178,8 +178,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary dataset-save-btn" data-plugin="saveDatasetPlugin">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary dataset-save-btn" data-plugin="saveDatasetPlugin" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
       </div>

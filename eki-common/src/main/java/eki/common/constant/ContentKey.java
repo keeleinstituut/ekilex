@@ -8,7 +8,7 @@ public interface ContentKey {
 
 	String LEXEME_SOURCE_LINK = "lex_source_link";
 
-	String MEANING_LINK = "meaning_link";
+	String MEANING_LINK = "meaning";
 
-	String WORD_LINK = "word_link";
+	String WORD_LINK = "word";
 }

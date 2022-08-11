@@ -175,7 +175,7 @@ public class ApiSearchController extends AbstractApiController {
 		List<String> datasets = parseDatasets(datasetsStr);
 		boolean isFullData = true;
 		EkiUser user = userContext.getUser();
-		WordDetails result = lexSearchService.getWordDetails(wordId, datasets, null, user, null, null, isFullData);
+		WordDetails result = lexSearchService.getWordDetails(wordId, null, datasets, null, user, null, null, isFullData);
 		return result;
 	}
 

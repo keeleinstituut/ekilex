@@ -9,16 +9,16 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Tingimused</h5>
+        <h5 class="card-title" th:text="#{termsofuse.active.terms}">Tingimused</h5>
       </div>
       <div class="card-body" th:utext="${activeTerms}"></div>
       <div class="form-group row">
         <div class="col-md-auto ml-4">
           <form class="d-inline" th:action="@{/agree_terms}" method="post">
-            <button type="submit" class="btn btn-primary">Kinnitan tingimustega nõusoleku</button>
+            <button type="submit" class="btn btn-primary" th:text="#{termsofuse.agree}">Kinnitan tingimustega nõusoleku</button>
           </form>
           <form class="d-inline" th:action="@{/refuse_terms}" method="post">
-            <button type="submit" class="btn btn-primary ml-3">Keeldun</button>
+            <button type="submit" class="btn btn-primary ml-3" th:text="#{termsofuse.refuse}">Keeldun</button>
           </form>
         </div>
       </div>

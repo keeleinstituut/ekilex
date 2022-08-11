@@ -24,7 +24,7 @@
       <div class="d-flex flex-row align-items-center"
            th:with="detailsUri=${searchPageName == 'lex_search' ? 'lexsearch' : searchPageName == 'term_search' ? 'termsearch' : searchPageName == 'lim_term_search' ? 'limtermsearch' : ''}">
         <button type="button" id="share-details-link" th:data-details-uri="${detailsUri}"
-                class="btn btn-light ml-2" data-plugin="shareDetailsLinkPlugin">Otselink
+                class="btn btn-light ml-2" data-plugin="shareDetailsLinkPlugin" th:text="#{common.search.share.details.link}">Otselink
         </button>
       </div>
     </div>
@@ -32,7 +32,7 @@
       <div id="manualEventOnDiv" class="d-none" data-plugin="manualEventOnDivView">
         <label class="form-check-label btn btn-primary date-check-box d-flex flex-row align-items-center m-0 p-0 shadow-none" data-plugin="mouseManualEventOnUpdateCheck">
           <i class="date-i-edit date-i-edit-small fa fa-edit d-flex flex-row"></i>
-          <span class="date-text d-none">Pisiparandused</span>
+          <span class="date-text d-none" th:text="#{common.manual.event.on}">Pisiparandused</span>
           <span class="date-check d-none">
             <input class="date-check-input" type="checkbox"
                    data-plugin="manualEventOnUpdateCheck"
@@ -50,7 +50,7 @@
     <div class="tab-pane fade " th:classappend="${searchMode =='SIMPLE' ? 'show active' : ''}" id="simple_search_filter">
       <div class="d-flex flex-row align-items-center">
         <input type="text" class="form-control col-2" name="simpleSearchFilter" th:value="${simpleSearchFilter}" th:placeholder="#{|search.placeholder.${searchPageName}|}" autocomplete="off">
-        <button type="submit" class="btn btn-primary px-5 ml-2">Otsi</button>
+        <button type="submit" class="btn btn-primary px-5 ml-2" th:text="#{common.search}">Otsi</button>
       </div>
     </div>
   </th:block>
@@ -88,13 +88,13 @@
                                                     || criteria.searchOperand.name() == 'SINGLE'
                                                     || criteria.searchOperand.name() == 'MULTIPLE'}">
                 <div th:if="${searchPageName == 'lex_search' || searchPageName == 'term_search'}">
-                  <input type="checkbox" class="m-2" title="Negatiivne" value="true"
+                  <input type="checkbox" class="m-2" th:title="#{common.search.negative}" value="true"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].not'"
                          th:checked="${criteria.not}"/>
                 </div>
                 <div class="col-2">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
-                    <option th:each="key : ${group.entity.keys}" th:value="${key}" th:selected="${criteria.searchKey == key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
+                    <option th:each="key : ${group.entity.keys}" th:value="${key}" th:selected="${criteria.searchKey == key}" th:text="#{|enum.search.key.${key.name()}|}">searchKey</option>
                   </select>
                 </div>
                 <div class="col-2">
@@ -102,12 +102,12 @@
                     <option th:each="operand : ${criteria.searchKey.getOperands()}"
                             th:value="${operand}"
                             th:selected="${criteria.searchOperand == operand}"
-                            th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
+                            th:text="#{|enum.search.operand.${operand.name()}|}">searchOperand</option>
                   </select>
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
-                    <option value="">Kõik keeled</option>
+                    <option value="" th:text="#{common.all.languages}">Kõik keeled</option>
                     <option th:each="language : ${allLanguages}"
                             th:value="${language.code}"
                             th:selected="${criteria.searchValue == language.code}"
@@ -142,7 +142,7 @@
                 </div>
                 <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'TAG_NAME'}">
                   <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'" data-live-search="true" data-style="btn-outline-secondary">
-                    <option value="" selected>Kõik sildid</option>
+                    <option value="" selected th:text="#{common.all.tags}">Kõik sildid</option>
                     <option th:each="tag : ${lexemeTags}"
                             th:value="${tag}"
                             th:selected="${criteria.searchValue == tag}"
@@ -156,7 +156,7 @@
                           data-style="btn-outline-secondary"
                           th:hidden="${isExistsOperand}"
                           th:disabled="${isExistsOperand}">
-                    <option value="">Kõik valdkonnad</option>
+                    <option value="" th:text="#{common.all.domains}">Kõik valdkonnad</option>
                     <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
                       <option th:each="domain : ${origin.getValue()}"
                               th:value="${domain.toIdString()}"
@@ -512,20 +512,20 @@
                   <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
                 </div>
                 <div class="col-auto">
-                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" title="Lisa uus otsingu tingimus">
+                  <button type="button" class="btn btn-sm mt-1" name="addDetailConditionBtn" th:title="#{common.search.add.condition}">
                     <i class="action-icon fa fa-plus" aria-hidden="true"></i>
                   </button>
-                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" title="Eemalda">
+                  <button type="button" class="btn btn-sm mt-1" name="removeDetailConditionBtn" th:title="#{common.search.remove.condition}">
                     <i class="action-icon fa fa-minus" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
             </div>
             <div class="flex-grow-0 flex-shrink-0 d-flex pl-3 pt-1">
-              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" title="Lisa uus otsitav">
+              <button type="button" class="btn btn-secondary btn-sm" name="addDetailGroupBtn" th:title="#{common.search.add.detail.group}">
                 <i class="action-icon fa fa-plus" aria-hidden="true"></i>
               </button>
-              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" title="Eemalda">
+              <button type="button" class="btn btn-secondary btn-sm ml-2" name="removeDetailGroupBtn" th:title="#{common.search.remove.detail.group}">
                 <i class="action-icon fa fa-minus" aria-hidden="true"></i>
               </button>
             </div>
@@ -533,25 +533,25 @@
           <div id="searchKeyTemplates" hidden>
             <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}" th:if="${searchPageName == 'lex_search'}">
               <select th:name="${entity}">
-                <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
+                <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|enum.search.key.${key.name()}|}">searchKey</option>
               </select>
             </div>
             <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
                  th:if="${searchPageName == 'term_search' || searchPageName == 'lim_term_search'}">
               <select th:name="${entity}">
-                <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
+                <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|enum.search.key.${key.name()}|}">searchKey</option>
               </select>
             </div>
             <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getSourceEntities()}" th:if="${searchPageName == 'source_search'}">
               <select th:name="${entity}">
-                <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|search.key.${key.name()}|}">searchKey</option>
+                <option th:each="key : ${entity.getKeys()}" th:value="${key}" th:text="#{|enum.search.key.${key.name()}|}">searchKey</option>
               </select>
             </div>
           </div>
           <div id="searchOperandTemplates" hidden>
             <div th:each="key : ${T(eki.ekilex.constant.SearchKey).values()}">
               <select th:name="${key}">
-                <option th:each="operand : ${key.getOperands()}" th:value="${operand}" th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
+                <option th:each="operand : ${key.getOperands()}" th:value="${operand}" th:text="#{|enum.search.operand.${operand.name()}|}">searchOperand</option>
               </select>
             </div>
           </div>
@@ -576,7 +576,7 @@
             </div>
             <div name="LANGUAGE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option value="" selected>Kõik keeled</option>
+                <option value="" selected th:text="#{common.all.languages}">Kõik keeled</option>
                 <option th:each="language : ${allLanguages}" th:value="${language.code}" th:text="${language.value}">language</option>
               </select>
             </div>
@@ -592,13 +592,13 @@
             </div>
             <div name="TAG_NAME" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option value="" selected>Kõik sildid</option>
+                <option value="" selected th:text="#{common.all.tags}">Kõik sildid</option>
                 <option th:each="tag : ${lexemeTags}" th:value="${tag}" th:text="${tag}">Täääg</option>
               </select>
             </div>
             <div name="DOMAIN" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <select class="form-control" data-live-search="true" data-style="btn-outline-secondary">
-                <option value="" selected>Kõik valdkonnad</option>
+                <option value="" selected th:text="#{common.all.domains}">Kõik valdkonnad</option>
                 <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}"
                           th:value="${domain.toIdString()}"
@@ -766,14 +766,14 @@
         </div>
         <div class="flex-grow-1 border-left border-light my-n3 pt-3 pr-3 pb-3 pl-3 detail-search-box-less">
           <div class="col-auto mb-1 p-0">
-            <input class="form-control detail-search-box-less-value" type="text" placeholder="Sisesta otsitav vorm" disabled="disabled" autocomplete="off">
+            <input class="form-control detail-search-box-less-value" type="text" disabled="disabled" autocomplete="off">
             <div class="d-flex flex-row w-100 justify-content-end">
               <div class="over-flow-opacity-box">
               </div>
             </div>
           </div>
-        </div> <!--/detail-search-box-less-->
-        <button type="submit" class="btn btn-primary px-5 ml-3 detail-search-filter-items">Otsi</button>
+        </div>
+        <button type="submit" class="btn btn-primary px-5 ml-3 detail-search-filter-items" th:text="#{common.search}">Otsi</button>
         <div class="d-flex flex-row detail-search-mode-less justify-content-center">
           <div class="detail-search-mode-less-border d-none">
             <button class="d-flex flex-column btn btn-secondary shadow-none align-items-center detail-search-mode-less-btn"
@@ -781,7 +781,7 @@
               <i class="d-flex flex-row align-items-center fa fa-sort-asc  detail-search-mode-less-btn-i" aria-hidden="true"></i>
             </button>
           </div>
-        </div> <!--/detail-search-mode-less-->
+        </div>
       </div>
     </div>
     <script th:inline="javascript">
@@ -790,7 +790,7 @@
   </th:block>
   <th:block th:fragment="dataset_select">
     <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#datasetSelectDlg" aria-expanded="false" aria-controls="dataset_select">
-      <span>Valitud sõnakogusid: </span>
+      <span th:text="#{common.search.selected.datasets}">Valitud sõnakogusid:</span>
       <span th:if="${#lists.isEmpty(userProfile.preferredDatasets)}">0</span>
       <span th:if="${not #lists.isEmpty(userProfile.preferredDatasets)}" th:text="${#lists.size(userProfile.preferredDatasets)}"></span>
       <i class="fa fa-book" aria-hidden="true"></i>
@@ -799,8 +799,8 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-body">
-            <button class="btn btn-secondary btn-sm" type="button" name="selectAll">Vali kõik</button>
-            <button class="btn btn-secondary btn-sm" type="button" name="selectNone">Eemalda valikud</button>
+            <button class="btn btn-secondary btn-sm" type="button" name="selectAll" th:text="#{common.select.all}">Vali kõik</button>
+            <button class="btn btn-secondary btn-sm" type="button" name="selectNone" th:text="#{common.unselect.all}">Eemalda valikud</button>
             <div class="mt-3" style="max-height: calc(100vh - 14rem); overflow-y: auto;">
               <div class="form-check mt-1" th:each="dataset : ${userVisibleDatasets}">
                 <label class="form-check-label">
@@ -813,8 +813,8 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Vali</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.select}">Vali</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </div>
       </div>

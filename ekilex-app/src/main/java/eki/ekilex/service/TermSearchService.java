@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -186,15 +187,23 @@ public class TermSearchService extends AbstractSearchService {
 	}
 
 	private void completeResultParams(TermSearchResult termSearchResult, int offset) {
+
 		int resultCount = termSearchResult.getResultCount();
+		List<TermMeaning> results = termSearchResult.getResults();
+		List<Long> resultMeaningIds = new ArrayList<>();
 		boolean resultExist = resultCount > 0;
 		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
 		boolean resultDownloadNow = resultExist && (resultCount < DEFAULT_MAX_DOWNLOAD_LIMIT);
 		boolean resultDownloadLater = resultExist && (resultCount >= DEFAULT_MAX_DOWNLOAD_LIMIT);
+		if (resultExist) {
+			resultMeaningIds = results.stream().map(TermMeaning::getMeaningId).distinct().collect(Collectors.toList());
+		}
+
 		termSearchResult.setResultExist(resultExist);
 		termSearchResult.setShowPaging(showPaging);
 		termSearchResult.setResultDownloadNow(resultDownloadNow);
 		termSearchResult.setResultDownloadLater(resultDownloadLater);
+		termSearchResult.setResultMeaningIds(resultMeaningIds);
 		if (showPaging) {
 			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
 		}
@@ -211,7 +220,7 @@ public class TermSearchService extends AbstractSearchService {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {FreeformType.LEARNER_COMMENT.name(), FreeformType.NOTE.name(), FreeformType.SEMANTIC_TYPE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(),
-				FreeformType.NOTE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
+				FreeformType.NOTE.name()};
 
 		DatasetPermission userRole = user.getRecentRole();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
@@ -223,9 +232,7 @@ public class TermSearchService extends AbstractSearchService {
 		}
 
 		permCalculator.applyCrud(userRole, meaning);
-		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		permCalculator.applyCrud(userRole, definitions);
-		permCalculator.filterVisibility(userRole, definitions);
+		List<Definition> definitions = composeDefinitions(userRole, meaningId);
 		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
 		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 		for (Definition definition : definitions) {
@@ -253,20 +260,15 @@ public class TermSearchService extends AbstractSearchService {
 
 		for (Long lexemeId : lexemeIds) {
 
-			LexemeWordTuple lexemeWordTuple = termSearchDbService.getLexemeWordTuple(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			Lexeme lexeme = conversionUtil.composeLexeme(lexemeWordTuple);
-			permCalculator.applyCrud(userRole, lexeme);
+			Lexeme lexeme = composeLexeme(userRole, lexemeId);
 			Long wordId = lexeme.getWordId();
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
 			List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 			permCalculator.filterVisibility(userRole, wordNotes);
+			List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
-			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
-					commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
-			permCalculator.applyCrud(userRole, usages);
-			permCalculator.filterVisibility(userRole, usages);
+			List<Usage> usages = composeUsages(userRole, lexemeId);
 			List<NoteSourceTuple> lexemeNoteSourceTuples = commonDataDbService.getLexemeNoteSourceTuples(lexemeId);
 			List<LexemeNote> lexemeNotes = conversionUtil.composeNotes(LexemeNote.class, lexemeId, lexemeNoteSourceTuples);
 			permCalculator.filterVisibility(userRole, lexemeNotes);
@@ -278,6 +280,7 @@ public class TermSearchService extends AbstractSearchService {
 
 			Word word = lexeme.getWord();
 			word.setNotes(wordNotes);
+			word.setOdWordRecommendations(odWordRecommendations);
 			permCalculator.applyCrud(userRole, word);
 
 			boolean classifiersExist = StringUtils.isNotBlank(word.getGenderCode())
@@ -324,10 +327,73 @@ public class TermSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
+	public List<Meaning> getTableMeanings(List<Long> meaningIds, List<String> selectedDatasetCodes, EkiUser user) {
+
+		List<Meaning> meanings = new ArrayList<>();
+		DatasetPermission userRole = user.getRecentRole();
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
+
+		for (Long meaningId : meaningIds) {
+			Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
+			if (meaning == null) {
+				continue;
+			}
+			permCalculator.applyCrud(userRole, meaning);
+
+			List<Definition> definitions = composeDefinitions(userRole, meaningId);
+
+			List<Long> lexemeIds = meaning.getLexemeIds();
+			List<Lexeme> lexemes = new ArrayList<>();
+			for (Long lexemeId : lexemeIds) {
+				Lexeme lexeme = composeLexeme(userRole, lexemeId);
+				List<Usage> usages = composeUsages(userRole, lexemeId);
+
+				Word word = lexeme.getWord();
+				permCalculator.applyCrud(userRole, word);
+
+				lexeme.setUsages(usages);
+				lexemes.add(lexeme);
+			}
+
+			meaning.setDefinitions(definitions);
+			meaning.setLexemes(lexemes);
+			meanings.add(meaning);
+		}
+
+		return meanings;
+	}
+
+	@Transactional
 	public String getMeaningFirstWordValue(Long meaningId, List<String> datasets) {
 	
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);
 		return termSearchDbService.getMeaningFirstWord(meaningId, searchDatasetsRestriction);
+	}
+
+	private Lexeme composeLexeme(DatasetPermission userRole, Long lexemeId) {
+
+		LexemeWordTuple lexemeWordTuple = termSearchDbService.getLexemeWordTuple(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		Lexeme lexeme = conversionUtil.composeLexeme(lexemeWordTuple);
+		permCalculator.applyCrud(userRole, lexeme);
+		return lexeme;
+	}
+
+	private List<Definition> composeDefinitions(DatasetPermission userRole, Long meaningId) {
+
+		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		permCalculator.applyCrud(userRole, definitions);
+		permCalculator.filterVisibility(userRole, definitions);
+		return definitions;
+	}
+
+	private List<Usage> composeUsages(DatasetPermission userRole, Long lexemeId) {
+
+		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
+				commonDataDbService.getLexemeUsageTranslationDefinitionTuples(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
+		permCalculator.applyCrud(userRole, usages);
+		permCalculator.filterVisibility(userRole, usages);
+		return usages;
 	}
 
 }

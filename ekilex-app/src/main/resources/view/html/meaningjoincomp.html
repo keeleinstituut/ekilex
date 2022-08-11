@@ -22,7 +22,7 @@
     </div>
     <div class="row" th:if="${not #lists.isEmpty(meaning.definitionLangGroups)}">
       <div class="col-1 pr-0">
-        <span class="lbl">Seletused</span>
+        <span class="lbl" th:text="#{term.definition}">Seletus</span>
       </div>
       <div class="col pl-0">
         <th:block th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
@@ -44,7 +44,7 @@
     </div>
     <div class="row" th:if="${not #lists.isEmpty(meaning.domains)}">
       <div class="col-1 pr-0">
-        <span class="lbl">Valdkonnad</span>
+        <span class="lbl" th:text="#{term.meaning.domain}">Valdkond</span>
       </div>
       <div class="col pl-0">
         <th:block th:each="classif,classifIter : ${meaning.domains}">
@@ -61,7 +61,7 @@
     </div>
     <div class="row" th:if="${not #lists.isEmpty(meaning.noteLangGroups)}">
       <div class="col-1 pr-0">
-        <span class="lbl">Märkused</span>
+        <span class="lbl" th:text="#{term.meaning.note}">Märkus</span>
       </div>
       <div class="col pl-0">
         <th:block th:each="noteLangGroup : ${lexeme.meaning.noteLangGroups}">
@@ -74,7 +74,7 @@
     </div>
     <div class="row" th:if="${not #lists.isEmpty(meaning.freeforms)}">
       <div class="col-1 pr-0">
-        <span class="lbl">Concept id</span>
+        <span class="lbl" th:text="#{meaningjoin.concept.id}">Concept id</span>
       </div>
       <div class="col pl-0">
         <th:block th:each="freeform : ${meaning.freeforms}">
@@ -94,7 +94,7 @@
         </div>
         <div class="row">
           <div class="col-1 pr-0">
-            <span class="lbl">Identifikaatorid</span>
+            <span class="lbl" th:text="#{term.data.ids}">Identifikaatorid</span>
           </div>
           <div class="col pl-0">
             <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
@@ -104,16 +104,16 @@
         </div>
         <div class="row">
           <div class="col-1 pr-0">
-            <span class="lbl">Avalikkus</span>
+            <span class="lbl" th:text="#{common.publicity}">Avalikkus</span>
           </div>
           <div class="col pl-0">
-            <span th:if="${lexeme.public}">avalik</span>
-            <span th:unless="${lexeme.public}">mitteavalik</span>
+            <span th:if="${lexeme.public}" th:text="#{boolean.public.true}">avalik</span>
+            <span th:unless="${lexeme.public}" th:text="#{boolean.public.false}">mitteavalik</span>
           </div>
         </div>
         <div class="row" th:if="${lexeme.lexemeValueStateCode != null}">
           <div class="col-1 pr-0">
-            <span class="lbl">Väärtusolek</span>
+            <span class="lbl" th:text="#{term.lexeme.value.state}">Väärtusolek</span>
           </div>
           <div class="col pl-0">
             <span th:text="${lexeme.lexemeValueStateCode}"></span>
@@ -121,7 +121,7 @@
         </div>
         <div class="row" th:if="${not #lists.isEmpty(lexeme.wordTypes)}">
           <div class="col-1 pr-0">
-            <span class="lbl">Keelendi tüüp</span>
+            <span class="lbl" th:text="#{term.word.type}">Keelendi tüüp</span>
           </div>
           <div class="col pl-0">
             <span th:each="classif,classifIter : ${lexeme.wordTypes}">
@@ -135,7 +135,7 @@
         </div>
         <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
           <div class="col-1 pr-0">
-            <span class="lbl">Allikaviited</span>
+            <span class="lbl" th:text="#{term.source.link}">Allikaviide</span>
           </div>
           <div class="col pl-0">
             <th:block th:each="sourceLink : ${lexeme.sourceLinks}">
@@ -150,7 +150,7 @@
         </div>
         <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
           <div class="col-1 pr-0">
-            <span class="lbl">Kasutusnäited</span>
+            <span class="lbl" th:text="#{term.usage}">Kasutusnäide</span>
           </div>
           <div class="col pl-0">
             <th:block th:each="usage : ${lexeme.usages}">

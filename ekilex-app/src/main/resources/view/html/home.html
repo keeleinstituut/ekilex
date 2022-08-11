@@ -13,56 +13,62 @@
       </div>
       <div class="card-body">
         <p>
-          <a th:href="@{/lexsearch}">Leksikograafide otsing</a>
+          <a th:href="@{/lexsearch}" th:text="#{menu.lex}">Leksikograafid</a>
         </p>
         <p>
-          <a th:href="@{/termsearch}">Terminoloogide otsing</a>
+          <a th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
         </p>
         <p>
-          <a th:href="@{/synsearch}" th:if="${userRoleData.crudRoleSelected}">Vastete otsing</a>
-          <span th:unless="${userRoleData.crudRoleSelected}" title="Vali roll vastete otsinguks">Vastete otsing</span>
+          <a th:href="@{/synsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.syn}">Vasted</a>
+          <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.syn}">Vasted</span>
         </p>
         <p>
-          <a th:href="@{/sourcesearch}">Allikate otsing</a>
+          <a th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
         </p>
         <p>
-          <a th:href="@{/limtermsearch}">Võrgustiku otsing</a>
+          <a th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
         </p>
         <hr />
         <p>
-          <a th:href="@{/history}">Kustutatud andmed</a>
+          <a th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
         </p>
         <p sec:authorize="#authentication.principal.admin">
-          <a th:href="@{/morphology}">Morfoloogia haldus</a>
+          <a th:href="@{/morphology}" th:text="#{menu.morphology}">Morfoloogia haldus</a>
         </p>
         <p>
-          <a th:href="@{/datasets}">Sõnakogude haldus</a>
+          <a th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
         </p>
         <p sec:authorize="#vars.userRoleData.admin">
-          <a th:href="@{/fedtermupload}">FedTerm liidestus</a>
+          <a th:href="@{/fedtermupload}" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
         </p>
         <p sec:authorize="#authentication.principal.admin">
-          <a th:href="@{/classifiers}">Klassifikaatorite haldus</a>
+          <a th:href="@{/classifiers}" th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
         </p>
         <p sec:authorize="#vars.userRoleData.admin">
-          <a th:href="@{/tags}">Siltide haldus</a>
+          <a th:href="@{/tags}" th:text="#{menu.tags}">Siltide haldus</a>
         </p>
         <p sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">
-          <a th:href="@{/permissions}">Õiguste haldus</a>
+          <a th:href="@{/permissions}" th:text="#{menu.permissions}">Õiguste haldus</a>
         </p>
         <p sec:authorize="#authentication.principal.datasetCrudPermissionsExist">
-          <a th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
+          <a th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
         </p>
         <p>
-          <a th:href="@{/stat}">Sõnaveebi Statistika</a>
+          <a th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi Statistika</a>
         </p>
         <th:block th:replace="components :: change_role" sec:authorize="#vars.userRoleData.roleChangeEnabled"></th:block>
         <hr />
         <p>
-          <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutusjuhend</a>
+          <a href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+            <span th:text="#{menu.user.manual}"></span>
+          </a>
         </p>
         <p>
-          <a th:href="@{/termsofuse}"><i class="fa fa-info-circle" aria-hidden="true"></i> Kasutustingimused</a>
+          <a th:href="@{/termsofuse}">
+            <i class="fa fa-info-circle" aria-hidden="true"></i>
+            <span th:text="#{menu.terms.of.use}"></span>
+          </a>
         </p>
       </div>
     </div>
@@ -71,22 +77,22 @@
   <div class="container-fluid" th:if="${statExists}">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <button class="btn btn-secondary" data-toggle="collapse" data-target="#statData">Ekilexi statistika</button>
+        <button class="btn btn-secondary" data-toggle="collapse" data-target="#statData" th:text="#{stat.header}">Ekilexi statistika</button>
       </div>
       <div id="statData" class="collapse">
         <div class="card-body">
           <h5>Olemite arvud</h5>
           <table class="table table-striped table-condensed">
             <tr>
-              <th>Sõnakogusid</th>
-              <th>Keelendeid</th>
-              <th>Ilmikuid</th>
-              <th>Mõisteid</th>
-              <th>Definitsioone</th>
-              <th>Paradigmasid</th>
-              <th>Vorme</th>
-              <th>Kollokatsioone</th>
-              <th>Allikaid</th>
+              <th th:text="#{stat.datasets}">Sõnakogusid</th>
+              <th th:text="#{stat.words}">Keelendeid</th>
+              <th th:text="#{stat.lexemes}">Ilmikuid</th>
+              <th th:text="#{stat.meanings}">Mõisteid</th>
+              <th th:text="#{stat.definitions}">Definitsioone</th>
+              <th th:text="#{stat.paradigms}">Paradigmasid</th>
+              <th th:text="#{stat.forms}">Vorme</th>
+              <th th:text="#{stat.collocations}">Kollokatsioone</th>
+              <th th:text="#{stat.sources}">Allikaid</th>
             </tr>
             <tr>
               <td th:text="${mainEntityStatData.datasetCount}"></td>
@@ -100,14 +106,14 @@
               <td th:text="${mainEntityStatData.sourceCount}"></td>
             </tr>
             <tr>
-              <th>Keeli</th>
-              <th>Valdkondi</th>
-              <th>Sõnaliike</th>
-              <th>Vormi märgendeid</th>
-              <th>Registreid</th>
-              <th>Aspekte</th>
-              <th>Tuletuskoode</th>
-              <th>Sugusid</th>
+              <th th:text="#{stat.languages}">Keeli</th>
+              <th th:text="#{stat.domains}">Valdkondi</th>
+              <th th:text="#{stat.pos}">Sõnaliike</th>
+              <th th:text="#{stat.morphs}">Vormi märgendeid</th>
+              <th th:text="#{stat.registers}">Registreid</th>
+              <th th:text="#{stat.aspects}">Aspekte</th>
+              <th th:text="#{stat.derivs}">Tuletuskoode</th>
+              <th th:text="#{stat.genders}">Sugusid</th>
             </tr>
             <tr>
               <td th:text="${mainEntityStatData.languageCount}"></td>
@@ -137,7 +143,7 @@
             </th:block>
           </table>
           <hr />
-          <h5 class="pt-4">Sõnakogu lekseemide arvud</h5>
+          <h5 class="pt-4" th:text="#{stat.datasets.lexemes}">Sõnakogu lekseemide arvud</h5>
           <table th:with="columns=${15}" class="table table-striped table-condensed">
             <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(lexemeDatasetStatData) - 1, columns)}">
               <tr>
@@ -153,7 +159,7 @@
             </th:block>
           </table>
           <hr />
-          <h5 class="pt-4">Viimase 30 päeva tegevused</h5>
+          <h5 class="pt-4" th:text="#{stat.last.activity}">Viimase 30 päeva tegevused</h5>
           <table th:with="columns=${15}" class="table table-striped table-condensed">
             <th:block th:each="firstRowItemIndex: ${#numbers.sequence(0, #arrays.length(activityStatData) - 1, columns)}">
               <tr>
@@ -172,8 +178,5 @@
       </div>
     </div>
   </div>
-  <script th:inline="javascript">
-	  initializeHome();
-  </script>
 </body>
 </html>

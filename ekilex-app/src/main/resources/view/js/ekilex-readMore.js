@@ -12,12 +12,12 @@ class ReadMore {
   appendDots() {
     const mainHeight = this.main.height();
     this.hidden = 0;
-    this.main.find('div:first').children("*").show();
-    this.main.find('div:first').children("*").find('.btn-custom').show();
+    this.main.find('div:first').children().show();
+    this.main.find('div:first').children().find('.btn-custom').show();
 
     const maxHeight = parseInt(this.main.css('max-height'));
 
-    $(this.main.find('div:first').children("*").get().reverse()).each((index, e) => {
+    $(this.main.find('div:first').children().get().reverse()).each((index, e) => {
       const obj = $(e);
       if (this.parent.parent().height() >= mainHeight && mainHeight >= maxHeight){
         this.hidden = this.hidden + 1;
@@ -25,7 +25,7 @@ class ReadMore {
       }
     });
 
-    $(this.main.find('div:first').children("*").find('.btn-custom').get().reverse()).each((index, e) => {
+    $(this.main.find('div:first .btn-custom').get().reverse()).each((index, e) => {
       const obj = $(e);
       if (this.parent.parent().height() >= mainHeight && mainHeight >= maxHeight){
         this.hidden = this.hidden + 1;
@@ -33,7 +33,7 @@ class ReadMore {
       }
     });
     if (this.hidden > 0) {
-      const lastVisible = this.main.find('div:first').children("*").filter(':visible').last();
+      const lastVisible = this.main.find('div:first').children().filter(':visible').last();
       lastVisible.after(this.handle = $('<div class="indicator"><i class="fa fa-ellipsis-h"></i></div>'));
     }
   }
@@ -63,7 +63,7 @@ class ReadMore {
 
   detectChange() {
     if (this.status) {
-      this.main.find('div:first').children("*").show();
+      this.main.find('div:first').children().show();
       if (this.handle) {
         this.handle.remove();
         this.handle = false;

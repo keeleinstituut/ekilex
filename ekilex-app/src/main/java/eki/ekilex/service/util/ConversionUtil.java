@@ -59,8 +59,6 @@ import eki.ekilex.data.Media;
 import eki.ekilex.data.Note;
 import eki.ekilex.data.NoteLangGroup;
 import eki.ekilex.data.NoteSourceTuple;
-import eki.ekilex.data.OdUsageAlternative;
-import eki.ekilex.data.OdUsageDefinition;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Source;
@@ -190,8 +188,6 @@ public class ConversionUtil implements GlobalConstant {
 		Map<Long, SourceLink> usageSourceMap = new HashMap<>();
 		Map<Long, UsageTranslation> usageTranslationMap = new HashMap<>();
 		Map<Long, UsageDefinition> usageDefinitionMap = new HashMap<>();
-		Map<Long, OdUsageDefinition> odUsageDefinitionMap = new HashMap<>();
-		Map<Long, OdUsageAlternative> odUsageAlternativeMap = new HashMap<>();
 
 		for (UsageTranslationDefinitionTuple tuple : usageTranslationDefinitionTuples) {
 
@@ -199,8 +195,6 @@ public class ConversionUtil implements GlobalConstant {
 			Long usageTranslationId = tuple.getUsageTranslationId();
 			Long usageDefinitionId = tuple.getUsageDefinitionId();
 			Long usageSourceLinkId = tuple.getUsageSourceLinkId();
-			Long odUsageDefinitionId = tuple.getOdUsageDefinitionId();
-			Long odUsageAlternativeId = tuple.getOdUsageAlternativeId();
 
 			Usage usage = usageMap.get(usageId);
 			if (usage == null) {
@@ -214,8 +208,6 @@ public class ConversionUtil implements GlobalConstant {
 				usage.setTypeValue(tuple.getUsageTypeValue());
 				usage.setTranslations(new ArrayList<>());
 				usage.setDefinitions(new ArrayList<>());
-				usage.setOdDefinitions(new ArrayList<>());
-				usage.setOdAlternatives(new ArrayList<>());
 				usage.setAuthors(new ArrayList<>());
 				usage.setSourceLinks(new ArrayList<>());
 				usage.setPublic(tuple.isUsagePublic());
@@ -266,26 +258,6 @@ public class ConversionUtil implements GlobalConstant {
 					usageDefinition.setLang(tuple.getUsageDefinitionLang());
 					usageDefinitionMap.put(usageDefinitionId, usageDefinition);
 					usage.getDefinitions().add(usageDefinition);
-				}
-			}
-			if (odUsageDefinitionId != null) {
-				OdUsageDefinition odUsageDefinition = odUsageDefinitionMap.get(odUsageDefinitionId);
-				if (odUsageDefinition == null) {
-					odUsageDefinition = new OdUsageDefinition();
-					odUsageDefinition.setId(odUsageDefinitionId);
-					odUsageDefinition.setValue(tuple.getOdUsageDefinitionValue());
-					odUsageDefinitionMap.put(odUsageDefinitionId, odUsageDefinition);
-					usage.getOdDefinitions().add(odUsageDefinition);
-				}
-			}
-			if (odUsageAlternativeId != null) {
-				OdUsageAlternative odUsageAlternative = odUsageAlternativeMap.get(odUsageAlternativeId);
-				if (odUsageAlternative == null) {
-					odUsageAlternative = new OdUsageAlternative();
-					odUsageAlternative.setId(odUsageAlternativeId);
-					odUsageAlternative.setValue(tuple.getOdUsageAlternativeValue());
-					odUsageAlternativeMap.put(odUsageAlternativeId, odUsageAlternative);
-					usage.getOdAlternatives().add(odUsageAlternative);
 				}
 			}
 		}

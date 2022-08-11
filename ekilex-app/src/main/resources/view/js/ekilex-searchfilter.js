@@ -10,18 +10,6 @@ $.fn.selectDataSetsPlugin = function() {
 	});
 }
 
-// $.fn.selectDatasets = function () {
-
-// 	$('[name=selectAll]').on("click", function () {
-// 		$('#datasetSelectDlg').find(':checkbox').prop('checked', true)
-// 	});
-
-// 	$('[name=selectNone]').on("click", function () {
-// 		$('#datasetSelectDlg').find(':checkbox').prop('checked', false)
-// 	});
-
-// };
-
 function detailSearchBtn() {
 
 	if ($('.main-nav-tabs').find("#detailSearchModeBtn").hasClass("active")) {
@@ -53,61 +41,33 @@ $.fn.detailSearchModePlugin = function() {
 	});
 }
 
-// $.fn.detailSearchModeBtn = function () {
-
-// 	$('.detail-search-mode-less-btn').on("click", function () {
-// 		let icon = $('.detail-search-mode-less-btn').find("i");
-// 		if (icon.hasClass("fa-sort-desc")) {
-// 			icon.addClass("fa-sort-asc").removeClass("fa-sort-desc");
-// 			$('.detail-search-filter-items').show();
-// 			$('.detail-search-box-less').hide();
-// 		} else {
-// 			icon.addClass("fa-sort-desc").removeClass("fa-sort-asc");
-// 			$('.detail-search-filter-items').hide();
-// 			$('.detail-search-box-less').show();
-// 		}
-// 	});
-
-// };
-
 function detailSearchModeBtnValue() {
-	let finalOutput = "";
-	$(".detail-search-group").each(function (index, value) {
-		let output = "";
-		let selected = $(this).find("select[name$='entity'] option:selected").text() ? ($(this).find("select[name$='entity'] option:selected").text() + "-") : "";
+	let output = "";
+	$(".detail-search-group").each(function () {
+		const group = $(this);
+		let selected = group.find("select[name$='entity'] option:selected").text() ? (group.find("select[name$='entity'] option:selected").text() + "-") : "";
 
-		$('.detail-search-sub-row', this).each(function (index, value) {
-			let obj = $(this);
-			let outputInner = "";
-			let notChksTitle = obj.find('[name$="not"]').is(':checked') ? (obj.find('[name$="not"]').attr('title').toLowerCase() + "-") : "";
-			let searchKey = obj.find("select[name$='searchKey'] option:selected").text() ? (obj.find("select[name$='searchKey'] option:selected").text() + "-") : "";
-			let searchOperand = obj.find("select[name$='searchOperand'] option:selected").text() ? (obj.find("select[name$='searchOperand'] option:selected").text()) : "";
-			outputInner = outputInner + selected + notChksTitle + searchKey + searchOperand;
-
+		group.find('.detail-search-sub-row').each(function () {
+			const obj = $(this);
+			const notChksTitle = obj.find('[name$="not"]').is(':checked') ? (obj.find('[name$="not"]').attr('title').toLowerCase() + "-") : "";
+			const searchKey = obj.find("select[name$='searchKey'] option:selected").text() ? (obj.find("select[name$='searchKey'] option:selected").text() + "-") : "";
+			const searchOperand = obj.find("select[name$='searchOperand'] option:selected").text() ? (obj.find("select[name$='searchOperand'] option:selected").text()) : "";
 			let searchValueValItem = obj.find("input[name$='searchValue']");
 			let searchValueTextItem = obj.find("select[name$='searchValue']");
-
-			if (!((searchValueTextItem.is(":hidden") === true) || (searchValueValItem.is(":hidden") === true))) { // box exists
+			if (!(searchValueTextItem.is(":hidden") || searchValueValItem.is(":hidden"))) { // box exists
 				let searchValueVal = searchValueValItem.val() ?? "";
 				let searchValueText = searchValueTextItem.find(":selected").text() ?? "";
 
-				if (searchValueVal.length > 0) {
-					outputInner = outputInner + "-" + '"' + searchValueVal + '"' + "; ";
-					output = output + outputInner;
-				} else if (searchValueText.length > 0) {
-					outputInner = outputInner + "-" + '"' + searchValueText + '"' + "; ";
-					output = output + outputInner;
-				} else {
-					outputInner = "";
+				if (searchValueVal.length > 0 || searchValueText.length > 0) {
+					output += `${selected + notChksTitle + searchKey + searchOperand}-"${searchValueVal}"; `;
 				}
 			} else {
-				output = output + outputInner + "; ";
+				output += `${selected + notChksTitle + searchKey + searchOperand}; `;
 			}
 
 		});
-		finalOutput = finalOutput + output;
 	});
-	$('.detail-search-box-less-value').val(finalOutput);
+	$('.detail-search-box-less-value').val(output);
 }
 
 function displayDetailConditionButtons() {
@@ -144,13 +104,13 @@ function displayNotOperandChk() {
 		"ID", "FREQUENCY", "RANK", "CREATED_OR_UPDATED_BY", "CREATED_OR_UPDATED_ON", "CREATED_BY", "CREATED_ON", "UPDATED_BY", "UPDATED_ON", "LAST_UPDATE_ON",
 		"MANUAL_UPDATE_ON", "ATTRIBUTE_NAME"];
 
-	let notChks = $('#detail_search_filter').find('[name$="not"]');
+	const notChks = $('#detail_search_filter').find('[name$="not"]');
 	notChks.each(function () {
-		let notChk = $(this);
-		let searchEntity = notChk.closest('.detail-search-group').find('[name$="entity"]').val();
-		let searchKey = notChk.closest('.detail-search-sub-row').find('[name$="searchKey"]').val();
+		const notChk = $(this);
+		const searchEntity = notChk.closest('.detail-search-group').find('[name$="entity"]').val();
+		const searchKey = notChk.closest('.detail-search-sub-row').find('[name$="searchKey"]').val();
+		const disable = disabledSearchEntities.includes(searchEntity) || disabledSearchKeys.includes(searchKey);
 
-		let disable = disabledSearchEntities.includes(searchEntity) || disabledSearchKeys.includes(searchKey);
 		if (disable) {
 			notChk.attr('disabled', true);
 			notChk.prop('checked', false);
@@ -161,42 +121,10 @@ function displayNotOperandChk() {
 }
 
 function initialiseSearchForm() {
-	// Moved to bottom of file as plugins
-	// $('#simpleSearchModeBtn').on('click',displaySimpleSearch);
-	// $('#detailSearchModeBtn').on('click',displayDetailSearch);
-	// let datasetDlg = $('#datasetSelectDlg');
-	// datasetDlg.on('shown.bs.modal', () => {
-	// 	datasetDlg.find('.btn').first().focus();
-	// });
 	detailSearchModeBtnValue();
   manualEventOnUpdateCheckCheckboxValueUpdate();
-	// Moved to bottom of file as plugin
-	// $('#searchForm').submit(function(e){
-	// 	openWaitDlg();
-	// 	let currentSearchMode = $('#searchMode').val();
-	// 	let isSearchFilterValid = $('#isSearchFilterValid').val();
-	// 	if (currentSearchMode === 'SIMPLE' && isSearchFilterValid === 'false') {
-	// 		e.preventDefault();
-	// 		validateAndSubmitSimpleSearch();
-	// 	}
-	// });
-
-	// Moved to bottom of file as plugin
-	// $(document).on("click", "#share-details-link", function() {
-	// 	let searchParams = new URLSearchParams(window.location.search);
-	// 	let idParam = searchParams.get("id");
-	// 	let detailsUri = $(this).data('details-uri');
-	// 	if (idParam) {
-	// 		let shareLink = applicationBaseUrl + '/' + detailsUri + '?id=' + idParam;
-	// 		let tempCopyField = $("<input>");
-	// 		$("body").append(tempCopyField);
-	// 		tempCopyField.val(shareLink).select();
-	// 		document.execCommand('copy');
-	// 		tempCopyField.remove();			
-	// 	}
-	// });
-
 };
+
 $.fn.manualEventOnDivView = function () {
 	const obj = $(this);
 	const dataViewType = $("#searchForm").attr('action');
@@ -219,14 +147,16 @@ function manualEventOnUpdateCheckCheckboxValueUpdate() {
 function manualEventOnUpdateItemsShow(obj) {
 	obj.find(".date-text").removeClass("d-none");
 	obj.find(".date-check").removeClass("d-none");
-	obj.find(".date-i-edit").removeClass("date-i-edit-small");
-	obj.find(".date-i-edit").addClass("date-i-edit-big");
+	obj.find(".date-i-edit")
+		.removeClass("date-i-edit-small")
+		.addClass("date-i-edit-big");
 }
 function manualEventOnUpdateItemsHide(obj) {
 	obj.find(".date-text").addClass("d-none");
 	obj.find(".date-check").addClass("d-none");
-	obj.find(".date-i-edit").addClass("date-i-edit-small");
-	obj.find(".date-i-edit").removeClass("date-i-edit-big");
+	obj.find(".date-i-edit")
+		.addClass("date-i-edit-small")
+		.removeClass("date-i-edit-big");
 }
 
 $.fn.mouseManualEventOnUpdateCheck = function (e) {
@@ -240,9 +170,10 @@ $.fn.mouseManualEventOnUpdateCheck = function (e) {
 		obj.animate({ width: "168", marginLeft: 0 }, { duration: 225 });
 		manualEventOnUpdateItemsShow(obj);
 	} else {
-		var timeout;
+		let timeout;
 		obj.on("mouseenter", function () {
-			if (timeout != null) { clearTimeout(timeout); }
+			if (timeout != null) clearTimeout(timeout);
+
 			timeout = setTimeout(function () {
 				obj.animate({ width: "168", marginLeft: 0 }, { duration: 225 });
 				manualEventOnUpdateItemsShow(obj);
@@ -261,13 +192,13 @@ $.fn.mouseManualEventOnUpdateCheck = function (e) {
 };
 
 $.fn.manualEventOnUpdateCheck = function () {
-	var main = $(this);
+	const main = $(this);
 	main.on('click', function (e) {
 		e.preventDefault();
 		openWaitDlg();
-		let checked = main.is(':checked');
+		const checked = main.is(':checked');
 		let manualEventOnUpdateUrl;
-		if (checked == true) {
+		if (checked) {
 			manualEventOnUpdateUrl = applicationUrl + 'manual_event_on_update/false';
 		} else {
 			manualEventOnUpdateUrl = applicationUrl + 'manual_event_on_update/true';
@@ -277,7 +208,7 @@ $.fn.manualEventOnUpdateCheck = function () {
 			$wpm.bindObjects();
 		}).fail(function (data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		}).always(function () {
 			manualEventOnUpdateCheckCheckboxValueUpdate();
 			closeWaitDlg();
@@ -286,24 +217,23 @@ $.fn.manualEventOnUpdateCheck = function () {
 };
 
 function validateAndSubmitSimpleSearch() {
-	let searchForm = $('#searchForm');
-	let searchFilter = searchForm.find('input[name="simpleSearchFilter"]').val();
-	let isSearchFilterValid = validateSearchFilter(searchFilter);
+	const searchForm = $('#searchForm');
+	const searchFilter = searchForm.find('input[name="simpleSearchFilter"]').val();
+	const isSearchFilterValid = validateSearchFilter(searchFilter);
 	if (isSearchFilterValid) {
 		$('#isSearchFilterValid').val('true');
 		searchForm.submit();
 	}
 };
 
-// Moved function outside initialization to let searchKeySelectChangePlugin find it
 function replaceSearchValueElement(searchKey, searchValueElement) {
 
-	let templateElement = $('#searchValueTemplates').find('[name="' + searchKey + '"]');
-	let copyOfValueTemplate = $(templateElement.html());
-	let isAutofillElement = copyOfValueTemplate.attr('data-live-search') != undefined;
-	let previousElementWasAutofill = searchValueElement.parent().hasClass('bootstrap-select');
+	const templateElement = $('#searchValueTemplates').find(`[name="${searchKey}"]`);
+	const copyOfValueTemplate = $(templateElement.html());
+	const isAutofillElement = copyOfValueTemplate.attr('data-live-search') != undefined;
+	const previousElementWasAutofill = searchValueElement.parent().hasClass('bootstrap-select');
 
-	searchValueElement.parents(".value-input-container").attr('class',templateElement.attr('class'));
+	searchValueElement.parents(".value-input-container").attr('class', templateElement.attr('class'));
 
 	if (copyOfValueTemplate.hasClass('date')) {
 		copyOfValueTemplate.children().attr('name', searchValueElement.attr('name'));
@@ -340,30 +270,31 @@ function initialiseDetailSearch() {
 
 function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 
-	let lastElement = parentElement.find('[name="' + itemName + '"]').last();
-	let copyOfLastElement = lastElement.clone();
-	let oldIndex = copyOfLastElement.data('index');
-	let newIndex = oldIndex + 1;
-	let oldIndexVal = indexName + '[' + oldIndex + ']';
-	let newIndexVal = indexName + '[' + newIndex + ']';
+	const lastElement = parentElement.find(`[name="${itemName}"]`).last();
+	const copyOfLastElement = lastElement.clone();
+	const oldIndex = copyOfLastElement.data('index');
+	const newIndex = oldIndex + 1;
+	const oldIndexVal = `${indexName}[${oldIndex}]`;
+	const newIndexVal = `${indexName}[${newIndex}]`;
 	copyOfLastElement.attr('data-index', newIndex);
-	copyOfLastElement.find('[name*="' + indexName + '["]').each(function(i, v) {
-		$(this).attr('name', $(this).attr('name').replace(oldIndexVal, newIndexVal))
+	copyOfLastElement.find('[name*="' + indexName + '["]').each(function() {
+		const element = $(this);
+		element.attr('name', element.attr('name').replace(oldIndexVal, newIndexVal));
 	});
 	copyOfLastElement.find('div.invalid-feedback').empty();
-	let inputCopy = copyOfLastElement.find('input');
-	let isCheckbox = inputCopy.is(':checkbox');
+	const inputCopy = copyOfLastElement.find('input');
+	const isCheckbox = inputCopy.is(':checkbox');
 	if (!isCheckbox) {
 		inputCopy.val(null);
 	}
 	lastElement.after(copyOfLastElement);
-	return parentElement.find('[name="' + itemName + '"]').last();
+	return parentElement.find(`[name="${itemName}"]`).last();
 };
 
 function initConditionGroup(groupElement) {
-	let entitySelect = groupElement.find('select[name$="entity"]');
+	const entitySelect = groupElement.find('select[name$="entity"]');
 	entitySelect.val(entitySelect.find('option').first().val());
-	entitySelect.trigger('change');
+	entitySelect.change();
 	displayDetailGroupButtons();
 };
 
@@ -371,7 +302,7 @@ function initCondition(conditionElement) {
 	const searchKeySelect = conditionElement.find('select[name$="searchKey"]');
 	const searchKey = searchKeySelect.find('option').first().val();
 	searchKeySelect.val(searchKey);
-	searchKeySelect.trigger('change');
+	searchKeySelect.change();
 	const templClasslist = $('#searchValueTemplates').find(`[name="${searchKey}"]`)[0].classList;
 	$(conditionElement).find('.value-input-container')[0].classList = templClasslist ;
 	displayDetailConditionButtons();
@@ -380,7 +311,7 @@ function initCondition(conditionElement) {
 function validateSearchFilter(searchFilter) {
 	if (searchFilter === '*') {
 		closeWaitDlg();
-		openMessageDlg('Palun täiendage otsingu parameetrit.');
+		openMessageDlg(messages["common.search.add.parameter"]);
 		return false;
 	}
 	return true;
@@ -394,7 +325,7 @@ $.fn.shareDetailsLinkPlugin = function() {
 			const idParam = searchParams.get("id");
 			const detailsUri = obj.data('details-uri');
 			if (idParam) {
-				const shareLink = applicationBaseUrl + '/' + detailsUri + '?id=' + idParam;
+				const shareLink = `${applicationBaseUrl}/${detailsUri}?id=${idParam}`;
 				const tempCopyField = $("<input>");
 				$("body").append(tempCopyField);
 				tempCopyField.val(shareLink).select();

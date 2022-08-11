@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{limterm.search.title}">EKILEX otsing</title>
+<title th:text="#{term.lim.term.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
 </th:block>
 <head>
@@ -26,7 +26,7 @@
                 data-toggle="modal"
                 data-target="#newLimTermWordDlg"
                 sec:authorize="#vars.userRoleData.crudRoleSelected"
-                th:text="#{limterm.new.word}">Uus keelend</button>
+                th:text="#{term.lim.term.new.word}">Uus keelend</button>
       </div>
       <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;" th:if="${isSearchResult}">
         <div id="results_div" class="card shadow" th:if="${termSearchResult.resultExist}">
@@ -67,7 +67,7 @@
             <div class="row">
               <div class="col">
                 <button type="button" class="btn badge badge-secondary float-right"
-                        title="Lisa andmeid"
+                        th:title="#{term.add.data}"
                         data-toggle="modal"
                         th:data-target="${'#addLimTermMeaningDataDlg_' + meaningId}"
                         sec:authorize="#vars.meaning.crudGrant">
@@ -90,7 +90,7 @@
             <div class="block-title">
               <button name="lang-collapse-btn" type="button" class="btn-lang"
                       th:data-lang="${lexemeLangGroup.lang}"
-                      th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}"
+                      th:title="${lexemeLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                       data-plugin="langCollapsePlugin">
                 <i th:class="${lexemeLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
               </button>
@@ -145,15 +145,15 @@
       <script th:replace="common :: confirmations"></script>
       <script>
         $('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
-          btnOkLabel: 'Jah',
-          btnCancelLabel: 'Ei',
-          title: 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm: deleteMeaningAndLexemesAndWords
         });
         $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-          btnOkLabel: 'Jah',
-          btnCancelLabel: 'Ei',
-          title: 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm: deleteLexemeAndWordAndMeaning
         });
       </script>
@@ -161,6 +161,7 @@
   </th:block>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
   <div th:replace="termdialog :: lim_term_new_word_dlg"></div>

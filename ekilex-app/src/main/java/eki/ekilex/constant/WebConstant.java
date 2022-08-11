@@ -60,6 +60,12 @@ public interface WebConstant {
 
 	String TERM_SEARCH_RESULT_ACCESS_URI = "/termsearch_result_access";
 
+	String TERM_SEARCH_RESULT_MEANING_TABLE_URI = "/termsearch_result_meaning_table";
+
+	String TERM_MEANING_TABLE_URI = "/termmeaningtable";
+
+	String TERM_MEANING_TABLE_PAGE = "termmeaningtable";
+
 	String LIM_TERM_PAGING_URI = "/lim_term_paging";
 
 	String TERM_COMPONENTS_PAGE = "termcomp";
@@ -180,6 +186,10 @@ public interface WebConstant {
 
 	String TERM_CREATE_WORD_URI = "/term_create_word";
 
+	String TERM_CREATE_WORD_AND_MEANING_URI = "/termcreatewordandmeaning";
+
+	String TERM_CREATE_WORD_AND_MEANING_PAGE = "/termcreatewordandmeaning";
+
 	String LIM_TERM_CREATE_WORD_URI = "/lim_term_create_word";
 
 	String CREATE_HOMONYM_URI = "/create_homonym";
@@ -197,10 +207,6 @@ public interface WebConstant {
 	String UPDATE_LEVELS_URI = "/update_levels";
 
 	String UPDATE_LEXEME_LEVELS_URI = "/update_lexeme_levels";
-
-	String UPDATE_WORD_VALUE_URI = "/update_word_value";
-
-	String UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI = "/update_word_data_and_lexeme_weight";
 
 	String DELETE_ITEM_URI = "/delete_item";
 

@@ -85,8 +85,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	private List<LexemeRelation> lexemeRelations;
 
-	private List<FreeForm> odLexemeRecommendations;
-
 	private List<CollocationPosGroup> collocationPosGroups;
 
 	private List<Collocation> secondaryCollocations;
@@ -422,14 +420,6 @@ public class WordLexeme extends AbstractCrudEntity implements LexemeLevel, Decor
 
 	public void setLexemeRelations(List<LexemeRelation> lexemeRelations) {
 		this.lexemeRelations = lexemeRelations;
-	}
-
-	public List<FreeForm> getOdLexemeRecommendations() {
-		return odLexemeRecommendations;
-	}
-
-	public void setOdLexemeRecommendations(List<FreeForm> odLexemeRecommendations) {
-		this.odLexemeRecommendations = odLexemeRecommendations;
 	}
 
 	public List<CollocationPosGroup> getCollocationPosGroups() {

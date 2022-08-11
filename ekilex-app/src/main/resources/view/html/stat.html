@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>Sõnaveebi statistika</title>
+<title th:text="#{stat.ww.title}">Sõnaveebi statistika</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -11,14 +11,14 @@
     <div class="card mt-4 mb-4 shadow">
       <form name="getStatForm" th:action="@{/ww_stat}" method="get" data-plugin="statisticsFormPlugin">
         <div class="card-header">
-          <span>Sõnaveebi otsingute statistika (top 100)</span>
+          <span th:text="#{stat.ww.header}">Sõnaveebi otsingute statistika (top 100)</span>
         </div>
         <div class="card-body">
           <div class="form-group row">
-            <label class="col-md-1 col-form-label">Sõnakogu</label>
+            <label class="col-md-1 col-form-label" th:text="#{stat.dataset}">Sõnakogu</label>
             <div class="col-md-2">
               <select class="form-control value-select" name="datasetCode">
-                <option value="">Kõik sõnakogud</option>
+                <option value="" th:text="#{stat.all.datasets}">Kõik sõnakogud</option>
                 <option th:each="dataset : ${userVisibleDatasets}"
                         th:value="${dataset.code}"
                         th:text="${dataset.name}">dataset</option>
@@ -27,10 +27,10 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-1 col-form-label">Keel</label>
+            <label class="col-md-1 col-form-label" th:text="#{stat.language}">Keel</label>
             <div class="col-md-2">
               <select class="form-control value-select" name="lang">
-                <option value="">Kõik keeled</option>
+                <option value="" th:text="#{stat.all.languages}">Kõik keeled</option>
                 <option th:each="lang : ${allLanguages}"
                         th:value="${lang.code}"
                         th:text="${lang.value}">lang</option>
@@ -39,17 +39,17 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-1 col-form-label">Otsingu tüüp</label>
+            <label class="col-md-1 col-form-label" th:text="#{stat.search.type}">Otsingu tüüp</label>
             <div class="col-md-2">
               <select class="form-control value-select" name="searchMode">
-                <option value="">Kõik tüübid</option>
-                <option value="detail">Tavaotsing</option>
-                <option value="simple">Keeleõppija otsing</option>
+                <option value="" th:text="#{stat.search.type.all}">Kõik tüübid</option>
+                <option value="detail" th:text="#{stat.search.type.detail}">Tavaotsing</option>
+                <option value="simple" th:text="#{stat.search.type.simple}">Keeleõppija otsing</option>
               </select>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-1 col-form-label">Alates</label>
+            <label class="col-md-1 col-form-label" th:text="#{stat.date.from}">Alates</label>
             <div class="col-md-2 input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
               <input type="text" class="form-control  bg-white" name="resultsFrom" readonly>
               <div class="input-group-addon input-group-append">
@@ -60,7 +60,7 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-1 col-form-label">Kuni</label>
+            <label class="col-md-1 col-form-label" th:text="#{stat.date.until}">Kuni</label>
             <div class="col-md-2 input-group date" data-provide="datepicker" data-date-language="et" data-date-autoclose="true">
               <input type="text" class="form-control bg-white" name="resultsUntil" readonly>
               <div class="input-group-addon input-group-append">
@@ -70,7 +70,7 @@
               </div>
             </div>
             <div class="col-md-">
-              <button type="submit" class="btn btn-primary">Kinnita</button>
+              <button type="submit" class="btn btn-primary" th:text="#{stat.confirm}">Kinnita</button>
             </div>
           </div>
         </div>
@@ -79,6 +79,7 @@
     <th:block th:replace="statcomp :: wwsearchstat"></th:block>
   </div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
     // Currently unnecessary due to use of plugin

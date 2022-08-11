@@ -25,11 +25,11 @@ function deleteClassifier() {
 			location.reload();
 		} else {
 			console.log(response);
-			openAlertDlg("Kustutamine ebaõnnestus. Kontrolli, kas klassifikaatorit on kusagil kasutatud.");
+			openAlertDlg(messages["common.error"]);
 		}
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg("Kustutamine ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 	});
 }
 
@@ -155,7 +155,7 @@ $.fn.saveClassifierChangesPlugin = function() {
 				location.reload();
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg("Salvestamine ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 			});
 		});
 	});
@@ -182,11 +182,11 @@ $.fn.createClassifierPlugin = function() {
 					location.reload();
 				} else {
 					console.log(response);
-					openAlertDlg("Salvestamine ebaõnnestus. Kontrolli, kas sellise koodiga klassifikaator on juba olemas");
+					openAlertDlg(messages["classifiers.save.fail"]);
 				}
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg("Salvestamine ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 			});
 		});
 	});
@@ -196,9 +196,9 @@ $.fn.deleteClassifierPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.confirmation({
-			btnOkLabel : 'Jah',
-			btnCancelLabel : 'Ei',
-			title : 'Klassifikaatorit on võimalik kustutada siis, kui see ei ole kasutuses. Kas soovid kustutada?',
+			btnOkLabel : messages["common.yes"],
+			btnCancelLabel : messages["common.no"],
+			title : messages["classifiers.confirm.delete"],
 			onConfirm : deleteClassifier
 		});
 	});

@@ -1055,7 +1055,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(FreeForm.class);
 	}
 
-	public List<FreeForm> getOdLexemeRecommendations(Long lexemeId) {
+	public List<FreeForm> getOdWordRecommendations(Long wordId) {
 
 		return create
 				.select(
@@ -1067,11 +1067,11 @@ public class CommonDataDbService extends AbstractDataDbService {
 						FREEFORM.ORDER_BY,
 						FREEFORM.MODIFIED_BY,
 						FREEFORM.MODIFIED_ON)
-				.from(FREEFORM, LEXEME_FREEFORM)
+				.from(FREEFORM, WORD_FREEFORM)
 				.where(
-						LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
-								.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.OD_LEXEME_RECOMMENDATION.name())))
+						WORD_FREEFORM.WORD_ID.eq(wordId)
+								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
+								.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetchInto(FreeForm.class);
 	}
@@ -1103,8 +1103,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 		Freeform u = FREEFORM.as("u");
 		Freeform ut = FREEFORM.as("ut");
 		Freeform ud = FREEFORM.as("ud");
-		Freeform odUd = FREEFORM.as("od_ud");
-		Freeform odUa = FREEFORM.as("od_ua");
 		Freeform utype = FREEFORM.as("utype");
 		Freeform pname = FREEFORM.as("pname");
 		Source src = SOURCE.as("src");
@@ -1142,10 +1140,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 						ud.ID.as("usage_definition_id"),
 						ud.VALUE_PRESE.as("usage_definition_value"),
 						ud.LANG.as("usage_definition_lang"),
-						odUd.ID.as("od_usage_definition_id"),
-						odUd.VALUE_PRESE.as("od_usage_definition_value"),
-						odUa.ID.as("od_usage_alternative_id"),
-						odUa.VALUE_PRESE.as("od_usage_alternative_value"),
 						srcl.ID.as("usage_source_link_id"),
 						srcl.TYPE.as("usage_source_link_type"),
 						srcl.NAME.as("usage_source_link_name"),
@@ -1157,14 +1151,12 @@ public class CommonDataDbService extends AbstractDataDbService {
 						ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
-								.leftOuterJoin(odUd).on(odUd.PARENT_ID.eq(u.ID).and(odUd.TYPE.eq(FreeformType.OD_USAGE_DEFINITION.name())))
-								.leftOuterJoin(odUa).on(odUa.PARENT_ID.eq(u.ID).and(odUa.TYPE.eq(FreeformType.OD_USAGE_ALTERNATIVE.name())))
 								.leftOuterJoin(srcl).on(srcl.FREEFORM_ID.eq(u.ID))
 								.leftOuterJoin(srcn).on(srcn.field("id").cast(Long.class).eq(srcl.SOURCE_ID))
 								.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 								.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode)))))
 				.where(ulff.LEXEME_ID.eq(lexemeId))
-				.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, odUd.ORDER_BY, odUa.ORDER_BY, srcl.ORDER_BY)
+				.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, srcl.ORDER_BY)
 				.fetchInto(UsageTranslationDefinitionTuple.class);
 	}
 

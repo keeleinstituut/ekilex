@@ -35,14 +35,6 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	private String usageDefinitionLang;
 
-	private Long odUsageDefinitionId;
-
-	private String odUsageDefinitionValue;
-
-	private Long odUsageAlternativeId;
-
-	private String odUsageAlternativeValue;
-
 	private Long usageSourceLinkId;
 
 	private ReferenceType usageSourceLinkType;
@@ -161,38 +153,6 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	public void setUsageDefinitionLang(String usageDefinitionLang) {
 		this.usageDefinitionLang = usageDefinitionLang;
-	}
-
-	public Long getOdUsageDefinitionId() {
-		return odUsageDefinitionId;
-	}
-
-	public void setOdUsageDefinitionId(Long odUsageDefinitionId) {
-		this.odUsageDefinitionId = odUsageDefinitionId;
-	}
-
-	public String getOdUsageDefinitionValue() {
-		return odUsageDefinitionValue;
-	}
-
-	public void setOdUsageDefinitionValue(String odUsageDefinitionValue) {
-		this.odUsageDefinitionValue = odUsageDefinitionValue;
-	}
-
-	public Long getOdUsageAlternativeId() {
-		return odUsageAlternativeId;
-	}
-
-	public void setOdUsageAlternativeId(Long odUsageAlternativeId) {
-		this.odUsageAlternativeId = odUsageAlternativeId;
-	}
-
-	public String getOdUsageAlternativeValue() {
-		return odUsageAlternativeValue;
-	}
-
-	public void setOdUsageAlternativeValue(String odUsageAlternativeValue) {
-		this.odUsageAlternativeValue = odUsageAlternativeValue;
 	}
 
 	public Long getUsageSourceLinkId() {

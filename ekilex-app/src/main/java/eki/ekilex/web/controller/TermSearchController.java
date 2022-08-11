@@ -306,4 +306,23 @@ public class TermSearchController extends AbstractPrivateSearchController {
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(bytes);
 	}
+
+	@PostMapping(TERM_SEARCH_RESULT_MEANING_TABLE_URI)
+	public String termSearchResultMeaningTable(@RequestParam("meaningIds") List<Long> meaningIds) {
+
+		String uri = "?meaningIds=" + StringUtils.join(meaningIds, ',');
+
+		return "redirect:" + TERM_MEANING_TABLE_URI + uri;
+	}
+
+	@GetMapping(TERM_MEANING_TABLE_URI)
+	public String termMeaningTable(@RequestParam("meaningIds") List<Long> meaningIds, Model model) {
+
+		EkiUser user = userContext.getUser();
+		List<String> datasetCodes = getUserPreferredDatasetCodes();
+		List<Meaning> meanings = termSearchService.getTableMeanings(meaningIds, datasetCodes, user);
+		model.addAttribute("meanings", meanings);
+
+		return TERM_MEANING_TABLE_PAGE;
+	}
 }

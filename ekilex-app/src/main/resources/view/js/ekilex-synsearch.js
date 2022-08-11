@@ -1,12 +1,12 @@
-var IS_KEYBOARD_MODE = false;
-var NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
-var NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
-var NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
+let IS_KEYBOARD_MODE = false;
+const NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
+const NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
+const NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
 
 function initializeSynSearch() {
 	let activeSearchResultID;
-	var sidebarScrollPosition = {};
+	let sidebarScrollPosition = {};
 
 	//Enter keyboard edit mode
 	$.fn.enableKeyboardModePlugin = function() {
@@ -19,51 +19,33 @@ function initializeSynSearch() {
 
 				activateSynCandidatesList();
 
-				$(this).attr('disabled', true);
-			})
+			 obj.attr('disabled', true);
+			});
 		})
 	}
-	// $(document).on("click", "#keyboardEditBtn", function() {
-	// 	IS_KEYBOARD_MODE = true;
-	// 	console.log('IS_KEYBOARD_MODE: ' + IS_KEYBOARD_MODE);
-	// 	$('body').addClass('keyboard-edit-mode-active');
-
-	// 	activateSynCandidatesList();
-
-	// 	$(this).attr('disabled', true);
-
-	// });
-
-	// Moved to end of file as a plugin
-	// $(document).on("click", "#activeTagCompleteBtn", function() {
-	// 	let wordId = $(this).data('word-id');
-	// 	let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
-	// 	let callbackFunc = () => refreshSynDetails();
-	// 	doPostRelationChange(actionUrl, callbackFunc);
-	// });
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
+		const button = $(this);
+		let savedScrollPositions = getScrollPositions();
 
-		var savedScrollPositions = getScrollPositions();
-
-		let id = $(this).data('id');
+		const id = button.data('id');
 		let markedSynMeaningId = $(document).find('.keyboard-nav-list-item-selected').data('meaning-id');
 
 		$('#synSearchResultsDiv').find('.list-group-item').each(function() {
-			$(this).removeClass('keyboard-nav-list-item-active active');
+			button.removeClass('keyboard-nav-list-item-active active');
 		});
 		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
 
-		$(this).parent().addClass('active');
-		$(this).parent().attr('data-navigate-selected', true);
+		button.parent().addClass('active');
+		button.parent().attr('data-navigate-selected', true);
 
 		$("[id^='syn_select_wait_']").hide();
-		$("#syn_select_wait_" + id).show();
+		$(`#syn_select_wait_${id}`).show();
 		openWaitDlg();
 
-		let detailsUrl = applicationUrl + "syn_worddetails/" + id;
+		let detailsUrl = `${applicationUrl}syn_worddetails/${id}`;
 		if (markedSynMeaningId != undefined) {
-			detailsUrl += '?markedSynMeaningId=' + markedSynMeaningId;
+			detailsUrl += `?markedSynMeaningId=${markedSynMeaningId}`;
 		}
 
 		sidebarScrollPosition = {
@@ -72,11 +54,11 @@ function initializeSynSearch() {
 		}
 
 		$.get(detailsUrl).done(function(data) {
-			let detailsDiv = $('#syn-details-area');
-			detailsDiv.replaceWith(data);
+			let detailsDivParent = $('#syn-details-area').parent();
+			detailsDivParent.html(data);
 			$('.tooltip').remove();
 			closeWaitDlg();
-			$("#syn_select_wait_" + id).hide();
+			$(`#syn_select_wait_${id}`).hide();
 			$('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
 
 			$wpm.bindObjects();
@@ -101,15 +83,6 @@ function initializeSynSearch() {
 				helper: "clone"
 			});
 
-			/*
-			$(document).find('.draggable-syn-rel').draggable({
-				revert: "invalid",
-				appendTo: "body",
-				containment: "window",
-				helper: "clone"
-			});
-			*/
-
 			let scrollDebounce;
 			$('.lexeme-list').off('scroll.droppable').on('scroll.droppable', function(){
 				const main = $(this);
@@ -131,16 +104,17 @@ function initializeSynSearch() {
 						}
 					});
 				}, 150);
-			}).trigger('scroll');
+			}).scroll();
 
 			$(document).find('.droppable-lexeme').droppable({
 				accept: function(draggableDiv) {
-					if ($(this).is('.canAccept')) {
+					const $this = $(this);
+					if ($this.is('.canAccept')) {
 						if (draggableDiv.hasClass("draggable-synonym")) {
-							let draggableMeaningId = draggableDiv.data('meaning-id');
-							let droppableMeaningId = $(this).data('meaning-id');
-							let isSameMeaning = draggableMeaningId === droppableMeaningId;
-							let existingMeaning = $(this).find("input.relation-meaning-id[value='" + draggableMeaningId + "']");
+							const draggableMeaningId = draggableDiv.data('meaning-id');
+							const droppableMeaningId = $this.data('meaning-id');
+							const isSameMeaning = draggableMeaningId === droppableMeaningId;
+							const existingMeaning = $this.find(`input.relation-meaning-id[value="${draggableMeaningId}"]`);
 
 							if (!existingMeaning.length && !isSameMeaning) {
 								return true;
@@ -154,52 +128,17 @@ function initializeSynSearch() {
 				},
 				drop: function(event, ui) {
 
-					let targetMeaningId = $(this).data('meaning-id');
-					let wordRelationId = ui.draggable.parent().data('id');
-					let sourceMeaningId = ui.draggable.data('meaning-id');
+					const targetMeaningId = $(this).data('meaning-id');
+					const wordRelationId = ui.draggable.parent().data('id');
+					const sourceMeaningId = ui.draggable.data('meaning-id');
 
-					let actionUrl = applicationUrl + 'syn_create_meaning_relation/' + targetMeaningId + '/' + sourceMeaningId + '/' + wordRelationId;
+					const actionUrl = `${applicationUrl}syn_create_meaning_relation/${targetMeaningId}/${sourceMeaningId}/${wordRelationId}`;
 
 					openWaitDlg();
-					let callbackFunc = () => refreshSynDetails();
+					const callbackFunc = () => refreshSynDetails();
 					doPostRelationChange(actionUrl, callbackFunc);
 				}
 			});
-
-			/*
-			$(document).find('.droppable-syn-rel').droppable({
-				accept: function(draggableDiv) {
-					if ($(this).is('.canAccept')) {
-						if (draggableDiv.hasClass("draggable-syn-rel")) {
-							let draggableSynRelLexemeId = draggableDiv.closest('.droppable-syn-rel').attr('data-lexeme-id');
-							let droppableSynRelLexemeId = $(this).closest('.droppable-syn-rel').attr('data-lexeme-id');
-
-							return draggableSynRelLexemeId === droppableSynRelLexemeId;
-						}
-					}
-				},
-				classes: {
-					"ui-droppable-active": "ui-state-active",
-					"ui-droppable-hover": "ui-state-hover"
-				},
-				drop: function(event, ui) {
-
-					let draggableOrderable = ui.draggable.closest('[data-orderpos]');
-					let draggableOrderPos = Number(draggableOrderable.data('orderpos'));
-					let orderingBtn = $(this);
-					let droppableOrderable = $(this).closest('[data-orderpos]');
-					let droppableOrderPos = Number(droppableOrderable.data('orderpos'));
-					let posDelta = droppableOrderPos - draggableOrderPos;
-					let draggableItem = ui.draggable;
-					let orderingData = changeLexemeSynRelationOrdering(draggableItem, posDelta);
-					openWaitDlg();
-					postJson(applicationUrl + 'update_ordering', orderingData);
-					if (orderingBtn.hasClass('do-refresh')) {
-						refreshSynDetails();
-					}
-				}
-			});
-			*/
 
 			if (IS_KEYBOARD_MODE) {
 				activateSynCandidatesList();
@@ -220,38 +159,6 @@ function initializeSynSearch() {
 		});
 	});
 
-	// Moved to end of file as a plugin
-	// $(document).on("click", ".rel-status-btn", function() {
-	// 	let status = $(this).data('status');
-	// 	let id = $(this).data('id');
-	// 	let actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
-
-	// 	let callbackFunc = () => refreshSynDetails();
-
-	// 	doPostRelationChange(actionUrl, callbackFunc);
-
-	// });
-	
-	// Now in common file as changeItemOrderingPlugin
-	// $(document).on('click', '.order-up', function() {
-	// 	let orderingBtn = $(this);
-	// 	let orderingData = changeItemOrdering(orderingBtn, -1);
-	// 	postJson(applicationUrl + 'update_ordering', orderingData);
-	// 	if (orderingBtn.hasClass('do-refresh')) {
-	// 		refreshSynDetails();
-	// 	}
-	// });
-
-	// Now in common file as changeItemOrderingPlugin
-	// $(document).on('click', '.order-down', function() {
-	// 	let orderingBtn = $(this);
-	// 	let orderingData = changeItemOrdering(orderingBtn, 1);
-	// 	postJson(applicationUrl + 'update_ordering', orderingData);
-	// 	if (orderingBtn.hasClass('do-refresh')) {
-	// 		refreshSynDetails();
-	// 	}
-	// });
-
 	$(document).find('.draggable-synonym').draggable();
 	$(document).find('.draggable-syn-rel').draggable();
 
@@ -261,81 +168,11 @@ function initializeSynSearch() {
 		$(document).find('input[name="simpleSearchFilter"]').focus();
 	}
 
-	let detailButtons = $('#results').find('[name="synDetailsBtn"]');
+	const detailButtons = $('#results').find('[name="synDetailsBtn"]');
 	if (detailButtons.length === 1) {
-		detailButtons.trigger('click');
+		detailButtons.click();
 	}
-
-	// Replaced by activityLogDlgPlugin under common
-	// $.fn.wordActivityLogDlgPlugin = function() {
-	// 	var el = $(this);
-	// 	el.on('show.bs.modal', function(e) {
-	// //$(document).on('show.bs.modal', '#wordActivityLogDlg', function(e) {
-	// 		let dlg = $(this);
-	// 		let link = $(e.relatedTarget);
-	// 		let url = link.attr('href');
-	// 		dlg.find('.close').focus();
-	// 		dlg.find('.modal-body').html(null);
-	// 		$.get(url).done(function(data) {
-	// 			dlg.find('.modal-body').html(data);
-	// 		});
-	// 	});
-	// }
-
-	// $.fn.pagingInputPlugin = function() {
-	// 	const input = $(this);
-	// 	input.on('keydown', function (e) {
-	// 		if (e.which === 13 || e.keyCode === 13) {
-	// 			console.log(e);
-	// 			e.preventDefault();
-	// 			input.closest('form').find('.paging-submit').click();
-	// 		}
-	// 	})
-	// }
-	//$(document).on('keydown', '.paging-input', function(e) {
-	// $('#synSearchResultsDiv').on('keydown', '.paging-input', function (e) {
-	// 	if (e.which === 13) {
-	// 		e.preventDefault();
-	// 		console.log(e);
-	// 		$('[name="pagingBtn"]').last().trigger('click');
-	// 	}
-	// });
-
-	// $('#synSearchResultsDiv').on('click', '[name="pagingBtn"]', function () {
-	// //$(document).on('click', '[name="pagingBtn"]', function() {
-	// 	openWaitDlg();
-	// 	let url = applicationUrl + "syn_paging";
-	// 	let button = $(this);
-	// 	let direction = button.data("direction");
-	// 	let form = button.closest('form');
-	// 	if (direction === "page") {
-	// 		//form.find('input[name="direction"]').val('next');
-	// 		//let inputPageValue = $(".paging-input").val().trim();
-	// 		//let tulemus = ((inputPageValue - 1) * 50) - 50;
-	// 		//form.find('input[name="offset"]').val(tulemus);
-	// 		//form.find('input[name="userInputPage"]').val(inputPageValue)
-	// 	} else {
-	// 		form.find('input[name="direction"]').val(direction);
-	// 	}
-	// 	$.ajax({
-	// 		url: url,
-	// 		data: form.serialize(),
-	// 		method: 'POST',
-	// 	}).done(function (data) {
-	// 		closeWaitDlg();
-	// 		$('#synSearchResultsDiv').html(data);
-	// 		$('#synSearchResultsDiv').parent().scrollTop(0);
-	// 		$('#syn-details-area').empty();
-	// 		$wpm.bindObjects();
-			
-	// 	}).fail(function (data) {
-	// 		console.log(data);
-	// 		closeWaitDlg();
-	// 		openAlertDlg('Lehekülje muutmine ebaõnnestus');
-	// 	});
-
-	// });
-	 detailSearchBtn();  
+	detailSearchBtn();  
 }
 
 function initAddSynRelationDlg(addDlg) {
@@ -344,26 +181,26 @@ function initAddSynRelationDlg(addDlg) {
 
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		e.preventDefault();
-		let button = $(this);
-		let content = button.html();
+		const button = $(this);
+		const content = button.html();
 		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-		let theForm = $(this).closest('form');
-		let url = theForm.attr('action') + '?' + theForm.serialize();
+		const form = button.closest('form');
+		const url = form.attr('action') + '?' + form.serialize();
 
 		$.get(url).done(function(data) {
 			addDlg.find('[data-name=dialogContent]').replaceWith(data);
-			let addRelationsBtn = addDlg.find('button[name="addRelationsBtn"]');
+			const addRelationsBtn = addDlg.find('button[name="addRelationsBtn"]');
 
-			let idsChk = addDlg.find('input[name="ids"]');
+			const idsChk = addDlg.find('input[name="ids"]');
 			idsChk.on('change', function() {
 				addRelationsBtn.prop('disabled', !idsChk.filter(":checked").length);
 			});
 
 			addRelationsBtn.off('click').on('click', function(e) {
 				e.preventDefault();
-				let selectRelationsForm = addRelationsBtn.closest('form');
+				const selectRelationsForm = addRelationsBtn.closest('form');
 				if (checkRequiredFields(selectRelationsForm)) {
-					let url = applicationUrl + "create_relations/"
+					const url = applicationUrl + "create_relations/"
 					$.ajax({
 						url: url,
 						data: selectRelationsForm.serialize(),
@@ -374,21 +211,21 @@ function initAddSynRelationDlg(addDlg) {
 					}).fail(function(data) {
 						addDlg.modal('hide');
 						console.log(data);
-						openAlertDlg('Kandidaatide lisamine ebaõnnestus');
+						openAlertDlg(messages["common.error"]);
 					});
 				}
 			});
 
 			addDlg.find('#addSynRelationWord').on('click', function(e) {
 				e.preventDefault();
-				let button = $(e.target);
+				const button = $(e.target);
 				addDlg.find('[name=opCode]').val('create_syn_word');
-				let weightValue = $("#weightInput").val();
+				const weightValue = $("#weightInput").val();
 				addDlg.find('[name=value2]').val(weightValue);
 
-				let theForm = button.closest('form');
-				if (checkRequiredFields(theForm)) {
-					submitForm(theForm, 'Keelendi lisamine ebaõnnestus.').always(function() {
+				const form = button.closest('form');
+				if (checkRequiredFields(form)) {
+					submitForm(form, messages["syn.add.syn.relation.word.fail"]).always(function() {
 						refreshSynDetails();
 						addDlg.modal('hide');
 					});
@@ -397,7 +234,7 @@ function initAddSynRelationDlg(addDlg) {
 
 		}).fail(function(data) {
 			console.log(data);
-			openAlertDlg('Viga!');
+			openAlertDlg(messages["common.error"]);
 		}).always(function() {
 			button.html(content);
 		});
@@ -409,9 +246,9 @@ function initAddSynRelationDlg(addDlg) {
 }
 
 function activateSynCandidatesList() {
-	let activatedList = $('#synCandidatesListDiv');
+	const activatedList = $('#synCandidatesListDiv');
 	activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
-	let itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="0"]');
+	const itemToSelect = activatedList.find('[data-navigate-selected="true"]').length ? activatedList.find('[data-navigate-selected="true"]') : activatedList.find('[data-navigate-index="0"]');
 	itemToSelect.addClass('keyboard-nav-list-item-active');
 	itemToSelect.attr(NAVIGATE_SELECTED_ATTR, true);
 	changeSynonymDefinitionDisplay('show');
@@ -421,22 +258,22 @@ function doPostRelationChange(actionUrl, callbackFunc) {
 
 	$.post(actionUrl).done(function(data) {
 		if (data != '{}') {
-			openAlertDlg("Andmete muutmine ebaõnnestus.");
+			openAlertDlg(messages["common.error"]);
 			console.log(data);
 		}
 		callbackFunc();
 	}).fail(function(data) {
-		openAlertDlg("Andmete muutmine ebaõnnestus.");
+		openAlertDlg(messages["common.error"]);
 		console.log(data);
 	});
 }
 
 function isDisabledItem(activeDiv, navigateItem) {
-	let panelIndex = activeDiv.attr('data-panel-index');
+	const panelIndex = activeDiv.attr('data-panel-index');
 
 	if (panelIndex == "2") {
-		let meaningId = activeDiv.data('marked-meaning-id');
-		return navigateItem.find('input.relation-meaning-id[value="' + meaningId + '"]').length != 0;
+		const meaningId = activeDiv.data('marked-meaning-id');
+		return navigateItem.find(`input.relation-meaning-id[value="${meaningId}"]`).length != 0;
 	}
 	return false;
 }
@@ -454,7 +291,7 @@ function unActivateItem(selectedItem, unSelect) {
 }
 
 function findSelectedNavigateItem(activeDiv) {
-	let selectedItem = activeDiv.find('[' + NAVIGATE_SELECTED_ATTR + ']');
+	let selectedItem = activeDiv.find(`${NAVIGATE_SELECTED_ATTR}`);
 
 	if (selectedItem.length == 0) {
 		selectedItem = activeDiv.find('[data-navigate-index="0"]');
@@ -464,19 +301,19 @@ function findSelectedNavigateItem(activeDiv) {
 }
 
 function isValidPanelChangeKeyPress(keyCode) {
-	let synDetailsVisible = $("#syn-details-area").html() != '';
+	const synDetailsVisible = $("#syn-details-area").html() !== '';
 
 	if (!synDetailsVisible) {
 		return false;
 	}
 
-	let currentActiveList = $('div[data-active-panel]');
-	let currentActivePanelIndex = currentActiveList.data('panel-index');
+	const currentActiveList = $('div[data-active-panel]');
+	const currentActivePanelIndex = currentActiveList.data('panel-index');
 
 	if (keyCode == 37 || keyCode == 39) {
 
 		if (currentActivePanelIndex != undefined) {
-			let currentIndex = parseInt(currentActivePanelIndex);
+			const currentIndex = parseInt(currentActivePanelIndex);
 			return ((currentIndex > 1 && keyCode == 37) || (currentIndex < 3 && keyCode == 39));
 		}
 	}
@@ -490,12 +327,12 @@ function isValidKeyboardModeKeypress(e) {
 		return false;
 	}
 
-	var tag = e.target.tagName.toLowerCase();
+	const tag = e.target.tagName.toLowerCase();
 	if (tag == 'input' || tag == 'textarea') {
 		return false;
 	}
 
-	if (($(".modal").data('bs.modal') || {})._isShown) {
+	if ($(".modal").data('bs.modal')?._isShown) {
 		return false;
 	}
 
@@ -504,19 +341,20 @@ function isValidKeyboardModeKeypress(e) {
 
 function handleUpOrDownInList(e, currentSelectedItem, currentSelectedIndex, currentActiveList, currentActivePanelIndex) {
 	if (currentSelectedItem.length != 0) {
-		let indexIncrement = (e.keyCode == 40 ? 1 : -1);
-		let newIndex = currentSelectedIndex + indexIncrement;
-		let newItem = currentActiveList.find('[data-navigate-index="' + newIndex + '"]');
+		const indexIncrement = (e.keyCode == 40 ? 1 : -1);
+		const newIndex = currentSelectedIndex + indexIncrement;
+		const newItem = currentActiveList.find(`[data-navigate-index="${newIndex}"]`);
 
 		if (newItem.length != 0) {
 			if (currentActivePanelIndex == "3") {
 				changeSynonymDefinitionDisplay('hide');
 			}
+			const $currentActiveList = $(currentActiveList);
 			newItem.addClass(isDisabledItem(currentActiveList, newItem) ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 			newItem.attr(NAVIGATE_SELECTED_ATTR, true);
 			unActivateItem(currentSelectedItem, true);
-			$(currentActiveList).stop(true);
-			$(currentActiveList).scrollTo(newItem, 320, {axis: 'y', offset: -64});
+			$currentActiveList.stop(true);
+			$currentActiveList.scrollTo(newItem, 320, {axis: 'y', offset: -64});
 			if (currentActivePanelIndex == "3") {
 				changeSynonymDefinitionDisplay('show');
 			}
@@ -535,15 +373,15 @@ function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
 		}
 
 		let selectedPanelIndex = 1;
-		let PANEL_KEYCODES = {"49": "1", "50": "2", "51": "3"};
+		const PANEL_KEYCODES = {"49": "1", "50": "2", "51": "3"};
 
-		let isArrowKey = e.keyCode == 37 || e.keyCode == 39;
+		const isArrowKey = e.keyCode === 37 || e.keyCode === 39;
 		if (isArrowKey) {
 			if (currentActivePanelIndex != undefined) {
 				selectedPanelIndex = parseInt(currentActivePanelIndex);
-				if (e.keyCode == 37 && selectedPanelIndex > 1) {
+				if (e.keyCode === 37 && selectedPanelIndex > 1) {
 					selectedPanelIndex--;
-				} else if (e.keyCode == 39 && selectedPanelIndex < 3) {
+				} else if (e.keyCode === 39 && selectedPanelIndex < 3) {
 					selectedPanelIndex++;
 				}
 			}
@@ -554,11 +392,11 @@ function handleListChange(e, currentActivePanelIndex, currentSelectedItem) {
 
 		unActivateItem(currentSelectedItem, false);
 
-		let activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
+		const activatedList = $('div[data-panel-index="' + selectedPanelIndex + '"]');
 		activatedList.attr('data-active-panel', true).addClass('keyboard-nav-list-active');
 
-		let selectedItem = findSelectedNavigateItem(activatedList);
-		let isDisabled = isDisabledItem(activatedList, selectedItem);
+		const selectedItem = findSelectedNavigateItem(activatedList);
+		const isDisabled = isDisabledItem(activatedList, selectedItem);
 
 		selectedItem.addClass(isDisabled ? NAVIGATE_DECLINED_CLASS : NAVIGATE_SELECTED_CLASS);
 		selectedItem.attr('data-navigate-selected', true);
@@ -573,15 +411,16 @@ function handleEscapeKeyPress(currentActivePanelIndex) {
 		changeSynonymDefinitionDisplay('hide');
 	}
 	$('.keyboard-nav-list').each(function() {
-		$(this).removeAttr('data-marked-meaning-id');
-		$(this).removeAttr('data-active-panel');
-		$(this).removeClass('keyboard-nav-list-active');
-		$(this).find('[data-navigate-index]').each(function () {
-			unActivateItem($(this), true);
+		const navItem = $(this);
+		navItem.removeAttr('data-marked-meaning-id');
+		navItem.removeAttr('data-active-panel');
+		navItem.removeClass('keyboard-nav-list-active');
+		navItem.find('[data-navigate-index]').each(function () {
+			unActivateItem(navItem, true);
 		});
 		$('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
 
-		$(this).find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
+		navItem.find('.keyboard-nav-list-item-active').removeClass('keyboard-nav-list-item-active');
 
 		$("#keyboardEditBtn").removeAttr('disabled');
 
@@ -617,29 +456,29 @@ function handleEnterKeyPress(e, currentActivePanelIndex, currentSelectedItem, cu
 
 	} else if (currentActivePanelIndex == "2") {
 		if (!currentSelectedItem.hasClass(NAVIGATE_DECLINED_CLASS)) {
-			let meaningId = currentActiveList.data('marked-meaning-id');
-			let wordRelationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('relation-id');
-			let sourceMeaningId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('meaning-id');
+			const meaningId = currentActiveList.data('marked-meaning-id');
+			const wordRelationId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('relation-id');
+			const sourceMeaningId = $('#synCandidatesListDiv').find('.keyboard-nav-list-item-selected').data('meaning-id');
 
 			if (meaningId != undefined) {
-				let targetMeaningId = currentSelectedItem.data('meaning-id');
+				const targetMeaningId = currentSelectedItem.data('meaning-id');
 
-				let actionUrl = applicationUrl + 'syn_create_meaning_relation/' + targetMeaningId + '/' + sourceMeaningId + '/' + wordRelationId;
-				let callbackFunc = () => refreshSynDetails();
+				const actionUrl = `${applicationUrl}syn_create_meaning_relation/${targetMeaningId}/${sourceMeaningId}/${wordRelationId}`;
+				const callbackFunc = () => refreshSynDetails();
 				doPostRelationChange(actionUrl, callbackFunc);
 
 			} else {
-				openAlertDlg("Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades 'ENTER'.");
+				openAlertDlg(messages["syn.press.enter.for.lexeme"]);
 			}
 
 		} else {
-			openAlertDlg("Ilmik on juba olemas.");
+			openAlertDlg(messages["syn.lexeme.exists"]);
 		}
 	} else if (currentActivePanelIndex == "1") {
 		$(document).find('.keyboard-nav-list-item-selected').removeClass('keyboard-nav-list-item-selected');
-		currentSelectedItem.find('button[name="synDetailsBtn"]').trigger('click');
+		currentSelectedItem.find('button[name="synDetailsBtn"]').click();
 
-		$('div[data-panel-index="' + 1 + '"]').removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
+		$('div[data-panel-index="1"]').removeAttr('data-active-panel').removeClass('keyboard-nav-list-active');
 		activateSynCandidatesList();
 
 	}
@@ -650,10 +489,10 @@ function handleKeyPress(e) {
 		return;
 	}
 
-	let currentActiveList = $('div[data-active-panel]');
-	let currentActivePanelIndex = currentActiveList.data('panel-index');
-	let currentSelectedItem = currentActiveList.find('[data-navigate-selected]');
-	let currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
+	const currentActiveList = $('div[data-active-panel]');
+	const currentActivePanelIndex = currentActiveList.data('panel-index');
+	const currentSelectedItem = currentActiveList.find('[data-navigate-selected]');
+	const currentSelectedIndex = parseInt(currentSelectedItem.attr('data-navigate-index'));
 
 	e = e || window.event;
 
@@ -676,12 +515,11 @@ function handleKeyPress(e) {
 }
 
 function getScrollPositions() {
-	let scrollPositions = [];
+	const scrollPositions = [];
 
 	$('.keyboard-nav-list').each(function() {
-		var scrollTop = $(this).scrollTop();
+		const scrollTop = $(this).scrollTop();
 		scrollPositions.push(scrollTop);
-
 	})
 	return scrollPositions;
 }
@@ -698,24 +536,19 @@ function changeSynonymDefinitionDisplay(displayOption = 'toggle') {
 }
 
 function refreshSynDetails() {
-	let selectedWordId = $('#syn-details-area').data('id');
-	var refreshButton = $('[name="synDetailsBtn"][data-id="' + selectedWordId + '"]');
+	const selectedWordId = $('#syn-details-area').data('id');
+	const refreshButton = $(`[name="synDetailsBtn"][data-id="${selectedWordId}"]`).first();
 
-	refreshButton.each(function () {
-		if ($(this).is(":hidden")) {
-			$(this).trigger('click');
-		}
-	});
+	refreshButton.click();
 
 	refreshButton.parent().addClass('active');
 }
 
 function updateWordSynRelationsStatusDeleted() {
 
-	let wordId = $(this).data('word-id');
-	let actionUrl = applicationUrl + 'syn_relation_status/delete?wordId=' + wordId;
-
-	let callbackFunc = () => refreshSynDetails();
+	const wordId = $(this).data('word-id');
+	const actionUrl = `${applicationUrl}syn_relation_status/delete?wordId=${wordId}`;
+	const callbackFunc = () => refreshSynDetails();
 
 	doPostRelationChange(actionUrl, callbackFunc);
 }
@@ -724,9 +557,9 @@ $.fn.updateSynTagCompletePlugin = function() {
 	return this.each(function() {
 		const button = $(this);
 		button.on('click', function() {
-			let wordId = button.data('word-id');
-			let actionUrl = applicationUrl + "update_word_active_tag_complete/" + wordId;
-			let callbackFunc = () => refreshSynDetails();
+			const wordId = button.data('word-id');
+			const actionUrl = `${applicationUrl}update_word_active_tag_complete/${wordId}`;
+			const callbackFunc = () => refreshSynDetails();
 			doPostRelationChange(actionUrl, callbackFunc);
 		})
 	})
@@ -738,7 +571,7 @@ $.fn.changeSynRelationPlugin = function() {
 		obj.on('click', function() {
 			const status = obj.data('status');
 			const id = obj.data('id');
-			const actionUrl = applicationUrl + 'syn_relation_status?id=' + id + '&status=' + status;
+			const actionUrl = `${applicationUrl}syn_relation_status?id=${id}&status=${status}`;
 			const callbackFunc = () => refreshSynDetails();
 			doPostRelationChange(actionUrl, callbackFunc);
 		})

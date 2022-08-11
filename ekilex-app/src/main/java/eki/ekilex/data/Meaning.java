@@ -15,6 +15,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<DefinitionLangGroup> definitionLangGroups;
 
+	private List<Lexeme> lexemes;
+
 	private List<LexemeLangGroup> lexemeLangGroups;
 
 	private List<OrderedClassifier> domains;
@@ -77,6 +79,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setDefinitionLangGroups(List<DefinitionLangGroup> definitionLangGroups) {
 		this.definitionLangGroups = definitionLangGroups;
+	}
+
+	public List<Lexeme> getLexemes() {
+		return lexemes;
+	}
+
+	public void setLexemes(List<Lexeme> lexemes) {
+		this.lexemes = lexemes;
 	}
 
 	public List<LexemeLangGroup> getLexemeLangGroups() {

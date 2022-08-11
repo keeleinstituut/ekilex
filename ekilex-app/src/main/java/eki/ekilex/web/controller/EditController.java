@@ -208,15 +208,6 @@ public class EditController extends AbstractMutableDataPageController {
 		case "od_word_recommendation":
 			cudService.createOdWordRecommendation(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
 			break;
-		case "od_lexeme_recommendation":
-			cudService.createOdLexemeRecommendation(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_definition":
-			cudService.createOdUsageDefinition(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_alternative":
-			cudService.createOdUsageAlternative(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
-			break;
 		}
 		return RESPONSE_OK_VER2;
 	}
@@ -301,11 +292,17 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_relation_weight":
 			cudService.updateMeaningRelationWeight(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
+		case "word_value":
+			cudService.updateWordValueWithDuplication(itemId, itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(itemId, itemValue, userId, userRole, isManualEventOnUpdateEnabled);
 			break;
 		case "word_type":
 			cudService.updateWordTypeWithDuplication(itemId, itemCurrentValue, itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			break;
+		case "word_data_and_lexeme_weight":
+			cudService.updateWordDataAndLexemeWeight(itemId, itemData.getId2(), itemValue, itemData.getLexemeWeight(), isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
 			cudService.updateLexemeGrammar(itemId, itemValue, itemComplexity, isManualEventOnUpdateEnabled);
@@ -366,15 +363,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "od_word_recommendation":
 			cudService.updateOdWordRecommendation(itemId, itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_lexeme_recommendation":
-			cudService.updateOdLexemeRecommendation(itemId, itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_definition":
-			cudService.updateOdUsageDefinition(itemId, itemValue, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_alternative":
-			cudService.updateOdUsageAlternative(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case ContentKey.FREEFORM_SOURCE_LINK:
 			String ffSourceLinkValue = getSourcePropertyValue(itemData.getId2());
@@ -659,36 +647,11 @@ public class EditController extends AbstractMutableDataPageController {
 		case "od_word_recommendation":
 			cudService.deleteOdWordRecommendation(id, isManualEventOnUpdateEnabled);
 			break;
-		case "od_lexeme_recommendation":
-			cudService.deleteOdLexemeRecommendation(id, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_definition":
-			cudService.deleteOdUsageDefinition(id, isManualEventOnUpdateEnabled);
-			break;
-		case "od_usage_alternative":
-			cudService.deleteOdUsageAlternative(id, isManualEventOnUpdateEnabled);
-			break;
 		case "paradigm":
 			cudService.deleteParadigm(id, isManualEventOnUpdateEnabled);
 			break;
 		}
 		return response;
-	}
-
-	@PostMapping(UPDATE_WORD_VALUE_URI)
-	@ResponseBody
-	public String updateWordValue(@RequestParam("wordId") Long wordId, @RequestParam("value") String value, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		Long userId = userContext.getUserId();
-		DatasetPermission userRole = userContext.getUserRole();
-		value = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(value);
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-
-		logger.debug("Updating word value, wordId: \"{}\", valuePrese: \"{}\"", wordId, value);
-
-		cudService.updateWordValueWithDuplication(wordId, value, userId, userRole, isManualEventOnUpdateEnabled);
-
-		return value;
 	}
 
 	@PostMapping(CREATE_RELATIONS_URI)

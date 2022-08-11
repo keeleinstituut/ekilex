@@ -69,14 +69,6 @@
     padding-right: 2.5rem;
   }
 
-  &:not(.expand) .label,
-  &:not(.expand) .label-md,
-  .corp-panel:not(.expand) div:nth-child(n+5),
-  .dependencies:not(.expand) .dependence {
-    display: none;
-    opacity: 0;
-  }
-
   .dependencies {
     .expand .dependence {
 

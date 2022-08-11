@@ -130,11 +130,16 @@
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
             <div class="col-8 h-100 d-flex flex-column" id="contentColumn">
-              <div class="overflow-auto pt-2 h-100" data-plugin="sorter" data-sorter:type="lex-details"  data-sorter:handle=".levels-handle">
+              <div class="overflow-auto pt-2 h-100" data-plugin="sorter" data-sorter:type="lex-details" data-sorter:handle=".levels-handle">
                 <th:block th:each="lexeme : ${details.lexemes}">
                   <div th:id="${'lexeme-details-' + lexeme.lexemeId}">
                     <th:block th:if="${#lists.size(details.lexemes) > 1}">
-                      <th:block th:replace="lexdetail :: lexeme_details_lite"></th:block>
+                      <th:block th:if="${lexeme.meaningId == lexMeaningIdSearchMeaningId}">
+                        <th:block th:replace="lexdetail :: lexeme_details_full"></th:block>
+                      </th:block>
+                      <th:block th:if="${lexeme.meaningId != lexMeaningIdSearchMeaningId}">
+                        <th:block th:replace="lexdetail :: lexeme_details_lite"></th:block>
+                      </th:block>
                     </th:block>
                     <th:block th:if="${#lists.size(details.lexemes) == 1}">
                       <th:block th:replace="lexdetail :: lexeme_details_full"></th:block>
@@ -181,7 +186,7 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.odWordRecommendations)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(details.odWordRecommendations)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <div th:each="odWordRecommendation : ${details.odWordRecommendations}">
@@ -226,7 +231,7 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.word.notes)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(details.word.notes)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <div th:each="note : ${details.word.notes}">
@@ -264,7 +269,7 @@
                       <span th:text="#{lex.paradigms}">Sõnavormid</span>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(details.paradigms)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(details.paradigms)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <div class="pb-3" th:unless="${#lists.isEmpty(details.paradigms)}">
@@ -327,7 +332,7 @@
                     </div>
                     <div class="ekiAccordion__content">
                       <div>
-                        <span th:unless="${details.wordRelationDetails.groupRelationExists}" th:text="#{lex.no.content}">
+                        <span th:unless="${details.wordRelationDetails.groupRelationExists}" th:text="#{common.no.content}">
                           Sisu puudub...
                         </span>
                         <table th:unless="${#lists.isEmpty(details.wordRelationDetails.wordGroups)}">
@@ -406,7 +411,7 @@
                       </button>
                     </div>
                     <div class="ekiAccordion__content">
-                      <div th:if="${#lists.isEmpty(relationGroup.members)}" th:text="#{lex.no.content}">
+                      <div th:if="${#lists.isEmpty(relationGroup.members)}" th:text="#{common.no.content}">
                         Sisu puudub...
                       </div>
                       <ul
@@ -499,6 +504,7 @@
   </th:block>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
   <div th:replace="lexdialog :: new_word_dlg"></div>

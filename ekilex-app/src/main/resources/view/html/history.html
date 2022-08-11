@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>EKILEX kustutatud andmed</title>
+<title th:text="#{history.title}">EKILEX kustutatud andmed</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,27 +10,28 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Kustutatud andmed</h5>
+        <h5 class="card-title" th:text="#{history.title}">Kustutatud andmed</h5>
       </div>
       <div class="card-body">
         <div>
-          <a th:href="@{/history/word/0}" class="btn btn-primary">Kustutatud keelendid, terminid</a>
-          <a th:href="@{/history/meaning/0}" class="btn btn-primary">Kustutatud tähendused, mõisted</a>
+          <a th:href="@{/history/word/0}" class="btn btn-primary" th:text="#{history.word.select}">Kustutatud keelendid, terminid</a>
+          <a th:href="@{/history/meaning/0}" class="btn btn-primary" th:text="#{history.meaning.select}">Kustutatud tähendused, mõisted</a>
         </div>
         <th:block th:if="${activityLogHistory}">
           <div class="mt-3">
             <h3>
-              <strong th:if="${historyType == 'word'}">keelendid, terminid</strong> <strong th:if="${historyType == 'meaning'}">tähendused, mõisted</strong>
+              <strong th:if="${historyType == 'word'}" th:text="#{history.word.title}">keelendid, terminid</strong>
+              <strong th:if="${historyType == 'meaning'}" th:text="#{history.meaning.title}">tähendused, mõisted</strong>
             </h3>
             <table class="table table-sm table-hover mt-3">
               <tr>
-                <th>Tegevuse aeg</th>
-                <th>Tegutseja</th>
-                <th>Tegevus</th>
-                <th>Olemi ID</th>
-                <th th:if="${historyType == 'meaning'}">Ilmikute ID-d</th>
-                <th>Keelendite väärtused</th>
-                <th th:if="${historyType == 'meaning'}">Definitsioonide väärtused</th>
+                <th th:text="#{history.event.on}">Tegevuse aeg</th>
+                <th th:text="#{history.event.by}">Tegutseja</th>
+                <th th:text="#{history.event}">Tegevus</th>
+                <th th:text="#{history.entity.id}">Olemi ID</th>
+                <th th:if="${historyType == 'meaning'}" th:text="#{history.lexeme.ids}">Ilmikute ID-d</th>
+                <th th:text="#{history.word.values}">Keelendite väärtused</th>
+                <th th:if="${historyType == 'meaning'}" th:text="#{history.definition.values}">Definitsioonide väärtused</th>
               </tr>
               <th:block th:each="logRow : ${activityLogHistory}">
                 <tr>
@@ -70,10 +71,10 @@
             </table>
             <hr />
             <div class="d-flex justify-content-center mb-2">
-              <a th:href="@{'/history/' + ${historyType} + '/' + ${prevOffset}}" th:hidden="${currOffset == 0}" title="Eelmine lehekülg" class="btn badge mr-2">
+              <a th:href="@{'/history/' + ${historyType} + '/' + ${prevOffset}}" th:hidden="${currOffset == 0}" th:title="#{common.previous.page}" class="btn badge mr-2">
                 <i class="fa fa-2x fa-angle-left" aria-hidden="true"></i>
               </a>
-              <a th:href="@{'/history/' + ${historyType} + '/' + ${nextOffset}}" th:hidden="${nextOffset < 0}" title="Järgmine lehekülg" class="btn badge ml-2">
+              <a th:href="@{'/history/' + ${historyType} + '/' + ${nextOffset}}" th:hidden="${nextOffset < 0}" th:title="#{common.next.page}" class="btn badge ml-2">
                 <i class="fa fa-2x fa-angle-right" aria-hidden="true"></i>
               </a>
             </div>

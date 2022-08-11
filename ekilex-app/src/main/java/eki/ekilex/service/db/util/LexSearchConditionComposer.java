@@ -515,8 +515,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 		// lexeme ff select
 		String[] lexemeFreeformTypes = new String[] {
-				FreeformType.NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(),
-				FreeformType.GRAMMAR.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
+				FreeformType.NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
 		where1 = lff1.LEXEME_ID.eq(l1.ID)
 				.and(lff1.FREEFORM_ID.eq(ff1.ID))
 				.and(ff1.TYPE.in(lexemeFreeformTypes));
@@ -548,8 +547,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 
 		// usage ff select
 		String[] usageFreeformTypes = new String[] {
-				FreeformType.USAGE_TRANSLATION.name(), FreeformType.USAGE_DEFINITION.name(),
-				FreeformType.OD_USAGE_ALTERNATIVE.name(), FreeformType.OD_LEXEME_RECOMMENDATION.name()};
+				FreeformType.USAGE_TRANSLATION.name(), FreeformType.USAGE_DEFINITION.name()};
 		where1 = lff1.LEXEME_ID.eq(l1.ID)
 				.and(lff1.FREEFORM_ID.eq(ff1.PARENT_ID))
 				.and(ff1.TYPE.in(usageFreeformTypes));

@@ -876,11 +876,13 @@ public class CudDbService extends AbstractDataDbService {
 		return meaningSemanticTypeCodeId;
 	}
 
-	public Long createLexeme(Long wordId, String datasetCode, Long meaningId, int lexemeLevel1) throws Exception {
+	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, int lexemeLevel1) throws Exception {
 
 		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
 			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
 		}
+
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		} else {
@@ -894,7 +896,7 @@ public class CudDbService extends AbstractDataDbService {
 					.fetchOptionalInto(Long.class)
 					.orElse(null);
 			if (existingLexemeId != null) {
-				return null;
+				return wordLexemeMeaningId;
 			}
 		}
 		Long lexemeId = create
@@ -905,7 +907,11 @@ public class CudDbService extends AbstractDataDbService {
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
-		return lexemeId;
+
+		wordLexemeMeaningId.setWordId(wordId);
+		wordLexemeMeaningId.setLexemeId(lexemeId);
+		wordLexemeMeaningId.setMeaningId(meaningId);
+		return wordLexemeMeaningId;
 	}
 
 	public Long createLexemeFreeform(Long lexemeId, FreeForm freeform, String userName) {

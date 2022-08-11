@@ -80,6 +80,19 @@
   .collapse-icon{
     transition: transform ease-in-out .32s;
   }
+
+  &[aria-expanded=false] .see-less-content {
+    display: none;
+  }
+
+  &[aria-expanded=true]  {
+    & .see-more-content {
+      display: none;
+    }
+    & .see-less-content {
+      display: block;
+    }
+  }
 }
 
 .btn-ellipsis{

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{word.join.title}">Keelendite ühendamine</title>
+<title th:text="#{wordjoin.title}">Keelendite ühendamine</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,12 +10,12 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary" th:href="@{/lexsearch}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary" th:href="@{/lexsearch}" th:text="#{common.back}">Tagasi</a>
       </p>
     </div>
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Olemasoleva sõna valik</h5>
+        <h5 class="card-title" th:text="#{wordjoin.header}">Olemasoleva sõna valik</h5>
       </div>
       <div class="card-body" th:if="${!meaningWordCandidates.meaningHasWord}">
         <form th:action="@{/create_homonym}" method="post">
@@ -25,7 +25,7 @@
           <input type="hidden" name="meaningId" th:value="${wordDetails.meaningId}">
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <span th:text="${meaningWordCandidates.wordValue}" class="ttl"></span>
-            <button type="submit" class="btn btn-primary ml-4">Lisa uus homonüüm</button>
+            <button type="submit" class="btn btn-primary ml-4" th:text="#{wordjoin.add.homonym}">Lisa uus homonüüm</button>
             <span class="float-right">
               <b th:text="${wordDetails.dataset}"></b>
             </span>
@@ -38,7 +38,9 @@
             <span th:utext="${viewUtil.getWordValueMarkup(wordCandidate.word)}" class="ttl"></span>
             <span th:text="${wordCandidate.word.homonymNr}" class="ttl"></span>
             <span th:text="${'(' + viewUtil.getLangIso2(wordCandidate.word.lang) + ')'}"></span>
-            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${wordDetails.dataset} + '/' + ${wordCandidate.word.wordId} + '/' + ${wordDetails.meaningId}}">Vali</a>
+            <a class="btn btn-primary"
+               th:href="@{'/wordselect/' + ${wordDetails.dataset} + '/' + ${wordCandidate.word.wordId} + '/' + ${wordDetails.meaningId}}"
+               th:text="#{common.select}">Vali</a>
             <span class="float-right">
               <b th:text="${#strings.listJoin(wordCandidate.word.datasetCodes, ', ')}"></b>
             </span>
@@ -55,7 +57,7 @@
             </span>
           </div>
           <div class="mt-2" th:if="${not #lists.isEmpty(wordCandidate.definitions)}">
-            <span class="lbl">Seletused</span>
+            <span class="lbl" th:text="#{lex.definition}">Seletus</span>
             <div th:each="definition : ${wordCandidate.definitions}" th:utext="${definition}"></div>
           </div>
         </div>

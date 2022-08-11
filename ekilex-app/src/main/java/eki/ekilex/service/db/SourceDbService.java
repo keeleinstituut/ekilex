@@ -440,6 +440,21 @@ public class SourceDbService implements GlobalConstant, ActivityFunct {
 				.where(FREEFORM_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
 				.execute();
 
+		create.update(DEFINITION_SOURCE_LINK)
+				.set(DEFINITION_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(DEFINITION_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
+		create.update(LEXEME_SOURCE_LINK)
+				.set(LEXEME_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(LEXEME_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
+		create.update(WORD_ETYMOLOGY_SOURCE_LINK)
+				.set(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID, targetSourceId)
+				.where(WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID.eq(originSourceId))
+				.execute();
+
 		create.update(SOURCE_ACTIVITY_LOG)
 				.set(SOURCE_ACTIVITY_LOG.SOURCE_ID, targetSourceId)
 				.where(SOURCE_ACTIVITY_LOG.SOURCE_ID.eq(originSourceId))

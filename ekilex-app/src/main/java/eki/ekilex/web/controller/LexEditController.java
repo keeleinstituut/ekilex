@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,9 +70,6 @@ public class LexEditController extends AbstractPrivatePageController {
 
 	@Autowired
 	private CudService cudService;
-
-	@Autowired
-	private MessageSource messageSource;
 
 	@RequestMapping(LEX_JOIN_URI + "/{targetLexemeId}")
 	public String lexJoin(
@@ -173,6 +168,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	@PostMapping(LEX_DUPLICATE_URI + "/{lexemeId}")
 	public Response duplicateLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		List<Long> clonedLexemeIds = new ArrayList<>();
 		try {
@@ -183,11 +179,13 @@ public class LexEditController extends AbstractPrivatePageController {
 
 		Response response = new Response();
 		if (CollectionUtils.isNotEmpty(clonedLexemeIds)) {
+			String message = messageSource.getMessage("lex.duplicate.lexeme.success", new Object[0], locale);
 			response.setStatus(ResponseStatus.OK);
-			response.setMessage("Lekseemi duplikaat lisatud");
+			response.setMessage(message);
 		} else {
+			String message = messageSource.getMessage("lex.duplicate.lexeme.fail", new Object[0], locale);
 			response.setStatus(ResponseStatus.ERROR);
-			response.setMessage("Duplikaadi lisamine ebaõnnestus");
+			response.setMessage(message);
 		}
 		return response;
 	}
@@ -196,12 +194,14 @@ public class LexEditController extends AbstractPrivatePageController {
 	@PostMapping(EMPTY_LEX_DUPLICATE_URI + "/{lexemeId}")
 	public Response duplicateEmptyLexemeAndMeaning(@PathVariable("lexemeId") Long lexemeId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		compositionService.duplicateEmptyLexemeAndMeaning(lexemeId, isManualEventOnUpdateEnabled);
 
+		String message = messageSource.getMessage("lex.duplicate.meaning", new Object[0], locale);
 		Response response = new Response();
 		response.setStatus(ResponseStatus.OK);
-		response.setMessage("Uus tähendus loodud");
+		response.setMessage(message);
 		return response;
 	}
 
@@ -306,19 +306,6 @@ public class LexEditController extends AbstractPrivatePageController {
 			searchUri = searchHelper.composeSearchUriAndAppendId(selectedDatasets, wordValue, wordId);
 		}
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
-	}
-
-	@PostMapping(UPDATE_WORD_DATA_AND_LEXEME_WEIGHT_URI)
-	@ResponseBody
-	public String updateWordDataAndLexemeWeight(
-			@RequestBody WordLexemeMeaningDetails wordDataAndLexemeWeight,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		valueUtil.trimAndCleanAndRemoveHtml(wordDataAndLexemeWeight);
-		cudService.updateWordDataAndLexemeWeight(wordDataAndLexemeWeight, isManualEventOnUpdateEnabled);
-
-		return RESPONSE_OK_VER2;
 	}
 
 	@GetMapping(WORD_SELECT_URI)

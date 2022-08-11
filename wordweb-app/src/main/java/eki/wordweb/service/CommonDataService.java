@@ -51,7 +51,7 @@ public class CommonDataService implements SystemConstant {
 		String displayLang = languageContext.getDisplayLang();
 		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
 		String otherLangsLabel = messageSource.getMessage("label.search.lang.other", new Object[0], locale);
-		List<String> langCodes = Arrays.asList(DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS);
+		List<String> langCodes = Arrays.asList(DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_FRA, DESTIN_LANG_UKR);
 		List<UiFilterElement> langFilter = new ArrayList<>();
 		langFilter.add(new UiFilterElement(DESTIN_LANG_ALL, allLangsLabel, true));
 		List<Classifier> classifiers = classifierUtil.getClassifiers(ClassifierName.LANGUAGE, langCodes, displayLang);
@@ -67,7 +67,7 @@ public class CommonDataService implements SystemConstant {
 		Locale locale = languageContext.getDisplayLocale();
 		String displayLang = languageContext.getDisplayLang();
 		String allLangsLabel = messageSource.getMessage("label.search.lang.all", new Object[0], locale);
-		List<String> langCodes = Arrays.asList(DESTIN_LANG_EST, DESTIN_LANG_RUS);
+		List<String> langCodes = Arrays.asList(DESTIN_LANG_EST, DESTIN_LANG_ENG, DESTIN_LANG_RUS, DESTIN_LANG_FRA, DESTIN_LANG_UKR);
 		List<UiFilterElement> langFilter = new ArrayList<>();
 		langFilter.add(new UiFilterElement(DESTIN_LANG_ALL, allLangsLabel, true));
 		List<Classifier> classifiers = classifierUtil.getClassifiers(ClassifierName.LANGUAGE, langCodes, displayLang);

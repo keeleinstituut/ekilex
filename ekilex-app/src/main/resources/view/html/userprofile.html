@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{user.profile.title}">Kasutaja profiil</title>
+<title th:text="#{userprofile.title}">Kasutaja profiil</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,20 +10,22 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Seaded</h5>
+        <h5 class="card-title" th:text="#{userprofile.heading}">Seaded</h5>
       </div>
       <div class="card-body">
         <div>
-          <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectMeaningRelationPrefsDlg">Muuda tähenduste seoste ja vastete kuva seadeid</button>
+          <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectMeaningRelationPrefsDlg"
+                  th:text="#{userprofile.edit.meaning.rel.prefs}">Muuda tähenduste seoste ja vastete kuva seadeid</button>
         </div>
         <div class="mt-3">
-          <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectTagPrefsDlg">Muuda siltide seadeid</button>
+          <button type="button" class="btn btn-secondary btn-compact" data-toggle="modal" data-target="#selectTagPrefsDlg"
+                  th:text="#{userprofile.edit.tag.prefs}">Muuda siltide seadeid</button>
         </div>
         <div class="mt-3">
           <form th:action="@{/enable_approve_meaning}" method="post">
             <label>
               <input type="checkbox" name="approveMeaningEnabled" onchange="submit()" value="true" th:checked="${userProfile.approveMeaningEnabled}">
-              <span class="ml-2">Mõiste kinnitamine </span>            
+              <span class="ml-2" th:text="#{userprofile.approve.meaning}">Mõiste kinnitamine</span>
             </label>
           </form>
         </div>
@@ -31,17 +33,17 @@
     </div>
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Olemasolevad õigused</h5>
+        <h5 class="card-title" th:text="#{userprofile.user.permissions}">Olemasolevad õigused</h5>
       </div>
       <div class="card-body" th:if="${#lists.isEmpty(userDatasetPermissions)}">
-        Õiguseid pole
+        <span th:text="#{userprofile.no.permissions}">Õiguseid pole</span>
       </div>
       <div class="card-body" th:unless="${#lists.isEmpty(userDatasetPermissions)}">
         <table class="table table-striped m-0 p-0 table-hover">
           <tr>
-            <th class="m-1 p-1" style="width: 10%">Sõnakogu kood</th>
-            <th class="m-1 p-1" style="width: 70%">Sõnakogu nimetus</th>
-            <th class="m-1 p-1" style="width: 20%">Õigus</th>
+            <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.dataset.code}">Sõnakogu kood</th>
+            <th class="m-1 p-1" style="width: 70%" th:text="#{userprofile.dataset.name}">Sõnakogu nimetus</th>
+            <th class="m-1 p-1" style="width: 20%" th:text="#{userprofile.dataset.permission}">Õigus</th>
           </tr>
           <th:block th:each="datasetPermission : ${userDatasetPermissions}">
             <tr>
@@ -62,19 +64,19 @@
     <div class="card mt-4 mb-4 shadow">
       <div class="card-header">
         <h5 class="card-title">
-          Esitatud õiguste taotlused
-          <button class="btn btn-primary pull-right" title="Esita uus taotlus" data-toggle="modal" data-target="#addApplicationDlg">Esita uus taotlus</button>
+          <span th:text="#{userprofile.user.applications}">Esitatud õiguste taotlused</span>
+          <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#addApplicationDlg" th:text="#{userprofile.add.application}">Esita uus taotlus</button>
         </h5>
       </div>
       <div class="card-body" th:if="${#lists.isEmpty(userApplications)}">
-        Taotluseid pole
+        <span th:text="#{userprofile.no.applications}">Taotluseid pole</span>
       </div>
       <div class="card-body" th:unless="${#lists.isEmpty(userApplications)}">
         <table class="table table-striped m-0 p-0 table-hover">
           <tr>
-            <th class="m-1 p-1" style="width: 10%">Esitamise aeg</th>
-            <th class="m-1 p-1" style="width: 40%">Taotluses märgitud sõnakogude koodid</th>
-            <th class="m-1 p-1" style="width: 50%">Kommentaar</th>
+            <th class="m-1 p-1" style="width: 10%" th:text="#{userprofile.application.created}">Esitamise aeg</th>
+            <th class="m-1 p-1" style="width: 40%" th:text="#{userprofile.application.dataset.codes}">Taotluses märgitud sõnakogude koodid</th>
+            <th class="m-1 p-1" style="width: 50%" th:text="#{userprofile.application.comment}">Kommentaar</th>
           </tr>
           <th:block th:each="userApplication : ${userApplications}">
             <tr>
@@ -94,10 +96,10 @@
     </div>
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Ekilex API võti</h5>
+        <h5 class="card-title" th:text="#{userprofile.api.key}">Ekilex API võti</h5>
       </div>
       <div class="card-body" th:unless="${userRoleData.admin}">
-        Ekilex API kasutamiseks on vajalik administraatori õigus
+        <span th:text="#{userprofile.api.admin.warning}">Ekilex API kasutamiseks on vajalik administraatori õigus</span>
       </div>
       <div class="card-body">
         <form th:action="@{/generate_api_key}" method="post">
@@ -106,7 +108,7 @@
             <strong th:if="${#authentication.principal.apiCrud}">CRUD</strong>
             <strong th:if="${!#authentication.principal.apiCrud}">READ</strong>
           </th:block>
-          <button class="btn btn-primary pull-right" type="submit">Genereeri võti</button>
+          <button class="btn btn-primary pull-right" type="submit" th:text="#{userprofile.generate.api.key}">Genereeri võti</button>
         </form>
       </div>
     </div>

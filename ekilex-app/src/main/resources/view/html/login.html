@@ -21,15 +21,15 @@
             <form th:action="@{/dologin}" method="post">
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">
-                  <span class="float-right">E-posti aadress</span>
+                  <span class="float-right" th:text="#{login.email}">E-posti aadress</span>
                 </label>
                 <div class="col-sm-4">
-                  <input type="email" class="form-control" name="email" placeholder="E-posti aadress" th:value="${userEmail}">
+                  <input type="email" class="form-control" name="email" th:placeholder="#{login.email}" th:value="${userEmail}">
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-2 col-form-label">
-                  <span class="float-right">Salasõna</span>
+                  <span class="float-right" th:text="#{login.password}">Salasõna</span>
                 </label>
                 <div class="col-sm-4">
                   <input type="password" class="form-control" name="password" th:autofocus="${userEmail != null}">
@@ -37,8 +37,8 @@
               </div>
               <div class="form-group row">
                 <div class="col-sm-4 offset-sm-2">
-                  <button type="submit" class="btn btn-primary float-left">Sisene</button>
-                  <a class="float-right" th:href="@{/passwordrecovery}">Soovin salasõna vahetada</a>
+                  <button type="submit" class="btn btn-primary float-left" th:text="#{login.login}">Sisene</button>
+                  <a class="float-right" th:href="@{/passwordrecovery}" th:text="#{login.password.set}">Soovin salasõna vahetada</a>
                 </div>
               </div>
             </form>

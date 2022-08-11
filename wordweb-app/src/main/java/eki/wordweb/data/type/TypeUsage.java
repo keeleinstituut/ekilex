@@ -30,10 +30,6 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Lan
 
 	private List<String> usageDefinitions;
 
-	private List<String> odUsageDefinitions;
-
-	private List<String> odUsageAlternatives;
-
 	private List<TypeSourceLink> sourceLinks;
 
 	private boolean putOnSpeaker;
@@ -114,22 +110,6 @@ public class TypeUsage extends AbstractDataObject implements ComplexityType, Lan
 
 	public void setUsageDefinitions(List<String> usageDefinitions) {
 		this.usageDefinitions = usageDefinitions;
-	}
-
-	public List<String> getOdUsageDefinitions() {
-		return odUsageDefinitions;
-	}
-
-	public void setOdUsageDefinitions(List<String> odUsageDefinitions) {
-		this.odUsageDefinitions = odUsageDefinitions;
-	}
-
-	public List<String> getOdUsageAlternatives() {
-		return odUsageAlternatives;
-	}
-
-	public void setOdUsageAlternatives(List<String> odUsageAlternatives) {
-		this.odUsageAlternatives = odUsageAlternatives;
 	}
 
 	public List<TypeSourceLink> getSourceLinks() {

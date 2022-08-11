@@ -4,7 +4,6 @@ import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_FREQ;
-import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREQ_CORP;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -21,7 +20,6 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
@@ -42,10 +40,8 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -590,27 +586,6 @@ public class LexSearchDbService extends AbstractDataDbService {
 								.and(l2.WORD_ID.eq(w2.ID)))
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetchInto(CollocationTuple.class);
-	}
-
-	public List<FreeForm> getOdWordRecommendations(Long wordId) {
-
-		return create
-				.select(
-						FREEFORM.ID,
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.ORDER_BY,
-						FREEFORM.MODIFIED_BY,
-						FREEFORM.MODIFIED_ON)
-				.from(FREEFORM, WORD_FREEFORM)
-				.where(
-						WORD_FREEFORM.WORD_ID.eq(wordId)
-								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.eq(FreeformType.OD_WORD_RECOMMENDATION.name())))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(FreeForm.class);
 	}
 
 	private List<eki.ekilex.data.Word> execute(

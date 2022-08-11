@@ -192,6 +192,28 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
+	public List<eki.ekilex.data.Word> getWords(String wordValue, String wordLang) {
+
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+
+		return create
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE.as("word_value"),
+						w.VALUE_PRESE.as("word_value_prese"),
+						w.LANG.as("word_lang"))
+				.from(w)
+				.where(
+						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
+								.and(w.LANG.eq(wordLang))
+								.andExists(DSL
+										.select(l.ID)
+										.from(l)
+										.where(l.WORD_ID.eq(w.ID))))
+				.fetchInto(eki.ekilex.data.Word.class);
+	}
+
 	public List<WordRelation> getWordRelations(Long wordId, String relTypeCode) {
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
@@ -582,6 +604,24 @@ public class LookupDbService extends AbstractDataDbService {
 										.from(LEXEME)
 										.where(LEXEME.WORD_ID.eq(WORD.ID)
 												.and(LEXEME.DATASET_CODE.eq(datasetCode)))))
+				.fetchSingleInto(Boolean.class);
+	}
+
+	public boolean wordExists(String wordValue, String wordLang) {
+
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+
+		return create
+				.select(field(DSL.count(w.ID).gt(0)).as("word_exists"))
+				.from(w)
+				.where(
+						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
+								.and(w.LANG.eq(wordLang))
+								.andExists(DSL
+										.select(l.ID)
+										.from(l)
+										.where(l.WORD_ID.eq(w.ID))))
 				.fetchSingleInto(Boolean.class);
 	}
 

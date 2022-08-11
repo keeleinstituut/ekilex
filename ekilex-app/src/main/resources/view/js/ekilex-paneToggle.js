@@ -10,6 +10,7 @@ class paneToggle {
     this.classes = {};
 
     if (this.hideableColumn.length) {
+      // Regex matches case insensitive classes like: col-number with number being up to 2 digits
       const hideableColumnCols = this.hideableColumn.attr('class').match(/col-\d{1,2}/igm)[0];
       const extendableColumnCols = this.extendableColumn.attr('class').match(/col-\d{1,2}/igm)[0];
       

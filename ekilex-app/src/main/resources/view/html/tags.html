@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>Sildid</title>
+<title th:text="#{tag.title}">Siltide haldus</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,9 +10,9 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Siltide haldus</h5>
+        <h5 class="card-title" th:text="#{tag.title}">Siltide haldus</h5>
         <div class="ml-auto pull-right">
-          <button class="btn btn-primary" title="Lisa uus silt" data-toggle="modal" data-target="#addTagDlg">Lisa uus</button>
+          <button class="btn btn-primary" data-toggle="modal" data-target="#addTagDlg" th:text="#{tag.add}">Lisa uus silt</button>
         </div>
       </div>
       <div class="card-body">
@@ -40,17 +40,17 @@
                 </td>
                 <td class="m-1 p-1 text-center">
                   <span class="text-secondary fa" th:classappend="${tag.setAutomatically ? 'fa-check-square-o' : 'fa-square-o'}"
-                        th:title="|#{tag.remove.to.complete} : ${tag.setAutomatically ? 'Jah' : 'Ei'}|">
+                        th:title="|#{tag.set.automatically}: | + (${tag.setAutomatically} ? #{common.yes} : #{common.no})">
                   </span>
                 </td>
                 <td class="m-1 p-1 text-center">
                   <span class="text-secondary fa" th:classappend="${tag.removeToComplete ? 'fa-check-square-o' : 'fa-square-o'}"
-                        th:title="|#{tag.remove.to.complete} : ${tag.removeToComplete ? 'Jah' : 'Ei'}|">
+                        th:title="|#{tag.remove.to.complete}: | + (${tag.removeToComplete} ? #{common.yes} : #{common.no})">
                   </span>
                 </td>
                 <td class="m-1 p-1 text-center">
                   <span class="text-secondary fa" th:classappend="${tag.used ? 'fa-check-square-o' : 'fa-square-o'}"
-                        th:title="|#{tag.used} : ${tag.used ? 'Jah' : 'Ei'}|">
+                        th:title="|#{tag.used}: | + (${tag.used} ? #{common.yes} : #{common.no})">
                   </span>
                 </td>
                 <td class="m-1 p-1">
@@ -81,6 +81,7 @@
     <div th:replace="tagdialog :: edit_tag_dlg"></div>
   </div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #waitDlg"></div>
   <script th:inline="javascript">
   </script>

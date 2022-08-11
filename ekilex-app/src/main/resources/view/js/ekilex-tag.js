@@ -1,15 +1,15 @@
 $.fn.editTag = function() {
-	var main = $(this);
+	const main = $(this);
 	main.on('click', function(e) {
 		e.preventDefault();
-		let tagName = main.data('tag-name');
-		let tagType = main.data('tag-type');
-		let tagOrder = main.data('tag-order');
-		let setAutomatically = main.data('tag-set-automatically');
-		let removeToComplete = main.data('tag-remove-to-complete');
+		const tagName = main.data('tag-name');
+		const tagType = main.data('tag-type');
+		const tagOrder = main.data('tag-order');
+		const setAutomatically = main.data('tag-set-automatically');
+		const removeToComplete = main.data('tag-remove-to-complete');
 
-		let editTagDlg = $("#editTagDlg");
-		let editTagForm = editTagDlg.find('form');
+		const editTagDlg = $("#editTagDlg");
+		const editTagForm = editTagDlg.find('form');
 		editTagForm.find('input[name="currentTagName"]').val(tagName);
 		editTagForm.find('input[name="tagName"]').val(tagName);
 		editTagForm.find('span[name="tagType"]').text(tagType);
@@ -22,11 +22,11 @@ $.fn.editTag = function() {
 };
 
 $.fn.saveTag = function() {
-	var main = $(this);
+	const main = $(this);
 	main.on('click', function(e) {
 		e.preventDefault();
-		let tagForm = main.closest('form');
-		let isValid = checkRequiredFields(tagForm);
+		const tagForm = main.closest('form');
+		const isValid = checkRequiredFields(tagForm);
 		if (isValid) {
 			$.ajax({
 				url: tagForm.attr('action'),
@@ -37,32 +37,31 @@ $.fn.saveTag = function() {
 					location.reload();
 				} else {
 					console.log(response);
-					openAlertDlg("Salvestamine ebaõnnestus. Kontrolli, kas sellise nimega silt on juba olemas");
+					openAlertDlg(messages["tag.save.fail"]);
 				}
 			}).fail(function(data) {
 				console.log(data);
-				openAlertDlg("Salvestamine ebaõnnestus");
+				openAlertDlg(messages["common.error"]);
 			});
 		}
 	});
 };
 
 $.fn.tagDeleteConfirm = function() {
-	let isUsed = $(this).data('tag-used');
+	const tag = $(this);
 	let title;
-	if (isUsed) {
-		title = 'Ettevaatust, silt on kasutusel. Kas oled kindel, et soovid kustutada?';
+	if (tag.data('tag-used')) {
+		title = messages["tag.in.use.confirm.delete"];
 	} else {
-		title = 'Kinnita sildi kustutamine';
+		title = messages["common.confirm.delete"];
 	}
-	$(this).confirmation({
-		btnOkLabel : 'Jah',
-		btnCancelLabel : 'Ei',
+	tag.confirmation({
+		btnOkLabel : messages["common.yes"],
+		btnCancelLabel : messages["common.no"],
 		title : title,
 		onConfirm : function() {
 			openWaitDlg();
-			let tagName = $(this).data('tag-name');
-			deleteTag(tagName);
+			deleteTag(tag.data('tag-name'));
 		}
 	});
 };
@@ -76,6 +75,6 @@ function deleteTag(tagName) {
 		location.reload();
 	}).fail(function(data) {
 		console.log(data);
-		openAlertDlg("Kustutamine ebaõnnestus");
+		openAlertDlg(messages["common.error"]);
 	});
 }

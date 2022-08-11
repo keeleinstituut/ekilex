@@ -85,7 +85,6 @@
       <div th:replace="lexdialog :: add_lexeme_deriv_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_register_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_grammar_dlg"></div>
-      <div th:replace="lexdialog :: add_od_lexeme_recommendation_dlg"></div>
       <div th:replace="lexdialog :: add_definition_dlg"></div>
       <div th:replace="lexdialog :: add_lexeme_source_link_dlg"></div>
       <div th:replace="lexdialog :: add_learner_comment_dlg"></div>
@@ -110,7 +109,8 @@
             style="display: none;"
             id="refresh-open"
             data-plugin="refreshOpenPlugin"></button>
-      <div class="card-body">
+      <div class="card-body" th:id="${'lexeme-meaning-' + lexeme.meaningId}">
+        <div th:if="${lexMeaningIdSearchMeaningId}" hidden id="lex-meaning-id-search-meaning-id" th:data-result-id="${lexMeaningIdSearchMeaningId}"></div>
         <button type="button" name="lexeme-details-btn"
                 class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
                 th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="lite"
@@ -126,13 +126,15 @@
                   data-toggle="modal"
                   th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}"
                   sec:authorize="#vars.lexeme.crudGrant">
-              <span class="bubble">
-                <span th:text="${lexeme.levels}"></span>
+              <span class="px-2 py-0 rounded font-weight-bold mr-2"
+                    th:classappend="${lexMeaningIdSearchMeaningId == lexeme.meaningId ? 'bg-warning text-white' : 'bg-light'}"
+                    th:text="${lexeme.levels}">
               </span>
             </span>
             <span class="pl-1 pr-1" th:if="${!lexeme.crudGrant}">
-              <span class="bubble">
-                <span th:text="${lexeme.levels}"></span>
+              <span class="px-2 py-0 rounded font-weight-bold mr-2"
+                    th:classappend="${lexMeaningIdSearchMeaningId == lexeme.meaningId ? 'bg-warning text-white' : 'bg-light'}"
+                    th:text="${lexeme.levels}">
               </span>
             </span>
             <button class="btn text-gray" data-plugin="lexemePublicity"
@@ -325,7 +327,6 @@
           <th:block th:replace="lexcomp :: meaning_semantic_type"></th:block>
         </div>
         <th:block th:replace="lexcomp :: definition"></th:block>
-        <th:block th:replace="lexcomp :: od_lexeme_recommendation"></th:block>
         <th:block th:replace="lexcomp :: lexeme_source_link"></th:block>
         <th:block th:replace="lexcomp :: meaning_learner_comment"></th:block>
         <th:block th:replace="lexcomp :: meaning_image"></th:block>

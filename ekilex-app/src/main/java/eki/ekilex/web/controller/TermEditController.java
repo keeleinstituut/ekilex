@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +34,11 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.MeaningCreateWordDetails;
+import eki.ekilex.data.UserMessage;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Tag;
+import eki.ekilex.data.TermCreateMeaningRequest;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -102,9 +107,10 @@ public class TermEditController extends AbstractMutableDataPageController {
 		List<Long> allMeaningIds = new ArrayList<>(sourceMeaningIds);
 		allMeaningIds.add(targetMeaningId);
 		Map<String, Integer[]> invalidWords = lookupService.getMeaningsWordsWithMultipleHomonymNumbers(allMeaningIds);
+		Locale locale = LocaleContextHolder.getLocale();
 
 		if (MapUtils.isNotEmpty(invalidWords)) {
-			String message = "Tähendusi ei saa ühendada, sest ühendatavatel tähendustel on järgnevad samakujulised, aga erineva homonüüminumbriga keelendid:";
+			String message = messageSource.getMessage("meaningjoin.invalid.words.1", new Object[0], locale);
 
 			Iterator<Map.Entry<String, Integer[]>> wordIterator = invalidWords.entrySet().iterator();
 			while (wordIterator.hasNext()) {
@@ -118,7 +124,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 				}
 			}
 
-			message += " Palun ühendage enne tähenduste ühendamist need homonüümid.";
+			message += " " + messageSource.getMessage("meaningjoin.invalid.words.2", new Object[0], locale);
 			response.setStatus(ResponseStatus.INVALID);
 			response.setMessage(message);
 		} else {
@@ -147,6 +153,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 	@PostMapping("/duplicatemeaning/{meaningId}")
 	public Response duplicateMeaning(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
+		Locale locale = LocaleContextHolder.getLocale();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		Optional<Long> clonedMeaning = Optional.empty();
 		try {
@@ -157,15 +164,83 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 		Response response = new Response();
 		if (clonedMeaning.isPresent()) {
+			String message = messageSource.getMessage("term.duplicate.meaning.success", new Object[0], locale);
 			Long duplicateMeaningId = clonedMeaning.get();
 			response.setStatus(ResponseStatus.OK);
-			response.setMessage("Mõiste duplikaat lisatud");
+			response.setMessage(message);
 			response.setId(duplicateMeaningId);
 		} else {
+			String message = messageSource.getMessage("term.duplicate.meaning.fail", new Object[0], locale);
 			response.setStatus(ResponseStatus.ERROR);
-			response.setMessage("Duplikaadi lisamine ebaõnnestus");
+			response.setMessage(message);
 		}
 		return response;
+	}
+
+	@PostMapping(TERM_CREATE_WORD_AND_MEANING_URI)
+	public String createWordAndMeaning(
+			TermCreateMeaningRequest details,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes redirectAttributes) throws Exception {
+
+		Long wordId = details.getWordId();
+		String wordValue = details.getWordValue();
+		String dataset = details.getDataset();
+		String language = details.getLanguage();
+		String searchUri = details.getSearchUri();
+		boolean clearResults = details.isClearResults();
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		redirectAttributes.addFlashAttribute("searchUri", searchUri);
+		redirectAttributes.addFlashAttribute("details", details);
+
+		if (wordId != null && StringUtils.isNotBlank(dataset)) {
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, dataset, null, isManualEventOnUpdateEnabled);
+			Long meaningId = wordLexemeMeaningId.getMeaningId();
+			UserMessage userMessage = new UserMessage();
+			userMessage.setSuccessMessageKey("termcreatemeaning.usermessage.meaning.created");
+			redirectAttributes.addFlashAttribute("userMessage", userMessage);
+			String meaningIdUri = "?id=" + meaningId;
+			return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
+		}
+
+		if (clearResults || StringUtils.isAnyBlank(wordValue, dataset, language)) {
+			return REDIRECT_PREF + TERM_CREATE_WORD_AND_MEANING_URI;
+		}
+
+		sessionBean.setRecentLanguage(language);
+		boolean wordExists = lookupService.wordExists(wordValue, language);
+
+		if (!wordExists) {
+			WordLexemeMeaningDetails wordDetails = new WordLexemeMeaningDetails();
+			wordDetails.setWordValue(wordValue);
+			wordDetails.setLanguage(language);
+			wordDetails.setDataset(dataset);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+			Long meaningId = wordLexemeMeaningId.getMeaningId();
+			UserMessage userMessage = new UserMessage();
+			userMessage.setSuccessMessageKey("termcreatemeaning.usermessage.word.and.meaning.created");
+			redirectAttributes.addFlashAttribute("userMessage", userMessage);
+			String meaningIdUri = "?id=" + meaningId;
+			return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
+		}
+
+		List<MeaningCreateWordDetails> wordCandidates = lookupService.getWordCandidatesForMeaningCreate(userRole, wordValue, language, dataset);
+		redirectAttributes.addFlashAttribute("wordCandidates", wordCandidates);
+		return REDIRECT_PREF + TERM_CREATE_WORD_AND_MEANING_URI;
+	}
+
+	@GetMapping(TERM_CREATE_WORD_AND_MEANING_URI)
+	public String initCreateWordAndMeaning(Model model) {
+
+		boolean detailsExists = model.asMap().get("details") != null;
+		if (!detailsExists) {
+			model.addAttribute("details", new TermCreateMeaningRequest());
+		}
+
+		return TERM_CREATE_WORD_AND_MEANING_PAGE;
 	}
 
 	@PostMapping(TERM_CREATE_WORD_URI)

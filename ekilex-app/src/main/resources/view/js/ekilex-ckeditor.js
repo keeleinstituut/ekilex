@@ -434,7 +434,7 @@ class ckLink {
 			if (!this.valid.internal) {
 				return false;
 			}
-			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link id="${this.activeID}" link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
+			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link data-link-id="${this.activeID}" data-link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
 			this.editor.insertElement(content);
 			this.toggle('hide');
 		}
@@ -522,10 +522,22 @@ class ckMedia {
 	}
 }
 
-function initCkEditor(elem) {
-	elem.ckeditor(function( textarea ) {
-		// Callback function code.
-	}, {
+/* Options object (everything optional):
+	extraPlugins: string with comma separated plugin names, this is where you include any custom plugins
+	extraAllowedContents: string with semicolon separated elements to allow into editing as HTML elements, example: 'eki-link[*];' meaning eki-link with any attributes
+	removePlugins: string with comma separated plugin names, example: 'sourcearea, elementspath',
+		sourcearea removes source view button and elementspath removes bottom breadcrumb bar
+	resize_enabled: boolean value to allow or deny editor resizing by the user
+	toolbarGroups: array of objects for grouping toolbar buttons, example: [{
+		name: 'eki-styles',
+		groups: ['ekiLink','removeEkilink']
+	}]
+	width: CSS value for defining width
+	height: pixel value for defining height of the text area, make sure to subtract the toolbar and/or breadcrumbs bar heights from this if needed
+*/
+
+function initCkEditor(elem, options) {
+	const config = {
 		enterMode: CKEDITOR.ENTER_BR,
 		extraPlugins: 'ekiStyles,ekiLink,removeEkilink,ekiMedia,removeEkiMedia',
 		toolbarGroups: [
@@ -541,10 +553,21 @@ function initCkEditor(elem) {
 		],
 		extraAllowedContent: 'eki-link[*]; ext-link[*]; eki-media[*];',
 		removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar,Italic,Bold'
-	});
+	};
 
+	if (options) {
+		$.each(options, function(key, value) {
+			config[key] = value;
+		})
+	}
 	
+	// Save the editor instance after creation
+	const editor = elem.ckeditor(function( textarea ) {
+		// Callback function code.
+	}, config).editor;
 
+	// Return the editor instance for use in other functions
+	return editor;
 }
 
 const linkTemplate = /*html*/`

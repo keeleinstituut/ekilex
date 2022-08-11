@@ -24,6 +24,34 @@
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var applicationBaseUrl = /*[[${appData.baseUrl}]]*/'/';
+	const messages = {
+		'common.error': /*[[#{common.error}]]*/'Viga!',
+		'common.data.add.error': /*[[#{common.data.add.error}]]*/'Andmete muutmine ebaõnnestus.',
+		'common.data.update.error': /*[[#{common.data.update.error}]]*/'Andmete muutmine ebaõnnestus.',
+		'common.save.error': /*[[#{common.save.error}]]*/'Salvestamine ebaõnnestus',
+		'common.yes': /*[[#{common.yes}]]*/'Jah',
+		'common.no': /*[[#{common.no}]]*/'Ei',
+	  'common.please.wait': /*[[#{common.please.wait}]]*/'Palun oodake',
+	  'common.search.add.parameter': /*[[#{common.search.add.parameter}]]*/'Palun täiendage otsingu parameetrit.',
+	  'common.broken.link': /*[[#{common.broken.link}]]*/'Vigane link.',
+	  'common.confirm.delete': /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+	  'classifiers.confirm.delete': /*[[#{classifiers.confirm.delete}]]*/'Klassifikaatorit on võimalik kustutada siis, kui see ei ole kasutuses. Kas soovid kustutada?',
+	  'tag.in.use.confirm.delete': /*[[#{tag.in.use.confirm.delete}]]*/'Ettevaatust, silt on kasutusel. Kas oled kindel, et soovid kustutada?',
+	  'source.confirm.delete': /*[[#{source.confirm.delete}]]*/'Palun kinnita allika kustutamine',
+	  'source.attribute.confirm.delete': /*[[#{source.attribute.confirm.delete}]]*/'Palun kinnita allika atribuudi kustutamine',
+		'permissions.email.send.success': /*[[#{permissions.email.send.success}]]*/'Kiri saadetud',
+		'permissions.email.send.fail': /*[[#{permissions.email.send.fail}]]*/'Kirja saatmine ebaõnnestus',
+		'lexjoin.fail': /*[[#{lexjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus',
+		'meaningjoin.fail': /*[[#{meaningjoin.fail}]]*/'Tähenduste ühendamine ebaõnnestus',
+		'tag.save.fail': /*[[#{tag.save.fail}]]*/'Salvestamine ebaõnnestus. Kontrolli, kas sellise nimega silt on juba olemas',
+		'classifiers.save.fail': /*[[#{classifiers.save.fail}]]*/'Salvestamine ebaõnnestus. Kontrolli, kas sellise koodiga klassifikaator on juba olemas',
+		'syn.add.syn.relation.word.fail': /*[[#{syn.add.syn.relation.word.fail}]]*/'Keelendi lisamine ebaõnnestus.',
+		'syn.lexeme.exists': /*[[#{syn.lexeme.exists}]]*/'Ilmik on juba olemas.',
+		'syn.press.enter.for.lexeme': /*[[#{syn.press.enter.for.lexeme}]]*/'Ilmiku tekitamiseks vali paremalt tulbast sõna vajutades \'ENTER\'.',
+	  'datasets.code.exists.validation': /*[[#{datasets.code.exists.validation}]]*/'Sellise koodiga sõnakogu on olemas.',
+	  'datasets.code.format.validation': /*[[#{datasets.code.format.validation}]]*/'Kood tohib sisaldada ainult tähti ja numbreid.',
+	  'term.meaning.table.max.meanings.exceeded': /*[[#{term.meaning.table.max.meanings.exceeded}]]*/'Tabelivaade käivitub ainult kuni 50 mõiste korral',
+  };
 </script>
 </head>
 <body>
@@ -55,29 +83,29 @@
             Ekilex <small class="text-secondary ml-auto" th:text="${'v.' + appData.appVersion}">1.0.0</small>
           </a>
           <div>
-            <div class="dropdown-header">Rakenduse valik</div>
+            <div class="dropdown-header" th:text="#{menu.dropdown.header}">Rakenduse valik</div>
             <div>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}" th:text="#{menu.lex}">Leksikograafid</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}"
-                 sec:authorize="#vars.userRoleData.crudRoleSelected">Vasted</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}">Allikate otsing</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}">Võrgustiku otsing</a>
+                 sec:authorize="#vars.userRoleData.crudRoleSelected" th:text="#{menu.syn}">Vasted</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}">Kustutatud andmed</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'history' ? 'active' : ''}" th:href="@{/history}" th:text="#{menu.history}">Kustutatud andmed</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'morphology' ? 'active' : ''}" th:href="@{/morphology}"
-                 sec:authorize="#vars.userRoleData.admin">Morfoloogia haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}">Sõnakogude haldus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.morphology}">Morfoloogia haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'datasets' ? 'active' : ''}" th:href="@{/datasets}" th:text="#{menu.datasets}">Sõnakogude haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fedtermupload' ? 'active' : ''}" th:href="@{/fedtermupload}"
-                 sec:authorize="#vars.userRoleData.admin">FedTerm liidestus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.fedtermupload}">FedTerm liidestus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'classifiers' ? 'active' : ''}" th:href="@{/classifiers}"
-                 sec:authorize="#vars.userRoleData.admin">Klassifikaatorite haldus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.classifiers}">Klassifikaatorite haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'tags' ? 'active' : ''}" th:href="@{/tags}"
-                 sec:authorize="#vars.userRoleData.admin">Siltide haldus</a>
+                 sec:authorize="#vars.userRoleData.admin" th:text="#{menu.tags}">Siltide haldus</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'permissions' ? 'active' : ''}" th:href="@{/permissions}"
-                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin">Kasutajaõiguste haldus</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}">Sõnaveebi tagasiside</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}">Sõnaveebi statistika</a>
+                 sec:authorize="#vars.userRoleData.datasetOwnerOrAdmin" th:text="#{menu.permissions}">Kasutajaõiguste haldus</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'wwfeedback' ? 'active' : ''}" th:href="@{/wwfeedback}" th:text="#{menu.wwfeedback}">Sõnaveebi tagasiside</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'stat' ? 'active' : ''}" th:href="@{/stat}" th:text="#{menu.stat}">Sõnaveebi statistika</a>
               <div class="dropdown-divider"></div>
             </div>
           </div>
@@ -87,17 +115,24 @@
               data-toggle="modal"
               data-target="#newWordDlg"
               sec:authorize="#vars.userRoleData.crudRoleSelected"
-              th:if="${activeItem == 'lex' || activeItem == 'term'}">
+              th:if="${activeItem == 'lex'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
-        <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
+        <span th:text="#{lex.new.word}">Uus keelend</span>
       </button>
+      <form th:action="@{/termcreatewordandmeaning}" method="post" th:if="${activeItem == 'term'}">
+        <input type="hidden" name="searchUri" th:value="${searchUri}">
+        <button type="submit" class="btn btn-primary rounded-0" sec:authorize="#vars.userRoleData.crudRoleSelected">
+          <i class="fa fa-plus mr-2" aria-hidden="true"></i>
+          <span th:text="#{term.new.word}">Uus Mõiste</span>
+        </button>
+      </form>
       <button type="button" class="btn btn-primary rounded-0 border-left ml-2"
               data-toggle="modal"
               data-target="#newLimTermWordDlg"
               sec:authorize="#vars.userRoleData.crudRoleSelected"
               th:if="${activeItem == 'limterm'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
-        <span th:text="#{limterm.new.word}">Uus keelend</span>
+        <span th:text="#{term.lim.term.new.word}">Uus keelend</span>
       </button>
       <div th:if="${appData.devEnv}" class="bg-warning ml-2">
         <strong class="px-5" th:text="${appData.envName}">TEST</strong>
@@ -106,7 +141,7 @@
         <li class="nav-item">
           <a class="nav-link" th:classappend="${searchMode == 'SIMPLE'} ? 'active':''"
             id="simpleSearchModeBtn"
-            th:text="#{'search.mode.SIMPLE'}"
+            th:text="#{common.search.mode.simple}"
             data-toggle="tab"
             href="#simple_search_filter"
             role="tab"
@@ -117,7 +152,7 @@
         <li class="nav-item">
           <a class="nav-link" th:classappend="${searchMode == 'DETAIL'} ? 'active':''"
             id="detailSearchModeBtn"
-            th:text="#{'search.mode.DETAIL'}"
+            th:text="#{common.search.mode.detail}"
             data-toggle="tab"
             href="#detail_search_filter"
             role="tab"
@@ -128,16 +163,17 @@
       </ul>
       <th:block th:if="${activeItem == 'syn'}">
         <button class="btn btn-primary mr-3" type="button" data-toggle="modal" data-target="#synTutorialDlg">
-          <i class="fa fa-question-circle-o" aria-hidden="true"></i> Kasutusjuhend
+          <i class="fa fa-question-circle-o" aria-hidden="true"></i>
+          <span th:text="#{common.user.manual}">Kasutusjuhend</span>
         </button>
       </th:block>
       <div th:if="${activeItem != 'limterm'}" class="navbar-nav" th:classappend="${searchMode == null ? 'ml-auto' : ''}">
         <th:block sec:authorize="isAuthenticated()">
           <div class="btn mr-3" style="font-size: 16px">
-            <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" title="Kasutajatugi">
+            <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" th:title="#{common.user.support}">
               <i class="fa fa-fw fa-envelope" aria-hidden="true"></i>
             </a>
-            <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" title="Kasutusjuhend">
+            <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" th:title="#{common.user.manual}">
               <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
             </a>
           </div>
@@ -151,13 +187,13 @@
                   </small>
                 </th:block>
                 <th:block th:unless="${userRoleData.roleSelected}">
-                  <small class="w-100 text-truncate user-menu-active-role">Aktiivne roll valimata</small>
+                  <small class="w-100 text-truncate user-menu-active-role" th:text="#{common.active.role.unseleted}">Aktiivne roll valimata</small>
                 </th:block>
               </span>
             </button>
             <div class="dropdown-menu dropdown-menu-right user-menu-content">
               <div>
-                <div class="dropdown-header pb-0">Aktiivne roll</div>
+                <div class="dropdown-header pb-0" th:text="#{common.active.role}">Aktiivne roll</div>
                 <div class="px-3 d-flex flex-row">
                   <th:block th:if="${userRoleData.roleSelected}" th:with="selectedRole = ${userRoleData.userRole}">
                     <span class="pr-3"
@@ -166,19 +202,21 @@
                     </span>
                   </th:block>
                   <th:block th:unless="${userRoleData.roleSelected}">
-                    <span class="pr-3 text-danger">Aktiivne roll valimata</span>
+                    <span class="pr-3 text-danger" th:text="#{common.active.role.unseleted}">Aktiivne roll valimata</span>
                   </th:block>
                   <a th:href="@{/home}" class="text-nowrap">
-                    <i class="fa fa-pencil" aria-hidden="true"></i> Vaheta
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    <span th:text="#{common.switch.role}">Vaheta</span>
                   </a>
                 </div>
               </div>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" th:href="@{/userprofile}">
-                Kasutaja profiili haldus <i class="fa fa-user" aria-hidden="true"></i>
+                <span th:text="#{common.user.profile}">Kasutaja profiili haldus</span>
+                <i class="fa fa-user" aria-hidden="true"></i>
               </a>
               <a class="dropdown-item" th:href="@{/dologout}">
-                Logi välja
+                <span th:text="#{common.log.out}">Logi välja</span>
                 <i class="fa fa-sign-out" aria-hidden="true"></i>
               </a>
             </div>
@@ -187,10 +225,10 @@
       </div>
       <div th:if="${activeItem == 'limterm'}" class="navbar-nav ml-auto">
         <div class="btn mr-3" style="font-size: 16px">
-          <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" title="Kasutajatugi">
+          <a class="btn-primary" href="mailto:kasutajatugi@ekilex.ee?subject=Ekilex" th:title="#{common.user.support}">
             <i class="fa fa-fw fa-envelope" aria-hidden="true"></i>
           </a>
-          <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" title="Kasutusjuhend">
+          <a class="btn-primary" href="https://keeleinstituut.github.io/ekilex/" target="ekilexUserManual" th:title="#{common.user.manual}">
             <i class="fa fa-fw fa-info-circle" aria-hidden="true"></i>
           </a>
         </div>
@@ -202,7 +240,7 @@
           </button>
           <div class="dropdown-menu dropdown-menu-right user-menu-content">
             <a class="dropdown-item" th:href="@{/dologout}">
-              Logi välja
+              <span th:text="#{common.log.out}">Logi välja</span>
               <i class="fa fa-sign-out" aria-hidden="true"></i>
             </a>
           </div>
@@ -210,14 +248,30 @@
       </div>
     </nav>
   </th:block>
+  <th:block th:fragment="user_message">
+    <th:block th:if="${userMessage}">
+      <div class="alert alert-success mt-2" role="alert" th:if="${userMessage.successMessageKey}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p th:text="#{${userMessage.successMessageKey}}"></p>
+      </div>
+      <div class="alert alert-danger mt-2" role="alert" th:if="${userMessage.warningMessageKey}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p th:text="#{${userMessage.warningMessageKey}}"></p>
+      </div>
+    </th:block>
+  </th:block>
   <th:block th:fragment="ordering_buttons(itemIter)">
     <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left"
-          title="Muuda järjestust"
+          th:title="#{common.update.ordering}"
           data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-up" aria-hidden="true"></i>
     </button>
     <button type="button" th:hidden="${itemIter.last}" class="btn badge badge-secondary order-down float-right"
-          title="Muuda järjestust"
+            th:title="#{common.update.ordering}"
           data-plugin="changeItemOrderingPlugin">
       <i class="fa fa-arrow-down" aria-hidden="true"></i>
     </button>
@@ -246,7 +300,7 @@
     <div id="noSourcesFoundDiv" th:if="${#lists.isEmpty(sources)}">
       <span th:text="#{source.search.not.found}">Nothing found</span>
       <button class="btn btn-primary ml-4"
-              title="Lisa uus allikas"
+              th:title="#{source.add.new}"
               data-plugin="addSourceAndSourceLinkPlugin"
               sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">Lisa uus allikas
       </button>
@@ -263,16 +317,18 @@
           </td>
           <td>
             <div class="row mb-1">
-              <table style="background-color: #ececec; font-weight: bold">
-                <tr>
-                  <td>allika id &nbsp;</td>
-                  <td th:text="${source.id}"></td>
-                </tr>
-                <tr>
-                  <td>tüüp</td>
-                  <td th:text="#{|source.type.${source.type}|}"></td>
-                </tr>
-              </table>
+              <div class="col-3">
+                <table class="table" style="background-color: #ececec; font-weight: bold">
+                  <tr>
+                    <td th:text="#{source.id}">allika id</td>
+                    <td th:text="${source.id}"></td>
+                  </tr>
+                  <tr>
+                    <td th:text="#{source.type}">tüüp</td>
+                    <td th:text="#{|source.type.${source.type}|}"></td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </td>
         </tr>
@@ -299,12 +355,12 @@
             <div class="row">
               <div class="col-12">
                 <div class="form-group row">
-                  <label class="col-auto col-form-label">Siseviide</label>
+                  <label class="col-auto col-form-label" th:text="#{source.link.name}">Siseviide</label>
                   <div class="col-8">
                     <input type="text" class="form-control">
                   </div>
                   <div class="col-2">
-                    <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}">Vali</button>
+                    <button type="submit" class="btn btn-primary" th:data-source-id="${source.id}" th:text="#{common.select}">Vali</button>
                   </div>
                 </div>
               </div>
@@ -316,23 +372,25 @@
   </div>
   <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="edit_source_link_dlg">
     <div class="row m-1 float-right">
-      <a th:href="@{'/sourcesearch/' + ${source.id}}" class="btn btn-secondary btn-compact">Muuda allikat</a>
+      <a th:href="@{'/sourcesearch/' + ${source.id}}" class="btn btn-secondary btn-compact" th:text="#{source.edit.source}">Muuda allikat</a>
     </div>
     <table>
       <tr>
         <td style="width: 70px;"></td>
         <td>
           <div class="row m-1">
-            <table style="background-color: #ececec; font-weight: bold">
-              <tr>
-                <td>allika id &nbsp;</td>
-                <td th:text="${source.id}"></td>
-              </tr>
-              <tr>
-                <td>tüüp</td>
-                <td th:text="#{|source.type.${source.type}|}"></td>
-              </tr>
-            </table>
+            <div class="col-3">
+              <table class="table" style="background-color: #ececec; font-weight: bold">
+                <tr>
+                  <td th:text="#{source.id}">allika id</td>
+                  <td th:text="${source.id}"></td>
+                </tr>
+                <tr>
+                  <td th:text="#{source.type}">tüüp</td>
+                  <td th:text="#{|source.type.${source.type}|}"></td>
+                </tr>
+              </table>
+            </div>
           </div>
         </td>
       </tr>
@@ -359,7 +417,7 @@
           <div class="row">
             <div class="col-12">
               <div class="form-group row">
-                <label class="col-auto col-form-label">Siseviide</label>
+                <label class="col-auto col-form-label" th:text="#{source.link.name}">Siseviide</label>
                 <div class="col-8">
                   <input type="text" class="form-control" name="value" th:value="${sourceLink.name}">
                 </div>
@@ -372,13 +430,13 @@
   </div>
   <script th:inline="javascript" th:fragment="confirmations">
   	$('[data-toggle=confirmation]').confirmation({
-  		btnOkLabel : 'Jah',
-  		btnCancelLabel : 'Ei'
+      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+      btnCancelLabel : /*[[#{common.no}]]*/'Ei'
   	});
   	$('[data-toggle=delete-confirm]').confirmation({
-  		btnOkLabel : 'Jah',
-  		btnCancelLabel : 'Ei',
-  		title : 'Kinnita kustutamine',
+      btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+      btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+  		title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
   		onConfirm : executeDelete
   	});
   </script>
@@ -407,11 +465,34 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Sulge</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
         </div>
       </div>
     </div>
   </div>
+  <div id="alertSmall">
+    <div class="alert-small-custom-content d-flex flex-row ">
+      <div class="alert-small-custom-header d-flex flex-row w-100 h-100">
+      <div class="alert-custom d-flex flex-row w-100 h-100">
+        <div class="alert-custom-warning-hide w-100">
+        <div class="alert-custom-warning d-flex flex-row w-100" role="alert">
+          <i class="fa fa-times-circle" aria-hidden="true"></i>
+          <span class="alert-custom-message flex-grow-1" name="alert_message"></span>
+        </div>
+        </div>
+        <div class="alert-custom-success-hide w-100">
+        <div class="alert-custom-success  d-flex flex-row w-100" role="alert">
+          <i class="fa fa-check-circle" aria-hidden="true"></i>
+          <span class="alert-custom-message flex-grow-1" name="alert_message"></span>
+        </div>
+      </div>
+    </div>
+        <button type="button" class="close" data-plugin="costomAlertClose">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+</div>
   <div id="confirmDlg" class="modal" role="dialog">
   </div>
   <div id="waitDlg" class="modal" role="dialog" data-keyboard="false" data-backdrop="static">

@@ -36,7 +36,6 @@
                   <option value="addMeaningImageDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{lex.image}">Pilt</option>
                   <option value="addMeaningMediaDlg" sec:authorize="#vars.isMeaningLexemeCrudGranted" th:text="#{lex.media}">Videod ja muu meedia</option>
                   <option value="addLearnerCommentDlg" sec:authorize="#vars.lexeme.meaning.crudGrant" th:text="#{lex.learner.comment}">Õppekommentaar</option>
-                  <option value="addOdLexemeRecommendationDlg" sec:authorize="#vars.lexeme.crudGrant" th:text="#{lex.od.recommedation}">ÕS soovitab</option>
                 </select>
               </div>
             </div>
@@ -792,8 +791,6 @@
                 <select id="usageMemberTypeSelect" required class="form-control" name="opCode">
                   <option value="usage_translation" th:text="#{lex.usage.translation}">Kasutusnäite tõlge</option>
                   <option value="usage_definition" th:text="#{lex.usage.definition}">Kasutusnäite seletus</option>
-                  <option value="od_usage_definition" th:text="#{lex.usage.od.definition}">ÕSi sõnastussoovitus</option>
-                  <option value="od_usage_alternative" th:text="#{lex.usage.od.alternative}">ÕSi variant</option>
                 </select>
               </div>
             </div>
@@ -1211,29 +1208,15 @@
         data-plugin="initWordValueEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_word_value}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="wordId" th:value="${wordId}">
+            <input type="hidden" name="id" th:value="${wordId}">
+            <input type="hidden" name="opCode" value="word_value">
             <input type="hidden" name="value" th:value="${details.word.wordValuePrese}">
-            <div class="form-group row eki-editor">
-              <div class="col-md-12 pb-3">
-                <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-success" data-btn-menu th:text="#{lex.add.markup}">Lisa märgendus</button>
-                  <button type="button" class="btn btn-sm btn-success" data-btn-remove th:text="#{lex.delete.markup}">Eemalda märgendus</button>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div contenteditable="true" data-name="editFld" class="edit-area form-control required-field"></div>
-                <div class="eki-editor-menu">
-                  <select class="eki-tag-select" size="6">
-                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
-            <button name="saveWordValueBtn" type="button" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
             <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
           </div>
         </form>
@@ -2212,30 +2195,16 @@
   <div th:id="${'editMeaningWordAndLexemeWeightDlg_' + synWord.lexemeId}"
        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
        class="modal" role="dialog" th:fragment="edit_meaning_word_and_lexeme_weight_dlg"
-       data-plugin="initEditMeaningWordAndLexemeWeightDlgPlugin">
+       data-plugin="initWordValueEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_word_data_and_lexeme_weight}" method="post">
+        <form th:action="@{/update_item}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="lexemeId" th:value="${synWord.lexemeId}">
-            <input type="hidden" name="wordId" th:value="${synWord.wordId}">
-            <input type="hidden" name="wordValuePrese" th:value="${synWord.wordValuePrese}">
-            <div class="form-group row eki-editor">
-              <div class="col-md-12 pb-3">
-                <div class="float-right">
-                  <button type="button" class="btn btn-sm btn-success" data-btn-menu th:text="#{lex.add.markup}">Lisa märgendus</button>
-                  <button type="button" class="btn btn-sm btn-success" data-btn-remove th:text="#{lex.delete.markup}">Eemalda märgendus</button>
-                </div>
-              </div>
-              <div class="col-md-12">
-                <div contenteditable="true" data-name="wordValueEditFld" class="edit-area form-control required-field"></div>
-                <div class="eki-editor-menu">
-                  <select class="eki-tag-select" size="6">
-                    <option th:each="ekiMarkupElem : ${ekiMarkupElements}" th:value="${ekiMarkupElem.code}" th:text="${ekiMarkupElem.value}">eki-elem</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <input type="hidden" name="id" th:value="${synWord.lexemeId}">
+            <input type="hidden" name="id2" th:value="${synWord.wordId}">
+            <input type="hidden" name="opCode" value="word_data_and_lexeme_weight">
+            <input type="hidden" name="value" th:value="${synWord.wordValuePrese}">
+            <div th:replace="components :: eki_editor_elem"></div>
             <div class="form-group row">
               <div class="col-md-12">
                 <label th:text="#{lex.lexeme.weight}">Ilmiku kaal</label>
@@ -2373,86 +2342,6 @@
             <input type="hidden" name="id" th:value="${odWordRecommendation.id}">
             <input type="hidden" name="opCode" value="od_word_recommendation">
             <input type="hidden" name="value" th:value="${odWordRecommendation.valuePrese}">
-            <div th:replace="components :: eki_editor_elem"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'addOdLexemeRecommendationDlg_' + lexeme.lexemeId}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="add_od_lexeme_recommendation_dlg" data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/create_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.lexemeId}">
-            <input type="hidden" name="opCode" value="od_lexeme_recommendation">
-            <input type="hidden" name="value">
-            <div th:replace="components :: eki_editor_elem"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editOdLexemeRecommendationDlg_' + lexeme.lexemeId + '_' + odLexemeRecommendation.id}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_od_lexeme_recommendation" data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${odLexemeRecommendation.id}">
-            <input type="hidden" name="opCode" value="od_lexeme_recommendation">
-            <input type="hidden" name="value" th:value="${odLexemeRecommendation.valuePrese}">
-            <div th:replace="components :: eki_editor_elem"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editOdUsageDefinitionDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageDefinition.id}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_od_usage_definition_dlg" data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${odUsageDefinition.id}">
-            <input type="hidden" name="opCode" value="od_usage_definition">
-            <input type="hidden" name="value" th:value="${odUsageDefinition.value}">
-            <div th:replace="components :: eki_editor_elem"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div th:id="${'editOdUsageAlternativeDlg_' + lexeme.lexemeId + '_' + usage.id + '_' + odUsageAlternative.id}"
-       th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
-       class="modal" role="dialog" th:fragment="edit_od_usage_alternative_dlg" data-plugin="initEkiEditorDlgAndFocusPlugin">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${odUsageAlternative.id}">
-            <input type="hidden" name="opCode" value="od_usage_alternative">
-            <input type="hidden" name="value" th:value="${odUsageAlternative.value}">
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">

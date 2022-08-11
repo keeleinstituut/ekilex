@@ -5,6 +5,24 @@
 	Version 2.1.4
 */
 "use strict";
+const mediaQuery = window.matchMedia('(max-width: 1023.98px)');
+let svgWidth = 400;
+let svgHeight = 285;
+if (mediaQuery.matches) {
+  svgWidth = 300;
+  svgHeight = 185;
+} else {
+  mediaQuery.addEventListener('change', (e) => {
+    if (e.matches) {
+      svgWidth = 300;
+      svgHeight = 185;
+    } else {
+      svgWidth = 400;
+      svgHeight = 285;
+    }
+  })
+}
+
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -22,7 +40,7 @@ function () {
 
     _classCallCheck(this, SimpleLightbox);
 
-    _defineProperty(this, "defaultOptions", {
+    _defineProperty(this, "defaultOptions", { 
       sourceAttr: 'href',
       overlay: true,
       spinner: true,
@@ -62,7 +80,7 @@ function () {
       doubleTapZoom: 2,
       maxZoom: 10,
       htmlClass: 'has-lightbox',
-      rtl: false
+      rtl: false,
     });
 
     _defineProperty(this, "transitionPrefix", void 0);
@@ -523,9 +541,15 @@ function () {
         if (_this5.loadedImages.indexOf(_this5.currentImage.getAttribute('src')) === -1) {
           _this5.loadedImages.push(_this5.currentImage.getAttribute('src'));
         }
-        // 300 and 185 are fallback dimensions in case an svg does not include dimensions
-        var imageWidth = event.target.width || 300,
-            imageHeight = event.target.height || 185;
+        // svg is specified to have the same dimensions between browsers
+        if (event.target.src.endsWith('svg')) {
+          var imageWidth = svgWidth,
+            imageHeight = svgHeight;
+        } else {
+          var imageWidth = event.target.width,
+            imageHeight = event.target.height;
+        }
+        
         if (_this5.options.scaleImageToRatio || imageWidth > windowWidth || imageHeight > windowHeight) {
           var ratio = imageWidth / imageHeight > windowWidth / windowHeight ? imageWidth / windowWidth : imageHeight / windowHeight;
           imageWidth /= ratio;
@@ -536,8 +560,6 @@ function () {
         _this5.domNodes.image.style.left = (window.innerWidth - imageWidth - _this5.globalScrollbarWidth) / 2 + 'px';
         _this5.domNodes.image.style.width = imageWidth + 'px';
         _this5.domNodes.image.style.height = imageHeight + 'px';
-        // Add a background color in case an svg with transparent background is used
-        _this5.domNodes.image.style.backgroundColor = 'white';
         _this5.domNodes.spinner.style.display = 'none';
 
         _this5.fadeIn(_this5.currentImage, 300);
@@ -1142,6 +1164,11 @@ function () {
       this.currentImage.dataset.scale = 1;
       this.currentImage.dataset.translateX = 0;
       this.currentImage.dataset.translateY = 0;
+      if (targetURL.endsWith('svg')) {
+        this.currentImage.style.width = `${svgWidth}px`;
+        this.currentImage.style.height = `${svgHeight}px`;
+        this.currentImage.style.backgroundColor = 'white';
+      }
 
       if (this.loadedImages.indexOf(targetURL) === -1) {
         this.loadedImages.push(targetURL);

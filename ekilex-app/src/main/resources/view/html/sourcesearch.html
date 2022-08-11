@@ -17,15 +17,16 @@
     </div>
     <div>
       <button class="btn btn-secondary mt-2"
-              title="Lisa uus allikas"
+              th:title="#{source.add.new}"
               data-toggle="modal"
               data-target="#addSourceDlg"
-              sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}">Lisa uus allikas
+              sec:authorize="${#authentication.principal.datasetCrudPermissionsExist}"
+              th:text="#{source.add.new}">Lisa uus allikas
       </button>
     </div>
     <div class="float-left w-50 mb-4" th:if="${sources != null}">
       <div class="mt-2">
-        <span>Tulemusi</span>
+        <span th:text="#{source.results}">Tulemusi</span>
         <span th:text="${sourceCount}">123</span>
       </div>
       <div th:each="source,sourceIter : ${sources}" class="card shadow mt-2">
@@ -48,6 +49,7 @@
   </div>
   <div th:replace="sourcedialog :: add_source_dlg"></div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <script th:inline="javascript">
 	  initializeSourceSearch();
   </script>

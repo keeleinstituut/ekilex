@@ -14,23 +14,23 @@
         <div class="form-row pt-3 align-items-center border-top border-light mt-3" style="display: none;">
           <div class="col-auto">
             <div class="row align-items-center">
-              <label class="col-auto col-form-label">Tulemused:</label>
+              <label class="col-auto col-form-label" th:text="#{term.results}">Tulemused:</label>
               <div class="col-auto">
                 <select name="resultLang" class="form-control classifier-select" data-live-search="true" id="lang-select-item">
-                  <option value="">Kõik keeled</option>
+                  <option value="" th:text="#{common.all.languages}">Kõik keeled</option>
                   <option th:each="lang : ${allLanguages}" th:value="${lang.code}" th:selected="${lang.code == sessionBean.termSearchResultLang}" th:text="${lang.value}"></option>
                 </select>
               </div>
               <div class="col-auto">
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
                   <label class="btn btn-secondary" th:classappend="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD ? 'active' : ''}">
-                    <span>Terminid</span>
+                    <span th:text="#{term.terms}">Terminid</span>
                     <input type="radio" name="resultMode" autocomplete="off" id="search-result-mode-1"
                            th:checked="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).WORD}"
                            th:value="${T(eki.ekilex.constant.SearchResultMode).WORD}"/>
                   </label>
                   <label class="btn btn-secondary" th:classappend="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING ? 'active' : ''}">
-                    <span>Mõisted</span>
+                    <span th:text="#{term.meanings}">Mõisted</span>
                     <input type="radio" name="resultMode" autocomplete="off" id="search-result-mode-2"
                            th:checked="${sessionBean.termSearchResultMode == T(eki.ekilex.constant.SearchResultMode).MEANING}"
                            th:value="${T(eki.ekilex.constant.SearchResultMode).MEANING}"/>
@@ -45,11 +45,12 @@
     </div>
   </div>
   <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-auto" th:with="isSearchResult = ${termSearchResult != null}">
+    <th:block th:replace="common :: user_message"></th:block>
     <div class="mt-4 float-left" th:if="${invalidSearch}">
       <div th:text="#{term.search.invalid}"></div>
     </div>
     <div class="row no-gutters pt-3 h-100">
-      <div class="col-3 pr-2 pb-2 h-100" style="align-self: stretch;" id="searchColumn" th:if="${isSearchResult}">
+      <div class="col-3 pb-2 h-100" style="align-self: stretch;" id="searchColumn" th:if="${isSearchResult}">
         <div id="results_div" class="card shadow" style="height: 100%;">
           <div th:replace="termcomp :: term_search_result"></div>
         </div>
@@ -57,7 +58,7 @@
       <div class="mt-4 float-left" th:if="${noResults == true}">
         <div th:text="#{term.not.found}">Not found.</div>
       </div>
-      <div class="h-100 d-flex flex-column" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
+      <div class="h-100 d-flex flex-column pl-2" th:classappend="${isSearchResult ? 'col-9' : 'col-auto'}" id="resultColumn">
         <div class="scrollable-area" data-plugin="ekiSortable">
           <div id="details-area" data-rel="details-area" style="height: 100%; overflow: auto;"></div>
         </div>
@@ -89,7 +90,7 @@
         <div class="card border-0 mb-2">
           <div class="card-body">
             <div th:replace="termcomp :: meaning_header"></div>
-            <div class="row">
+            <div class="row no-gutters">
               <div class="col">
                 <button type="button" class="btn btn-secondary ml-2"
                         id="activeTagCompleteBtn"
@@ -97,7 +98,8 @@
                         th:disabled="${meaning.activeTagComplete}"
                         th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
                         sec:authorize="#vars.meaning.subGrant"
-                        data-plugin="updateTagCompletePlugin">Märgi tehtuks
+                        data-plugin="updateTagCompletePlugin"
+                        th:text="#{term.update.tag.complete}">Märgi tehtuks
                 </button>
               </div>
               <div class="col-auto form-inline">
@@ -126,7 +128,7 @@
             <div class="block-title">
               <button name="lang-collapse-btn" type="button" class="btn-lang"
                       th:data-lang="${lexemeLangGroup.lang}"
-                      th:title="${lexemeLangGroup.selected ? 'Peida keele grupp' : 'Näita keele gruppi'}"
+                      th:title="${lexemeLangGroup.selected} ? #{common.hide.lang.group} : #{common.show.lang.group}"
                       data-plugin="langCollapsePlugin">
                 <i th:class="${lexemeLangGroup.selected ? 'fa fa-caret-down' : 'fa fa-caret-right'}" aria-hidden="true"></i>
               </button>
@@ -137,7 +139,7 @@
                    th:if="${lexemeLangGroup.selected}"
                    th:data-id="${lexeme.lexemeId}"
                    th:data-orderby="${lexeme.orderBy}"
-                   class="card border-0 border-top-1">
+                   class="card border-0">
                 <div th:replace="termdialog :: add_lexeme_data_dlg"></div>
                 <div th:replace="termdialog :: add_lexeme_source_link_dlg"></div>
                 <div th:replace="termdialog :: add_usage_dlg"></div>
@@ -145,6 +147,7 @@
                 <div th:replace="termdialog :: add_lexeme_note_dlg"></div>
                 <div th:replace="termdialog :: add_lexeme_tag_dlg"></div>
                 <div th:replace="termdialog :: add_word_note_dlg"></div>
+                <div th:replace="termdialog :: add_od_word_recommendation_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_publicity_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
                 <div th:replace="termdialog :: edit_lexeme_reliability_dlg"></div>
@@ -152,30 +155,37 @@
                 <div th:replace="termdialog :: edit_word_gender_dlg"></div>
                 <div th:replace="termdialog :: edit_word_lang_dlg"></div>
                 <div th:replace="termdialog :: edit_word_display_morph_dlg"></div>
-                <div class="card-body pb-4" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
-                  <div th:replace="termcomp :: lexeme_header"></div>
-                  <div>
-                    <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
-                    <div th:replace="termcomp :: data_ids"></div>
-                    <div th:replace="termcomp :: lexeme_tags"></div>
-                    <div th:replace="termcomp :: lexeme_complexity"></div>
-                    <div th:replace="termcomp :: lexeme_value_state"></div>
-                    <div th:replace="termcomp :: lexeme_reliability"></div>
-                    <div th:replace="termcomp :: word_gender"></div>
-                    <div th:replace="termcomp :: word_lang"></div>
-                    <div th:replace="termcomp :: word_type"></div>
-                    <div th:replace="termcomp :: lexeme_grammar"></div>
-                    <div th:replace="termcomp :: lexeme_pos"></div>
-                    <div th:replace="termcomp :: word_note"></div>
-                    <div th:replace="termcomp :: lexeme_derivative"></div>
-                    <div th:replace="termcomp :: lexeme_register"></div>
-                    <div th:replace="termcomp :: lexeme_region"></div>
+                <div class="row w-100 no-gutters">
+                  <div class="card-body pb-4 col-8" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
+                    <div th:replace="termcomp :: lexeme_header"></div>
+                    <div>
+                      <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
+                      <div th:replace="termcomp :: data_ids"></div>
+                      <div th:replace="termcomp :: lexeme_tags"></div>
+                      <div th:replace="termcomp :: lexeme_complexity"></div>
+                      <div th:replace="termcomp :: lexeme_value_state"></div>
+                      <div th:replace="termcomp :: lexeme_reliability"></div>
+                      <div th:replace="termcomp :: word_gender"></div>
+                      <div th:replace="termcomp :: word_lang"></div>
+                      <div th:replace="termcomp :: word_type"></div>
+                      <div th:replace="termcomp :: lexeme_grammar"></div>
+                      <div th:replace="termcomp :: lexeme_pos"></div>
+                      <div th:replace="termcomp :: lexeme_derivative"></div>
+                      <div th:replace="termcomp :: lexeme_register"></div>
+                      <div th:replace="termcomp :: lexeme_region"></div>
+                    </div>
+                    <div th:replace="termcomp :: lexeme_source_link"></div>
+                    <div th:replace="termcomp :: lexeme_usage"></div>
+                    <div th:replace="termcomp :: lexeme_relation"></div>
+                    <div th:replace="termcomp :: lexeme_note"></div>
+                    <div th:replace="termcomp :: lexeme_freeform"></div>
                   </div>
-                  <div th:replace="termcomp :: lexeme_source_link"></div>
-                  <div th:replace="termcomp :: lexeme_usage"></div>
-                  <div th:replace="termcomp :: lexeme_relation"></div>
-                  <div th:replace="termcomp :: lexeme_note"></div>
-                  <div th:replace="termcomp :: lexeme_freeform"></div>
+                  <div class="col-4 ekiAccordion"
+                       th:classappend="${itemIter.index > 0 ? 'mt-2' : ''}"
+                       data-plugin="ekiAccordion">
+                    <div th:replace="termcomp :: word_od_recommendation"></div>
+                    <div th:replace="termcomp :: word_note"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -186,15 +196,15 @@
       <script th:replace="common :: confirmations"></script>
       <script>
         $('[data-toggle=deleteMeaningAndLexemesAndWords]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+			    title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm : deleteMeaningAndLexemesAndWords
         });
         $('[data-toggle=deleteLexemeAndWordAndMeaning]').confirmation({
-          btnOkLabel : 'Jah',
-          btnCancelLabel : 'Ei',
-          title : 'Kinnita kustutamine',
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+			    title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
           onConfirm : deleteLexemeAndWordAndMeaning
         });
   	  </script>
@@ -202,6 +212,7 @@
   </th:block>
   <div th:replace="common :: #sourceDetailsDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #confirmDlg"></div>
   <div th:replace="common :: #waitDlg"></div>
   <div th:replace="termdialog :: new_word_dlg"></div>

@@ -115,6 +115,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean noLimit = false;
 
+		SessionBean sessionBean = getSessionBean(model);
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
@@ -126,6 +127,8 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
 			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			Long meaningIdSearchMeaningId = searchHelper.getMeaningIdSearchMeaningId(detailSearchFilter);
+			sessionBean.setLexMeaningIdSearchMeaningId(meaningIdSearchMeaningId);
 		} else {
 			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
@@ -218,15 +221,18 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		logger.debug("word details for {}", wordId);
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		Long lexMeaningIdSearchMeaningId = sessionBean.getLexMeaningIdSearchMeaningId();
+		sessionBean.setLexMeaningIdSearchMeaningId(null);
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> datasetCodes = userProfile.getPreferredDatasets();
 		UserContextData userContextData = getUserContextData();
 		Tag activeTag = userContextData.getActiveTag();
-		WordDetails details = lexSearchService.getWordDetails(wordId, datasetCodes, languagesOrder, user, userProfile, activeTag, false);
+		WordDetails details = lexSearchService.getWordDetails(wordId, lexMeaningIdSearchMeaningId, datasetCodes, languagesOrder, user, userProfile, activeTag, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
+		model.addAttribute("lexMeaningIdSearchMeaningId", lexMeaningIdSearchMeaningId);
 
 		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "word_details";
 	}

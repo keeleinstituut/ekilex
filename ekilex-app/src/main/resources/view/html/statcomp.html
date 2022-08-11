@@ -6,9 +6,9 @@
     <div class="card mt-4 mb-4 shadow w-50">
       <table class="table table-striped mb-0">
         <tr>
-          <th>Järjekord</th>
-          <th>Otsingusõna</th>
-          <th>Päringute arv</th>
+          <th th:text="#{stat.order}">Järjekord</th>
+          <th th:text="#{stat.search.word}">Otsingusõna</th>
+          <th th:text="#{stat.search.count}">Päringute arv</th>
         </tr>
         <tr th:each="statEntry,statEntryIter : ${searchStatMap}">
           <td><span th:text="${statEntryIter.count}"></span></td>

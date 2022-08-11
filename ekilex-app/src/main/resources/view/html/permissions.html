@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title>EKILEX kasutajaõigused</title>
+<title th:text="#{permissions.title}">Kasutajaõiguste haldus</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
@@ -10,18 +10,18 @@
   <div class="container-fluid">
     <div class="card mt-4 shadow">
       <div class="card-header">
-        <h5 class="card-title">Kasutajaõiguste haldus</h5>
+        <h5 class="card-title" th:text="#{permissions.title}">Kasutajaõiguste haldus</h5>
       </div>
       <div class="card-body">
         <div>
           <form th:action="@{/permissions/search}" method="post">
             <div class="form-group row">
               <div class="col-3">
-                <input type="text" class="form-control" name="userNameFilter" th:value="${permSearchBean.userNameFilter}" placeholder="Nimi, e-post või selle osa">
+                <input type="text" class="form-control" name="userNameFilter" th:value="${permSearchBean.userNameFilter}" th:placeholder="#{permissions.placeholder.search}">
               </div>
               <div class="col-3">
                 <select class="form-control" name="userPermDatasetCodeFilter">
-                  <option value="">Sõnakogu</option>
+                  <option value="" th:text="#{permissions.dataset}">Sõnakogu</option>
                   <option th:each="dataset : ${userOwnedDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}"
@@ -31,11 +31,11 @@
               <div class="col-2">
                 <div class="form-control">
                   <input type="checkbox" class="ml-1 form-check-input" name="userEnablePendingFilter" th:checked="${permSearchBean.userEnablePendingFilter}">
-                  <label class="ml-4 form-check-label">Uued avaldused</label>
+                  <label class="ml-4 form-check-label" th:text="#{permissions.pending.applications}">Uued avaldused</label>
                 </div>
               </div>
               <div class="col-2">
-                <button type="submit" class="btn btn-primary">Otsi</button>
+                <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
               </div>
             </div>
           </form>
@@ -45,7 +45,7 @@
             <div id="permissionsArea">
               <th:block th:if="${not #lists.isEmpty(ekiUserPermissions)}">
                 <div class="mb-2">
-                  Tulemusi:
+                  <span th:text="#{permissions.results}">Tulemusi:</span>
                   <span th:text="${#lists.size(ekiUserPermissions)}"></span>
                 </div>
                 <table class="table table-striped m-0 p-0 table-hover">
@@ -57,7 +57,7 @@
                         <button type="submit" class="btn badge badge-light">
                           <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
                         </button>
-                        Kuupäev
+                        <span th:text="#{permissions.date}">Kuupäev</span>
                       </form>
                     </th>
                     <th class="p-1 text-nowrap">
@@ -66,18 +66,18 @@
                         <button type="submit" class="btn badge badge-light">
                           <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
                         </button>
-                        Nimi
+                        <span th:text="#{permissions.name}">Nimi</span>
                       </form>
                     </th>
-                    <th class="p-1">E-post</th>
-                    <th class="p-1 text-center">api</th>
-                    <th class="p-1 text-center">crud</th>
-                    <th class="p-1 text-center">Admin</th>
-                    <th class="p-1 text-center">Ülevaataja</th>
-                    <th class="p-1 text-center">Lubatud</th>
-                    <th class="p-1">Kommentaar</th>
-                    <th class="p-1">Avaldused</th>
-                    <th class="p-1" colspan="3">Load</th>
+                    <th class="p-1" th:text="#{permissions.email}">E-post</th>
+                    <th class="p-1 text-center" th:text="#{permissions.api}">api</th>
+                    <th class="p-1 text-center" th:text="#{permissions.crud}">crud</th>
+                    <th class="p-1 text-center" th:text="#{permissions.admin}">Admin</th>
+                    <th class="p-1 text-center" th:text="#{permissions.master}">Ülevaataja</th>
+                    <th class="p-1 text-center" th:text="#{permissions.enabled}">Lubatud</th>
+                    <th class="p-1" th:text="#{permissions.comment}">Kommentaar</th>
+                    <th class="p-1" th:text="#{permissions.applications}">Avaldused</th>
+                    <th class="p-1" colspan="3" th:text="#{permissions.dataset.permissions}">Load</th>
                   </tr>
                   <th:block th:each="userPerm : ${ekiUserPermissions}"
                             th:with="
@@ -130,7 +130,7 @@
                       </td>
                       <td class="p-1">
                         <div th:replace="permdialog :: edit_review_comment_dlg"></div>
-                        <button type="button" class="btn badge badge-success" title="Lisa kommentaar"
+                        <button type="button" class="btn badge badge-success" th:title="#{permissions.add.comment}"
                                 data-toggle="modal"
                                 th:data-target="${'#editPermReviewCommentDlg_' + userPerm.id}"
                                 sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
@@ -139,14 +139,14 @@
                         </button>
                         <div class="invisible-buttons" th:unless="${#strings.isEmpty(userPerm.reviewComment)}">
                           <span th:text="${userPerm.reviewComment}"></span>
-                          <button type="button" class="btn badge badge-primary" title="Muuda"
+                          <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
                                   data-toggle="modal"
                                   th:data-target="${'#editPermReviewCommentDlg_' + userPerm.id}"
                                   sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
                           <button type="button" class="btn badge badge-warning"
-                                  title="Kustuta kommentaar"
+                                  th:title="#{permissions.delete.comment}"
                                   th:data-id="${userPerm.id}"
                                   data-plugin="deletePermReviewCommentPlugin"
                                   sec:authorize="${#vars.isDatasetOwnerOrAdmin}">
@@ -159,7 +159,7 @@
                         <th:block th:each="userApplication,userApplicationIter : ${userPerm.applications}">
                           <div>
                             <input type="checkbox"
-                                   title="Tegeletud"
+                                   th:title="#{permissions.reviewed}"
                                    th:data-application-id="${userApplication.id}"
                                    data-plugin="applicationReviewedCheck"
                                    th:checked="${userApplication.reviewed}"
@@ -172,7 +172,7 @@
                       </td>
                       <td class="p-1 text-center">
                         <div th:replace="permdialog :: add_dataset_perm_dlg"></div>
-                        <button type="button" class="btn badge badge-success" title="Lisa luba"
+                        <button type="button" class="btn badge badge-success" th:title="#{permissions.add.dataset.permission}"
                                 data-toggle="modal"
                                 th:data-target="${'#addDatasetPermissionDlg_' + userPerm.id}"
                                 sec:authorize="${#vars.isDatasetOwnerOrAdmin}"
@@ -216,18 +216,18 @@
             </div>
             <script type="text/javascript">
               $('[data-toggle=delete-confirm]').confirmation({
-                btnOkLabel: 'Jah',
-                btnCancelLabel: 'Ei',
-                title: 'Palun kinnita kustutamine',
+                btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+                btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+                title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
                 onConfirm: function () {
                   let datasetPermId = $(this).data('id');
                   deleteDatasetPermission(datasetPermId);
                 }
               });
               $('[data-toggle=send-mail-confirm]').confirmation({
-                btnOkLabel : 'Jah',
-                btnCancelLabel : 'Ei',
-                title : 'Saada kasutajale e-postiga olemasolevate õiguste nimekiri',
+                btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+                btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+                title : /*[[#{permissions.send.email.confirmation}]]*/'Saada kasutajale e-postiga olemasolevate õiguste nimekiri',
                 onConfirm : function() {
                   let userEmail = $(this).data('user-email');
                   sendPermissionsEmail(userEmail);
@@ -240,6 +240,7 @@
     </div>
   </div>
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #waitDlg"></div>
 </body>
 </html>

@@ -1,18 +1,18 @@
 function initializeMeaningJoin() {
-	let idsChk = $(document).find('input[name="sourceMeaningIds"]');
-	let joinBtn = $("#joinMeaningsBtn");
+	const idsChk = $(document).find('input[name="sourceMeaningIds"]');
+	const joinBtn = $("#joinMeaningsBtn");
 
 	idsChk.on('change', function() {
 		joinBtn.prop('disabled', !idsChk.filter(":checked").length);
 	});
 
-	var detailsDiv = $("#details-area");
+	const detailsDiv = $("#details-area");
 	decorateSourceLinks(detailsDiv);
 };
 
 function joinMeanings() {
-	let joinForm = $(this).closest('form');
-	let validateJoinUrl = applicationUrl + "validatemeaningjoin";
-	let failMessage = "Tähenduste ühendamine ebaõnnestus";
+	const joinForm = $(this).closest('form');
+	const validateJoinUrl = applicationUrl + "validatemeaningjoin";
+	const failMessage = messages["meaningjoin.fail"];
 	validateAndSubmitJoinForm(validateJoinUrl, joinForm, failMessage);
 };
