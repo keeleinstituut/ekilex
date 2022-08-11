@@ -32,6 +32,7 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.MeaningCreateWordDetails;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.OrderedClassifier;
@@ -79,6 +80,11 @@ public class LookupService extends AbstractWordSearchService {
 	@Transactional
 	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
 		return lookupDbService.meaningHasWord(meaningId, wordValue, language);
+	}
+
+	@Transactional
+	public boolean wordExists(String wordValue, String language) {
+		return lookupDbService.wordExists(wordValue, language);
 	}
 
 	@Transactional
@@ -157,6 +163,54 @@ public class LookupService extends AbstractWordSearchService {
 			wordDetailsList.add(wordDetails);
 		}
 		return wordDetailsList;
+	}
+
+	@Transactional
+	public List<MeaningCreateWordDetails> getWordCandidatesForMeaningCreate(DatasetPermission userRole, String wordValue, String language, String datasetCode) {
+
+		List<MeaningCreateWordDetails> wordCandidates = new ArrayList<>();
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
+		List<Word> words = lookupDbService.getWords(wordValue, language);
+
+		for (Word word : words) {
+			Long wordId = word.getWordId();
+			List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+
+			wordLexemes.forEach(lexeme -> {
+				Long meaningId = lexeme.getMeaningId();
+				String lexemeDatasetCode = lexeme.getDatasetCode();
+				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				permCalculator.filterVisibility(userRole, definitions);
+				Meaning meaning = new Meaning();
+				meaning.setMeaningId(meaningId);
+				meaning.setDefinitions(definitions);
+				lexeme.setMeaning(meaning);
+			});
+
+			List<WordLexeme> mainDatasetLexemes = wordLexemes.stream()
+					.filter(lexeme -> StringUtils.equalsAny(lexeme.getDatasetCode(), datasetCode, DATASET_EKI))
+					.sorted(Comparator.comparing(lexeme -> !StringUtils.equals(lexeme.getDatasetCode(), datasetCode)))
+					.collect(Collectors.toList());
+
+			List<WordLexeme> secondaryDatasetLexemes = wordLexemes.stream()
+					.filter(lexeme -> !StringUtils.equalsAny(lexeme.getDatasetCode(), datasetCode, DATASET_EKI))
+					.collect(Collectors.toList());
+
+			MeaningCreateWordDetails wordCandidate = new MeaningCreateWordDetails();
+			wordCandidate.setWord(word);
+			if (mainDatasetLexemes.isEmpty()) {
+				wordCandidate.setMainDatasetLexemes(secondaryDatasetLexemes);
+				wordCandidate.setSecondaryDatasetLexemes(new ArrayList<>());
+			} else {
+				boolean primaryDatasetLexemeExists = mainDatasetLexemes.get(0).getDatasetCode().equals(datasetCode);
+				wordCandidate.setMainDatasetLexemes(mainDatasetLexemes);
+				wordCandidate.setSecondaryDatasetLexemes(secondaryDatasetLexemes);
+				wordCandidate.setPrimaryDatasetLexemeExists(primaryDatasetLexemeExists);
+			}
+			wordCandidates.add(wordCandidate);
+		}
+
+		return wordCandidates;
 	}
 
 	private boolean isWordJoinGranted(Long userId, DatasetPermission userRole, Long sourceWordId, Long targetWordId) {

@@ -34,8 +34,11 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.MeaningCreateWordDetails;
+import eki.ekilex.data.UserMessage;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Tag;
+import eki.ekilex.data.TermCreateMeaningRequest;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
@@ -172,6 +175,72 @@ public class TermEditController extends AbstractMutableDataPageController {
 			response.setMessage(message);
 		}
 		return response;
+	}
+
+	@PostMapping(TERM_CREATE_WORD_AND_MEANING_URI)
+	public String createWordAndMeaning(
+			TermCreateMeaningRequest details,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes redirectAttributes) throws Exception {
+
+		Long wordId = details.getWordId();
+		String wordValue = details.getWordValue();
+		String dataset = details.getDataset();
+		String language = details.getLanguage();
+		String searchUri = details.getSearchUri();
+		boolean clearResults = details.isClearResults();
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
+		redirectAttributes.addFlashAttribute("searchUri", searchUri);
+		redirectAttributes.addFlashAttribute("details", details);
+
+		if (wordId != null && StringUtils.isNotBlank(dataset)) {
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, dataset, null, isManualEventOnUpdateEnabled);
+			Long meaningId = wordLexemeMeaningId.getMeaningId();
+			UserMessage userMessage = new UserMessage();
+			userMessage.setSuccessMessageKey("termcreatemeaning.usermessage.meaning.created");
+			redirectAttributes.addFlashAttribute("userMessage", userMessage);
+			String meaningIdUri = "?id=" + meaningId;
+			return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
+		}
+
+		if (clearResults || StringUtils.isAnyBlank(wordValue, dataset, language)) {
+			return REDIRECT_PREF + TERM_CREATE_WORD_AND_MEANING_URI;
+		}
+
+		sessionBean.setRecentLanguage(language);
+		boolean wordExists = lookupService.wordExists(wordValue, language);
+
+		if (!wordExists) {
+			WordLexemeMeaningDetails wordDetails = new WordLexemeMeaningDetails();
+			wordDetails.setWordValue(wordValue);
+			wordDetails.setLanguage(language);
+			wordDetails.setDataset(dataset);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+			Long meaningId = wordLexemeMeaningId.getMeaningId();
+			UserMessage userMessage = new UserMessage();
+			userMessage.setSuccessMessageKey("termcreatemeaning.usermessage.word.and.meaning.created");
+			redirectAttributes.addFlashAttribute("userMessage", userMessage);
+			String meaningIdUri = "?id=" + meaningId;
+			return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
+		}
+
+		List<MeaningCreateWordDetails> wordCandidates = lookupService.getWordCandidatesForMeaningCreate(userRole, wordValue, language, dataset);
+		redirectAttributes.addFlashAttribute("wordCandidates", wordCandidates);
+		return REDIRECT_PREF + TERM_CREATE_WORD_AND_MEANING_URI;
+	}
+
+	@GetMapping(TERM_CREATE_WORD_AND_MEANING_URI)
+	public String initCreateWordAndMeaning(Model model) {
+
+		boolean detailsExists = model.asMap().get("details") != null;
+		if (!detailsExists) {
+			model.addAttribute("details", new TermCreateMeaningRequest());
+		}
+
+		return TERM_CREATE_WORD_AND_MEANING_PAGE;
 	}
 
 	@PostMapping(TERM_CREATE_WORD_URI)

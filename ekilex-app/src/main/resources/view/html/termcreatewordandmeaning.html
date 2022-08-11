@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{termcreatemeaning.title}">Mõiste loomine</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'term')"></th:block>
+  <div class="container-fluid h-100">
+    <div class="row no-gutters py-3 flex-grow-1 h-100">
+      <div class="col-3 pr-2 h-100">
+        <div class="card shadow h-100">
+          <div class="card-body h-100">
+            <div>Lisa termin uue mõiste loomiseks</div>
+            <hr/>
+            <form th:action="@{/termcreatewordandmeaning}" method="post" id="createWordForm" autocomplete="off" th:with="editEnabled = ${#lists.isEmpty(wordCandidates)}">
+              <input type="hidden" name="searchUri" th:value="${searchUri}">
+              <input type="hidden" name="clearResults" value="false">
+              <div class="form-group row">
+                <div class="col-12">
+                  <label th:text="#{term.term}">Termin</label>
+                  <input class="form-control required-field" name="wordValue"
+                         th:value="${details.wordValue}"
+                         th:placeholder="#{term.placeholder.insert.term}"
+                         th:readonly="${!editEnabled}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-12">
+                  <label th:text="#{term.dataset}">Sõnakogu</label>
+                  <th:block th:if="${userRoleData.userRole.superiorPermission}">
+                    <select required class="form-control required-field classifier-select" name="dataset" th:readonly="${!editEnabled}">
+                      <option th:each="dataset : ${userVisibleDatasets}"
+                              th:value="${dataset.code}"
+                              th:text="${dataset.name}"
+                              th:selected="${dataset.code == details.dataset}">dataset
+                      </option>
+                    </select>
+                  </th:block>
+                  <th:block th:unless="${userRoleData.userRole.superiorPermission}">
+                    <input type="hidden" name="dataset" th:value="${userRoleData.userRole.datasetCode}">
+                    <input class="form-control required-field" th:value="${userRoleData.userRole.datasetName}" disabled>
+                  </th:block>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-12">
+                  <label th:text="#{term.language}">Keel</label>
+                  <select required class="form-control required-field classifier-select" name="language" th:readonly="${!editEnabled}">
+                    <option th:each="language : ${userRoleLanguages}"
+                            th:value="${language.code}"
+                            th:selected="${language.code == sessionBean.recentLanguage}"
+                            th:text="${language.value}">language
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <hr/>
+              <div th:if="${editEnabled}">
+                <button type="button" class="btn btn-primary" data-plugin="createWordClickPlugin" th:text="#{term.add.term}">Lisa termin</button>
+                <a th:if="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{/termsearch}" th:text="#{common.cancel}">Katkesta</a>
+                <a th:unless="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{'/termsearch' + ${searchUri}}" th:text="#{common.cancel}">Katkesta</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="h-100 d-flex flex-column col-9 col-3">
+        <div class="card shadow h-100 overflow-auto" th:if="${not #lists.isEmpty(wordCandidates)}">
+          <div class="card-body h-100">
+            <form th:action="@{/termcreatewordandmeaning}" id="selectWordForm" method="post">
+              <input type="hidden" name="dataset">
+              <input type="hidden" name="" value="true">
+              <div th:if="${#lists.size(wordCandidates) == 1}">
+                <span th:text="#{termcreatemeaning.one.candidate.primary.dataset}" th:if="${wordCandidates.get(0).primaryDatasetLexemeExists}"></span>
+                <span th:text="#{termcreatemeaning.one.candidate}" th:unless="${wordCandidates.get(0).primaryDatasetLexemeExists}"></span>
+              </div>
+              <div th:if="${#lists.size(wordCandidates) > 1}">
+                <span th:text="#{termcreatemeaning.multiple.candidates}"></span>
+              </div>
+              <div class="mb-2 p-2" th:each="wordCandidate,wordCandidateIter : ${wordCandidates}">
+                <div class="row mb-2">
+                  <input type="radio" name="wordId" class="ml-3 mr-3"
+                         th:value="${wordCandidate.word.wordId}"
+                         th:checked="${#lists.size(wordCandidates) == 1}"
+                         data-plugin="enableSelectWordBtnPlugin"/>
+                  <span th:utext="${wordCandidate.word.wordValuePrese}"></span>
+                  <small class="ml-3" th:text="'W' + ${wordCandidate.word.wordId}"></small>
+                </div>
+                <div class="border border-dark rounded mb-2 p-2">
+                  <th:block th:each="lexeme,lexemeIter : ${wordCandidate.mainDatasetLexemes}">
+                    <div th:replace="termcreatewordandmeaningcomp :: word_candidate_lexeme_details"></div>
+                  </th:block>
+                  <th:block th:if="${#lists.size(wordCandidate.secondaryDatasetLexemes) > 0}">
+                    <div class="row">
+                      <a class="btn ml-3" data-toggle="collapse" th:href="${'#secondaryLexemesSelect' + wordCandidateIter.index}" role="button" aria-expanded="false">
+                        <span class="lbl" th:text="#{common.see.more}">Näita rohkem</span>
+                        <i class="fa fa-angle-down lbl"></i>
+                      </a>
+                    </div>
+                    <div class="mt-3 collapse" th:id="${'secondaryLexemesSelect' + wordCandidateIter.index}">
+                      <th:block th:each="lexeme,lexemeIter : ${wordCandidate.secondaryDatasetLexemes}">
+                        <div th:replace="termcreatewordandmeaningcomp :: word_candidate_lexeme_details"></div>
+                      </th:block>
+                    </div>
+                  </th:block>
+                </div>
+              </div>
+              <hr/>
+              <div class="row">
+                <button type="button" class="btn btn-default" data-plugin="editWordClickPlugin">
+                  <i class="fa fa-angle-left"></i>
+                  <span th:text="#{termcreatemeaning.edit.search}">Muudan terminit</span>
+                </button>
+                <div class="ml-auto mr-5">
+                  <a th:if="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{/termsearch}" th:text="#{common.cancel}">Katkesta</a>
+                  <a th:unless="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{'/termsearch' + ${searchUri}}" th:text="#{common.cancel}">Katkesta</a>
+                  <button type="button" class="btn btn-primary" data-plugin="selectWordClickPlugin" id="selectWordBtn" disabled th:text="#{termcreatemeaning.create}">Loo uus mõiste</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script th:inline="javascript">
+	  initializeTermCreateWordAndMeaning();
+  </script>
+</body>
+</html>

@@ -115,10 +115,17 @@
               data-toggle="modal"
               data-target="#newWordDlg"
               sec:authorize="#vars.userRoleData.crudRoleSelected"
-              th:if="${activeItem == 'lex' || activeItem == 'term'}">
+              th:if="${activeItem == 'lex'}">
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
-        <span th:text="#{${activeItem} + '.new.word'}">Uus keelend</span>
+        <span th:text="#{lex.new.word}">Uus keelend</span>
       </button>
+      <form th:action="@{/termcreatewordandmeaning}" method="post" th:if="${activeItem == 'term'}">
+        <input type="hidden" name="searchUri" th:value="${searchUri}">
+        <button type="submit" class="btn btn-primary rounded-0" sec:authorize="#vars.userRoleData.crudRoleSelected">
+          <i class="fa fa-plus mr-2" aria-hidden="true"></i>
+          <span th:text="#{term.new.word}">Uus Mõiste</span>
+        </button>
+      </form>
       <button type="button" class="btn btn-primary rounded-0 border-left ml-2"
               data-toggle="modal"
               data-target="#newLimTermWordDlg"
@@ -240,6 +247,22 @@
         </div>
       </div>
     </nav>
+  </th:block>
+  <th:block th:fragment="user_message">
+    <th:block th:if="${userMessage}">
+      <div class="alert alert-success mt-2" role="alert" th:if="${userMessage.successMessageKey}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p th:text="#{${userMessage.successMessageKey}}"></p>
+      </div>
+      <div class="alert alert-danger mt-2" role="alert" th:if="${userMessage.warningMessageKey}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p th:text="#{${userMessage.warningMessageKey}}"></p>
+      </div>
+    </th:block>
   </th:block>
   <th:block th:fragment="ordering_buttons(itemIter)">
     <button type="button" th:hidden="${itemIter.first}" class="btn badge badge-secondary order-up float-left"

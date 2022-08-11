@@ -889,17 +889,19 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void createLexeme(Long wordId, String datasetCode, Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
 		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexeme", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		Long lexemeId = cudDbService.createLexeme(wordId, datasetCode, meaningId, lexemeLevel1);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, meaningId, lexemeLevel1);
+		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		if (lexemeId == null) {
-			return;
+			return wordLexemeMeaningId;
 		}
 		tagDbService.createLexemeAutomaticTags(lexemeId);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
+		return wordLexemeMeaningId;
 	}
 
 	@Transactional

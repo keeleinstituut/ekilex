@@ -57,24 +57,24 @@ $(function() {
 	}
 
 	$.fn.initWordValueEditorDlgAndFocusPlugin = function() {
+		const editorOptions = {
+			width: '100%',
+			height: '5em',
+			extraPlugins: 'ekiStyles',
+			extraAllowedContent: '',
+			removePlugins: 'sourcearea, elementspath',
+			resize_enabled: false,
+			toolbarGroups: [
+				{
+					name: 'eki-styles',
+					groups: ['ekiStyles']
+				}
+			]
+		};
 		return this.each(function() {
 			const obj = $(this);
-			const options = {
-				width: '100%',
-				height: '5em',
-				extraPlugins: 'ekiStyles',
-				extraAllowedContent: '',
-				removePlugins: 'sourcearea, elementspath',
-				resize_enabled: false,
-				toolbarGroups: [
-					{
-						name: 'eki-styles',
-						groups: ['ekiStyles']
-					}
-				]
-			};
 			obj.on('show.bs.modal', function(e) {
-				initEkiEditorDlg(obj, options);
+				initEkiEditorDlg(obj, editorOptions);
 				alignAndFocus(e, obj);
 			})
 		})
