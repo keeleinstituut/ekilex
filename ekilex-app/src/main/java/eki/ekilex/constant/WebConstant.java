@@ -188,7 +188,7 @@ public interface WebConstant {
 
 	String TERM_CREATE_WORD_AND_MEANING_URI = "/termcreatewordandmeaning";
 
-	String TERM_CREATE_WORD_AND_MEANING_PAGE = "/termcreatewordandmeaning";
+	String TERM_CREATE_WORD_AND_MEANING_PAGE = "termcreatewordandmeaning";
 
 	String LIM_TERM_CREATE_WORD_URI = "/lim_term_create_word";
 
