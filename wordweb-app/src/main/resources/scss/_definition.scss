@@ -16,14 +16,17 @@
 }
 
 .definition-sources {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: #6b7885;
   .source-link{
-    font-size: 14px;
+    font-size: 12px;
     color: #6b7885;
     text-align: left;
     word-break: break-all;
   }
 }
 
+.ul-list-style{
+  list-style: disc;
+}
