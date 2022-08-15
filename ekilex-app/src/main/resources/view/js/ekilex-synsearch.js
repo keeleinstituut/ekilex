@@ -126,6 +126,7 @@ function initializeSynSearch() {
 					"ui-droppable-active": "ui-state-active",
 					"ui-droppable-hover": "ui-state-hover"
 				},
+				tolerance: 'pointer',
 				drop: function(event, ui) {
 
 					const targetMeaningId = $(this).data('meaning-id');

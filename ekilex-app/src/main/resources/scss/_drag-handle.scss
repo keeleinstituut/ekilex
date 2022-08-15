@@ -6,3 +6,9 @@
 .ui-sortable-handle{
   cursor: move;
 }
+
+// Limit height of draggable object to make sure it can be dragged to target
+.ui-draggable-dragging {
+  overflow: hidden;
+  max-height: 15rem;
+}
