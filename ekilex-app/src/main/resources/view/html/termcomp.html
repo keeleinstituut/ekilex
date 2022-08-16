@@ -1193,14 +1193,6 @@
       </span>
     </div>
   </div>
-  <div class="hidden-buttons row no-gutters" th:if="${lexeme.complexity != null}" th:fragment="lexeme_complexity" style="display: none;">
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{term.complexity}">Detailsus</span>
-    </div>
-    <div class="col pl-0">
-      <span th:text="#{'enum.complexity.' + ${lexeme.complexity}}"></span>
-    </div>
-  </div>
   <div class="hidden-buttons row no-gutters" th:if="${lexeme.lexemeValueState != null}" th:fragment="lexeme_value_state"  data-id="valuestatus" style="display: none;">
     <div class="col pr-0 col-w13rem">
       <span class="lbl" th:text="#{term.lexeme.value.state}">Väärtusolek</span>
