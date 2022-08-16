@@ -34,7 +34,7 @@ function initializeSynSearch() {
 			.removeClass('keyboard-nav-list-item-active active')
 			.removeAttr('data-navigate-selected');
 		// Make all results with the same id active, in case there are multiple with same id
-		$(`button[data-id=${id}]`).parent().addClass('active').attr('data-navigate-selected', true);
+		$(`#synSearchResultsDiv button[data-id=${id}]`).parent().addClass('active').attr('data-navigate-selected', true);
 
 		$("[id^='syn_select_wait_']").hide();
 		$(`#syn_select_wait_${id}`).show();
