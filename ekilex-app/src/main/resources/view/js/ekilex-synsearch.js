@@ -30,14 +30,11 @@ function initializeSynSearch() {
 
 		const id = button.data('id');
 		let markedSynMeaningId = $(document).find('.keyboard-nav-list-item-selected').data('meaning-id');
-
-		$('#synSearchResultsDiv').find('.list-group-item').each(function() {
-			button.removeClass('keyboard-nav-list-item-active active');
-		});
-		$('#synSearchResultsDiv').find('[data-navigate-selected]').removeAttr('data-navigate-selected');
-
-		button.parent().addClass('active');
-		button.parent().attr('data-navigate-selected', true);
+		$('#synSearchResultsDiv .list-group-item')
+			.removeClass('keyboard-nav-list-item-active active')
+			.removeAttr('data-navigate-selected');
+		// Make all results with the same id active, in case there are multiple with same id
+		$(`button[data-id=${id}]`).parent().addClass('active').attr('data-navigate-selected', true);
 
 		$("[id^='syn_select_wait_']").hide();
 		$(`#syn_select_wait_${id}`).show();
@@ -170,8 +167,8 @@ function initializeSynSearch() {
 	}
 
 	const detailButtons = $('#results').find('[name="synDetailsBtn"]');
-	if (detailButtons.length === 1) {
-		detailButtons.click();
+	if (detailButtons.length >= 1) {
+		detailButtons.eq(0).click();
 	}
 	detailSearchBtn();  
 }
@@ -542,7 +539,6 @@ function refreshSynDetails() {
 
 	refreshButton.click();
 
-	refreshButton.parent().addClass('active');
 }
 
 function updateWordSynRelationsStatusDeleted() {
