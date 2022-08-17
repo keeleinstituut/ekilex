@@ -12,7 +12,13 @@ public class WordDescript extends AbstractDataObject {
 
 	private List<WordLexeme> lexemes;
 
+	private List<WordLexeme> mainDatasetLexemes;
+
+	private List<WordLexeme> secondaryDatasetLexemes;
+
 	private List<String> definitions;
+
+	private boolean primaryDatasetLexemeExists;
 
 	public Word getWord() {
 		return word;
@@ -30,6 +36,22 @@ public class WordDescript extends AbstractDataObject {
 		this.lexemes = lexemes;
 	}
 
+	public List<WordLexeme> getMainDatasetLexemes() {
+		return mainDatasetLexemes;
+	}
+
+	public void setMainDatasetLexemes(List<WordLexeme> mainDatasetLexemes) {
+		this.mainDatasetLexemes = mainDatasetLexemes;
+	}
+
+	public List<WordLexeme> getSecondaryDatasetLexemes() {
+		return secondaryDatasetLexemes;
+	}
+
+	public void setSecondaryDatasetLexemes(List<WordLexeme> secondaryDatasetLexemes) {
+		this.secondaryDatasetLexemes = secondaryDatasetLexemes;
+	}
+
 	public List<String> getDefinitions() {
 		return definitions;
 	}
@@ -38,4 +60,11 @@ public class WordDescript extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
+	public boolean isPrimaryDatasetLexemeExists() {
+		return primaryDatasetLexemeExists;
+	}
+
+	public void setPrimaryDatasetLexemeExists(boolean primaryDatasetLexemeExists) {
+		this.primaryDatasetLexemeExists = primaryDatasetLexemeExists;
+	}
 }

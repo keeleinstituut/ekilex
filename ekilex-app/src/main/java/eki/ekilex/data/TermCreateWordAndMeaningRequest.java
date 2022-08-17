@@ -2,9 +2,11 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class TermCreateMeaningRequest extends AbstractDataObject {
+public class TermCreateWordAndMeaningRequest extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private Long meaningId;
 
 	private Long wordId;
 
@@ -12,11 +14,19 @@ public class TermCreateMeaningRequest extends AbstractDataObject {
 
 	private String language;
 
-	private String dataset;
+	private String datasetCode;
 
 	private String searchUri;
 
 	private boolean clearResults;
+
+	public Long getMeaningId() {
+		return meaningId;
+	}
+
+	public void setMeaningId(Long meaningId) {
+		this.meaningId = meaningId;
+	}
 
 	public Long getWordId() {
 		return wordId;
@@ -42,12 +52,12 @@ public class TermCreateMeaningRequest extends AbstractDataObject {
 		this.language = language;
 	}
 
-	public String getDataset() {
-		return dataset;
+	public String getDatasetCode() {
+		return datasetCode;
 	}
 
-	public void setDataset(String dataset) {
-		this.dataset = dataset;
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 	public String getSearchUri() {

@@ -82,10 +82,6 @@ public interface WebConstant {
 
 	String WORD_SELECT_PAGE = "wordselect";
 
-	String MEANING_REL_SELECT_URI = "/meaningrelselect";
-
-	String MEANING_REL_SELECT_PAGE = "meaningrelselect";
-
 	String MEANING_INTERNAL_LINK_SEARCH_URI = "/meaning_internal_link_search";
 
 	String WORD_INTERNAL_LINK_SEARCH_URI = "/word_internal_link_search";
@@ -101,10 +97,6 @@ public interface WebConstant {
 	String APPROVE_MEANING = "/approve_meaning";
 
 	String GENERATE_API_KEY = "/generate_api_key";
-
-	String CREATE_WORD_AND_MEANING_AND_REL_URI = "/create_word_and_meaning_and_rel";
-
-	String VALIDATE_MEANING_DATA_IMPORT_URI = "/validatemeaningdataimport";
 
 	String SEND_FEEDBACK_URI = "/send_feedback";
 
@@ -184,7 +176,9 @@ public interface WebConstant {
 
 	String LEX_CREATE_WORD_URI = "/lex_create_word";
 
-	String TERM_CREATE_WORD_URI = "/term_create_word";
+	String TERM_CREATE_WORD_URI = "/termcreateword";
+
+	String TERM_CREATE_WORD_PAGE = "termcreateword";
 
 	String TERM_CREATE_WORD_AND_MEANING_URI = "/termcreatewordandmeaning";
 

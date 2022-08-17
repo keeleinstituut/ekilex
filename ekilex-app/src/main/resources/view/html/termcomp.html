@@ -87,11 +87,15 @@
         <h1 class="mb-0"><span th:text="${meaningId}"></span></h1>
       </div>
       <div class="ml-2">
-        <button class="btn btn-secondary mr-1"
-                data-toggle="modal"
-                data-target="#newWordDlg"
-                th:data-meaning-id="${meaningId}"
-                sec:authorize="#vars.isMeaningAnyLexemeCrudGranted && #vars.userRoleData.crudRoleSelected" th:text="#{term.add.term}">Lisa termin</button>
+        <div class="d-inline-block">
+          <form th:action="@{/termcreateword}" id="termCreateWordForm" method="post">
+            <input type="hidden" name="searchUri">
+            <input type="hidden" name="meaningId" th:value="${meaningId}">
+            <button type="button" class="btn btn-secondary mr-1" data-plugin="initCreateWordPlugin" sec:authorize="#vars.meaning.crudGrant">
+              <span th:text="#{term.add.term}">Lisa termin</span>
+            </button>
+          </form>
+        </div>
         <a class="btn btn-secondary mr-1" th:href="@{'/meaningjoin/' + ${meaningId}}"
            title="Tähenduste ühendamine"
            sec:authorize="#vars.meaning.crudGrant" th:text="#{term.join}">Ühenda</a>
@@ -99,7 +103,7 @@
                 data-toggle="duplicate-meaning-confirm"
                 th:data-meaning-id="${meaningId}"
                 sec:authorize="#vars.meaning.crudGrant" th:text="#{term.duplicate}">Dubleeri</button>
-        <div style="display:inline-block" class="p-1 ml-2" th:classappend="${meaning.lastApproveEventOn != null ? 'border rounded' : ''}">
+        <div class="p-1 ml-2 d-inline-block" th:classappend="${meaning.lastApproveEventOn != null ? 'border rounded' : ''}">
           <form th:action="@{/approve_meaning}" method="post">
             <input type="hidden" name="meaningId" th:value="${meaningId}">
             <span class="ml-1 date-modified" data-toggle="tooltip" data-placement="bottom" th:data-original-title="#{term.last.approved}" th:if="${meaning.lastApproveEventOn}">
@@ -123,7 +127,7 @@
                 data-toggle="deleteMeaningAndLexemesAndWords"
                 sec:authorize="#vars.isMeaningLexemeCrudGranted"
                 th:text="#{common.delete}">Kustuta</button>
-        <div style="display:inline-block" class="hover-actions-container hover-actions-container-outline ml-2">
+        <div class="hover-actions-container hover-actions-container-outline ml-2 d-inline-block">
           <div class="date-modified" data-toggle="tooltip" data-boundary="window" data-placement="top" th:title="#{term.manual.event.on}">
             <i class="fa fa-edit"></i>
             <span th:text="${#dates.format(meaning.manualEventOn, 'dd.MM.yyyy')}" class="ml-n1"></span>
@@ -196,7 +200,7 @@
                 sec:authorize="#vars.meaning.crudGrant"
                 data-plugin="duplicateLimTermMeaningPlugin"
                 th:text="#{term.duplicate}">Dubleeri</button>
-        <div style="display:inline-block" class="date-modified" title="" data-toggle="tooltip" data-placement="bottom"
+        <div class="date-modified d-inline-block" title="" data-toggle="tooltip" data-placement="bottom"
              th:data-original-title="#{term.last.modified}">
           <i class="fa fa-calendar"></i><span th:text="${#dates.format(meaning.lastActivityEventOn, 'dd.MM.yyyy')}"></span>
         </div>

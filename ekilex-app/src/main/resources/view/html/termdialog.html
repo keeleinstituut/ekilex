@@ -1708,56 +1708,6 @@
       </div>
     </div>
   </div>
-<!--  TODO remove later -->
-  <div id="newWordDlg" class="modal" role="dialog" th:fragment="new_word_dlg">
-    <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected}">
-      <div class="modal-content">
-        <form id="addWordForm" th:action="@{/term_create_word}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="meaningId">
-            <input type="hidden" name="backUri" th:value="${searchUri}">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <input class="form-control required-field" name="wordValue" th:placeholder="#{term.placeholder.new.word}">
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-12" th:if="${userRoleData.userRole.superiorPermission}">
-                <select name="dataset" required class="form-control required-field classifier-select" data-live-search="true">
-                  <option value="" hidden disabled th:selected="${userRoleData.userRole.superiorPermission}" th:text="#{common.select.dataset}">vali sõnakogu...</option>
-                  <option th:each="dataset : ${userVisibleDatasets}"
-                          th:value="${dataset.code}"
-                          th:text="${dataset.name}">
-                          dataset
-                  </option>
-                </select>
-              </div>
-              <div class="col-md-12" th:unless="${userRoleData.userRole.superiorPermission}">
-                <input type="hidden" name="dataset" th:value="${userRoleData.userRole.datasetCode}">
-                <span th:text="${userRoleData.userRole.datasetName}"></span>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-8">
-                <select required id="wordPermLanguageSelect" class="form-control required-field classifier-select" data-live-search="true" name="language">
-                  <option value="" hidden disabled th:selected="${#strings.isEmpty(sessionBean.recentLanguage)}" th:text="#{common.select.language}">vali keel...</option>
-                  <option th:each="language : ${userRoleLanguages}"
-                          th:value="${language.code}"
-                          th:selected="${language.code == sessionBean.recentLanguage}"
-                          th:text="${language.value}">language
-                  </option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button id="addWordSubmitBtn" type="button" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div id="newLimTermWordDlg" class="modal" role="dialog" th:fragment="lim_term_new_word_dlg">
     <div class="modal-dialog" role="document" th:if="${userRoleData.roleSelected}">
       <div class="modal-content">

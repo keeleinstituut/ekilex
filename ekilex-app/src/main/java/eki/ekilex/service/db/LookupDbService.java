@@ -202,15 +202,18 @@ public class LookupDbService extends AbstractDataDbService {
 						w.ID.as("word_id"),
 						w.VALUE.as("word_value"),
 						w.VALUE_PRESE.as("word_value_prese"),
-						w.LANG.as("word_lang"))
-				.from(w)
+						w.LANG.as("word_lang"),
+						DSL.field(DSL
+										.select(DSL.arrayAggDistinct(l.DATASET_CODE))
+										.from(l)
+										.where(l.WORD_ID.eq(w.ID)))
+								.as("dataset_codes"))
+				.from(w, l)
 				.where(
 						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
 								.and(w.LANG.eq(wordLang))
-								.andExists(DSL
-										.select(l.ID)
-										.from(l)
-										.where(l.WORD_ID.eq(w.ID))))
+								.and(l.WORD_ID.eq(w.ID)))
+				.groupBy(w.ID)
 				.fetchInto(eki.ekilex.data.Word.class);
 	}
 
@@ -360,6 +363,16 @@ public class LookupDbService extends AbstractDataDbService {
 				.selectFrom(wv)
 				.where(PostgresDSL.arrayLength(wv.field(homonymNumbers)).gt(1))
 				.fetchMap(wordValue, homonymNumbers);
+	}
+
+	public String getMeaningFirstDatasetCode(Long meaningId) {
+
+		return create
+				.select(LEXEME.DATASET_CODE)
+				.from(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.limit(1)
+				.fetchSingleInto(String.class);
 	}
 
 	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId) {

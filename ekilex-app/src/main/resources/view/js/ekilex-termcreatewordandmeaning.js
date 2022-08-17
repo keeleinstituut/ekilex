@@ -41,14 +41,15 @@ $.fn.editWordClickPlugin = function() {
 	});
 }
 
-$.fn.selectWordClickPlugin = function() {
+$.fn.initCreateWordPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
-			const dataset = $("#createWordForm").find('input[name="dataset"]').val();
-			const selectWordForm = $('#selectWordForm');
-			selectWordForm.find('input[name="dataset"]').val(dataset);
-			selectWordForm.submit();
+			const createWordForm = $('#termCreateWordForm');
+			const createWordAndMeaningForm = $('#termCreateWordAndMeaningForm');
+			let searchUri = createWordAndMeaningForm.find('input[name="searchUri"]').val();
+			createWordForm.find('input[name="searchUri"]').val(searchUri);
+			createWordForm.submit();
 		});
 	});
 }

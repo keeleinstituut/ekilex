@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,11 +16,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,17 +29,16 @@ import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
-import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.MeaningCreateWordDetails;
-import eki.ekilex.data.UserMessage;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Tag;
-import eki.ekilex.data.TermCreateMeaningRequest;
+import eki.ekilex.data.TermCreateWordAndMeaningDetails;
+import eki.ekilex.data.TermCreateWordAndMeaningRequest;
 import eki.ekilex.data.UserContextData;
+import eki.ekilex.data.UserMessage;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.WordMeaningRelationsDetails;
 import eki.ekilex.service.CompositionService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.LookupService;
@@ -56,8 +52,6 @@ import eki.ekilex.web.util.SearchHelper;
 public class TermEditController extends AbstractMutableDataPageController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermEditController.class);
-
-	public static final String DEFAULT_CANDIDATE_MEANING_REL = "duplikaadikandidaat";
 
 	@Autowired
 	private TermSearchService termSearchService;
@@ -179,200 +173,125 @@ public class TermEditController extends AbstractMutableDataPageController {
 
 	@PostMapping(TERM_CREATE_WORD_AND_MEANING_URI)
 	public String createWordAndMeaning(
-			TermCreateMeaningRequest details,
+			TermCreateWordAndMeaningRequest requestData,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes redirectAttributes) throws Exception {
+			RedirectAttributes redirectAttributes,
+			Model model) throws Exception {
 
-		Long wordId = details.getWordId();
-		String wordValue = details.getWordValue();
-		String dataset = details.getDataset();
-		String language = details.getLanguage();
-		String searchUri = details.getSearchUri();
-		boolean clearResults = details.isClearResults();
+		Long wordId = requestData.getWordId();
+		String wordValue = requestData.getWordValue();
+		String datasetCode = requestData.getDatasetCode();
+		String language = requestData.getLanguage();
+		String searchUri = requestData.getSearchUri();
+		boolean clearResults = requestData.isClearResults();
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		redirectAttributes.addFlashAttribute("searchUri", searchUri);
-		redirectAttributes.addFlashAttribute("details", details);
+		model.addAttribute("searchUri", searchUri);
 
-		if (wordId != null && StringUtils.isNotBlank(dataset)) {
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, dataset, null, isManualEventOnUpdateEnabled);
-			Long meaningId = wordLexemeMeaningId.getMeaningId();
-			UserMessage userMessage = new UserMessage();
-			userMessage.setSuccessMessageKey("termcreatemeaning.usermessage.meaning.created");
-			redirectAttributes.addFlashAttribute("userMessage", userMessage);
-			String meaningIdUri = "?id=" + meaningId;
-			return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
-		}
-
-		if (clearResults || StringUtils.isAnyBlank(wordValue, dataset, language)) {
-			return REDIRECT_PREF + TERM_CREATE_WORD_AND_MEANING_URI;
+		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
+			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(userRole, wordValue, language, datasetCode, false);
+			model.addAttribute("details", details);
+			return TERM_CREATE_WORD_AND_MEANING_PAGE;
 		}
 
 		sessionBean.setRecentLanguage(language);
-		boolean wordExists = lookupService.wordExists(wordValue, language);
 
-		if (!wordExists) {
-			WordLexemeMeaningDetails wordDetails = new WordLexemeMeaningDetails();
-			wordDetails.setWordValue(wordValue);
-			wordDetails.setLanguage(language);
-			wordDetails.setDataset(dataset);
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+		if (wordId != null) {
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, datasetCode, null, isManualEventOnUpdateEnabled);
 			Long meaningId = wordLexemeMeaningId.getMeaningId();
-			UserMessage userMessage = new UserMessage();
-			userMessage.setSuccessMessageKey("termcreatemeaning.usermessage.word.and.meaning.created");
-			redirectAttributes.addFlashAttribute("userMessage", userMessage);
-			String meaningIdUri = "?id=" + meaningId;
-			return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
+			addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.meaning.created");
+			String redirectToMeaning = composeRedirectToMeaning(meaningId);
+			return redirectToMeaning;
 		}
 
-		List<MeaningCreateWordDetails> wordCandidates = lookupService.getWordCandidatesForMeaningCreate(userRole, wordValue, language, dataset);
-		redirectAttributes.addFlashAttribute("wordCandidates", wordCandidates);
-		return REDIRECT_PREF + TERM_CREATE_WORD_AND_MEANING_URI;
-	}
-
-	@GetMapping(TERM_CREATE_WORD_AND_MEANING_URI)
-	public String initCreateWordAndMeaning(Model model) {
-
-		boolean detailsExists = model.asMap().get("details") != null;
-		if (!detailsExists) {
-			model.addAttribute("details", new TermCreateMeaningRequest());
+		boolean wordExists = lookupService.wordExists(wordValue, language);
+		if (!wordExists) {
+			WordLexemeMeaningDetails createWordDetails = new WordLexemeMeaningDetails();
+			createWordDetails.setWordValue(wordValue);
+			createWordDetails.setLanguage(language);
+			createWordDetails.setDataset(datasetCode);
+			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(createWordDetails, isManualEventOnUpdateEnabled);
+			Long meaningId = wordLexemeMeaningId.getMeaningId();
+			addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.word.and.meaning.created");
+			String redirectToMeaning = composeRedirectToMeaning(meaningId);
+			return redirectToMeaning;
 		}
 
+		TermCreateWordAndMeaningDetails details = lookupService.getDetailsForMeaningAndWordCreate(userRole, wordValue, language, datasetCode, true);
+		model.addAttribute("details", details);
 		return TERM_CREATE_WORD_AND_MEANING_PAGE;
 	}
 
 	@PostMapping(TERM_CREATE_WORD_URI)
 	public String createWord(
-			WordLexemeMeaningDetails wordDetails,
-			@RequestParam("backUri") String backUri,
+			TermCreateWordAndMeaningRequest requestData,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) throws Exception {
+			RedirectAttributes redirectAttributes,
+			Model model) throws Exception {
 
-		valueUtil.trimAndCleanAndRemoveHtml(wordDetails);
+		Long meaningId = requestData.getMeaningId();
+		Long wordId = requestData.getWordId();
+		String wordValue = requestData.getWordValue();
+		String datasetCode = requestData.getDatasetCode();
+		String language = requestData.getLanguage();
+		String searchUri = requestData.getSearchUri();
+		boolean clearResults = requestData.isClearResults();
 
-		String wordValue = wordDetails.getWordValue();
-		if (StringUtils.isNotBlank(wordValue)) {
-			String language = wordDetails.getLanguage();
-			Long meaningId = wordDetails.getMeaningId();
-			String dataset = wordDetails.getDataset();
-			DatasetPermission userRole = userContext.getUserRole();
-			Long userId = userContext.getUserId();
-			List<String> userPrefDatasetCodes = getUserPreferredDatasetCodes();
-			List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-			boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = null;
-
-			sessionBean.setRecentLanguage(language);
-
-			boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
-			if (!meaningHasWord) {
-				List<Meaning> relationCandidates = lookupService.getMeaningsOfRelationCandidates(userRole, wordValue, meaningId, languagesOrder);
-				if (CollectionUtils.isNotEmpty(relationCandidates)) {
-					attributes.addFlashAttribute("dataset", dataset);
-					attributes.addFlashAttribute("wordValue", wordValue);
-					attributes.addFlashAttribute("language", language);
-					attributes.addFlashAttribute("meaningId", meaningId);
-					attributes.addFlashAttribute("relationCandidates", relationCandidates);
-					attributes.addFlashAttribute("backUri", backUri);
-					return "redirect:" + MEANING_REL_SELECT_URI;
-				} else {
-					wordLexemeMeaningId = cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
-				}
-			}
-
-			if (!userPrefDatasetCodes.contains(dataset)) {
-				userPrefDatasetCodes.add(dataset);
-				userProfileService.updateUserPreferredDatasets(userPrefDatasetCodes, userId);
-			}
-			if (meaningId == null && wordLexemeMeaningId != null) {
-				meaningId = wordLexemeMeaningId.getMeaningId();
-			}
-			backUri += "?id=" + meaningId;
-		}
-		return "redirect:" + TERM_SEARCH_URI + backUri;
-	}
-
-	@GetMapping(MEANING_REL_SELECT_URI)
-	public String listMeaningRelationCandidates(
-			@ModelAttribute(name = "dataset") String dataset,
-			@ModelAttribute(name = "wordValue") String wordValue,
-			@ModelAttribute(name = "language") String language,
-			@ModelAttribute(name = "meaningId") Long meaningId,
-			@ModelAttribute(name = "relationCandidates") List<Meaning> relationCandidates,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
-
-		model.addAttribute("defaultMeaningRelation", DEFAULT_CANDIDATE_MEANING_REL);
-		return MEANING_REL_SELECT_PAGE;
-	}
-
-	@PostMapping(CREATE_WORD_AND_MEANING_AND_REL_URI)
-	@ResponseBody
-	public Response createWordAndMeaningAndRelations(
-			@RequestBody WordMeaningRelationsDetails wordMeaningRelationsDetails,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		valueUtil.trimAndCleanAndRemoveHtml(wordMeaningRelationsDetails);
-
-		Response response = new Response();
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		String wordValue = wordMeaningRelationsDetails.getWordValue();
-		Long meaningId = wordMeaningRelationsDetails.getMeaningId();
-		String datasetCode = wordMeaningRelationsDetails.getDataset();
-		String backUri = wordMeaningRelationsDetails.getBackUri();
-		String searchUri;
-		if (StringUtils.isNotBlank(wordValue)) {
+		model.addAttribute("searchUri", searchUri);
 
-			EkiUser user = userContext.getUser();
-			Long userId = user.getId();
-			String userName = user.getName();
-			List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-
-			wordMeaningRelationsDetails.setDataset(datasetCode);
-			wordMeaningRelationsDetails.setUserName(userName);
-			wordMeaningRelationsDetails.setUserPermDatasetCodes(userPermDatasetCodes);
-
-			WordLexemeMeaningIdTuple wordLexemeMeaningId = compositionService
-					.createWordAndMeaningAndRelations(wordMeaningRelationsDetails, isManualEventOnUpdateEnabled);
-
-			List<String> selectedDatasets = getUserPreferredDatasetCodes();
-			if (!selectedDatasets.contains(datasetCode)) {
-				selectedDatasets.add(datasetCode);
-				userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
-			}
-			if (meaningId == null) {
-				Long createdMeaningId = wordLexemeMeaningId.getMeaningId();
-				searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
-				searchUri = searchUri + "?id=" + createdMeaningId;
-			} else {
-				searchUri = backUri + "?id=" + meaningId;
-			}
-			response.setStatus(ResponseStatus.VALID);
-			response.setUri(searchUri);
-		} else {
-			response.setStatus(ResponseStatus.INVALID);
-			response.setMessage("Viga! Terminil puudub väärtus");
+		if (clearResults || StringUtils.isAnyBlank(wordValue, datasetCode, language)) {
+			TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(userRole, meaningId, wordValue, language, false);
+			model.addAttribute("details", details);
+			return TERM_CREATE_WORD_PAGE;
 		}
 
-		return response;
-	}
+		sessionBean.setRecentLanguage(language);
 
-	@GetMapping(VALIDATE_MEANING_DATA_IMPORT_URI + "/{meaningId}")
-	@ResponseBody
-	public String validateMeaningDataImport(@PathVariable("meaningId") Long meaningId) {
-
-		logger.debug("Validating meaning data import, meaning id: {}", meaningId);
-		Long userId = userContext.getUserId();
-		List<String> userPermDatasetCodes = permissionService.getUserPermDatasetCodes(userId);
-
-		boolean isImportValid = compositionService.validateMeaningDataImport(meaningId, userPermDatasetCodes);
-		if (isImportValid) {
-			return RESPONSE_OK_VER1;
-		} else {
-			return "invalid";
+		if (wordId != null) {
+			cudService.createLexeme(wordId, datasetCode, meaningId, isManualEventOnUpdateEnabled);
+			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
+			String redirectToMeaning = composeRedirectToMeaning(meaningId);
+			return redirectToMeaning;
 		}
+
+		boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
+		if (meaningHasWord) {
+			addRedirectWarningMessage(redirectAttributes, "termcreateword.usermessage.meaning.word.exists");
+			String redirectToMeaning = composeRedirectToMeaning(meaningId);
+			return redirectToMeaning;
+		}
+
+		boolean wordExists = lookupService.wordExists(wordValue, language);
+		if (!wordExists) {
+			WordLexemeMeaningDetails wordDetails = new WordLexemeMeaningDetails();
+			wordDetails.setMeaningId(meaningId);
+			wordDetails.setWordValue(wordValue);
+			wordDetails.setLanguage(language);
+			wordDetails.setDataset(datasetCode);
+			cudService.createWord(wordDetails, isManualEventOnUpdateEnabled);
+			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.word.and.lexeme.created");
+			String redirectToMeaning = composeRedirectToMeaning(meaningId);
+			return redirectToMeaning;
+		}
+
+		boolean isOtherDatasetOnlyWord = lookupService.isOtherDatasetOnlyWord(wordValue, language, datasetCode);
+		if (isOtherDatasetOnlyWord) {
+			List<Word> words = lookupService.getWords(wordValue, language);
+			Long onlyWordId = words.get(0).getWordId();
+			cudService.createLexeme(onlyWordId, datasetCode, meaningId, isManualEventOnUpdateEnabled);
+			addRedirectSuccessMessage(redirectAttributes, "termcreateword.usermessage.lexeme.created");
+			String meaningIdUri = "?id=" + meaningId;
+			return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
+		}
+
+		TermCreateWordAndMeaningDetails details = lookupService.getDetailsForWordCreate(userRole, meaningId, wordValue, language, true);
+		model.addAttribute("details", details);
+		return TERM_CREATE_WORD_PAGE;
 	}
 
 	@PostMapping(UPDATE_MEANING_ACTIVE_TAG_COMPLETE_URI + "/{meaningId}")
@@ -399,5 +318,25 @@ public class TermEditController extends AbstractMutableDataPageController {
 		compositionService.approveMeaning(meaningId, isManualEventOnUpdateEnabled);
 
 		return RESPONSE_OK_VER2;
+	}
+
+	private void addRedirectSuccessMessage(RedirectAttributes redirectAttributes, String successMessageKey) {
+
+		UserMessage userMessage = new UserMessage();
+		userMessage.setSuccessMessageKey(successMessageKey);
+		redirectAttributes.addFlashAttribute("userMessage", userMessage);
+	}
+
+	private void addRedirectWarningMessage(RedirectAttributes redirectAttributes, String warningMessageKey) {
+
+		UserMessage userMessage = new UserMessage();
+		userMessage.setWarningMessageKey(warningMessageKey);
+		redirectAttributes.addFlashAttribute("userMessage", userMessage);
+	}
+
+	private String composeRedirectToMeaning(Long meaningId) {
+
+		String meaningIdUri = "?id=" + meaningId;
+		return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
 	}
 }

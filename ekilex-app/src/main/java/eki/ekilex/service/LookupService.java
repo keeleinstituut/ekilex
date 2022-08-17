@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityOwner;
+import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.Classifier;
@@ -32,13 +33,13 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.MeaningCreateWordDetails;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.OrderedClassifier;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SourceLink;
+import eki.ekilex.data.TermCreateWordAndMeaningDetails;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
@@ -78,13 +79,32 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
-		return lookupDbService.meaningHasWord(meaningId, wordValue, language);
+	public List<Word> getWords(String wordValue, String language) {
+		return lookupDbService.getWords(wordValue, language);
 	}
 
 	@Transactional
 	public boolean wordExists(String wordValue, String language) {
 		return lookupDbService.wordExists(wordValue, language);
+	}
+
+	@Transactional
+	public boolean meaningHasWord(Long meaningId, String wordValue, String language) {
+		return lookupDbService.meaningHasWord(meaningId, wordValue, language);
+	}
+
+	@Transactional
+	public boolean isOtherDatasetOnlyWord(String wordValue, String language, String excludedDatasetCode) {
+
+		List<Word> words = lookupDbService.getWords(wordValue, language);
+		if (words.size() == 1) {
+			Word word = words.get(0);
+			List<String> wordDatasetCodes = word.getDatasetCodes();
+			if (!wordDatasetCodes.contains(excludedDatasetCode)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Transactional
@@ -166,9 +186,61 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<MeaningCreateWordDetails> getWordCandidatesForMeaningCreate(DatasetPermission userRole, String wordValue, String language, String datasetCode) {
+	public TermCreateWordAndMeaningDetails getDetailsForMeaningAndWordCreate(
+			DatasetPermission userRole, String wordValue, String language, String datasetCode, boolean withCandidates) {
 
-		List<MeaningCreateWordDetails> wordCandidates = new ArrayList<>();
+		List<WordDescript> wordCandidates;
+		if (withCandidates) {
+			wordCandidates = getWordCandidates(userRole, wordValue, language, datasetCode);
+		} else {
+			wordCandidates = new ArrayList<>();
+		}
+
+		TermCreateWordAndMeaningDetails details = new TermCreateWordAndMeaningDetails();
+		details.setWordValue(wordValue);
+		details.setLanguage(language);
+		details.setDatasetCode(datasetCode);
+		details.setWordCandidates(wordCandidates);
+
+		return details;
+	}
+
+	@Transactional
+	public TermCreateWordAndMeaningDetails getDetailsForWordCreate(
+			DatasetPermission userRole, Long meaningId, String wordValue, String language, boolean withCandidates) {
+
+		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
+		String meaningdatasetname = datasetNameMap.get(datasetCode);
+		List<Classifier> datasetLanguages = commonDataDbService.getDatasetClassifiers(ClassifierName.LANGUAGE, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		permCalculator.filterVisibility(userRole, meaningDefinitions);
+
+		List<WordDescript> wordCandidates;
+		if (withCandidates) {
+			wordCandidates = getWordCandidates(userRole, wordValue, language, datasetCode);
+		} else {
+			wordCandidates = new ArrayList<>();
+		}
+
+		TermCreateWordAndMeaningDetails details = new TermCreateWordAndMeaningDetails();
+		details.setMeaningId(meaningId);
+		details.setDatasetCode(datasetCode);
+		details.setDatasetName(meaningdatasetname);
+		details.setDatasetLanguages(datasetLanguages);
+		details.setMeaningDomains(meaningDomains);
+		details.setMeaningDefinitions(meaningDefinitions);
+		details.setWordValue(wordValue);
+		details.setLanguage(language);
+		details.setWordCandidates(wordCandidates);
+
+		return details;
+	}
+
+	private List<WordDescript> getWordCandidates(DatasetPermission userRole, String wordValue, String language, String datasetCode) {
+
+		List<WordDescript> wordCandidates = new ArrayList<>();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
 		List<Word> words = lookupDbService.getWords(wordValue, language);
 
@@ -196,7 +268,7 @@ public class LookupService extends AbstractWordSearchService {
 					.filter(lexeme -> !StringUtils.equalsAny(lexeme.getDatasetCode(), datasetCode, DATASET_EKI))
 					.collect(Collectors.toList());
 
-			MeaningCreateWordDetails wordCandidate = new MeaningCreateWordDetails();
+			WordDescript wordCandidate = new WordDescript();
 			wordCandidate.setWord(word);
 			if (mainDatasetLexemes.isEmpty()) {
 				wordCandidate.setMainDatasetLexemes(secondaryDatasetLexemes);
@@ -316,19 +388,6 @@ public class LookupService extends AbstractWordSearchService {
 			List<Meaning> meanings = lookupDbService.getMeanings(searchFilter, searchDatasetsRestriction, excludedMeaningId);
 			permCalculator.applyCrud(userRole, meanings);
 			meanings.sort(Comparator.comparing(meaning -> !meaning.isAnyGrant()));
-			meanings.forEach(meaning -> composeMeaningSelectData(userRole, meaning, languagesOrder));
-			return meanings;
-		}
-	}
-
-	@Transactional
-	public List<Meaning> getMeaningsOfRelationCandidates(DatasetPermission userRole, String wordValue, Long excludedMeaningId, List<ClassifierSelect> languagesOrder) {
-
-		if (StringUtils.isBlank(wordValue)) {
-			return Collections.emptyList();
-		} else {
-			SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
-			List<Meaning> meanings = lookupDbService.getMeanings(wordValue, searchDatasetsRestriction, excludedMeaningId);
 			meanings.forEach(meaning -> composeMeaningSelectData(userRole, meaning, languagesOrder));
 			return meanings;
 		}
