@@ -13,3 +13,6 @@ update freeform set value_prese = replace(value_prese, ' link-type=', ' data-lin
 -- ilmiku ja kasutusnäite ÕS soovituste kustutamine
 delete from freeform where type in ('OD_LEXEME_RECOMMENDATION', 'OD_USAGE_DEFINITION', 'OD_USAGE_ALTERNATIVE');
 -- recreate ekilex views and types
+
+-- vastete tähenduse seose tüübi mapping
+insert into meaning_rel_mapping (code1, code2) values ('sarnane', 'sarnane');
