@@ -5,7 +5,6 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.routines.AdjustHomonymNrs;
-import eki.ekilex.data.db.routines.MergeHomonymsToEki;
 
 import org.jooq.Configuration;
 
@@ -21,16 +20,6 @@ public class Routines {
      */
     public static void adjustHomonymNrs(Configuration configuration) {
         AdjustHomonymNrs p = new AdjustHomonymNrs();
-
-        p.execute(configuration);
-    }
-
-    /**
-     * Call <code>public.merge_homonyms_to_eki</code>
-     */
-    public static void mergeHomonymsToEki(Configuration configuration, String[] includedLangs) {
-        MergeHomonymsToEki p = new MergeHomonymsToEki();
-        p.setIncludedLangs(includedLangs);
 
         p.execute(configuration);
     }

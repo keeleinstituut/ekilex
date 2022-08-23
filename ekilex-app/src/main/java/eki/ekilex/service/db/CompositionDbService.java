@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.Record1;
 import org.jooq.Result;
@@ -72,7 +73,9 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
+import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordActivityLog;
+import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -1126,20 +1129,65 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public void joinWordData(Long targetWordId, Long sourceWordId) {
 
+		joinWordAttributes(targetWordId, sourceWordId);
 		joinWordFreeforms(targetWordId, sourceWordId);
 		joinWordRelations(targetWordId, sourceWordId);
 		joinWordTypeCodes(targetWordId, sourceWordId);
 		joinWordGroupMembers(targetWordId, sourceWordId);
+		joinWordEtymologyAndEtymologyRelations(targetWordId, sourceWordId);
+		joinWordActivityLogs(targetWordId, sourceWordId);
+	}
 
-		create.update(WORD_ETYMOLOGY)
-				.set(WORD_ETYMOLOGY.WORD_ID, targetWordId)
-				.where(WORD_ETYMOLOGY.WORD_ID.eq(sourceWordId))
-				.execute();
+	private void joinWordAttributes(Long targetWordId, Long sourceWordId) {
 
-		joinWordEtymologyRelations(targetWordId, sourceWordId);
+		Word w = WORD.as("w");
+		WordRecord targetWord = create.selectFrom(w).where(w.ID.eq(targetWordId)).fetchOne();
+		WordRecord sourceWord = create.selectFrom(w).where(w.ID.eq(sourceWordId)).fetchOne();
+
+		String targetWordAspectCode = targetWord.getAspectCode();
+		String targetWordDisplayMorphCode = targetWord.getDisplayMorphCode();
+		String targetWordVocalForm = targetWord.getVocalForm();
+		String targetWordMorphophonoForm = targetWord.getMorphophonoForm();
+		String targetWordGenderCode = targetWord.getGenderCode();
+
+		String sourceWordAspectCode = sourceWord.getAspectCode();
+		String sourceWordDisplayMorphCode = sourceWord.getDisplayMorphCode();
+		String sourceWordVocalForm = sourceWord.getVocalForm();
+		String sourceWordMorphophonoForm = sourceWord.getMorphophonoForm();
+		String sourceWordGenderCode = sourceWord.getGenderCode();
+
+		boolean isUpdate = false;
+		if (StringUtils.isBlank(targetWordAspectCode) && StringUtils.isNotBlank(sourceWordAspectCode)) {
+			targetWord.setAspectCode(sourceWordAspectCode);
+			isUpdate = true;
+		}
+		if (StringUtils.isBlank(targetWordDisplayMorphCode) && StringUtils.isNotBlank(sourceWordDisplayMorphCode)) {
+			targetWord.setDisplayMorphCode(sourceWordDisplayMorphCode);
+			isUpdate = true;
+		}
+		if (StringUtils.isBlank(targetWordVocalForm) && StringUtils.isNotBlank(sourceWordVocalForm)) {
+			targetWord.setVocalForm(sourceWordVocalForm);
+			isUpdate = true;
+		}
+		if (StringUtils.isBlank(targetWordMorphophonoForm) && StringUtils.isNotBlank(sourceWordMorphophonoForm)) {
+			targetWord.setMorphophonoForm(sourceWordMorphophonoForm);
+			isUpdate = true;
+		}
+		if (StringUtils.isBlank(targetWordGenderCode) && StringUtils.isNotBlank(sourceWordGenderCode)) {
+			targetWord.setGenderCode(sourceWordGenderCode);
+			isUpdate = true;
+		}
+
+		if (isUpdate) {
+			targetWord.store();
+		}
+	}
+
+	private void joinWordActivityLogs(Long targetWordId, Long sourceWordId) {
 
 		WordActivityLog wals = WORD_ACTIVITY_LOG.as("wals");
 		WordActivityLog walt = WORD_ACTIVITY_LOG.as("walt");
+
 		create.update(wals)
 				.set(wals.WORD_ID, targetWordId)
 				.where(wals.WORD_ID.eq(sourceWordId)
@@ -1152,10 +1200,16 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 				.execute();
 	}
 
-	private void joinWordEtymologyRelations(Long targetWordId, Long sourceWordId) {
+	private void joinWordEtymologyAndEtymologyRelations(Long targetWordId, Long sourceWordId) {
 
+		WordEtymology we = WORD_ETYMOLOGY.as("we");
 		WordEtymologyRelation wer1 = WORD_ETYMOLOGY_RELATION.as("wer1");
 		WordEtymologyRelation wer2 = WORD_ETYMOLOGY_RELATION.as("wer2");
+
+		create.update(we)
+				.set(we.WORD_ID, targetWordId)
+				.where(we.WORD_ID.eq(sourceWordId))
+				.execute();
 
 		create.update(wer1)
 				.set(wer1.RELATED_WORD_ID, targetWordId)

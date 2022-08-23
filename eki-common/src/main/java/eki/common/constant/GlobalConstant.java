@@ -14,6 +14,8 @@ public interface GlobalConstant {
 
 	String DATASET_EKI = "eki";
 
+	String DATASET_ETY = "ety";
+
 	String DATASET_LIMITED = "vrk";
 
 	String DATASET_XXX = "xxx";
@@ -45,6 +47,8 @@ public interface GlobalConstant {
 	String WORD_TYPE_CODE_SUFFIXOID = "sf";
 
 	String WORD_TYPE_CODE_ABBREVIATION = "l";
+
+	String WORD_TYPE_CODE_SYMBOL = "th";
 
 	String[] WORD_TYPE_CODES_ABBREVIATION = new String[] {"l", "th"};
 

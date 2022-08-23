@@ -263,7 +263,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		return targetWordId;
 	}
 
-	private Long joinWords(Long firstWordId, Long secondWordId, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long joinWords(Long firstWordId, Long secondWordId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Integer firstWordHomonymNum = compositionDbService.getWordHomonymNum(firstWordId);
 		Integer secondWordHomonymNum = compositionDbService.getWordHomonymNum(secondWordId);

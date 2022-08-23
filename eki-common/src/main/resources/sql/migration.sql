@@ -16,3 +16,6 @@ delete from freeform where type in ('OD_LEXEME_RECOMMENDATION', 'OD_USAGE_DEFINI
 
 -- vastete tähenduse seose tüübi mapping
 insert into meaning_rel_mapping (code1, code2) values ('sarnane', 'sarnane');
+
+-- igaöise homonüümide ühendaja kolimine baasi funktsioonist java teenusesse
+drop function if exists merge_homonyms_to_eki(char(3) array);

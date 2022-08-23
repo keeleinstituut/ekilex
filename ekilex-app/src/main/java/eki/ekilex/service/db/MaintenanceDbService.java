@@ -17,17 +17,23 @@ import static eki.ekilex.data.db.Tables.WORD_GUID;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record7;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.GlobalConstant;
+import eki.ekilex.data.SourceTargetIdTuple;
 import eki.ekilex.data.db.Routines;
 import eki.ekilex.data.db.tables.DataRequest;
+import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.WordRecord;
 
 @Component
-public class MaintenanceDbService implements GlobalConstant {
+public class MaintenanceDbService extends AbstractDataDbService implements GlobalConstant {
 
 	private static final String DATASET_CODE_MAB = "mab";
 
@@ -38,9 +44,90 @@ public class MaintenanceDbService implements GlobalConstant {
 		return create.selectFrom(WORD).fetchInto(WordRecord.class);
 	}
 
-	public void mergeHomonymsToEki(String[] includedLangs) {
+	public List<SourceTargetIdTuple> getHomonymsToMerge(String[] includedLangs) {
 
-		Routines.mergeHomonymsToEki(create.configuration(), includedLangs);
+		Word w1 = WORD.as("w1");
+		Word w2 = WORD.as("w2");
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+
+		Field<Boolean> isPrefixoid = getWordTypeExists(w1.ID, WORD_TYPE_CODE_PREFIXOID);
+		Field<Boolean> isSuffixoid = getWordTypeExists(w1.ID, WORD_TYPE_CODE_SUFFIXOID);
+		Field<Boolean> isSymbol = getWordTypeExists(w1.ID, WORD_TYPE_CODE_SYMBOL);
+		Field<Boolean> isAbbreviation = getWordTypeExists(w1.ID, WORD_TYPE_CODE_ABBREVIATION);
+
+		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wHom = create
+				.select(
+						w1.ID.as("word_id"),
+						w1.VALUE.as("word_value"),
+						w1.LANG.as("word_lang"),
+						isPrefixoid.as("is_pf"),
+						isSuffixoid.as("is_sf"),
+						isSymbol.as("is_th"),
+						isAbbreviation.as("is_l"))
+				.from(w1, l1)
+				.where(
+						w1.LANG.in(includedLangs)
+								.and(l1.WORD_ID.eq(w1.ID))
+								.and(l1.DATASET_CODE.notIn(DATASET_EKI, DATASET_ETY))
+								.andNotExists(DSL
+										.select(l2.ID)
+										.from(l2)
+										.where(
+												l2.WORD_ID.eq(w1.ID)
+														.and(l2.DATASET_CODE.eq(DATASET_EKI)))))
+				.asTable("w_hom");
+
+		Table<Record7<Long, String, String, Boolean, Boolean, Boolean, Boolean>> wEki = create
+				.select(
+						w1.ID.as("word_id"),
+						w1.VALUE.as("word_value"),
+						w1.LANG.as("word_lang"),
+						isPrefixoid.as("is_pf"),
+						isSuffixoid.as("is_sf"),
+						isSymbol.as("is_th"),
+						isAbbreviation.as("is_l"))
+				.from(w1)
+				.where(
+						w1.LANG.in(includedLangs)
+								.andExists(DSL
+										.select(l1.ID)
+										.from(l1)
+										.where(
+												l1.WORD_ID.eq(w1.ID)
+														.and(l1.DATASET_CODE.eq(DATASET_EKI))
+														.and(l1.IS_PUBLIC.isTrue())))
+								.andNotExists(DSL
+										.select(w2.ID)
+										.from(w2)
+										.where(
+												w2.VALUE.eq(w1.VALUE)
+														.and(w2.LANG.eq(w1.LANG))
+														.and(w2.ID.ne(w1.ID))
+														.andExists(DSL
+																.select(l2.ID)
+																.from(l2)
+																.where(
+																		l2.WORD_ID.eq(w2.ID)
+																				.and(l2.DATASET_CODE.eq(DATASET_EKI))
+																				.and(l2.IS_PUBLIC.isTrue()))))))
+				.asTable("w_eki");
+
+		return create
+				.select(
+						wHom.field("word_id", Long.class).as("source_id"),
+						wEki.field("word_id", Long.class).as("target_id"))
+				.from(wHom, wEki)
+				.where(
+						wHom.field("word_value", String.class).eq(wEki.field("word_value", String.class))
+								.and(wHom.field("word_lang", String.class).eq(wEki.field("word_lang", String.class)))
+								.and(wHom.field("word_id", Long.class).ne(wEki.field("word_id", Long.class)))
+								.and(wHom.field("is_pf", Boolean.class).eq(wEki.field("is_pf", Boolean.class)))
+								.and(wHom.field("is_sf", Boolean.class).eq(wEki.field("is_sf", Boolean.class)))
+								.and(wHom.field("is_th", Boolean.class).eq(wEki.field("is_th", Boolean.class)))
+								.and(wHom.field("is_l", Boolean.class).eq(wEki.field("is_l", Boolean.class))))
+				.orderBy(wHom.field("word_id", Long.class), (wEki.field("word_id", Long.class)))
+				.fetchInto(SourceTargetIdTuple.class);
 	}
 
 	public void adjustHomonymNrs() {

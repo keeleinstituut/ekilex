@@ -19,6 +19,7 @@ import eki.common.constant.GlobalConstant;
 import eki.common.data.Count;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.SourceTargetIdTuple;
 import eki.ekilex.data.db.tables.records.WordRecord;
 import eki.ekilex.service.db.MaintenanceDbService;
 
@@ -29,6 +30,9 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 
 	@Autowired
 	private TextDecorationService textDecorationService;
+
+	@Autowired
+	private CompositionService compositionService;
 
 	@Autowired
 	private CacheManager cacheManager;
@@ -77,11 +81,21 @@ public class MaintenanceService implements SystemConstant, GlobalConstant {
 
 	@Scheduled(cron = MERGE_HOMONYMS_TIME_3_AM)
 	@Transactional
-	public void mergeHomonyms() {
+	public void mergeHomonyms() throws Exception {
 
-		logger.info("Starting homonyms merge procedure...");
+		logger.info("Starting homonyms merge...");
 		String[] includedLangs = new String[] {LANGUAGE_CODE_EST, LANGUAGE_CODE_LAT, LANGUAGE_CODE_RUS};
-		maintenanceDbService.mergeHomonymsToEki(includedLangs);
+		boolean isManualEventOnUpdateEnabled = false;
+		List<SourceTargetIdTuple> homonyms = maintenanceDbService.getHomonymsToMerge(includedLangs);
+		logger.info("Found {} homonyms to merge", homonyms.size());
+
+		for (SourceTargetIdTuple homonym : homonyms) {
+			Long targetWordId = homonym.getTargetId();
+			Long sourceWordId = homonym.getSourceId();
+			compositionService.joinWords(targetWordId, sourceWordId, isManualEventOnUpdateEnabled);
+		}
+
+		logger.info("Homonyms merge finished");
 	}
 
 	@Scheduled(cron = ADJUST_HOMONYM_NRS_TIME_3_30_AM)

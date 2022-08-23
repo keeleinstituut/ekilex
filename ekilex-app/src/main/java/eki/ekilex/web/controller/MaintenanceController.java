@@ -32,7 +32,7 @@ public class MaintenanceController implements WebConstant {
 
 	@ResponseBody
 	@GetMapping(MAINTENANCE_URI + "/mergehomonyms")
-	public String mergeHomonyms() {
+	public String mergeHomonyms() throws Exception {
 
 		maintenanceService.mergeHomonyms();
 

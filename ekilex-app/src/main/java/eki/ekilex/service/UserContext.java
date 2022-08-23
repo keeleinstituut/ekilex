@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,13 +23,19 @@ public class UserContext {
 	}
 
 	public EkiUser getUser() {
-		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		EkiUser user;
-		if (principal instanceof EkiUser) {
-			user = (EkiUser) principal;
-		} else {
+		if (authentication == null) {
 			user = new EkiUser();
-			user.setName(principal.toString());
+			user.setName("ekilex");
+		} else {
+			Object principal = authentication.getPrincipal();
+			if (principal instanceof EkiUser) {
+				user = (EkiUser) principal;
+			} else {
+				user = new EkiUser();
+				user.setName(principal.toString());
+			}
 		}
 		return user;
 	}
