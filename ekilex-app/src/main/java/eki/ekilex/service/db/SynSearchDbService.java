@@ -76,7 +76,11 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<String[]> usages = DSL
 				.select(DSL.arrayAgg(u.VALUE_PRESE).orderBy(u.ORDER_BY))
 				.from(u, lff)
-				.where(lff.LEXEME_ID.eq(l2.ID).and(lff.FREEFORM_ID.eq(u.ID)).and(u.TYPE.eq(FreeformType.USAGE.name())))
+				.where(
+						lff.LEXEME_ID.eq(l2.ID)
+								.and(lff.FREEFORM_ID.eq(u.ID))
+								.and(u.TYPE.eq(FreeformType.USAGE.name()))
+								.and(u.IS_PUBLIC.isTrue()))
 				.groupBy(l2.ID)
 				.asField("usages");
 
