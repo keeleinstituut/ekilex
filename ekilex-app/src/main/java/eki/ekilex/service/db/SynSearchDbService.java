@@ -23,6 +23,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
@@ -75,7 +76,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<String[]> usages = DSL
 				.select(DSL.arrayAgg(u.VALUE_PRESE).orderBy(u.ORDER_BY))
 				.from(u, lff)
-				.where(lff.LEXEME_ID.eq(l2.ID).and(lff.FREEFORM_ID.eq(u.ID)))
+				.where(lff.LEXEME_ID.eq(l2.ID).and(lff.FREEFORM_ID.eq(u.ID)).and(u.TYPE.eq(FreeformType.USAGE.name())))
 				.groupBy(l2.ID)
 				.asField("usages");
 
