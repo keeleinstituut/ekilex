@@ -16874,6 +16874,10 @@ body.hidden-scroll {
   padding-bottom: 4px;
 }
 
+.dependencies .rekts-est b {
+  margin-right: 10px;
+}
+
 .colloc-row {
   display: flex;
   flex-flow: row wrap;
