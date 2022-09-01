@@ -75,6 +75,10 @@ public class LookupDbService extends AbstractDataDbService {
 		return create.select(WORD.VALUE_PRESE).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
 	}
 
+	public String getWordLang(Long wordId) {
+		return create.select(WORD.LANG).from(WORD).where(WORD.ID.eq(wordId)).fetchOptionalInto(String.class).orElse(null);
+	}
+
 	public Long getWordWordTypeId(Long wordId, String typeCode) {
 		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
 		return wordWordTypeRecord.getId();
@@ -217,6 +221,15 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Word.class);
 	}
 
+	public List<Long> getWordDatasetCodes(Long wordId) {
+
+		return create
+				.selectDistinct(LEXEME.DATASET_CODE)
+				.from(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId))
+				.fetchInto(Long.class);
+	}
+
 	public List<WordRelation> getWordRelations(Long wordId, String relTypeCode) {
 		return create.select(WORD_RELATION.ID, WORD_RELATION.ORDER_BY)
 				.from(WORD_RELATION)
@@ -262,6 +275,15 @@ public class LookupDbService extends AbstractDataDbService {
 	
 		return create
 				.select(LEXEME.MEANING_ID)
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(Long.class);
+	}
+
+	public Long getLexemeWordId(Long lexemeId) {
+
+		return create
+				.select(LEXEME.WORD_ID)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(lexemeId))
 				.fetchSingleInto(Long.class);

@@ -380,24 +380,6 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}" class="modal select-dlg"
-        role="dialog"
-        th:fragment="edit_word_lang_dlg"
-        data-plugin="initSelectDlgPlugin">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.wordId}">
-            <input type="hidden" name="opCode" value="word_lang">
-            <select required class="form-control" name="value">
-              <option th:each="item : ${allLanguages}" th:value="${item.code}" th:text="${item.value}" th:selected="${item.code == lexeme.word.lang}">value</option>
-            </select>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
   <div th:id="${'addMeaningDomainDlg_' + meaningId}" class="modal"
         role="dialog"
         th:fragment="add_meaning_domain_dlg"
@@ -1424,15 +1406,27 @@
   <div th:id="${'editWordValueDlg_' + lexeme.wordId}" class="modal"
         role="dialog"
         th:fragment="edit_word_value_dlg"
-        data-plugin="initWordValueEditorDlgAndFocusPlugin">
+        data-plugin="initTermWordValueEditorDlgPlugin">
     <div class="modal-dialog modal-sm" role="document">
       <div class="modal-content">
-        <form th:action="@{/update_item}" method="post">
+        <form th:action="@{/termupdateword}" method="post">
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${lexeme.wordId}">
-            <input type="hidden" name="opCode" value="word_value">
-            <input type="hidden" name="value" th:value="${lexeme.word.wordValuePrese}">
+            <input type="hidden" name="searchUri" th:value="${searchUri}">
+            <input type="hidden" name="lexemeId" th:value="${lexeme.lexemeId}">
+            <input type="hidden" name="wordValuePrese" th:value="${lexeme.word.wordValuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
+            <div class="formItem">
+              <div class="formItem__title" th:text="#{lex.select.language}">Vali keel</div>
+              <div class="formItem__element">
+                <select class="form-control value-select required-field" data-live-search="true" name="language" required>
+                  <option th:each="language : ${userRoleLanguages}"
+                          th:value="${language.code}"
+                          th:selected="${language.code == lexeme.word.lang}"
+                          th:text="${language.value}">language
+                  </option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>

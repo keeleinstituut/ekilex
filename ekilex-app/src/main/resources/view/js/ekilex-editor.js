@@ -16,25 +16,26 @@ function toggleUsageMemberAdditionalFields(dlg, usageMemberType) {
 }
 
 function initEkiEditorDlg(editDlg, editorOptions) {
-	let modifyFld = editDlg.find('[data-id="editFld"]');
-	modifyFld.val(editDlg.find('[name=value]').val());
+	let editFld = editDlg.find('[data-id="editFld"]');
+	let valueInput = editDlg.find('[name=value]');
+	editFld.val(valueInput.val());
 
 	const complexityBtns = editDlg.find('[name="complexity"]');
 	if (complexityBtns.filter(':checked').length === 0){
 		complexityBtns.eq(complexityBtns.length-1).prop('checked', true);
 	}
-	initCkEditor(modifyFld, editorOptions);
+	initCkEditor(editFld, editorOptions);
 
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		if (modifyFld.val()) {
-			let content = modifyFld.val();
-			content = content.replace("<br>", "").replaceAll("&nbsp;", " ").replaceAll('class="eki-selected"', '');
-			editDlg.find('[name=value]').val(content);
-			modifyFld.removeClass('is-invalid');
+		if (editFld.val()) {
+			let editFldValue = editFld.val();
+			editFldValue = editFldValue.replace("<br>", "").replaceAll("&nbsp;", " ").replaceAll('class="eki-selected"', '');
+			valueInput.val(editFldValue);
+			editFld.removeClass('is-invalid');
 			submitDialog(e, editDlg, messages["common.data.update.error"]);
 		} else {
 			e.preventDefault();
-			modifyFld.addClass('is-invalid');
+			editFld.addClass('is-invalid');
 		}
 	});
 };

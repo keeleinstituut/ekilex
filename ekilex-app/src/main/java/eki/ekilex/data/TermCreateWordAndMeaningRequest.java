@@ -8,8 +8,6 @@ public class TermCreateWordAndMeaningRequest extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private Long wordId;
-
 	private String wordValue;
 
 	private String language;
@@ -26,14 +24,6 @@ public class TermCreateWordAndMeaningRequest extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
-	}
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
 	}
 
 	public String getWordValue() {

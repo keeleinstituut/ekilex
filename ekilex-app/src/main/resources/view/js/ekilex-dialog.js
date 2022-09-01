@@ -56,7 +56,7 @@ $(function() {
 		})
 	}
 
-	$.fn.initWordValueEditorDlgAndFocusPlugin = function() {
+	$.fn.initLexWordValueEditorDlgAndFocusPlugin = function() {
 		const editorOptions = {
 			width: '100%',
 			height: '5em',
@@ -76,6 +76,50 @@ $(function() {
 			obj.on('show.bs.modal', function(e) {
 				initEkiEditorDlg(obj, editorOptions);
 				alignAndFocus(e, obj);
+			})
+		})
+	}
+
+	$.fn.initTermWordValueEditorDlgPlugin = function() {
+		const editorOptions = {
+			width: '100%',
+			height: '5em',
+			extraPlugins: 'ekiStyles',
+			extraAllowedContent: '',
+			removePlugins: 'sourcearea, elementspath',
+			resize_enabled: false,
+			toolbarGroups: [
+				{
+					name: 'eki-styles',
+					groups: ['ekiStyles']
+				}
+			]
+		};
+		return this.each(function() {
+			const editDlg = $(this);
+			editDlg.on('show.bs.modal', function() {
+				const createWordAndMeaningForm = $('#termCreateWordAndMeaningForm');
+				const searchUri = createWordAndMeaningForm.find('input[name="searchUri"]').val();
+				const searchUriFld = editDlg.find('input[name="searchUri"]');
+				const editFld = editDlg.find('[data-id="editFld"]');
+				const valueInput = editDlg.find('[name=wordValuePrese]');
+				editFld.val(valueInput.val());
+				searchUriFld.val(searchUri);
+				initCkEditor(editFld, editorOptions);
+
+				editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+					e.preventDefault();
+					const submitBtn = $(this);
+					if (editFld.val()) {
+						const editFldValue = editFld.val();
+						valueInput.val(editFldValue);
+						const editWordForm = submitBtn.closest('form');
+						const isValid = checkRequiredFields(editWordForm);
+						if (isValid) {
+							editWordForm.submit();
+						}
+					}
+				});
 			})
 		})
 	}

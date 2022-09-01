@@ -21,9 +21,11 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.SimpleWord;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.tables.records.WordRecord;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
@@ -96,6 +98,79 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		Long wordId = lexeme.getWordId();
 		Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
 		duplicateLexemeData(lexemeId, null, duplicateWordId, false, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
+	public void updateLexemeWordId(Long lexemeId, Long wordId, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData lexemeActivityLog = activityLogService
+				.prepareActivityLog("updateLexemeWordId", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
+		Long lexemeWordId = lookupDbService.getLexemeWordId(lexemeId);
+		connectLexemeToAnotherWord(wordId, lexemeId);
+		cudDbService.deleteFloatingWord(lexemeWordId);
+		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional
+	public void updateLexemeWordValue(Long lexemeId, String wordValuePrese, String wordLang, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData lexemeActivityLog = activityLogService
+				.prepareActivityLog("updateLexemeWordValue", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
+		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
+		Long originalWordId = lookupDbService.getLexemeWordId(lexemeId);
+		WordRecord originalWord = compositionDbService.getWord(originalWordId);
+		String originalWordValue = originalWord.getValue();
+		String originalWordLang = originalWord.getLang();
+		List<Long> originalWordDatasetCodes = lookupDbService.getWordDatasetCodes(originalWordId);
+		boolean originalWordExistsOnlyInOneDataset = originalWordDatasetCodes.size() == 1;
+		List<Word> existingSameValueWords = lookupDbService.getWords(wordValue, wordLang);
+
+		if (existingSameValueWords.size() == 0) {
+			if (originalWordExistsOnlyInOneDataset) {
+				ActivityLogData wordActivityLog = activityLogService
+						.prepareActivityLog("updateLexemeWordValue", originalWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+				updateWordValue(originalWordId, wordValue, wordValuePrese, wordLang, originalWordValue, originalWordLang);
+				activityLogService.createActivityLog(wordActivityLog, originalWordId, ActivityEntity.WORD);
+			} else {
+				Long duplicateWordId = duplicateWordData(originalWordId, isManualEventOnUpdateEnabled);
+				ActivityLogData wordActivityLog = activityLogService
+						.prepareActivityLog("updateLexemeWordValue", duplicateWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+				updateWordValue(duplicateWordId, wordValue, wordValuePrese, wordLang, originalWordValue, originalWordLang);
+				connectLexemeToAnotherWord(duplicateWordId, lexemeId);
+				activityLogService.createActivityLog(wordActivityLog, duplicateWordId, ActivityEntity.WORD);
+			}
+		}
+
+		if (existingSameValueWords.size() == 1) {
+			Long existingWordId = existingSameValueWords.get(0).getWordId();
+			connectLexemeToAnotherWord(existingWordId, lexemeId);
+		}
+
+		if (existingSameValueWords.size() > 1) {
+			throw new UnsupportedOperationException();
+		}
+
+		cudDbService.deleteFloatingWord(originalWordId);
+		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	private void updateWordValue(Long wordId, String wordValue, String wordValuePrese, String wordLang, String originalWordValue, String originalWordLang) {
+
+		String cleanValue = textDecorationService.unifyToApostrophe(wordValue);
+		String valueAsWord = textDecorationService.removeAccents(cleanValue);
+		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(wordValue, cleanValue)) {
+			valueAsWord = cleanValue;
+		}
+		SimpleWord originalSimpleWord = new SimpleWord(null, originalWordValue, originalWordLang);
+		SimpleWord updatedSimpleWord = new SimpleWord(null, wordValue, wordLang);
+
+		cudDbService.updateWordValueAndLang(wordId, wordValue, wordValuePrese, wordLang);
+		if (StringUtils.isNotEmpty(valueAsWord)) {
+			cudDbService.updateAsWordValue(wordId, valueAsWord);
+		}
+
+		cudDbService.adjustWordHomonymNrs(originalSimpleWord);
+		cudDbService.adjustWordHomonymNrs(updatedSimpleWord);
 	}
 
 	private Long duplicateMeaningWithLexemes(Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -314,13 +389,14 @@ public class CompositionService extends AbstractService implements GlobalConstan
 				Long targetWordLexemeId = targetWordLexeme.getId();
 				compositionDbService.joinLexemes(targetWordLexemeId, sourceWordLexemeId);
 			} else {
-				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId, sourceWordLexemeDatasetCode);
+				connectLexemeToAnotherWord(targetWordId, sourceWordLexemeId);
 			}
 		}
 	}
 
-	private void connectLexemeToAnotherWord(Long targetWordId, Long sourceWordLexemeId, String datasetCode) {
+	private void connectLexemeToAnotherWord(Long targetWordId, Long sourceWordLexemeId) {
 
+		String datasetCode = lookupDbService.getLexemeDatasetCode(sourceWordLexemeId);
 		Integer currentTargetWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(targetWordId, datasetCode);
 		int level1 = currentTargetWordLexemesMaxLevel1 + 1;
 		compositionDbService.updateLexemeWordIdAndLevels(sourceWordLexemeId, targetWordId, level1, DEFAULT_LEXEME_LEVEL);

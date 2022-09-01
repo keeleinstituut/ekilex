@@ -40,6 +40,7 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermCreateWordAndMeaningDetails;
+import eki.ekilex.data.TermUpdateWordDetails;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
@@ -238,6 +239,39 @@ public class LookupService extends AbstractWordSearchService {
 		return details;
 	}
 
+	@Transactional
+	public TermUpdateWordDetails getDetailsForWordUpdate(DatasetPermission userRole, Long lexemeId, String wordValuePrese, String language) {
+
+		Long meaningId = lookupDbService.getLexemeMeaningId(lexemeId);
+		Long wordId = lookupDbService.getLexemeWordId(lexemeId);
+		String originalWordValuePrese = lookupDbService.getWordValuePrese(wordId);
+		String originalWordLang = lookupDbService.getWordLang(wordId);
+		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
+		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+		String datasetCode = lookupDbService.getMeaningFirstDatasetCode(meaningId);
+		String meaningdatasetname = datasetNameMap.get(datasetCode);
+		List<OrderedClassifier> meaningDomains = commonDataDbService.getMeaningDomains(meaningId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<Definition> meaningDefinitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		permCalculator.filterVisibility(userRole, meaningDefinitions);
+
+		List<WordDescript> wordCandidates = getWordCandidates(userRole, wordValue, language, datasetCode);
+
+		TermUpdateWordDetails details = new TermUpdateWordDetails();
+		details.setLexemeId(lexemeId);
+		details.setMeaningId(meaningId);
+		details.setDatasetCode(datasetCode);
+		details.setDatasetName(meaningdatasetname);
+		details.setMeaningDomains(meaningDomains);
+		details.setMeaningDefinitions(meaningDefinitions);
+		details.setOriginalWordValuePrese(originalWordValuePrese);
+		details.setOriginalWordLang(originalWordLang);
+		details.setWordValuePrese(wordValuePrese);
+		details.setWordLang(language);
+		details.setWordCandidates(wordCandidates);
+
+		return details;
+	}
+
 	private List<WordDescript> getWordCandidates(DatasetPermission userRole, String wordValue, String language, String datasetCode) {
 
 		List<WordDescript> wordCandidates = new ArrayList<>();
@@ -401,6 +435,11 @@ public class LookupService extends AbstractWordSearchService {
 	@Transactional
 	public Long getMeaningId(Long lexemeId) {
 		return lookupDbService.getLexemeMeaningId(lexemeId);
+	}
+
+	@Transactional
+	public Long getWordId(Long lexemeId) {
+		return lookupDbService.getLexemeWordId(lexemeId);
 	}
 
 	@Transactional

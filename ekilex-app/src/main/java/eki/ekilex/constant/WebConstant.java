@@ -174,6 +174,8 @@ public interface WebConstant {
 
 	String ERROR_PAGE = "error";
 
+	String SELECT_URI = "/select";
+
 	String LEX_CREATE_WORD_URI = "/lex_create_word";
 
 	String TERM_CREATE_WORD_URI = "/termcreateword";
@@ -183,6 +185,10 @@ public interface WebConstant {
 	String TERM_CREATE_WORD_AND_MEANING_URI = "/termcreatewordandmeaning";
 
 	String TERM_CREATE_WORD_AND_MEANING_PAGE = "termcreatewordandmeaning";
+
+	String TERM_UPDATE_WORD_URI = "/termupdateword";
+
+	String TERM_UPDATE_WORD_PAGE = "termupdateword";
 
 	String LIM_TERM_CREATE_WORD_URI = "/lim_term_create_word";
 

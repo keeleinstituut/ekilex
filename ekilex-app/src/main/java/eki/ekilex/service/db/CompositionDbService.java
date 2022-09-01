@@ -112,6 +112,10 @@ import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 @Component
 public class CompositionDbService extends AbstractDataDbService implements GlobalConstant {
 
+	public WordRecord getWord(Long wordId) {
+		return create.selectFrom(WORD).where(WORD.ID.eq(wordId)).fetchOne();
+	}
+
 	public LexemeRecord getLexeme(Long lexemeId) {
 		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 	}

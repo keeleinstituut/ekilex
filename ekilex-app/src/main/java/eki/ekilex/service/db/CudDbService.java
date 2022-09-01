@@ -341,6 +341,15 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateWordValueAndLang(Long wordId, String value, String valuePrese, String lang) {
+		create.update(WORD)
+				.set(WORD.VALUE, value)
+				.set(WORD.VALUE_PRESE, valuePrese)
+				.set(WORD.LANG, lang)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateAsWordValue(Long wordId, String valueAsWord) {
 		create.update(WORD).set(WORD.VALUE_AS_WORD, valueAsWord).where(WORD.ID.eq(wordId)).execute();
 	}
@@ -1084,6 +1093,19 @@ public class CudDbService extends AbstractDataDbService {
 				.where(WORD.ID.eq(wordId))
 				.execute();
 		adjustWordHomonymNrs(word);
+	}
+
+	public void deleteFloatingWord(Long wordId) {
+
+		create
+				.delete(WORD)
+				.where(
+						WORD.ID.eq(wordId)
+								.andNotExists(DSL
+										.select(LEXEME.ID)
+										.from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID))))
+				.execute();
 	}
 
 	public void deleteWordWordType(Long wordWordTypeId) {

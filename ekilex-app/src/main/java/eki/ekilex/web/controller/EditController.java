@@ -293,7 +293,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateMeaningRelationWeight(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case "word_value":
-			cudService.updateWordValueWithDuplication(itemId, itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.updateWordValue(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
 			cudService.updateWordGenderWithDuplication(itemId, itemValue, userId, userRole, isManualEventOnUpdateEnabled);

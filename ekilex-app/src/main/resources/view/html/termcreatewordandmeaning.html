@@ -69,9 +69,7 @@
       <div class="h-100 d-flex flex-column col-9 col-3">
         <div class="card shadow h-100 overflow-auto" th:if="${not #lists.isEmpty(details.wordCandidates)}">
           <div class="card-body h-100">
-            <form th:action="@{/termcreatewordandmeaning}" id="selectWordForm" method="post">
-              <input type="hidden" name="wordValue" th:value="${details.wordValue}">
-              <input type="hidden" name="language" th:value="${details.language}">
+            <form th:action="@{/termcreatewordandmeaning/select}" method="post">
               <input type="hidden" name="datasetCode" th:value="${details.datasetCode}">
               <div th:if="${#lists.size(details.wordCandidates) == 1}">
                 <span th:text="#{termcreatemeaning.one.candidate.primary.dataset}" th:if="${details.wordCandidates.get(0).primaryDatasetLexemeExists}"></span>

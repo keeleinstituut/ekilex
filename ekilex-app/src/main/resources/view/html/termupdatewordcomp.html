@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head></head>
+<body>
+  <div class="row" th:fragment="word_candidate_lexeme_details">
+    <hr th:unless="${lexemeIter.first}">
+    <div class="col-2">
+      <span class="lbl" th:text="#{term.definitions}">Seletused</span>
+    </div>
+    <div class="col-6">
+      <th:block th:each="definition : ${lexeme.meaning.definitions}">
+        <div style="display: list-item; position: absolute"></div>
+        <div>
+          <span th:utext="${definition.value}"></span>
+        </div>
+      </th:block>
+    </div>
+    <div class="col-2">
+      <span th:text="${lexeme.datasetName}"></span>
+    </div>
+    <div class="col-2">
+      <a th:href="@{'/termsearch?id=' + ${lexeme.meaningId}}" target="_blank" th:text="#{termcreatemeaning.display.meaning}">Vaata tervet kirjet</a>
+    </div>
+  </div>>
+</body>
+</html>

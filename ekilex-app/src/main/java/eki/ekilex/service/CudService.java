@@ -103,20 +103,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
 	}
 
-	@Transactional
-	public void updateWordValueWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String datasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
-		if (isWordCrudGrant) {
-			updateWordValue(wordId, valuePrese, isManualEventOnUpdateEnabled);
-		} else {
-			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
-			updateWordValue(duplicateWordId, valuePrese, isManualEventOnUpdateEnabled);
-		}
-	}
-
 	private Long duplicateWordData(Long wordId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		SimpleWord simpleWord = compositionDbService.getSimpleWord(wordId);

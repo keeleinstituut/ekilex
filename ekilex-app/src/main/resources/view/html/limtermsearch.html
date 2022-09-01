@@ -112,7 +112,6 @@
                 <div th:replace="termdialog :: edit_lexeme_value_state_dlg"></div>
                 <div th:replace="termdialog :: edit_word_value_dlg"></div>
                 <div th:replace="termdialog :: edit_word_gender_dlg"></div>
-                <div th:replace="termdialog :: edit_word_lang_dlg"></div>
                 <div class="card-body pb-4" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
                   <div th:replace="termcomp :: lexeme_header"></div>
                   <div>
@@ -122,7 +121,6 @@
                     <div th:replace="termcomp :: lexeme_complexity"></div>
                     <div th:replace="termcomp :: lexeme_value_state"></div>
                     <div th:replace="termcomp :: word_gender"></div>
-                    <div th:replace="termcomp :: word_lang"></div>
                     <div th:replace="termcomp :: word_type"></div>
                     <div th:replace="termcomp :: lexeme_grammar"></div>
                     <div th:replace="termcomp :: lexeme_pos"></div>

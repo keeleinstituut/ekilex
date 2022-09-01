@@ -1073,7 +1073,7 @@
                 th:title="#{common.edit}"
                 data-toggle="modal"
                 th:data-target="${'#editWordValueDlg_' + lexeme.wordId}"
-                sec:authorize="${#vars.lexeme.word.subGrant}">
+                sec:authorize="${#vars.lexeme.crudGrant}">
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
       </div>
@@ -1700,20 +1700,6 @@
               data-placement="right"
               sec:authorize="${#vars.lexeme.word.subGrant}">
         <i class="fa fa-remove" aria-hidden="true"></i>
-      </button>
-    </div>
-  </div>
-  <div class="row mr-0 hidden-buttons no-gutters" th:if="${lexeme.word.lang != null}" th:fragment="word_lang">
-    <div class="col pr-0 col-w13rem">
-      <span class="lbl" th:text="#{term.word.language}">Sõna keel</span>
-    </div>
-    <div class="col pl-0">
-      <span th:text="${viewUtil.getClassifierValue(lexeme.word.lang, allLanguages)}"></span>
-      <button type="button" class="btn badge badge-primary" th:title="#{common.edit}"
-              data-toggle="modal"
-              th:data-target="${'#editWordLangDlg_' + lexeme.lexemeId + '_' + lexeme.wordId}"
-              sec:authorize="${#vars.lexeme.word.subGrant}">
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
     </div>
   </div>
