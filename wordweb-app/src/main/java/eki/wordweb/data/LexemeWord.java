@@ -57,8 +57,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	private Long lexemeOrderBy;
 
-	private Long valueStateOrderBy;
-
 	private List<String> adviceNotes;
 
 	private List<TypeFreeform> lexemeNotes;
@@ -299,14 +297,6 @@ public class LexemeWord extends WordTypeData implements LexemeLevel, ComplexityT
 
 	public void setLexemeOrderBy(Long lexemeOrderBy) {
 		this.lexemeOrderBy = lexemeOrderBy;
-	}
-
-	public Long getValueStateOrderBy() {
-		return valueStateOrderBy;
-	}
-
-	public void setValueStateOrderBy(Long valueStateOrderBy) {
-		this.valueStateOrderBy = valueStateOrderBy;
 	}
 
 	public List<String> getAdviceNotes() {

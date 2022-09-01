@@ -860,7 +860,6 @@ select l.id lexeme_id,
        l.complexity,
        ds.order_by dataset_order_by,
        l.order_by lexeme_order_by,
-       l_vs.order_by value_state_order_by,
        l_lc.lang_complexities,
        l_reg.register_codes,
        l_pos.pos_codes,
@@ -874,7 +873,6 @@ select l.id lexeme_id,
        usg.usages
 from lexeme l
   inner join dataset ds on ds.code = l.dataset_code
-  left outer join value_state l_vs on l_vs.code = l.value_state_code
   left outer join (select l_reg.lexeme_id, array_agg(l_reg.register_code order by l_reg.order_by) register_codes from lexeme_register l_reg group by l_reg.lexeme_id) l_reg on l_reg.lexeme_id = l.id
   left outer join (select l_pos.lexeme_id, array_agg(l_pos.pos_code order by l_pos.order_by) pos_codes from lexeme_pos l_pos group by l_pos.lexeme_id) l_pos on l_pos.lexeme_id = l.id
   left outer join (select l_rgn.lexeme_id, array_agg(l_rgn.region_code order by l_rgn.order_by) region_codes from lexeme_region l_rgn group by l_rgn.lexeme_id) l_rgn on l_rgn.lexeme_id = l.id

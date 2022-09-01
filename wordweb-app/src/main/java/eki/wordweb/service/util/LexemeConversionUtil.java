@@ -49,7 +49,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		} else if (DatasetType.TERM.equals(datasetType)) {
 			Collections.sort(lexemeWords, Comparator
 					.comparing(LexemeWord::getDatasetOrderBy)
-					.thenComparing(LexemeWord::getValueStateOrderBy, Comparator.nullsLast(Comparator.naturalOrder()))
 					.thenComparing(LexemeWord::getLexemeOrderBy));
 		}
 	}

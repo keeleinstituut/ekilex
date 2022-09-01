@@ -279,7 +279,6 @@ dblink(
 	complexity varchar(100),
 	dataset_order_by bigint,
 	lexeme_order_by bigint,
-	value_state_order_by bigint,
 	lang_complexities type_lang_complexity array,
 	register_codes varchar(100) array,
 	pos_codes varchar(100) array,

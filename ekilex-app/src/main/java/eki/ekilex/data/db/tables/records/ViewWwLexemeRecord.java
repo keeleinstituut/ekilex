@@ -21,7 +21,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 1260286058;
+    private static final long serialVersionUID = -1070533725;
 
     /**
      * Setter for <code>public.view_ww_lexeme.lexeme_id</code>.
@@ -234,171 +234,157 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     }
 
     /**
-     * Setter for <code>public.view_ww_lexeme.value_state_order_by</code>.
-     */
-    public void setValueStateOrderBy(Long value) {
-        set(15, value);
-    }
-
-    /**
-     * Getter for <code>public.view_ww_lexeme.value_state_order_by</code>.
-     */
-    public Long getValueStateOrderBy() {
-        return (Long) get(15);
-    }
-
-    /**
      * Setter for <code>public.view_ww_lexeme.lang_complexities</code>.
      */
     public void setLangComplexities(TypeLangComplexityRecord[] value) {
-        set(16, value);
+        set(15, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.lang_complexities</code>.
      */
     public TypeLangComplexityRecord[] getLangComplexities() {
-        return (TypeLangComplexityRecord[]) get(16);
+        return (TypeLangComplexityRecord[]) get(15);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.register_codes</code>.
      */
     public void setRegisterCodes(String[] value) {
-        set(17, value);
+        set(16, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.register_codes</code>.
      */
     public String[] getRegisterCodes() {
-        return (String[]) get(17);
+        return (String[]) get(16);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.pos_codes</code>.
      */
     public void setPosCodes(String[] value) {
-        set(18, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.pos_codes</code>.
      */
     public String[] getPosCodes() {
-        return (String[]) get(18);
+        return (String[]) get(17);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.region_codes</code>.
      */
     public void setRegionCodes(String[] value) {
-        set(19, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.region_codes</code>.
      */
     public String[] getRegionCodes() {
-        return (String[]) get(19);
+        return (String[]) get(18);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.deriv_codes</code>.
      */
     public void setDerivCodes(String[] value) {
-        set(20, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.deriv_codes</code>.
      */
     public String[] getDerivCodes() {
-        return (String[]) get(20);
+        return (String[]) get(19);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.meaning_words</code>.
      */
     public void setMeaningWords(TypeMeaningWordRecord[] value) {
-        set(21, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.meaning_words</code>.
      */
     public TypeMeaningWordRecord[] getMeaningWords() {
-        return (TypeMeaningWordRecord[]) get(21);
+        return (TypeMeaningWordRecord[]) get(20);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.advice_notes</code>.
      */
     public void setAdviceNotes(String[] value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.advice_notes</code>.
      */
     public String[] getAdviceNotes() {
-        return (String[]) get(22);
+        return (String[]) get(21);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.notes</code>.
      */
     public void setNotes(TypeFreeformRecord[] value) {
-        set(23, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.notes</code>.
      */
     public TypeFreeformRecord[] getNotes() {
-        return (TypeFreeformRecord[]) get(23);
+        return (TypeFreeformRecord[]) get(22);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.grammars</code>.
      */
     public void setGrammars(TypeFreeformRecord[] value) {
-        set(24, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.grammars</code>.
      */
     public TypeFreeformRecord[] getGrammars() {
-        return (TypeFreeformRecord[]) get(24);
+        return (TypeFreeformRecord[]) get(23);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.governments</code>.
      */
     public void setGovernments(TypeFreeformRecord[] value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.governments</code>.
      */
     public TypeFreeformRecord[] getGovernments() {
-        return (TypeFreeformRecord[]) get(25);
+        return (TypeFreeformRecord[]) get(24);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.usages</code>.
      */
     public void setUsages(TypeUsageRecord[] value) {
-        set(26, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.usages</code>.
      */
     public TypeUsageRecord[] getUsages() {
-        return (TypeUsageRecord[]) get(26);
+        return (TypeUsageRecord[]) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -415,7 +401,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     /**
      * Create a detached, initialised ViewWwLexemeRecord
      */
-    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, Long valueStateOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages) {
+    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages) {
         super(ViewWwLexeme.VIEW_WW_LEXEME);
 
         set(0, lexemeId);
@@ -433,17 +419,16 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
         set(12, complexity);
         set(13, datasetOrderBy);
         set(14, lexemeOrderBy);
-        set(15, valueStateOrderBy);
-        set(16, langComplexities);
-        set(17, registerCodes);
-        set(18, posCodes);
-        set(19, regionCodes);
-        set(20, derivCodes);
-        set(21, meaningWords);
-        set(22, adviceNotes);
-        set(23, notes);
-        set(24, grammars);
-        set(25, governments);
-        set(26, usages);
+        set(15, langComplexities);
+        set(16, registerCodes);
+        set(17, posCodes);
+        set(18, regionCodes);
+        set(19, derivCodes);
+        set(20, meaningWords);
+        set(21, adviceNotes);
+        set(22, notes);
+        set(23, grammars);
+        set(24, governments);
+        set(25, usages);
     }
 }

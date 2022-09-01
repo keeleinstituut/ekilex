@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -1848964144;
+    private static final long serialVersionUID = -400072981;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -124,11 +124,6 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.lexeme_order_by</code>.
      */
     public final TableField<MviewWwLexemeRecord, Long> LEXEME_ORDER_BY = createField(DSL.name("lexeme_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme.value_state_order_by</code>.
-     */
-    public final TableField<MviewWwLexemeRecord, Long> VALUE_STATE_ORDER_BY = createField(DSL.name("value_state_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.lang_complexities</code>.
