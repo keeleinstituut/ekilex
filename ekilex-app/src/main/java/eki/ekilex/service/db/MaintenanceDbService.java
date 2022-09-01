@@ -12,7 +12,6 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
-import static eki.ekilex.data.db.Tables.WORD_GUID;
 
 import java.util.List;
 
@@ -24,7 +23,6 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.GlobalConstant;
 import eki.ekilex.data.SourceTargetIdTuple;
 import eki.ekilex.data.db.Routines;
 import eki.ekilex.data.db.tables.DataRequest;
@@ -33,9 +31,7 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.WordRecord;
 
 @Component
-public class MaintenanceDbService extends AbstractDataDbService implements GlobalConstant {
-
-	private static final String DATASET_CODE_MAB = "mab";
+public class MaintenanceDbService extends AbstractDataDbService {
 
 	@Autowired
 	private DSLContext create;
@@ -192,11 +188,6 @@ public class MaintenanceDbService extends AbstractDataDbService implements Globa
 						.select(LEXEME.ID)
 						.from(LEXEME)
 						.where(LEXEME.WORD_ID.eq(WORD.ID)))
-				.andNotExists(DSL
-						.select(WORD_GUID.ID)
-						.from(WORD_GUID)
-						.where(WORD_GUID.WORD_ID.eq(WORD.ID)
-								.and(WORD_GUID.DATASET_CODE.eq(DATASET_CODE_MAB))))
 				.andExists(DSL.select(DSL.field(IGNORE_QUERY_LOG)))
 				.execute();
 	}
