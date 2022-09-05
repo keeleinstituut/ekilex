@@ -28,6 +28,7 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.db.Routines;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Freeform;
@@ -42,6 +43,7 @@ import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelMeaningRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
+import eki.ekilex.service.db.util.JooqBugCompensator;
 import eki.ekilex.service.db.util.SearchFilterHelper;
 
 @Component
@@ -49,6 +51,9 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
+
+	@Autowired
+	private JooqBugCompensator jooqBugCompensator;
 
 	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
 
@@ -85,7 +90,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.asField("usages");
 
 		Field<String[]> definitions = DSL
-				.select(DSL.arrayAgg(d.VALUE_PRESE).orderBy(d.ORDER_BY))
+				.select(DSL.arrayAgg(Routines.encodeText(d.VALUE_PRESE)).orderBy(d.ORDER_BY))
 				.from(d)
 				.where(d.MEANING_ID.eq(l2.MEANING_ID).and(d.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
 				.groupBy(l2.MEANING_ID)
@@ -212,7 +217,11 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("word_lexemes_max_frequency"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
-				.fetchInto(SynRelation.class);
+				.fetch(record -> {
+					SynRelation pojo = record.into(SynRelation.class);
+					jooqBugCompensator.decodeWordMeaning(pojo.getWordMeanings());
+					return pojo;
+				});
 	}
 
 	public List<WordLexeme> getWordPrimarySynonymLexemes(

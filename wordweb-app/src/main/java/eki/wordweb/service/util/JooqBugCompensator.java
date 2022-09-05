@@ -6,14 +6,16 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import eki.common.service.util.AbstractJooqBugCompensator;
 import eki.wordweb.data.WordTypeData;
 import eki.wordweb.data.type.TypeCollocMember;
 import eki.wordweb.data.type.TypeDefinition;
 import eki.wordweb.data.type.TypeFreeform;
+import eki.wordweb.data.type.TypeSourceLink;
 import eki.wordweb.data.type.TypeUsage;
 
 @Component
-public class JooqBugCompensator {
+public class JooqBugCompensator extends AbstractJooqBugCompensator {
 
 	public void trimWordTypeData(List<? extends WordTypeData> list) {
 
@@ -94,6 +96,49 @@ public class JooqBugCompensator {
 			value = freeform.getValue();
 			value = StringUtils.trim(value);
 			freeform.setValue(value);
+		}
+	}
+
+	public void decodeDefinitions(List<TypeDefinition> definitions) {
+
+		if (CollectionUtils.isEmpty(definitions)) {
+			return;
+		}
+
+		for (TypeDefinition definition : definitions) {
+			List<String> notes = definition.getNotes();
+			notes = decode(notes);
+			definition.setNotes(notes);
+		}
+	}
+
+	public void decodeUsages(List<TypeUsage> usages) {
+
+		if (CollectionUtils.isEmpty(usages)) {
+			return;
+		}
+
+		for (TypeUsage usage : usages) {
+			List<String> usageTranslations = usage.getUsageTranslations();
+			usageTranslations = decode(usageTranslations);
+			usage.setUsageTranslations(usageTranslations);
+
+			List<String> usageDefinitions = usage.getUsageDefinitions();
+			usageDefinitions = decode(usageDefinitions);
+			usage.setUsageDefinitions(usageDefinitions);
+		}
+	}
+
+	public void decodeSourceLinks(List<TypeSourceLink> sourceLinks) {
+
+		if (CollectionUtils.isEmpty(sourceLinks)) {
+			return;
+		}
+
+		for (TypeSourceLink sourceLink : sourceLinks) {
+			List<String> sourceProps = sourceLink.getSourceProps();
+			sourceProps = decode(sourceProps);
+			sourceLink.setSourceProps(sourceProps);
 		}
 	}
 }

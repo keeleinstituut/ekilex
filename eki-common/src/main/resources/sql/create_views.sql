@@ -758,7 +758,7 @@ from (select m.id,
                                 d.lang,
                                 d.complexity,
                                 d.order_by,
-                                (select array_agg(ff.value_prese order by ff.order_by)
+                                (select array_agg(encode_text(ff.value_prese) order by ff.order_by)
                                  from definition_freeform dff,
                                       freeform ff
                                  where dff.definition_id = d.id
@@ -1005,14 +1005,14 @@ from lexeme l
                                         on utp.parent_id = u.id
                                        and utp.type = 'USAGE_TYPE'
                            left outer join (select ut.parent_id usage_id,
-                                                   array_agg(ut.value_prese order by ut.order_by) usage_translations
+                                                   array_agg(encode_text(ut.value_prese) order by ut.order_by) usage_translations
                                             from freeform ut
                                             where ut.type = 'USAGE_TRANSLATION'
                                             -- TODO this hack is based on ralistic data and fulfils necessary prerequisite for data filtering at ww
                                             and   ut.lang = 'rus'
                                             group by ut.parent_id) ut on ut.usage_id = u.id
                            left outer join (select ud.parent_id usage_id,
-                                                   array_agg(ud.value_prese order by ud.order_by) usage_definitions
+                                                   array_agg(encode_text(ud.value_prese) order by ud.order_by) usage_definitions
                                             from freeform ud
                                             where ud.type = 'USAGE_DEFINITION'
                                             group by ud.parent_id) ud on ud.usage_id = u.id) u
@@ -1660,7 +1660,7 @@ select we.word_id,
 from word_etymology we,
      word_etymology_source_link wesl,
      (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
+             array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
       from source s,
            source_freeform sff,
            freeform ff
@@ -1702,7 +1702,7 @@ from lexeme l,
      dataset ds,
      lexeme_source_link lsl,
      (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
+             array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
       from source s,
            source_freeform sff,
            freeform ff
@@ -1741,7 +1741,7 @@ from lexeme l,
      lexeme_freeform lff,
      freeform_source_link ffsl,
      (select s.id source_id,
-             array_agg(ff.value_prese order by ff.order_by) source_props
+             array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
       from source s,
            source_freeform sff,
            freeform ff
@@ -1790,7 +1790,7 @@ from (select mff.meaning_id,
            meaning_freeform mff,
            freeform_source_link ffsl,
            (select s.id source_id,
-                   array_agg(ff.value_prese order by ff.order_by) source_props
+                   array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
             from source s,
                  source_freeform sff,
                  freeform ff
@@ -1844,7 +1844,7 @@ from (select d.meaning_id,
            definition d,
            definition_source_link dsl,
            (select s.id source_id,
-                   array_agg(ff.value_prese order by ff.order_by) source_props
+                   array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
             from source s,
                  source_freeform sff,
                  freeform ff

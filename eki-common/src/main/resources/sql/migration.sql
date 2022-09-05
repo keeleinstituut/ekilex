@@ -19,3 +19,16 @@ insert into meaning_rel_mapping (code1, code2) values ('sarnane', 'sarnane');
 
 -- igaöise homonüümide ühendaja kolimine baasi funktsioonist java teenusesse
 drop function if exists merge_homonyms_to_eki(char(3) array);
+
+-- postgres komplekstüübi siseses tekstimassiivis jutumärkide kodeerimine, et vältida teksti katkemist
+create or replace function encode_text(initial_text text)
+  returns text
+  language plpgsql
+  immutable
+as $$
+declare
+  encoded_text text;
+begin
+  encoded_text = replace(initial_text, '"', 'U+0022');
+  return encoded_text;
+end $$;

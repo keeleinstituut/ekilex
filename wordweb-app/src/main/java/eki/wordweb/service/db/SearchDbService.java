@@ -73,6 +73,8 @@ import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
+import eki.wordweb.data.type.TypeDefinition;
+import eki.wordweb.data.type.TypeMeaningWord;
 import eki.wordweb.service.util.JooqBugCompensator;
 
 @Component
@@ -238,8 +240,12 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						ww.field("homonym_nr"))
 				.fetch(record -> {
 					Word pojo = record.into(Word.class);
-					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
-					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
+					List<TypeMeaningWord> meaningWords = pojo.getMeaningWords();
+					List<TypeDefinition> definitions = pojo.getDefinitions();
+					jooqBugCompensator.trimWordTypeData(meaningWords);
+					jooqBugCompensator.trimDefinitions(definitions);
+					jooqBugCompensator.decodeDefinitions(definitions);
+					jooqBugCompensator.decodeSourceLinks(pojo.getWordEtymSourceLinks());
 					return pojo;
 				});
 	}
@@ -295,6 +301,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					jooqBugCompensator.trimFreeforms(pojo.getGovernments());
 					jooqBugCompensator.trimUsages(pojo.getUsages());
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
+					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
+					jooqBugCompensator.decodeUsages(pojo.getUsages());
+					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeSourceLinks());
+					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeFreeformSourceLinks());
 					return pojo;
 				});
 	}
@@ -363,6 +373,10 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					jooqBugCompensator.trimFreeforms(pojo.getGovernments());
 					jooqBugCompensator.trimUsages(pojo.getUsages());
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
+					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
+					jooqBugCompensator.decodeUsages(pojo.getUsages());
+					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeSourceLinks());
+					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeFreeformSourceLinks());
 					return pojo;
 				});
 	}
@@ -491,6 +505,8 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					Word pojo = record.into(Word.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
 					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
+					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
+					jooqBugCompensator.decodeSourceLinks(pojo.getWordEtymSourceLinks());
 					return pojo;
 				});
 	}
@@ -602,6 +618,9 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
 					jooqBugCompensator.trimFreeforms(pojo.getNotes());
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedMeanings());
+					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
+					jooqBugCompensator.decodeSourceLinks(pojo.getDefinitionSourceLinks());
+					jooqBugCompensator.decodeSourceLinks(pojo.getFreeformSourceLinks());
 					return pojo;
 				});
 	}

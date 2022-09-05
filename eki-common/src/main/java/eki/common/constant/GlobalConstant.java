@@ -95,4 +95,7 @@ public interface GlobalConstant {
 	String ENCODE_SYM_PERCENT = "$25";
 
 	String ENCODE_SYM_BACKSLASH = "$5C";
+
+	String ENCODE_SYM_QUOTATION = "U+0022";
+
 }

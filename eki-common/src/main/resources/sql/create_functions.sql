@@ -51,3 +51,15 @@ begin
         end loop;
     end loop;
 end $$;
+
+create or replace function encode_text(initial_text text)
+  returns text
+  language plpgsql
+  immutable
+as $$
+declare
+  encoded_text text;
+begin
+  encoded_text = replace(initial_text, '"', 'U+0022');
+  return encoded_text;
+end $$;

@@ -27,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexemeFreeformSourceLink extends TableImpl<ViewWwLexemeFreeformSourceLinkRecord> {
 
-    private static final long serialVersionUID = -768259229;
+    private static final long serialVersionUID = 1624462342;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme_freeform_source_link</code>
@@ -78,7 +78,7 @@ public class ViewWwLexemeFreeformSourceLink extends TableImpl<ViewWwLexemeFreefo
     }
 
     private ViewWwLexemeFreeformSourceLink(Name alias, Table<ViewWwLexemeFreeformSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_lexeme_freeform_source_link\" as  SELECT l.id AS lexeme_id,\n    array_agg(ROW('FREEFORM'::character varying(100), ffsl.freeform_id, ffsl.id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by, s.source_id, s.source_props)::type_source_link ORDER BY lff.id, ffsl.order_by) AS source_links\n   FROM lexeme l,\n    dataset ds,\n    lexeme_freeform lff,\n    freeform_source_link ffsl,\n    ( SELECT s_1.id AS source_id,\n            array_agg(ff.value_prese ORDER BY ff.order_by) AS source_props\n           FROM source s_1,\n            source_freeform sff,\n            freeform ff\n          WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n          GROUP BY s_1.id) s\n  WHERE ((l.is_public = true) AND (lff.lexeme_id = l.id) AND (lff.freeform_id = ffsl.freeform_id) AND (ffsl.source_id = s.source_id) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))\n  GROUP BY l.id\n  ORDER BY l.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_lexeme_freeform_source_link\" as  SELECT l.id AS lexeme_id,\n    array_agg(ROW('FREEFORM'::character varying(100), ffsl.freeform_id, ffsl.id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by, s.source_id, s.source_props)::type_source_link ORDER BY lff.id, ffsl.order_by) AS source_links\n   FROM lexeme l,\n    dataset ds,\n    lexeme_freeform lff,\n    freeform_source_link ffsl,\n    ( SELECT s_1.id AS source_id,\n            array_agg(encode_text(ff.value_prese) ORDER BY ff.order_by) AS source_props\n           FROM source s_1,\n            source_freeform sff,\n            freeform ff\n          WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n          GROUP BY s_1.id) s\n  WHERE ((l.is_public = true) AND (lff.lexeme_id = l.id) AND (lff.freeform_id = ffsl.freeform_id) AND (ffsl.source_id = s.source_id) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))\n  GROUP BY l.id\n  ORDER BY l.id;"));
     }
 
     public <O extends Record> ViewWwLexemeFreeformSourceLink(Table<O> child, ForeignKey<O, ViewWwLexemeFreeformSourceLinkRecord> key) {
