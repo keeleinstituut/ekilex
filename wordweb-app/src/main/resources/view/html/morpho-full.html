@@ -1769,6 +1769,36 @@
                       <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'plur,loct')"></th:block>
                     </td>
                   </tr>
+                  <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'sing,gen2')}">
+                      <th:block th:if="${formIter.index==0}">
+                        <tr>
+                          <td>
+                            Родительный 2
+                            <br />
+                            <span class="highlight">кого? чего? / kelle? mille?</span>
+                          </td>
+                          <td>
+                            <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,gen2')"></th:block>
+                          </td>
+                          <td>&nbsp;</td>
+                        </tr>
+                      </th:block>
+                  </th:block>
+                  <th:block th:each="form, formIter : ${viewUtil.getForms(paradigm, 'sing,loc2')}">
+                    <th:block th:if="${formIter.index==0}">
+                      <tr>
+                        <td>
+                          Предложный 2
+                          <br />
+                          <span class="highlight">где? / kus?</span>
+                        </td>
+                        <td>
+                          <th:block th:replace=" :: morpho-noun-form-row(${paradigm}, 'sing,loc2')"></th:block>
+                        </td>
+                        <td>&nbsp;</td>
+                      </tr>
+                    </th:block>
+                  </th:block>
                 </table>
               </div>
             </div>
