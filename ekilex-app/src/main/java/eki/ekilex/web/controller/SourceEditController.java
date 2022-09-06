@@ -152,8 +152,9 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	public String createSource(@RequestBody SourceRequest source) throws Exception {
 
 		String sourceName = source.getName();
+		String shortName = source.getShortName();
 		SourceType sourceType = source.getType();
-		logger.debug("Creating new source, source name: {}", sourceName);
+		logger.debug("Creating new source, short name: {} name: {}", shortName, sourceName);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
 		Long sourceId = sourceService.createSource(sourceType, sourceProperties, MANUAL_EVENT_ON_UPDATE_DISABLED);
@@ -165,11 +166,12 @@ public class SourceEditController extends AbstractMutableDataPageController {
 	public String createSourceAndSourceLink(@RequestBody SourceRequest source, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
 		String sourceName = source.getName();
+		String shortName = source.getShortName();
 		SourceType sourceType = source.getType();
 		Long sourceLinkOwnerId = source.getId();
 		String sourceLinkOwnerCode = source.getOpCode();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		logger.debug("Creating new source and source link, source name: {}", sourceName);
+		logger.debug("Creating new source and source link, short name: {} name: {}", shortName, sourceName);
 
 		List<SourceProperty> sourceProperties = processSourceProperties(source);
 		sourceLinkService.createSourceAndSourceLink(sourceType, sourceProperties, sourceLinkOwnerId, sourceLinkOwnerCode, isManualEventOnUpdateEnabled);
@@ -250,6 +252,7 @@ public class SourceEditController extends AbstractMutableDataPageController {
 
 	private List<SourceProperty> processSourceProperties(SourceRequest source) {
 
+		String sourceShortName = source.getShortName();
 		String sourceName = source.getName();
 		List<SourceProperty> sourceProperties = source.getProperties();
 
@@ -258,6 +261,12 @@ public class SourceEditController extends AbstractMutableDataPageController {
 		name.setType(FreeformType.SOURCE_NAME);
 		name.setValueText(sourceName);
 		sourceProperties.add(0, name);
+
+		SourceProperty shortName = new SourceProperty();
+		sourceShortName = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(sourceShortName);
+		shortName.setType(FreeformType.SOURCE_NAME);
+		shortName.setValueText(sourceShortName);
+		sourceProperties.add(0, shortName);
 
 		sourceProperties.forEach(property -> {
 			String valueText = property.getValueText();
