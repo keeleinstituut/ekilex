@@ -461,7 +461,8 @@ public class LookupDbService extends AbstractDataDbService {
 		return create
 				.select(
 						MEANING.ID.as("meaning_id"),
-						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
+						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"),
+						DSL.arrayAggDistinct(LEXEME.DATASET_CODE).as("lexeme_dataset_codes"))
 				.from(MEANING, LEXEME, mid)
 				.where(
 						MEANING.ID.eq(mid.field("meaning_id", Long.class))

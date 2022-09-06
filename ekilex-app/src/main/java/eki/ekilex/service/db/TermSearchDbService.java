@@ -432,7 +432,8 @@ public class TermSearchDbService extends AbstractDataDbService {
 						m.MANUAL_EVENT_ON,
 						mlacteof.as("last_activity_event_on"),
 						mlappeof.as("last_approve_event_on"),
-						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
+						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"),
+						DSL.arrayAggDistinct(LEXEME.DATASET_CODE).as("lexeme_dataset_codes"))
 				.from(m, LEXEME)
 				.where(
 						m.ID.eq(meaningId)

@@ -1,10 +1,14 @@
 package eki.ekilex.web.util;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.Meaning;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionGrantService;
 import eki.ekilex.service.UserContext;
@@ -62,5 +66,26 @@ public class PermDataUtil {
 			return false;
 		}
 		return lookupService.isValidWordStressAndMarkup(sourceWordId, targetWordId);
+	}
+
+	public boolean isMeaningValidForJoin(Meaning sourceMeaning, Meaning targetMeaning) {
+
+		Long sourceMeaningId = sourceMeaning.getMeaningId();
+		Long targetMeaningId = targetMeaning.getMeaningId();
+		List<String> sourceMeaningDatasetCodes = sourceMeaning.getLexemeDatasetCodes();
+		List<String> targetMeaningDatasetCodes = targetMeaning.getLexemeDatasetCodes();
+
+		if (sourceMeaningId.equals(targetMeaningId)) {
+			return false;
+		}
+		if (sourceMeaningDatasetCodes.size() > 1 || targetMeaningDatasetCodes.size() > 1) {
+			return false;
+		}
+
+		String sourceMeaningDatasetCode = sourceMeaningDatasetCodes.get(0);
+		String targetMeaningDatasetCode = targetMeaningDatasetCodes.get(0);
+
+		boolean isSameDatasetMeanings = StringUtils.equals(sourceMeaningDatasetCode, targetMeaningDatasetCode);
+		return isSameDatasetMeanings;
 	}
 }
