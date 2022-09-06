@@ -19,7 +19,7 @@
       <span th:text="${lexeme.datasetName}"></span>
     </div>
     <div class="col-2">
-      <a th:href="@{'/termsearch?id=' + ${lexeme.meaningId}}" th:text="#{termcreatemeaning.display.meaning}">Vaata tervet kirjet</a>
+      <a th:href="@{'/termsearch?id=' + ${lexeme.meaningId}}" target="_blank" th:text="#{termcreatemeaning.display.meaning}">Vaata tervet kirjet</a>
     </div>
   </div>>
 </body>
