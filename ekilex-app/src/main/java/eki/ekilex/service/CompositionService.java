@@ -55,7 +55,7 @@ public class CompositionService extends AbstractService implements GlobalConstan
 	@Autowired
 	private TextDecorationService textDecorationService;
 
-		@Transactional
+	@Transactional
 	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
 		return Optional.of(duplicateMeaningWithLexemes(meaningId, isManualEventOnUpdateEnabled));
 	}

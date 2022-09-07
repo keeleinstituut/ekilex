@@ -2,7 +2,7 @@ $.fn.duplicateLimTermMeaningPlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
-			const url = `${applicationUrl}duplicatemeaning/${obj.data('meaning-id')}`;
+			const url = `${applicationUrl}meaningduplicate/${obj.data('meaning-id')}`;
 			$.post(url).done(function(response) {
 				if (response.status === "OK") {
 					openMessageDlg(response.message);

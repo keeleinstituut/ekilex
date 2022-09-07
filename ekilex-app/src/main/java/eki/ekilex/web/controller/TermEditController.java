@@ -149,7 +149,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 	}
 
 	@ResponseBody
-	@PostMapping("/duplicatemeaning/{meaningId}")
+	@PostMapping(MEANING_DUPLICATE_URI + "/{meaningId}")
 	public Response duplicateMeaning(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Locale locale = LocaleContextHolder.getLocale();
