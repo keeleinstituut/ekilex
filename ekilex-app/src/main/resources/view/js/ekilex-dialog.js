@@ -98,13 +98,16 @@ $(function() {
 		return this.each(function() {
 			const editDlg = $(this);
 			editDlg.on('show.bs.modal', function() {
-				const createWordAndMeaningForm = $('#termCreateWordAndMeaningForm');
-				const searchUri = createWordAndMeaningForm.find('input[name="searchUri"]').val();
-				const searchUriFld = editDlg.find('input[name="searchUri"]');
+				const location = window.location;
+				const backUri = location.pathname;
+				const uriParams = location.search;
+				const backUriFld = editDlg.find('input[name="backUri"]');
+				const uriParamsFld = editDlg.find('input[name="uriParams"]');
 				const editFld = editDlg.find('[data-id="editFld"]');
 				const valueInput = editDlg.find('[name=wordValuePrese]');
 				editFld.val(valueInput.val());
-				searchUriFld.val(searchUri);
+				backUriFld.val(backUri);
+				uriParamsFld.val(uriParams);
 				initCkEditor(editFld, editorOptions);
 
 				editDlg.find('button[type="submit"]').off('click').on('click', function(e) {

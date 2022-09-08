@@ -19,13 +19,9 @@
       <span th:text="${lexeme.datasetName}"></span>
     </div>
     <div class="col-2">
-      <a th:if="${#strings.isEmpty(searchUri)}"
-         th:href="@{'/termsearch?id=' + ${details.meaningId} + ',' + ${lexeme.meaningId}}" target="_blank"
-         th:text="#{termcreatemeaning.display.meaning}">Vaata tervet kirjet</a>
-      <a th:unless="${#strings.isEmpty(searchUri)}"
-         th:href="@{'/termsearch' + ${searchUri} + '?id=' + ${details.meaningId} + ',' + ${lexeme.meaningId}}" target="_blank"
+      <a th:href="@{${backUri + '?id=' + details.meaningId + ',' + lexeme.meaningId}}" target="_blank"
          th:text="#{termcreatemeaning.display.meaning}">Vaata tervet kirjet</a>
     </div>
-  </div>>
+  </div>
 </body>
 </html>

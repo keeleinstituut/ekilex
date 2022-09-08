@@ -14,7 +14,9 @@ public class TermCreateWordAndMeaningRequest extends AbstractDataObject {
 
 	private String datasetCode;
 
-	private String searchUri;
+	private String backUri;
+
+	private String uriParams;
 
 	private boolean clearResults;
 
@@ -50,12 +52,20 @@ public class TermCreateWordAndMeaningRequest extends AbstractDataObject {
 		this.datasetCode = datasetCode;
 	}
 
-	public String getSearchUri() {
-		return searchUri;
+	public String getBackUri() {
+		return backUri;
 	}
 
-	public void setSearchUri(String searchUri) {
-		this.searchUri = searchUri;
+	public void setBackUri(String backUri) {
+		this.backUri = backUri;
+	}
+
+	public String getUriParams() {
+		return uriParams;
+	}
+
+	public void setUriParams(String uriParams) {
+		this.uriParams = uriParams;
 	}
 
 	public boolean isClearResults() {

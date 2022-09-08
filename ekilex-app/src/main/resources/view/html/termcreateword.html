@@ -15,7 +15,8 @@
             <div th:text="#{termcreateword.add.word}">Lisa mõistele uus termin</div>
             <hr/>
             <form th:action="@{/termcreateword}" method="post" id="createWordForm" autocomplete="off" th:with="editEnabled = ${#lists.isEmpty(details.wordCandidates)}">
-              <input type="hidden" name="searchUri" th:value="${searchUri}">
+              <input type="hidden" name="backUri" th:value="${backUri}">
+              <input type="hidden" name="uriParams" th:value="${uriParams}">
               <input type="hidden" name="meaningId" th:value="${details.meaningId}">
               <input type="hidden" name="datasetCode" th:value="${details.datasetCode}">
               <input type="hidden" name="clearResults" value="false">
@@ -93,8 +94,7 @@
               <hr/>
               <div th:if="${editEnabled}">
                 <button type="button" class="btn btn-primary" data-plugin="createWordClickPlugin" th:text="#{term.add.term}">Lisa termin</button>
-                <a th:if="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{/termsearch}" th:text="#{common.cancel}">Katkesta</a>
-                <a th:unless="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{'/termsearch' + ${searchUri}}" th:text="#{common.cancel}">Katkesta</a>
+                <a class="btn btn-default" th:href="${backUri + uriParams}" th:text="#{common.cancel}">Katkesta</a>
               </div>
             </form>
           </div>
@@ -104,6 +104,8 @@
         <div class="card shadow h-100 overflow-auto" th:if="${not #lists.isEmpty(details.wordCandidates)}">
           <div class="card-body h-100">
             <form th:action="@{/termcreateword/select}" method="post">
+              <input type="hidden" name="backUri" th:value="${backUri}">
+              <input type="hidden" name="uriParams" th:value="${uriParams}">
               <input type="hidden" name="meaningId" th:value="${details.meaningId}">
               <input type="hidden" name="datasetCode" th:value="${details.datasetCode}">
               <div th:if="${#lists.size(details.wordCandidates) == 1}">
@@ -147,8 +149,7 @@
                   <span th:text="#{termcreateword.edit.search}">Muudan terminit</span>
                 </button>
                 <div class="ml-auto mr-5">
-                  <a th:if="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{/termsearch}" th:text="#{common.cancel}">Katkesta</a>
-                  <a th:unless="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{'/termsearch' + ${searchUri}}" th:text="#{common.cancel}">Katkesta</a>
+                  <a class="btn btn-default" th:href="${backUri} + ${uriParams}" th:text="#{common.cancel}">Katkesta</a>
                   <button type="submit" class="btn btn-primary" id="selectWordBtn" disabled th:text="#{termcreateword.create}">Loo uus termin</button>
                 </div>
               </div>

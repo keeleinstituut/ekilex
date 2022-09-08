@@ -88,8 +88,9 @@
       </div>
       <div class="ml-2">
         <div class="d-inline-block">
-          <form th:action="@{/termcreateword}" id="termCreateWordForm" method="post">
-            <input type="hidden" name="searchUri">
+          <form th:action="@{/termcreateword}" method="post">
+            <input type="hidden" name="backUri">
+            <input type="hidden" name="uriParams">
             <input type="hidden" name="meaningId" th:value="${meaningId}">
             <button type="button" class="btn btn-secondary mr-1" data-plugin="initCreateWordPlugin" sec:authorize="#vars.meaning.crudGrant">
               <span th:text="#{term.add.term}">Lisa termin</span>

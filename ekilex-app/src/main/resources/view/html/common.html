@@ -119,9 +119,10 @@
         <i class="fa fa-plus mr-2" aria-hidden="true"></i>
         <span th:text="#{lex.new.word}">Uus keelend</span>
       </button>
-      <form th:action="@{/termcreatewordandmeaning}" id="termCreateWordAndMeaningForm" method="post" th:if="${activeItem == 'term'}">
-        <input type="hidden" name="searchUri" th:value="${searchUri}">
-        <button type="submit" class="btn btn-primary rounded-0" sec:authorize="#vars.userRoleData.crudRoleSelected">
+      <form th:action="@{/termcreatewordandmeaning}" method="post" th:if="${activeItem == 'term'}">
+        <input type="hidden" name="backUri" th:value="${backUri}">
+        <input type="hidden" name="uriParams" th:value="${uriParams}">
+        <button type="button" class="btn btn-primary rounded-0" data-plugin="initCreateWordPlugin" sec:authorize="#vars.userRoleData.crudRoleSelected">
           <i class="fa fa-plus mr-2" aria-hidden="true"></i>
           <span th:text="#{term.new.meaning}">Uus Mõiste</span>
         </button>

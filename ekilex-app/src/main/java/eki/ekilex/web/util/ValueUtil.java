@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.WordLexemeMeaningDetails;
-import eki.ekilex.data.WordMeaningRelationsDetails;
 
 @Component
 public class ValueUtil implements SystemConstant {
@@ -63,13 +62,6 @@ public class ValueUtil implements SystemConstant {
 		String wordValuePrese = details.getWordValuePrese();
 		wordValuePrese = trimAndCleanAndRemoveHtmlAndLimit(wordValuePrese);
 		details.setWordValuePrese(wordValuePrese);
-	}
-
-	public void trimAndCleanAndRemoveHtml(WordMeaningRelationsDetails details) {
-
-		String wordValue = details.getWordValue();
-		wordValue = trimAndCleanAndRemoveHtmlAndLimit(wordValue);
-		details.setWordValue(wordValue);
 	}
 
 	public String unifyToApostrophe(String value) {
