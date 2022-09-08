@@ -114,7 +114,7 @@ function submitForm(form, failMessage, callback) {
 			if (detailsOpen.length) {
 				Cookies.set('details-open', detailsOpen.parent().attr('id'));
 			}
-			$('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').click();
+			form.parents('#details-area:first, #meaning-details-area:first, #syn-details-area:first').find('#refresh-details').click();
 		}
 	}).fail(function(data) {
 		console.log(data);
