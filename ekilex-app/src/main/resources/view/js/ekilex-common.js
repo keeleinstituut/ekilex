@@ -1187,6 +1187,12 @@ function loadDetails(wordId, task, lastWordId) {
 			break;
 		default:
 			wordDetailsUrl = applicationUrl + 'worddetails/' + wordId;
+			let selectedMeaningIdInput = $('#selectedMeaningId');
+			const selectedMeaningId = selectedMeaningIdInput.val();
+			if (selectedMeaningId) {
+				wordDetailsUrl += '/' + selectedMeaningId;
+				selectedMeaningIdInput.val('');
+			}
 			break;
 	}
 

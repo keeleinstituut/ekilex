@@ -103,7 +103,6 @@ import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.Freeform;
@@ -1325,18 +1324,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.on(DOMAIN.CODE.eq(DOMAIN_LABEL.CODE).and(DOMAIN.ORIGIN.eq(DOMAIN_LABEL.ORIGIN)))
 				.where(DOMAIN.DATASETS.contains(datasetCodes))
 				.fetchInto(Classifier.class);
-	}
-
-	public WordLexemeMeaningIdTuple getWordLexemeMeaningId(Long lexemeId) {
-
-		return create
-				.select(
-						LEXEME.WORD_ID,
-						LEXEME.MEANING_ID,
-						LEXEME.ID.as("lexeme_id"))
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(WordLexemeMeaningIdTuple.class);
 	}
 
 }

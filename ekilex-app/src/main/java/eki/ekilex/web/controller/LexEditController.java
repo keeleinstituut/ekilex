@@ -31,6 +31,7 @@ import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.MeaningWordCandidates;
 import eki.ekilex.data.Response;
@@ -217,6 +218,7 @@ public class LexEditController extends AbstractPrivatePageController {
 	@GetMapping(WORD_JOIN_URI)
 	public String showWordJoin(@RequestParam("wordId") Long wordId, Model model) {
 
+		EkiUser user = userContext.getUser();
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		Long userId = userContextData.getUserId();
@@ -226,7 +228,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		WordDetails targetWordDetails = lookupService.getWordJoinDetails(userRole, wordId);
 		Word targetWord = targetWordDetails.getWord();
 
-		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(userRole, targetWord, userPreferredDatasetCodes, userVisibleDatasetCodes);
+		List<WordDetails> sourceWordDetailsList = lookupService.getWordDetailsOfJoinCandidates(user, targetWord, userPreferredDatasetCodes, userVisibleDatasetCodes);
 
 		model.addAttribute("targetWordDetails", targetWordDetails);
 		model.addAttribute("sourceWordDetailsList", sourceWordDetailsList);

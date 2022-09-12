@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.math.BigDecimal;
+
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 
@@ -26,6 +28,8 @@ public class UpdateItemRequest extends AbstractDataObject {
 
 	private String currentValue;
 
+	private BigDecimal numberValue;
+
 	private String language;
 
 	private boolean selected;
@@ -33,8 +37,6 @@ public class UpdateItemRequest extends AbstractDataObject {
 	private Complexity complexity;
 
 	private boolean isPublic;
-
-	private String lexemeWeight;
 
 	public String getTarget() {
 		return target;
@@ -108,6 +110,14 @@ public class UpdateItemRequest extends AbstractDataObject {
 		this.currentValue = currentValue;
 	}
 
+	public BigDecimal getNumberValue() {
+		return numberValue;
+	}
+
+	public void setNumberValue(BigDecimal numberValue) {
+		this.numberValue = numberValue;
+	}
+
 	public String getLanguage() {
 		return language;
 	}
@@ -138,13 +148,5 @@ public class UpdateItemRequest extends AbstractDataObject {
 
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
-	}
-
-	public String getLexemeWeight() {
-		return lexemeWeight;
-	}
-
-	public void setLexemeWeight(String lexemeWeight) {
-		this.lexemeWeight = lexemeWeight;
 	}
 }

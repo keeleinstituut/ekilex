@@ -289,6 +289,18 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Long.class);
 	}
 
+	public WordLexemeMeaningIdTuple getWordLexemeMeaningId(Long lexemeId) {
+
+		return create
+				.select(
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.ID.as("lexeme_id"))
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(WordLexemeMeaningIdTuple.class);
+	}
+
 	public Long getLexemePosId(Long lexemeId, String posCode) {
 		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
 		return lexemePosRecord.getId();
@@ -572,17 +584,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
-	public boolean meaningRelationsExist(Long meaningId) {
-	
-		return create
-				.select(DSL.field(DSL.count(MEANING_RELATION.ID).gt(0)).as("meaning_relations_exists"))
-				.from(MEANING_RELATION)
-				.where(
-						MEANING_RELATION.MEANING1_ID.eq(meaningId)
-						.or(MEANING_RELATION.MEANING2_ID.eq(meaningId)))
-				.fetchSingleInto(Boolean.class);
-	}
-
 	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
 	
 		return create
@@ -724,5 +725,17 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchOneInto(Long.class);
 		boolean exists = (id != null);
 		return exists;
+	}
+
+	public boolean isOnlyValuePreseUpdate(Long wordId, String wordValue, String wordValuePrese) {
+
+		return create
+				.select(field(DSL.count(WORD.ID).eq(1)).as("is_only_value_prese_update"))
+				.from(WORD)
+				.where(
+						WORD.ID.eq(wordId)
+								.and(WORD.VALUE.eq(wordValue))
+								.and(WORD.VALUE_PRESE.ne(wordValuePrese)))
+				.fetchSingleInto(Boolean.class);
 	}
 }

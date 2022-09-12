@@ -30,6 +30,7 @@ import eki.ekilex.constant.ResponseStatus;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Response;
 import eki.ekilex.data.Tag;
@@ -328,16 +329,28 @@ public class TermEditController extends AbstractMutableDataPageController {
 			RedirectAttributes redirectAttributes,
 			Model model) throws Exception {
 
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		wordValuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(wordValuePrese);
 		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
-		Long meaningId = lookupService.getMeaningId(lexemeId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = lookupService.getWordLexemeMeaningId(lexemeId);
+		Long meaningId = wordLexemeMeaningId.getMeaningId();
+		Long wordId = wordLexemeMeaningId.getWordId();
+
+		boolean isOnlyValuePreseUpdate = lookupService.isOnlyValuePreseUpdate(wordId, wordValuePrese);
+		if (isOnlyValuePreseUpdate) {
+			boolean isUpdateSuccess = compositionService.updateWordValuePrese(user, wordId, wordValuePrese, isManualEventOnUpdateEnabled);
+			if (isUpdateSuccess) {
+				addRedirectSuccessMessage(redirectAttributes, "termupdateword.usermessage.word.value.prese.updated");
+			} else {
+				addRedirectWarningMessage(redirectAttributes, "termupdateword.usermessage.word.value.prese.update.fail");
+			}
+			return REDIRECT_PREF + backUri + uriParams;
+		}
 
 		boolean meaningHasWord = lookupService.meaningHasWord(meaningId, wordValue, language);
 		if (meaningHasWord) {
-			// TODO specify what to do if value is same and only value prese is updated?
 			addRedirectWarningMessage(redirectAttributes, "termupdateword.usermessage.meaning.word.exists");
 			return REDIRECT_PREF + backUri + uriParams;
 		}
