@@ -43,13 +43,15 @@ $.fn.editWordClickPlugin = function() {
 
 $.fn.initCreateWordPlugin = function() {
 	return this.each(function() {
-		const obj = $(this);
-		obj.on('click', function() {
-			const createWordForm = $('#termCreateWordForm');
-			const createWordAndMeaningForm = $('#termCreateWordAndMeaningForm');
-			let searchUri = createWordAndMeaningForm.find('input[name="searchUri"]').val();
-			createWordForm.find('input[name="searchUri"]').val(searchUri);
-			createWordForm.submit();
+		const btn = $(this);
+		btn.on('click', function() {
+			const form = btn.closest('form');
+			const location = window.location;
+			const backUri = location.pathname;
+			const uriParams = location.search;
+			form.find('input[name="backUri"]').val(backUri);
+			form.find('input[name="uriParams"]').val(uriParams);
+			form.submit();
 		});
 	});
 }

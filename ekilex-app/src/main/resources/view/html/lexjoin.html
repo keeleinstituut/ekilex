@@ -76,7 +76,7 @@
       <div class="col col-w2rem">
         <input name="sourceLexemeIds" type="checkbox" class="mt-2"
           th:value="${lexeme.lexemeId}"
-          th:if="${lexeme.meaningId != targetLexeme.meaningId}"
+          th:if="${lexeme.meaningId != targetLexeme.meaningId && lexeme.datasetCode == targetLexeme.datasetCode}"
           sec:authorize="#vars.permDataUtil.isSourceMeaningCrudGranted(#vars.lexeme.meaningId, #vars.targetLexeme.meaningId)"/>
         <input type="checkbox" class="mt-2" th:if="${lexeme.meaningId == targetLexeme.meaningId}" checked="checked" th:disabled="true" />
       </div>

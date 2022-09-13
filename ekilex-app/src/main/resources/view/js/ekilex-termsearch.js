@@ -88,7 +88,7 @@ function deleteMeaningAndLexemesAndWords() {
 };
 
 function duplicateMeaning() {
-	const url = `${applicationUrl}duplicatemeaning/${$(this).data('meaning-id')}`;
+	const url = `${applicationUrl}meaningduplicate/${$(this).data('meaning-id')}`;
 	$.post(url).done(function(response) {
 		if (response.status === "OK") {
 			let duplicateMeaningId = response.id;

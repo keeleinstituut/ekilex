@@ -115,6 +115,8 @@
         <div class="card shadow h-100 overflow-auto">
           <div class="card-body h-100">
             <form th:action="@{/termupdateword/select}" method="post">
+              <input type="hidden" name="backUri" th:value="${backUri}">
+              <input type="hidden" name="uriParams" th:value="${uriParams}">
               <input type="hidden" name="lexemeId" th:value="${details.lexemeId}">
               <span th:text="#{termupdateword.select.word}">Vali sobivaim...</span>
               <hr/>
@@ -148,8 +150,7 @@
               <hr/>
               <div class="row">
                 <div class="ml-auto mr-5">
-                  <a th:if="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{'/termsearch?id=' + ${details.meaningId}}" th:text="#{common.cancel}">Katkesta</a>
-                  <a th:unless="${#strings.isEmpty(searchUri)}" class="btn btn-default" th:href="@{'/termsearch' + ${searchUri} + '?id=' + ${details.meaningId}}" th:text="#{common.cancel}">Katkesta</a>
+                  <a class="btn btn-default" th:href="${backUri + uriParams}" th:text="#{common.cancel}">Katkesta</a>
                   <button type="submit" class="btn btn-primary" id="selectWordBtn" disabled th:text="#{termupdateword.select.word.submit}">Salvesta muudatus</button>
                 </div>
               </div>

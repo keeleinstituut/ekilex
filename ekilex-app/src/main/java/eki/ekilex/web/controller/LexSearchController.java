@@ -115,7 +115,6 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
 		boolean noLimit = false;
 
-		SessionBean sessionBean = getSessionBean(model);
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
@@ -124,11 +123,11 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		userProfileService.updateUserPreferredDatasets(selectedDatasets, userId);
 
 		WordsResult wordsResult;
+		Long selectedMeaningId = null;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
 			wordsResult = lexSearchService.getWords(detailSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
-			Long meaningIdSearchMeaningId = searchHelper.getMeaningIdSearchMeaningId(detailSearchFilter);
-			sessionBean.setLexMeaningIdSearchMeaningId(meaningIdSearchMeaningId);
+			selectedMeaningId = searchHelper.getMeaningIdSearchMeaningId(detailSearchFilter);
 		} else {
 			wordsResult = lexSearchService.getWords(simpleSearchFilter, selectedDatasets, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
@@ -139,6 +138,7 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("wordsResult", wordsResult);
 		model.addAttribute("noResults", noResults);
 		model.addAttribute("searchUri", searchUri);
+		model.addAttribute("selectedMeaningId", selectedMeaningId);
 
 		return LEX_SEARCH_PAGE;
 	}
@@ -215,24 +215,28 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		return COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "source_search_result";
 	}
 
-	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
-	public String wordDetails(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) throws Exception {
+	@GetMapping(value = {
+			WORD_DETAILS_URI + "/{wordId}",
+			WORD_DETAILS_URI + "/{wordId}/{selectedMeaningId}"
+	})
+	public String wordDetails(
+			@PathVariable("wordId") Long wordId,
+			@PathVariable(value = "selectedMeaningId", required = false) Long selectedMeaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) throws Exception {
 
 		logger.debug("word details for {}", wordId);
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Long lexMeaningIdSearchMeaningId = sessionBean.getLexMeaningIdSearchMeaningId();
-		sessionBean.setLexMeaningIdSearchMeaningId(null);
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<String> datasetCodes = userProfile.getPreferredDatasets();
 		UserContextData userContextData = getUserContextData();
 		Tag activeTag = userContextData.getActiveTag();
-		WordDetails details = lexSearchService.getWordDetails(wordId, lexMeaningIdSearchMeaningId, datasetCodes, languagesOrder, user, userProfile, activeTag, false);
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedMeaningId, datasetCodes, languagesOrder, user, userProfile, activeTag, false);
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
-		model.addAttribute("lexMeaningIdSearchMeaningId", lexMeaningIdSearchMeaningId);
 
 		return LEX_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "word_details";
 	}

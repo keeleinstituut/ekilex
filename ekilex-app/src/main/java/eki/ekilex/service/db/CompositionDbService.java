@@ -161,32 +161,26 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 
 	public List<LexemeRecord> getWordLexemes(Long wordId) {
 		return create
-				.selectFrom(LEXEME).where(
-					LEXEME.WORD_ID.eq(wordId))
+				.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(wordId))
+				.orderBy(LEXEME.ORDER_BY)
 				.fetch();
 	}
 
 	public List<LexemeRecord> getMeaningLexemes(Long meaningId) {
 		return create
-				.selectFrom(LEXEME).where(
-						LEXEME.MEANING_ID.eq(meaningId))
+				.selectFrom(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId))
+				.orderBy(LEXEME.ORDER_BY)
 				.fetch();
 	}
 
 	public List<LexemeRecord> getMeaningLexemes(Long meaningId, String datasetCode) {
 		return create
-				.selectFrom(LEXEME).where(
-					LEXEME.MEANING_ID.eq(meaningId)
-					.and(LEXEME.DATASET_CODE.eq(datasetCode)))
-				.fetch();
-	}
-
-	public List<LexemeRecord> getMeaningLexemes(Long meaningId, List<String> userPermDatasetCodes) {
-		return create
-				.selectFrom(LEXEME).where(
-						LEXEME.MEANING_ID.eq(meaningId)
-								.and(LEXEME.IS_PUBLIC.eq(PUBLICITY_PUBLIC)
-										.or(LEXEME.DATASET_CODE.in(userPermDatasetCodes))))
+				.selectFrom(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.orderBy(LEXEME.ORDER_BY)
 				.fetch();
 	}
 

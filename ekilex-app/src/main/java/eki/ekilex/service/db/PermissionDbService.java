@@ -348,11 +348,6 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 		String providedAuthItem = userRole.getAuthItem().name();
 		String providedAuthOp = userRole.getAuthOperation().name();
 
-		boolean isSuperiorPermission = StringUtils.equals(DATASET_XXX, providedDatasetCode);
-		if (isSuperiorPermission && requiredAuthOps.contains(providedAuthOp)) {
-			return true;
-		}
-
 		Condition providedRequiredAuthCond = DSL.val(providedAuthItem).eq(requiredAuthItem).and(DSL.val(providedAuthOp).in(requiredAuthOps));
 
 		Table<Record1<Integer>> lsc = DSL

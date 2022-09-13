@@ -134,10 +134,10 @@
                 <th:block th:each="lexeme : ${details.lexemes}">
                   <div th:id="${'lexeme-details-' + lexeme.lexemeId}">
                     <th:block th:if="${#lists.size(details.lexemes) > 1}">
-                      <th:block th:if="${lexeme.meaningId == lexMeaningIdSearchMeaningId}">
+                      <th:block th:if="${lexeme.meaningId == selectedMeaningId}">
                         <th:block th:replace="lexdetail :: lexeme_details_full"></th:block>
                       </th:block>
-                      <th:block th:if="${lexeme.meaningId != lexMeaningIdSearchMeaningId}">
+                      <th:block th:if="${lexeme.meaningId != selectedMeaningId}">
                         <th:block th:replace="lexdetail :: lexeme_details_lite"></th:block>
                       </th:block>
                     </th:block>

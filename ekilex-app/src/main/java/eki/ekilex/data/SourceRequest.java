@@ -11,6 +11,8 @@ public class SourceRequest extends AbstractDataObject {
 
 	private String name;
 
+	private String shortName;
+
 	private SourceType type;
 
 	private List<SourceProperty> properties;
@@ -25,6 +27,14 @@ public class SourceRequest extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
 	}
 
 	public SourceType getType() {

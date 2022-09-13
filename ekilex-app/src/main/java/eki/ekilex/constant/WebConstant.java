@@ -124,6 +124,8 @@ public interface WebConstant {
 
 	String MEANING_WORD_AND_LEX_DUPLICATE_URI = "/meaningwordandlexduplicate";
 
+	String MEANING_DUPLICATE_URI = "/meaningduplicate";
+
 	String MEANING_JOIN_URI = "/meaningjoin";
 
 	String MEANING_JOIN_PAGE = "meaningjoin";
