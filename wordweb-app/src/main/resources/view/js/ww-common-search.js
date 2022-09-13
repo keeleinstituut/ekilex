@@ -104,6 +104,22 @@ $(document).on("click", "eki-link", function(e) {
   });
 });
 
+$(document).on('click', 'ext-link', function() {
+	const link = $(this);
+	const href = link.attr('href');
+	if (href) {
+		const target = link.attr('target');
+		// Perhaps a good idea to add a regex check for valid url?
+		if (href.startsWith('https://')) {
+			window.open(href, target);
+		} else {
+			window.open(`https://${href}`, target);
+		}
+	} else  {
+		openAlertDlg(messages["common.broken.link"]);
+	}
+});
+
 $(document).on("keyup", "input[name='searchWord']", function(e) {
   if ($(this).val()) {
     $("#clear-search-btn").show();
