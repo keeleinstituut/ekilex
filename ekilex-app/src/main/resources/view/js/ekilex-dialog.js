@@ -98,9 +98,8 @@ $(function() {
 		return this.each(function() {
 			const editDlg = $(this);
 			editDlg.on('show.bs.modal', function() {
-				const location = window.location;
-				const backUri = location.pathname;
-				const uriParams = location.search;
+				const backUri = getTermSearchBackUri();
+				const uriParams = window.location.search;
 				const backUriFld = editDlg.find('input[name="backUri"]');
 				const uriParamsFld = editDlg.find('input[name="uriParams"]');
 				const editFld = editDlg.find('[data-id="editFld"]');

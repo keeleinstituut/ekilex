@@ -150,7 +150,7 @@
               <hr/>
               <div class="row">
                 <div class="ml-auto mr-5">
-                  <a class="btn btn-default" th:href="${backUri + uriParams}" th:text="#{common.cancel}">Katkesta</a>
+                  <a class="btn btn-default" th:href="@{${backUri + uriParams}}" th:text="#{common.cancel}">Katkesta</a>
                   <button type="submit" class="btn btn-primary" id="selectWordBtn" disabled th:text="#{termupdateword.select.word.submit}">Salvesta muudatus</button>
                 </div>
               </div>

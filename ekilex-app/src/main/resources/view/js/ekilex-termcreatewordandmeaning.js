@@ -46,9 +46,8 @@ $.fn.initCreateWordPlugin = function() {
 		const btn = $(this);
 		btn.on('click', function() {
 			const form = btn.closest('form');
-			const location = window.location;
-			const backUri = location.pathname;
-			const uriParams = location.search;
+			const backUri = getTermSearchBackUri();
+			const uriParams = window.location.search;
 			form.find('input[name="backUri"]').val(backUri);
 			form.find('input[name="uriParams"]').val(uriParams);
 			form.submit();
