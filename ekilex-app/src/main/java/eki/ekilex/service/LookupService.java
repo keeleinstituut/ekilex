@@ -365,8 +365,8 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<WordLexeme> getWordLexemesOfJoinCandidates(
-			DatasetPermission userRole, List<String> userPrefDatasetCodes,
-			String searchWord, Integer wordHomonymNumber, Long excludedMeaningId, List<String> tagNames) throws Exception {
+			DatasetPermission userRole, List<String> userPrefDatasetCodes, String searchWord, Integer wordHomonymNumber, Long excludedMeaningId,
+			List<String> tagNames, String targetLexemeDatasetCode) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
@@ -410,7 +410,7 @@ public class LookupService extends AbstractWordSearchService {
 				}
 			}
 		}
-		lexemes.sort(Comparator.comparing(lexeme -> !lexeme.getMeaning().isAnyGrant()));
+		lexemes.sort(Comparator.comparing(lexeme -> !StringUtils.equals(lexeme.getDatasetCode(), targetLexemeDatasetCode)));
 		return lexemes;
 	}
 

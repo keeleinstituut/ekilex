@@ -89,6 +89,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, userRole, true);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
+		String targetLexemeDatasetCode = targetLexeme.getDatasetCode();
 		if (searchFilter == null) {
 			searchFilter = targetLexemeWord;
 		}
@@ -99,7 +100,7 @@ public class LexEditController extends AbstractPrivatePageController {
 		}
 
 		List<WordLexeme> sourceLexemes = lookupService
-				.getWordLexemesOfJoinCandidates(userRole, datasetCodes, searchFilter, wordHomonymNumber, sourceLexemeMeaningId, tagNames);
+				.getWordLexemesOfJoinCandidates(userRole, datasetCodes, searchFilter, wordHomonymNumber, sourceLexemeMeaningId, tagNames, targetLexemeDatasetCode);
 
 		model.addAttribute("targetLexeme", targetLexeme);
 		model.addAttribute("searchFilter", searchFilter);
