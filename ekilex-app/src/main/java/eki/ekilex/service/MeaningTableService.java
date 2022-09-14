@@ -11,6 +11,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.IdPair;
 import eki.ekilex.data.MeaningTableRow;
 import eki.ekilex.data.MeaningTableSearchResult;
 import eki.ekilex.data.SearchDatasetsRestriction;
@@ -63,7 +64,7 @@ public class MeaningTableService extends AbstractSearchService {
 			List<TypeMtLexeme> lexemes = meaningTableRow.getLexemes();
 			List<TypeMtWord> words = meaningTableRow.getWords();
 			List<TypeMtLexemeFreeform> usages = meaningTableRow.getUsages();
-			Map<Long, TypeMtWord> wordMap = words.stream().collect(Collectors.toMap(TypeMtWord::getWordId, word -> word));
+			Map<IdPair, TypeMtWord> wordMap = words.stream().collect(Collectors.toMap(word -> new IdPair(word.getWordId(), word.getLexemeId()), word -> word));
 			Map<Long, List<TypeMtLexemeFreeform>> lexemeUsagesMap = Collections.emptyMap();
 			if (CollectionUtils.isNotEmpty(usages)) {
 				lexemeUsagesMap = usages.stream().collect(Collectors.groupingBy(TypeMtLexemeFreeform::getLexemeId));
@@ -72,7 +73,8 @@ public class MeaningTableService extends AbstractSearchService {
 
 				Long lexemeId = lexeme.getLexemeId();
 				Long wordId = lexeme.getWordId();
-				TypeMtWord lexemeWord = wordMap.get(wordId);
+				IdPair wordKey = new IdPair(wordId, lexemeId);
+				TypeMtWord lexemeWord = wordMap.get(wordKey);
 				List<TypeMtLexemeFreeform> lexemeUsages = lexemeUsagesMap.get(lexemeId);
 				lexeme.setWord(lexemeWord);
 				lexeme.setUsages(lexemeUsages);

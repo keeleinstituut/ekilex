@@ -10,6 +10,14 @@ public class IdPair extends AbstractDataObject {
 
 	private Long id2;
 
+	public IdPair() {
+	}
+
+	public IdPair(Long id1, Long id2) {
+		this.id1 = id1;
+		this.id2 = id2;
+	}
+
 	public Long getId1() {
 		return id1;
 	}
