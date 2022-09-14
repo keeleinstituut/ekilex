@@ -50,7 +50,6 @@ import org.jooq.Record2;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.Table;
-import org.jooq.TableField;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -90,7 +89,6 @@ import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
-import eki.ekilex.data.db.tables.records.WordRecord;
 
 @Component
 public class SearchFilterHelper implements GlobalConstant {

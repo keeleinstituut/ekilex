@@ -60,8 +60,6 @@ public interface WebConstant {
 
 	String TERM_SEARCH_RESULT_ACCESS_URI = "/termsearch_result_access";
 
-	String TERM_SEARCH_RESULT_MEANING_TABLE_URI = "/termsearch_result_meaning_table";
-
 	String TERM_MEANING_TABLE_URI = "/termmeaningtable";
 
 	String TERM_MEANING_TABLE_PAGE = "termmeaningtable";

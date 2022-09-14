@@ -14,8 +14,6 @@ public class TermSearchResult extends PagingResult {
 
 	private List<TermMeaning> results;
 
-	private List<Long> resultMeaningIds;
-
 	private boolean resultExist;
 
 	private boolean resultDownloadNow;
@@ -52,14 +50,6 @@ public class TermSearchResult extends PagingResult {
 
 	public void setResults(List<TermMeaning> results) {
 		this.results = results;
-	}
-
-	public List<Long> getResultMeaningIds() {
-		return resultMeaningIds;
-	}
-
-	public void setResultMeaningIds(List<Long> resultMeaningIds) {
-		this.resultMeaningIds = resultMeaningIds;
 	}
 
 	public boolean isResultExist() {

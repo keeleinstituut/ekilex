@@ -147,6 +147,10 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeMeaningWord;
 import eki.ekilex.data.db.udt.TypeMediaFile;
+import eki.ekilex.data.db.udt.TypeMtDefinition;
+import eki.ekilex.data.db.udt.TypeMtLexeme;
+import eki.ekilex.data.db.udt.TypeMtLexemeFreeform;
+import eki.ekilex.data.db.udt.TypeMtWord;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -173,7 +177,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 14697775;
+    private static final long serialVersionUID = 640157965;
 
     /**
      * The reference instance of <code>public</code>
@@ -1121,6 +1125,10 @@ public class Public extends SchemaImpl {
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeMeaningWord.TYPE_MEANING_WORD,
             TypeMediaFile.TYPE_MEDIA_FILE,
+            TypeMtDefinition.TYPE_MT_DEFINITION,
+            TypeMtLexeme.TYPE_MT_LEXEME,
+            TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM,
+            TypeMtWord.TYPE_MT_WORD,
             TypeSourceLink.TYPE_SOURCE_LINK,
             TypeTermMeaningWord.TYPE_TERM_MEANING_WORD,
             TypeUsage.TYPE_USAGE,

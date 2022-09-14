@@ -32,14 +32,18 @@
         <th:block th:if="${termSearchResult != null}">
           <div class="btn-group btn-tabs">
             <th:block th:if="${termSearchResult.resultDownloadNow}">
-              <form th:action="@{/termsearch_result_download}" method="post">
-                <input type="hidden" name="searchUri" th:value="${searchUri}">
-                <button type="submit" class="btn btn-secondary ml-3" th:text="#{term.download}">Laadi alla</button>
-              </form>
+              <div>
+                <form th:action="@{/termsearch_result_download}" method="post">
+                  <span>|</span>
+                  <input type="hidden" name="searchUri" th:value="${searchUri}">
+                  <button type="submit" class="btn btn-secondary" th:text="#{term.download}">Laadi alla</button>
+                </form>
+              </div>
             </th:block>
             <th:block th:if="${termSearchResult.resultDownloadLater}">
-              <div class="ml-3">
+              <div>
                 <form th:action="@{/termsearch_result_queue}" method="post">
+                  <span>|</span>
                   <input type="hidden" name="searchUri" th:value="${searchUri}">
                   <button id="queueTermSearchResultsBtn" type="button" data-plugin="queueTermSearchResults" class="btn btn-secondary" th:text="#{term.send.email}">Saada e-postiga</button>
                   <span id="queueTermSearchResultsMsg" class="btn" style="display: none" th:text="#{term.sending}">Saatmisel</span>
@@ -47,8 +51,9 @@
               </div>
             </th:block>
             <div>
-              <form th:action="@{/termsearch_result_meaning_table}" method="post" target="_blank">
-                <input type="hidden" name="meaningIds" th:value="${#strings.listJoin(termSearchResult.resultMeaningIds, ',')}">
+              <form th:action="@{/termmeaningtable}" method="post" target="_blank">
+                <span>|</span>
+                <input type="hidden" name="searchUri" th:value="${searchUri}">
                 <button type="button" data-plugin="tableViewTermSearchResults" class="btn btn-secondary" th:data-result-count="${termSearchResult.meaningCount}" th:text="#{term.meaning.table.title}">Tabelivaade</button>
               </form>
             </div>

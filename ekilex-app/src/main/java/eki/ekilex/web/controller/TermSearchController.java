@@ -100,7 +100,7 @@ public class TermSearchController extends AbstractPrivateSearchController {
 		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
 
-	@GetMapping(value = TERM_SEARCH_URI + "/**")
+	@GetMapping(TERM_SEARCH_URI + "/**")
 	public String termSearch(Model model, HttpServletRequest request) throws Exception {
 
 		final String searchPage = TERM_SEARCH_PAGE;
@@ -307,22 +307,4 @@ public class TermSearchController extends AbstractPrivateSearchController {
 				.body(bytes);
 	}
 
-	@PostMapping(TERM_SEARCH_RESULT_MEANING_TABLE_URI)
-	public String termSearchResultMeaningTable(@RequestParam("meaningIds") List<Long> meaningIds) {
-
-		String uri = "?meaningIds=" + StringUtils.join(meaningIds, ',');
-
-		return "redirect:" + TERM_MEANING_TABLE_URI + uri;
-	}
-
-	@GetMapping(TERM_MEANING_TABLE_URI)
-	public String termMeaningTable(@RequestParam("meaningIds") List<Long> meaningIds, Model model) {
-
-		EkiUser user = userContext.getUser();
-		List<String> datasetCodes = getUserPreferredDatasetCodes();
-		List<Meaning> meanings = termSearchService.getTableMeanings(meaningIds, datasetCodes, user);
-		model.addAttribute("meanings", meanings);
-
-		return TERM_MEANING_TABLE_PAGE;
-	}
 }

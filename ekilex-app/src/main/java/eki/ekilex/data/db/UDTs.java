@@ -15,6 +15,10 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeMeaningWord;
 import eki.ekilex.data.db.udt.TypeMediaFile;
+import eki.ekilex.data.db.udt.TypeMtDefinition;
+import eki.ekilex.data.db.udt.TypeMtLexeme;
+import eki.ekilex.data.db.udt.TypeMtLexemeFreeform;
+import eki.ekilex.data.db.udt.TypeMtWord;
 import eki.ekilex.data.db.udt.TypeSourceLink;
 import eki.ekilex.data.db.udt.TypeTermMeaningWord;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -86,6 +90,26 @@ public class UDTs {
      * The type <code>public.type_media_file</code>
      */
     public static TypeMediaFile TYPE_MEDIA_FILE = eki.ekilex.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE;
+
+    /**
+     * The type <code>public.type_mt_definition</code>
+     */
+    public static TypeMtDefinition TYPE_MT_DEFINITION = eki.ekilex.data.db.udt.TypeMtDefinition.TYPE_MT_DEFINITION;
+
+    /**
+     * The type <code>public.type_mt_lexeme</code>
+     */
+    public static TypeMtLexeme TYPE_MT_LEXEME = eki.ekilex.data.db.udt.TypeMtLexeme.TYPE_MT_LEXEME;
+
+    /**
+     * The type <code>public.type_mt_lexeme_freeform</code>
+     */
+    public static TypeMtLexemeFreeform TYPE_MT_LEXEME_FREEFORM = eki.ekilex.data.db.udt.TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM;
+
+    /**
+     * The type <code>public.type_mt_word</code>
+     */
+    public static TypeMtWord TYPE_MT_WORD = eki.ekilex.data.db.udt.TypeMtWord.TYPE_MT_WORD;
 
     /**
      * The type <code>public.type_source_link</code>

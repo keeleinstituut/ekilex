@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -189,21 +188,15 @@ public class TermSearchService extends AbstractSearchService {
 	private void completeResultParams(TermSearchResult termSearchResult, int offset) {
 
 		int resultCount = termSearchResult.getResultCount();
-		List<TermMeaning> results = termSearchResult.getResults();
-		List<Long> resultMeaningIds = new ArrayList<>();
 		boolean resultExist = resultCount > 0;
 		boolean showPaging = resultCount > DEFAULT_MAX_RESULTS_LIMIT;
 		boolean resultDownloadNow = resultExist && (resultCount < DEFAULT_MAX_DOWNLOAD_LIMIT);
 		boolean resultDownloadLater = resultExist && (resultCount >= DEFAULT_MAX_DOWNLOAD_LIMIT);
-		if (resultExist) {
-			resultMeaningIds = results.stream().map(TermMeaning::getMeaningId).distinct().collect(Collectors.toList());
-		}
 
 		termSearchResult.setResultExist(resultExist);
 		termSearchResult.setShowPaging(showPaging);
 		termSearchResult.setResultDownloadNow(resultDownloadNow);
 		termSearchResult.setResultDownloadLater(resultDownloadLater);
-		termSearchResult.setResultMeaningIds(resultMeaningIds);
 		if (showPaging) {
 			setPagingData(offset, DEFAULT_MAX_RESULTS_LIMIT, resultCount, termSearchResult);
 		}
