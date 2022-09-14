@@ -69,6 +69,7 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 		String wordClass = firstForm.getWordClass();
 		String paradigmComment = firstForm.getParadigmComment();
 		String inflectionType = firstForm.getInflectionType();
+		String inflectionTypeNr = firstForm.getInflectionTypeNr();
 
 		Map<String, List<Form>> formMorphCodeMap = paradigmForms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
 		Paradigm paradigm = new Paradigm();
@@ -76,6 +77,7 @@ public class ParadigmConversionUtil implements WebConstant, SystemConstant {
 		paradigm.setWordClass(wordClass);
 		paradigm.setComment(paradigmComment);
 		paradigm.setInflectionType(inflectionType);
+		paradigm.setInflectionTypeNr(inflectionTypeNr);
 		paradigm.setFormMorphCodeMap(formMorphCodeMap);
 		return paradigm;
 	}

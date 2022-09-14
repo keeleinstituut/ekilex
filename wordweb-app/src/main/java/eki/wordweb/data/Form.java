@@ -19,6 +19,8 @@ public class Form extends AbstractDataObject {
 
 	private String inflectionType;
 
+	private String inflectionTypeNr;
+
 	private String morphGroup1;
 
 	private String morphGroup2;
@@ -105,6 +107,14 @@ public class Form extends AbstractDataObject {
 
 	public void setInflectionType(String inflectionType) {
 		this.inflectionType = inflectionType;
+	}
+
+	public String getInflectionTypeNr() {
+		return inflectionTypeNr;
+	}
+
+	public void setInflectionTypeNr(String inflectionTypeNr) {
+		this.inflectionTypeNr = inflectionTypeNr;
 	}
 
 	public String getMorphGroup1() {
