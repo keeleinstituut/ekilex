@@ -22,8 +22,6 @@ public class SessionBean extends AbstractDataObject {
 
 	private boolean isManualEventOnUpdateEnabled;
 
-	private Long lexMeaningIdSearchMeaningId;
-
 	public SearchResultMode getTermSearchResultMode() {
 		return termSearchResultMode;
 	}
@@ -70,13 +68,5 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setManualEventOnUpdateEnabled(boolean manualEventOnUpdateEnabled) {
 		isManualEventOnUpdateEnabled = manualEventOnUpdateEnabled;
-	}
-
-	public Long getLexMeaningIdSearchMeaningId() {
-		return lexMeaningIdSearchMeaningId;
-	}
-
-	public void setLexMeaningIdSearchMeaningId(Long lexMeaningIdSearchMeaningId) {
-		this.lexMeaningIdSearchMeaningId = lexMeaningIdSearchMeaningId;
 	}
 }

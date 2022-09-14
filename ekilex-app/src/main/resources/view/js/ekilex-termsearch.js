@@ -102,3 +102,10 @@ function duplicateMeaning() {
 		console.log(data);
 	});
 }
+
+function getTermSearchBackUri() {
+	const pathname = window.location.pathname;
+	const backUriStartIndex = pathname.indexOf('/termsearch');
+	const backUri = pathname.substring(backUriStartIndex);
+	return backUri;
+}

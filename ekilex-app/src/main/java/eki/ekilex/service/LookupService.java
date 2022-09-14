@@ -27,6 +27,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.Lexeme;
@@ -49,16 +50,14 @@ import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.db.PermissionDbService;
+import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class LookupService extends AbstractWordSearchService {
-
-	@Autowired
-	private PermissionDbService permissionDbService;
 
 	@Autowired
 	private TermSearchDbService termSearchDbService;
@@ -68,6 +67,9 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Autowired
 	private PermCalculator permCalculator;
+
+	@Autowired
+	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
 
 	@Transactional
 	public SimpleWord getLexemeSimpleWord(Long lexemeId) {
@@ -126,6 +128,13 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public boolean isOnlyValuePreseUpdate(Long wordId, String wordValuePrese) {
+
+		String wordValue = textDecorationService.removeEkiElementMarkup(wordValuePrese);
+		return lookupDbService.isOnlyValuePreseUpdate(wordId, wordValue, wordValuePrese);
+	}
+
+	@Transactional
 	public MeaningWordCandidates getMeaningWordCandidates(
 			DatasetPermission userRole, String wordValue, String language, Long sourceMeaningId, List<String> tagNames) throws Exception {
 
@@ -171,13 +180,13 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
-	public List<WordDetails> getWordDetailsOfJoinCandidates(DatasetPermission userRole, Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
+	public List<WordDetails> getWordDetailsOfJoinCandidates(EkiUser user, Word targetWord, List<String> userPrefDatasetCodes, List<String> userVisibleDatasetCodes) {
 
+		DatasetPermission userRole = user.getRecentRole();
 		List<WordDetails> wordDetailsList = new ArrayList<>();
-		Long userId = userRole.getUserId();
 		Long targetWordId = targetWord.getWordId();
 		List<Long> sourceWordIds = lookupDbService.getWordIdsOfJoinCandidates(targetWord, userPrefDatasetCodes, userVisibleDatasetCodes);
-		sourceWordIds.sort(Comparator.comparing(sourceWordId -> !isWordJoinGranted(userId, userRole, sourceWordId, targetWordId)));
+		sourceWordIds.sort(Comparator.comparing(sourceWordId -> !isWordJoinGranted(user, sourceWordId, targetWordId)));
 
 		for (Long sourceWordId : sourceWordIds) {
 			WordDetails wordDetails = getWordJoinDetails(userRole, sourceWordId);
@@ -319,9 +328,12 @@ public class LookupService extends AbstractWordSearchService {
 		return wordCandidates;
 	}
 
-	private boolean isWordJoinGranted(Long userId, DatasetPermission userRole, Long sourceWordId, Long targetWordId) {
+	private boolean isWordJoinGranted(EkiUser user, Long sourceWordId, Long targetWordId) {
 
-		if (!permissionDbService.isGrantedForWord(userId, userRole, sourceWordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD)) {
+		DatasetPermission userRole = user.getRecentRole();
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, sourceWordId);
+		if (!isWordCrudGrant) {
 			return false;
 		}
 		return isValidWordStressAndMarkup(sourceWordId, targetWordId);
@@ -353,8 +365,8 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public List<WordLexeme> getWordLexemesOfJoinCandidates(
-			DatasetPermission userRole, List<String> userPrefDatasetCodes,
-			String searchWord, Integer wordHomonymNumber, Long excludedMeaningId, List<String> tagNames) throws Exception {
+			DatasetPermission userRole, List<String> userPrefDatasetCodes, String searchWord, Integer wordHomonymNumber, Long excludedMeaningId,
+			List<String> tagNames, String targetLexemeDatasetCode) throws Exception {
 
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(userPrefDatasetCodes);
 		List<WordLexeme> lexemes = new ArrayList<>();
@@ -398,7 +410,7 @@ public class LookupService extends AbstractWordSearchService {
 				}
 			}
 		}
-		lexemes.sort(Comparator.comparing(lexeme -> !lexeme.getMeaning().isAnyGrant()));
+		lexemes.sort(Comparator.comparing(lexeme -> !StringUtils.equals(lexeme.getDatasetCode(), targetLexemeDatasetCode)));
 		return lexemes;
 	}
 
@@ -440,6 +452,11 @@ public class LookupService extends AbstractWordSearchService {
 	@Transactional
 	public Long getWordId(Long lexemeId) {
 		return lookupDbService.getLexemeWordId(lexemeId);
+	}
+
+	@Transactional
+	public WordLexemeMeaningIdTuple getWordLexemeMeaningId(Long lexemeId) {
+		return lookupDbService.getWordLexemeMeaningId(lexemeId);
 	}
 
 	@Transactional

@@ -139,3 +139,13 @@ $(document).on("click", ".word-form", function() {
   $("input[name = 'searchWord']").val(word);
   $('#search-btn').trigger('click');
 });
+
+$(document).on("click", ".word-grouper-wrapper .btn-collapse", function () {
+  let item = $(this);
+  let middle = item.parent().find('.limit');
+  if (item.attr("aria-expanded") === "true") {
+    middle.removeClass('limit-collapsed');
+  } else {
+    middle.addClass('limit-collapsed');
+  }
+});

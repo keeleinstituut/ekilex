@@ -16812,6 +16812,7 @@ body.hidden-scroll {
 
 .ul-list-style {
   list-style: disc;
+  margin-bottom: 12px;
 }
 
 .dependence .dependence-unit {
@@ -17725,8 +17726,12 @@ body {
   margin-left: 5px;
 }
 
-.word-grouper-wrapper .collapse-panel:not(.expanded) .word-options.limit a > span::after {
+.word-grouper-wrapper .collapse-panel:not(.expanded) .word-options.limit.limit-collapsed a > span::after {
   display: none;
+}
+
+.word-grouper-wrapper .collapse-panel:not(.expanded) .word-options.limit:not(.limit-collapsed) a > sup {
+  right: 12px;
 }
 
 @media (min-width: 768px) {
@@ -19460,7 +19465,7 @@ eki-meta {
   font-stretch: expanded;
 }
 
-eki-link {
+eki-link, ext-link {
   color: #004F87;
   cursor: pointer;
 }

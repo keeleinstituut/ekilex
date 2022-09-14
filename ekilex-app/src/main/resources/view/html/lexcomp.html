@@ -3,6 +3,7 @@
 <head></head>
 <body>
   <div class="card-body p-0 d-flex flex-column h-100" th:fragment="search_result">
+    <input type="hidden" id="selectedMeaningId" th:value="${selectedMeaningId}">
     <div class="bg-light rounded-top px-2 py-1">
       <span th:text="#{lex.results.found}">Kokku leiti:</span>
       <span th:text="${wordsResult.totalCount}"></span>
@@ -88,7 +89,7 @@
     <div class="col pl-0">
       <span class="pr-1" th:text="'W' + ${lexeme.wordId}"></span>
       <span class="pr-1" th:text="'L' + ${lexeme.lexemeId}"></span>
-      <span class="pr-1" th:classappend="${lexeme.meaningId == lexMeaningIdSearchMeaningId ? 'text-warning' : ''}" th:text="'M' + ${lexeme.meaningId}"></span>
+      <span class="pr-1" th:classappend="${lexeme.meaningId == selectedMeaningId ? 'text-warning' : ''}" th:text="'M' + ${lexeme.meaningId}"></span>
     </div>
   </div>
   <div class="hidden-buttons row" th:if="${lexeme.complexity != null}" th:fragment="lexeme_complexity">

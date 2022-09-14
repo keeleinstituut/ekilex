@@ -37,9 +37,9 @@
                       th:with="langData=${viewUtil.getLangData(definitionEntry.key)}"
                       th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                 <div class="flex-shrink-1" style="font-weight: 500;">
-                  <ul th:class="${definitionEntry.value.size() &lt;= 1}  ? 'list-unstyled' : 'ul-list-style' ">
+                  <ul th:class="${definitionEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
                     <li th:each="definition,definitionIter : ${definitionEntry.value}"
-                              th:with="isCollapsable=${#strings.length(definition.valuePrese) > 500}">
+                              th:with="isCollapsable=${#strings.length(definition.valuePrese) > 500}">     
                       <th:block th:if="${!definition.subDataExists}"> 
                         <div th:id="${'definition-entry-' + definition.definitionId}">
                           <th:block th:if="${isCollapsable}">
@@ -131,7 +131,7 @@
                             </span>
                           </th:block>
                           <th:block th:if="${not #lists.isEmpty(definition.notes)}">
-                            <ul class="ul-list-style">
+                            <ul class="ul-list-style m-0">
                               <li th:each="note : ${definition.notes}">
                                 <span class="additional-meta mb-2" th:utext="${note}"></span>
                               </li>
@@ -157,7 +157,7 @@
                         th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                         th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
                     <div class="flex-shrink-1">
-                      <ul th:class="${noteEntry.value.size() &lt;= 1}  ? 'list-unstyled' : 'ul-list-style' ">
+                      <ul th:class="${noteEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
                         <li th:each="note : ${noteEntry.value}"
                                   th:with="isCollapsable=${#strings.length(note.value) > 500}">
                           <div th:id="${'note-entry-text-' + note.freeformId}">

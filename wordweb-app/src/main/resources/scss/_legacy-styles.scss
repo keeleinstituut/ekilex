@@ -230,15 +230,26 @@
   .word-options:not(:last-child) a.is-homonym > span::after{
     margin-left: 5px;
   }
-  .collapse-panel:not(.expanded){
-    .word-options.limit{
 
-      a > span::after{
-        display: none;
+.collapse-panel:not(.expanded) {
+    .word-options.limit {
+
+      &.limit-collapsed {
+
+        a>span::after {
+          display: none;
+        }
+      }
+
+      &:not(.limit-collapsed) {
+
+        a>sup {
+          right: 12px;
+        }
       }
     }
-
   }
+
 }
 
 .dependence-group {

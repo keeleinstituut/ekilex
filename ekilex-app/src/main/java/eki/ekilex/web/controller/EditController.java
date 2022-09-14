@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,6 +29,7 @@ import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.CreateItemRequest;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.DeleteItemRequest;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.LexemeDeleteConfirmation;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.MeaningDeleteConfirmation;
@@ -75,8 +77,7 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Add new item : {}", itemData);
 
-		Long userId = userContext.getUserId();
-		DatasetPermission userRole = userContext.getUserRole();
+		EkiUser user = userContext.getUser();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 		String language = itemData.getLanguage();
@@ -147,10 +148,10 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateLexemeReliability(itemData.getId(), itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
-			cudService.updateWordGenderWithDuplication(itemData.getId3(), itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.updateWordGenderWithDuplication(itemData.getId3(), itemValue, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_type":
-			cudService.createWordTypeWithDuplication(itemData.getId3(), itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.createWordTypeWithDuplication(itemData.getId3(), itemValue, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(itemData.getId3(), itemValue, isManualEventOnUpdateEnabled);
@@ -187,7 +188,7 @@ public class EditController extends AbstractMutableDataPageController {
 			sessionBean.setRecentNoteLanguage(language);
 			break;
 		case "word_note":
-			cudService.createWordNoteWithDuplication(itemData.getId(), itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.createWordNoteWithDuplication(itemData.getId(), itemValue, user, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_image":
 			cudService.createMeaningImage(itemData.getId(), itemValue, itemData.getComplexity(), isManualEventOnUpdateEnabled);
@@ -227,12 +228,12 @@ public class EditController extends AbstractMutableDataPageController {
 
 		logger.debug("Update item : {}", itemData);
 
-		Long userId = userContext.getUserId();
-		DatasetPermission userRole = userContext.getUserRole();
+		EkiUser user = userContext.getUser();
 		Long itemId = itemData.getId();
 		String itemValue = itemData.getValue();
 		itemValue = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(itemValue);
 		String itemCurrentValue = itemData.getCurrentValue();
+		BigDecimal itemNumberValue = itemData.getNumberValue();
 		String itemLanguage = itemData.getLanguage();
 		String itemCode = itemData.getCode();
 		Complexity itemComplexity = itemData.getComplexity();
@@ -287,22 +288,22 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.updateLexemeReliability(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_weight":
-			cudService.updateLexemeWeight(itemId, itemValue, isManualEventOnUpdateEnabled);
+			cudService.updateLexemeWeight(itemId, itemNumberValue, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_relation_weight":
-			cudService.updateMeaningRelationWeight(itemId, itemValue, isManualEventOnUpdateEnabled);
+			cudService.updateMeaningRelationWeight(itemId, itemNumberValue, isManualEventOnUpdateEnabled);
 			break;
 		case "word_value":
 			cudService.updateWordValue(itemId, itemValue, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
-			cudService.updateWordGenderWithDuplication(itemId, itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.updateWordGenderWithDuplication(itemId, itemValue, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_type":
-			cudService.updateWordTypeWithDuplication(itemId, itemCurrentValue, itemValue, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.updateWordTypeWithDuplication(itemId, itemCurrentValue, itemValue, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_data_and_lexeme_weight":
-			cudService.updateWordDataAndLexemeWeight(itemId, itemData.getId2(), itemValue, itemData.getLexemeWeight(), isManualEventOnUpdateEnabled);
+			cudService.updateWordDataAndLexemeWeight(itemId, itemData.getId2(), itemValue, itemNumberValue, isManualEventOnUpdateEnabled);
 			break;
 		case "lexeme_grammar":
 			cudService.updateLexemeGrammar(itemId, itemValue, itemComplexity, isManualEventOnUpdateEnabled);
@@ -507,9 +508,9 @@ public class EditController extends AbstractMutableDataPageController {
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToDelete);
 
 		Response response = new Response();
-		Long userId = userContext.getUserId();
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		DatasetPermission userRole = userContext.getUserRole();
+		EkiUser user = userContext.getUser();
+		DatasetPermission userRole = user.getRecentRole();
 		if (userRole == null) {
 			response.setStatus(ResponseStatus.ERROR);
 			return response;
@@ -609,7 +610,7 @@ public class EditController extends AbstractMutableDataPageController {
 			response = cudService.deleteMeaningRelation(id, response, isManualEventOnUpdateEnabled);
 			break;
 		case "word_gender":
-			cudService.updateWordGenderWithDuplication(id, null, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.updateWordGenderWithDuplication(id, null, user, isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_image":
 			cudService.deleteMeaningImage(id, isManualEventOnUpdateEnabled);
@@ -618,7 +619,7 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.deleteMeaningMedia(id, isManualEventOnUpdateEnabled);
 			break;
 		case "word_type":
-			cudService.deleteWordTypeWithDuplication(id, valueToDelete, userId, userRole, isManualEventOnUpdateEnabled);
+			cudService.deleteWordTypeWithDuplication(id, valueToDelete, user, isManualEventOnUpdateEnabled);
 			break;
 		case "word_aspect":
 			cudService.updateWordAspect(id, null, isManualEventOnUpdateEnabled);

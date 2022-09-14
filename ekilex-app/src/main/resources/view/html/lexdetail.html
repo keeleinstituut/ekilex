@@ -110,7 +110,7 @@
             id="refresh-open"
             data-plugin="refreshOpenPlugin"></button>
       <div class="card-body" th:id="${'lexeme-meaning-' + lexeme.meaningId}">
-        <div th:if="${lexMeaningIdSearchMeaningId}" hidden id="lex-meaning-id-search-meaning-id" th:data-result-id="${lexMeaningIdSearchMeaningId}"></div>
+        <div th:if="${selectedMeaningId}" hidden id="lex-meaning-id-search-meaning-id" th:data-result-id="${selectedMeaningId}"></div>
         <button type="button" name="lexeme-details-btn"
                 class="btn btn-secondary btn-sm btn-toggle float-right" title="Peida detailid"
                 th:data-id="${lexeme.lexemeId}" th:data-lex-levels="${lexeme.levels}" th:data-composition="lite"
@@ -127,13 +127,13 @@
                   th:data-target="${'#editLexemeLevelsDlg_' + lexeme.lexemeId}"
                   sec:authorize="#vars.lexeme.crudGrant">
               <span class="px-2 py-0 rounded font-weight-bold mr-2"
-                    th:classappend="${lexMeaningIdSearchMeaningId == lexeme.meaningId ? 'bg-warning text-white' : 'bg-light'}"
+                    th:classappend="${selectedMeaningId == lexeme.meaningId ? 'bg-warning text-white' : 'bg-light'}"
                     th:text="${lexeme.levels}">
               </span>
             </span>
             <span class="pl-1 pr-1" th:if="${!lexeme.crudGrant}">
               <span class="px-2 py-0 rounded font-weight-bold mr-2"
-                    th:classappend="${lexMeaningIdSearchMeaningId == lexeme.meaningId ? 'bg-warning text-white' : 'bg-light'}"
+                    th:classappend="${selectedMeaningId == lexeme.meaningId ? 'bg-warning text-white' : 'bg-light'}"
                     th:text="${lexeme.levels}">
               </span>
             </span>

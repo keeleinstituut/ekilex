@@ -17,8 +17,11 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.PermConstant;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
+import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.IdPair;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.Word;
@@ -26,6 +29,7 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.WordRecord;
+import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
@@ -33,7 +37,7 @@ import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @Component
-public class CompositionService extends AbstractService implements GlobalConstant {
+public class CompositionService extends AbstractService implements GlobalConstant, PermConstant {
 
 	private static final int DEFAULT_LEXEME_LEVEL = 1;
 
@@ -54,6 +58,9 @@ public class CompositionService extends AbstractService implements GlobalConstan
 
 	@Autowired
 	private TextDecorationService textDecorationService;
+
+	@Autowired
+	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
 
 	@Transactional
 	public Optional<Long> optionalDuplicateMeaningWithLexemes(Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -109,6 +116,21 @@ public class CompositionService extends AbstractService implements GlobalConstan
 		connectLexemeToAnotherWord(wordId, lexemeId);
 		cudDbService.deleteFloatingWord(lexemeWordId);
 		activityLogService.createActivityLog(lexemeActivityLog, lexemeId, ActivityEntity.LEXEME);
+	}
+
+	@Transactional
+	public boolean updateWordValuePrese(EkiUser user, Long wordId, String wordValuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		DatasetPermission userRole = user.getRecentRole();
+		String datasetCode = userRole.getDatasetCode();
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
+		if (isWordCrudGrant) {
+			ActivityLogData activityLog = activityLogService
+					.prepareActivityLog("updateWordValuePrese", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+			cudDbService.updateWordValuePrese(wordId, wordValuePrese);
+			activityLogService.createActivityLog(activityLog, wordId, ActivityEntity.WORD);
+		}
+		return isWordCrudGrant;
 	}
 
 	@Transactional

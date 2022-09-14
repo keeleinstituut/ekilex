@@ -28,6 +28,7 @@ import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.Response;
@@ -37,11 +38,10 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
-import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.LookupDbService;
-import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
@@ -62,13 +62,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	private CompositionDbService compositionDbService;
 
 	@Autowired
-	private PermissionDbService permissionDbService;
-
-	@Autowired
 	private TextDecorationService textDecorationService;
-
-	@Autowired
-	private CommonDataDbService commonDataDbService;
 
 	@Autowired
 	private LookupDbService lookupDbService;
@@ -78,6 +72,9 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
+
+	@Autowired
+	private EkilexPermissionEvaluator ekilexPermissionEvaluator;
 
 	// --- UPDATE ---
 
@@ -153,10 +150,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 
 	@Transactional
 	public void updateWordTypeWithDuplication(
-			Long wordId, String currentTypeCode, String newTypeCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long wordId, String currentTypeCode, String newTypeCode, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		DatasetPermission userRole = user.getRecentRole();
 		String datasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
 		if (isWordCrudGrant) {
 			updateWordType(wordId, currentTypeCode, newTypeCode, isManualEventOnUpdateEnabled);
 		} else {
@@ -191,10 +189,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateWordGenderWithDuplication(Long wordId, String genderCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordGenderWithDuplication(Long wordId, String genderCode, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		DatasetPermission userRole = user.getRecentRole();
 		String datasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
 		if (isWordCrudGrant) {
 			updateWordGender(wordId, genderCode, isManualEventOnUpdateEnabled);
 		} else {
@@ -715,26 +714,24 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void updateLexemeWeight(Long lexemeId, String lexemeWeightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateLexemeWeight(Long lexemeId, BigDecimal lexemeWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateLexemeWeight", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		BigDecimal lexemeWeight = new BigDecimal(lexemeWeightStr);
 		cudDbService.updateLexemeWeight(lexemeId, lexemeWeight);
 		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
 	}
 
 	@Transactional
-	public void updateMeaningRelationWeight(Long meaningRelationId, String relationWeightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateMeaningRelationWeight(Long meaningRelationId, BigDecimal lexemeWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		Long meaningId = activityLogService.getOwnerId(meaningRelationId, ActivityEntity.MEANING_RELATION);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningRelationWeight", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-		BigDecimal relationWeight = new BigDecimal(relationWeightStr);
-		cudDbService.updateMeaningRelationWeight(meaningRelationId, relationWeight);
+		cudDbService.updateMeaningRelationWeight(meaningRelationId, lexemeWeight);
 		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
 	}
 
 	@Transactional
-	public void updateWordDataAndLexemeWeight(Long lexemeId, Long wordId, String wordValuePrese, String lexemeWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordDataAndLexemeWeight(Long lexemeId, Long wordId, String wordValuePrese, BigDecimal lexemeWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		updateWordValue(wordId, wordValuePrese, isManualEventOnUpdateEnabled);
 		updateLexemeWeight(lexemeId, lexemeWeight, isManualEventOnUpdateEnabled);
@@ -802,10 +799,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void createWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordTypeWithDuplication(Long wordId, String typeCode, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		DatasetPermission userRole = user.getRecentRole();
 		String datasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
 		if (isWordCrudGrant) {
 			createWordType(wordId, typeCode, isManualEventOnUpdateEnabled);
 		} else {
@@ -861,10 +859,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void createWordNoteWithDuplication(Long wordId, String valuePrese, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordNoteWithDuplication(Long wordId, String valuePrese, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		DatasetPermission userRole = user.getRecentRole();
 		String datasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
 		if (isWordCrudGrant) {
 			createWordNote(wordId, valuePrese, isManualEventOnUpdateEnabled);
 		} else {
@@ -1270,10 +1269,11 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void deleteWordTypeWithDuplication(Long wordId, String typeCode, Long userId, DatasetPermission userRole, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteWordTypeWithDuplication(Long wordId, String typeCode, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		DatasetPermission userRole = user.getRecentRole();
 		String datasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
 		if (isWordCrudGrant) {
 			deleteWordType(wordId, typeCode, isManualEventOnUpdateEnabled);
 		} else {
@@ -1333,7 +1333,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 
 		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
 		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = commonDataDbService.getWordLexemeMeaningId(lexemeId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = lookupDbService.getWordLexemeMeaningId(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		updateLexemeLevels(lexemeId, "delete", isManualEventOnUpdateEnabled);
