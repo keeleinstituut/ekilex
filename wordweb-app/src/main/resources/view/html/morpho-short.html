@@ -38,12 +38,12 @@
     </th:block>
     <th:block th:if="${paradigm.inflectionTypeNr} and ${paradigm.inflectionTypeNr} == 41">
       <p class="btn-bold mt-3">
-        <span th:text="#{label.morpho.inflectiontype}">Muutumatu</span>
+        <span th:text="#{label.morpho.indeclinable}">Muutumatu</span>
       </p>
     </th:block>
     <th:block th:if="${paradigm.inflectionTypeNr} and ${paradigm.inflectionTypeNr} == 0">
       <p class="btn-bold mt-3">
-        <span th:text="#{label.morpho.inflectiontype}">Erandlik</span>
+        <span th:text="#{label.morpho.exceptional}">Erandlik</span>
       </p>
     </th:block>
     <p th:utext="${paradigm.comment}" class="paradigm-comment"></p>
