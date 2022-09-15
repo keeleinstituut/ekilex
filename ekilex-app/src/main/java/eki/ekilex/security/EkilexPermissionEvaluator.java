@@ -123,6 +123,25 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		return true;
 	}
 
+	// dataset crud
+
+	public boolean isDatasetCrudGranted(Principal principal, String crudRoleDataset, String datasetCode) {
+
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		DatasetPermission crudRole = getCrudRole(userId, crudRoleDataset);
+		if (crudRole == null) {
+			return false;
+		}
+		if (crudRole.isSuperiorPermission()) {
+			return true;
+		}
+		if (crudRole.isSuperiorDataset()) {
+			return true;
+		}
+		return StringUtils.equals(crudRoleDataset, datasetCode);
+	}
+
 	// source crud
 
 	@Transactional
@@ -236,6 +255,8 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 		}
 		return false;
 	}
+
+	// word crud
 
 	@Transactional
 	public boolean isWordCreateGranted(Principal principal, String crudRoleDataset, Word word) {

@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.client.HttpClientErrorException;
 
@@ -207,47 +205,6 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("meaningCount", meaningCount);
 
 		return SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
-	}
-
-	@PostMapping(SYN_RELATION_STATUS_URI)
-	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
-	@ResponseBody
-	public String updateRelationStatus(@RequestParam Long id, @RequestParam String status, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		logger.debug("Updating syn relation status id {}, new status {}", id, status);
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synSearchService.updateRelationStatus(id, status, isManualEventOnUpdateEnabled);
-		return RESPONSE_OK_VER2;
-	}
-
-	@PostMapping(SYN_RELATION_STATUS_URI + "/delete")
-	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
-	@ResponseBody
-	public String updateWordSynRelationsStatusDeleted(@RequestParam Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		logger.debug("Updating word {} syn relation status to \"DELETED\"", wordId);
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		String datasetCode = userRole.getDatasetCode();
-		List<String> synCandidateLangCodes = userContextData.getSynCandidateLangCodes();
-
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synSearchService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, synCandidateLangCodes, isManualEventOnUpdateEnabled);
-		return RESPONSE_OK_VER2;
-	}
-
-	@PostMapping(SYN_CREATE_MEANING_RELATION_URI + "/{targetMeaningId}/{sourceMeaningId}/{wordRelationId}")
-	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
-	@ResponseBody
-	public String createSynMeaningRelation(
-			@PathVariable Long targetMeaningId,
-			@PathVariable Long sourceMeaningId,
-			@PathVariable Long wordRelationId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
-
-		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synSearchService.createSynMeaningRelation(targetMeaningId, sourceMeaningId, wordRelationId, isManualEventOnUpdateEnabled);
-		return RESPONSE_OK_VER2;
 	}
 
 	@GetMapping(SYN_SEARCH_WORDS_URI)

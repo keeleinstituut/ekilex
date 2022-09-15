@@ -9,18 +9,10 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
-import eki.common.constant.ActivityEntity;
-import eki.common.constant.ActivityOwner;
-import eki.common.constant.RelationStatus;
-import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
@@ -34,16 +26,13 @@ import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
-import eki.ekilex.data.TypeWordRelParam;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordNote;
-import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
-import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -52,16 +41,11 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	private static final String RAW_RELATION_CODE = "raw";
 
-	private static final float DEFAULT_MEANING_RELATION_WEIGHT = 1;
-
 	@Value("#{${relation.weight.multipliers}}")
 	private Map<String, Float> relationWeightMultiplierMap;
 
 	@Autowired
 	private SynSearchDbService synSearchDbService;
-
-	@Autowired
-	private CudDbService cudDbService;
 
 	@Autowired
 	private PermCalculator permCalculator;
@@ -136,116 +120,5 @@ public class SynSearchService extends AbstractWordSearchService {
 		meaning.setMeaningId(meaningId);
 		meaning.setDefinitions(definitions);
 		lexeme.setMeaning(meaning);
-	}
-
-	@Transactional
-	public void updateRelationStatus(Long relationId, String relationStatus, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		if (StringUtils.equals(RelationStatus.DELETED.name(), relationStatus)) {
-			moveChangedRelationToLast(relationId);
-		}
-		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		synSearchDbService.updateRelationStatus(relationId, relationStatus);
-		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
-	}
-
-	@Transactional
-	public void updateWordSynRelationsStatusDeleted(
-			Long wordId, String datasetCode, List<String> synCandidateLangCodes, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		List<SynRelation> wordSynRelations = synSearchDbService
-				.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
-				.filter(synRelation -> synRelation.getRelationStatus() == null || synRelation.getRelationStatus().equals(RelationStatus.UNDEFINED))
-				.collect(Collectors.toList());
-
-		for (SynRelation synRelation : filteredWordSynRelations) {
-			Long relationId = synRelation.getId();
-			updateRelationStatus(relationId, RelationStatus.DELETED.name(), isManualEventOnUpdateEnabled);
-		}
-	}
-
-	@Transactional
-	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		List<TypeWordRelParam> typeWordRelParams = synSearchDbService.getWordRelationParams(wordRelationId);
-		Float meaningRelationWeight = getCalculatedMeaningRelationWeight(typeWordRelParams);
-		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, isManualEventOnUpdateEnabled);
-
-		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		synSearchDbService.updateRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
-		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
-	}
-
-	@Transactional
-	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, String weightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		Float meaningRelationWeight = NumberUtils.toFloat(weightStr);
-		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, isManualEventOnUpdateEnabled);
-	}
-
-	private void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Float meaningRelationWeight, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog;
-		Long meaningRelationId;
-		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-		meaningRelationId = cudDbService.createMeaningRelation(targetMeaningId, sourceMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
-		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
-
-		boolean oppositeRelationExists = lookupDbService.meaningRelationExists(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR);
-		if (oppositeRelationExists) {
-			return;
-		}
-
-		activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", sourceMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-		meaningRelationId = cudDbService.createMeaningRelation(sourceMeaningId, targetMeaningId, MEANING_REL_TYPE_CODE_SIMILAR, meaningRelationWeight);
-		activityLogService.createActivityLog(activityLog, meaningRelationId, ActivityEntity.MEANING_RELATION);
-	}
-
-	private void moveChangedRelationToLast(Long relationId) {
-		List<WordRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, RAW_RELATION_CODE);
-
-		if (existingRelations.size() > 1) {
-			WordRelation lastRelation = existingRelations.get(existingRelations.size() - 1);
-			List<Long> existingOrderByValues = existingRelations.stream().map(WordRelation::getOrderBy).collect(Collectors.toList());
-
-			cudDbService.updateWordRelationOrderBy(relationId, lastRelation.getOrderBy());
-			existingRelations.remove(0);
-
-			existingOrderByValues.remove(existingOrderByValues.size() - 1);
-
-			int relIdx = 0;
-			for (WordRelation relation : existingRelations) {
-				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
-				relIdx++;
-			}
-		}
-	}
-
-	private Float getCalculatedMeaningRelationWeight(List<TypeWordRelParam> typeWordRelParams) {
-
-		if (typeWordRelParams.isEmpty()) {
-			return DEFAULT_MEANING_RELATION_WEIGHT;
-		}
-
-		float dividend = 0;
-		float divisor = 0;
-
-		for (TypeWordRelParam typeWordRelParam : typeWordRelParams) {
-			String relationParamName = typeWordRelParam.getName();
-			Float relationParamValue = typeWordRelParam.getValue();
-			Float relationParamWeightMultiplier = relationWeightMultiplierMap.get(relationParamName);
-
-			if (relationParamWeightMultiplier == null) {
-				throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Unknown relation weight name: " + relationParamName);
-			}
-
-			dividend += (relationParamValue * relationParamWeightMultiplier);
-			divisor += relationParamWeightMultiplier;
-		}
-
-		return dividend / divisor;
 	}
 }

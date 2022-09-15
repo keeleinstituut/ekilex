@@ -16,6 +16,8 @@ public interface ApiConstant {
 
 	String WORD_URI = "/word";
 
+	String SYN_CANDIDATE_URI = "/syn_candidate";
+
 	String WORD_TYPE_URI = "/word_type";
 
 	String WORD_RELATION_URI = "/word_relation";

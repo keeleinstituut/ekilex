@@ -124,9 +124,9 @@ public class ComplexOpService {
 		List<Long> wordIdsToBeDeleted = new ArrayList<>();
 		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
 		if (isSuperiorPermission) {
-			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId);
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId);
 		} else {
-			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId, datasetCode);
 		}
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();

@@ -456,7 +456,7 @@ public class LookupService extends AbstractWordSearchService {
 
 	@Transactional
 	public WordLexemeMeaningIdTuple getWordLexemeMeaningId(Long lexemeId) {
-		return lookupDbService.getWordLexemeMeaningId(lexemeId);
+		return lookupDbService.getWordLexemeMeaningIdByLexeme(lexemeId);
 	}
 
 	@Transactional

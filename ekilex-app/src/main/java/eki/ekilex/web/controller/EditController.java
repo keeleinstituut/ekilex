@@ -42,7 +42,7 @@ import eki.ekilex.service.ComplexOpService;
 import eki.ekilex.service.CudService;
 import eki.ekilex.service.SourceLinkService;
 import eki.ekilex.service.SourceService;
-import eki.ekilex.service.SynSearchService;
+import eki.ekilex.service.SynCudService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -56,6 +56,9 @@ public class EditController extends AbstractMutableDataPageController {
 	@Autowired
 	private CudService cudService;
 
+	@Autowired	
+	private SynCudService synCudService;
+
 	@Autowired
 	private ConversionUtil conversionUtil;
 
@@ -67,9 +70,6 @@ public class EditController extends AbstractMutableDataPageController {
 
 	@Autowired
 	private ComplexOpService complexOpService;
-
-	@Autowired
-	private SynSearchService synSearchService;
 
 	@ResponseBody
 	@PostMapping(CREATE_ITEM_URI)
@@ -201,7 +201,7 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "create_syn_word":
 			datasetCode = getDatasetCodeFromRole();
-			cudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, language, itemData.getValue2(), isManualEventOnUpdateEnabled);
+			synCudService.createWordAndSynRelation(itemData.getId(), itemValue, datasetCode, language, itemData.getValue2(), isManualEventOnUpdateEnabled);
 			break;
 		case "meaning_semantic_type":
 			cudService.createMeaningSemanticType(itemData.getId2(), itemValue, isManualEventOnUpdateEnabled);
@@ -680,13 +680,13 @@ public class EditController extends AbstractMutableDataPageController {
 				cudService.createWordRelation(id1, id2, relationType, oppositeRelationType, isManualEventOnUpdateEnabled);
 				break;
 			case "syn_meaning_relation":
-				synSearchService.createSynMeaningRelation(id1, id2, weightStr, isManualEventOnUpdateEnabled);
+				synCudService.createSynMeaningRelation(id1, id2, weightStr, isManualEventOnUpdateEnabled);
 				break;
 			case "raw_relation":
 				if (datasetCode == null) {
 					datasetCode = getDatasetCodeFromRole();
 				}
-				cudService.createSynWordRelation(id1, id2, weightStr, datasetCode, isManualEventOnUpdateEnabled);
+				synCudService.createSynWordRelation(id1, id2, weightStr, datasetCode, isManualEventOnUpdateEnabled);
 				break;
 			}
 		}

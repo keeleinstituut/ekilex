@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -22,9 +21,7 @@ import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.PermConstant;
-import eki.common.constant.RelationStatus;
 import eki.common.constant.WordRelationGroupType;
-import eki.common.service.TextDecorationService;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.DatasetPermission;
@@ -37,38 +34,16 @@ import eki.ekilex.data.Tag;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningDetails;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
-import eki.ekilex.data.WordRelation;
 import eki.ekilex.security.EkilexPermissionEvaluator;
 import eki.ekilex.service.db.CompositionDbService;
-import eki.ekilex.service.db.CudDbService;
-import eki.ekilex.service.db.LookupDbService;
-import eki.ekilex.service.db.TagDbService;
 import eki.ekilex.service.util.LexemeLevelCalcUtil;
 
 @PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 @Component
-public class CudService extends AbstractService implements GlobalConstant, PermConstant {
-
-	private static final String RAW_RELATION_TYPE = "raw";
-
-	private static final String USER_ADDED_WORD_RELATION_NAME = "user";
-
-	private static final String UNDEFINED_RELATION_STATUS = RelationStatus.UNDEFINED.name();
-
-	@Autowired
-	private CudDbService cudDbService;
+public class CudService extends AbstractCudService implements GlobalConstant, PermConstant {
 
 	@Autowired
 	private CompositionDbService compositionDbService;
-
-	@Autowired
-	private TextDecorationService textDecorationService;
-
-	@Autowired
-	private LookupDbService lookupDbService;
-
-	@Autowired
-	private TagDbService tagDbService;
 
 	@Autowired
 	private LexemeLevelCalcUtil lexemeLevelCalcUtil;
@@ -774,8 +749,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
 			valueAsWord = cleanValue;
 		}
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, value, valueAsWord, value, language, dataset, PUBLICITY_PUBLIC, meaningId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(value, value, valueAsWord, value, language, dataset, PUBLICITY_PUBLIC, meaningId);
 
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
@@ -874,35 +848,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public WordLexemeMeaningIdTuple createLexeme(Long wordId, String datasetCode, Long meaningId, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		int currentLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(wordId, datasetCode);
-		int lexemeLevel1 = currentLexemesMaxLevel1 + 1;
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexeme", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexeme(wordId, datasetCode, meaningId, lexemeLevel1);
-		Long lexemeId = wordLexemeMeaningId.getLexemeId();
-		if (lexemeId == null) {
-			return wordLexemeMeaningId;
-		}
-		tagDbService.createLexemeAutomaticTags(lexemeId);
-		activityLogService.createActivityLog(activityLog, lexemeId, ActivityEntity.LEXEME);
-		return wordLexemeMeaningId;
-	}
-
-	@Transactional
-	public void createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.USAGE);
-		freeform.setLang(lang);
-		freeform.setComplexity(complexity);
-		freeform.setPublic(isPublic);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
-
-		createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
 	public void createUsageTranslation(Long usageId, String valuePrese, String lang, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
@@ -924,14 +869,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
 		createUsageChildFreeform(ActivityEntity.USAGE_DEFINITION, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
-	public void createLexemePos(Long lexemeId, String posCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemePos", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		Long lexemePosId = cudDbService.createLexemePos(lexemeId, posCode);
-		activityLogService.createActivityLog(activityLog, lexemePosId, ActivityEntity.POS);
 	}
 
 	@Transactional
@@ -1088,18 +1025,6 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 	}
 
 	@Transactional
-	public void createDefinition(
-			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic,
-			boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinition", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity, isPublic);
-		cudDbService.createDefinitionDataset(definitionId, datasetCode);
-		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
-	}
-
-	@Transactional
 	public void createDefinitionNote(Long definitionId, String valuePrese, String lang, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
@@ -1154,60 +1079,12 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		createWordFreeform(ActivityEntity.OD_WORD_RECOMMENDATION, wordId, freeform, isManualEventOnUpdateEnabled);
 	}
 
-	@Transactional
-	public void createWordAndSynRelation(
-			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		String cleanValue = textDecorationService.unifyToApostrophe(value);
-		String valueAsWord = textDecorationService.removeAccents(cleanValue);
-		if (StringUtils.isBlank(valueAsWord) && !StringUtils.equals(value, cleanValue)) {
-			valueAsWord = cleanValue;
-		}
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService
-				.createWordAndLexeme(value, valuePrese, valueAsWord, value, language, datasetCode, PUBLICITY_PRIVATE, null);
-		Long createdWordId = wordLexemeMeaningId.getWordId();
-		Long createdLexemeId = wordLexemeMeaningId.getLexemeId();
-		tagDbService.createLexemeAutomaticTags(createdLexemeId);
-
-		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		moveCreatedWordRelationToFirst(existingWordId, createdRelationId, RAW_RELATION_TYPE);
-		BigDecimal weight = new BigDecimal(weightStr);
-		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
-		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
-	}
-
-	@Transactional
-	public void createSynWordRelation(Long targetWordId, Long sourceWordId, String weightStr, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		boolean word2DatasetLexemeExists = lookupDbService.wordLexemeExists(sourceWordId, datasetCode);
-		if (!word2DatasetLexemeExists) {
-			createLexeme(sourceWordId, datasetCode, null, isManualEventOnUpdateEnabled);
-		}
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, RAW_RELATION_TYPE, UNDEFINED_RELATION_STATUS);
-		moveCreatedWordRelationToFirst(targetWordId, createdRelationId, RAW_RELATION_TYPE);
-		BigDecimal weight = new BigDecimal(weightStr);
-		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
-		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
-	}
-
 	private void createWordFreeform(ActivityEntity activityEntity, Long wordId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordFreeform", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		Long wordFreeformId = cudDbService.createWordFreeform(wordId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, wordFreeformId, activityEntity);
-	}
-
-	private void createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		String userName = userContext.getUserName();
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		Long lexemeFreeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
-		activityLogService.createActivityLog(activityLog, lexemeFreeformId, activityEntity);
 	}
 
 	private void createMeaningFreeform(ActivityEntity activityEntity, Long meaningId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -1333,7 +1210,7 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 
 		boolean isOnlyLexemeForMeaning = lookupDbService.isOnlyLexemeForMeaning(lexemeId);
 		boolean isOnlyLexemeForWord = lookupDbService.isOnlyLexemeForWord(lexemeId);
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = lookupDbService.getWordLexemeMeaningId(lexemeId);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = lookupDbService.getWordLexemeMeaningIdByLexeme(lexemeId);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		updateLexemeLevels(lexemeId, "delete", isManualEventOnUpdateEnabled);
@@ -1496,9 +1373,9 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		boolean isSuperiorPermission = StringUtils.equals(DATASET_XXX, datasetCode);
 		List<WordLexemeMeaningIdTuple> wordLexemeMeaningIds;
 		if (isSuperiorPermission) {
-			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId);
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId);
 		} else {
-			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIds(meaningId, datasetCode);
+			wordLexemeMeaningIds = lookupDbService.getWordLexemeMeaningIdsByMeaning(meaningId, datasetCode);
 		}
 		for (WordLexemeMeaningIdTuple wordLexemeMeaningId : wordLexemeMeaningIds) {
 			Long lexemeId = wordLexemeMeaningId.getLexemeId();
@@ -1623,29 +1500,4 @@ public class CudService extends AbstractService implements GlobalConstant, PermC
 		activityLogService.createActivityLog(activityLog, paradigmId, ActivityEntity.PARADIGM);
 	}
 
-	private void moveCreatedWordRelationToFirst(Long wordId, Long relationId, String relTypeCode) {
-		List<WordRelation> existingRelations = lookupDbService.getWordRelations(wordId, relTypeCode);
-		if (existingRelations.size() > 1) {
-
-			WordRelation firstRelation = existingRelations.get(0);
-			List<Long> existingOrderByValues = existingRelations.stream().map(WordRelation::getOrderBy).collect(Collectors.toList());
-
-			cudDbService.updateWordRelationOrderBy(relationId, firstRelation.getOrderBy());
-			existingRelations.remove(existingRelations.size() - 1);
-			existingOrderByValues.remove(0);
-
-			int relIdx = 0;
-			for (WordRelation relation : existingRelations) {
-				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
-				relIdx++;
-			}
-		}
-	}
-
-	private void setFreeformValueTextAndValuePrese(FreeForm freeform, String valuePrese) {
-
-		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
-		freeform.setValueText(value);
-		freeform.setValuePrese(valuePrese);
-	}
 }

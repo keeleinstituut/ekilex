@@ -21,13 +21,13 @@ import eki.ekilex.service.db.TagDbService;
 public class WordService extends AbstractService {
 
 	@Autowired
-	TextDecorationService textDecorationService;
+	private TextDecorationService textDecorationService;
 
 	@Autowired
-	CudDbService cudDbService;
+	private CudDbService cudDbService;
 
 	@Autowired
-	TagDbService tagDbService;
+	private TagDbService tagDbService;
 
 	@Transactional
 	public Long createWord(Word word, boolean isManualEventOnUpdateEnabled) throws Exception {
@@ -37,7 +37,7 @@ public class WordService extends AbstractService {
 		Long meaningId = word.getMeaningId();
 		boolean isMeaningCreate = meaningId == null;
 
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexeme(word, valueAsWord);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(word, valueAsWord);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		meaningId = wordLexemeMeaningId.getMeaningId();

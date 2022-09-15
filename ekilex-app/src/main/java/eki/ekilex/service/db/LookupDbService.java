@@ -289,18 +289,6 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Long.class);
 	}
 
-	public WordLexemeMeaningIdTuple getWordLexemeMeaningId(Long lexemeId) {
-
-		return create
-				.select(
-						LEXEME.WORD_ID,
-						LEXEME.MEANING_ID,
-						LEXEME.ID.as("lexeme_id"))
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(lexemeId))
-				.fetchSingleInto(WordLexemeMeaningIdTuple.class);
-	}
-
 	public Long getLexemePosId(Long lexemeId, String posCode) {
 		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
 		return lexemePosRecord.getId();
@@ -409,7 +397,19 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(String.class);
 	}
 
-	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId) {
+	public WordLexemeMeaningIdTuple getWordLexemeMeaningIdByLexeme(Long lexemeId) {
+
+		return create
+				.select(
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.ID.as("lexeme_id"))
+				.from(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.fetchSingleInto(WordLexemeMeaningIdTuple.class);
+	}
+
+	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIdsByMeaning(Long meaningId) {
 
 		return create
 				.select(
@@ -421,7 +421,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(WordLexemeMeaningIdTuple.class);
 	}
 
-	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIds(Long meaningId, String datasetCode) {
+	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIdsByMeaning(Long meaningId, String datasetCode) {
 
 		return create
 				.select(
@@ -431,6 +431,20 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.fetchInto(WordLexemeMeaningIdTuple.class);
+	}
+
+	public List<WordLexemeMeaningIdTuple> getWordLexemeMeaningIdsByWord(Long wordId, String datasetCode) {
+
+		return create
+				.select(
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.ID.as("lexeme_id"))
+				.from(LEXEME)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
 				.fetchInto(WordLexemeMeaningIdTuple.class);
 	}
