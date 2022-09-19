@@ -12,14 +12,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
+import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.api.TextWithSource;
-import eki.ekilex.data.api.WordSynCandidate;
-import eki.ekilex.data.api.WordSynCandidateData;
+import eki.ekilex.data.api.SynCandidateWord;
+import eki.ekilex.data.api.SynCandidacy;
 import eki.ekilex.service.db.LookupDbService;
 
 @Component
@@ -27,42 +29,50 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 
 	private static final Logger logger = LoggerFactory.getLogger(SynCandidateService.class);
 
+	private static final String WORD_RELATION_PARAM_NAME_SYN_CANDIDATE = "syn candidate";
+
 	@Autowired
 	private LookupDbService lookupDbService;
 
 	@Transactional
-	public void createWordSynCandidates(WordSynCandidateData wordSynCandidateData) throws Exception {
+	public void createSynCandidacy(SynCandidacy synCandidacy) throws Exception {
 
-		String headwordValue = wordSynCandidateData.getValue();
-		String headwordLang = wordSynCandidateData.getLang();
-		String synCandidateDatasetCode = wordSynCandidateData.getDatasetCode();
-		List<WordSynCandidate> wordSynCandidates = wordSynCandidateData.getWordSynCandidates();
+		String headwordValue = synCandidacy.getHeadwordValue();
+		String headwordLang = synCandidacy.getHeadwordLang();
+		String synCandidateDatasetCode = synCandidacy.getSynCandidateDatasetCode();
+		List<SynCandidateWord> synCandidateWords = synCandidacy.getSynCandidateWords();
+
+		logger.info("Creating syn {} candidates for \"{}\" ({}) in \"{}\"", synCandidateWords.size(), headwordValue, headwordLang, synCandidateDatasetCode);
 
 		List<Word> existingHeadwords = lookupDbService.getWords(headwordValue, headwordLang);
 
-		for (WordSynCandidate wordSynCandidate : wordSynCandidates) {
+		for (SynCandidateWord synCandidateWord : synCandidateWords) {
 
-			BigDecimal synLexemeWeight = wordSynCandidate.getWeight();
+			BigDecimal synLexemeWeight = synCandidateWord.getWeight();
 
-			handleSynCandidateData(synCandidateDatasetCode, wordSynCandidate);
+			WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId = handleSynCandidateWord(synCandidateDatasetCode, synCandidateWord);
 
-			//TODO relate candidates with existingHeadwords
+			for (Word headword : existingHeadwords) {
+				Long headwordId = headword.getWordId();
+				Long synCandidateWordId = synCandidateWordLexemeMeaningId.getWordId();
+				createSynCandidateWordRelation(headwordId, synCandidateWordId, synLexemeWeight);
+			}
 		}
 	}
 
-	private WordLexemeMeaningIdTuple handleSynCandidateData(String synCandidateDatasetCode, WordSynCandidate wordSynCandidate) throws Exception {
+	private WordLexemeMeaningIdTuple handleSynCandidateWord(String synCandidateDatasetCode, SynCandidateWord synCandidateWord) throws Exception {
 
-		String synCandidateWordValue = wordSynCandidate.getValue();
-		String synCandidateWordLang = wordSynCandidate.getLang();
-		List<String> synPosCodes = wordSynCandidate.getPosCodes();
-		List<TextWithSource> synDefinitions = wordSynCandidate.getDefinitions();
-		List<TextWithSource> synUsages = wordSynCandidate.getUsages();
+		String synCandidateWordValue = synCandidateWord.getValue();
+		String synCandidateWordLang = synCandidateWord.getLang();
+		List<String> synPosCodes = synCandidateWord.getPosCodes();
+		List<TextWithSource> synDefinitions = synCandidateWord.getDefinitions();
+		List<TextWithSource> synUsages = synCandidateWord.getUsages();
 
 		List<Word> existingSynCandidateWords = lookupDbService.getWords(synCandidateWordValue, synCandidateWordLang);
 		WordLexemeMeaningIdTuple synCandidateWordLexemeMeaningId;
 
 		if (CollectionUtils.isEmpty(existingSynCandidateWords)) {
-			synCandidateWordLexemeMeaningId = createWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode);
+			synCandidateWordLexemeMeaningId = createSynCandidateWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode);
 		} else {
 			Word existingSynCandidateWord = existingSynCandidateWords.stream()
 					.filter(word -> word.getDatasetCodes().contains(synCandidateDatasetCode))
@@ -75,9 +85,9 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 			} else if (existingSynCandidateWords.size() == 1) {
 				existingSynCandidateWord = existingSynCandidateWords.get(0);
 				Long existingSynCandidateWordId = existingSynCandidateWord.getWordId();
-				synCandidateWordLexemeMeaningId = createLexemeAndMeaning(existingSynCandidateWordId, synCandidateDatasetCode);
+				synCandidateWordLexemeMeaningId = createSynCandidateLexemeAndMeaning(existingSynCandidateWordId, synCandidateDatasetCode);
 			} else {
-				synCandidateWordLexemeMeaningId = createWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode);
+				synCandidateWordLexemeMeaningId = createSynCandidateWordAndLexemeAndMeaning(synCandidateWordValue, synCandidateWordLang, synCandidateDatasetCode);
 			}
 		}
 
@@ -105,7 +115,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		return synCandidateWordLexemeMeaningId;
 	}
 
-	private WordLexemeMeaningIdTuple createWordAndLexemeAndMeaning(String value, String lang, String datasetCode) throws Exception {
+	private WordLexemeMeaningIdTuple createSynCandidateWordAndLexemeAndMeaning(String value, String lang, String datasetCode) throws Exception {
 
 		value = textDecorationService.removeEkiElementMarkup(value);
 		String cleanValue = textDecorationService.unifyToApostrophe(value);
@@ -120,14 +130,14 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		boolean isManualEventOnUpdateEnabled = MANUAL_EVENT_ON_UPDATE_DISABLED;
 		tagDbService.createLexemeAutomaticTags(lexemeId);
-		activityLogService.createActivityLog("createWordAndLexemeAndMeaning", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createWordAndLexemeAndMeaning", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createWordAndLexemeAndMeaning", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateWordAndLexemeAndMeaning", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 
 		return wordLexemeMeaningId;
 	}
 
-	private WordLexemeMeaningIdTuple createLexemeAndMeaning(Long wordId, String datasetCode) throws Exception {
+	private WordLexemeMeaningIdTuple createSynCandidateLexemeAndMeaning(Long wordId, String datasetCode) throws Exception {
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createLexemeAndMeaning(wordId, datasetCode, PUBLICITY_PRIVATE);
 
@@ -135,10 +145,19 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		boolean isManualEventOnUpdateEnabled = MANUAL_EVENT_ON_UPDATE_DISABLED;
 		tagDbService.createLexemeAutomaticTags(lexemeId);
-		activityLogService.createActivityLog("createLexemeAndMeaning", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createLexemeAndMeaning", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
-		activityLogService.createActivityLog("createLexemeAndMeaning", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateLexemeAndMeaning", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateLexemeAndMeaning", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog("createSynCandidateLexemeAndMeaning", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 
 		return wordLexemeMeaningId;
+	}
+
+	private void createSynCandidateWordRelation(Long headwordId, Long synCandidateWordId, BigDecimal weight) throws Exception {
+
+		boolean isManualEventOnUpdateEnabled = MANUAL_EVENT_ON_UPDATE_DISABLED;
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynCandidateWordRelation", headwordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		Long createdRelationId = cudDbService.createWordRelation(headwordId, synCandidateWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
+		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
+		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
 	}
 }

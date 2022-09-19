@@ -39,8 +39,6 @@ import eki.ekilex.service.util.PermCalculator;
 @Component
 public class SynSearchService extends AbstractWordSearchService {
 
-	private static final String RAW_RELATION_CODE = "raw";
-
 	@Value("#{${relation.weight.multipliers}}")
 	private Map<String, Float> relationWeightMultiplierMap;
 
@@ -71,7 +69,7 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<SynRelation> synRelations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {
-			synRelations = synSearchDbService.getWordSynRelations(wordId, RAW_RELATION_CODE, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			synRelations = synSearchDbService.getWordSynRelations(wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		}
 		WordRelationDetails wordRelationDetails = new WordRelationDetails();
 		wordRelationDetails.setWordSynRelations(synRelations);

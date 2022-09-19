@@ -35,6 +35,15 @@ public class DatasetDbService {
 	@Autowired
 	private DatasetDbServiceHelper helper;
 
+	public boolean datasetExists(String code) {
+
+		return create
+				.fetchExists(DSL
+						.select(DATASET.CODE)
+						.from(DATASET)
+						.where(DATASET.CODE.eq(code)));
+	}
+
 	public Dataset getDataset(String code) {
 
 		return create

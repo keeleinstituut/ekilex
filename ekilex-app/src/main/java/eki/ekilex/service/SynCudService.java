@@ -30,10 +30,6 @@ import eki.ekilex.service.db.SynSearchDbService;
 @Component
 public class SynCudService extends AbstractCudService implements GlobalConstant, SystemConstant {
 
-	private static final String RELATION_TYPE_CODE_RAW = "raw";
-
-	private static final String UNDEFINED_RELATION_STATUS = RelationStatus.UNDEFINED.name();
-
 	private static final String USER_ADDED_WORD_RELATION_NAME = "user";
 
 	private static final float DEFAULT_MEANING_RELATION_WEIGHT = 1;
@@ -125,8 +121,8 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 
 		activityLogService.createActivityLog("createWordAndSynRelation", createdWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createWordAndSynRelation", existingWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, RELATION_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
-		moveCreatedWordRelationToFirst(existingWordId, createdRelationId, RELATION_TYPE_CODE_RAW);
+		Long createdRelationId = cudDbService.createWordRelation(existingWordId, createdWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
+		moveCreatedWordRelationToFirst(existingWordId, createdRelationId, WORD_REL_TYPE_CODE_RAW);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
@@ -140,8 +136,8 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 			createLexeme(sourceWordId, datasetCode, null, isManualEventOnUpdateEnabled);
 		}
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynWordRelation", targetWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, RELATION_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
-		moveCreatedWordRelationToFirst(targetWordId, createdRelationId, RELATION_TYPE_CODE_RAW);
+		Long createdRelationId = cudDbService.createWordRelation(targetWordId, sourceWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
+		moveCreatedWordRelationToFirst(targetWordId, createdRelationId, WORD_REL_TYPE_CODE_RAW);
 		BigDecimal weight = new BigDecimal(weightStr);
 		cudDbService.createWordRelationParam(createdRelationId, USER_ADDED_WORD_RELATION_NAME, weight);
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
@@ -179,7 +175,7 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {
-		List<WordRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, RELATION_TYPE_CODE_RAW);
+		List<WordRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, WORD_REL_TYPE_CODE_RAW);
 
 		if (existingRelations.size() > 1) {
 			WordRelation lastRelation = existingRelations.get(existingRelations.size() - 1);
@@ -203,7 +199,7 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 			Long wordId, String datasetCode, List<String> synCandidateLangCodes, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		List<SynRelation> wordSynRelations = synSearchDbService
-				.getWordSynRelations(wordId, RELATION_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				.getWordSynRelations(wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
 				.filter(synRelation -> synRelation.getRelationStatus() == null || synRelation.getRelationStatus().equals(RelationStatus.UNDEFINED))
 				.collect(Collectors.toList());

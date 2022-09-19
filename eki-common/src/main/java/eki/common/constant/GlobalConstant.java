@@ -40,6 +40,8 @@ public interface GlobalConstant {
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
 
+	String UNDEFINED_RELATION_STATUS = RelationStatus.UNDEFINED.name();
+
 	String UNKNOWN_FORM_CODE = "??";
 
 	String WORD_TYPE_CODE_PREFIXOID = "pf";

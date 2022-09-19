@@ -5,7 +5,7 @@ import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
-public class WordSynCandidate extends AbstractDataObject {
+public class SynCandidateWord extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

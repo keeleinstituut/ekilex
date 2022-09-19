@@ -42,6 +42,11 @@ public class DatasetService implements SystemConstant, GlobalConstant {
 	private MaintenanceService maintenanceService;
 
 	@Transactional
+	public boolean datasetExists(String code) {
+		return datasetDbService.datasetExists(code);
+	}
+
+	@Transactional
 	public List<Dataset> getDatasets() {
 		List<Dataset> datasets = datasetDbService.getDatasets();
 		datasets = datasetUtil.removePlaceholderDataset(datasets);

@@ -511,7 +511,7 @@ public class CudDbService extends AbstractDataDbService {
 				.from(l)
 				.where(
 						l.WORD_ID.eq(w.ID)
-						.and(l.DATASET_CODE.eq(DATASET_EKI)))
+								.and(l.DATASET_CODE.eq(DATASET_EKI)))
 				.asField();
 
 		Field<Integer> afobf = DSL
@@ -531,7 +531,7 @@ public class CudDbService extends AbstractDataDbService {
 				.from(w)
 				.where(
 						w.LANG.eq(lang)
-						.and(w.VALUE.eq(wordValue))
+								.and(w.VALUE.eq(wordValue))
 								.andExists(DSL
 										.select(l.ID)
 										.from(l)
@@ -564,7 +564,14 @@ public class CudDbService extends AbstractDataDbService {
 	}
 
 	public WordLexemeMeaningIdTuple createWordAndLexemeAndMeaning(
-			String value, String valuePrese, String valueAsWord, String morphophonoForm, String lang, String datasetCode, boolean isPublic, Long meaningId) throws Exception {
+			String value,
+			String valuePrese,
+			String valueAsWord,
+			String morphophonoForm,
+			String lang,
+			String datasetCode,
+			boolean isPublic,
+			Long meaningId) throws Exception {
 
 		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
 			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
@@ -1078,7 +1085,8 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void createWordRelationParam(Long wordRelationId, String paramName, BigDecimal paramValue) {
 
-		create.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
+		create
+				.insertInto(WORD_RELATION_PARAM, WORD_RELATION_PARAM.WORD_RELATION_ID, WORD_RELATION_PARAM.NAME, WORD_RELATION_PARAM.VALUE)
 				.values(wordRelationId, paramName, paramValue)
 				.execute();
 	}
