@@ -328,21 +328,19 @@
                         <span class="lang-code lang-code-sm mr-2 align-self-start"
                               th:with="langData=${viewUtil.getLangData(noteEntry.key)}"
                               th:text="${langData.codeIso2}" th:title="${langData.label}" data-toggle="tooltip"></span>
-                        <ul th:class="${noteEntry.value.size() &lt;= 1}  ? 'list-unstyled m-0' : 'ul-list-style' ">
-                          <li th:each="note : ${noteEntry.value}">
-                            <span th:utext="${note.value}"></span>
-                            <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
-                              <span class="definition-sources">
-                                <span th:each="sourceLink : ${note.sourceLinks}">
-                                  <button type="button" class="source-link btn btn-link-dark p-0 pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
-                                          th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
-                                    <span th:utext="${sourceLink.value}"></span>
-                                  </button>
-                                </span>
+                        <div th:each="note : ${noteEntry.value}">
+                          <span th:utext="${note.value}"></span>
+                          <th:block th:if="${not #lists.isEmpty(note.sourceLinks)}">
+                            <span class="definition-sources">
+                              <span th:each="sourceLink : ${note.sourceLinks}">
+                                <button type="button" class="source-link btn btn-link-dark p-0 pt-0 px-0 pb-1" data-toggle="popover" data-html="true"
+                                        th:title="#{label.source}" th:data-content="${#strings.listJoin(sourceLink.sourceProps, ', ')}">
+                                  <span th:utext="${sourceLink.value}"></span>
+                                </button>
                               </span>
-                            </th:block>
-                          </li>
-                        </ul>
+                            </span>
+                          </th:block>
+                        </div>
                       </div>
                     </th:block>
                   </div>
