@@ -148,7 +148,7 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(102)
-	@GetMapping(value = {
+	@GetMapping({
 			API_SERVICES_URI + WORD_URI + SEARCH_URI + "/{word}",
 			API_SERVICES_URI + WORD_URI + SEARCH_URI + "/{word}/{datasets}"
 	})
@@ -163,7 +163,7 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(103)
-	@GetMapping(value = {
+	@GetMapping({
 			API_SERVICES_URI + WORD_URI + DETAILS_URI + "/{wordId}",
 			API_SERVICES_URI + WORD_URI + DETAILS_URI + "/{wordId}/{datasets}"
 	})
@@ -180,7 +180,7 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(104)
-	@GetMapping(value = {
+	@GetMapping({
 			API_SERVICES_URI + MEANING_URI + SEARCH_URI + "/{word}",
 			API_SERVICES_URI + MEANING_URI + SEARCH_URI + "/{word}/{datasets}"
 	})
@@ -197,7 +197,7 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(105)
-	@GetMapping(value = {
+	@GetMapping({
 			API_SERVICES_URI + MEANING_URI + DETAILS_URI + "/{meaningId}",
 			API_SERVICES_URI + MEANING_URI + DETAILS_URI + "/{meaningId}/{datasets}"
 	})
@@ -215,7 +215,7 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(106)
-	@GetMapping(value = API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
+	@GetMapping(API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
 	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
 
 		ClassifierName classifierName = null;
@@ -235,7 +235,7 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(108)
-	@GetMapping(value = API_SERVICES_URI + DOMAINS_URI + "/{origin}")
+	@GetMapping(API_SERVICES_URI + DOMAINS_URI + "/{origin}")
 	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
 		return commonDataService.getDomains(origin);
 	}

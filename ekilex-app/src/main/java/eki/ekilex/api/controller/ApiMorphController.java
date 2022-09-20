@@ -26,7 +26,7 @@ public class ApiMorphController extends AbstractApiController {
 	private MorphologyService morphologyService;
 
 	@Order(401)
-	@GetMapping(value = API_SERVICES_URI + PARADIGM_URI + DETAILS_URI + "/{wordId}")
+	@GetMapping(API_SERVICES_URI + PARADIGM_URI + DETAILS_URI + "/{wordId}")
 	public List<Paradigm> getParadigms(@PathVariable("wordId") Long wordId) {
 
 		return morphologyService.getParadigms(wordId);
@@ -34,7 +34,7 @@ public class ApiMorphController extends AbstractApiController {
 
 	@Order(402)
 	@PreAuthorize("principal.admin")
-	@PostMapping(value = API_SERVICES_URI + PARADIGM_URI + REPLACE_URI)
+	@PostMapping(API_SERVICES_URI + PARADIGM_URI + REPLACE_URI)
 	@ResponseBody
 	public ApiResponse replaceMorphology(@RequestBody ParadigmWrapper paradigmWrapper) {
 

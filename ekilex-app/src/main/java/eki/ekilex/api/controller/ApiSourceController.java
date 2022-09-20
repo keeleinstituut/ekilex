@@ -32,7 +32,7 @@ public class ApiSourceController extends AbstractApiController {
 	private SourceService sourceService;
 
 	@Order(201)
-	@GetMapping(value = API_SERVICES_URI + SOURCE_URI + SEARCH_URI + "/{searchFilter}")
+	@GetMapping(API_SERVICES_URI + SOURCE_URI + SEARCH_URI + "/{searchFilter}")
 	@ResponseBody
 	public List<Source> sourceSearch(@PathVariable("searchFilter") String searchFilter) {
 
@@ -42,7 +42,7 @@ public class ApiSourceController extends AbstractApiController {
 
 	@Order(202)
 	@PreAuthorize("principal.apiCrud && principal.datasetCrudPermissionsExist")
-	@PostMapping(value = API_SERVICES_URI + SOURCE_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + SOURCE_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSource(@RequestBody Source source) {
 
@@ -88,7 +88,7 @@ public class ApiSourceController extends AbstractApiController {
 
 	@Order(203)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
-	@PostMapping(value = API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
+	@PostMapping(API_SERVICES_URI + SOURCE_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSource(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -105,7 +105,7 @@ public class ApiSourceController extends AbstractApiController {
 
 	@Order(204)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
-	@DeleteMapping(value = API_SERVICES_URI + SOURCE_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + SOURCE_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSource(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -125,7 +125,7 @@ public class ApiSourceController extends AbstractApiController {
 
 	@Order(205)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId1)")
-	@PostMapping(value = API_SERVICES_URI + SOURCE_URI + JOIN_URI)
+	@PostMapping(API_SERVICES_URI + SOURCE_URI + JOIN_URI)
 	@ResponseBody
 	public ApiResponse joinSources(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -142,7 +142,7 @@ public class ApiSourceController extends AbstractApiController {
 
 	@Order(206)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourceCrudGranted(authentication, #crudRoleDataset, #sourceId)")
-	@PostMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSourceProperty(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -161,7 +161,7 @@ public class ApiSourceController extends AbstractApiController {
 
 	@Order(207)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
-	@PostMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
+	@PostMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateSourceProperty(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -179,7 +179,7 @@ public class ApiSourceController extends AbstractApiController {
 
 	@Order(208)
 	@PreAuthorize("principal.apiCrud && @permEval.isSourcePropertyCrudGranted(authentication, #crudRoleDataset, #sourcePropertyId)")
-	@DeleteMapping(value = API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
+	@DeleteMapping(API_SERVICES_URI + SOURCE_PROPERTY_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteSourceProperty(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,

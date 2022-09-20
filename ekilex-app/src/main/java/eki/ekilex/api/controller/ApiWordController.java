@@ -30,7 +30,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(601)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCreateGranted(principal, #crudRoleDataset, #word)")
-	@PostMapping(value = API_SERVICES_URI + WORD_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createWord(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -49,7 +49,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(602)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType)")
-	@PostMapping(value = API_SERVICES_URI + WORD_TYPE_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_TYPE_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createWordType(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -67,7 +67,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(603)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordRelation)")
-	@PostMapping(value = API_SERVICES_URI + WORD_RELATION_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_RELATION_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createWordRelation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -87,7 +87,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(604)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordNote)")
-	@PostMapping(value = API_SERVICES_URI + WORD_NOTE_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_NOTE_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createWordNote(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -106,7 +106,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(605)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #odWordRecommendation)")
-	@PostMapping(value = API_SERVICES_URI + OD_WORD_RECOMMENDATION + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createOdWordRecommendation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -125,7 +125,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(606)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #word)")
-	@PostMapping(value = API_SERVICES_URI + WORD_URI + UPDATE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateWord(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -141,7 +141,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(607)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #wordNote)")
-	@PostMapping(value = API_SERVICES_URI + WORD_NOTE_URI + UPDATE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_NOTE_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateWordNote(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -160,7 +160,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(608)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #odWordRecommendation)")
-	@PostMapping(value = API_SERVICES_URI + OD_WORD_RECOMMENDATION + UPDATE_URI)
+	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateOdWordRecommendation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -179,7 +179,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(609)
 	@PreAuthorize("principal.apiCrud && @permEval.isLexemeCrudGranted(principal, #crudRoleDataset, #lexemeId)")
-	@PostMapping(value = API_SERVICES_URI + LEXEME_URI + DELETE_URI)
+	@PostMapping(API_SERVICES_URI + LEXEME_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteLexeme(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -195,7 +195,7 @@ public class ApiWordController extends AbstractApiController {
 
    @Order(610)
    @PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordType)")
-   @PostMapping(value = API_SERVICES_URI + WORD_TYPE_URI + DELETE_URI)
+   @PostMapping(API_SERVICES_URI + WORD_TYPE_URI + DELETE_URI)
    @ResponseBody
    public ApiResponse deleteWordType(
 		   @RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -213,7 +213,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(611)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordRelationCrudGranted(principal, #crudRoleDataset, #relationId)")
-	@PostMapping(value = API_SERVICES_URI + WORD_RELATION_URI + DELETE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_RELATION_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordRelation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -229,7 +229,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(612)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #wordNoteId)")
-	@PostMapping(value = API_SERVICES_URI + WORD_NOTE_URI + DELETE_URI)
+	@PostMapping(API_SERVICES_URI + WORD_NOTE_URI + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteWordNote(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
@@ -245,7 +245,7 @@ public class ApiWordController extends AbstractApiController {
 
 	@Order(613)
 	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #odWordRecommendationId)")
-	@PostMapping(value = API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
+	@PostMapping(API_SERVICES_URI + OD_WORD_RECOMMENDATION + DELETE_URI)
 	@ResponseBody
 	public ApiResponse deleteOdWordRecommendation(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,

@@ -36,7 +36,7 @@ public class ApiSynController extends AbstractApiController {
 
 	@Order(701)
 	@PreAuthorize("principal.apiCrud && @permEval.isDatasetCrudGranted(principal, #crudRoleDataset, #synCandidacy.synCandidateDatasetCode)")
-	@PostMapping(value = API_SERVICES_URI + SYN_CANDIDATE_URI + CREATE_URI)
+	@PostMapping(API_SERVICES_URI + SYN_CANDIDATE_URI + CREATE_URI)
 	@ResponseBody
 	public ApiResponse createSynCandidacy(
 			@RequestParam("crudRoleDataset") String crudRoleDataset,
