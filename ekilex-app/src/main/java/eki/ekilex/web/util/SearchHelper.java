@@ -33,7 +33,7 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.UserContext;
+import eki.ekilex.service.core.UserContext;
 
 @Component
 public class SearchHelper implements WebConstant, GlobalConstant {

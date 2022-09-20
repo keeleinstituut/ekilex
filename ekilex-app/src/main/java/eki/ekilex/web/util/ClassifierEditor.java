@@ -1,4 +1,4 @@
-package eki.ekilex.data.editor;
+package eki.ekilex.web.util;
 
 import java.beans.PropertyEditorSupport;
 

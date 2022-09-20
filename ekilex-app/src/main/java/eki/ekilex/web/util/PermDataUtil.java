@@ -11,7 +11,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.service.LookupService;
 import eki.ekilex.service.PermissionGrantService;
-import eki.ekilex.service.UserContext;
+import eki.ekilex.service.core.UserContext;
 
 @Component
 public class PermDataUtil {

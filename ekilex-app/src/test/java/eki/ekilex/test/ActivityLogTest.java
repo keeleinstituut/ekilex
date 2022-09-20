@@ -21,7 +21,7 @@ import eki.common.test.TestEnvInitialiser;
 import eki.ekilex.app.EkilexApplication;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.TypeActivityLogDiff;
-import eki.ekilex.service.ActivityLogService;
+import eki.ekilex.service.core.ActivityLogService;
 import eki.ekilex.service.db.CudDbService;
 
 @RunWith(SpringRunner.class)

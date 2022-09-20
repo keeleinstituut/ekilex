@@ -47,7 +47,7 @@ import eki.common.service.AbstractLoaderCommons;
 import eki.common.service.TransportService;
 import eki.common.util.CodeGenerator;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.service.ActivityLogService;
+import eki.ekilex.service.core.ActivityLogService;
 
 @Component
 public class DatasetImporterRunner extends AbstractLoaderCommons {

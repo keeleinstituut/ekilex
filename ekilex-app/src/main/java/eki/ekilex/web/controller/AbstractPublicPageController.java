@@ -11,8 +11,8 @@ import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserService;
+import eki.ekilex.service.core.UserContext;
 
 public abstract class AbstractPublicPageController implements WebConstant {
 

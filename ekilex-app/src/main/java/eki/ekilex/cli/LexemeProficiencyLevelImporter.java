@@ -9,38 +9,20 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.cli.runner.LexemeProficiencyLevelImporterRunner;
-import eki.ekilex.service.QueueHandlerService;
-import eki.ekilex.service.ClassifierService;
-import eki.ekilex.service.DatasetService;
-import eki.ekilex.service.EmailService;
-import eki.ekilex.service.MaintenanceService;
-import eki.ekilex.service.PermissionService;
-import eki.ekilex.service.QueueService;
-import eki.ekilex.service.TagService;
-import eki.ekilex.service.UserService;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
 		"eki.common",
 		"eki.ekilex.cli.config",
 		"eki.ekilex.cli.runner",
-		"eki.ekilex.service",
-		"eki.ekilex.data"}, excludeFilters = {
-				@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {
-						QueueService.class,
-						QueueHandlerService.class,
-						MaintenanceService.class,
-						ClassifierService.class,
-						DatasetService.class,
-						EmailService.class,
-						UserService.class,
-						PermissionService.class,
-						TagService.class})})
+		"eki.ekilex.service.core",
+		"eki.ekilex.service.db",
+		"eki.ekilex.service.util",
+		"eki.ekilex.data"})
 @EnableTransactionManagement
 public class LexemeProficiencyLevelImporter implements CommandLineRunner {
 

@@ -30,11 +30,11 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Origin;
-import eki.ekilex.data.editor.ClassifierEditor;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.DatasetService;
 import eki.ekilex.service.PermissionService;
 import eki.ekilex.service.UserService;
+import eki.ekilex.web.util.ClassifierEditor;
 
 @ConditionalOnWebApplication
 @Controller

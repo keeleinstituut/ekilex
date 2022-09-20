@@ -1,4 +1,4 @@
-package eki.ekilex.service;
+package eki.ekilex.service.core;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

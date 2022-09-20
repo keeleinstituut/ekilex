@@ -6,7 +6,7 @@ import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.ApiConstant;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.api.ApiResponse;
-import eki.ekilex.service.UserContext;
+import eki.ekilex.service.core.UserContext;
 import eki.ekilex.service.util.MessageUtil;
 import eki.ekilex.web.util.ValueUtil;
 

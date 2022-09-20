@@ -27,6 +27,7 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserApplication;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.security.EkilexPasswordEncoder;
+import eki.ekilex.service.core.UserContext;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.PermissionDbService;
 import eki.ekilex.service.db.UserDbService;

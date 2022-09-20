@@ -9,8 +9,8 @@ import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.EkiUserRoleData;
-import eki.ekilex.service.UserContext;
 import eki.ekilex.service.UserProfileService;
+import eki.ekilex.service.core.UserContext;
 
 @Component
 public class UserProfileUtil implements PermConstant {

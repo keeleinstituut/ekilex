@@ -1,4 +1,4 @@
-package eki.ekilex.service;
+package eki.ekilex.service.core;
 
 import java.util.Collection;
 

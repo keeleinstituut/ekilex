@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.ActivityLog;
-import eki.ekilex.service.ActivityLogService;
+import eki.ekilex.service.core.ActivityLogService;
 
 @ConditionalOnWebApplication
 @Controller

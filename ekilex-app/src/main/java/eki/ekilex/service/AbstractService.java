@@ -3,6 +3,8 @@ package eki.ekilex.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 
+import eki.ekilex.service.core.ActivityLogService;
+import eki.ekilex.service.core.UserContext;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
