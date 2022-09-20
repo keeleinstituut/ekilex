@@ -38,6 +38,7 @@ import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.LexemeWordTuple;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.Media;
@@ -53,7 +54,7 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
-import eki.ekilex.data.WordNote;
+import eki.ekilex.data.WordForum;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
@@ -216,6 +217,7 @@ public class TermSearchService extends AbstractSearchService {
 				FreeformType.NOTE.name()};
 
 		DatasetPermission userRole = user.getRecentRole();
+		boolean isAdmin = user.isAdmin();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
@@ -239,6 +241,8 @@ public class TermSearchService extends AbstractSearchService {
 		List<ImageSourceTuple> imageSourceTuples = commonDataDbService.getMeaningImageSourceTuples(meaningId);
 		List<Media> images = conversionUtil.composeMeaningImages(imageSourceTuples);
 		List<Media> medias = commonDataDbService.getMeaningMedias(meaningId);
+		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
+		permCalculator.applyCrud(userRole, isAdmin, meaningForums);
 		List<NoteSourceTuple> meaningNoteSourceTuples = commonDataDbService.getMeaningNoteSourceTuples(meaningId);
 		List<MeaningNote> meaningNotes = conversionUtil.composeNotes(MeaningNote.class, meaningId, meaningNoteSourceTuples);
 		permCalculator.filterVisibility(userRole, meaningNotes);
@@ -256,9 +260,8 @@ public class TermSearchService extends AbstractSearchService {
 			Lexeme lexeme = composeLexeme(userRole, lexemeId);
 			Long wordId = lexeme.getWordId();
 			List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-			List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
-			List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
-			permCalculator.filterVisibility(userRole, wordNotes);
+			List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
+			permCalculator.applyCrud(userRole, isAdmin, wordForums);
 			List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.getLexemeFreeforms(lexemeId, excludeLexemeAttributeTypes);
 			List<Usage> usages = composeUsages(userRole, lexemeId);
@@ -272,7 +275,7 @@ public class TermSearchService extends AbstractSearchService {
 			List<String> lexemeTags = commonDataDbService.getLexemeTags(lexemeId);
 
 			Word word = lexeme.getWord();
-			word.setNotes(wordNotes);
+			word.setForums(wordForums);
 			word.setOdWordRecommendations(odWordRecommendations);
 			permCalculator.applyCrud(userRole, word);
 
@@ -309,6 +312,7 @@ public class TermSearchService extends AbstractSearchService {
 		meaning.setFreeforms(meaningFreeforms);
 		meaning.setImages(images);
 		meaning.setMedias(medias);
+		meaning.setForums(meaningForums);
 		meaning.setNoteLangGroups(meaningNoteLangGroups);
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);

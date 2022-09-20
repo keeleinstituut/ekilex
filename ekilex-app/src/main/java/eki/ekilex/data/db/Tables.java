@@ -62,6 +62,7 @@ import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
+import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.MeaningNr;
@@ -122,6 +123,7 @@ import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.tables.WordForum;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
@@ -435,6 +437,11 @@ public class Tables {
     public static final MeaningDomain MEANING_DOMAIN = MeaningDomain.MEANING_DOMAIN;
 
     /**
+     * The table <code>public.meaning_forum</code>.
+     */
+    public static final MeaningForum MEANING_FORUM = MeaningForum.MEANING_FORUM;
+
+    /**
      * The table <code>public.meaning_freeform</code>.
      */
     public static final MeaningFreeform MEANING_FREEFORM = MeaningFreeform.MEANING_FREEFORM;
@@ -733,6 +740,11 @@ public class Tables {
      * The table <code>public.word_etymology_source_link</code>.
      */
     public static final WordEtymologySourceLink WORD_ETYMOLOGY_SOURCE_LINK = WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK;
+
+    /**
+     * The table <code>public.word_forum</code>.
+     */
+    public static final WordForum WORD_FORUM = WordForum.WORD_FORUM;
 
     /**
      * The table <code>public.word_freeform</code>.

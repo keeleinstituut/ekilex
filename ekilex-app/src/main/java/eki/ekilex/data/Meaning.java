@@ -33,6 +33,8 @@ public class Meaning extends AbstractCrudEntity {
 
 	private List<Media> medias;
 
+	private List<MeaningForum> forums;
+
 	private List<NoteLangGroup> noteLangGroups;
 
 	private List<MeaningRelation> relations;
@@ -153,6 +155,14 @@ public class Meaning extends AbstractCrudEntity {
 
 	public void setMedias(List<Media> medias) {
 		this.medias = medias;
+	}
+
+	public List<MeaningForum> getForums() {
+		return forums;
+	}
+
+	public void setForums(List<MeaningForum> forums) {
+		this.forums = forums;
 	}
 
 	public List<NoteLangGroup> getNoteLangGroups() {

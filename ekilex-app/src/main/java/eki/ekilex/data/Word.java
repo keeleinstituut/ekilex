@@ -51,7 +51,7 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 
 	private List<String> datasetCodes;
 
-	private List<WordNote> notes;
+	private List<WordForum> forums;
 
 	private List<WordRelation> relations;
 
@@ -237,12 +237,12 @@ public class Word extends AbstractCrudEntity implements DecoratedWordType {
 		this.datasetCodes = datasetCodes;
 	}
 
-	public List<WordNote> getNotes() {
-		return notes;
+	public List<WordForum> getForums() {
+		return forums;
 	}
 
-	public void setNotes(List<WordNote> notes) {
-		this.notes = notes;
+	public void setForums(List<WordForum> forums) {
+		this.forums = forums;
 	}
 
 	public List<WordRelation> getRelations() {

@@ -57,35 +57,35 @@
               <div class="border-bottom pb-2">
                 <div class="col-12">
                   <div>
-                    <span class="lbl" th:text="#{syn.word.notes}">Keelendi märkused</span>
+                    <span class="lbl" th:text="#{syn.word.forums}">Sisemärkused</span>
                     <button type="button" class="btn btn-light badge"
                             th:title="#{common.add.new}" data-toggle="modal"
-                            th:data-target="${'#addWordNoteDlg_' + wordId}"
-                            sec:authorize="#vars.details.word.crudGrant">
+                            th:data-target="${'#addWordForumDlg_' + wordId}"
+                            sec:authorize="#vars.userRoleData.crudRoleSelected">
                       <i class="action-icon fa fa-plus" aria-hidden="true"></i>
                     </button>
                   </div>
-                  <div th:each="note : ${details.word.notes}">
-                    <div th:replace="syndialog :: edit_word_note_dlg"></div>
+                  <div th:each="forum : ${details.word.forums}">
+                    <div th:replace="syndialog :: edit_word_forum_dlg"></div>
                     <div class="col hidden-buttons pr-5">
                       <div class="action-buttons-anchor">
-                        <span th:utext="${note.valuePrese}"></span>
-                        <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
-                        <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${details.word.crudGrant}"></span>
+                        <span th:utext="${forum.valuePrese}"></span>
+                        <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+                        <span class="ctxt" th:text="'(' + ${#dates.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
                         <div class="action-buttons-2">
                           <button type="button" class="btn badge badge-primary"
                                   th:title="#{common.edit}"
                                   data-toggle="modal"
-                                  th:data-target="${'#editWordNoteDlg_' + note.id}"
-                                  sec:authorize="#vars.details.word.crudGrant">
+                                  th:data-target="${'#editWordForumDlg_' + forum.id}"
+                                  sec:authorize="#vars.forum.crudGrant">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
                           <button type="button" class="btn badge badge-warning"
-                                  th:data-id="${note.id}"
-                                  data-op-code="word_note"
+                                  th:data-id="${forum.id}"
+                                  data-op-code="word_forum"
                                   data-toggle="delete-confirm"
                                   data-placement="right"
-                                  sec:authorize="#vars.details.word.crudGrant">
+                                  sec:authorize="#vars.forum.crudGrant">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                         </div>
@@ -176,7 +176,7 @@
         </div>
       </div>
     </div>
-    <div th:replace="syndialog :: add_word_note_dlg"></div>
+    <div th:replace="syndialog :: add_word_forum_dlg"></div>
     <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.word.lang}, ${details.wordRelationDetails.wordSynRelations})"></div>
     <script>
         $('[data-toggle=delete-confirm]').confirmation({

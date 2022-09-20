@@ -16,11 +16,11 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
-import eki.ekilex.data.NoteSourceTuple;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SynRelation;
@@ -30,17 +30,14 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordForum;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.service.db.SynSearchDbService;
 import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public class SynSearchService extends AbstractWordSearchService {
-
-	@Value("#{${relation.weight.multipliers}}")
-	private Map<String, Float> relationWeightMultiplierMap;
 
 	@Autowired
 	private SynSearchDbService synSearchDbService;
@@ -50,16 +47,17 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public WordDetails getWordSynDetails(Long wordId, List<ClassifierSelect> languagesOrder, List<String> synCandidateLangCodes,
-			List<String> synMeaningWordLangCodes, Tag activeTag, DatasetPermission userRole, EkiUserProfile userProfile) throws Exception {
+			List<String> synMeaningWordLangCodes, Tag activeTag, EkiUser user, EkiUserProfile userProfile) {
 
+		DatasetPermission userRole = user.getRecentRole();
+		boolean isAdmin = user.isAdmin();
 		String datasetCode = userRole.getDatasetCode();
 		List<String> datasetCodeList = new ArrayList<>(Collections.singletonList(datasetCode));
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasetCodeList);
 		Word word = synSearchDbService.getWord(wordId);
 		permCalculator.applyCrud(userRole, word);
-		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
-		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
-		permCalculator.filterVisibility(userRole, wordNotes);
+		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
+		permCalculator.applyCrud(userRole, isAdmin, wordForums);
 		String wordLang = word.getLang();
 
 		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -75,10 +73,10 @@ public class SynSearchService extends AbstractWordSearchService {
 		wordRelationDetails.setWordSynRelations(synRelations);
 
 		WordDetails wordDetails = new WordDetails();
-		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setLexemes(synLexemes);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
+		word.setForums(wordForums);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;

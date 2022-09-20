@@ -12,6 +12,7 @@ import eki.ekilex.data.AbstractPublicEntity;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionNote;
+import eki.ekilex.data.Forum;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.Meaning;
@@ -20,7 +21,6 @@ import eki.ekilex.data.Source;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordNote;
 import eki.ekilex.service.db.PermissionDbService;
 
 @Component
@@ -74,6 +74,39 @@ public class PermCalculator implements PermConstant {
 
 			crudEntity.setCrudGrant(isCrudGrant);
 			crudEntity.setAnyGrant(isAnyGrant);
+		}
+	}
+
+	public void applyCrud(DatasetPermission userRole, boolean isAdmin, List<? extends AbstractCrudEntity> crudEntities) {
+
+		if (userRole == null) {
+			return;
+		}
+
+		Long userId = userRole.getUserId();
+		AuthorityOperation authOperation = userRole.getAuthOperation();
+		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
+
+		if (!isCrudRole) {
+			return;
+		}
+
+		for (AbstractCrudEntity crudEntity : crudEntities) {
+			boolean isCrudGrant = false;
+
+			if (crudEntity instanceof Forum) {
+				if (isAdmin) {
+					isCrudGrant = true;
+				} else {
+					Forum forum = (Forum) crudEntity;
+					Long creatorId = forum.getCreatorId();
+					if (userId.equals(creatorId)) {
+						isCrudGrant = true;
+					}
+				}
+			}
+
+			crudEntity.setCrudGrant(isCrudGrant);
 		}
 	}
 
@@ -170,10 +203,6 @@ public class PermCalculator implements PermConstant {
 			DefinitionNote definitionNote = (DefinitionNote) entity;
 			Long definitionId = definitionNote.getDefinitionId();
 			isVisible = permissionDbService.isGrantedForDefinition(userId, userRole, definitionId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
-		} else if (entity instanceof WordNote) {
-			WordNote wordNote = (WordNote) entity;
-			Long wordId = wordNote.getWordId();
-			isVisible = permissionDbService.isGrantedForWord(userId, userRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_READ);
 		}
 		return isVisible;
 	}

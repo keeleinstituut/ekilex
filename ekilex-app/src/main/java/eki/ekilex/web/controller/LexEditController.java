@@ -80,13 +80,14 @@ public class LexEditController extends AbstractPrivatePageController {
 			Model model) throws Exception {
 
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		EkiUser user = userContext.getUser();
+		Long userId = user.getId();
 		UserContextData userContextData = getUserContextData();
-		Long userId = userContextData.getUserId();
 		DatasetPermission userRole = userContextData.getUserRole();
 		List<String> tagNames = userContextData.getTagNames();
 		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
-		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, userRole, true);
+		WordLexeme targetLexeme = lexSearchService.getWordLexeme(targetLexemeId, languagesOrder, userProfile, user, true);
 		Long sourceLexemeMeaningId = targetLexeme.getMeaningId();
 		String targetLexemeWord = targetLexeme.getWordValue();
 		String targetLexemeDatasetCode = targetLexeme.getDatasetCode();

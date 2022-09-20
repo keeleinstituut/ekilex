@@ -171,7 +171,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where = searchFilterHelper.applyWordFrequencyFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordRelationValueFilters(searchCriteria, w1.ID, where);
 				where = searchFilterHelper.applyWordRelationExistsFilters(searchCriteria, w1.ID, where);
-				where = searchFilterHelper.applyWordFreeformFilters(SearchKey.WORD_NOTE, FreeformType.NOTE, searchCriteria, w1.ID, where);
+				where = searchFilterHelper.applyWordForumFilters(searchCriteria, w1.ID, where);
 				where = applyWordActivityLogFilters(searchCriteria, w1.ID, where);
 
 			} else if (SearchEntity.WORD.equals(searchEntity)) {
@@ -283,6 +283,7 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 				where1 = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyMeaningRelationValueFilters(searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyMeaningRelationExistsFilters(searchCriteria, m1.ID, where1);
+				where1 = searchFilterHelper.applyMeaningForumFilters(searchCriteria, m1.ID, where1);
 				where1 = searchFilterHelper.applyMeaningFreeformFilters(SearchKey.MEANING_NOTE, FreeformType.NOTE, searchCriteria, m1.ID, where1);
 				where = where.andExists(DSL.select(m1.ID).from(l1, m1).where(where1));
 

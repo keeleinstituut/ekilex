@@ -187,13 +187,12 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 	}
 
 	@Transactional
-	public void updateWordNote(Long wordNoteId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void updateWordForum(Long wordForumId, String valuePrese, EkiUser user) {
 
-		FreeForm freeform = new FreeForm();
-		freeform.setId(wordNoteId);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		String userName = user.getName();
 
-		updateFreeform(ActivityOwner.WORD, ActivityEntity.WORD_NOTE, freeform, isManualEventOnUpdateEnabled);
+		cudDbService.updateWordForum(wordForumId, value, valuePrese, userName);
 	}
 
 	@Transactional
@@ -638,6 +637,15 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 	}
 
 	@Transactional
+	public void updateMeaningForum(Long meaningForumId, String valuePrese, EkiUser user) {
+
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		String userName = user.getName();
+
+		cudDbService.updateMeaningForum(meaningForumId, value, valuePrese, userName);
+	}
+
+	@Transactional
 	public void updateMeaningSemanticType(Long meaningId, String currentSemanticType, String newSemanticType, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateMeaningSemanticType", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
@@ -820,31 +828,13 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 	}
 
 	@Transactional
-	public void createWordNote(Long wordId, String valuePrese, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createWordForum(Long wordId, String valuePrese, EkiUser user) {
 
-		FreeForm freeform = new FreeForm();
-		freeform.setType(FreeformType.NOTE);
-		freeform.setLang(LANGUAGE_CODE_EST);
-		freeform.setComplexity(Complexity.DETAIL);
-		freeform.setPublic(false);
-		setFreeformValueTextAndValuePrese(freeform, valuePrese);
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long userId = user.getId();
+		String userName = user.getName();
 
-		createWordFreeform(ActivityEntity.WORD_NOTE, wordId, freeform, isManualEventOnUpdateEnabled);
-	}
-
-	@Transactional
-	public void createWordNoteWithDuplication(Long wordId, String valuePrese, EkiUser user, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		DatasetPermission userRole = user.getRecentRole();
-		String datasetCode = userRole.getDatasetCode();
-		boolean isWordCrudGrant = ekilexPermissionEvaluator.isWordCrudGranted(user, datasetCode, wordId);
-		if (isWordCrudGrant) {
-			createWordNote(wordId, valuePrese, isManualEventOnUpdateEnabled);
-		} else {
-			Long duplicateWordId = duplicateWordData(wordId, isManualEventOnUpdateEnabled);
-			updateWordLexemesWordId(wordId, duplicateWordId, datasetCode, isManualEventOnUpdateEnabled);
-			createWordNote(duplicateWordId, valuePrese, isManualEventOnUpdateEnabled);
-		}
+		cudDbService.createWordForum(wordId, value, valuePrese, userId, userName);
 	}
 
 	@Transactional
@@ -1016,6 +1006,16 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 	}
 
 	@Transactional
+	public void createMeaningForum(Long meaningId, String valuePrese, EkiUser user) {
+
+		String value = textDecorationService.removeEkiElementMarkup(valuePrese);
+		Long userId = user.getId();
+		String userName = user.getName();
+
+		cudDbService.createMeaningForum(meaningId, value, valuePrese, userId, userName);
+	}
+
+	@Transactional
 	public void createMeaningSemanticType(Long meaningId, String semanticTypeCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createMeaningSemanticType", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
@@ -1179,12 +1179,9 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 	}
 
 	@Transactional
-	public void deleteWordNote(Long wordNoteId, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void deleteWordForum(Long wordForumId) {
 
-		Long wordId = activityLogService.getOwnerId(wordNoteId, ActivityEntity.WORD_NOTE);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteWordNote", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		cudDbService.deleteFreeform(wordNoteId);
-		activityLogService.createActivityLog(activityLog, wordNoteId, ActivityEntity.WORD_NOTE);
+		cudDbService.deleteWordForum(wordForumId);
 	}
 
 	@Transactional
@@ -1453,6 +1450,12 @@ public class CudService extends AbstractCudService implements GlobalConstant, Pe
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("deleteMeaningNote", meaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		cudDbService.deleteFreeform(meaningNoteId);
 		activityLogService.createActivityLog(activityLog, meaningNoteId, ActivityEntity.MEANING_NOTE);
+	}
+
+	@Transactional
+	public void deleteMeaningForum(Long meaningForumId) {
+
+		cudDbService.deleteMeaningForum(meaningForumId);
 	}
 
 	@Transactional

@@ -62,6 +62,7 @@ import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningDomain;
+import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.MeaningNr;
@@ -122,6 +123,7 @@ import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordEtymologyRelation;
 import eki.ekilex.data.db.tables.WordEtymologySourceLink;
+import eki.ekilex.data.db.tables.WordForum;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
@@ -177,7 +179,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 640157965;
+    private static final long serialVersionUID = 1131538605;
 
     /**
      * The reference instance of <code>public</code>
@@ -473,6 +475,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_domain</code>.
      */
     public final MeaningDomain MEANING_DOMAIN = MeaningDomain.MEANING_DOMAIN;
+
+    /**
+     * The table <code>public.meaning_forum</code>.
+     */
+    public final MeaningForum MEANING_FORUM = MeaningForum.MEANING_FORUM;
 
     /**
      * The table <code>public.meaning_freeform</code>.
@@ -775,6 +782,11 @@ public class Public extends SchemaImpl {
     public final WordEtymologySourceLink WORD_ETYMOLOGY_SOURCE_LINK = WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK;
 
     /**
+     * The table <code>public.word_forum</code>.
+     */
+    public final WordForum WORD_FORUM = WordForum.WORD_FORUM;
+
+    /**
      * The table <code>public.word_freeform</code>.
      */
     public final WordFreeform WORD_FREEFORM = WordFreeform.WORD_FREEFORM;
@@ -921,6 +933,8 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_ACTIVITY_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
+            Sequences.MEANING_FORUM_ID_SEQ,
+            Sequences.MEANING_FORUM_ORDER_BY_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
             Sequences.MEANING_LAST_ACTIVITY_LOG_ID_SEQ,
@@ -956,6 +970,8 @@ public class Public extends SchemaImpl {
             Sequences.WORD_ETYMOLOGY_RELATION_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_SOURCE_LINK_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.WORD_FORUM_ID_SEQ,
+            Sequences.WORD_FORUM_ORDER_BY_SEQ,
             Sequences.WORD_FREEFORM_ID_SEQ,
             Sequences.WORD_FREEFORM_ORDER_BY_SEQ,
             Sequences.WORD_FREQ_ID_SEQ,
@@ -1035,6 +1051,7 @@ public class Public extends SchemaImpl {
             Meaning.MEANING,
             MeaningActivityLog.MEANING_ACTIVITY_LOG,
             MeaningDomain.MEANING_DOMAIN,
+            MeaningForum.MEANING_FORUM,
             MeaningFreeform.MEANING_FREEFORM,
             MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG,
             MeaningNr.MEANING_NR,
@@ -1095,6 +1112,7 @@ public class Public extends SchemaImpl {
             WordEtymology.WORD_ETYMOLOGY,
             WordEtymologyRelation.WORD_ETYMOLOGY_RELATION,
             WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,
+            WordForum.WORD_FORUM,
             WordFreeform.WORD_FREEFORM,
             WordFreq.WORD_FREQ,
             WordGroup.WORD_GROUP,

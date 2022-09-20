@@ -32,6 +32,7 @@ import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeNote;
 import eki.ekilex.data.LexemeRelation;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningNote;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
@@ -52,9 +53,9 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordEtymTuple;
+import eki.ekilex.data.WordForum;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 import eki.ekilex.data.WordsResult;
@@ -77,6 +78,7 @@ public class LexSearchService extends AbstractWordSearchService {
 			return null;
 		}
 		DatasetPermission userRole = user.getRecentRole();
+		boolean isAdmin = user.isAdmin();
 		permCalculator.applyCrud(userRole, word);
 		String wordLang = word.getLang();
 		List<Classifier> wordTypes = commonDataDbService.getWordTypes(wordId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
@@ -92,9 +94,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
-		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
-		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
-		permCalculator.filterVisibility(userRole, wordNotes);
+		List<WordForum> wordForums = commonDataDbService.getWordForums(wordId);
+		permCalculator.applyCrud(userRole, isAdmin, wordForums);
 
 		boolean isFullDataCorrection = isFullData | CollectionUtils.size(lexemes) == 1;
 		boolean isFullDataByMeaningId = !isFullDataCorrection && fullDataMeaningId != null;
@@ -102,18 +103,17 @@ public class LexSearchService extends AbstractWordSearchService {
 			if (isFullDataByMeaningId) {
 				Long lexemeMeaningId = lexeme.getMeaningId();
 				if (fullDataMeaningId.equals(lexemeMeaningId)) {
-					populateLexeme(lexeme, languagesOrder, userRole, userProfile, true);
+					populateLexeme(lexeme, languagesOrder, user, userProfile, true);
 					isFullDataByMeaningId = false;
 					continue;
 				}
 			}
-			populateLexeme(lexeme, languagesOrder, userRole, userProfile, isFullDataCorrection);
+			populateLexeme(lexeme, languagesOrder, user, userProfile, isFullDataCorrection);
 		}
 		lexemeLevelPreseUtil.combineLevels(lexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(userRole, lexemes, activeTag);
 
 		WordDetails wordDetails = new WordDetails();
-		word.setNotes(wordNotes);
 		wordDetails.setWord(word);
 		wordDetails.setWordTypes(wordTypes);
 		wordDetails.setParadigms(paradigms);
@@ -121,6 +121,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		wordDetails.setWordEtymology(wordEtymology);
 		wordDetails.setOdWordRecommendations(odWordRecommendations);
 		wordDetails.setWordRelationDetails(wordRelationDetails);
+		word.setForums(wordForums);
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;
@@ -128,11 +129,11 @@ public class LexSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public WordLexeme getWordLexeme(
-			Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, DatasetPermission userRole, boolean isFullData) throws Exception {
+			Long lexemeId, List<ClassifierSelect> languagesOrder, EkiUserProfile userProfile, EkiUser user, boolean isFullData) throws Exception {
 
 		WordLexeme lexeme = lexSearchDbService.getLexeme(lexemeId, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		if (lexeme != null) {
-			populateLexeme(lexeme, languagesOrder, userRole, userProfile, isFullData);
+			populateLexeme(lexeme, languagesOrder, user, userProfile, isFullData);
 		}
 		return lexeme;
 	}
@@ -174,13 +175,15 @@ public class LexSearchService extends AbstractWordSearchService {
 	}
 
 	private void populateLexeme(
-			WordLexeme lexeme, List<ClassifierSelect> languagesOrder, DatasetPermission userRole, EkiUserProfile userProfile, boolean isFullData) throws Exception {
+			WordLexeme lexeme, List<ClassifierSelect> languagesOrder, EkiUser user, EkiUserProfile userProfile, boolean isFullData) throws Exception {
 
 		final String[] excludeMeaningAttributeTypes = new String[] {
 				FreeformType.LEARNER_COMMENT.name(), FreeformType.SEMANTIC_TYPE.name(), FreeformType.NOTE.name()};
 		final String[] excludeLexemeAttributeTypes = new String[] {
 				FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name(), FreeformType.NOTE.name()};
 
+		DatasetPermission userRole = user.getRecentRole();
+		boolean isAdmin = user.isAdmin();
 		List<String> preferredMeaningWordLangs = new ArrayList<>();
 		if (userProfile != null) {
 			preferredMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
@@ -205,6 +208,8 @@ public class LexSearchService extends AbstractWordSearchService {
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		permCalculator.applyCrud(userRole, definitions);
 		permCalculator.filterVisibility(userRole, definitions);
+		List<MeaningForum> meaningForums = commonDataDbService.getMeaningForums(meaningId);
+		permCalculator.applyCrud(userRole, isAdmin, meaningForums);
 
 		lexeme.setTags(lexemeTags);
 		lexeme.setSynonymLangGroups(synonymLangGroups);
@@ -213,6 +218,7 @@ public class LexSearchService extends AbstractWordSearchService {
 		meaning.setMeaningId(meaningId);
 		meaning.setDomains(meaningDomains);
 		meaning.setDefinitions(definitions);
+		meaning.setForums(meaningForums);
 
 		if (isFullData) {
 

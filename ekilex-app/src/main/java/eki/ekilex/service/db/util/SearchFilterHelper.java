@@ -15,9 +15,11 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
@@ -77,12 +79,14 @@ import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LexemeTag;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
+import eki.ekilex.data.db.tables.MeaningForum;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordForum;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
@@ -507,6 +511,40 @@ public class SearchFilterHelper implements GlobalConstant {
 		} else {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(wff.ID).from(wff, ff).where(where1));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
+	public Condition applyWordForumFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.WORD_FORUM))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
+
+		WordForum wf = WORD_FORUM.as("wf");
+		Condition where1 = wf.WORD_ID.eq(wordIdField);
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), wf.VALUE, where1, true);
+				}
+			}
+			where = where.and(DSL.exists(DSL.select(wf.ID).from(wf).where(where1)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(wf.ID).from(wf).where(where1));
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}
@@ -1241,6 +1279,40 @@ public class SearchFilterHelper implements GlobalConstant {
 		} else {
 			boolean isNot = existsCriteria.get(0).isNot();
 			Condition critWhere = DSL.exists(DSL.select(mff.ID).from(mff, ff).where(where1));
+			if (isNot) {
+				critWhere = DSL.not(critWhere);
+			}
+			where = where.and(critWhere);
+		}
+		return where;
+	}
+
+	public Condition applyMeaningForumFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition where) throws Exception {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.MEANING_FORUM))
+				.collect(toList());
+
+		if (CollectionUtils.isEmpty(filteredCriteria)) {
+			return where;
+		}
+
+		List<SearchCriterion> existsCriteria = filteredCriteria.stream().filter(crit -> crit.getSearchOperand().equals(SearchOperand.EXISTS)).collect(toList());
+
+		MeaningForum mf = MEANING_FORUM.as("mf");
+		Condition where1 = mf.MEANING_ID.eq(meaningIdField);
+
+		if (CollectionUtils.isEmpty(existsCriteria)) {
+			for (SearchCriterion criterion : filteredCriteria) {
+				if (criterion.getSearchValue() != null) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = applyValueFilter(searchValueStr, criterion.isNot(), criterion.getSearchOperand(), mf.VALUE, where1, true);
+				}
+			}
+			where = where.and(DSL.exists(DSL.select(mf.ID).from(mf).where(where1)));
+		} else {
+			boolean isNot = existsCriteria.get(0).isNot();
+			Condition critWhere = DSL.exists(DSL.select(mf.ID).from(mf).where(where1));
 			if (isNot) {
 				critWhere = DSL.not(critWhere);
 			}

@@ -63,7 +63,6 @@ import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIds;
-import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.CommonDataDbService;
@@ -115,7 +114,6 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 			ActivityEntity.DESCRIBER,
 			ActivityEntity.DESCRIBING_YEAR,
 			ActivityEntity.OD_WORD_RECOMMENDATION,
-			ActivityEntity.WORD_NOTE,
 			ActivityEntity.MEANING_NOTE,
 			ActivityEntity.LEXEME_NOTE,
 			ActivityEntity.SOURCE_NOTE,
@@ -248,14 +246,10 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		}
 		id = (Long) freeformOwnerDataMap.get("word_id");
 		if (id != null) {
-			if (StringUtils.equals(FreeformType.NOTE.name(), ffTypeName)) {
-				activityEntity = ActivityEntity.WORD_NOTE;
-			} else {
-				try {
-					activityEntity = ActivityEntity.valueOf(ffTypeName);
-				} catch (Exception e) {
-					throw new IllegalParamException("Missing activity entity owner mapping for word freeform " + ffTypeName);
-				}
+			try {
+				activityEntity = ActivityEntity.valueOf(ffTypeName);
+			} catch (Exception e) {
+				throw new IllegalParamException("Missing activity entity owner mapping for word freeform " + ffTypeName);
 			}
 			return new ActivityLogOwnerEntityDescr(ActivityOwner.WORD, id, activityEntity);
 		}
@@ -633,11 +627,8 @@ public class ActivityLogService implements SystemConstant, GlobalConstant {
 		List<WordEtymTuple> wordEtymTuples = lexSearchDbService.getWordEtymology(wordId);
 		List<WordEtym> wordEtymology = conversionUtil.composeWordEtymology(wordEtymTuples);
 		List<FreeForm> odWordRecommendations = commonDataDbService.getOdWordRecommendations(wordId);
-		List<NoteSourceTuple> wordNoteSourceTuples = commonDataDbService.getWordNoteSourceTuples(wordId);
-		List<WordNote> wordNotes = conversionUtil.composeNotes(WordNote.class, wordId, wordNoteSourceTuples);
 
 		word.setWordTypes(wordTypes);
-		word.setNotes(wordNotes);
 		word.setRelations(wordRelations);
 		word.setGroups(wordGroups);
 		word.setEtymology(wordEtymology);

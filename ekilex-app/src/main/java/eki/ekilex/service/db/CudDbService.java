@@ -14,6 +14,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_TAG;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
@@ -21,6 +22,7 @@ import static eki.ekilex.data.db.Tables.MEANING_TAG;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
@@ -63,9 +65,11 @@ import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeTagRecord;
+import eki.ekilex.data.db.tables.records.MeaningForumRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.tables.records.WordForumRecord;
 import eki.ekilex.data.db.tables.records.WordFreeformRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
@@ -477,6 +481,20 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateMeaningForum(Long meaningForumId, String value, String valuePrese, String userName) {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+		create
+				.update(MEANING_FORUM)
+				.set(MEANING_FORUM.VALUE, value)
+				.set(MEANING_FORUM.VALUE_PRESE, valuePrese)
+				.set(MEANING_FORUM.MODIFIED_BY, userName)
+				.set(MEANING_FORUM.MODIFIED_ON, timestamp)
+				.where(MEANING_FORUM.ID.eq(meaningForumId))
+				.execute();
+	}
+
 	public void updateWordLexemesPublicity(Long wordId, boolean isPublic) {
 		create
 				.update(LEXEME)
@@ -494,6 +512,20 @@ public class CudDbService extends AbstractDataDbService {
 				.where(
 						LEXEME.WORD_ID.eq(currentWordId)
 								.and(LEXEME.DATASET_CODE.eq(datasetCode)))
+				.execute();
+	}
+
+	public void updateWordForum(Long wordForumId, String value, String valuePrese, String userName) {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+		create
+				.update(WORD_FORUM)
+				.set(WORD_FORUM.VALUE, value)
+				.set(WORD_FORUM.VALUE_PRESE, valuePrese)
+				.set(WORD_FORUM.MODIFIED_BY, userName)
+				.set(WORD_FORUM.MODIFIED_ON, timestamp)
+				.where(WORD_FORUM.ID.eq(wordForumId))
 				.execute();
 	}
 
@@ -696,6 +728,22 @@ public class CudDbService extends AbstractDataDbService {
 		return freeformId;
 	}
 
+	public void createWordForum(Long wordId, String value, String valuePrese, Long userId, String userName) {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+		WordForumRecord wordForumRecord = create.newRecord(WORD_FORUM);
+		wordForumRecord.setWordId(wordId);
+		wordForumRecord.setValue(value);
+		wordForumRecord.setValuePrese(valuePrese);
+		wordForumRecord.setCreatorId(userId);
+		wordForumRecord.setCreatedBy(userName);
+		wordForumRecord.setCreatedOn(timestamp);
+		wordForumRecord.setModifiedBy(userName);
+		wordForumRecord.setModifiedOn(timestamp);
+		wordForumRecord.store();
+	}
+
 	public Long createWordType(Long wordId, String typeCode) {
 		Long wordWordTypeId = create
 				.select(WORD_WORD_TYPE.ID)
@@ -883,6 +931,22 @@ public class CudDbService extends AbstractDataDbService {
 		meaningFreeformRecord.store();
 
 		return freeformId;
+	}
+
+	public void createMeaningForum(Long meaningId, String value, String valuePrese, Long userId, String userName) {
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+		MeaningForumRecord meaningForumRecord = create.newRecord(MEANING_FORUM);
+		meaningForumRecord.setMeaningId(meaningId);
+		meaningForumRecord.setValue(value);
+		meaningForumRecord.setValuePrese(valuePrese);
+		meaningForumRecord.setCreatorId(userId);
+		meaningForumRecord.setCreatedBy(userName);
+		meaningForumRecord.setCreatedOn(timestamp);
+		meaningForumRecord.setModifiedBy(userName);
+		meaningForumRecord.setModifiedOn(timestamp);
+		meaningForumRecord.store();
 	}
 
 	public Long createMeaningDomain(Long meaningId, Classifier domain) {
@@ -1188,6 +1252,13 @@ public class CudDbService extends AbstractDataDbService {
 		return lexemeIds;
 	}
 
+	public void deleteWordForum(Long wordForumId) {
+		create
+				.delete(WORD_FORUM)
+				.where(WORD_FORUM.ID.eq(wordForumId))
+				.execute();
+	}
+
 	public List<Long> deleteMeaningLexemesTag(Long meaningId, String datasetCode, String tagName) {
 
 		List<Long> lexemeIds = create
@@ -1301,6 +1372,13 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void deleteMeaningForum(Long meaningForumId) {
+		create
+				.delete(MEANING_FORUM)
+				.where(MEANING_FORUM.ID.eq(meaningForumId))
+				.execute();
+	}
+
 	public Long deleteImageTitle(Long imageFreeformId) {
 		return create.delete(FREEFORM)
 				.where(FREEFORM.PARENT_ID.eq(imageFreeformId)
@@ -1356,5 +1434,4 @@ public class CudDbService extends AbstractDataDbService {
 								.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))))
 				.execute();
 	}
-
 }
