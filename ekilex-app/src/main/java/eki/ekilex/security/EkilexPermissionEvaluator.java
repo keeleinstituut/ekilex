@@ -20,15 +20,10 @@ import eki.common.constant.ReferenceOwner;
 import eki.common.exception.TermsNotAcceptedException;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceProperty;
-import eki.ekilex.data.WordForum;
 import eki.ekilex.data.api.FreeformOwner;
 import eki.ekilex.data.api.Word;
-import eki.ekilex.data.api.WordClassifier;
-import eki.ekilex.data.api.WordFreeform;
-import eki.ekilex.data.api.WordRelation;
 import eki.ekilex.service.db.ActivityLogDbService;
 import eki.ekilex.service.db.LookupDbService;
 import eki.ekilex.service.db.PermissionDbService;
@@ -283,45 +278,9 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	}
 
 	@Transactional
-	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, Word word) {
-
-		Long wordId = word.getWordId();
-		return isWordCrudGranted(principal, crudRoleDataset, wordId);
-	}
-
-	@Transactional
-	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, WordFreeform wordFreeform) {
-
-		Long wordId = wordFreeform.getWordId();
-		return isWordCrudGranted(principal, crudRoleDataset, wordId);
-	}
-
-	@Transactional
-	public boolean isWordFreeformCrudGranted(Principal principal, String crudRoleDataset, WordFreeform wordFreeform) {
-
-		Long freeformId = wordFreeform.getFreeformId();
-		Long wordId = lookupDbService.getWordId(freeformId);
-		return isWordCrudGranted(principal, crudRoleDataset, wordId);
-	}
-
-	@Transactional
 	public boolean isWordFreeformCrudGranted(Principal principal, String crudRoleDataset, Long freeformId) {
 
 		Long wordId = lookupDbService.getWordId(freeformId);
-		return isWordCrudGranted(principal, crudRoleDataset, wordId);
-	}
-
-	@Transactional
-	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, WordClassifier wordClassifier) {
-
-		Long wordId = wordClassifier.getWordId();
-		return isWordCrudGranted(principal, crudRoleDataset, wordId);
-	}
-
-	@Transactional
-	public boolean isWordCrudGranted(Principal principal, String crudRoleDataset, WordRelation wordRelation) {
-
-		Long wordId = wordRelation.getWordId();
 		return isWordCrudGranted(principal, crudRoleDataset, wordId);
 	}
 
@@ -349,13 +308,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 	}
 
 	@Transactional
-	public boolean isWordForumCrudGranted(Principal principal, WordForum wordForum) {
-
-		Long wordForumId = wordForum.getId();
-		return isWordForumCrudGranted(principal, wordForumId);
-	}
-
-	@Transactional
 	public boolean isWordForumCrudGranted(Principal principal, Long wordForumId) {
 
 		EkiUser user = (EkiUser) principal;
@@ -367,13 +319,6 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 
 		boolean isGranted = permissionDbService.isGrantedForWordForum(userId, wordForumId);
 		return isGranted;
-	}
-
-	@Transactional
-	public boolean isMeaningForumCrudGranted(Principal principal, MeaningForum meaningForum) {
-
-		Long meaningForumId = meaningForum.getId();
-		return isMeaningForumCrudGranted(principal, meaningForumId);
 	}
 
 	@Transactional

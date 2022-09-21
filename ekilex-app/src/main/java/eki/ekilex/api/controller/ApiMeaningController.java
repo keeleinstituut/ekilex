@@ -41,7 +41,7 @@ public class ApiMeaningController extends AbstractApiController {
 	}
 
 	@Order(802)
-	@PreAuthorize("principal.apiCrud && @permEval.isMeaningForumCrudGranted(principal, #meaningForum)")
+	@PreAuthorize("principal.apiCrud && @permEval.isMeaningForumCrudGranted(principal, #meaningForum.id)")
 	@PostMapping(API_SERVICES_URI + MEANING_FORUM_URI + UPDATE_URI)
 	@ResponseBody
 	public ApiResponse updateMeaningForum(@RequestBody MeaningForum meaningForum) {
