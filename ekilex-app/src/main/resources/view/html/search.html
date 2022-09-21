@@ -483,7 +483,14 @@
                             th:text="${meaningAttribute}">attribute name</option>
                   </select>
                 </div>
-                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_NOTE'}">
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'WORD_FORUM'}">
+                  <input type="text" class="form-control"
+                         th:value="${criteria.searchValue}"
+                         th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                         autocomplete="off">
+                  <div class="invalid-feedback d-block" th:text="${criteria.validationMessage}">warning</div>
+                </div>
+                <div class="value-input-container col-auto flex-grow-1 flex-shrink-1" th:if="${criteria.searchKey.name() == 'MEANING_FORUM'}">
                   <input type="text" class="form-control"
                          th:value="${criteria.searchValue}"
                          th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
@@ -750,7 +757,10 @@
                 <option th:each="meaningAttribute : ${meaningAttributes}" th:value="${meaningAttribute}" th:text="${meaningAttribute}">attribute name</option>
               </select>
             </div>
-            <div name="WORD_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+            <div name="WORD_FORUM" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
+              <input type="text" class="form-control" autocomplete="off">
+            </div>
+            <div name="MEANING_FORUM" class="value-input-container col-auto flex-grow-1 flex-shrink-1">
               <input type="text" class="form-control" autocomplete="off">
             </div>
             <div name="LEXEME_NOTE" class="value-input-container col-auto flex-grow-1 flex-shrink-1">

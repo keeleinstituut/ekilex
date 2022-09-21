@@ -187,8 +187,11 @@ public class EditController extends AbstractMutableDataPageController {
 			cudService.createMeaningNote(itemData.getId(), itemValue, language, itemData.getComplexity(), itemData.isPublic(), isManualEventOnUpdateEnabled);
 			sessionBean.setRecentNoteLanguage(language);
 			break;
-		case "word_note":
-			cudService.createWordNoteWithDuplication(itemData.getId(), itemValue, user, isManualEventOnUpdateEnabled);
+		case "meaning_forum":
+			cudService.createMeaningForum(itemData.getId(), itemValue, user);
+			break;
+		case "word_forum":
+			cudService.createWordForum(itemData.getId(), itemValue, user);
 			break;
 		case "meaning_image":
 			cudService.createMeaningImage(itemData.getId(), itemValue, itemData.getComplexity(), isManualEventOnUpdateEnabled);
@@ -344,8 +347,11 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_note":
 			cudService.updateMeaningNote(itemId, itemValue, itemLanguage, itemComplexity, isPublic, isManualEventOnUpdateEnabled);
 			break;
-		case "word_note":
-			cudService.updateWordNote(itemId, itemValue, isManualEventOnUpdateEnabled);
+		case "meaning_forum":
+			cudService.updateMeaningForum(itemId, itemValue, user);
+			break;
+		case "word_forum":
+			cudService.updateWordForum(itemId, itemValue, user);
 			break;
 		case "meaning_image":
 			cudService.updateMeaningImage(itemId, itemValue, itemComplexity, isManualEventOnUpdateEnabled);
@@ -603,6 +609,12 @@ public class EditController extends AbstractMutableDataPageController {
 		case "meaning_note":
 			cudService.deleteMeaningNote(id, isManualEventOnUpdateEnabled);
 			break;
+		case "meaning_forum":
+			cudService.deleteMeaningForum(id);
+			break;
+		case "word_forum":
+			cudService.deleteWordForum(id);
+			break;
 		case "meaning_relation":
 			response = cudService.deleteMeaningRelation(id, response, isManualEventOnUpdateEnabled);
 			break;
@@ -635,9 +647,6 @@ public class EditController extends AbstractMutableDataPageController {
 			break;
 		case "word_vocal_form":
 			cudService.updateWordVocalForm(id, null, isManualEventOnUpdateEnabled);
-			break;
-		case "word_note":
-			cudService.deleteWordNote(id, isManualEventOnUpdateEnabled);
 			break;
 		case "image_title":
 			cudService.deleteImageTitle(id, isManualEventOnUpdateEnabled);

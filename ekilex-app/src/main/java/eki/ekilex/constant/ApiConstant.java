@@ -22,7 +22,9 @@ public interface ApiConstant {
 
 	String WORD_RELATION_URI = "/word_relation";
 
-	String WORD_NOTE_URI = "/word_note";
+	String WORD_FORUM_URI = "/word_forum";
+
+	String MEANING_FORUM_URI = "/meaning_forum";
 
 	String OD_WORD_RECOMMENDATION = "/od_word_recommendation";
 

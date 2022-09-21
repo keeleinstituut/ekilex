@@ -17,10 +17,12 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static org.jooq.impl.DSL.field;
 
 import java.util.List;
@@ -821,6 +823,25 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 				.fetchInto(String.class);
 
 		return CollectionUtils.containsAll(permittedDatasets, linkedDatasets);
+	}
+
+	public boolean isGrantedForWordForum(Long userId, Long wordForumId) {
+
+		return create
+				.select(field(DSL.count(WORD_FORUM.ID).eq(1)).as("is_granted"))
+				.from(WORD_FORUM)
+				.where(WORD_FORUM.ID.eq(wordForumId).and(WORD_FORUM.CREATOR_ID.eq(userId)))
+				.fetchSingleInto(Boolean.class);
+
+	}
+
+	public boolean isGrantedForMeaningForum(Long userId, Long meaningForumId) {
+
+		return create
+				.select(field(DSL.count(MEANING_FORUM.ID).eq(1)).as("is_granted"))
+				.from(MEANING_FORUM)
+				.where(MEANING_FORUM.ID.eq(meaningForumId).and(MEANING_FORUM.CREATOR_ID.eq(userId)))
+				.fetchSingleInto(Boolean.class);
 	}
 
 	public boolean isMasterUser(Long userId) {

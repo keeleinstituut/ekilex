@@ -320,6 +320,16 @@ public class Sequences {
     public static final Sequence<Long> MEANING_DOMAIN_ORDER_BY_SEQ = Internal.createSequence("meaning_domain_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
+     * The sequence <code>public.meaning_forum_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_FORUM_ID_SEQ = Internal.createSequence("meaning_forum_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.meaning_forum_order_by_seq</code>
+     */
+    public static final Sequence<Long> MEANING_FORUM_ORDER_BY_SEQ = Internal.createSequence("meaning_forum_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
      * The sequence <code>public.meaning_freeform_id_seq</code>
      */
     public static final Sequence<Long> MEANING_FREEFORM_ID_SEQ = Internal.createSequence("meaning_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
@@ -493,6 +503,16 @@ public class Sequences {
      * The sequence <code>public.word_etymology_source_link_order_by_seq</code>
      */
     public static final Sequence<Long> WORD_ETYMOLOGY_SOURCE_LINK_ORDER_BY_SEQ = Internal.createSequence("word_etymology_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_forum_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_FORUM_ID_SEQ = Internal.createSequence("word_forum_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+
+    /**
+     * The sequence <code>public.word_forum_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_FORUM_ORDER_BY_SEQ = Internal.createSequence("word_forum_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.word_freeform_id_seq</code>

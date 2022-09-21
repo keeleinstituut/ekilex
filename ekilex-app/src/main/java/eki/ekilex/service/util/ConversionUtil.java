@@ -81,7 +81,6 @@ import eki.ekilex.data.WordEtymRel;
 import eki.ekilex.data.WordEtymTuple;
 import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordNote;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.WordRelationDetails;
 
@@ -294,8 +293,6 @@ public class ConversionUtil implements GlobalConstant {
 					((LexemeNote) note).setLexemeId(parentId);
 				} else if (note instanceof MeaningNote) {
 					((MeaningNote) note).setMeaningId(parentId);
-				} else if (note instanceof WordNote) {
-					((WordNote) note).setWordId(parentId);
 				}
 				noteMap.put(noteId, note);
 				notes.add(note);

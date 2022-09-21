@@ -81,3 +81,60 @@ create type type_mt_lexeme_freeform as (
   modified_by text,
   modified_on timestamp
 );
+
+-- keelendi ja mõiste sisemärkus
+create table word_forum
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  value text not null,
+  value_prese text not null,
+  creator_id bigint references eki_user(id) null,
+  created_by text null,
+  created_on timestamp null,
+  modified_by text null,
+  modified_on timestamp null,
+  order_by bigserial
+);
+alter sequence word_forum_id_seq restart with 10000;
+
+create table meaning_forum
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  value text not null,
+  value_prese text not null,
+  creator_id bigint references eki_user(id) null,
+  created_by text null,
+  created_on timestamp null,
+  modified_by text null,
+  modified_on timestamp null,
+  order_by bigserial
+);
+alter sequence meaning_forum_id_seq restart with 10000;
+
+insert into word_forum(word_id, value, value_prese, created_by, created_on, modified_by, modified_on)
+select wff.word_id, ff.value_text, ff.value_prese, ff.created_by, ff.created_on, ff.modified_by, ff.modified_on
+from word_freeform wff,
+     freeform ff
+where wff.freeform_id = ff.id
+  and ff.type = 'NOTE'
+order by ff.order_by;
+
+update word_forum wf
+set creator_id = eki_user.id
+from (select u1.name, u1.id
+      from eki_user u1
+      where not exists(select u2.id
+                       from eki_user u2
+                       where u2.name = u1.name
+                         and u2.id != u1.id
+                         and u2.created > u1.created)) eki_user
+where wf.created_by = eki_user.name
+  and wf.creator_id is null;
+
+delete
+from freeform ff
+using word_freeform wff
+where wff.freeform_id = ff.id
+  and ff.type = 'NOTE';

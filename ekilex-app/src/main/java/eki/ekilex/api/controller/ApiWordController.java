@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.WordForum;
 import eki.ekilex.data.api.ApiResponse;
 import eki.ekilex.data.api.Word;
 import eki.ekilex.data.api.WordClassifier;
@@ -86,18 +88,17 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(604)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordCrudGranted(principal, #crudRoleDataset, #wordNote)")
-	@PostMapping(API_SERVICES_URI + WORD_NOTE_URI + CREATE_URI)
+	@PreAuthorize("principal.apiCrud")
+	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + CREATE_URI)
 	@ResponseBody
-	public ApiResponse createWordNote(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody WordFreeform wordNote) {
+	public ApiResponse createWordForum(@RequestBody WordForum wordForum) {
 
 		try {
-			Long wordId = wordNote.getWordId();
-			String valuePrese = wordNote.getValuePrese();
+			EkiUser user = userContext.getUser();
+			Long wordId = wordForum.getWordId();
+			String valuePrese = wordForum.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.createWordNote(wordId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.createWordForum(wordId, valuePrese, user);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -140,18 +141,17 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(607)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #wordNote)")
-	@PostMapping(API_SERVICES_URI + WORD_NOTE_URI + UPDATE_URI)
+	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForum)")
+	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + UPDATE_URI)
 	@ResponseBody
-	public ApiResponse updateWordNote(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestBody WordFreeform wordNote) {
+	public ApiResponse updateWordForum(@RequestBody WordForum wordForum) {
 
 		try {
-			Long wordNoteId = wordNote.getFreeformId();
-			String valuePrese = wordNote.getValuePrese();
+			EkiUser user = userContext.getUser();
+			Long wordForumId = wordForum.getId();
+			String valuePrese = wordForum.getValuePrese();
 			valuePrese = valueUtil.trimAndCleanAndRemoveHtmlAndLimit(valuePrese);
-			cudService.updateWordNote(wordNoteId, valuePrese, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.updateWordForum(wordForumId, valuePrese, user);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);
@@ -228,15 +228,13 @@ public class ApiWordController extends AbstractApiController {
 	}
 
 	@Order(612)
-	@PreAuthorize("principal.apiCrud && @permEval.isWordFreeformCrudGranted(principal, #crudRoleDataset, #wordNoteId)")
-	@PostMapping(API_SERVICES_URI + WORD_NOTE_URI + DELETE_URI)
+	@PreAuthorize("principal.apiCrud && @permEval.isWordForumCrudGranted(principal, #wordForumId)")
+	@PostMapping(API_SERVICES_URI + WORD_FORUM_URI + DELETE_URI)
 	@ResponseBody
-	public ApiResponse deleteWordNote(
-			@RequestParam("crudRoleDataset") String crudRoleDataset,
-			@RequestParam("wordNoteId") Long wordNoteId) {
+	public ApiResponse deleteWordForum(@RequestParam("wordForumId") Long wordForumId) {
 
 		try {
-			cudService.deleteWordNote(wordNoteId, MANUAL_EVENT_ON_UPDATE_ENABLED);
+			cudService.deleteWordForum(wordForumId);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

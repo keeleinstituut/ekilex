@@ -1800,5 +1800,50 @@
       </table>
     </div>
   </div>
+  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="meaning_forum">
+    <div class="ekiAccordion__title">
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.meaning.forums)}">•</span>
+      <span th:text="#{lex.meaning.forum}">Sisemärkus</span>
+      <button type="button" class="ekiAccordion__add"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addMeaningForumDlg_' + lexeme.meaningId}"
+              sec:authorize="#vars.userRoleData.crudRoleSelected">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="ekiAccordion__content overflow-auto">
+      <div th:if="${#lists.isEmpty(lexeme.meaning.forums)}" th:text="#{common.no.content}">
+        Sisu puudub...
+      </div>
+      <div th:each="forum : ${lexeme.meaning.forums}">
+        <div th:replace="lexdialog :: edit_meaning_forum_dlg"></div>
+        <div class="col hidden-buttons pr-5">
+          <div class="action-buttons-anchor">
+            <span th:utext="${forum.valuePrese}"></span>
+            <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+            <span class="ctxt" th:text="'(' + ${#dates.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editMeaningForumDlg_' + forum.id}"
+                      sec:authorize="#vars.forum.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      th:data-id="${forum.id}"
+                      data-op-code="meaning_forum"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.forum.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

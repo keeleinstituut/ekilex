@@ -1,6 +1,6 @@
 package eki.ekilex.data;
 
-public class WordNote extends Note {
+public class WordForum extends Forum {
 
 	private static final long serialVersionUID = 1L;
 

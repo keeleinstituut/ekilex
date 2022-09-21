@@ -254,10 +254,9 @@ public class LexSearchController extends AbstractPrivateSearchController {
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		EkiUser user = userContext.getUser();
 		Long userId = user.getId();
-		DatasetPermission userRole = user.getRecentRole();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		boolean isFullData = StringUtils.equals(composition, "full");
-		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, userRole, isFullData);
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId, languagesOrder, userProfile, user, isFullData);
 		lexeme.setLevels(levels);
 		model.addAttribute("lexeme", lexeme);
 

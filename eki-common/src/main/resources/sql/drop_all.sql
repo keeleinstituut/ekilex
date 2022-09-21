@@ -43,6 +43,10 @@ drop type if exists type_word_rel_param;
 drop type if exists type_word_rel_meaning;
 drop type if exists type_classifier;
 drop type if exists type_word_hom_nr_data_tuple;
+drop type if exists type_mt_definition;
+drop type if exists type_mt_lexeme;
+drop type if exists type_mt_word;
+drop type if exists type_mt_lexeme_freeform;
 drop table if exists temp_ds_import_pk_map;
 drop table if exists temp_ds_import_queue;
 drop table if exists feedback_log_comment;
@@ -84,6 +88,7 @@ drop table if exists definition_dataset;
 drop table if exists definition;
 drop table if exists meaning_lifecycle_log;--TODO remove later
 drop table if exists meaning_relation;
+drop table if exists meaning_forum;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning_semantic_type;
@@ -93,6 +98,7 @@ drop table if exists form_frequency;--TODO remove later
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;--TODO remove later
+drop table if exists word_forum;
 drop table if exists word_freeform;
 drop table if exists word_etymology_relation;
 drop table if exists word_etymology;

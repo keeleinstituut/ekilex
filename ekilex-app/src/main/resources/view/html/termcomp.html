@@ -1078,7 +1078,7 @@
         <button type="button" class="btn badge badge-primary"
                 th:title="#{common.edit}"
                 data-toggle="modal"
-                th:data-target="${'#editWordValueDlg_' + lexeme.wordId}"
+                th:data-target="${'#editWordValueDlg_' + lexeme.lexemeId}"
                 sec:authorize="${#vars.lexeme.crudGrant}">
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
@@ -1740,43 +1740,88 @@
       </span>
     </div>
   </div>
-  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_note">
+  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="word_forum">
     <div class="ekiAccordion__title">
-      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.notes)}">•</span>
-      <span th:text="#{term.word.note}">Keelendi märkus</span>
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(lexeme.word.forums)}">•</span>
+      <span th:text="#{term.word.forum}">Keelendi sisemärkus</span>
       <button type="button" class="ekiAccordion__add"
               th:title="#{common.add.new}"
               data-toggle="modal"
-              th:data-target="${'#addWordNoteDlg_' + lexeme.lexemeId}"
-              sec:authorize="#vars.lexeme.word.subGrant">
+              th:data-target="${'#addWordForumDlg_' + lexeme.lexemeId}"
+              sec:authorize="#vars.userRoleData.crudRoleSelected">
         <i class="fa fa-plus" aria-hidden="true"></i>
       </button>
     </div>
     <div class="ekiAccordion__content overflow-auto">
-      <div th:if="${#lists.isEmpty(lexeme.word.notes)}" th:text="#{common.no.content}">
+      <div th:if="${#lists.isEmpty(lexeme.word.forums)}" th:text="#{common.no.content}">
         Sisu puudub...
       </div>
-      <div th:each="note : ${lexeme.word.notes}">
-        <div th:replace="termdialog :: edit_word_note_dlg"></div>
+      <div th:each="forum : ${lexeme.word.forums}">
+        <div th:replace="termdialog :: edit_word_forum_dlg"></div>
         <div class="col hidden-buttons pr-5">
           <div class="action-buttons-anchor">
-            <span th:utext="${note.valuePrese}"></span>
-            <span class="ctxt" th:text="'[' + ${note.modifiedBy} + ']'" th:if="${note.modifiedBy != null}"></span>
-            <span class="ctxt" th:text="'(' + #{'boolean.public.' + ${note.public}} + ')'" th:if="${lexeme.word.crudGrant}"></span>
+            <span th:utext="${forum.valuePrese}"></span>
+            <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+            <span class="ctxt" th:text="'(' + ${#dates.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
             <div class="action-buttons-2">
               <button type="button" class="btn badge badge-primary"
                       th:title="#{common.edit}"
                       data-toggle="modal"
-                      th:data-target="${'#editWordNoteDlg_' + note.id}"
-                      sec:authorize="#vars.lexeme.word.crudGrant">
+                      th:data-target="${'#editWordForumDlg_' + forum.id}"
+                      sec:authorize="#vars.forum.crudGrant">
                 <i class="fa fa-edit" aria-hidden="true"></i>
               </button>
               <button type="button" class="btn badge badge-warning"
-                      th:data-id="${note.id}"
-                      data-op-code="word_note"
+                      th:data-id="${forum.id}"
+                      data-op-code="word_forum"
                       data-toggle="delete-confirm"
                       data-placement="right"
-                      sec:authorize="#vars.lexeme.word.crudGrant">
+                      sec:authorize="#vars.forum.crudGrant">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="border-top px-0 w-100 ekiAccordion__instance" th:fragment="meaning_forum">
+    <div class="ekiAccordion__title">
+      <span class="badge badge-data-exists" th:unless="${#lists.isEmpty(meaning.forums)}">•</span>
+      <span th:text="#{term.meaning.forum}">Tähenduse sisemärkus</span>
+      <button type="button" class="ekiAccordion__add"
+              th:title="#{common.add.new}"
+              data-toggle="modal"
+              th:data-target="${'#addMeaningForumDlg_' + meaningId}"
+              sec:authorize="#vars.userRoleData.crudRoleSelected">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="ekiAccordion__content overflow-auto">
+      <div th:if="${#lists.isEmpty(meaning.forums)}" th:text="#{common.no.content}">
+        Sisu puudub...
+      </div>
+      <div th:each="forum : ${meaning.forums}">
+        <div th:replace="termdialog :: edit_meaning_forum_dlg"></div>
+        <div class="col hidden-buttons pr-5">
+          <div class="action-buttons-anchor">
+            <span th:utext="${forum.valuePrese}"></span>
+            <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+            <span class="ctxt" th:text="'(' + ${#dates.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+            <div class="action-buttons-2">
+              <button type="button" class="btn badge badge-primary"
+                      th:title="#{common.edit}"
+                      data-toggle="modal"
+                      th:data-target="${'#editMeaningForumDlg_' + forum.id}"
+                      sec:authorize="#vars.forum.crudGrant">
+                <i class="fa fa-edit" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      th:data-id="${forum.id}"
+                      data-op-code="meaning_forum"
+                      data-toggle="delete-confirm"
+                      data-placement="right"
+                      sec:authorize="#vars.forum.crudGrant">
                 <i class="fa fa-remove" aria-hidden="true"></i>
               </button>
             </div>

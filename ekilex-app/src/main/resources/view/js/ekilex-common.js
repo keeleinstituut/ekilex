@@ -651,11 +651,12 @@ function openAlertDlg(alertMessage, showAsAlert = true) {
 	alertDlg.find('.modal-footer button').focus();
 };
 */
-function openMessageDlg(message, smallAlert = false) {
+
+function openMessageDlg(message, smallAlert = true) {
 	openAlertDlg(message, smallAlert, false);
 };
 
-function openAlertDlg(alertMessage, smallAlert = false, showAsAlert = true) {
+function openAlertDlg(alertMessage, smallAlert = true, showAsAlert = true) {
 	let warning = null;
 	let success = null;
 	let alertDlg = null;

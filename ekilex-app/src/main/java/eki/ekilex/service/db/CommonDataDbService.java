@@ -34,6 +34,7 @@ import static eki.ekilex.data.db.Tables.LEX_REL_TYPE;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE;
@@ -61,6 +62,7 @@ import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.VALUE_STATE;
 import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
@@ -95,6 +97,7 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.ImageSourceTuple;
 import eki.ekilex.data.LexemeRelation;
+import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.Media;
 import eki.ekilex.data.NoteSourceTuple;
@@ -103,6 +106,7 @@ import eki.ekilex.data.Origin;
 import eki.ekilex.data.SearchLangsRestriction;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+import eki.ekilex.data.WordForum;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.Freeform;
@@ -404,23 +408,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
-	public List<Classifier> getWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		return create
-				.select(
-						getClassifierNameField(ClassifierName.WORD_TYPE),
-						WORD_TYPE_LABEL.CODE,
-						WORD_TYPE_LABEL.VALUE)
-				.from(WORD_WORD_TYPE, WORD_TYPE_LABEL)
-				.where(
-						WORD_WORD_TYPE.WORD_ID.eq(wordId)
-								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_LABEL.CODE))
-								.and(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang))
-								.and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(WORD_WORD_TYPE.ORDER_BY)
-				.fetchInto(Classifier.class);
-	}
-
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#root.methodName, #classifierLabelLang, #classifierLabelTypeCode}")
 	public List<Classifier> getSemanticTypes(String classifierLabelLang, String classifierLabelType) {
 		return create
@@ -496,6 +483,32 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(USAGE_TYPE_LABEL.LANG.eq(classifierLabelLang).and(USAGE_TYPE_LABEL.TYPE.eq(classifierLabelType)).and(USAGE_TYPE_LABEL.CODE.eq(USAGE_TYPE.CODE)))
 				.orderBy(USAGE_TYPE.ORDER_BY)
 				.fetchInto(Classifier.class);
+	}
+
+	public List<Classifier> getWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.WORD_TYPE),
+						WORD_TYPE_LABEL.CODE,
+						WORD_TYPE_LABEL.VALUE)
+				.from(WORD_WORD_TYPE, WORD_TYPE_LABEL)
+				.where(
+						WORD_WORD_TYPE.WORD_ID.eq(wordId)
+								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_LABEL.CODE))
+								.and(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang))
+								.and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.orderBy(WORD_WORD_TYPE.ORDER_BY)
+				.fetchInto(Classifier.class);
+	}
+
+	public List<WordForum> getWordForums(Long wordId) {
+
+		return create
+				.selectFrom(WORD_FORUM)
+				.where(WORD_FORUM.WORD_ID.eq(wordId))
+				.orderBy(WORD_FORUM.ORDER_BY.desc())
+				.fetchInto(WordForum.class);
 	}
 
 	public eki.ekilex.data.Meaning getMeaning(Long meaningId) {
@@ -1001,6 +1014,15 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.fetchInto(Classifier.class);
 	}
 
+	public List<MeaningForum> getMeaningForums(Long meaningId) {
+
+		return create
+				.selectFrom(MEANING_FORUM)
+				.where(MEANING_FORUM.MEANING_ID.eq(meaningId))
+				.orderBy(MEANING_FORUM.ORDER_BY.desc())
+				.fetchInto(MeaningForum.class);
+	}
+
 	public List<FreeForm> getLexemeFreeforms(Long lexemeId, String... excludedTypes) {
 		return create
 				.select(
@@ -1244,34 +1266,6 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.where(MEANING_TAG.MEANING_ID.eq(meaningId))
 				.orderBy(MEANING_TAG.CREATED_ON)
 				.fetchInto(String.class);
-	}
-
-	public List<NoteSourceTuple> getWordNoteSourceTuples(Long wordId) {
-
-		return create
-				.select(
-						FREEFORM.ID.as("freeform_id"),
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_PRESE,
-						FREEFORM.LANG,
-						FREEFORM.COMPLEXITY,
-						FREEFORM.IS_PUBLIC,
-						FREEFORM.ORDER_BY,
-						FREEFORM.MODIFIED_BY,
-						FREEFORM.MODIFIED_ON,
-						FREEFORM_SOURCE_LINK.ID.as("source_link_id"),
-						FREEFORM_SOURCE_LINK.TYPE.as("source_link_type"),
-						FREEFORM_SOURCE_LINK.NAME.as("source_link_name"),
-						FREEFORM_SOURCE_LINK.VALUE.as("source_link_value"),
-						FREEFORM_SOURCE_LINK.SOURCE_ID.as("source_id"))
-				.from(WORD_FREEFORM, FREEFORM.leftOuterJoin(FREEFORM_SOURCE_LINK)
-						.on(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(FREEFORM.ID)))
-				.where(
-						WORD_FREEFORM.WORD_ID.eq(wordId)
-								.and(FREEFORM.ID.eq(WORD_FREEFORM.FREEFORM_ID))
-								.and(FREEFORM.TYPE.eq(FreeformType.NOTE.name())))
-				.orderBy(FREEFORM.ORDER_BY)
-				.fetchInto(NoteSourceTuple.class);
 	}
 
 	private Field<String> getClassifierNameField(ClassifierName classifierName) {

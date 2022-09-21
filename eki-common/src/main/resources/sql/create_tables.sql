@@ -44,7 +44,56 @@ create type type_value_name_lang as (
   value_id bigint,
   value text,
   name text,
-  lang char(3));
+  lang char(3)
+);
+
+create type type_mt_definition as (
+  definition_id bigint,
+  definition_type_code varchar(100),
+  value text,
+  value_prese text,
+  lang char(3),
+  complexity varchar(100),
+  is_public boolean
+);
+
+create type type_mt_lexeme as (
+  lexeme_id bigint,
+  word_id bigint,
+  meaning_id bigint,
+  dataset_code varchar(10),
+  is_public boolean
+);
+
+create type type_mt_word as (
+  lexeme_id bigint,
+  word_id bigint,
+  value text,
+  value_prese text,
+  lang char(3),
+  homonym_nr integer,
+  display_morph_code varchar(100),
+  gender_code varchar(100),
+  aspect_code varchar(100),
+  vocal_form text,
+  morphophono_form text,
+  manual_event_on timestamp
+);
+
+create type type_mt_lexeme_freeform as (
+  lexeme_id bigint,
+  freeform_id bigint,
+  "type" varchar(100),
+  value_text text,
+  value_prese text,
+  lang char(3),
+  complexity varchar(100),
+  is_public boolean,
+  created_by text,
+  created_on timestamp,
+  modified_by text,
+  modified_on timestamp
+);
 
 create table terms_of_use
 (
@@ -701,6 +750,22 @@ create table word_freeform
 );
 alter sequence word_freeform_id_seq restart with 10000;
 
+-- keelendi sisemärkus
+create table word_forum
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  value text not null,
+  value_prese text not null,
+  creator_id bigint references eki_user(id) null,
+  created_by text null,
+  created_on timestamp null,
+  modified_by text null,
+  modified_on timestamp null,
+  order_by bigserial
+);
+alter sequence word_forum_id_seq restart with 10000;
+
 -- paradigma
 create table paradigm
 (
@@ -797,6 +862,22 @@ create table meaning_freeform
   unique(meaning_id, freeform_id)
 );
 alter sequence meaning_freeform_id_seq restart with 10000;
+
+-- mõiste sisemärkus
+create table meaning_forum
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  value text not null,
+  value_prese text not null,
+  creator_id bigint references eki_user(id) null,
+  created_by text null,
+  created_on timestamp null,
+  modified_by text null,
+  modified_on timestamp null,
+  order_by bigserial
+);
+alter sequence meaning_forum_id_seq restart with 10000;
 
 create table meaning_tag
 (

@@ -20,8 +20,10 @@ import eki.common.constant.ReferenceOwner;
 import eki.common.exception.TermsNotAcceptedException;
 import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.MeaningForum;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.SourceProperty;
+import eki.ekilex.data.WordForum;
 import eki.ekilex.data.api.FreeformOwner;
 import eki.ekilex.data.api.Word;
 import eki.ekilex.data.api.WordClassifier;
@@ -343,6 +345,48 @@ public class EkilexPermissionEvaluator implements PermissionEvaluator, PermConst
 			return true;
 		}
 		boolean isGranted = permissionDbService.isGrantedForWord(userId, crudRole, wordId, AUTH_ITEM_DATASET, AUTH_OPS_CRUD);
+		return isGranted;
+	}
+
+	@Transactional
+	public boolean isWordForumCrudGranted(Principal principal, WordForum wordForum) {
+
+		Long wordForumId = wordForum.getId();
+		return isWordForumCrudGranted(principal, wordForumId);
+	}
+
+	@Transactional
+	public boolean isWordForumCrudGranted(Principal principal, Long wordForumId) {
+
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		boolean isAdmin = user.isAdmin();
+		if (isAdmin) {
+			return true;
+		}
+
+		boolean isGranted = permissionDbService.isGrantedForWordForum(userId, wordForumId);
+		return isGranted;
+	}
+
+	@Transactional
+	public boolean isMeaningForumCrudGranted(Principal principal, MeaningForum meaningForum) {
+
+		Long meaningForumId = meaningForum.getId();
+		return isMeaningForumCrudGranted(principal, meaningForumId);
+	}
+
+	@Transactional
+	public boolean isMeaningForumCrudGranted(Principal principal, Long meaningForumId) {
+
+		EkiUser user = (EkiUser) principal;
+		Long userId = user.getId();
+		boolean isAdmin = user.isAdmin();
+		if (isAdmin) {
+			return true;
+		}
+
+		boolean isGranted = permissionDbService.isGrantedForMeaningForum(userId, meaningForumId);
 		return isGranted;
 	}
 

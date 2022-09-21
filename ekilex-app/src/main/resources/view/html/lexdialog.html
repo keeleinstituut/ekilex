@@ -2271,22 +2271,22 @@
       </div>
     </div>
   </div>
-  <div th:id="${'addWordNoteDlg_' + wordId}" class="modal"
-        role="dialog"
-        th:fragment="add_word_note_dlg"
-        data-plugin="initEkiEditorDlgAndFocusPlugin">
+  <div th:id="${'addWordForumDlg_' + wordId}" class="modal"
+       role="dialog"
+       th:fragment="add_word_forum_dlg"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/create_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title" th:text="#{lex.add.word.note}">Lisa keelendi märkus</h5>
+            <h5 class="modal-title" th:text="#{lex.add.word.forum}">Lisa sisemärkus</h5>
             <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
             <input type="hidden" name="id" th:value="${wordId}">
-            <input type="hidden" name="opCode" value="word_note">
+            <input type="hidden" name="opCode" value="word_forum">
             <input type="hidden" name="value">
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
@@ -2298,23 +2298,77 @@
       </div>
     </div>
   </div>
-  <div th:id="${'editWordNoteDlg_' + note.id}" class="modal"
-        role="dialog"
-        th:fragment="edit_word_note_dlg"
-        data-plugin="initEkiEditorDlgAndFocusPlugin">
+  <div th:id="${'editWordForumDlg_' + forum.id}" class="modal"
+       role="dialog"
+       th:fragment="edit_word_forum_dlg"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
     <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <form th:action="@{/update_item}" method="post">
           <div class="modal-header">
-            <h5 class="modal-title" th:text="#{lex.edit.word.note}">Muuda keelendi märkust</h5>
+            <h5 class="modal-title" th:text="#{lex.edit.word.forum}">Muuda sisemärkust</h5>
             <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <input type="hidden" name="id" th:value="${note.id}">
-            <input type="hidden" name="opCode" value="word_note">
-            <input type="hidden" name="value" th:value="${note.valuePrese}">
+            <input type="hidden" name="id" th:value="${forum.id}">
+            <input type="hidden" name="opCode" value="word_forum">
+            <input type="hidden" name="value" th:value="${forum.valuePrese}">
+            <div th:replace="components :: eki_editor_elem"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addMeaningForumDlg_' + lexeme.meaningId}" class="modal"
+       role="dialog"
+       th:fragment="add_meaning_forum_dlg"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/create_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.add.meaning.forum}">Lisa sisemärkus</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${lexeme.meaningId}">
+            <input type="hidden" name="opCode" value="meaning_forum">
+            <input type="hidden" name="value">
+            <div th:replace="components :: eki_editor_elem"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.add}">Lisa</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editMeaningForumDlg_' + forum.id}" class="modal"
+       role="dialog"
+       th:fragment="edit_meaning_forum_dlg"
+       data-plugin="initEkiEditorDlgAndFocusPlugin">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-header">
+            <h5 class="modal-title" th:text="#{lex.edit.meaning.forum}">Muuda sisemärkust</h5>
+            <button type="button" class="close" aria-label="Close" data-role="close" data-dismiss="modal">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${forum.id}">
+            <input type="hidden" name="opCode" value="meaning_forum">
+            <input type="hidden" name="value" th:value="${forum.valuePrese}">
             <div th:replace="components :: eki_editor_elem"></div>
           </div>
           <div class="modal-footer">
