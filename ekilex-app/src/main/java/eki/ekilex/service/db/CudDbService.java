@@ -949,6 +949,19 @@ public class CudDbService extends AbstractDataDbService {
 		meaningForumRecord.store();
 	}
 
+	public void createMeaningForum(Long meaningId, String value, Timestamp createdOn, String createdBy) {
+
+		MeaningForumRecord meaningForumRecord = create.newRecord(MEANING_FORUM);
+		meaningForumRecord.setMeaningId(meaningId);
+		meaningForumRecord.setValue(value);
+		meaningForumRecord.setValuePrese(value);
+		meaningForumRecord.setCreatedBy(createdBy);
+		meaningForumRecord.setCreatedOn(createdOn);
+		meaningForumRecord.setModifiedBy(createdBy);
+		meaningForumRecord.setModifiedOn(createdOn);
+		meaningForumRecord.store();
+	}
+
 	public Long createMeaningDomain(Long meaningId, Classifier domain) {
 		Long meaningDomainId = create
 				.select(MEANING_DOMAIN.ID).from(MEANING_DOMAIN)

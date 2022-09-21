@@ -54,11 +54,17 @@
 			</properties>
 		</profile>
 		<profile>
-      <id>plimp</id>
-      <properties>
-        <spring.boot.mainclass>eki.ekilex.cli.LexemeProficiencyLevelImporter</spring.boot.mainclass>
-      </properties>
-    </profile>
+			<id>plimp</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.LexemeProficiencyLevelImporter</spring.boot.mainclass>
+			</properties>
+		</profile>
+		<profile>
+			<id>mfimp</id>
+			<properties>
+				<spring.boot.mainclass>eki.ekilex.cli.MeaningForumImporter</spring.boot.mainclass>
+			</properties>
+		</profile>
 	</profiles>
 
 	<build>
