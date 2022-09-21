@@ -49,7 +49,7 @@ public class FedTermUploadController extends AbstractPrivatePageController {
 		return FEDTERM_UPLOAD_PAGE;
 	}
 
-	@PostMapping(FEDTERM_UPLOAD_URI)
+	@PostMapping(value = FEDTERM_UPLOAD_URI, params = "upload")
 	public String uploadDataset(@RequestParam("datasetCode") String datasetCode) throws Exception {
 
 		EkiUser user = userContext.getUser();
@@ -57,5 +57,13 @@ public class FedTermUploadController extends AbstractPrivatePageController {
 		queueService.queue(fedTermUploadQueueSteps);
 
 		return REDIRECT_PREF + FEDTERM_UPLOAD_URI;
+	}
+
+	@PostMapping(value = FEDTERM_UPLOAD_URI, params = "delete")
+	public String deleteDataset(@RequestParam("datasetCode") String datasetCode) throws Exception {
+
+		fedTermUploadService.deleteFedTermCollection(datasetCode);
+
+		return REDIRECT_PREF + FEDTERM_UPLOAD_URI;		
 	}
 }
