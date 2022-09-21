@@ -1078,7 +1078,7 @@
         <button type="button" class="btn badge badge-primary"
                 th:title="#{common.edit}"
                 data-toggle="modal"
-                th:data-target="${'#editWordValueDlg_' + lexeme.wordId}"
+                th:data-target="${'#editWordValueDlg_' + lexeme.lexemeId}"
                 sec:authorize="${#vars.lexeme.crudGrant}">
           <i class="fa fa-edit" aria-hidden="true"></i>
         </button>
