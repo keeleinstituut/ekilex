@@ -162,13 +162,25 @@ public class FedTermUploadService implements InitializingBean {
 
 		Dataset dataset = datasetDbService.getDataset(datasetCode);
 		String fedTermCollectionId = dataset.getFedTermCollectionId();
+		Map<String, Object> collectionMessageMap = composeFedTermCollectionMessageMap(dataset);
+		String collectionMessageJson = convertToJson(collectionMessageMap);
 		if (StringUtils.isBlank(fedTermCollectionId)) {
-			Map<String, Object> collectionMessageMap = composeFedTermCollectionMessageMap(dataset);
-			String collectionMessageJson = convertToJson(collectionMessageMap);
 			fedTermCollectionId = fedTermClient.createFedTermCollection(datasetCode, collectionMessageJson);
 			datasetDbService.setFedTermCollectionId(datasetCode, fedTermCollectionId);
+		} else {
+			//TODO should work by API spec but doesn't
+			//fedTermClient.updateFedTermCollection(datasetCode, fedTermCollectionId, collectionMessageJson);
 		}
 		return fedTermCollectionId;
+	}
+
+	@Transactional
+	public void deleteFedTermCollection(String datasetCode) throws Exception {
+
+		Dataset dataset = datasetDbService.getDataset(datasetCode);
+		String fedTermCollectionId = dataset.getFedTermCollectionId();
+		datasetDbService.setFedTermCollectionId(datasetCode, null);
+		fedTermClient.deleteFedTermCollection(datasetCode, fedTermCollectionId);
 	}
 
 	@Transactional
@@ -372,18 +384,22 @@ public class FedTermUploadService implements InitializingBean {
 		collectionMessageMap.put("allowsUsesBesidesDGT", Boolean.TRUE);
 		collectionMessageMap.put("appropriatnessForDSI", Boolean.TRUE);
 		collectionMessageMap.put("attributionText", datasetDescription);
-		collectionMessageMap.put("cpEmail", "eki@eki.ee");
+		/* 
+		 * temporarily removed
+		 *  
 		collectionMessageMap.put("cpName", "n/a");
-		collectionMessageMap.put("cpOrganization", "Institute of the Estonian Language");
 		collectionMessageMap.put("cpSurname", "n/a");
-		collectionMessageMap.put("iprEmail", "eki@eki.ee");
+		collectionMessageMap.put("cpOrganization", "Institute of the Estonian Language");
+		collectionMessageMap.put("cpEmail", "eki@eki.ee");
 		collectionMessageMap.put("iprName", "n/a");
-		collectionMessageMap.put("iprOrganization", "Institute of the Estonian Language");
 		collectionMessageMap.put("iprSurname", "n/a");
+		collectionMessageMap.put("iprOrganization", "Institute of the Estonian Language");
+		collectionMessageMap.put("iprEmail", "eki@eki.ee");
+		*/
 		collectionMessageMap.put("isPSI", Boolean.FALSE);
 		collectionMessageMap.put("licence", "CC-BY-4.0");
 		collectionMessageMap.put("originalName", datasetName);
-		collectionMessageMap.put("originalNameLang", "et");
+		//collectionMessageMap.put("originalNameLang", "et");
 		collectionMessageMap.put("restrictionsOfUse", "No restrictions, you are welcome to use");
 		collectionMessageMap.put("sourceURL", datasetLandingPageUrlWithDatasetCode);
 

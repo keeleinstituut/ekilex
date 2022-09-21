@@ -48,7 +48,7 @@
               <th class="m-1 p-1" style="width: 10%" th:text="#{fedterm.contacts}">Kontaktid</th>
               <th class="m-1 p-1" style="width: 5%" th:text="#{fedterm.domain.id}">Domain ID</th>
               <th class="m-1 p-1" style="width: 5%" th:text="#{fedterm.collection.id}">Collection ID</th>
-              <th class="m-1 p-1" style="width: 4%"></th>
+              <th class="m-1 p-1" style="width: 5%"></th>
             </tr>
             <th:block th:each="dataset : ${datasets}"
                       th:with="
@@ -78,11 +78,14 @@
                   </th:block>
                 </td>
                 <td class="m-1 p-1 pl-2 border-left">
-                  <th:block th:if="${isAdmin && dataset.public && isFedTermAccessEnabled && fedTermDomainExists}">
+                  <th:block th:if="${isAdmin && isFedTermAccessEnabled}">
                     <form th:action="@{/fedtermupload}" method="post">
                       <input type="hidden" name="datasetCode" th:value="${dataset.code}">
-                      <button type="submit" class="btn badge badge-primary" th:title="#{fedterm.send}">
+                      <button type="submit" name="upload" class="btn badge badge-primary" th:title="#{fedterm.send}" th:if="${fedTermDomainExists}">
                         <i class="fa fa-upload" aria-hidden="true"></i>
+                      </button>
+                      <button type="submit" name="delete" class="btn badge badge-warning" th:title="#{fedterm.delete}" th:if="${fedTermCollectionExists}">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
                       </button>
                     </form>
                   </th:block>
