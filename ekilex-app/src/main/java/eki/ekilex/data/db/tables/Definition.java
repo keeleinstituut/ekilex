@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = -978489931;
+    private static final long serialVersionUID = -1015503901;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -134,7 +134,7 @@ public class Definition extends TableImpl<DefinitionRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DEFINITION_COMPLEXITY_IDX, Indexes.DEFINITION_LANG_IDX, Indexes.DEFINITION_MEANING_ID_IDX);
+        return Arrays.<Index>asList(Indexes.DEFINITION_COMPLEXITY_IDX, Indexes.DEFINITION_IS_PUBLIC_IDX, Indexes.DEFINITION_LANG_IDX, Indexes.DEFINITION_MEANING_ID_IDX);
     }
 
     @Override

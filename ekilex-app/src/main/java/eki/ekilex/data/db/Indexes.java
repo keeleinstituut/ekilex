@@ -101,6 +101,7 @@ public class Indexes {
     public static final Index DATASET_PERM_DATASET_FULL_CMPLX_IDX = Indexes0.DATASET_PERM_DATASET_FULL_CMPLX_IDX;
     public static final Index DATASET_PERM_USER_ID_IDX = Indexes0.DATASET_PERM_USER_ID_IDX;
     public static final Index DEFINITION_COMPLEXITY_IDX = Indexes0.DEFINITION_COMPLEXITY_IDX;
+    public static final Index DEFINITION_IS_PUBLIC_IDX = Indexes0.DEFINITION_IS_PUBLIC_IDX;
     public static final Index DEFINITION_LANG_IDX = Indexes0.DEFINITION_LANG_IDX;
     public static final Index DEFINITION_MEANING_ID_IDX = Indexes0.DEFINITION_MEANING_ID_IDX;
     public static final Index DEFINITION_FREEFORM_DEFINITION_ID_IDX = Indexes0.DEFINITION_FREEFORM_DEFINITION_ID_IDX;
@@ -125,6 +126,7 @@ public class Indexes {
     public static final Index FORM_FREQ_RANK_IDX = Indexes0.FORM_FREQ_RANK_IDX;
     public static final Index FORM_FREQ_VALUE_IDX = Indexes0.FORM_FREQ_VALUE_IDX;
     public static final Index FREEFORM_COMPLEXITY_IDX = Indexes0.FREEFORM_COMPLEXITY_IDX;
+    public static final Index FREEFORM_IS_PUBLIC_IDX = Indexes0.FREEFORM_IS_PUBLIC_IDX;
     public static final Index FREEFORM_LANG_IDX = Indexes0.FREEFORM_LANG_IDX;
     public static final Index FREEFORM_PARENT_ID_IDX = Indexes0.FREEFORM_PARENT_ID_IDX;
     public static final Index FREEFORM_TYPE_IDX = Indexes0.FREEFORM_TYPE_IDX;
@@ -200,6 +202,7 @@ public class Indexes {
     public static final Index TEMP_DS_IMPORT_QUEUE_IMPORT_CODE_IDX = Indexes0.TEMP_DS_IMPORT_QUEUE_IMPORT_CODE_IDX;
     public static final Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Indexes0.TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
+    public static final Index WORD_IS_PUBLIC_IDX = Indexes0.WORD_IS_PUBLIC_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
     public static final Index WORD_MANUAL_EVENT_ON_IDX = Indexes0.WORD_MANUAL_EVENT_ON_IDX;
     public static final Index WORD_MORPHOPHONO_FORM_IDX = Indexes0.WORD_MORPHOPHONO_FORM_IDX;
@@ -258,6 +261,7 @@ public class Indexes {
         public static Index DATASET_PERM_DATASET_FULL_CMPLX_IDX = Internal.createIndex("dataset_perm_dataset_full_cmplx_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM, DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.AUTH_LANG }, false);
         public static Index DATASET_PERM_USER_ID_IDX = Internal.createIndex("dataset_perm_user_id_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.USER_ID }, false);
         public static Index DEFINITION_COMPLEXITY_IDX = Internal.createIndex("definition_complexity_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.COMPLEXITY }, false);
+        public static Index DEFINITION_IS_PUBLIC_IDX = Internal.createIndex("definition_is_public_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.IS_PUBLIC }, false);
         public static Index DEFINITION_LANG_IDX = Internal.createIndex("definition_lang_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.LANG }, false);
         public static Index DEFINITION_MEANING_ID_IDX = Internal.createIndex("definition_meaning_id_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.MEANING_ID }, false);
         public static Index DEFINITION_FREEFORM_DEFINITION_ID_IDX = Internal.createIndex("definition_freeform_definition_id_idx", DefinitionFreeform.DEFINITION_FREEFORM, new OrderField[] { DefinitionFreeform.DEFINITION_FREEFORM.DEFINITION_ID }, false);
@@ -282,6 +286,7 @@ public class Indexes {
         public static Index FORM_FREQ_RANK_IDX = Internal.createIndex("form_freq_rank_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.RANK }, false);
         public static Index FORM_FREQ_VALUE_IDX = Internal.createIndex("form_freq_value_idx", FormFreq.FORM_FREQ, new OrderField[] { FormFreq.FORM_FREQ.VALUE }, false);
         public static Index FREEFORM_COMPLEXITY_IDX = Internal.createIndex("freeform_complexity_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.COMPLEXITY }, false);
+        public static Index FREEFORM_IS_PUBLIC_IDX = Internal.createIndex("freeform_is_public_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.IS_PUBLIC }, false);
         public static Index FREEFORM_LANG_IDX = Internal.createIndex("freeform_lang_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.LANG }, false);
         public static Index FREEFORM_PARENT_ID_IDX = Internal.createIndex("freeform_parent_id_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.PARENT_ID }, false);
         public static Index FREEFORM_TYPE_IDX = Internal.createIndex("freeform_type_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.TYPE }, false);
@@ -357,6 +362,7 @@ public class Indexes {
         public static Index TEMP_DS_IMPORT_QUEUE_IMPORT_CODE_IDX = Internal.createIndex("temp_ds_import_queue_import_code_idx", TempDsImportQueue.TEMP_DS_IMPORT_QUEUE, new OrderField[] { TempDsImportQueue.TEMP_DS_IMPORT_QUEUE.IMPORT_CODE }, false);
         public static Index TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX = Internal.createIndex("temp_ds_import_queue_table_name_idx", TempDsImportQueue.TEMP_DS_IMPORT_QUEUE, new OrderField[] { TempDsImportQueue.TEMP_DS_IMPORT_QUEUE.TABLE_NAME }, false);
         public static Index WORD_HOMONYM_NR_IDX = Internal.createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
+        public static Index WORD_IS_PUBLIC_IDX = Internal.createIndex("word_is_public_idx", Word.WORD, new OrderField[] { Word.WORD.IS_PUBLIC }, false);
         public static Index WORD_LANG_IDX = Internal.createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
         public static Index WORD_MANUAL_EVENT_ON_IDX = Internal.createIndex("word_manual_event_on_idx", Word.WORD, new OrderField[] { Word.WORD.MANUAL_EVENT_ON }, false);
         public static Index WORD_MORPHOPHONO_FORM_IDX = Internal.createIndex("word_morphophono_form_idx", Word.WORD, new OrderField[] { Word.WORD.MORPHOPHONO_FORM }, false);

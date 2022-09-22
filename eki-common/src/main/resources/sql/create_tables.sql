@@ -647,7 +647,8 @@ create table word
   aspect_code varchar(100) references aspect(code) null,
   vocal_form text null,
   morphophono_form text null,
-  manual_event_on timestamp null
+  manual_event_on timestamp null,
+  is_public boolean not null default true
 );
 alter sequence word_id_seq restart with 10000;
 
@@ -899,7 +900,7 @@ create table definition
   value_prese text not null,
   lang char(3) references language(code) not null,
   complexity varchar(100) not null,
-  is_public boolean default true,
+  is_public boolean not null default true,
   order_by bigserial
 );
 alter sequence definition_id_seq restart with 10000;
@@ -955,7 +956,7 @@ create table lexeme
   level2 integer default 0 not null,
   value_state_code varchar(100) references value_state(code) null,
   proficiency_level_code varchar(100) references proficiency_level(code) null,
-  is_public boolean default true not null,
+  is_public boolean not null default true,
   complexity varchar(100) not null,
   weight numeric(5,4) default 1,
   reliability integer null,
@@ -1336,6 +1337,7 @@ create index word_value_as_word_lower_prefix_idx on word(lower(value_as_word) te
 create index word_manual_event_on_idx on word(manual_event_on);
 create index word_morphophono_form_idx on word(morphophono_form);
 create index word_morphophono_form_lower_idx on word(lower(morphophono_form));
+create index word_is_public_idx on word(is_public);
 create index word_etym_word_id_idx on word_etymology(word_id);
 create index word_etym_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_etym_rel_word_etym_id_idx on word_etymology_relation(word_etym_id);
@@ -1363,6 +1365,7 @@ create index lexeme_tag_tag_name_idx on lexeme_tag(tag_name);
 create index definition_meaning_id_idx on definition(meaning_id);
 create index definition_lang_idx on definition(lang);
 create index definition_complexity_idx on definition(complexity);
+create index definition_is_public_idx on definition(is_public);
 create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
 create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
 create index meaning_rel_mapping_code1_idx on meaning_rel_mapping(code1);
@@ -1385,6 +1388,7 @@ create index freeform_value_text_lower_idx on freeform(lower(value_text));
 create index freeform_type_idx on freeform(type);
 create index freeform_lang_idx on freeform(lang);
 create index freeform_complexity_idx on freeform(complexity);
+create index freeform_is_public_idx on freeform(is_public);
 create index source_type_idx on source(type);
 create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);

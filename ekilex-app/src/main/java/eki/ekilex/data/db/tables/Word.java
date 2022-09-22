@@ -19,7 +19,7 @@ import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row12;
+import org.jooq.Row13;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = -1892097240;
+    private static final long serialVersionUID = 1541606235;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -111,6 +111,11 @@ public class Word extends TableImpl<WordRecord> {
     public final TableField<WordRecord, String> MORPHOPHONO_FORM = createField(DSL.name("morphophono_form"), org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
+     * The column <code>public.word.is_public</code>.
+     */
+    public final TableField<WordRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
      * Create a <code>public.word</code> table reference
      */
     public Word() {
@@ -150,7 +155,7 @@ public class Word extends TableImpl<WordRecord> {
 
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_LANG_IDX, Indexes.WORD_MANUAL_EVENT_ON_IDX, Indexes.WORD_MORPHOPHONO_FORM_IDX, Indexes.WORD_VALUE_AS_WORD_IDX, Indexes.WORD_VALUE_IDX);
+        return Arrays.<Index>asList(Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_IS_PUBLIC_IDX, Indexes.WORD_LANG_IDX, Indexes.WORD_MANUAL_EVENT_ON_IDX, Indexes.WORD_MORPHOPHONO_FORM_IDX, Indexes.WORD_VALUE_AS_WORD_IDX, Indexes.WORD_VALUE_IDX);
     }
 
     @Override
@@ -216,11 +221,11 @@ public class Word extends TableImpl<WordRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row12 type methods
+    // Row13 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String> fieldsRow() {
-        return (Row12) super.fieldsRow();
+    public Row13<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String, Boolean> fieldsRow() {
+        return (Row13) super.fieldsRow();
     }
 }

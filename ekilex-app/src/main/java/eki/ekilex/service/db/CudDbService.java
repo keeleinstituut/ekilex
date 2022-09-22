@@ -595,6 +595,48 @@ public class CudDbService extends AbstractDataDbService {
 		}
 	}
 
+	public WordLexemeMeaningIdTuple createPrivateWordAndLexemeAndMeaning(
+			String value,
+			String valuePrese,
+			String valueAsWord,
+			String morphophonoForm,
+			String lang,
+			String datasetCode) throws Exception {
+
+		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
+			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
+		}
+
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
+
+		int homonymNr = 0;
+		boolean isPublic = false;
+
+		Long wordId = create
+				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.MORPHOPHONO_FORM, WORD.HOMONYM_NR, WORD.LANG, WORD.IS_PUBLIC)
+				.values(value, valuePrese, valueAsWord, morphophonoForm, homonymNr, lang, isPublic)
+				.returning(WORD.ID)
+				.fetchOne()
+				.getId();
+
+		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+
+		Long lexemeId = create
+				.insertInto(
+						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
+				.values(meaningId, wordId, datasetCode, 1, 1, isPublic, COMPLEXITY_DETAIL)
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
+
+		wordLexemeMeaningId.setWordId(wordId);
+		wordLexemeMeaningId.setLexemeId(lexemeId);
+		wordLexemeMeaningId.setMeaningId(meaningId);
+
+		return wordLexemeMeaningId;
+	}
+
 	public WordLexemeMeaningIdTuple createWordAndLexemeAndMeaning(
 			String value,
 			String valuePrese,

@@ -138,3 +138,10 @@ from freeform ff
 using word_freeform wff
 where wff.freeform_id = ff.id
   and ff.type = 'NOTE';
+
+-- keelendi varjamine + avalikkuse indeksid
+alter table word add column is_public not null default true;
+create index word_is_public_idx on word(is_public);
+create index freeform_is_public_idx on freeform(is_public);
+create index definition_is_public_idx on definition(is_public);
+
