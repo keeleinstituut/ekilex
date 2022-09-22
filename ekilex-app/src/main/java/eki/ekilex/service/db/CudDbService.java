@@ -681,32 +681,6 @@ public class CudDbService extends AbstractDataDbService {
 		return wordLexemeMeaningId;
 	}
 
-	public WordLexemeMeaningIdTuple createLexemeAndMeaning(Long wordId, String datasetCode, boolean isPublic) throws Exception {
-
-		if (StringUtils.equals(datasetCode, DATASET_XXX)) {
-			throw new OperationDeniedException("Creating lexeme for hidden dataset. Please inform developers immediately!");
-		}
-
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
-
-		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-
-		Long lexemeId = create
-				.insertInto(
-						LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.IS_PUBLIC, LEXEME.COMPLEXITY)
-				.values(meaningId, wordId, datasetCode, 1, 1, isPublic, COMPLEXITY_DETAIL)
-				.returning(LEXEME.ID)
-				.fetchOne()
-				.getId();
-
-		wordLexemeMeaningId.setWordId(wordId);
-		wordLexemeMeaningId.setLexemeId(lexemeId);
-		wordLexemeMeaningId.setMeaningId(meaningId);
-
-		return wordLexemeMeaningId;
-	}
-
 	public WordLexemeMeaningIdTuple createWordAndLexemeAndMeaning(eki.ekilex.data.api.Word word, String valueAsWord) {
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
