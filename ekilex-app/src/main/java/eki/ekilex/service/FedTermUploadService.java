@@ -168,8 +168,7 @@ public class FedTermUploadService implements InitializingBean {
 			fedTermCollectionId = fedTermClient.createFedTermCollection(datasetCode, collectionMessageJson);
 			datasetDbService.setFedTermCollectionId(datasetCode, fedTermCollectionId);
 		} else {
-			//TODO should work by API spec but doesn't
-			//fedTermClient.updateFedTermCollection(datasetCode, fedTermCollectionId, collectionMessageJson);
+			fedTermClient.updateFedTermCollection(datasetCode, fedTermCollectionId, collectionMessageJson);
 		}
 		return fedTermCollectionId;
 	}

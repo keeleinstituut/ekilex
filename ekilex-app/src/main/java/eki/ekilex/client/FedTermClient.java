@@ -86,7 +86,7 @@ public class FedTermClient {
 
 	public void updateFedTermCollection(String datasetCode, String fedTermCollectionId, String collectionMessageJson) throws Exception {
 
-		String updateCollectionServiceUrl = new String(fedTermServiceUrl);
+		String updateCollectionServiceUrl = new String(fedTermServiceUrl) + "/" + fedTermCollectionId;
 		String resultMessage = requestPostWithBody(updateCollectionServiceUrl, collectionMessageJson, CONTENT_TYPE_JSON, HTTP_PUT);
 
 		logger.info("Update of FedTerm collection for \"{} ({})\" returned \"{}\"", fedTermCollectionId, datasetCode, resultMessage);
