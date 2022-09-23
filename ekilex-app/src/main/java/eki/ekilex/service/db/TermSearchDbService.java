@@ -508,6 +508,7 @@ public class TermSearchDbService extends AbstractDataDbService {
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(WORD.IS_PUBLIC.isTrue())
 								.and(dsWhere))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, WORD.ID)
 				.limit(1)

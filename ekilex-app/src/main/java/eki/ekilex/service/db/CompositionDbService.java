@@ -989,7 +989,10 @@ public class CompositionDbService extends AbstractDataDbService implements Globa
 		Integer currentHomonymNumber = create
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD)
-				.where(WORD.LANG.eq(lang).and(WORD.VALUE.eq(wordValue)))
+				.where(
+						WORD.LANG.eq(lang)
+								.and(WORD.VALUE.eq(wordValue))
+								.and(WORD.IS_PUBLIC.isTrue()))
 				.fetchOneInto(Integer.class);
 
 		int homonymNumber = currentHomonymNumber + 1;

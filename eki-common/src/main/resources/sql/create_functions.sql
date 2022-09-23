@@ -35,7 +35,8 @@ begin
                          from word_word_type wt
                          where wt.word_id = w.id and wt.word_type_code in ('pf', 'sf')) af_order_by
                  from word w
-                 where exists(select l.id from lexeme l where l.word_id = w.id)) w
+                 where w.is_public = true
+                   and exists(select l.id from lexeme l where l.word_id = w.id)) w
            group by w.value,
                     w.lang) w
      where ordered_homonym_nrs_str_pattern not like w.homonym_nrs_str || '%'

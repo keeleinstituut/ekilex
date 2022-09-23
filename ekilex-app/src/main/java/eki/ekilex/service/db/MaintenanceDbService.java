@@ -37,7 +37,10 @@ public class MaintenanceDbService extends AbstractDataDbService {
 	private DSLContext create;
 
 	public List<WordRecord> getWordRecords() {
-		return create.selectFrom(WORD).fetchInto(WordRecord.class);
+		return create
+				.selectFrom(WORD)
+				.where(WORD.IS_PUBLIC.isTrue())
+				.fetchInto(WordRecord.class);
 	}
 
 	public List<SourceTargetIdTuple> getHomonymsToMerge(String[] includedLangs) {
@@ -64,6 +67,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.from(w1, l1)
 				.where(
 						w1.LANG.in(includedLangs)
+								.and(w1.IS_PUBLIC.isTrue())
 								.and(l1.WORD_ID.eq(w1.ID))
 								.and(l1.DATASET_CODE.notIn(DATASET_EKI, DATASET_ETY))
 								.andNotExists(DSL
@@ -86,6 +90,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 				.from(w1)
 				.where(
 						w1.LANG.in(includedLangs)
+								.and(w1.IS_PUBLIC.isTrue())
 								.andExists(DSL
 										.select(l1.ID)
 										.from(l1)
@@ -98,6 +103,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 										.from(w2)
 										.where(
 												w2.VALUE.eq(w1.VALUE)
+														.and(w2.IS_PUBLIC.isTrue())
 														.and(w2.LANG.eq(w1.LANG))
 														.and(w2.ID.ne(w1.ID))
 														.andExists(DSL

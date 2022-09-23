@@ -279,13 +279,6 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public void updateLexemeDataset(Long lexemeId, String dataset) {
-		create.update(LEXEME)
-				.set(LEXEME.DATASET_CODE, dataset)
-				.where(LEXEME.ID.eq(lexemeId))
-				.execute();
-	}
-
 	public Long updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		Long lexemePosId = create
 				.update(LEXEME_POS)
@@ -564,6 +557,7 @@ public class CudDbService extends AbstractDataDbService {
 				.where(
 						w.LANG.eq(lang)
 								.and(w.VALUE.eq(wordValue))
+								.and(w.IS_PUBLIC.isTrue())
 								.andExists(DSL
 										.select(l.ID)
 										.from(l)
@@ -1436,7 +1430,10 @@ public class CudDbService extends AbstractDataDbService {
 		Integer currentHomonymNr = create
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD)
-				.where(WORD.LANG.eq(lang).and(WORD.VALUE.eq(value)))
+				.where(
+						WORD.LANG.eq(lang)
+								.and(WORD.VALUE.eq(value))
+								.and(WORD.IS_PUBLIC.isTrue()))
 				.fetchOneInto(Integer.class);
 
 		int homonymNr = 1;

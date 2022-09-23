@@ -79,7 +79,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		Lexeme l1 = LEXEME.as("l1");
 
 		Condition wherem = DSL.noCondition();
-		Condition wherew = DSL.noCondition();
+		Condition wherew = w1.IS_PUBLIC.isTrue();
 		Condition wherel = searchFilterHelper.applyDatasetRestrictions(l1, searchDatasetsRestriction, null);
 
 		for (SearchCriterionGroup searchCriterionGroup : criteriaGroups) {
@@ -351,6 +351,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 		} else {
 			wherew = DSL.or(DSL.lower(w1.VALUE).eq(filterField), DSL.lower(w1.VALUE_AS_WORD).eq(filterField));
 		}
+		wherew = wherew.and(w1.IS_PUBLIC.isTrue());
 
 		Table<Record1<Long>> w = DSL
 				.select(w1.ID)

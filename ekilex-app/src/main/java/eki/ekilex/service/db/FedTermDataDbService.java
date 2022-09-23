@@ -179,6 +179,7 @@ public class FedTermDataDbService {
 						l.DATASET_CODE.eq(datasetCode)
 								.and(l.MEANING_ID.in(meaningIds))
 								.and(l.WORD_ID.eq(w.ID))
+								.and(w.IS_PUBLIC.isTrue())
 								.and(l.MEANING_ID.eq(m.ID)))
 				.orderBy(w.VALUE, l.ORDER_BY)
 				.fetchInto(MeaningLexemeWordTuple.class);

@@ -164,7 +164,13 @@ public class SynSearchDbService extends AbstractDataDbService {
 						relm.as("word_meanings"),
 						rwlp.as("word_lexemes_poses"))
 				.from(r
-						.innerJoin(w2).on(r.WORD2_ID.eq(w2.ID).andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID))))
+						.innerJoin(w2).on(
+								r.WORD2_ID.eq(w2.ID)
+										.and(w2.IS_PUBLIC.isTrue())
+										.andExists(DSL
+												.select(l2.ID)
+												.from(l2)
+												.where(l2.WORD_ID.eq(w2.ID))))
 						.leftOuterJoin(oppr).on(
 								oppr.WORD1_ID.eq(r.WORD2_ID)
 										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
@@ -186,6 +192,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(wh)
 				.where(
 						wh.VALUE.eq(rr.field("word_value", String.class))
+								.and(wh.IS_PUBLIC.isTrue())
 								.andExists(DSL
 										.select(lh.ID)
 										.from(lh)

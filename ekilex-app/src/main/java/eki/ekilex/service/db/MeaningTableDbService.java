@@ -134,7 +134,8 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 				.from(l, w, cll)
 				.where(
 						wherel.and(l.WORD_ID.eq(w.ID))
-								.and(w.LANG.eq(cll.CODE)))
+								.and(w.LANG.eq(cll.CODE))
+								.and(w.IS_PUBLIC.isTrue()))
 				.asField();
 
 		String wrowsql = DSL
@@ -158,7 +159,8 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 				.from(l, w, cll)
 				.where(
 						wherel.and(l.WORD_ID.eq(w.ID))
-								.and(w.LANG.eq(cll.CODE)))
+								.and(w.LANG.eq(cll.CODE))
+								.and(w.IS_PUBLIC.isTrue()))
 				.asField();
 
 		String urowsql = DSL
@@ -189,7 +191,7 @@ public class MeaningTableDbService implements GlobalConstant, SystemConstant {
 		Field<String> wof = DSL
 				.select(DSL.field("({0})[1]", DSL.arrayAgg(w.VALUE).orderBy(cll.ORDER_BY, w.VALUE)))
 				.from(l, w, cll)
-				.where(wherel.and(l.WORD_ID.eq(w.ID)).and(w.LANG.eq(cll.CODE)))
+				.where(wherel.and(l.WORD_ID.eq(w.ID)).and(w.LANG.eq(cll.CODE)).and(w.IS_PUBLIC.isTrue()))
 				.asField();
 
 		int limit = DEFAULT_MAX_RESULTS_LIMIT;

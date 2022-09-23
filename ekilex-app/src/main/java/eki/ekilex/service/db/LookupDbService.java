@@ -151,6 +151,7 @@ public class LookupDbService extends AbstractDataDbService {
 		Condition whereCondition = WORD.VALUE.like(wordValue)
 				.and(WORD.ID.ne(wordIdToExclude))
 				.and(WORD.LANG.eq(wordLang))
+				.and(WORD.IS_PUBLIC.isTrue())
 				.andExists(DSL
 						.select(LEXEME.ID)
 						.from(LEXEME)
@@ -215,6 +216,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(w, l)
 				.where(
 						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
+								.and(w.IS_PUBLIC.isTrue())
 								.and(w.LANG.eq(wordLang))
 								.and(l.WORD_ID.eq(w.ID)))
 				.groupBy(w.ID)
@@ -344,7 +346,8 @@ public class LookupDbService extends AbstractDataDbService {
 						LEXEME.MEANING_ID.eq(meaningId)
 								.and(LEXEME.DATASET_CODE.eq(datasetCode))
 								.and(WORD.ID.eq(LEXEME.WORD_ID))
-								.and(WORD.LANG.eq(lang)))
+								.and(WORD.LANG.eq(lang))
+								.and(WORD.IS_PUBLIC.isTrue()))
 				.fetchInto(Long.class);
 	}
 
@@ -377,7 +380,8 @@ public class LookupDbService extends AbstractDataDbService {
 				.from(LEXEME, WORD)
 				.where(
 						LEXEME.MEANING_ID.in(meaningIds)
-								.and(WORD.ID.eq(LEXEME.WORD_ID)))
+								.and(WORD.ID.eq(LEXEME.WORD_ID))
+								.and(WORD.IS_PUBLIC.isTrue()))
 				.groupBy(WORD.VALUE)
 				.asTable("wv");
 
@@ -459,11 +463,11 @@ public class LookupDbService extends AbstractDataDbService {
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
 
-		Condition whereFormValue;
+		Condition whereWordValue;
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
-			whereFormValue = DSL.lower(w.VALUE).like(filterField);
+			whereWordValue = DSL.lower(w.VALUE).like(filterField);
 		} else {
-			whereFormValue = DSL.lower(w.VALUE).equal(filterField);
+			whereWordValue = DSL.lower(w.VALUE).equal(filterField);
 		}
 
 		Condition whereLexemeDataset = searchFilterHelper.applyDatasetRestrictions(l, searchDatasetsRestriction, null);
@@ -479,7 +483,8 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(
 						l.MEANING_ID.eq(m.ID)
 								.and(w.ID.eq(l.WORD_ID))
-								.and(whereFormValue)
+								.and(whereWordValue)
+								.and(w.IS_PUBLIC.isTrue())
 								.and(whereLexemeDataset)
 								.and(whereExcludeMeaningId))
 				.asTable("mid");
@@ -594,7 +599,8 @@ public class LookupDbService extends AbstractDataDbService {
 						LEXEME.MEANING_ID.eq(meaningId)
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(WORD.VALUE.eq(wordValue))
-								.and(WORD.LANG.eq(language)))
+								.and(WORD.LANG.eq(language))
+								.and(WORD.IS_PUBLIC.isTrue()))
 				.fetchSingleInto(Boolean.class);
 	}
 
@@ -669,6 +675,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(
 						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
 								.and(w.LANG.eq(wordLang))
+								.and(w.IS_PUBLIC.isTrue())
 								.andExists(DSL
 										.select(l.ID)
 										.from(l)

@@ -765,6 +765,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(wh)
 				.where(
 						wh.VALUE.eq(w2.VALUE)
+								.and(wh.IS_PUBLIC.isTrue())
 								.andExists(DSL
 										.select(lh.ID)
 										.from(lh)
@@ -787,7 +788,8 @@ public class CommonDataDbService extends AbstractDataDbService {
 						.and(l2.MEANING_ID.eq(l1.MEANING_ID))
 						.and(l2.ID.ne(l1.ID))
 						.and(l2.DATASET_CODE.eq(l1.DATASET_CODE))
-						.and(l2.WORD_ID.eq(w2.ID));
+						.and(l2.WORD_ID.eq(w2.ID))
+						.and(w2.IS_PUBLIC.isTrue());
 
 		if (!noLangsFiltering) {
 			List<String> filteringLangs = meaningWordLangsRestriction.getFilteringLangs();
@@ -852,7 +854,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
 								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID).and(l2.DATASET_CODE.eq(datasetCode)))
-								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID)))
+								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID).and(w2.IS_PUBLIC.isTrue())))
 				.where(
 						mr.MEANING1_ID.eq(meaningId)
 								.and(mr.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_CODE_SIMILAR)))
@@ -864,6 +866,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(wh)
 				.where(
 						wh.VALUE.eq(mrel.field("word_value", String.class))
+								.and(wh.IS_PUBLIC.isTrue())
 								.andExists(DSL
 										.select(lh.ID)
 										.from(lh)
@@ -990,7 +993,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 						mr
 								.innerJoin(m2).on(m2.ID.eq(mr.MEANING2_ID))
 								.innerJoin(l2).on(l2.MEANING_ID.eq(m2.ID))
-								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID)))
+								.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID).and(w2.IS_PUBLIC.isTrue())))
 				.where(mr.MEANING1_ID.eq(meaningId).and(mr.MEANING_REL_TYPE_CODE.ne(MEANING_REL_TYPE_CODE_SIMILAR)))
 				.groupBy(m2.ID, mr.ID, w2.ID)
 				.orderBy(mr.ID, DSL.field("lexeme_order_by"))
@@ -1237,7 +1240,7 @@ public class CommonDataDbService extends AbstractDataDbService {
 				.from(
 						r
 						.innerJoin(l2).on(l2.ID.eq(r.LEXEME2_ID))
-						.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID))
+						.innerJoin(w2).on(w2.ID.eq(l2.WORD_ID).and(w2.IS_PUBLIC.isTrue()))
 						.leftOuterJoin(rtl).on(
 								r.LEX_REL_TYPE_CODE.eq(rtl.CODE)
 										.and(rtl.LANG.eq(classifierLabelLang)
