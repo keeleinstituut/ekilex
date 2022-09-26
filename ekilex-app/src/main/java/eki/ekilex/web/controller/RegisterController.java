@@ -164,8 +164,7 @@ public class RegisterController extends AbstractPublicPageController {
 					model.addAttribute("message", message + " " + email);
 				} else {
 					String message = messageSource.getMessage("register.recovery.link", new Object[0], locale);
-					message += " " + passwordRecoveryLink;
-					model.addAttribute("message", message + " " + email);
+					model.addAttribute("message", message + " " + passwordRecoveryLink);
 				}
 			} else {
 				if (emailService.isEnabled()) {
