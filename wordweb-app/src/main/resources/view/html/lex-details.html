@@ -366,7 +366,7 @@
               </div>
               <div class="dependencies" th:if="${lexeme.showSection3}">
                 <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="rekts-est d-flex flex-row align-items-baseline">
-                  <b class="text-medium text-gray-350">Rektsioon</b>
+                  <b class="text-medium text-gray-350" th:text="#{label.government}">Rektsioon</b>
                   <span class="tag mb-1 d-inline-block" th:each="government,iter : ${lexeme.governments}" th:text="${government.value}"> </span>
                 </div>
                 <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
