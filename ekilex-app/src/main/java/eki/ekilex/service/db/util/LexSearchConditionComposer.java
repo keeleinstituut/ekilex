@@ -76,7 +76,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 		Field<String> filterField = DSL.lower(maskedSearchFilter);
 
 		Condition where = composeWordDatasetsCondition(word, searchDatasetsRestriction);
-		where = where.and(word.IS_PUBLIC.isTrue());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
 			where = where.and(DSL.or(DSL.lower(word.VALUE).like(filterField), DSL.lower(word.VALUE_AS_WORD).like(filterField)));
 		} else {
@@ -88,7 +87,6 @@ public class LexSearchConditionComposer implements GlobalConstant, ActivityFunct
 	public Condition createSearchCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, SearchDatasetsRestriction searchDatasetsRestriction) throws Exception {
 
 		Condition where = composeWordDatasetsCondition(w1, searchDatasetsRestriction);
-		where = where.and(w1.IS_PUBLIC.isTrue());
 
 		for (SearchCriterionGroup searchCriterionGroup : searchCriteriaGroups) {
 
