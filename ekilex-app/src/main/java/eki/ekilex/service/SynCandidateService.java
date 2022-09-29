@@ -35,7 +35,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 	private LookupDbService lookupDbService;
 
 	@Transactional
-	public void createSynCandidacy(SynCandidacy synCandidacy) throws Exception {
+	public void createFullSynCandidacy(SynCandidacy synCandidacy) throws Exception {
 
 		String headwordValue = synCandidacy.getHeadwordValue();
 		String headwordLang = synCandidacy.getHeadwordLang();

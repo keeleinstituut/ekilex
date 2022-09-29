@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{syn.search.title}">EKILEX otsing</title>
+<title th:text="#{fullsyn.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
 </th:block>
 </head>
-<body class="d-flex flex-column">
-  <th:block th:replace="common :: nav_bar(activeItem = 'syn')"></th:block>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar(activeItem = 'fullsyn')"></th:block>
   <div class="card shadow rounded-0 border-0 flex-shrink-0">
     <div class="card-body px-2 py-3">
-      <form th:action="@{/synsearch}" method="post">
+      <form th:action="@{/fullsynsearch}" method="post">
         <th:block th:replace="search :: search_form('lex_search', false)"></th:block>
       </form>
     </div>
@@ -53,7 +53,7 @@
             <div th:replace="syncomp :: syn_logdata"></div>
           </div>
           <div class="row no-gutters h-100 overflow-hidden">
-            <div class="col-8 overflow-auto h-100 keyboard-nav-list lexeme-list" data-panel-index="2" th:attrappend="data-marked-meaning-id=${markedSynMeaningId != null}?${markedSynMeaningId}">
+            <div class="col-8 overflow-auto h-100 lexeme-list" data-panel-index="2" th:attrappend="data-marked-meaning-id=${markedSynMeaningId != null}?${markedSynMeaningId}">
               <div class="border-bottom pb-2">
                 <div class="col-12">
                   <div>
@@ -133,7 +133,7 @@
                   </div>
                   <th:block th:replace="syncomp :: definitions_data"></th:block>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
-                  <th:block th:replace="syncomp :: syn_data"></th:block>
+                  <th:block th:replace="fullsyncomp :: full_syn_data"></th:block>
                 </div>
               </div>
             </div>
@@ -153,23 +153,9 @@
                         <i class="action-icon fa fa-remove" aria-hidden="true"></i>
                       </span>
                     </button>
-                    <span class="border-left py-2"></span>
-                    <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0"
-                        th:disabled="${markedSynMeaningId != null}"
-                        data-plugin="enableKeyboardModePlugin">
-                      <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
-                        <i class="action-icon fa fa-keyboard-o" aria-hidden="true"></i>
-                      </span>
-                    </button>
-                    <span class="border-left py-2"></span>
-                    <button type="button" class="btn btn-light px-2 rounded-0" data-toggle="modal" th:data-target="${'#addSynRelationDlg_' + wordId}">
-                      <span th:title="#{syn.add.synonym}" data-toggle="tooltip">
-                        <i class="action-icon fa fa-plus" aria-hidden="true"></i>
-                      </span>
-                    </button>
                   </div>
                 </div>
-                <div th:replace="syncomp :: syn_candidate_list"></div>
+                <div th:replace="fullsyncomp :: syn_candidate_list"></div>
               </div>
             </div>
           </div>
@@ -177,7 +163,6 @@
       </div>
     </div>
     <div th:replace="syndialog :: add_word_forum_dlg"></div>
-    <div th:replace="syndialog :: add_syn_relation_dlg(${wordId}, ${details.word.lang}, ${details.wordRelationDetails.wordSynRelations})"></div>
     <script>
         $('[data-toggle=delete-confirm]').confirmation({
           btnOkLabel : /*[[#{common.yes}]]*/'Jah',
@@ -197,9 +182,8 @@
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #confirmDlg"></div>
-  <div th:replace="syndialog :: #synTutorialDlg"></div>
   <script th:inline="javascript">
-	  initializeSynSearch();
+	  initializeFullSynSearch();
   </script>
 </body>
 </html>

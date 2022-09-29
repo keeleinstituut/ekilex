@@ -3,8 +3,7 @@ const NAVIGATE_SELECTED_CLASS = 'keyboard-nav-list-item-active';
 const NAVIGATE_DECLINED_CLASS = 'keyboard-nav-declined-item';
 const NAVIGATE_SELECTED_ATTR = 'data-navigate-selected';
 
-
-function initializeSynSearch() {
+function initializePartSynSearch() {
 	let activeSearchResultID;
 	let sidebarScrollPosition = {};
 
@@ -19,7 +18,7 @@ function initializeSynSearch() {
 
 				activateSynCandidatesList();
 
-			 obj.attr('disabled', true);
+			 button.attr('disabled', true);
 			});
 		})
 	}
@@ -40,7 +39,7 @@ function initializeSynSearch() {
 		$(`#syn_select_wait_${id}`).show();
 		openWaitDlg();
 
-		let detailsUrl = `${applicationUrl}syn_worddetails/${id}`;
+		let detailsUrl = `${applicationUrl}partsyn_worddetails/${id}`;
 		if (markedSynMeaningId != undefined) {
 			detailsUrl += `?markedSynMeaningId=${markedSynMeaningId}`;
 		}

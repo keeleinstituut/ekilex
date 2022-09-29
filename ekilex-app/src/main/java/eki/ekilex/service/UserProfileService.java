@@ -37,15 +37,15 @@ public class UserProfileService implements GlobalConstant, SystemConstant {
 		EkiUserProfile userProfile = userProfileDbService.getUserProfile(userId);
 
 		if (userProfile != null) {
-			List<String> synCandidateLangs = userProfile.getPreferredSynCandidateLangs();
+			List<String> partSynCandidateLangs = userProfile.getPreferredPartSynCandidateLangs();
 			List<String> synLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 			List<String> meaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 			List<Classifier> allLangs = commonDataDbService.getLanguages(CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 			List<String> allLangCodes = allLangs.stream().map(Classifier::getCode).collect(Collectors.toList());
 
-			if (CollectionUtils.isEmpty(synCandidateLangs)) {
-				synCandidateLangs = allLangCodes;
-				userProfile.setPreferredSynCandidateLangs(synCandidateLangs);
+			if (CollectionUtils.isEmpty(partSynCandidateLangs)) {
+				partSynCandidateLangs = allLangCodes;
+				userProfile.setPreferredPartSynCandidateLangs(partSynCandidateLangs);
 			}
 			if (CollectionUtils.isEmpty(synLexMeaningWordLangs)) {
 				synLexMeaningWordLangs = allLangCodes;

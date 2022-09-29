@@ -97,13 +97,13 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 	}
 
 	protected Field<Boolean> getWordTypeExists(Field<Long> wordIdField, String wordType) {
-		Field<Boolean> wt_exists = DSL.field(DSL.exists(DSL
+		Field<Boolean> wtef = DSL.field(DSL.exists(DSL
 				.select(WORD_WORD_TYPE.ID)
 				.from(WORD_WORD_TYPE)
 				.where(
 						WORD_WORD_TYPE.WORD_ID.eq(wordIdField)
 								.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(wordType)))));
-		return wt_exists;
+		return wtef;
 	}
 
 	protected Field<Boolean> getWordIsPrefixoidField(Field<Long> wordIdField) {

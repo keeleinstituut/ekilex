@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{partsyn.search.title}">EKILEX otsing</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="d-flex flex-column">
+  <th:block th:replace="common :: nav_bar(activeItem = 'partsyn')"></th:block>
+  <div class="card shadow rounded-0 border-0 flex-shrink-0">
+    <div class="card-body px-2 py-3">
+      <form th:action="@{/partsynsearch}" method="post">
+        <th:block th:replace="search :: search_form('lex_search', false)"></th:block>
+      </form>
+    </div>
+  </div>
+  <div class="container-fluid flex-grow-1 flex-shrink-1 d-flex flex-column h-100 overflow-hidden" th:with="isSearchResult = ${wordsResult != null}">
+    <div class="mt-4 float-left" th:if="${invalidSearch}">
+      <div th:text="#{lex.search.invalid}"></div>
+    </div>
+    <div class="row no-gutters py-3 flex-grow-1 h-100">
+      <div class="col-3 pr-2 h-100" th:if="${isSearchResult}">
+        <div class="mt-4 float-left" th:if="${noResults == true}">
+          <div th:text="#{common.not.found}">Not found.</div>
+        </div>
+        <div id="synSearchResultsDiv" class="card shadow navigate-panel h-100 d-flex flex-column" th:if="${not #lists.isEmpty(wordsResult.words)}">
+          <div th:replace="syncomp :: search_result"></div>
+        </div>
+      </div>
+      <div class="col-9 h-100 d-flex flex-column">
+        <div id="syn-details-area" data-rel="details-area"></div>
+      </div>
+    </div>
+  </div>
+  <th:block th:fragment="details" th:if="${details != null}">
+    <div th:data-id="${wordId}" id="syn-details-area" class="h-100" data-rel="details-area">
+      <button id="refresh-details" hidden th:data-id="${wordId}" name="synDetailsBtn"
+            data-refresh
+            data-plugin="loadDetailsPlugin"></button>
+      <div class="navigate-panel card shadow h-100">
+        <div class="card-body p-0 d-flex flex-column h-100">
+          <div class="px-2 d-flex flex-row align-items-center py-2">
+            <h1 th:utext="${viewUtil.getWordValueMarkup(details.word)}" class="mr-3 mb-0" th:text="#{syn.active.word}">Aktiivne sõna</h1>
+            <button type="button" class="btn btn-secondary btn-compact"
+                    id="activeTagCompleteBtn"
+                    th:data-word-id="${wordId}"
+                    th:disabled="${details.activeTagComplete}"
+                    th:if="${userRoleData.lexemeActiveTagChangeEnabled}"
+                    data-plugin="updateSynTagCompletePlugin"
+                    sec:authorize="#vars.details.word.subGrant"
+                    th:text="#{syn.update.tag.complete}">Märgi tehtuks
+            </button>
+            <div th:replace="syncomp :: syn_logdata"></div>
+          </div>
+          <div class="row no-gutters h-100 overflow-hidden">
+            <div class="col-8 overflow-auto h-100 keyboard-nav-list lexeme-list" data-panel-index="2" th:attrappend="data-marked-meaning-id=${markedSynMeaningId != null}?${markedSynMeaningId}">
+              <div class="border-bottom pb-2">
+                <div class="col-12">
+                  <div>
+                    <span class="lbl" th:text="#{syn.word.forums}">Sisemärkused</span>
+                    <button type="button" class="btn btn-light badge"
+                            th:title="#{common.add.new}" data-toggle="modal"
+                            th:data-target="${'#addWordForumDlg_' + wordId}"
+                            sec:authorize="#vars.userRoleData.crudRoleSelected">
+                      <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div th:each="forum : ${details.word.forums}">
+                    <div th:replace="syndialog :: edit_word_forum_dlg"></div>
+                    <div class="col hidden-buttons pr-5">
+                      <div class="action-buttons-anchor">
+                        <span th:utext="${forum.valuePrese}"></span>
+                        <span class="ctxt" th:text="'[' + ${forum.modifiedBy} + ']'" th:if="${forum.modifiedBy != null}"></span>
+                        <span class="ctxt" th:text="'(' + ${#dates.format(forum.modifiedOn, 'dd.MM.yyyy')} + ')'" th:if="${forum.modifiedOn != null}"></span>
+                        <div class="action-buttons-2">
+                          <button type="button" class="btn badge badge-primary"
+                                  th:title="#{common.edit}"
+                                  data-toggle="modal"
+                                  th:data-target="${'#editWordForumDlg_' + forum.id}"
+                                  sec:authorize="#vars.forum.crudGrant">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-id="${forum.id}"
+                                  data-op-code="word_forum"
+                                  data-toggle="delete-confirm"
+                                  data-placement="right"
+                                  sec:authorize="#vars.forum.crudGrant">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="px-3 droppable-lexeme border-bottom border-light lexeme-list-item"
+                   th:each="lexeme, lexemeIter : ${details.lexemes}"
+                   th:classappend="${lexemeIter.first} ? 'pb-2' : 'py-2'"
+                   th:data-meaning-id="${lexeme.meaningId}"
+                   th:data-lexeme-id="${lexeme.lexemeId}"
+                   th:data-navigate-index="${lexemeIter.index}">
+                <th:block th:replace="syndialog :: add_lexeme_tag_dlg"></th:block>
+                <div data-lexeme-title class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() > 2} ? 'pl-4': ''">
+                  <div class="d-flex align-items-start flex-wrap pt-2">
+                    <span class="px-2 py-0 bg-light rounded font-weight-bold mr-2">
+                      <span th:if="${lexeme.levels != null}" th:text="${lexeme.levels}"> 1</span>
+                    </span>
+                    <th:block th:replace="syncomp :: pos_data"></th:block>
+                    <th:block th:replace="syncomp :: registers_data"></th:block>
+                    <span class="pl-0 pr-2">
+                      <span class="lbl" th:text="#{syn.lexeme.tags}">Ilmiku sildid</span>
+                      <button type="button" class="btn btn-light badge"
+                              th:title="#{common.add.new}" data-toggle="modal"
+                              th:data-target="${'#addLexemeTagDlg_' + lexeme.lexemeId}"
+                              sec:authorize="#vars.lexeme.crudGrant">
+                        <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                      <span th:each="tag,tagIter : ${lexeme.tags}" class="hidden-buttons">
+                        <span th:text="${tag}"></span>
+                        <button type="button" class="btn badge badge-warning"
+                                data-op-code="lexeme_tag"
+                                th:data-id="${lexeme.lexemeId}"
+                                th:data-value="${tag}"
+                                data-toggle="delete-confirm"
+                                data-placement="right"
+                                sec:authorize="#vars.lexeme.crudGrant">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                        <span th:unless="${tagIter.last}">,</span>
+                      </span>
+                    </span>
+                  </div>
+                  <th:block th:replace="syncomp :: definitions_data"></th:block>
+                  <th:block th:replace="syncomp :: usages_data"></th:block>
+                  <th:block th:replace="partsyncomp :: part_syn_data"></th:block>
+                </div>
+              </div>
+            </div>
+            <div class="col-4 border-left border-light h-100">
+              <div class="navigate-panel mb-2 d-flex flex-column h-100">
+                <div class="d-flex bg-light px-2 align-items-center">
+                  <span th:text="#{syn.candidates.title}">Sünonüümide kandidaadid</span>
+                  <div class="ml-auto d-flex flex-row align-items-center">
+                    <span class="border-left py-2"></span>
+                    <button type="button"
+                            class="btn btn-light mr-1"
+                            data-toggle="delete-word-syn-relations-confirm"
+                            data-placement="bottom"
+                            th:data-word-id="${wordId}"
+                            sec:authorize="#vars.details.word.subGrant">
+                      <span th:title="#{syn.delete.all}" data-toggle="tooltip">
+                        <i class="action-icon fa fa-remove" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                    <span class="border-left py-2"></span>
+                    <button id="keyboardEditBtn" type="button" class="btn btn-light px-2 rounded-0"
+                        th:disabled="${markedSynMeaningId != null}"
+                        data-plugin="enableKeyboardModePlugin">
+                      <span th:title="#{syn.manual.mode}" data-toggle="tooltip">
+                        <i class="action-icon fa fa-keyboard-o" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                    <span class="border-left py-2"></span>
+                    <button type="button" class="btn btn-light px-2 rounded-0" data-toggle="modal" th:data-target="${'#addSynRelationDlg_' + wordId}">
+                      <span th:title="#{syn.add.synonym}" data-toggle="tooltip">
+                        <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                <div th:replace="partsyncomp :: syn_candidate_list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div th:replace="syndialog :: add_word_forum_dlg"></div>
+    <div th:replace="partsyndialog :: add_syn_relation_dlg(${wordId}, ${details.word.lang}, ${details.wordRelationDetails.wordSynRelations})"></div>
+    <script>
+        $('[data-toggle=delete-confirm]').confirmation({
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+          onConfirm : executeDelete
+        });
+        $('[data-toggle=delete-word-syn-relations-confirm]').confirmation({
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{syn.confirm.delete.all}]]*/'Kustuta kõik kinnitamata kandidaadid',
+          onConfirm : updateWordSynRelationsStatusDeleted
+        });
+    </script>
+  </th:block>
+  <div th:replace="common :: #waitDlg"></div>
+  <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="common :: #alertSmall"></div>
+  <div th:replace="common :: #confirmDlg"></div>
+  <div th:replace="partsyndialog :: #synTutorialDlg"></div>
+  <script th:inline="javascript">
+	  initializePartSynSearch();
+  </script>
+</body>
+</html>

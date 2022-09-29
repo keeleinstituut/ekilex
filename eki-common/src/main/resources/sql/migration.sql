@@ -198,3 +198,13 @@ begin
     end loop;
 end $$;
 
+-- tõlkevastete seaded kasutaja profiilis
+alter table eki_user_profile rename column preferred_syn_candidate_langs to preferred_part_syn_candidate_langs;
+alter table eki_user_profile add column preferred_full_syn_candidate_langs char(3) array;
+alter table eki_user_profile add column preferred_full_syn_candidate_dataset_code varchar(10) references dataset(code) null;
+
+-- sisemärkuste indeksid
+create index meaning_forum_meaning_id_idx on meaning_forum(meaning_id);
+create index meaning_forum_creator_id_idx on meaning_forum(creator_id);
+create index word_forum_word_id_idx on word_forum(word_id);
+create index word_forum_creator_id_idx on word_forum(creator_id);

@@ -51,7 +51,7 @@ public class SynEditController extends AbstractPrivateSearchController {
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		String datasetCode = userRole.getDatasetCode();
-		List<String> synCandidateLangCodes = userContextData.getSynCandidateLangCodes();
+		List<String> synCandidateLangCodes = userContextData.getPartSynCandidateLangCodes();
 
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
 		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, synCandidateLangCodes, isManualEventOnUpdateEnabled);

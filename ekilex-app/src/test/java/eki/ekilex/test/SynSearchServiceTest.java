@@ -42,7 +42,7 @@ public class SynSearchServiceTest extends AbstractTest implements SystemConstant
 
 	@Test
 	public void testGetSynRelationsTuples() {
-		List<SynRelation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "qq2", Collections.singletonList("est"), CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<SynRelation> relations = synSearchDbService.getWordSynRelations(1003L, "raw", "qq2", Collections.singletonList("est"), true, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		assertThat(relations.size()).isEqualTo(2);
 	}
 }

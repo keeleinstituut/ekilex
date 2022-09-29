@@ -58,7 +58,9 @@ public class UserProfileController extends AbstractPrivatePageController {
 			@RequestParam(name = "showMeaningRelationMeaningId", required = false) boolean showMeaningRelationMeaningId,
 			@RequestParam(name = "showMeaningRelationWordDatasets", required = false) boolean showMeaningRelationWordDatasets,
 			@RequestParam("meaningWordLanguages") List<String> meaningWordLanguages,
-			@RequestParam("synCandidateLanguages") List<String> synCandidateLanguages) {
+			@RequestParam("partSynCandidateLanguages") List<String> partSynCandidateLanguages,
+			@RequestParam("fullSynCandidateLanguages") List<String> fullSynCandidateLanguages,
+			@RequestParam(name = "fullSynCandidateDatasetCode", required = false) String fullSynCandidateDatasetCode) {
 
 		Long userId = userContext.getUserId();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
@@ -68,7 +70,9 @@ public class UserProfileController extends AbstractPrivatePageController {
 		userProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		userProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
 		userProfile.setPreferredSynLexMeaningWordLangs(meaningWordLanguages);
-		userProfile.setPreferredSynCandidateLangs(synCandidateLanguages);
+		userProfile.setPreferredPartSynCandidateLangs(partSynCandidateLanguages);
+		userProfile.setPreferredFullSynCandidateLangs(fullSynCandidateLanguages);
+		userProfile.setPreferredFullSynCandidateDatasetCode(fullSynCandidateDatasetCode);
 		userProfileService.updateUserProfile(userProfile);
 
 		return "redirect:" + USER_PROFILE_URI;

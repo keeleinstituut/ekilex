@@ -102,15 +102,43 @@
                 </select>
               </div>
             </div>
+            <hr/>
             <div class="row">
-              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.syn.candidate.langs}">Vastete kandidaatide keeled</label>
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.part.syn.candidate.langs}">Osavastete kandidaatide keeled</label>
               <div class="col-md-12">
-                <select name="synCandidateLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
-                        th:title="#{userprofile.select.pref.syn.candidate.langs}"
+                <select name="partSynCandidateLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
+                        th:title="#{userprofile.select.pref.part.syn.candidate.langs}"
                         th:data-select-all-text="#{common.select.all}"
                         th:data-deselect-all-text="#{common.unselect.all}">
                   <th:block th:each="language: ${userRoleLanguages}">
-                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredSynCandidateLangs != null && #lists.contains(userProfile.preferredSynCandidateLangs, language.code)}"/>
+                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredPartSynCandidateLangs != null && #lists.contains(userProfile.preferredPartSynCandidateLangs, language.code)}"/>
+                  </th:block>
+                </select>
+              </div>
+            </div>
+            <hr/>
+            <div class="row">
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.full.syn.candidate.dataset}">Tõlkevastete kandidaatide sõnakogu</label>
+              <div class="col-md-12">
+                <select name="fullSynCandidateDatasetCode" class="classifier-select"
+                        th:title="#{userprofile.select.pref.full.syn.candidate.dataset}">
+                  <option th:each="dataset : ${userVisibleDatasets}"
+                          th:value="${dataset.code}"
+                          th:text="${dataset.name}"
+                          th:selected="${dataset.code == userProfile.preferredFullSynCandidateDatasetCode}">dataset
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.full.syn.candidate.langs}">Tõlkevastete kandidaatide keeled</label>
+              <div class="col-md-12">
+                <select name="fullSynCandidateLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
+                        th:title="#{userprofile.select.pref.full.syn.candidate.langs}"
+                        th:data-select-all-text="#{common.select.all}"
+                        th:data-deselect-all-text="#{common.unselect.all}">
+                  <th:block th:each="language: ${allLanguages}">
+                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredFullSynCandidateLangs != null && #lists.contains(userProfile.preferredFullSynCandidateLangs, language.code)}"/>
                   </th:block>
                 </select>
               </div>

@@ -397,7 +397,9 @@ public class SearchHelper implements WebConstant, GlobalConstant {
 		SearchOperand searchOperand = null;
 		if (StringUtils.equals(LEX_SEARCH_PAGE, searchPage)) {
 			searchEntity = SearchEntity.getLexEntities().get(0);
-		} else if (StringUtils.equals(SYN_SEARCH_PAGE, searchPage)) {
+		} else if (StringUtils.equals(PART_SYN_SEARCH_PAGE, searchPage)) {
+			searchEntity = SearchEntity.getLexEntities().get(0);
+		} else if (StringUtils.equals(FULL_SYN_SEARCH_PAGE, searchPage)) {
 			searchEntity = SearchEntity.getLexEntities().get(0);
 		} else if (StringUtils.equals(TERM_SEARCH_PAGE, searchPage)) {
 			searchEntity = SearchEntity.getTermEntities().get(0);

@@ -306,15 +306,21 @@ public interface WebConstant {
 
 	String MANUAL_EVENT_ON_UPDATE_URI = "/manual_event_on_update";
 
-	String SYN_SEARCH_PAGE = "synsearch";
+	String PART_SYN_SEARCH_PAGE = "partsynsearch";
 
-	String SYN_SEARCH_URI = "/synsearch";
+	String PART_SYN_SEARCH_URI = "/partsynsearch";
+
+	String FULL_SYN_SEARCH_PAGE = "fullsynsearch";
+
+	String FULL_SYN_SEARCH_URI = "/fullsynsearch";
 
 	String SYN_PAGING_URI = "/syn_paging";
 
-	String SYN_COMPONENTS_PAGE = "syncomp";
+	String COMMON_SYN_COMPONENTS_PAGE = "syncomp";
 
-	String SYN_WORD_DETAILS_URI = "/syn_worddetails";
+	String PART_SYN_WORD_DETAILS_URI = "/partsyn_worddetails";
+
+	String FULL_SYN_WORD_DETAILS_URI = "/fullsyn_worddetails";
 
 	String SYN_RELATION_STATUS_URI = "/syn_relation_status";
 

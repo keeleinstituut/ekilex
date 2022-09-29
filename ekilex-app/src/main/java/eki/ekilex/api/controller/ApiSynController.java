@@ -67,7 +67,7 @@ public class ApiSynController extends AbstractApiController {
 			if (!headwordExists) {
 				return getOpFailResponse("Headword does not exist");
 			}
-			synCandidateService.createSynCandidacy(synCandidacy);
+			synCandidateService.createFullSynCandidacy(synCandidacy);
 			return getOpSuccessResponse();
 		} catch (Exception e) {
 			return getOpFailResponse(e);

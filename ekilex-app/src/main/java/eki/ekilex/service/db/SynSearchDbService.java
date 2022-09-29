@@ -55,68 +55,32 @@ public class SynSearchDbService extends AbstractDataDbService {
 	@Autowired
 	private JooqBugCompensator jooqBugCompensator;
 
-	public List<SynRelation> getWordSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs, String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelation> getWordSynRelations(
+			Long wordId, String relationType, String datasetCode, List<String> wordLangs, boolean isPublicDataOnly,
+			String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordRelation r = WORD_RELATION.as("r");
 		WordRelation oppr = WORD_RELATION.as("oppr");
-		WordRelationParam rp = WORD_RELATION_PARAM.as("rp");
 		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 		Lexeme l2 = LEXEME.as("l2");
 		Lexeme lh = LEXEME.as("lh");
 		LexemePos lp = LEXEME_POS.as("lp");
-		LexemeRegister lr = LEXEME_REGISTER.as("lr");
-		Definition d = DEFINITION.as("d");
-		Freeform u = FREEFORM.as("u");
-		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 
-		Field<TypeWordRelParamRecord[]> relp = DSL
-				.select(DSL.field("array_agg(row(rp.name, rp.value)::type_word_rel_param)", TypeWordRelParamRecord[].class))
-				.from(rp)
-				.where(rp.WORD_RELATION_ID.eq(r.ID))
-				.groupBy(rp.WORD_RELATION_ID)
-				.asField();
-
-		Field<String[]> usages = DSL
-				.select(DSL.arrayAgg(u.VALUE_PRESE).orderBy(u.ORDER_BY))
-				.from(u, lff)
-				.where(
-						lff.LEXEME_ID.eq(l2.ID)
-								.and(lff.FREEFORM_ID.eq(u.ID))
-								.and(u.TYPE.eq(FreeformType.USAGE.name()))
-								.and(u.IS_PUBLIC.isTrue()))
-				.groupBy(l2.ID)
-				.asField("usages");
-
-		Field<String[]> definitions = DSL
-				.select(DSL.arrayAgg(Routines.encodeText(d.VALUE_PRESE)).orderBy(d.ORDER_BY))
-				.from(d)
-				.where(d.MEANING_ID.eq(l2.MEANING_ID).and(d.IS_PUBLIC.eq(PUBLICITY_PUBLIC)))
-				.groupBy(l2.MEANING_ID)
-				.asField("definitions");
-
-		Field<String[]> lexRegisterCodes = DSL
-				.select(DSL.arrayAgg(lr.REGISTER_CODE).orderBy(lr.ORDER_BY))
-				.from(lr)
-				.where(lr.LEXEME_ID.eq(l2.ID))
-				.groupBy(l2.ID)
-				.asField("lex_register_codes");
-
-		Field<String[]> lexPosCodes = DSL
-				.select(DSL.arrayAgg(lp.POS_CODE).orderBy(lp.ORDER_BY))
-				.from(lp)
-				.where(lp.LEXEME_ID.eq(l2.ID))
-				.groupBy(l2.ID)
-				.asField("lex_pos_codes");
+		Field<TypeWordRelParamRecord[]> relpf = getWordRelationParamField(r.ID);
+		Field<String[]> uf = getUsagesField(l2.ID, isPublicDataOnly);
+		Field<String[]> df = getDefinitionsField(l2.MEANING_ID, isPublicDataOnly);
+		Field<String[]> lrcf = getLexRegisterCodesField(l2.ID);
+		Field<String[]> lpcf = getLexPosCodesField(l2.ID);
 
 		Table<Record5<Long, String[], String[], String[], String[]>> relmt = DSL
 				.select(
 						l2.MEANING_ID,
-						definitions,
-						usages,
-						lexRegisterCodes,
-						lexPosCodes)
+						df.as("definitions"),
+						uf.as("usages"),
+						lrcf.as("lex_register_codes"),
+						lpcf.as("lex_pos_codes"))
 				.from(l2)
 				.where(
 						l2.WORD_ID.eq(r.WORD2_ID)
@@ -150,7 +114,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rtl.VALUE.as("rel_type_label"),
 						r.RELATION_STATUS,
 						oppr.RELATION_STATUS.as("opposite_relation_status"),
-						relp.as("relation_params"),
+						relpf.as("relation_params"),
 						r.ORDER_BY,
 						w2.ID.as("word_id"),
 						w2.VALUE.as("word_value"),
@@ -166,7 +130,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(r
 						.innerJoin(w2).on(
 								r.WORD2_ID.eq(w2.ID)
-										.and(w2.IS_PUBLIC.isTrue())
 										.andExists(DSL
 												.select(l2.ID)
 												.from(l2)
@@ -183,7 +146,12 @@ public class SynSearchDbService extends AbstractDataDbService {
 						r.WORD1_ID.eq(wordId)
 								.and(r.WORD_REL_TYPE_CODE.eq(relationType))
 								.and(w2.LANG.in(wordLangs))
-								.andExists(DSL.select(l2.ID).from(l2).where(l2.WORD_ID.eq(w2.ID).and(l2.DATASET_CODE.eq(datasetCode)))))
+								.andExists(DSL
+										.select(l2.ID)
+										.from(l2)
+										.where(
+												l2.WORD_ID.eq(w2.ID)
+														.and(l2.DATASET_CODE.eq(datasetCode)))))
 				.groupBy(r.ID, rtl.VALUE, w2.ID, oppr.RELATION_STATUS)
 				.asTable("r");
 
@@ -316,5 +284,80 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(WORD_RELATION_PARAM)
 				.where(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(wordRelationId))
 				.fetchInto(TypeWordRelParam.class);
+	}
+
+	private Field<TypeWordRelParamRecord[]> getWordRelationParamField(Field<Long> wordRelationIdField) {
+
+		WordRelationParam rp = WORD_RELATION_PARAM.as("rp");
+
+		Field<TypeWordRelParamRecord[]> relp = DSL.field(DSL
+				.select(DSL.field("array_agg(row(rp.name, rp.value)::type_word_rel_param)", TypeWordRelParamRecord[].class))
+				.from(rp)
+				.where(rp.WORD_RELATION_ID.eq(wordRelationIdField))
+				.groupBy(rp.WORD_RELATION_ID));
+		return relp;
+	}
+
+	private Field<String[]> getUsagesField(Field<Long> lexemeIdField, boolean isPublicDataOnly) {
+
+		Freeform u = FREEFORM.as("u");
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+
+		Condition where =
+				lff.LEXEME_ID.eq(lexemeIdField)
+						.and(lff.FREEFORM_ID.eq(u.ID))
+						.and(u.TYPE.eq(FreeformType.USAGE.name()));
+
+		if (isPublicDataOnly) {
+			where = where.and(u.IS_PUBLIC.isTrue());
+		}
+
+		Field<String[]> uf = DSL.field(DSL
+				.select(DSL.arrayAgg(u.VALUE_PRESE).orderBy(u.ORDER_BY))
+				.from(u, lff)
+				.where(where)
+				.groupBy(lexemeIdField));
+		return uf;
+	}
+
+	private Field<String[]> getLexRegisterCodesField(Field<Long> lexemeIdField) {
+
+		LexemeRegister lr = LEXEME_REGISTER.as("lr");
+
+		Field<String[]> lrcf = DSL.field(DSL
+				.select(DSL.arrayAgg(lr.REGISTER_CODE).orderBy(lr.ORDER_BY))
+				.from(lr)
+				.where(lr.LEXEME_ID.eq(lexemeIdField))
+				.groupBy(lexemeIdField));
+		return lrcf;
+	}
+
+	private Field<String[]> getDefinitionsField(Field<Long> meaningIdField, boolean isPublicDataOnly) {
+
+		Definition d = DEFINITION.as("d");
+
+		Condition where = d.MEANING_ID.eq(meaningIdField);
+		if (isPublicDataOnly) {
+			where = where.and(d.IS_PUBLIC.isTrue());
+		}
+
+		Field<String[]> df = DSL.field(DSL
+				.select(DSL.arrayAgg(Routines.encodeText(d.VALUE_PRESE)).orderBy(d.ORDER_BY))
+				.from(d)
+				.where(where)
+				.groupBy(meaningIdField));
+		return df;
+	}
+
+	private Field<String[]> getLexPosCodesField(Field<Long> lexemeIdField) {
+
+		LexemePos lp = LEXEME_POS.as("lp");
+
+		Field<String[]> lpcf = DSL.field(DSL
+				.select(DSL.arrayAgg(lp.POS_CODE).orderBy(lp.ORDER_BY))
+				.from(lp)
+				.where(lp.LEXEME_ID.eq(lexemeIdField))
+				.groupBy(lexemeIdField));
+		return lpcf;
 	}
 }

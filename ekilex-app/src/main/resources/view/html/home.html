@@ -19,8 +19,12 @@
           <a th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
         </p>
         <p>
-          <a th:href="@{/synsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.syn}">Vasted</a>
-          <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.syn}">Vasted</span>
+          <a th:href="@{/partsynsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.partsyn}">Vasted</a>
+          <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.partsyn}">Vasted</span>
+        </p>
+        <p>
+          <a th:href="@{/fullsynsearch}" th:if="${userRoleData.crudRoleSelected}" th:text="#{menu.fullsyn}">Tõlkevasted</a>
+          <span th:unless="${userRoleData.crudRoleSelected}" th:title="#{menu.syn.select.crud.role}" th:text="#{menu.fullsyn}">Tõlkevasted</span>
         </p>
         <p>
           <a th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>

@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+  <div th:id="${'addSynRelationDlg_' + wordId}" class="modal"
+        role="dialog"
+        th:fragment="add_syn_relation_dlg(wordId, language, relations)"
+        data-plugin="initAddSynRelationDlgPlugin">
+    <div class="modal-dialog modal-dialog-scrollable" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/syn_search_words}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <input type="hidden" name="language" th:value="${language}"/>
+                  <input th:each="relation : ${relations}" type="hidden" name="excludedIds" th:value="${relation.wordId}"/>
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" th:placeholder="#{lex.placeholder.word.search}">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/create_item}" method="post">
+            <input type="hidden" name="id" th:value="${wordId}"/>
+            <input type="hidden" name="opCode" value="raw_relation"/>
+            <input type="hidden" name="value2"/>
+            <div class="form-group row">
+              <div class="col-md-6"></div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'editSynMeaningRelationWeightDlg_' + syn.relationId}" class="modal"
+        role="dialog"
+        th:fragment="edit_syn_meaning_relation_weight_dlg"
+        data-plugin="initGenericTextEditDlgPlugin">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${syn.relationId}">
+            <input type="hidden" name="opCode" value="meaning_relation_weight">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="value" th:value="${syn.weight}">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal" tabindex="-1" role="dialog" id="synTutorialDlg">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{syn.manual}">Kasutusjuhend</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Tulpade vahel ja üles alla liikumiseks töötavad <strong>nooleklahvid</strong>.
+            <br/>
+            Klahv <strong>ENTER</strong> töötab eri tulpades järgmiselt:
+          </p>
+          <p>
+          <ul>
+            <li>Vasakul: valitud otsingutulemuse detailide kuvamine</li>
+            <li>Paremal: valitud sünonüümi märkimine</li>
+            <li>Keskel: Paremal tulbas märgitud sünonüümi valitud ilmikuga sidumine</li>
+          </ul>
+          Klahv <strong>ESC</strong> eemaldab markeeringud ja liigutab kursori otsingu kasti.
+          <br/>
+          Klahvid <strong>'1', '2' ja '3'</strong> töötavad kiirklahvidena kolme tulba valimiseks
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" th:text="#{common.close}">Sulge</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

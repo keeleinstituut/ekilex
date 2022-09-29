@@ -93,9 +93,14 @@ public abstract class AbstractAuthActionController implements WebConstant, Syste
 		Tag activeTag = tagService.getTag(activeTagName);
 		List<String> preferredTagNames = userProfile.getPreferredTagNames();
 		List<String> preferredDatasetCodes = userProfile.getPreferredDatasets();
-		List<String> synCandidateLangCodes = userProfile.getPreferredSynCandidateLangs();
+		List<String> partSynCandidateLangCodes = userProfile.getPreferredPartSynCandidateLangs();
+		List<String> fullSynCandidateLangCodes = userProfile.getPreferredFullSynCandidateLangs();
 		List<String> synMeaningWordLangCodes = userProfile.getPreferredSynLexMeaningWordLangs();
-		return new UserContextData(userId, userName, userRole, userRoleDatasetCode, activeTag, preferredTagNames, preferredDatasetCodes, synCandidateLangCodes, synMeaningWordLangCodes);
+		String fullSynCandidateDatasetCode = userProfile.getPreferredFullSynCandidateDatasetCode();
+
+		return new UserContextData(
+				userId, userName, userRole, userRoleDatasetCode, activeTag, preferredTagNames, preferredDatasetCodes,
+				partSynCandidateLangCodes, fullSynCandidateLangCodes, synMeaningWordLangCodes, fullSynCandidateDatasetCode);
 	}
 
 	protected SessionBean getSessionBean(Model model) {

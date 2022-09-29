@@ -60,7 +60,8 @@ public class UserProfileDbService {
 		Long userId = userProfile.getUserId();
 		Long recentDatasetPermissionId = userProfile.getRecentDatasetPermissionId();
 		List<String> preferredDatasets = userProfile.getPreferredDatasets();
-		List<String> preferredSynCandidateLangs = userProfile.getPreferredSynCandidateLangs();
+		List<String> preferredPartSynCandidateLangs = userProfile.getPreferredPartSynCandidateLangs();
+		List<String> preferredFullSynCandidateLangs = userProfile.getPreferredFullSynCandidateLangs();
 		List<String> preferredSynLexMeaningWordLangs = userProfile.getPreferredSynLexMeaningWordLangs();
 		List<String> preferredMeaningRelationWordLangs = userProfile.getPreferredMeaningRelationWordLangs();
 		boolean showLexMeaningRelationSourceLangWords = userProfile.isShowLexMeaningRelationSourceLangWords();
@@ -68,7 +69,9 @@ public class UserProfileDbService {
 		boolean showMeaningRelationMeaningId = userProfile.isShowMeaningRelationMeaningId();
 		boolean showMeaningRelationWordDatasets = userProfile.isShowMeaningRelationWordDatasets();
 		String activeTagName = userProfile.getActiveTagName();
+		String preferredFullSynCandidateDatasetCode = userProfile.getPreferredFullSynCandidateDatasetCode();
 		List<String> preferredTagNames = userProfile.getPreferredTagNames();
+		boolean isApproveMeaningEnabled = userProfile.isApproveMeaningEnabled();
 
 		EkiUserProfileRecord ekiUserProfile = create.selectFrom(EKI_USER_PROFILE).where(EKI_USER_PROFILE.USER_ID.eq(userId)).fetchOne();
 
@@ -76,8 +79,11 @@ public class UserProfileDbService {
 		if (CollectionUtils.isNotEmpty(preferredDatasets)) {
 			ekiUserProfile.setPreferredDatasets(preferredDatasets.toArray(new String[0]));
 		}
-		if (CollectionUtils.isNotEmpty(preferredSynCandidateLangs)) {
-			ekiUserProfile.setPreferredSynCandidateLangs(preferredSynCandidateLangs.toArray(new String[0]));
+		if (CollectionUtils.isNotEmpty(preferredPartSynCandidateLangs)) {
+			ekiUserProfile.setPreferredPartSynCandidateLangs(preferredPartSynCandidateLangs.toArray(new String[0]));
+		}
+		if (CollectionUtils.isNotEmpty(preferredFullSynCandidateLangs)) {
+			ekiUserProfile.setPreferredFullSynCandidateLangs(preferredFullSynCandidateLangs.toArray(new String[0]));
 		}
 		if (CollectionUtils.isNotEmpty(preferredSynLexMeaningWordLangs)) {
 			ekiUserProfile.setPreferredSynLexMeaningWordLangs(preferredSynLexMeaningWordLangs.toArray(new String[0]));
@@ -89,7 +95,9 @@ public class UserProfileDbService {
 		ekiUserProfile.setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
 		ekiUserProfile.setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
 		ekiUserProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
+		ekiUserProfile.setIsApproveMeaningEnabled(isApproveMeaningEnabled);
 		ekiUserProfile.setActiveTagName(activeTagName);
+		ekiUserProfile.setPreferredFullSynCandidateDatasetCode(preferredFullSynCandidateDatasetCode);
 		if (CollectionUtils.isNotEmpty(preferredTagNames)) {
 			ekiUserProfile.setPreferredTagNames(preferredTagNames.toArray(new String[0]));
 		} else {

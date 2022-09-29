@@ -22,12 +22,18 @@ public class UserContextData extends AbstractDataObject {
 
 	private List<String> preferredDatasetCodes;
 
-	private List<String> synCandidateLangCodes;
+	private List<String> partSynCandidateLangCodes;
+
+	private List<String> fullSynCandidateLangCodes;
 
 	private List<String> synMeaningWordLangCodes;
 
-	public UserContextData(Long userId, String userName, DatasetPermission userRole, String userRoleDatasetCode, Tag activeTag, List<String> tagNames,
-			List<String> preferredDatasetCodes, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes) {
+	private String fullSynCandidateDatasetCode;
+
+	public UserContextData(
+			Long userId, String userName, DatasetPermission userRole, String userRoleDatasetCode, Tag activeTag, List<String> tagNames,
+			List<String> preferredDatasetCodes, List<String> partSynCandidateLangCodes, List<String> fullSynCandidateLangCodes,
+			List<String> synMeaningWordLangCodes, String fullSynCandidateDatasetCode) {
 		this.userId = userId;
 		this.userName = userName;
 		this.userRole = userRole;
@@ -35,8 +41,10 @@ public class UserContextData extends AbstractDataObject {
 		this.activeTag = activeTag;
 		this.tagNames = tagNames;
 		this.preferredDatasetCodes = preferredDatasetCodes;
-		this.synCandidateLangCodes = synCandidateLangCodes;
+		this.partSynCandidateLangCodes = partSynCandidateLangCodes;
+		this.fullSynCandidateLangCodes = fullSynCandidateLangCodes;
 		this.synMeaningWordLangCodes = synMeaningWordLangCodes;
+		this.fullSynCandidateDatasetCode = fullSynCandidateDatasetCode;
 	}
 
 	public Long getUserId() {
@@ -67,12 +75,19 @@ public class UserContextData extends AbstractDataObject {
 		return preferredDatasetCodes;
 	}
 
-	public List<String> getSynCandidateLangCodes() {
-		return synCandidateLangCodes;
+	public List<String> getPartSynCandidateLangCodes() {
+		return partSynCandidateLangCodes;
+	}
+
+	public List<String> getFullSynCandidateLangCodes() {
+		return fullSynCandidateLangCodes;
 	}
 
 	public List<String> getSynMeaningWordLangCodes() {
 		return synMeaningWordLangCodes;
 	}
 
+	public String getFullSynCandidateDatasetCode() {
+		return fullSynCandidateDatasetCode;
+	}
 }

@@ -67,7 +67,7 @@
     <link rel="stylesheet" th:href="@{/view/css/styles.css}" />
   </th:block>
   <th:block th:fragment="nav_bar">
-    <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'syn' ? '' : 'fixed-top'}">
+    <nav class="navbar navbar-expand-md bg-primary navbar-dark main-navigation" th:classappend="${activeItem == 'partsyn' ? '' : 'fixed-top'}">
       <a th:href="@{/}">
         <span th:if="${activeItem == 'home' || activeItem == 'limterm'}" class="text-white">
           Ekilex <small class="pl-2" th:text="${'v.' + appData.appVersion}">1.0.0</small>
@@ -87,8 +87,10 @@
             <div>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}" th:text="#{menu.lex}">Leksikograafid</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}" th:text="#{menu.term}">Terminoloogid</a>
-              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'syn' ? 'active' : ''}" th:href="@{/synsearch}"
-                 sec:authorize="#vars.userRoleData.crudRoleSelected" th:text="#{menu.syn}">Vasted</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'partsyn' ? 'active' : ''}" th:href="@{/partsynsearch}"
+                 sec:authorize="#vars.userRoleData.crudRoleSelected" th:text="#{menu.partsyn}">Vasted</a>
+              <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'fullsyn' ? 'active' : ''}" th:href="@{/fullsynsearch}"
+                 sec:authorize="#vars.userRoleData.crudRoleSelected" th:text="#{menu.fullsyn}">Tõlkevasted</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'source' ? 'active' : ''}" th:href="@{/sourcesearch}" th:text="#{menu.source}">Allikate otsing</a>
               <a class="dropdown-item side-menu-item" th:classappend="${activeItem == 'limterm' ? 'limterm' : ''}" th:href="@{/limtermsearch}" th:text="#{menu.lim.term}">Võrgustiku otsing</a>
               <div class="dropdown-divider"></div>
@@ -162,7 +164,7 @@
             data-plugin="chooseSearchModePlugin">Detailotsing</a>
         </li>
       </ul>
-      <th:block th:if="${activeItem == 'syn'}">
+      <th:block th:if="${activeItem == 'partsyn'}">
         <button class="btn btn-primary mr-3" type="button" data-toggle="modal" data-target="#synTutorialDlg">
           <i class="fa fa-question-circle-o" aria-hidden="true"></i>
           <span th:text="#{common.user.manual}">Kasutusjuhend</span>

@@ -44,8 +44,32 @@ public class SynSearchService extends AbstractWordSearchService {
 	private PermCalculator permCalculator;
 
 	@Transactional
-	public WordDetails getWordSynDetails(Long wordId, List<ClassifierSelect> languagesOrder, List<String> synCandidateLangCodes,
+	public WordDetails getWordPartSynDetails(
+			Long wordId, List<ClassifierSelect> languagesOrder, List<String> synCandidateLangCodes, List<String> synMeaningWordLangCodes, Tag activeTag,
+			EkiUser user, EkiUserProfile userProfile) {
+
+		DatasetPermission userRole = user.getRecentRole();
+		String synCandidateDatasetCode = userRole.getDatasetCode();
+		boolean isSynCandidatePublicDataOnly = true;
+		return getWordSynDetails(
+				wordId, languagesOrder, synCandidateDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, isSynCandidatePublicDataOnly,
+				activeTag, user, userProfile);
+	}
+
+	@Transactional
+	public WordDetails getWordFullSynDetails(
+			Long wordId, List<ClassifierSelect> languagesOrder, String synCandidateDatasetCode, List<String> synCandidateLangCodes,
 			List<String> synMeaningWordLangCodes, Tag activeTag, EkiUser user, EkiUserProfile userProfile) {
+
+		boolean isSynCandidatePublicDataOnly = false;
+		return getWordSynDetails(
+				wordId, languagesOrder, synCandidateDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, isSynCandidatePublicDataOnly,
+				activeTag, user, userProfile);
+	}
+
+	private WordDetails getWordSynDetails(
+			Long wordId, List<ClassifierSelect> languagesOrder, String synCandidateDatasetCode, List<String> synCandidateLangCodes,
+			List<String> synMeaningWordLangCodes, boolean isSynCandidatePublicDataOnly, Tag activeTag, EkiUser user, EkiUserProfile userProfile) {
 
 		DatasetPermission userRole = user.getRecentRole();
 		boolean isAdmin = user.isAdmin();
@@ -65,7 +89,9 @@ public class SynSearchService extends AbstractWordSearchService {
 
 		List<SynRelation> synRelations = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(synCandidateLangCodes)) {
-			synRelations = synSearchDbService.getWordSynRelations(wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+			synRelations = synSearchDbService.getWordSynRelations(
+					wordId, WORD_REL_TYPE_CODE_RAW, synCandidateDatasetCode, synCandidateLangCodes, isSynCandidatePublicDataOnly,
+					CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		}
 		WordRelationDetails wordRelationDetails = new WordRelationDetails();
 		wordRelationDetails.setWordSynRelations(synRelations);

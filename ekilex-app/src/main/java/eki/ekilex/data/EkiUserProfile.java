@@ -18,7 +18,11 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private String activeTagName;
 
-	private List<String> preferredSynCandidateLangs;
+	private List<String> preferredPartSynCandidateLangs;
+
+	private List<String> preferredFullSynCandidateLangs;
+
+	private String preferredFullSynCandidateDatasetCode;
 
 	private List<String> preferredSynLexMeaningWordLangs;
 
@@ -74,12 +78,28 @@ public class EkiUserProfile extends AbstractDataObject {
 		this.activeTagName = activeTagName;
 	}
 
-	public List<String> getPreferredSynCandidateLangs() {
-		return preferredSynCandidateLangs;
+	public List<String> getPreferredPartSynCandidateLangs() {
+		return preferredPartSynCandidateLangs;
 	}
 
-	public void setPreferredSynCandidateLangs(List<String> preferredSynCandidateLangs) {
-		this.preferredSynCandidateLangs = preferredSynCandidateLangs;
+	public void setPreferredPartSynCandidateLangs(List<String> preferredPartSynCandidateLangs) {
+		this.preferredPartSynCandidateLangs = preferredPartSynCandidateLangs;
+	}
+
+	public List<String> getPreferredFullSynCandidateLangs() {
+		return preferredFullSynCandidateLangs;
+	}
+
+	public void setPreferredFullSynCandidateLangs(List<String> preferredFullSynCandidateLangs) {
+		this.preferredFullSynCandidateLangs = preferredFullSynCandidateLangs;
+	}
+
+	public String getPreferredFullSynCandidateDatasetCode() {
+		return preferredFullSynCandidateDatasetCode;
+	}
+
+	public void setPreferredFullSynCandidateDatasetCode(String preferredFullSynCandidateDatasetCode) {
+		this.preferredFullSynCandidateDatasetCode = preferredFullSynCandidateDatasetCode;
 	}
 
 	public List<String> getPreferredSynLexMeaningWordLangs() {
@@ -134,8 +154,7 @@ public class EkiUserProfile extends AbstractDataObject {
 		return isApproveMeaningEnabled;
 	}
 
-	public void setApproveMeaningEnabled(boolean isApproveMeaningEnabled) {
-		this.isApproveMeaningEnabled = isApproveMeaningEnabled;
+	public void setApproveMeaningEnabled(boolean approveMeaningEnabled) {
+		isApproveMeaningEnabled = approveMeaningEnabled;
 	}
-
 }

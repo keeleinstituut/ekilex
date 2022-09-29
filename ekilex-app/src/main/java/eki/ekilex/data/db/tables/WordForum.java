@@ -4,6 +4,7 @@
 package eki.ekilex.data.db.tables;
 
 
+import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordForumRecord;
@@ -15,6 +16,7 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
+import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row10;
@@ -33,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordForum extends TableImpl<WordForumRecord> {
 
-    private static final long serialVersionUID = 1645142862;
+    private static final long serialVersionUID = 1045179198;
 
     /**
      * The reference instance of <code>public.word_forum</code>
@@ -134,6 +136,11 @@ public class WordForum extends TableImpl<WordForumRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    @Override
+    public List<Index> getIndexes() {
+        return Arrays.<Index>asList(Indexes.WORD_FORUM_CREATOR_ID_IDX, Indexes.WORD_FORUM_WORD_ID_IDX);
     }
 
     @Override
