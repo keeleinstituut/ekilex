@@ -1,1 +1,8 @@
 Märkused ver 1.26.0 tarne kohta:
+
+* Tarnega kaasnev andmebaasi migratsiooni skript:
+  /eki-common/src/main/resources/sql/delivery.sql
+
+* Sisemärkused kolisid vabavormidest eraldi andmekategooriasse. Mõiste sisemärkuste laadimiseks on 2 võimalust:
+1. TSV formaadis failist laadimine - https://github.com/keeleinstituut/ekilex/wiki/Tähenduse-sisemärkuste-laadur
+2. API kaudu - https://github.com/keeleinstituut/ekilex/wiki/Ekilex-API#create-meaning-forum-mõiste-sisemärkus
