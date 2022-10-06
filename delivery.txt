@@ -6,3 +6,18 @@ Märkused ver 1.26.0 tarne kohta:
 * Sisemärkused kolisid vabavormidest eraldi andmekategooriasse. Mõiste sisemärkuste laadimiseks on 2 võimalust:
 1. TSV formaadis failist laadimine - https://github.com/keeleinstituut/ekilex/wiki/Tähenduse-sisemärkuste-laadur
 2. API kaudu - https://github.com/keeleinstituut/ekilex/wiki/Ekilex-API#create-meaning-forum-mõiste-sisemärkus
+  /api/meaning_forum/create
+
+* Lisandus tõlkevaste kandidaatide lisamise API teenus:
+  /api/syn_candidate/create
+
+Tõlkevastete kandidaatide keelendid on mitteavalikud (word.is_public = false).
+Kandidaadid on nähtavad leks vaates ja uues tõlkevastete vaates. Tõlkevastete vaade on lõpetamata, andmete kuva töötab, muutmine tuleb järgmise tarnega.
+
+* Teha värske sõnaveebi laadimine:
+Kustutada ekilexis kõik sõnaveebiga seotud vaated ja andmetüübid:
+  ekilex/eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
+
+Luua ekilexi ja sõnaveebi vaated:
+  ekilex/eki-common/src/main/resources/sql/create_views.sql
+  ekilex/wordweb-app/fileresources/sql/create_mviews.sql
