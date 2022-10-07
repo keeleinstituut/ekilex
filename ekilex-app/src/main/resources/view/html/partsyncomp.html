@@ -179,5 +179,74 @@
       </div>
     </div>
   </div>
+  <div data-name="dialogContent" th:fragment="syn_word_search_result">
+    <div class="card">
+      <div class="card-body p-2">
+        <div class="form-group row">
+          <div class="col-md-4 ml-2">
+            <label th:text="#{syn.candidate.weight}">Kandidaadi kaal</label>
+            <input name="weight" id="weightInput" type="number" min="0" max="0.9" step=".1" class="form-control required-field required-range" value="0.7">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
+      <div class="card-body p-2">
+        <span th:text="#{syn.results.found}">Kokku leiti:</span>
+        <span th:text="${totalCount}"></span>
+        <div style="max-height: 50vh; overflow: auto;">
+          <table class="table table-striped mb-0">
+            <tr th:each="word : ${wordsFoundBySearch}" th:with="wordExists = ${existingIds != null && #lists.contains(existingIds, word.wordId)}">
+              <td class="p-0" style="line-height: 0.6rem;">
+                <div class="btn btn-custom pt-0">
+                  <span th:utext="${viewUtil.getWordValueMarkup(word)}" class="ttl">vorm 1</span>
+                  <span th:text="${word.homonymNr}" th:if="${word.homonymNr > 0}"></span>
+                  <span th:text="${'(' + viewUtil.getLangIso2(word.lang) + ')'}"></span>
+                </div>
+                <input name="ids" type="checkbox" class="float-right mt-2 mr-2"
+                       th:value="${word.wordId}"
+                       th:disabled="${wordExists}"
+                       th:title="${wordExists} ? #{syn.candidate.exists} : ''"/>
+                <div class="ml-3 mb-2" style="margin-top: -6px;">
+                  <small>
+                    <span th:text="${#strings.listJoin(word.datasetCodes, ', ')}"></span>
+                  </small>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <button name="addRelationsBtn" type="submit" class="btn btn-primary float-right mt-2" disabled th:text="#{syn.add.selected.candidates}">Lisa valitud kandidaadid</button>
+      </div>
+    </div>
+    <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
+      <div th:text="#{common.not.found}" class="card-body">Not found.</div>
+    </div>
+    <div class="card">
+      <div class="card-body p-2">
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <div th:text="${userRoleData.userRole.datasetName}"></div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-9 ml-2">
+            <select required id="wordPermLanguageSelect" class="form-control required-field" name="language">
+              <option value="" selected disabled th:text="#{common.select.language}">vali keel...</option>
+              <option th:each="language : ${userRoleLanguages}" th:value="${language.code}" th:text="${language.value}" th:selected="${language.code == selectedWordLanguage}"></option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-6 ml-2">
+            <input class="form-control required-field" readonly name="value" th:value="${searchedWord}"/>
+          </div>
+          <div class="col-md-3">
+            <button type="button" id="addSynRelationWord" class="btn btn-sm btn-success" data-btn-menu th:text="#{syn.add.syn.relation.word}">Lisa uus keelend</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

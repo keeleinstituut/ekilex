@@ -33,6 +33,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.UserContextData;
+import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.SynSearchService;
@@ -53,10 +54,10 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 
 		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 		if (userRole.isSuperiorPermission()) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 
 		initSearchForms(FULL_SYN_SEARCH_PAGE, model);
@@ -85,7 +86,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
-		return "redirect:" + FULL_SYN_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + FULL_SYN_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(value = FULL_SYN_SEARCH_URI + "/**")
@@ -161,6 +162,23 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("meaningCount", meaningCount);
 
 		return FULL_SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
+	}
+
+	@PostMapping(FULL_SYN_SEARCH_WORDS_URI + "/{targetMeaningId}/{wordRelationId}")
+	public String searchSynWords(
+			@PathVariable Long targetMeaningId,
+			@PathVariable Long wordRelationId,
+			Model model) {
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		List<WordDescript> wordCandidates = synSearchService.getRelationWordCandidates(wordRelationId, userRole);
+
+		model.addAttribute("wordCandidates", wordCandidates);
+		model.addAttribute("targetMeaningId", targetMeaningId);
+		model.addAttribute("wordRelationId", wordRelationId);
+
+		return FULL_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "full_syn_word_select";
 	}
 
 }

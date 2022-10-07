@@ -70,6 +70,8 @@ public interface GlobalConstant {
 
 	String MEANING_REL_TYPE_CODE_SIMILAR = "sarnane";
 
+	String WORD_RELATION_PARAM_NAME_SYN_CANDIDATE = "syn candidate";
+
 	String[] MEANING_ATTRIBUTES = new String[] {
 			FreeformType.CONCEPT_ID.name(), FreeformType.GENUS.name(), FreeformType.FAMILY.name(), FreeformType.DESCRIBER.name(),
 			FreeformType.DESCRIBING_YEAR.name(), FreeformType.SOURCE_FILE.name()};

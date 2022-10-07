@@ -2,7 +2,10 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_DATASET;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -12,12 +15,14 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Record18;
 import org.jooq.Record5;
+import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +36,9 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.db.Routines;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
@@ -40,6 +47,14 @@ import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
+import eki.ekilex.data.db.tables.records.DefinitionRecord;
+import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
+import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
+import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
+import eki.ekilex.data.db.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.tables.records.WordRecord;
 import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelMeaningRecord;
 import eki.ekilex.data.db.udt.records.TypeWordRelParamRecord;
@@ -168,6 +183,20 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.groupBy(wh.VALUE)
 				.asField();
 
+		Field<Integer> rwsvpwcf = DSL
+				.select(DSL.field(DSL.count(wh.ID)))
+				.from(wh)
+				.where(
+						wh.VALUE.eq(rr.field("word_value", String.class))
+								.and(wh.LANG.eq(rr.field("word_lang", String.class)))
+								.and(wh.IS_PUBLIC.isTrue())
+								.andExists(DSL
+										.select(lh.ID)
+										.from(lh)
+										.where(lh.WORD_ID.eq(wh.ID))))
+				.groupBy(wh.VALUE)
+				.asField();
+
 		return create
 				.select(
 						rr.field("id"),
@@ -182,6 +211,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("word_value_prese"),
 						rr.field("word_homonym_nr"),
 						rwhe.as("homonyms_exist"),
+						rwsvpwcf.as("same_value_public_word_count"),
 						rr.field("word_lang"),
 						rr.field("word_type_codes"),
 						rr.field("prefixoid"),
@@ -227,13 +257,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetchInto(WordLexeme.class);
 	}
 
-	public void updateRelationStatus(Long id, String status) {
-		create.update(WORD_RELATION)
-				.set(WORD_RELATION.RELATION_STATUS, status)
-				.where(WORD_RELATION.ID.eq(id))
-				.execute();
-	}
-
 	public eki.ekilex.data.Word getWord(Long wordId) {
 
 		Word w = WORD.as("w");
@@ -275,6 +298,43 @@ public class SynSearchDbService extends AbstractDataDbService {
 								.and(WORD_RELATION.WORD_REL_TYPE_CODE.eq(relTypeCode)))
 				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetchInto(eki.ekilex.data.WordRelation.class);
+	}
+
+	public Long getSynCandidateWordId(Long wordRelationId) {
+
+		return create
+				.select(WORD_RELATION.WORD2_ID)
+				.from(WORD_RELATION)
+				.where(WORD_RELATION.ID.eq(wordRelationId))
+				.fetchOneInto(Long.class);
+	}
+
+	public Long getMeaningFirstWordLexemeId(Long meaningId, String datasetCode, String wordValue, String language) {
+
+		return create
+				.select(LEXEME.ID)
+				.from(LEXEME, WORD)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(WORD.VALUE.eq(wordValue))
+								.and(WORD.LANG.eq(language))
+								.and(WORD.IS_PUBLIC.isTrue()))
+				.orderBy(WORD.HOMONYM_NR)
+				.fetchOptionalInto(Long.class)
+				.orElse(null);
+	}
+
+	public BigDecimal getWordRelationParamValue(Long wordRelationId, String paramName) {
+
+		return create
+				.select(WORD_RELATION_PARAM.VALUE)
+				.from(WORD_RELATION_PARAM)
+				.where(
+						WORD_RELATION_PARAM.WORD_RELATION_ID.eq(wordRelationId)
+								.and(WORD_RELATION_PARAM.NAME.eq(paramName)))
+				.fetchOneInto(BigDecimal.class);
 	}
 
 	public List<TypeWordRelParam> getWordRelationParams(Long wordRelationId) {
@@ -359,5 +419,162 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.where(lp.LEXEME_ID.eq(lexemeIdField))
 				.groupBy(lexemeIdField));
 		return lpcf;
+	}
+
+	public void updateRelationStatus(Long id, String status) {
+		create.update(WORD_RELATION)
+				.set(WORD_RELATION.RELATION_STATUS, status)
+				.where(WORD_RELATION.ID.eq(id))
+				.execute();
+	}
+
+	public Long createSynWord(Long sourceWordId) {
+
+		WordRecord word = create.selectFrom(WORD).where(WORD.ID.eq(sourceWordId)).fetchOne();
+		WordRecord synWord = word.copy();
+		synWord.setHomonymNr(1);
+		synWord.setIsPublic(PUBLICITY_PUBLIC);
+		synWord.store();
+		Long synWordId = synWord.getId();
+		return synWordId;
+	}
+
+	public void createSynLexeme(Long sourceLexemeId, Long wordId, Long meaningId, String datasetCode, BigDecimal weight) {
+
+		LexemeRecord sourceLexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne();
+		LexemeRecord synLexeme = sourceLexeme.copy();
+		synLexeme.setMeaningId(meaningId);
+		synLexeme.setWordId(wordId);
+		synLexeme.setDatasetCode(datasetCode);
+		synLexeme.setWeight(weight);
+		synLexeme.setIsPublic(PUBLICITY_PUBLIC);
+		synLexeme.changed(LEXEME.ORDER_BY, false);
+		synLexeme.store();
+
+		Long synLexemeId = synLexeme.getId();
+		cloneSynLexemeData(synLexemeId, sourceLexemeId);
+	}
+
+	public void cloneSynLexemeData(Long targetLexemeId, Long sourceLexemeId) {
+
+		LexemePos tgtpos = LEXEME_POS.as("tgtpos");
+		LexemePos srcpos = LEXEME_POS.as("srcpos");
+		Freeform tgtu = FREEFORM.as("tgtu");
+		Freeform srcu = FREEFORM.as("srcu");
+		LexemeFreeform lexff = LEXEME_FREEFORM.as("lexff");
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+
+		Result<LexemePosRecord> sourceLexemePoses = create
+				.selectFrom(srcpos)
+				.where(
+						srcpos.LEXEME_ID.eq(sourceLexemeId)
+								.andNotExists(DSL
+										.select(tgtpos.ID)
+										.from(tgtpos)
+										.where(
+												tgtpos.LEXEME_ID.eq(targetLexemeId)
+														.and(tgtpos.POS_CODE.eq(srcpos.POS_CODE)))))
+				.orderBy(srcpos.ORDER_BY)
+				.fetch();
+
+		for (LexemePosRecord sourceLexemePos : sourceLexemePoses) {
+			LexemePosRecord targetLexemePos = sourceLexemePos.copy();
+			targetLexemePos.setLexemeId(targetLexemeId);
+			targetLexemePos.changed(LEXEME_POS.ORDER_BY, false);
+			targetLexemePos.store();
+		}
+
+		Result<FreeformRecord> sourceUsages = create
+				.select(srcu.fields())
+				.from(srcu, lexff)
+				.where(
+						lexff.LEXEME_ID.eq(sourceLexemeId)
+								.and(lexff.FREEFORM_ID.eq(srcu.ID))
+								.and(srcu.TYPE.eq(FreeformType.USAGE.name()))
+								.andNotExists(DSL
+										.select(tgtu.ID)
+										.from(tgtu, lexff)
+										.where(
+												lexff.LEXEME_ID.eq(targetLexemeId)
+														.and(lexff.FREEFORM_ID.eq(tgtu.ID))
+														.and(tgtu.TYPE.eq(FreeformType.USAGE.name()))
+														.and(tgtu.VALUE_TEXT.eq(srcu.VALUE_TEXT)))))
+				.orderBy(srcu.ID)
+				.fetchInto(FREEFORM);
+
+		for (FreeformRecord sourceUsage : sourceUsages) {
+			Long sourceUsageId = sourceUsage.getId();
+			FreeformRecord targetUsage = sourceUsage.copy();
+			targetUsage.setIsPublic(PUBLICITY_PUBLIC);
+			targetUsage.changed(FREEFORM.ORDER_BY, false);
+			targetUsage.store();
+			Long targetUsageId = targetUsage.getId();
+
+			Result<FreeformSourceLinkRecord> sourceUsageSourceLinks = create
+					.selectFrom(ffsl)
+					.where(ffsl.FREEFORM_ID.eq(sourceUsageId))
+					.orderBy(ffsl.ORDER_BY)
+					.fetch();
+
+			for (FreeformSourceLinkRecord sourceUsageSourceLink : sourceUsageSourceLinks) {
+				FreeformSourceLinkRecord targetUsageSourceLink = sourceUsageSourceLink.copy();
+				targetUsageSourceLink.setFreeformId(targetUsageId);
+				targetUsageSourceLink.changed(FREEFORM_SOURCE_LINK.ORDER_BY, false);
+				targetUsageSourceLink.store();
+			}
+
+			LexemeFreeformRecord targetLexemeFreeform = create.newRecord(lexff);
+			targetLexemeFreeform.setLexemeId(targetLexemeId);
+			targetLexemeFreeform.setFreeformId(sourceUsageId);
+			targetLexemeFreeform.store();
+		}
+	}
+
+	public void cloneSynMeaningData(Long targetMeaningId, Long sourceMeaningId, String datasetCode) {
+
+		Definition tgtdef = DEFINITION.as("tgtdef");
+		Definition srcdef = DEFINITION.as("srcdef");
+		DefinitionSourceLink defsl = DEFINITION_SOURCE_LINK.as("defsl");
+
+		Result<DefinitionRecord> sourceDefinitions = create
+				.selectFrom(srcdef)
+				.where(
+						srcdef.MEANING_ID.eq(sourceMeaningId)
+								.andNotExists(DSL
+										.select(tgtdef.ID)
+										.from(tgtdef)
+										.where(
+												tgtdef.MEANING_ID.eq(targetMeaningId)
+														.and(tgtdef.VALUE.eq(srcdef.VALUE)))))
+				.orderBy(srcdef.ORDER_BY)
+				.fetch();
+
+		for (DefinitionRecord sourceDefinition : sourceDefinitions) {
+			Long sourceDefinitionId = sourceDefinition.getId();
+			DefinitionRecord synDefinition = sourceDefinition.copy();
+			synDefinition.setMeaningId(targetMeaningId);
+			synDefinition.setIsPublic(PUBLICITY_PUBLIC);
+			synDefinition.changed(DEFINITION.ORDER_BY, false);
+			synDefinition.store();
+			Long synDefinitionId = synDefinition.getId();
+
+			create
+					.insertInto(DEFINITION_DATASET, DEFINITION_DATASET.DEFINITION_ID, DEFINITION_DATASET.DATASET_CODE)
+					.values(synDefinitionId, datasetCode)
+					.execute();
+
+			Result<DefinitionSourceLinkRecord> sourceDefinitionSourceLinks = create
+					.selectFrom(defsl)
+					.where(defsl.DEFINITION_ID.eq(sourceDefinitionId))
+					.orderBy(defsl.ORDER_BY)
+					.fetch();
+
+			for (DefinitionSourceLinkRecord sourceDefinitionSourceLink : sourceDefinitionSourceLinks) {
+				DefinitionSourceLinkRecord synDefinitionSourceLink = sourceDefinitionSourceLink.copy();
+				synDefinitionSourceLink.setDefinitionId(synDefinitionId);
+				synDefinitionSourceLink.changed(DEFINITION_SOURCE_LINK.ORDER_BY, false);
+				synDefinitionSourceLink.store();
+			}
+		}
 	}
 }

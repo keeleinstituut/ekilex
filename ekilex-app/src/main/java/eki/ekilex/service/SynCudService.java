@@ -19,12 +19,17 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.GlobalConstant;
 import eki.common.constant.RelationStatus;
+import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLogData;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.service.db.CompositionDbService;
 import eki.ekilex.service.db.SynSearchDbService;
 
 @Component
@@ -40,6 +45,9 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	@Autowired
 	private SynSearchDbService synSearchDbService;
 
+	@Autowired
+	private CompositionDbService compositionDbService;
+
 	@Transactional
 	public void createSynMeaningRelation(Long targetMeaningId, Long sourceMeaningId, Long wordRelationId, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -47,10 +55,7 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 		Float meaningRelationWeight = getCalculatedMeaningRelationWeight(typeWordRelParams);
 		createSynMeaningRelation(targetMeaningId, sourceMeaningId, meaningRelationWeight, isManualEventOnUpdateEnabled);
 
-		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningRelation", relationWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		synSearchDbService.updateRelationStatus(wordRelationId, RelationStatus.PROCESSED.name());
-		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
+		updateWordRelationStatus("createSynMeaningRelation", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
 	}
 
 	private Float getCalculatedMeaningRelationWeight(List<TypeWordRelParam> typeWordRelParams) {
@@ -105,6 +110,52 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	}
 
 	@Transactional
+	public void createSynMeaningWord(Long targetMeaningId, Long synWordId, Long wordRelationId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		// TODO add activity log
+		Long sourceWordId = synSearchDbService.getSynCandidateWordId(wordRelationId);
+		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
+		String sourceWordValue = sourceWord.getWordValue();
+		String sourceWordLang = sourceWord.getLang();
+
+		List<Word> sameValueWords = lookupDbService.getWords(sourceWordValue, sourceWordLang);
+
+		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
+		if (sourceWordLexemes.size() != 1) {
+			throw new OperationDeniedException();
+		}
+		LexemeRecord sourceWordLexeme = sourceWordLexemes.get(0);
+		Long sourceLexemeId = sourceWordLexeme.getId();
+		Long sourceMeaningId = sourceWordLexeme.getMeaningId();
+
+		Long targetMeaningSameWordLexemeId = synSearchDbService.getMeaningFirstWordLexemeId(targetMeaningId, datasetCode, sourceWordValue, sourceWordLang);
+		boolean targetMeaningHasWord = targetMeaningSameWordLexemeId != null;
+		if (targetMeaningHasWord) {
+			// TODO in this case no activity log?
+			// TODO cloning logic needs to be specified
+			synSearchDbService.cloneSynLexemeData(targetMeaningSameWordLexemeId, sourceLexemeId);
+			synSearchDbService.cloneSynMeaningData(targetMeaningId, sourceMeaningId, datasetCode);
+			return;
+		}
+
+		if (sameValueWords.size() == 0) {
+			synWordId = synSearchDbService.createSynWord(sourceWordId);
+		} else if (sameValueWords.size() == 1) {
+			synWordId = sameValueWords.get(0).getWordId();
+		} else {
+			if (synWordId == null) {
+				throw new OperationDeniedException();
+			}
+		}
+
+		BigDecimal weight = synSearchDbService.getWordRelationParamValue(wordRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE);
+		synSearchDbService.createSynLexeme(sourceLexemeId, synWordId, targetMeaningId, datasetCode, weight);
+		synSearchDbService.cloneSynMeaningData(targetMeaningId, sourceMeaningId, datasetCode);
+
+		updateWordRelationStatus("createSynMeaningWord", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
 	public void createWordAndSynRelation(
 			Long existingWordId, String valuePrese, String datasetCode, String language, String weightStr, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -143,7 +194,41 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
 	}
 
+	@Transactional
+	public void updateRelationStatus(Long relationId, String relationStatus, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		if (StringUtils.equals(RelationStatus.DELETED.name(), relationStatus)) {
+			moveChangedRelationToLast(relationId);
+		}
+		updateWordRelationStatus("updateRelationStatus", relationId, relationStatus, isManualEventOnUpdateEnabled);
+	}
+
+	@Transactional
+	public void updateWordSynRelationsStatusDeleted(
+			Long wordId, String datasetCode, List<String> synCandidateLangCodes, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		List<SynRelation> wordSynRelations = synSearchDbService.getWordSynRelations(
+				wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, true, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
+				.filter(synRelation -> synRelation.getRelationStatus() == null || synRelation.getRelationStatus().equals(RelationStatus.UNDEFINED))
+				.collect(Collectors.toList());
+
+		for (SynRelation synRelation : filteredWordSynRelations) {
+			Long relationId = synRelation.getId();
+			updateRelationStatus(relationId, RelationStatus.DELETED.name(), isManualEventOnUpdateEnabled);
+		}
+	}
+
+	private void updateWordRelationStatus(String functName, Long wordRelationId, String relationStatus, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		Long relationWordId = activityLogService.getOwnerId(wordRelationId, ActivityEntity.WORD_RELATION);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog(functName, relationWordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
+		synSearchDbService.updateRelationStatus(wordRelationId, relationStatus);
+		activityLogService.createActivityLog(activityLog, wordRelationId, ActivityEntity.WORD_RELATION);
+	}
+
 	private void moveCreatedWordRelationToFirst(Long wordId, Long relationId, String relTypeCode) {
+
 		List<WordRelation> existingRelations = lookupDbService.getWordRelations(wordId, relTypeCode);
 		if (existingRelations.size() > 1) {
 
@@ -160,18 +245,6 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 				relIdx++;
 			}
 		}
-	}
-
-	@Transactional
-	public void updateRelationStatus(Long relationId, String relationStatus, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		if (StringUtils.equals(RelationStatus.DELETED.name(), relationStatus)) {
-			moveChangedRelationToLast(relationId);
-		}
-		Long wordId = activityLogService.getOwnerId(relationId, ActivityEntity.WORD_RELATION);
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("changeRelationStatus", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
-		synSearchDbService.updateRelationStatus(relationId, relationStatus);
-		activityLogService.createActivityLog(activityLog, relationId, ActivityEntity.WORD_RELATION);
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {
@@ -191,22 +264,6 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 				cudDbService.updateWordRelationOrderBy(relation.getId(), existingOrderByValues.get(relIdx));
 				relIdx++;
 			}
-		}
-	}
-
-	@Transactional
-	public void updateWordSynRelationsStatusDeleted(
-			Long wordId, String datasetCode, List<String> synCandidateLangCodes, boolean isManualEventOnUpdateEnabled) throws Exception {
-
-		List<SynRelation> wordSynRelations = synSearchDbService.getWordSynRelations(
-				wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, true, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
-				.filter(synRelation -> synRelation.getRelationStatus() == null || synRelation.getRelationStatus().equals(RelationStatus.UNDEFINED))
-				.collect(Collectors.toList());
-
-		for (SynRelation synRelation : filteredWordSynRelations) {
-			Long relationId = synRelation.getId();
-			updateRelationStatus(relationId, RelationStatus.DELETED.name(), isManualEventOnUpdateEnabled);
 		}
 	}
 }

@@ -306,17 +306,21 @@ public interface WebConstant {
 
 	String MANUAL_EVENT_ON_UPDATE_URI = "/manual_event_on_update";
 
-	String PART_SYN_SEARCH_PAGE = "partsynsearch";
-
 	String PART_SYN_SEARCH_URI = "/partsynsearch";
 
-	String FULL_SYN_SEARCH_PAGE = "fullsynsearch";
+	String PART_SYN_SEARCH_PAGE = "partsynsearch";
 
 	String FULL_SYN_SEARCH_URI = "/fullsynsearch";
+
+	String FULL_SYN_SEARCH_PAGE = "fullsynsearch";
 
 	String SYN_PAGING_URI = "/syn_paging";
 
 	String COMMON_SYN_COMPONENTS_PAGE = "syncomp";
+
+	String PART_SYN_COMPONENTS_PAGE = "partsyncomp";
+
+	String FULL_SYN_COMPONENTS_PAGE = "fullsyncomp";
 
 	String PART_SYN_WORD_DETAILS_URI = "/partsyn_worddetails";
 
@@ -326,7 +330,11 @@ public interface WebConstant {
 
 	String SYN_CREATE_MEANING_RELATION_URI = "/syn_create_meaning_relation";
 
-	String SYN_SEARCH_WORDS_URI = "/syn_search_words";
+	String SYN_CREATE_MEANING_WORD_URI = "/syn_create_meaning_word";
+
+	String PART_SYN_SEARCH_WORDS_URI = "/part_syn_search_words";
+
+	String FULL_SYN_SEARCH_WORDS_URI = "/full_syn_search_words";
 
 	String USER_PROFILE_PAGE = "userprofile";
 

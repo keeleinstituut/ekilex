@@ -29,8 +29,6 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 
 	private static final Logger logger = LoggerFactory.getLogger(SynCandidateService.class);
 
-	private static final String WORD_RELATION_PARAM_NAME_SYN_CANDIDATE = "syn candidate";
-
 	@Autowired
 	private LookupDbService lookupDbService;
 

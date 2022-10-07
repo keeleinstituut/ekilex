@@ -6,18 +6,19 @@
        class="overflow-auto h-100"
        data-panel-index="3"
        th:fragment="syn_candidate_list">
-    <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" width="100%" class="orderable list-unstyled p-0"
-          data-op-code="word_relation"
-          data-sorter:type="relations"
-          data-plugin="sorter">
+    <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" width="100%" class="list-unstyled p-0">
       <li th:each="synRelation,relationIter : ${details.wordRelationDetails.wordSynRelations}"
-          class="border w-100"
-          th:data-id="${synRelation.id}"
+          class="border draggable-synonym drag-handle"
+          th:data-syn-relation-id="${synRelation.id}"
+          th:data-word-count="${synRelation.sameValuePublicWordCount}"
           th:data-orderby="${synRelation.orderBy}">
         <div class="d-flex flex-row hover-actions-container align-items-center pl-1 bg-light"
              th:data-word-id="${synRelation.wordId}"
              th:data-word="${synRelation.wordValue}"
              th:data-meaning-id="${synRelation.meaningId}">
+          <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
+            <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
+          </span>
           <span th:if="${synRelation.relationStatus}" th:title="#{|relationstatus.${synRelation.relationStatus}|}" data-toggle="tooltip" class="px-2">
             <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.relationStatus}|}" aria-hidden="true"></i>
           </span>
@@ -30,16 +31,6 @@
             </p>
           </div>
           <div class="hover-actions">
-            <button type="button" th:hidden="${relationIter.first}" class="btn btn-xs btn-secondary order-up "
-                  th:title="#{common.update.ordering}"
-                  data-plugin="changeItemOrderingPlugin">
-              <i class="fa fa-arrow-up" aria-hidden="true"></i>
-            </button>
-            <button type="button" th:hidden="${relationIter.last}" class="btn btn-xs  btn-secondary order-down "
-                    th:title="#{common.update.ordering}"
-                  data-plugin="changeItemOrderingPlugin">
-              <i class="fa fa-arrow-down" aria-hidden="true"></i>
-            </button>
             <button type="button" class="btn  btn-xs btn-secondary rel-status-btn" th:data-id="${synRelation.id}"
                   data-status="UNDEFINED"
                   th:title="#{syn.update.undefined}"
@@ -75,25 +66,16 @@
               <br>
               <ul th:if="${not #lists.isEmpty(synRelation.relationParams)}" class="list-unstyled">
                 <li th:each="relationParam : ${synRelation.relationParams}" class="d-flex flex-row flex-nowrap row">
-                  <span class="col-6" th:text="${relationParam.name}">Label</span>
+                  <span class="col-6" th:text="#{syn.candidate.weight}">Kandidaadi kaal</span>
                   <span class="col-6" th:text="${relationParam.value}">Value</span>
                 </li>
               </ul>
               <p th:if="${#lists.isEmpty(synRelation.relationParams)}" th:text="#{syn.no.relation.params}">Seosetugevuste andmed puuduvad</p>
             </div>
           </div>
-          <span th:if="${synRelation.oppositeRelationStatus != null}"
-                th:title="#{|relationstatus.${synRelation.oppositeRelationStatus}|}"
-                data-toggle="tooltip"
-                class="border-left border-light px-2">
-            <i class="fa" th:classappend="#{|relationstatus.icon.${synRelation.oppositeRelationStatus}|}" aria-hidden="true"></i>
-          </span>
-          <span th:if="${synRelation.oppositeRelationStatus == null}" th:title="#{syn.no.relation}" data-toggle="tooltip" class="border-left border-light px-2">
-            <i class="fa fa-exclamation-triangle text-muted" aria-hidden="true"></i>
-          </span>
         </div>
-        <div class="draggable-synonym drag-handle keyboard-nav-list"
-             th:each="meaning,meaningIter : ${synRelation.wordMeanings}"
+        <!-- TODO remove unnecessary data attributes -->
+        <div th:with="meaning = ${synRelation.wordMeanings.get(0)}"
              th:data-meaning-id="${meaning.meaningId}"
              th:data-relation-id="${synRelation.id}"
              th:data-id="${synRelation.id}"
@@ -101,12 +83,7 @@
              th:data-navigate-selected="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId}?'true'"
              th:data-active-panel="${markedSynMeaningId != null}?'true'"
              th:classappend="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId ? 'navigate-marked' : ''}">
-          <div data-toggle="tooltip" data-html="true" th:title="${viewUtil.getLexRegisterTooltipHtml(meaning.lexRegisterCodes)}">
-            <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
-              <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
-            </span>
-            <span class="small" th:text="#{syn.meaning.id}">Tähenduse id:</span>
-            <span class="small" th:text="${meaning.meaningId}"></span>
+          <div data-toggle="tooltip" th:title="#{fullsyn.lexeme.pos}">
             <span class="pr-2 small" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
               <span th:each="posCode : ${meaning.lexPosCodes}">
                 <span class="font-italic" th:text="${posCode}"></span>
@@ -160,6 +137,58 @@
         </span>
       </div>
     </div>
+  </div>
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" th:fragment="full_syn_word_select">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" th:text="#{fullsyn.select.homonym}">Vali sobiv keelend</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="submitSynWordForm" th:action="@{/full_syn_search_words/select}" method="post">
+          <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
+          <input type="hidden" name="wordRelationId" th:value="${wordRelationId}">
+          <div class="mb-2 p-2" th:each="wordCandidate,wordCandidateIter : ${wordCandidates}">
+            <div class="row mb-2">
+              <input type="radio" name="wordId" class="ml-3 mr-3"
+                     th:value="${wordCandidate.word.wordId}"
+                     data-plugin="enableSelectSynWordBtnPlugin"/>
+              <span th:utext="${wordCandidate.word.wordValuePrese}"></span>
+              <span class="badge" th:text="${wordCandidate.word.homonymNr}"></span>
+              <small class="ml-3" th:text="'W' + ${wordCandidate.word.wordId}"></small>
+            </div>
+            <div class="border border-dark rounded mb-2 p-2">
+              <th:block th:each="lexeme,lexemeIter : ${wordCandidate.lexemes}">
+                <div class="row" th:fragment="word_candidate_lexeme_details">
+                  <hr th:unless="${lexemeIter.first}">
+                  <div class="col-2">
+                    <span class="lbl" th:text="#{fullsyn.definitions}">Seletused</span>
+                  </div>
+                  <div class="col-6">
+                    <th:block th:each="definition : ${lexeme.meaning.definitions}">
+                      <div style="display: list-item; position: absolute"></div>
+                      <div>
+                        <span th:utext="${definition.value}"></span>
+                      </div>
+                    </th:block>
+                  </div>
+                  <div class="col-2">
+                    <span th:text="${lexeme.datasetName}"></span>
+                  </div>
+                </div>
+              </th:block>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="selectWordBtn" data-plugin="submitSynWordBtnPlugin" disabled th:text="#{common.add}">Lisa</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+      </div>
+    </div>
+    <script th:inline="javascript">
+		  initializeFullSynWordSearch();
+    </script>
   </div>
 </body>
 </html>

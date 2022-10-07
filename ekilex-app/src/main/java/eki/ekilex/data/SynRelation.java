@@ -20,6 +20,8 @@ public class SynRelation extends AbstractRelation {
 
 	private List<TypeWordRelMeaning> wordMeanings;
 
+	private int sameValuePublicWordCount;
+
 	public List<String> getWordLexemesPoses() {
 		return wordLexemesPoses;
 	}
@@ -66,5 +68,13 @@ public class SynRelation extends AbstractRelation {
 
 	public void setWordMeanings(List<TypeWordRelMeaning> wordMeanings) {
 		this.wordMeanings = wordMeanings;
+	}
+
+	public int getSameValuePublicWordCount() {
+		return sameValuePublicWordCount;
+	}
+
+	public void setSameValuePublicWordCount(int sameValuePublicWordCount) {
+		this.sameValuePublicWordCount = sameValuePublicWordCount;
 	}
 }

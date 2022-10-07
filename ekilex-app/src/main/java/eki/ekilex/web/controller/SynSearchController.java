@@ -12,7 +12,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -80,34 +79,4 @@ public class SynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("searchUri", searchUri);
 		return COMMON_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "search_result";
 	}
-
-	@GetMapping(SYN_SEARCH_WORDS_URI)
-	public String searchSynWords(
-			@RequestParam String searchFilter,
-			@RequestParam(required = false) List<Long> excludedIds,
-			@RequestParam(required = false) String language,
-			@RequestParam(required = false) String morphCode,
-			Model model) throws Exception {
-
-		logger.debug("word search {}", searchFilter);
-
-		final int maxResultsLimit = 250;
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
-		List<String> tagNames = userContextData.getTagNames();
-
-		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, maxResultsLimit, false);
-
-		model.addAttribute("wordsFoundBySearch", result.getWords());
-		model.addAttribute("totalCount", result.getTotalCount());
-		model.addAttribute("existingIds", excludedIds);
-
-		model.addAttribute("searchedWord", searchFilter);
-		model.addAttribute("selectedWordLanguage", language);
-		model.addAttribute("selectedWordMorphCode", morphCode);
-
-		return COMMON_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
-	}
-
 }

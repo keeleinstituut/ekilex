@@ -21,12 +21,14 @@ import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.MeaningWord;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchLangsRestriction;
+import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordForum;
 import eki.ekilex.data.WordLexeme;
@@ -140,5 +142,41 @@ public class SynSearchService extends AbstractWordSearchService {
 		meaning.setMeaningId(meaningId);
 		meaning.setDefinitions(definitions);
 		lexeme.setMeaning(meaning);
+	}
+
+	@Transactional
+	public List<WordDescript> getRelationWordCandidates(Long wordRelationId, DatasetPermission userRole) {
+
+		Long sourceWordId = synSearchDbService.getSynCandidateWordId(wordRelationId);
+		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
+		String sourceWordValue = sourceWord.getWordValue();
+		String sourceWordLang = sourceWord.getLang();
+
+		List<WordDescript> wordCandidates = new ArrayList<>();
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
+		List<Word> words = lookupDbService.getWords(sourceWordValue, sourceWordLang);
+
+		for (Word word : words) {
+			Long wordId = word.getWordId();
+			List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+
+			wordLexemes.forEach(lexeme -> {
+				Long meaningId = lexeme.getMeaningId();
+				String lexemeDatasetCode = lexeme.getDatasetCode();
+				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				permCalculator.filterVisibility(userRole, definitions);
+				Meaning meaning = new Meaning();
+				meaning.setMeaningId(meaningId);
+				meaning.setDefinitions(definitions);
+				lexeme.setMeaning(meaning);
+			});
+
+			WordDescript wordCandidate = new WordDescript();
+			wordCandidate.setWord(word);
+			wordCandidate.setLexemes(wordLexemes);
+
+			wordCandidates.add(wordCandidate);
+		}
+		return wordCandidates;
 	}
 }

@@ -53,10 +53,10 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 
 		DatasetPermission userRole = userContext.getUserRole();
 		if (userRole == null) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 		if (userRole.isSuperiorPermission()) {
-			return "redirect:" + HOME_URI;
+			return REDIRECT_PREF + HOME_URI;
 		}
 
 		initSearchForms(PART_SYN_SEARCH_PAGE, model);
@@ -85,7 +85,7 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 		List<String> roleDatasets = new ArrayList<>(Arrays.asList(roleDatasetCode));
 
 		String searchUri = searchHelper.composeSearchUri(searchMode, roleDatasets, simpleSearchFilter, detailSearchFilter, resultMode, resultLang);
-		return "redirect:" + PART_SYN_SEARCH_URI + searchUri;
+		return REDIRECT_PREF + PART_SYN_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping(value = PART_SYN_SEARCH_URI + "/**")
@@ -161,6 +161,35 @@ public class PartSynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("meaningCount", meaningCount);
 
 		return PART_SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";
+	}
+
+	@GetMapping(PART_SYN_SEARCH_WORDS_URI)
+	public String searchSynWords(
+			@RequestParam String searchFilter,
+			@RequestParam(required = false) List<Long> excludedIds,
+			@RequestParam(required = false) String language,
+			@RequestParam(required = false) String morphCode,
+			Model model) throws Exception {
+
+		logger.debug("word search {}", searchFilter);
+
+		final int maxResultsLimit = 250;
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		List<String> datasetCodes = userContextData.getPreferredDatasetCodes();
+		List<String> tagNames = userContextData.getTagNames();
+
+		WordsResult result = synSearchService.getWords(searchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, maxResultsLimit, false);
+
+		model.addAttribute("wordsFoundBySearch", result.getWords());
+		model.addAttribute("totalCount", result.getTotalCount());
+		model.addAttribute("existingIds", excludedIds);
+
+		model.addAttribute("searchedWord", searchFilter);
+		model.addAttribute("selectedWordLanguage", language);
+		model.addAttribute("selectedWordMorphCode", morphCode);
+
+		return PART_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "syn_word_search_result";
 	}
 
 }

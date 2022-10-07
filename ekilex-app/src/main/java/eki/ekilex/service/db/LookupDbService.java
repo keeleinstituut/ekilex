@@ -208,6 +208,7 @@ public class LookupDbService extends AbstractDataDbService {
 						w.VALUE.as("word_value"),
 						w.VALUE_PRESE.as("word_value_prese"),
 						w.LANG.as("word_lang"),
+						w.HOMONYM_NR,
 						DSL.field(DSL
 										.select(DSL.arrayAggDistinct(l.DATASET_CODE))
 										.from(l)
@@ -667,7 +668,6 @@ public class LookupDbService extends AbstractDataDbService {
 	public boolean wordExists(String wordValue, String wordLang) {
 
 		Word w = WORD.as("w");
-		Lexeme l = LEXEME.as("l");
 
 		return create
 				.select(field(DSL.count(w.ID).gt(0)).as("word_exists"))
@@ -675,11 +675,7 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(
 						DSL.lower(w.VALUE).eq(DSL.lower(wordValue))
 								.and(w.LANG.eq(wordLang))
-								.and(w.IS_PUBLIC.isTrue())
-								.andExists(DSL
-										.select(l.ID)
-										.from(l)
-										.where(l.WORD_ID.eq(w.ID))))
+								.and(w.IS_PUBLIC.isTrue()))
 				.fetchSingleInto(Boolean.class);
 	}
 

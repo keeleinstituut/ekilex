@@ -4,7 +4,7 @@ function initializeFullSynSearch() {
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 
-		// TODO remove unnecessary (keyboard mode) code and move partsyn common part together
+		// TODO remove unnecessary (keyboard mode) code and move common code with partsyn together to ekilex-synsearch.js
 
 		const button = $(this);
 		let savedScrollPositions = getScrollPositions();
@@ -85,14 +85,8 @@ function initializeFullSynSearch() {
 					const $this = $(this);
 					if ($this.is('.canAccept')) {
 						if (draggableDiv.hasClass("draggable-synonym")) {
-							const draggableMeaningId = draggableDiv.data('meaning-id');
-							const droppableMeaningId = $this.data('meaning-id');
-							const isSameMeaning = draggableMeaningId === droppableMeaningId;
-							const existingMeaning = $this.find(`input.relation-meaning-id[value="${draggableMeaningId}"]`);
-
-							if (!existingMeaning.length && !isSameMeaning) {
-								return true;
-							}
+							// TODO is dragging always enabled?
+							return true;
 						}
 					}
 				},
@@ -104,14 +98,26 @@ function initializeFullSynSearch() {
 				drop: function(event, ui) {
 
 					const targetMeaningId = $(this).data('meaning-id');
-					const wordRelationId = ui.draggable.parent().data('id');
-					const sourceMeaningId = ui.draggable.data('meaning-id');
+					const draggableCandidate = ui.draggable;
+					const wordRelationId = draggableCandidate.data('syn-relation-id');
+					const wordCount = draggableCandidate.data('word-count');
 
-					const actionUrl = `${applicationUrl}syn_create_meaning_relation/${targetMeaningId}/${sourceMeaningId}/${wordRelationId}`;
-
-					openWaitDlg();
-					const callbackFunc = () => refreshSynDetails();
-					doPostRelationChange(actionUrl, callbackFunc);
+					if (wordCount > 1) {
+						const synCreateMeaningWordUrl = `${applicationUrl}full_syn_search_words/${targetMeaningId}/${wordRelationId}`;
+						$.post(synCreateMeaningWordUrl).done(function(wordSelectDlgHtml) {
+							const wordSelectDlg = $('#wordSelectDlg');
+							wordSelectDlg.html(wordSelectDlgHtml);
+							wordSelectDlg.modal('show');
+						}).fail(function(data) {
+							openAlertDlg(messages["common.error"]);
+							console.log(data);
+						});
+					} else {
+						const synCreateMeaningWordUrl = `${applicationUrl}syn_create_meaning_word/${targetMeaningId}/${wordRelationId}`;
+						openWaitDlg();
+						const callbackFunc = () => refreshSynDetails();
+						doPostRelationChange(synCreateMeaningWordUrl, callbackFunc);
+					}
 				}
 			});
 
@@ -141,5 +147,45 @@ function initializeFullSynSearch() {
 	if (detailButtons.length >= 1) {
 		detailButtons.eq(0).click();
 	}
-	detailSearchBtn();  
+	detailSearchBtn();
+}
+
+function initializeFullSynWordSearch() {
+	$wpm.bindObjects();
+}
+
+$.fn.submitSynWordBtnPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const form = $('#submitSynWordForm');
+			$.ajax({
+				url: form.attr('action'),
+				data: form.serialize(),
+				method: 'POST',
+			}).done(function() {
+				const wordSelectDlg = $('#wordSelectDlg');
+				wordSelectDlg.modal('hide');
+				refreshSynDetails();
+			}).fail(function(data) {
+				console.log(data);
+				openAlertDlg(messages["common.error"]);
+			});
+		})
+	})
+}
+
+$.fn.enableSelectSynWordBtnPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('click', function() {
+			enableSelectSynWordBtn();
+		});
+	});
+}
+
+function enableSelectSynWordBtn() {
+	if ($('input[type=radio][name="wordId"]:checked').length === 1) {
+		$("#selectWordBtn").removeAttr("disabled");
+	}
 }
