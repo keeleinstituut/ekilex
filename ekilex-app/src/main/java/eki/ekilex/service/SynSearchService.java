@@ -60,9 +60,10 @@ public class SynSearchService extends AbstractWordSearchService {
 
 	@Transactional
 	public WordDetails getWordFullSynDetails(
-			Long wordId, List<ClassifierSelect> languagesOrder, String synCandidateDatasetCode, List<String> synCandidateLangCodes,
+			Long wordId, List<ClassifierSelect> languagesOrder, String synCandidateDatasetCode, String synCandidateLangCode,
 			List<String> synMeaningWordLangCodes, Tag activeTag, EkiUser user, EkiUserProfile userProfile) {
 
+		List<String> synCandidateLangCodes = new ArrayList<>(Collections.singletonList(synCandidateLangCode));
 		boolean isSynCandidatePublicDataOnly = false;
 		return getWordSynDetails(
 				wordId, languagesOrder, synCandidateDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, isSynCandidatePublicDataOnly,

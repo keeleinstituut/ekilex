@@ -147,18 +147,20 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		EkiUser user = userContext.getUser();
 		UserContextData userContextData = getUserContextData();
 		Long userId = userContextData.getUserId();
-		List<String> synCandidateLangCodes = userContextData.getFullSynCandidateLangCodes();
 		List<String> synMeaningWordLangCodes = userContextData.getSynMeaningWordLangCodes();
+		String synCandidateLangCode = userContextData.getFullSynCandidateLangCode();
 		String synCandidateDatasetCode = userContextData.getFullSynCandidateDatasetCode();
 		Tag activeTag = userContextData.getActiveTag();
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Count meaningCount = new Count();
 		WordDetails details = synSearchService.getWordFullSynDetails(
-				wordId, languagesOrder, synCandidateDatasetCode, synCandidateLangCodes, synMeaningWordLangCodes, activeTag, user, userProfile);
+				wordId, languagesOrder, synCandidateDatasetCode, synCandidateLangCode, synMeaningWordLangCodes, activeTag, user, userProfile);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
+		model.addAttribute("synCandidateLangCode", synCandidateLangCode);
+		model.addAttribute("synCandidateDatasetCode", synCandidateDatasetCode);
 		model.addAttribute("meaningCount", meaningCount);
 
 		return FULL_SYN_SEARCH_PAGE + PAGE_FRAGMENT_ELEM + "details";

@@ -120,8 +120,7 @@
             <div class="row">
               <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.full.syn.candidate.dataset}">Tõlkevastete kandidaatide sõnakogu</label>
               <div class="col-md-12">
-                <select name="fullSynCandidateDatasetCode" class="classifier-select"
-                        th:title="#{userprofile.select.pref.full.syn.candidate.dataset}">
+                <select name="fullSynCandidateDatasetCode" class="classifier-select" th:title="#{userprofile.select.pref.full.syn.candidate.dataset}">
                   <option th:each="dataset : ${userVisibleDatasets}"
                           th:value="${dataset.code}"
                           th:text="${dataset.name}"
@@ -131,15 +130,10 @@
               </div>
             </div>
             <div class="row">
-              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.full.syn.candidate.langs}">Tõlkevastete kandidaatide keeled</label>
+              <label class="col-md-auto col-form-label" th:text="#{userprofile.pref.full.syn.candidate.lang}">Tõlkevastete kandidaatide keeled</label>
               <div class="col-md-12">
-                <select name="fullSynCandidateLanguages" class="classifier-select multi-select required-field" multiple data-live-search="true" data-actions-box="true"
-                        th:title="#{userprofile.select.pref.full.syn.candidate.langs}"
-                        th:data-select-all-text="#{common.select.all}"
-                        th:data-deselect-all-text="#{common.unselect.all}">
-                  <th:block th:each="language: ${allLanguages}">
-                    <option th:value="${language.code}" th:text="${language.value}" th:selected="${userProfile.preferredFullSynCandidateLangs != null && #lists.contains(userProfile.preferredFullSynCandidateLangs, language.code)}"/>
-                  </th:block>
+                <select name="fullSynCandidateLanguage" class="classifier-select" th:title="#{userprofile.select.pref.full.syn.candidate.lang}">
+                  <option th:each="lang : ${allLanguages}" th:value="${lang.code}" th:selected="${lang.code == userProfile.preferredFullSynCandidateLang}" th:text="${lang.value}"></option>
                 </select>
               </div>
             </div>

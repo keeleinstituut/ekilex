@@ -582,7 +582,7 @@ create table eki_user_profile
   active_tag_name varchar(100) references tag(name),
   preferred_part_syn_candidate_langs char(3) array,
   preferred_syn_lex_meaning_word_langs char(3) array,
-  preferred_full_syn_candidate_langs char(3) array,
+  preferred_full_syn_candidate_lang char(3) references language(code) null,
   preferred_full_syn_candidate_dataset_code varchar(10) references dataset(code) null,
   preferred_meaning_relation_word_langs char(3) array,
   show_lex_meaning_relation_source_lang_words boolean default true,

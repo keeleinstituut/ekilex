@@ -148,6 +148,8 @@
                             data-toggle="delete-word-syn-relations-confirm"
                             data-placement="bottom"
                             th:data-word-id="${wordId}"
+                            th:data-lang="${details.word.lang}"
+                            th:data-dataset="${userRoleData.userRole.datasetCode}"
                             sec:authorize="#vars.details.word.subGrant">
                       <span th:title="#{syn.delete.all}" data-toggle="tooltip">
                         <i class="action-icon fa fa-remove" aria-hidden="true"></i>

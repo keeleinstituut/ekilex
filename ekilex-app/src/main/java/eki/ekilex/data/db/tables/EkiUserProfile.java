@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = -1187599649;
+    private static final long serialVersionUID = 128630028;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -120,14 +120,14 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     public final TableField<EkiUserProfileRecord, Boolean> IS_APPROVE_MEANING_ENABLED = createField(DSL.name("is_approve_meaning_enabled"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
-     * The column <code>public.eki_user_profile.preferred_full_syn_candidate_langs</code>.
-     */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_FULL_SYN_CANDIDATE_LANGS = createField(DSL.name("preferred_full_syn_candidate_langs"), org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
-
-    /**
      * The column <code>public.eki_user_profile.preferred_full_syn_candidate_dataset_code</code>.
      */
     public final TableField<EkiUserProfileRecord, String> PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE = createField(DSL.name("preferred_full_syn_candidate_dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+
+    /**
+     * The column <code>public.eki_user_profile.preferred_full_syn_candidate_lang</code>.
+     */
+    public final TableField<EkiUserProfileRecord, String> PREFERRED_FULL_SYN_CANDIDATE_LANG = createField(DSL.name("preferred_full_syn_candidate_lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
 
     /**
      * Create a <code>public.eki_user_profile</code> table reference
@@ -189,7 +189,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
     @Override
     public List<ForeignKey<EkiUserProfileRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE_FKEY);
+        return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_LANG_FKEY);
     }
 
     public EkiUser ekiUser() {
@@ -206,6 +206,10 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
     public Dataset dataset() {
         return new Dataset(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE_FKEY);
+    }
+
+    public Language language() {
+        return new Language(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_LANG_FKEY);
     }
 
     @Override
@@ -239,7 +243,7 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row16<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String[], String, Boolean, String[], String> fieldsRow() {
+    public Row16<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String[], String, Boolean, String, String> fieldsRow() {
         return (Row16) super.fieldsRow();
     }
 }

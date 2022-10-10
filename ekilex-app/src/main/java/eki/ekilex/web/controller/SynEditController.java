@@ -1,7 +1,5 @@
 package eki.ekilex.web.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.DatasetPermission;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.service.SynCudService;
 import eki.ekilex.web.bean.SessionBean;
@@ -45,16 +42,15 @@ public class SynEditController extends AbstractPrivateSearchController {
 	@PostMapping(SYN_RELATION_STATUS_URI + "/delete")
 	@PreAuthorize("authentication.principal.datasetCrudPermissionsExist")
 	@ResponseBody
-	public String updateWordSynRelationsStatusDeleted(@RequestParam Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
+	public String updateWordSynRelationsStatusDeleted(
+			@RequestParam Long wordId,
+			@RequestParam String lang,
+			@RequestParam String datasetCode,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) throws Exception {
 
-		logger.debug("Updating word {} syn relation status to \"DELETED\"", wordId);
-		UserContextData userContextData = getUserContextData();
-		DatasetPermission userRole = userContextData.getUserRole();
-		String datasetCode = userRole.getDatasetCode();
-		List<String> synCandidateLangCodes = userContextData.getPartSynCandidateLangCodes();
-
+		logger.debug("Updating word {} lang {} dataset {} syn relation status to \"DELETED\"", wordId, lang, datasetCode);
 		boolean isManualEventOnUpdateEnabled = sessionBean.isManualEventOnUpdateEnabled();
-		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, synCandidateLangCodes, isManualEventOnUpdateEnabled);
+		synCudService.updateWordSynRelationsStatusDeleted(wordId, datasetCode, lang, isManualEventOnUpdateEnabled);
 		return RESPONSE_OK_VER2;
 	}
 

@@ -1,6 +1,8 @@
 package eki.ekilex.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -205,8 +207,9 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 
 	@Transactional
 	public void updateWordSynRelationsStatusDeleted(
-			Long wordId, String datasetCode, List<String> synCandidateLangCodes, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long wordId, String datasetCode, String synCandidateLangCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
+		List<String> synCandidateLangCodes = new ArrayList<>(Collections.singletonList(synCandidateLangCode));
 		List<SynRelation> wordSynRelations = synSearchDbService.getWordSynRelations(
 				wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, true, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
 		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
