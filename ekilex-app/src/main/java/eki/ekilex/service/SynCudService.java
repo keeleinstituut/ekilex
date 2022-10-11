@@ -114,13 +114,13 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	@Transactional
 	public void createSynMeaningWord(Long targetMeaningId, Long synWordId, Long wordRelationId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		// TODO add activity log
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWord", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long sourceWordId = synSearchDbService.getSynCandidateWordId(wordRelationId);
 		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
 		String sourceWordValue = sourceWord.getWordValue();
 		String sourceWordLang = sourceWord.getLang();
 
-		List<Word> sameValueWords = lookupDbService.getWords(sourceWordValue, sourceWordLang);
+		updateWordRelationStatus("createSynMeaningWord", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
 
 		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
 		if (sourceWordLexemes.size() != 1) {
@@ -133,13 +133,13 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 		Long targetMeaningSameWordLexemeId = synSearchDbService.getMeaningFirstWordLexemeId(targetMeaningId, datasetCode, sourceWordValue, sourceWordLang);
 		boolean targetMeaningHasWord = targetMeaningSameWordLexemeId != null;
 		if (targetMeaningHasWord) {
-			// TODO in this case no activity log?
-			// TODO cloning logic needs to be specified
 			synSearchDbService.cloneSynLexemeData(targetMeaningSameWordLexemeId, sourceLexemeId);
 			synSearchDbService.cloneSynMeaningData(targetMeaningId, sourceMeaningId, datasetCode);
+			activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 			return;
 		}
 
+		List<Word> sameValueWords = lookupDbService.getWords(sourceWordValue, sourceWordLang);
 		if (sameValueWords.size() == 0) {
 			synWordId = synSearchDbService.createSynWord(sourceWordId);
 		} else if (sameValueWords.size() == 1) {
@@ -154,7 +154,7 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 		synSearchDbService.createSynLexeme(sourceLexemeId, synWordId, targetMeaningId, datasetCode, weight);
 		synSearchDbService.cloneSynMeaningData(targetMeaningId, sourceMeaningId, datasetCode);
 
-		updateWordRelationStatus("createSynMeaningWord", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 	}
 
 	@Transactional

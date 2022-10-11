@@ -2,20 +2,13 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div id="synCandidatesListDiv"
-       class="overflow-auto h-100"
-       data-panel-index="3"
-       th:fragment="syn_candidate_list">
+  <div id="synCandidatesListDiv" class="overflow-auto h-100" th:fragment="syn_candidate_list">
     <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" width="100%" class="list-unstyled p-0">
       <li th:each="synRelation,relationIter : ${details.wordRelationDetails.wordSynRelations}"
           class="border draggable-synonym drag-handle"
           th:data-syn-relation-id="${synRelation.id}"
-          th:data-word-count="${synRelation.sameValuePublicWordCount}"
-          th:data-orderby="${synRelation.orderBy}">
-        <div class="d-flex flex-row hover-actions-container align-items-center pl-1 bg-light"
-             th:data-word-id="${synRelation.wordId}"
-             th:data-word="${synRelation.wordValue}"
-             th:data-meaning-id="${synRelation.meaningId}">
+          th:data-word-count="${synRelation.sameValuePublicWordCount}">
+        <div class="d-flex flex-row hover-actions-container align-items-center pl-1 bg-light">
           <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
             <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
           </span>
@@ -74,15 +67,7 @@
             </div>
           </div>
         </div>
-        <!-- TODO remove unnecessary data attributes -->
-        <div th:with="meaning = ${synRelation.wordMeanings.get(0)}"
-             th:data-meaning-id="${meaning.meaningId}"
-             th:data-relation-id="${synRelation.id}"
-             th:data-id="${synRelation.id}"
-             th:data-navigate-index="${meaningCount.increment()}"
-             th:data-navigate-selected="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId}?'true'"
-             th:data-active-panel="${markedSynMeaningId != null}?'true'"
-             th:classappend="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId ? 'navigate-marked' : ''}">
+        <div th:with="meaning = ${synRelation.wordMeanings.get(0)}">
           <div data-toggle="tooltip" th:title="#{fullsyn.lexeme.pos}">
             <span class="pr-2 small" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
               <span th:each="posCode : ${meaning.lexPosCodes}">
@@ -103,7 +88,7 @@
        class="text-secondary font-italic p-3"
        th:text="#{fullsyn.no.word.syn.relations}">Vastete kandidaadid puuduvad valitud keeltes</p>
   </div>
-  <div th:fragment="full_syn_data"
+  <div th:fragment="syn_data"
        th:if="${not #lists.isEmpty(lexeme.synonymLangGroups)}"
        class="orderable border-top">
     <div class="orderable d-flex flex-row" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" >

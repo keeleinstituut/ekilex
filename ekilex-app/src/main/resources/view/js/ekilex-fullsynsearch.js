@@ -1,20 +1,10 @@
 function initializeFullSynSearch() {
-	let activeSearchResultID;
 	let sidebarScrollPosition = {};
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 
-		// TODO remove unnecessary (keyboard mode) code and move common code with partsyn together to ekilex-synsearch.js
-
 		const button = $(this);
-		let savedScrollPositions = getScrollPositions();
-
 		const id = button.data('id');
-		$('#synSearchResultsDiv .list-group-item')
-			.removeClass('keyboard-nav-list-item-active active')
-			.removeAttr('data-navigate-selected');
-		// Make all results with the same id active, in case there are multiple with same id
-		$(`#synSearchResultsDiv button[data-id=${id}]`).parent().addClass('active').attr('data-navigate-selected', true);
 
 		$("[id^='syn_select_wait_']").hide();
 		$(`#syn_select_wait_${id}`).show();
@@ -85,7 +75,6 @@ function initializeFullSynSearch() {
 					const $this = $(this);
 					if ($this.is('.canAccept')) {
 						if (draggableDiv.hasClass("draggable-synonym")) {
-							// TODO is dragging always enabled?
 							return true;
 						}
 					}
@@ -120,19 +109,9 @@ function initializeFullSynSearch() {
 					}
 				}
 			});
-
-			//KEEP TRACK OF WHAT WAS THE LAST SEARCH RESULT DISPLAYED
-			if (activeSearchResultID !== id) {
-				activeSearchResultID = id;
-			}
-			//IF AN ALLREADY ACTIVE DETAILS VIEW WAS SELECTED KEEP THE SCROLLPOSITIONS
-			else if (activeSearchResultID === id) {
-				setScrollPositions(savedScrollPositions);
-			}
-
 		}).fail(function(data) {
 			console.log(data);
-			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+			alert(messages["common.error"]);
 		});
 	});
 
