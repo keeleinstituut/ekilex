@@ -225,8 +225,8 @@ class Sorter {
         openWaitDlg();
         postJson(applicationUrl + 'update_ordering', data).done(function() {
           if (viewType === 'lex') {
-            const successCallbackName = orderingBtn.attr("data-callback");
-            const successCallbackFunc = () => window[successCallbackName]();
+            const successCallback = orderingBtn.attr("data-callback");
+            const successCallbackFunc = createCallback(successCallback);
             successCallbackFunc();
           } else {
             refreshSynDetails();

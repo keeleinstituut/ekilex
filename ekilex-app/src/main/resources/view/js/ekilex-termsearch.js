@@ -82,8 +82,8 @@ function deleteMeaningAndLexemesAndWords() {
 	const opName = "delete";
 	const opCode = "meaning";
 	const meaningId = $this.attr("data-id");
-	const successCallbackName = $this.attr("data-callback");
-	let successCallbackFunc = () => window[successCallbackName]($this);
+	const successCallback = $this.attr("data-callback");
+	let successCallbackFunc = createCallback(successCallback, $this);
 	executeMultiConfirmPostDelete(opName, opCode, meaningId, successCallbackFunc, true);
 };
 
