@@ -9,7 +9,8 @@
           <input id="search" type="text" name="searchWord" th:value="${searchWord}"
                  class="main-search-input form-control search-phrase" 
                  th:classappend="${pageContext == 'search' ? 'compact' : ''}"
-                 th:placeholder="#{search.placeholder}" role="search" />
+                 th:placeholder="#{search.placeholder}" role="search"
+                 autocapitalize="off" autocorrect="off"/>
           <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="datasetCodesStr" th:value="${datasetCodesStr}" />
           <input type="hidden" name="selectedWordHomonymNr" />
