@@ -168,3 +168,12 @@ function enableSelectSynWordBtn() {
 		$("#selectWordBtn").removeAttr("disabled");
 	}
 }
+
+function deleteSynLexeme() {
+	const opName = "delete";
+	const opCode = "lexeme";
+	const lexemeId = $(this).attr("data-id");
+	const callbackFunc = () => refreshSynDetails();
+
+	executeMultiConfirmPostDelete(opName, opCode, lexemeId, callbackFunc);
+}

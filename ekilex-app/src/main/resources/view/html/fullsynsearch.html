@@ -179,6 +179,12 @@
           title : /*[[#{syn.confirm.delete.all}]]*/'Kustuta kõik kinnitamata kandidaadid',
           onConfirm : updateWordSynRelationsStatusDeleted
         });
+        $('[data-toggle=delete-syn-lexeme-confirm]').confirmation({
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+          onConfirm : deleteSynLexeme
+        });
     </script>
   </th:block>
   <div th:replace="common :: #waitDlg"></div>

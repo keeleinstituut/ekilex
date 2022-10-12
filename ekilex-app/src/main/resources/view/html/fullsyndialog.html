@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+  <div th:id="${'editLexemeWeightDlg_' + synWord.lexemeId}" class="modal"
+       role="dialog"
+       th:fragment="edit_lexeme_weight_dlg"
+       data-plugin="initGenericTextEditDlgPlugin">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${synWord.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_weight">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="numberValue" th:value="${syn.weight}">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -115,6 +115,22 @@
                 <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                 <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
               </span>
+              <th:block th:if="${isMeaningWordSyn}">
+                <div th:replace="fullsyndialog :: edit_lexeme_weight_dlg"></div>
+                <button type="button" class="btn badge badge-secondary btn-xs"
+                        th:title="#{syn.edit.syn.lexeme.weight}"
+                        data-toggle="modal"
+                        th:data-target="${'#editLexemeWeightDlg_' + synWord.lexemeId}"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        th:data-id="${synWord.lexemeId}"
+                        data-toggle="delete-syn-lexeme-confirm"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.syn.lexeme}"></i>
+                </button>
+              </th:block>
               <span th:unless="${synWordIter.last}">,</span>
             </th:block>
             <span th:unless="${synIter.last}">|</span>
