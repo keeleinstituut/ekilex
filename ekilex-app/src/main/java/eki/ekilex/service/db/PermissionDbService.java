@@ -26,6 +26,7 @@ import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static org.jooq.impl.DSL.field;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -56,6 +57,7 @@ import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EkiUserApplication;
 import eki.ekilex.data.db.tables.EkiUserProfile;
+import eki.ekilex.data.db.tables.records.DatasetPermissionRecord;
 
 @Component
 public class PermissionDbService implements SystemConstant, GlobalConstant, PermConstant {
@@ -289,7 +291,7 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 			authLangCond = edp.AUTH_LANG.eq(authLang);
 		}
 
-		return create
+		Optional<DatasetPermissionRecord> optionalDatasetPermission = create
 				.insertInto(
 						DATASET_PERMISSION,
 						DATASET_PERMISSION.USER_ID,
@@ -309,8 +311,14 @@ public class PermissionDbService implements SystemConstant, GlobalConstant, Perm
 														.and(edp.AUTH_OPERATION.eq(authOp.name()))
 														.and(authLangCond))))
 				.returning(DATASET_PERMISSION.ID)
-				.fetchOne()
-				.getId();
+				.fetchOptional();
+
+		if (optionalDatasetPermission.isPresent()) {
+			DatasetPermissionRecord datasetPermission = optionalDatasetPermission.get();
+			return datasetPermission.getId();
+		} else {
+			return null;
+		}
 	}
 
 	public void deleteDatasetPermissions(String datasetCode) {
