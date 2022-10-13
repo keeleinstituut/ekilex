@@ -1146,9 +1146,9 @@ function getBreadcrumbsData(detailsDiv, word) {
 
 // Scroll to result when searching by id in lex view
 function scrollDetails(div, scrollPosition) {
+	let overflowDiv = div.find('.overflow-auto').first();
 	if (viewType === 'lex') {
 		const searchedId = $('#lex-meaning-id-search-meaning-id');
-		const overflowDiv = div.find('.overflow-auto').first();
 		if (searchedId.length) {
 			const searchResult = div.find(`#lexeme-meaning-${searchedId.attr('data-result-id')}`);
 			const scrollOffset = searchResult.offset().top - overflowDiv.offset().top;
@@ -1156,6 +1156,8 @@ function scrollDetails(div, scrollPosition) {
 		} else {
 			overflowDiv.scrollTop(scrollPosition);
 		}
+	} else if (viewType === 'term') {
+		overflowDiv.scrollTop(scrollPosition);
 	}
 }
 
