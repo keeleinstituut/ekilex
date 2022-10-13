@@ -68,7 +68,7 @@ function doPostDelete(deleteUrl, callback, force) {
 					}
 				}
 
-			} else {
+			} else if (callback) {
 				callback();
 			}
 		} else {
@@ -750,7 +750,7 @@ function deleteLexemeAndRusMeaningLexemes() {
 
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, function() {
 		const detailsLength = element.parents('[data-rel="details-area"]:first').find('[id*="lexeme-details-"]').length;
-		if (detailsLength <= 1) {
+		if (detailsLength <= 1 && successCallbackFunc) {
 			successCallbackFunc();
 		} else {
 			element.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
@@ -858,7 +858,7 @@ $.fn.langCollapsePlugin = function() {
 			postJson(applicationUrl + 'update_item', itemData).done(function() {
 				if (viewType === 'term') {
 					refreshDetailsSearch(btn.parents('[data-rel="details-area"]').attr('data-id'));
-				} else {
+				} else if (successCallbackFunc) {
 					successCallbackFunc();
 				}
 			});
@@ -1339,14 +1339,23 @@ function initBasicInlineEkiEditorOnContent(obj, callback) {
  * @returns Function that will trigger the callback with args applied
  */
 function createCallback(data, optionalArgs) {
-	// Remove end parenthesis and split string from the start of function args
-	const [func, argsString] = data.replace(')', '').split('(');
+	if (!data) return undefined;
+	let func;
+	let argsString = '';
+
+	if (data.includes('(')) {
+		// Remove end parenthesis and split string from the start of function args
+		[func, argsString] = data.replace(')', '').split('(');
+	} else {
+		func = data;
+	}
+	
 	// Check if the function exists
 	if (window[func]) {
 		// Split args by comma
-		const splitArgsString = argsString.split(',');
+		const splitArgsString = argsString.replace(', ', ',').split(',');
 		// Check if first element of args has an actual length and return empty array if not
-		let callbackArgs = splitArgsString[0].toString().length ? [...splitArgsString] : [];
+		const callbackArgs = splitArgsString[0].toString().length ? [...splitArgsString] : [];
 		// Include optional argument if needed
 		const args = callbackArgs;
 		if (optionalArgs) {
