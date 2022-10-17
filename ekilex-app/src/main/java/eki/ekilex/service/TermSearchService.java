@@ -324,43 +324,6 @@ public class TermSearchService extends AbstractSearchService {
 	}
 
 	@Transactional
-	public List<Meaning> getTableMeanings(List<Long> meaningIds, List<String> selectedDatasetCodes, EkiUser user) {
-
-		List<Meaning> meanings = new ArrayList<>();
-		DatasetPermission userRole = user.getRecentRole();
-		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(selectedDatasetCodes, user.getId());
-
-		for (Long meaningId : meaningIds) {
-			Meaning meaning = termSearchDbService.getMeaning(meaningId, searchDatasetsRestriction);
-			if (meaning == null) {
-				continue;
-			}
-			permCalculator.applyCrud(userRole, meaning);
-
-			List<Definition> definitions = composeDefinitions(userRole, meaningId);
-
-			List<Long> lexemeIds = meaning.getLexemeIds();
-			List<Lexeme> lexemes = new ArrayList<>();
-			for (Long lexemeId : lexemeIds) {
-				Lexeme lexeme = composeLexeme(userRole, lexemeId);
-				List<Usage> usages = composeUsages(userRole, lexemeId);
-
-				Word word = lexeme.getWord();
-				permCalculator.applyCrud(userRole, word);
-
-				lexeme.setUsages(usages);
-				lexemes.add(lexeme);
-			}
-
-			meaning.setDefinitions(definitions);
-			meaning.setLexemes(lexemes);
-			meanings.add(meaning);
-		}
-
-		return meanings;
-	}
-
-	@Transactional
 	public String getMeaningFirstWordValue(Long meaningId, List<String> datasets) {
 	
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(datasets);

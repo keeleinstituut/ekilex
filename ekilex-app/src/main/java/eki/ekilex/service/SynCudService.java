@@ -210,8 +210,7 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 			Long wordId, String datasetCode, String synCandidateLangCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		List<String> synCandidateLangCodes = new ArrayList<>(Collections.singletonList(synCandidateLangCode));
-		List<SynRelation> wordSynRelations = synSearchDbService.getWordSynRelations(
-				wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, true, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<SynRelation> wordSynRelations = synSearchDbService.getWordPartSynRelations(wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes);
 		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
 				.filter(synRelation -> synRelation.getRelationStatus() == null || synRelation.getRelationStatus().equals(RelationStatus.UNDEFINED))
 				.collect(Collectors.toList());

@@ -22,8 +22,9 @@ create type type_word_rel_param as (
 
 create type type_word_rel_meaning as (
   meaning_id bigint,
-  definitions text array,
-  usages text array,
+  lexeme_id bigint,
+  definition_values text array,
+  usage_values text array,
   lex_register_codes varchar(100) array,
   lex_pos_codes varchar(100) array
 );

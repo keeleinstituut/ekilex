@@ -24,6 +24,7 @@ function initializeFullSynSearch() {
 			closeWaitDlg();
 			$(`#syn_select_wait_${id}`).hide();
 			$('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
+			decorateSourceLinks($('#syn-details-area'));
 
 			$wpm.bindObjects();
 
