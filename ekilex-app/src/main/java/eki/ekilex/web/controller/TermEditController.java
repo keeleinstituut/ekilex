@@ -215,7 +215,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 			WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createWord(createWordDetails, isManualEventOnUpdateEnabled);
 			Long meaningId = wordLexemeMeaningId.getMeaningId();
 			addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.word.and.meaning.created");
-			String redirectToMeaning = composeRedirectToMeaning(meaningId);
+			String redirectToMeaning = composeRedirectToMeaning(meaningId, backUri);
 			return redirectToMeaning;
 		}
 
@@ -228,6 +228,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 	public String createWordAndMeaning(
 			@RequestParam("wordId") Long wordId,
 			@RequestParam("datasetCode") String datasetCode,
+			@RequestParam("backUri") String backUri,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes redirectAttributes) throws Exception {
 
@@ -235,7 +236,7 @@ public class TermEditController extends AbstractMutableDataPageController {
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudService.createLexeme(wordId, datasetCode, null, isManualEventOnUpdateEnabled);
 		Long meaningId = wordLexemeMeaningId.getMeaningId();
 		addRedirectSuccessMessage(redirectAttributes, "termcreatemeaning.usermessage.meaning.created");
-		String redirectToMeaning = composeRedirectToMeaning(meaningId);
+		String redirectToMeaning = composeRedirectToMeaning(meaningId, backUri);
 		return redirectToMeaning;
 	}
 
@@ -426,9 +427,9 @@ public class TermEditController extends AbstractMutableDataPageController {
 		redirectAttributes.addFlashAttribute("userMessage", userMessage);
 	}
 
-	private String composeRedirectToMeaning(Long meaningId) {
+	private String composeRedirectToMeaning(Long meaningId, String backUri) {
 
 		String meaningIdUri = "?id=" + meaningId;
-		return REDIRECT_PREF + TERM_SEARCH_URI + meaningIdUri;
+		return REDIRECT_PREF + backUri + meaningIdUri;
 	}
 }
