@@ -167,6 +167,8 @@ public class SynSearchService extends AbstractWordSearchService {
 		List<SynonymLangGroup> synonymLangGroups = conversionUtil.composeSynonymLangGroups(synMeaningRelations, meaningWords, userProfile, headwordLanguage, languagesOrder);
 
 		List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, datasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<DefSourceAndNoteSourceTuple> definitionsDataTuples = commonDataDbService.getMeaningDefSourceAndNoteSourceTuples(meaningId);
+		conversionUtil.composeMeaningDefinitions(definitions, definitionsDataTuples);
 		permCalculator.filterVisibility(userRole, definitions);
 
 		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
