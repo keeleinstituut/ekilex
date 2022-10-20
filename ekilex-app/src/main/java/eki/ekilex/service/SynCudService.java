@@ -151,7 +151,9 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 		}
 
 		BigDecimal weight = synSearchDbService.getWordRelationParamValue(wordRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE);
-		synSearchDbService.createSynLexeme(sourceLexemeId, synWordId, targetMeaningId, datasetCode, weight);
+		int currentSynWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(synWordId, datasetCode);
+		int synLexemeLevel1 = currentSynWordLexemesMaxLevel1 + 1;
+		synSearchDbService.createSynLexeme(sourceLexemeId, synWordId, synLexemeLevel1, targetMeaningId, datasetCode, weight);
 		synSearchDbService.cloneSynMeaningData(targetMeaningId, sourceMeaningId, datasetCode);
 
 		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);

@@ -64,6 +64,8 @@ import eki.ekilex.service.db.util.SearchFilterHelper;
 @Component
 public class SynSearchDbService extends AbstractDataDbService {
 
+	private static final int DEFAULT_LEXEME_LEVEL = 1;
+
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
 
@@ -527,7 +529,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 		return synWordId;
 	}
 
-	public void createSynLexeme(Long sourceLexemeId, Long wordId, Long meaningId, String datasetCode, BigDecimal weight) {
+	public void createSynLexeme(Long sourceLexemeId, Long wordId, int synLexemeLevel1, Long meaningId, String datasetCode, BigDecimal weight) {
 
 		LexemeRecord sourceLexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne();
 		LexemeRecord synLexeme = sourceLexeme.copy();
@@ -535,6 +537,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 		synLexeme.setWordId(wordId);
 		synLexeme.setDatasetCode(datasetCode);
 		synLexeme.setWeight(weight);
+		synLexeme.setLevel1(synLexemeLevel1);
+		synLexeme.setLevel2(DEFAULT_LEXEME_LEVEL);
 		synLexeme.setIsPublic(PUBLICITY_PUBLIC);
 		synLexeme.changed(LEXEME.ORDER_BY, false);
 		synLexeme.store();
