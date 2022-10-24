@@ -1263,7 +1263,7 @@
     "word": "käekott",
     "wordId": 189817,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/käekott/1",
-    "example_1": "Panin käekoti kapi peale.",
+    "example_1": "Panin käekoti kummiti peale.",
     "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/esik_kxekott.svg",
@@ -2352,7 +2352,7 @@
     "wordId": 214630,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/peale/1",
     "example_1": "Koer hüppab tooli peale.",
-    "example_2": "Pane potile kaas peale.",
+    "example_2": "Pane taldrik laua peale.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/peale.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_10939.mp3",
@@ -2403,7 +2403,7 @@
     "wordId": 156509,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/alla/1",
     "example_1": "Koer läks tooli alla.",
-    "example_2": "Kass ronis voodi alla.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/alla.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_10037.mp3",
@@ -2522,8 +2522,8 @@
     "wordId": 240970,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/taga/1",
     "example_1": "Koer on karbi taga peidus.",
-    "example_2": "Bussis istus minu taga üks imelik mees.",
-    "example_3": "Mulle meeldib kinos taga istuda.",
+    "example_2": "Mulle meeldib kinos taga istuda.",
+    "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/taga.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_19660.mp3",
     "level": "A1",
@@ -2760,7 +2760,7 @@
     "wordId": 234328,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/sisse/1",
     "example_1": "Koer hüppab karbi sisse.",
-    "example_2": "Pakkisin kingituse karbi sisse.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/sisse.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_11204.mp3",
@@ -2812,7 +2812,7 @@
     "word_link": "https://sonaveeb.ee/search/lite/dlall/välja/1",
     "example_1": "Koer tuleb majast välja.",
     "example_2": "Päike tuli pilve tagant välja.",
-    "example_3": "Päike tuli pilve tagant välja.",
+    "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/vxlja.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_21881.mp3",
     "level": "A1",
@@ -2862,7 +2862,7 @@
     "wordId": 183189,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/kohale/1",
     "example_1": "Panin lambi laua kohale.",
-    "example_2": "Mere kohale kogunevad tumedad pilved.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/laua_kohale.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_10485.mp3",
@@ -2896,7 +2896,7 @@
     "wordId": 183204,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/kohalt/1",
     "example_1": "Keerasin lambi laua kohalt ära.",
-    "example_2": "Lennuk lendas pea kohalt üle.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/laua_kohalt.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_14377.mp3",
@@ -4932,6 +4932,40 @@
   {
     "category": "Kool ja kontor",
     "sub_category": "Asjad",
+    "word": "käärid",
+    "wordId": 190632,
+    "word_link": "https://sonaveeb.ee/search/lite/dlall/k%C3%A4%C3%A4rid/1",
+    "example_1": "Palun ulata mulle käärid.",
+    "example_2": "Lõikasin paki kääridega lahti.",
+    "example_3": "Käärid on nüriks läinud.",
+    "image_link": "https://sonaveeb.ee/files/images/k44rid.jpg",
+    "audio_link": "https://sonaveeb.ee/files/audio/h_15254.mp3",
+    "level": "A2",
+    "A1_A2": "yes",
+    "A1_B1": "yes",
+    "order": 6,
+    "type": 2
+  },
+  {
+    "category": "Kool ja kontor",
+    "sub_category": "Asjad",
+    "word": "liim",
+    "wordId": 195024,
+    "word_link": "https://sonaveeb.ee/search/lite/dlall/liim/1",
+    "example_1": "Määri paberi ääred liimiga kokku.",
+    "example_2": "Liim ei ole veel kuivanud.",
+    "example_3": "",
+    "image_link": "https://sonaveeb.ee/files/images/liimipulk.svg",
+    "audio_link": "https://sonaveeb.ee/files/audio/h_15692.mp3",
+    "level": "B1",
+    "A1_A2": "yes",
+    "A1_B1": "yes",
+    "order": 7,
+    "type": 2
+  },
+  {
+    "category": "Kool ja kontor",
+    "sub_category": "Asjad",
     "word": "joonlaud",
     "wordId": 174107,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/joonlaud/1",
@@ -4943,7 +4977,7 @@
     "level": "B1",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 6,
+    "order": 8,
     "type": 2
   },
   {
@@ -4960,7 +4994,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 7,
+    "order": 9,
     "type": 2
   },
   {
@@ -4977,24 +5011,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 8,
-    "type": 2
-  },
-  {
-    "category": "Kool ja kontor",
-    "sub_category": "Asjad",
-    "word": "käärid",
-    "wordId": 190632,
-    "word_link": "https://sonaveeb.ee/search/lite/dlall/k%C3%A4%C3%A4rid/1",
-    "example_1": "Palun ulata mulle käärid.",
-    "example_2": "Lõikasin paki kääridega lahti.",
-    "example_3": "Käärid on nüriks läinud.",
-    "image_link": "https://sonaveeb.ee/files/images/k44rid.jpg",
-    "audio_link": "https://sonaveeb.ee/files/audio/h_15254.mp3",
-    "level": "A2",
-    "A1_A2": "yes",
-    "A1_B1": "yes",
-    "order": 9,
+    "order": 10,
     "type": 2
   },
   {
@@ -5011,7 +5028,7 @@
     "level": "B1",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 10,
+    "order": 11,
     "type": 2
   },
   {
@@ -5028,7 +5045,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 11,
+    "order": 12,
     "type": 2
   },
   {
@@ -5045,7 +5062,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 12,
+    "order": 13,
     "type": 2
   },
   {
@@ -5062,7 +5079,7 @@
     "level": "B1",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 13,
+    "order": 14,
     "type": 2
   },
   {
@@ -5077,9 +5094,9 @@
     "image_link": "https://sonaveeb.ee/files/images/knopka.svg",
     "audio_link": "",
     "level": "A1",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 14,
+    "order": 15,
     "type": 2
   },
   {
@@ -5096,7 +5113,7 @@
     "level": "A1",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 15,
+    "order": 16,
     "type": 2
   },
   {
@@ -5113,7 +5130,7 @@
     "level": "A1",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 16,
+    "order": 17,
     "type": 2
   },
   {
@@ -5130,7 +5147,7 @@
     "level": "A1",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 17,
+    "order": 18,
     "type": 2
   },
   {
@@ -5146,23 +5163,6 @@
     "audio_link": "https://sonaveeb.ee/files/audio/h_10906.mp3",
     "level": "A1",
     "A1_A2": "yes",
-    "A1_B1": "yes",
-    "order": 18,
-    "type": 2
-  },
-  {
-    "category": "Kool ja kontor",
-    "sub_category": "Asjad",
-    "word": "liim",
-    "wordId": 195024,
-    "word_link": "https://sonaveeb.ee/search/lite/dlall/liim/1",
-    "example_1": "Määri paberi ääred liimiga kokku.",
-    "example_2": "Liim ei ole veel kuivanud.",
-    "example_3": "",
-    "image_link": "https://sonaveeb.ee/files/images/liimipulk.svg",
-    "audio_link": "https://sonaveeb.ee/files/audio/h_15692.mp3",
-    "level": "B1",
-    "A1_A2": "no",
     "A1_B1": "yes",
     "order": 19,
     "type": 2
@@ -5213,9 +5213,26 @@
     "image_link": "https://sonaveeb.ee/files/images/kalkulaator.svg",
     "audio_link": "",
     "level": "B1",
-    "A1_A2": "no",
+    "A1_A2": "yes",
     "A1_B1": "yes",
     "order": 22,
+    "type": 2
+  },
+  {
+    "category": "Kool ja kontor",
+    "sub_category": "Asjad",
+    "word": "arvuti",
+    "wordId": 158370,
+    "word_link": "https://sonaveeb.ee/search/lite/dlall/arvuti/1",
+    "example_1": "Töötan arvutiga iga päev.",
+    "example_2": "Arvutiga töötamine rikub silmi.",
+    "example_3": "",
+    "image_link": "https://sonaveeb.ee/files/images/kodumasinad_arvuti.svg",
+    "audio_link": "https://sonaveeb.ee/files/audio/h_11844.mp3",
+    "level": "A1",
+    "A1_A2": "yes",
+    "A1_B1": "yes",
+    "order": 23,
     "type": 2
   },
   {
@@ -5230,9 +5247,9 @@
     "image_link": "https://sonaveeb.ee/files/images/sylearvuti.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_19584.mp3",
     "level": "A2",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 23,
+    "order": 24,
     "type": 2
   },
   {
@@ -5247,9 +5264,9 @@
     "image_link": "https://sonaveeb.ee/files/images/tahvelarvuti.svg",
     "audio_link": "",
     "level": "A2",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 24,
+    "order": 25,
     "type": 2
   },
   {
@@ -5264,9 +5281,9 @@
     "image_link": "https://sonaveeb.ee/files/images/printer.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_17922.mp3",
     "level": "B1",
-    "A1_A2": "no",
+    "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 25,
+    "order": 26,
     "type": 2
   },
   {
@@ -5281,9 +5298,9 @@
     "image_link": "https://sonaveeb.ee/files/images/skxnner.svg",
     "audio_link": "",
     "level": "B2",
-    "A1_A2": "no",
+    "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 26,
+    "order": 27,
     "type": 2
   },
   {
@@ -5300,7 +5317,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 27,
+    "order": 28,
     "type": 2
   },
   {
@@ -5317,7 +5334,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 28,
+    "order": 29,
     "type": 2
   },
   {
@@ -5334,7 +5351,7 @@
     "level": "B1",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 29,
+    "order": 30,
     "type": 2
   },
   {
@@ -5378,7 +5395,7 @@
     "wordId": 205352,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/mõtlema/1",
     "example_1": "Millest sa mõtled?",
-    "example_2": "Mõtlesin oma vanematest.",
+    "example_2": "Ma pean mõtlema.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/m6tlema.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_16540.mp3",
@@ -5468,7 +5485,7 @@
     "image_link": "https://sonaveeb.ee/files/images/arvutama.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_11841.mp3",
     "level": "B1",
-    "A1_A2": "no",
+    "A1_A2": "yes",
     "A1_B1": "yes",
     "order": 8,
     "type": 2
@@ -5479,13 +5496,13 @@
     "word": "lõikama",
     "wordId": 197504,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/lõikama/1",
-    "example_1": "Kokk lõikab saia.",
+    "example_1": "Lõikasin paberi pooleks.",
     "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/l6ikama_paberit.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_15879.mp3",
     "level": "A2",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
     "order": 9,
     "type": 2
@@ -5638,7 +5655,7 @@
     "image_link": "https://sonaveeb.ee/files/images/romb.svg",
     "audio_link": "",
     "level": "B1",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
     "order": 4,
     "type": 2
@@ -5649,13 +5666,13 @@
     "word": "trapets",
     "wordId": 246430,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/trapets/1",
-    "example_1": "Arvuta trapetsi pidala.",
+    "example_1": "Arvuta trapetsi pindala.",
     "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/trapets.svg",
     "audio_link": "",
     "level": "B1",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
     "order": 5,
     "type": 2
@@ -5672,7 +5689,7 @@
     "image_link": "https://sonaveeb.ee/files/images/ristkylik.svg",
     "audio_link": "",
     "level": "B2",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
     "order": 6,
     "type": 2
@@ -5689,7 +5706,7 @@
     "image_link": "https://sonaveeb.ee/files/images/r77pkylik.svg",
     "audio_link": "",
     "level": "B1",
-    "A1_A2": "yes",
+    "A1_A2": "no",
     "A1_B1": "yes",
     "order": 7,
     "type": 2
@@ -6076,7 +6093,7 @@
     "word_link": "https://sonaveeb.ee/search/lite/dlall/pliit/1",
     "example_1": "Pane pott pliidile.",
     "example_2": "Pliidil keeb supp.",
-    "example_3": "Ostsime suvilasse ilma ahjuta pliidi.",
+    "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/k77k_pliit.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_17799.mp3",
     "level": "A2",
@@ -6194,7 +6211,7 @@
     "wordId": 242527,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/tass/1",
     "example_1": "Tassis on kuum kohv.",
-    "example_2": "Ta valas tassidesse teed.",
+    "example_2": "Valasin tassidesse teed.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/k77k_tass.svg",
     "audio_link": "https://sonaveeb.ee/files/audio/h_19847.mp3",
@@ -8518,7 +8535,7 @@
   },
   {
     "category": "Loomad",
-    "sub_category": "Lõunamaa loomad",
+    "sub_category": "Koduloomad",
     "word": "eesel",
     "wordId": 162532,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/eesel/1",
@@ -8604,6 +8621,23 @@
   {
     "category": "Loomad",
     "sub_category": "Koduloomad",
+    "word": "küülik",
+    "wordId": 191474,
+    "word_link": "https://sonaveeb.ee/search/lite/dlall/küülik/1",
+    "example_1": "Küülikul on punased silmad.",
+    "example_2": "Lapsed läksid küülikuid toitma.",
+    "example_3": "",
+    "image_link": "https://sonaveeb.ee/files/images/kyylik2.svg",
+    "audio_link": "",
+    "level": "B1",
+    "A1_A2": "no",
+    "A1_B1": "yes",
+    "order": 14,
+    "type": 2
+  },
+  {
+    "category": "Loomad",
+    "sub_category": "Koduloomad",
     "word": "laama",
     "wordId": 191659,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/laama/2",
@@ -8615,7 +8649,7 @@
     "level": "B2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 14,
+    "order": 15,
     "type": 2
   },
   {
@@ -8631,23 +8665,6 @@
     "audio_link": "",
     "level": "B2",
     "A1_A2": "yes",
-    "A1_B1": "yes",
-    "order": 15,
-    "type": 2
-  },
-  {
-    "category": "Loomad",
-    "sub_category": "Koduloomad",
-    "word": "küülik",
-    "wordId": 191474,
-    "word_link": "https://sonaveeb.ee/search/lite/dlall/küülik/1",
-    "example_1": "Küülikul on punased silmad.",
-    "example_2": "Lapsed läksid küülikuid toitma.",
-    "example_3": "",
-    "image_link": "https://sonaveeb.ee/files/images/kyylik2.svg",
-    "audio_link": "",
-    "level": "B1",
-    "A1_A2": "no",
     "A1_B1": "yes",
     "order": 16,
     "type": 2
@@ -8666,7 +8683,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 17,
+    "order": 1,
     "type": 2
   },
   {
@@ -8683,7 +8700,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 18,
+    "order": 2,
     "type": 2
   },
   {
@@ -8700,7 +8717,7 @@
     "level": "B1",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 19,
+    "order": 3,
     "type": 2
   },
   {
@@ -8717,7 +8734,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 20,
+    "order": 4,
     "type": 2
   },
   {
@@ -8734,7 +8751,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 21,
+    "order": 5,
     "type": 2
   },
   {
@@ -8751,7 +8768,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 22,
+    "order": 6,
     "type": 2
   },
   {
@@ -8768,7 +8785,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 23,
+    "order": 7,
     "type": 2
   },
   {
@@ -8785,7 +8802,7 @@
     "level": "B1",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 24,
+    "order": 8,
     "type": 2
   },
   {
@@ -8802,7 +8819,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 25,
+    "order": 9,
     "type": 2
   },
   {
@@ -8819,7 +8836,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 26,
+    "order": 10,
     "type": 2
   },
   {
@@ -8836,7 +8853,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 27,
+    "order": 11,
     "type": 2
   },
   {
@@ -8853,7 +8870,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 28,
+    "order": 12,
     "type": 2
   },
   {
@@ -8870,7 +8887,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 29,
+    "order": 13,
     "type": 2
   },
   {
@@ -8887,7 +8904,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 30,
+    "order": 14,
     "type": 2
   },
   {
@@ -8904,7 +8921,7 @@
     "level": "A2",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 31,
+    "order": 15,
     "type": 2
   },
   {
@@ -8921,7 +8938,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 32,
+    "order": 16,
     "type": 2
   },
   {
@@ -8938,7 +8955,7 @@
     "level": "B1",
     "A1_A2": "yes",
     "A1_B1": "yes",
-    "order": 33,
+    "order": 17,
     "type": 2
   },
   {
@@ -8955,7 +8972,7 @@
     "level": "B1",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 34,
+    "order": 18,
     "type": 2
   },
   {
@@ -8972,7 +8989,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 35,
+    "order": 19,
     "type": 2
   },
   {
@@ -8989,7 +9006,7 @@
     "level": "B2",
     "A1_A2": "no",
     "A1_B1": "yes",
-    "order": 36,
+    "order": 20,
     "type": 2
   },
   {
@@ -13384,8 +13401,8 @@
     "word": "panen salli kaela",
     "wordId": 230792,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/sall/1",
-    "example_1": "Pane sall kaela, õues on külm.",
-    "example_2": "Mehel on ruuduline sall kaelas.",
+    "example_1": "Mees pani ruudulise salli kaela.",
+    "example_2": "Pane sall kaela, õues on külm.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/kaela.svg",
     "audio_link": "",
@@ -13401,8 +13418,8 @@
     "word": "sall on kaelas",
     "wordId": 230792,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/sall/1",
-    "example_1": "Pane sall kaela, õues on külm.",
-    "example_2": "Mehel on ruuduline sall kaelas.",
+    "example_1": "Mehel on ruuduline sall kaelas.",
+    "example_2": "Sall on kaelas, sest õues on külm.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/kaelas.svg",
     "audio_link": "",
@@ -13418,8 +13435,8 @@
     "word": "võtan salli kaelast ära",
     "wordId": 230792,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/sall/1",
-    "example_1": "Pane sall kaela, õues on külm.",
-    "example_2": "Mehel on ruuduline sall kaelas.",
+    "example_1": "Mees võttis salli kaelast.",
+    "example_2": "Võtsin salli kaelast, sest mul oli palav.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/kaelast.svg",
     "audio_link": "",
@@ -13588,8 +13605,8 @@
     "word": "panen lipsu ette",
     "wordId": 195698,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/lips/1",
-    "example_1": "Mehel on ees punane lips.",
-    "example_2": "Noormees läks teatrisse ülikonna ja lipsuga.",
+    "example_1": "Mees pani punase lipsu ette.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/lipsu_ette_panema.svg",
     "audio_link": "",
@@ -13606,7 +13623,7 @@
     "wordId": 195698,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/lips/1",
     "example_1": "Mehel on ees punane lips.",
-    "example_2": "Noormees läks teatrisse ülikonna ja lipsuga.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/lips_on_ees.svg",
     "audio_link": "",
@@ -13622,8 +13639,8 @@
     "word": "võtan lipsu eest ära",
     "wordId": 195698,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/lips/1",
-    "example_1": "Mehel on ees punane lips.",
-    "example_2": "Noormees läks teatrisse ülikonna ja lipsuga.",
+    "example_1": "Mees võttis lipsu eest ära.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/lipsu_eest_v6tma.svg",
     "audio_link": "",
@@ -13639,8 +13656,8 @@
     "word": "teen nööbid lahti",
     "wordId": 210359,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/nööp/1",
-    "example_1": "Nööp tuli eest ära.",
-    "example_2": "Õmblesin mantlile nööbid ette.",
+    "example_1": "Mees pani särgi nööbid kinni.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/n77pe-lahti-tegema.svg",
     "audio_link": "",
@@ -13656,8 +13673,8 @@
     "word": "panen nööbid kinni",
     "wordId": 210359,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/nööp/1",
-    "example_1": "Nööp tuli eest ära.",
-    "example_2": "Õmblesin mantlile nööbid ette.",
+    "example_1": "Mees tegi särgi nööbid lahti.",
+    "example_2": "",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/n77pe-kinni-panema.svg",
     "audio_link": "",
@@ -13673,8 +13690,8 @@
     "word": "teen luku lahti",
     "wordId": 196881,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/lukk/1",
-    "example_1": "Saapa lukk läks katki.",
-    "example_2": "Tõmbasin luku kinni/lahti.",
+    "example_1": "Tee lukk lahti.",
+    "example_2": "Ma ei saa lukku lahti.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/lukku-lahti-t6mbama.svg",
     "audio_link": "",
@@ -13690,8 +13707,8 @@
     "word": "panen luku kinni",
     "wordId": 196881,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/lukk/1",
-    "example_1": "Saapa lukk läks katki.",
-    "example_2": "Tõmbasin luku kinni/lahti.",
+    "example_1": "Pane lukk kinni.",
+    "example_2": "Ma ei saa lukku kinni.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/lukku-kinni-t6mbama.svg",
     "audio_link": "",
@@ -13707,9 +13724,9 @@
     "word": "teen trukid lahti",
     "wordId": 246850,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/trukk/1",
-    "example_1": "Kapuutsi saab trukkide abil eemaldada.",
-    "example_2": "Vestil on ees lukk ja trukid.",
-    "example_3": "Tegin trukid lahti.",
+    "example_1": "Tee trukid lahti.",
+    "example_2": "Ma ei saa trukke lahti.",
+    "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/trukk-lahti.svg",
     "audio_link": "",
     "level": "B2",
@@ -13724,9 +13741,9 @@
     "word": "panen trukid kinni",
     "wordId": 246850,
     "word_link": "https://sonaveeb.ee/search/lite/dlall/trukk/1",
-    "example_1": "Kapuutsi saab trukkide abil eemaldada.",
-    "example_2": "Vestil on ees lukk ja trukid.",
-    "example_3": "Tegin trukid lahti.",
+    "example_1": "Pane trukid kinni.",
+    "example_2": "Ma ei saa trukke kinni.",
+    "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/trukk-kinni.svg",
     "audio_link": "",
     "level": "B2",
@@ -13740,9 +13757,9 @@
     "sub_category": "lahti-kinni",
     "word": "teen krõpsud lahti",
     "wordId": 186858,
-    "word_link": "https://sonaveeb.ee/search/lite/dlall/krõps/1",
-    "example_1": "Lapsel on jalas krõpsuga saapad.",
-    "example_2": "",
+    "word_link": "https://sonaveeb.ee/search/lite/dlall/kr%C3%B5psud/1",
+    "example_1": "Tee saapal krõpsud lahti.",
+    "example_2": "Saabastel olid krõpsud lahti.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/kr6psuga-saapad-lahti.svg",
     "audio_link": "",
@@ -13757,9 +13774,9 @@
     "sub_category": "lahti-kinni",
     "word": "panen krõpsud kinni",
     "wordId": 186858,
-    "word_link": "https://sonaveeb.ee/search/lite/dlall/krõps/1",
-    "example_1": "Lapsel on jalas krõpsuga saapad.",
-    "example_2": "",
+    "word_link": "https://sonaveeb.ee/search/lite/dlall/kr%C3%B5psud/1",
+    "example_1": "Pane saabastel krõpsud kinni.",
+    "example_2": "Krõpsud ei jää kinni.",
     "example_3": "",
     "image_link": "https://sonaveeb.ee/files/images/kr6psuga-saapad-kinni.svg",
     "audio_link": "",
