@@ -646,7 +646,7 @@ public class CudDbService extends AbstractDataDbService {
 		}
 
 		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
-		int homonymNr = getNextHomonymNr(value, lang);
+		int homonymNr = getWordNextHomonymNr(value, lang);
 
 		Long wordId = create
 				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.MORPHOPHONO_FORM, WORD.HOMONYM_NR, WORD.LANG)
@@ -688,7 +688,7 @@ public class CudDbService extends AbstractDataDbService {
 		String aspectCode = word.getAspectCode();
 		String vocalForm = word.getVocalForm();
 		String morphophonoForm = word.getMorphophonoForm();
-		int homonymNr = getNextHomonymNr(value, lang);
+		int homonymNr = getWordNextHomonymNr(value, lang);
 
 		WordRecord wordRecord = create.newRecord(WORD);
 		wordRecord.setValue(value);
@@ -724,6 +724,17 @@ public class CudDbService extends AbstractDataDbService {
 		wordLexemeMeaningId.setMeaningId(meaningId);
 
 		return wordLexemeMeaningId;
+	}
+
+	public Long createWord(String wordValue, String valuePrese, String valueAsWord, String lang, int homNr) {
+
+		Long wordId = create
+				.insertInto(WORD, WORD.VALUE, WORD.VALUE_PRESE, WORD.VALUE_AS_WORD, WORD.MORPHOPHONO_FORM, WORD.HOMONYM_NR, WORD.LANG)
+				.values(wordValue, valuePrese, valueAsWord, wordValue, homNr, lang)
+				.returning(WORD.ID)
+				.fetchOne()
+				.getId();
+		return wordId;
 	}
 
 	public Long createWordFreeform(Long wordId, FreeForm freeform, String userName) {
@@ -1425,14 +1436,14 @@ public class CudDbService extends AbstractDataDbService {
 				.fetchInto(Long.class);
 	}
 
-	private int getNextHomonymNr(String value, String lang) {
+	public int getWordNextHomonymNr(String wordValue, String wordLang) {
 
 		Integer currentHomonymNr = create
 				.select(DSL.max(WORD.HOMONYM_NR))
 				.from(WORD)
 				.where(
-						WORD.LANG.eq(lang)
-								.and(WORD.VALUE.eq(value))
+						WORD.LANG.eq(wordLang)
+								.and(WORD.VALUE.eq(wordValue))
 								.and(WORD.IS_PUBLIC.isTrue()))
 				.fetchOneInto(Integer.class);
 

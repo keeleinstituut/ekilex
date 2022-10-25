@@ -518,11 +518,11 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public Long createSynWord(Long sourceWordId) {
+	public Long createSynWord(Long sourceWordId, int wordHomNr) {
 
 		WordRecord word = create.selectFrom(WORD).where(WORD.ID.eq(sourceWordId)).fetchOne();
 		WordRecord synWord = word.copy();
-		synWord.setHomonymNr(1);
+		synWord.setHomonymNr(wordHomNr);
 		synWord.setIsPublic(PUBLICITY_PUBLIC);
 		synWord.store();
 		Long synWordId = synWord.getId();
@@ -617,7 +617,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 			LexemeFreeformRecord targetLexemeFreeform = create.newRecord(lexff);
 			targetLexemeFreeform.setLexemeId(targetLexemeId);
-			targetLexemeFreeform.setFreeformId(sourceUsageId);
+			targetLexemeFreeform.setFreeformId(targetUsageId);
 			targetLexemeFreeform.store();
 		}
 	}

@@ -167,7 +167,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	}
 
 	@PostMapping(FULL_SYN_SEARCH_WORDS_URI + "/{targetMeaningId}/{wordRelationId}")
-	public String searchSynWords(
+	public String searchSynWordRelationWords(
 			@PathVariable Long targetMeaningId,
 			@PathVariable Long wordRelationId,
 			Model model) {
@@ -180,7 +180,27 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		model.addAttribute("targetMeaningId", targetMeaningId);
 		model.addAttribute("wordRelationId", wordRelationId);
 
-		return FULL_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "full_syn_word_select";
+		return FULL_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "full_syn_relation_word_select";
+	}
+
+	@GetMapping(FULL_SYN_SEARCH_WORDS_URI)
+	public String searchSynMeaningWords(
+			@RequestParam Long targetMeaningId,
+			@RequestParam String wordValue,
+			Model model) {
+
+		logger.debug("Syn meaning word search: {}", wordValue);
+
+		UserContextData userContextData = getUserContextData();
+		DatasetPermission userRole = userContextData.getUserRole();
+		String wordLang = userContextData.getFullSynCandidateLangCode();
+		List<WordDescript> wordCandidates = synSearchService.getMeaningWordCandidates(wordValue, wordLang, userRole);
+
+		model.addAttribute("wordCandidates", wordCandidates);
+		model.addAttribute("targetMeaningId", targetMeaningId);
+		model.addAttribute("wordValue", wordValue);
+
+		return FULL_SYN_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "full_syn_meaning_word_select";
 	}
 
 }

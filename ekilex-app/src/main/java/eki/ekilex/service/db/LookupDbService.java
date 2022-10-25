@@ -605,6 +605,21 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchSingleInto(Boolean.class);
 	}
 
+	public boolean meaningHasWord(Long meaningId, String datasetCode, String wordValue, String language) {
+
+		return create
+				.select(DSL.field(DSL.count(WORD.ID).gt(0)).as("word_exists"))
+				.from(LEXEME, WORD)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(WORD.VALUE.eq(wordValue))
+								.and(WORD.LANG.eq(language))
+								.and(WORD.IS_PUBLIC.isTrue()))
+				.fetchSingleInto(Boolean.class);
+	}
+
 	public boolean meaningRelationExists(Long meaningId1, Long meaningId2, String relationType) {
 	
 		return create

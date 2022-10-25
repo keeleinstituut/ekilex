@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -106,7 +107,11 @@ public class SynSearchService extends AbstractWordSearchService {
 		String wordLang = word.getLang();
 
 		List<WordLexeme> synLexemes = synSearchDbService.getWordPrimarySynonymLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
-		synLexemes.forEach(lexeme -> populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile));
+		synLexemes.forEach(lexeme -> {
+			languagesOrder.sort(Comparator.comparing(orderLang -> !StringUtils.equals(orderLang.getCode(), synCandidateLangCode)));
+			populateLexeme(lexeme, languagesOrder, wordLang, synMeaningWordLangCodes, userRole, userProfile);
+			reorderFullSynLangGroups(lexeme, synCandidateLangCode);
+		});
 		lexemeLevelPreseUtil.combineLevels(synLexemes);
 		boolean isActiveTagComplete = conversionUtil.isLexemesActiveTagComplete(synLexemes, activeTag);
 
@@ -128,6 +133,22 @@ public class SynSearchService extends AbstractWordSearchService {
 		wordDetails.setActiveTagComplete(isActiveTagComplete);
 
 		return wordDetails;
+	}
+
+	private void reorderFullSynLangGroups(WordLexeme lexeme, String synCandidateLangCode) {
+
+		List<SynonymLangGroup> synonymLangGroups = lexeme.getSynonymLangGroups();
+		SynonymLangGroup emptySynonymLangGroup = new SynonymLangGroup();
+		emptySynonymLangGroup.setLang(synCandidateLangCode);
+
+		if (synonymLangGroups.isEmpty()) {
+			synonymLangGroups.add(emptySynonymLangGroup);
+		} else {
+			SynonymLangGroup firstSynonymLangGroup = synonymLangGroups.get(0);
+			if (!StringUtils.equals(firstSynonymLangGroup.getLang(), synCandidateLangCode)) {
+				synonymLangGroups.add(0, emptySynonymLangGroup);
+			}
+		}
 	}
 
 	private void populateFullSynRelationUsagesAndDefinitions(SynRelation synRelation) {
@@ -195,6 +216,19 @@ public class SynSearchService extends AbstractWordSearchService {
 		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
 		String sourceWordValue = sourceWord.getWordValue();
 		String sourceWordLang = sourceWord.getLang();
+
+		List<WordDescript> wordCandidates = getWordCandidates(sourceWordValue, sourceWordLang, userRole);
+		return wordCandidates;
+	}
+
+	@Transactional
+	public List<WordDescript> getMeaningWordCandidates(String wordValue, String wordLang, DatasetPermission userRole) {
+
+		List<WordDescript> wordCandidates = getWordCandidates(wordValue, wordLang, userRole);
+		return wordCandidates;
+	}
+
+	private List<WordDescript> getWordCandidates(String sourceWordValue, String sourceWordLang, DatasetPermission userRole) {
 
 		List<WordDescript> wordCandidates = new ArrayList<>();
 		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());

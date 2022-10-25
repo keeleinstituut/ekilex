@@ -330,6 +330,8 @@ public interface WebConstant {
 
 	String SYN_CREATE_MEANING_RELATION_URI = "/syn_create_meaning_relation";
 
+	String SYN_CREATE_MEANING_WORD_WITH_CANDIDATE_DATA_URI = "/syn_create_meaning_word_with_candidate_data";
+
 	String SYN_CREATE_MEANING_WORD_URI = "/syn_create_meaning_word";
 
 	String PART_SYN_SEARCH_WORDS_URI = "/part_syn_search_words";
