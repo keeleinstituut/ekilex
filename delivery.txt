@@ -1,1 +1,6 @@
 Märkused ver 1.27.0 tarne kohta:
+
+* Tarne sisaldab peamiselt bugide parandusi ja tõlkevastete vaate täiendusi.
+
+* Tarnega kaasnev andmebaasi migratsiooni skript:
+  /eki-common/src/main/resources/sql/delivery.sql
