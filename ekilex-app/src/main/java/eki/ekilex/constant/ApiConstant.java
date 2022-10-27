@@ -26,6 +26,8 @@ public interface ApiConstant {
 
 	String MEANING_FORUM_URI = "/meaning_forum";
 
+	String LEXEME_POS_URI = "/lexeme_pos";
+
 	String OD_WORD_RECOMMENDATION = "/od_word_recommendation";
 
 	String LEXEME_URI = "/lexeme";
