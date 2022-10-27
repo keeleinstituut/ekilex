@@ -4,7 +4,7 @@
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar(activeItem = 'home')"></th:block>
-  <div class="container-fluid">
+  <div class="container-fluid" th:unless="${applicationDenied}">
     <div class="card mt-4 shadow">
       <div class="card-header">
         <h5 class="card-title">
@@ -16,20 +16,33 @@
           <div th:text="#{apply.ekilex.application.title}">See on EKI sõnastiku- ja terminibaasisüsteem Ekilex. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust.</div>
         </div>
         <div class="alert alert-info" role="alert" th:if="${applicationReviewPending}">
-          <span th:text="#{apply.application.pending}">Sinu Ekilexi sõnakogude õiguste taotlus on vastu võetud ning ootab rahuldamist. Seni saad Ekilexi kasutada vaatamisõigusega</span>
-          <form th:action="@{/apply_read}" method="post">
-            <button type="submit" class="btn btn-primary ml-3 mt-2" th:text="#{apply.start.using}">Hakka Ekilexi kasutama</button>
-          </form>
+          <div th:text="#{apply.application.pending}">Sinu Ekilexi sõnakogude õiguste taotlus on vastu võetud ning ootab rahuldamist. Seni saad Ekilexi kasutada vaatamisõigusega</div>
         </div>
-        <div class="alert alert-warning" role="alert" th:if="${applicationDenied}">
-          <div th:text="#{apply.denied}">Sinu Ekilexi kasutamise taotlus lükati tagasi.</div>
+        <div class="container float-left" th:if="${applicationReviewPending && not #lists.isEmpty(userApplications)}">
+          <div>
+            <b th:text="#{apply.user.applications}">Sinu sõnakogude muutmisõiguse taotlused</b>
+          </div>
+          <th:block th:each="userApplication,userApplicationIter : ${userApplications}">
+            <div class="row no-gutters mt-3">
+              <div class="col-8">
+                <th:block th:each="dataset : ${userApplication.datasets}">
+                  <div class="row no-gutters">
+                    <span th:text="${dataset.code}" class="col-1"></span>
+                    <span th:text="${dataset.name}" class="col-10"></span>
+                  </div>
+                </th:block>
+              </div>
+            </div>
+            <hr class="mt-3" th:unless="${userApplicationIter.last}" />
+          </th:block>
         </div>
-        <div class="container float-left w-50" th:if="${applicationNotSubmitted}">
+        <div class="container float-left w-50">
           <form th:action="@{/apply}" method="post">
             <div class="row no-gutters">
               <span class="col-10 mt-3 ml-5">
                 <a class="btn btn-outline-secondary" data-toggle="collapse" href="#datasetsSelection" role="button" aria-expanded="false" aria-controls="datasetsSelection">
-                  <span th:text="#{apply.crud}">Soovin sõnakogude muutmisõigust</span>
+                  <span th:text="#{apply.crud}" th:if="${applicationNotSubmitted}">Soovin sõnakogude muutmisõigust</span>
+                  <span th:text="#{apply.additional.crud}" th:unless="${applicationNotSubmitted}">Lisa uus taotlus</span>
                 </a>
               </span>
             </div>
@@ -57,27 +70,9 @@
             </div>
           </form>
         </div>
-        <div class="container float-left w-50" th:if="${applicationReviewPending && not #lists.isEmpty(userApplications)}">
-          <div>
-            <b th:text="#{apply.user.applications}">Sinu sõnakogude muutmisõiguse taotlused</b>
-          </div>
-          <th:block th:each="userApplication,userApplicationIter : ${userApplications}">
-            <div class="row no-gutters mt-3">
-              <div class="col-8">
-                <th:block th:each="dataset : ${userApplication.datasets}">
-                  <div class="row no-gutters">
-                    <span th:text="${dataset.code}" class="col-1"></span>
-                    <span th:text="${dataset.name}" class="col-10"></span>
-                  </div>
-                </th:block>
-              </div>
-            </div>
-            <hr class="mt-3" th:unless="${userApplicationIter.last}" />
-          </th:block>
-        </div>
       </div>
     </div>
-    <div class="card mt-4 shadow" th:if="${applicationNotSubmitted}">
+    <div class="card mt-4 shadow">
       <div class="card-body">
         <div class="alert alert-info" role="alert">
           <div th:text="#{apply.read}">Kui soovid Ekilexi vaatamisõigust ja katsebaasi muutmisõigust:</div>
@@ -106,6 +101,20 @@
               </div>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" th:if="${applicationDenied}">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">
+          <span th:text="#{apply.welcome(${#authentication.name})}"></span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-warning" role="alert" th:if="${applicationDenied}">
+          <div th:text="#{apply.denied}">Sinu Ekilexi kasutamise taotlus lükati tagasi.</div>
         </div>
       </div>
     </div>

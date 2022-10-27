@@ -80,7 +80,9 @@ public class HomeController extends AbstractPublicPageController {
 	@GetMapping(APPLY_URI)
 	public String apply(Model model) {
 		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getEnabled())) {
+		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
+		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
+		if (isUserEnabled && datasetPermissionsExist) {
 			return "redirect:" + HOME_URI;
 		}
 		populateUserApplicationData(user, model);
@@ -94,7 +96,9 @@ public class HomeController extends AbstractPublicPageController {
 			Model model) {
 
 		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getEnabled())) {
+		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
+		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
+		if (isUserEnabled && datasetPermissionsExist) {
 			populateStatData(model);
 			return HOME_PAGE;
 		}
@@ -107,7 +111,9 @@ public class HomeController extends AbstractPublicPageController {
 	public String applyRead(Model model) {
 
 		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getEnabled())) {
+		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
+		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
+		if (isUserEnabled && datasetPermissionsExist) {
 			populateStatData(model);
 			return HOME_PAGE;
 		}
@@ -120,7 +126,9 @@ public class HomeController extends AbstractPublicPageController {
 	public String applyLimited(Model model) {
 
 		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getEnabled())) {
+		boolean isUserEnabled = Boolean.TRUE.equals(user.getEnabled());
+		boolean datasetPermissionsExist = user.isDatasetPermissionsExist();
+		if (isUserEnabled && datasetPermissionsExist) {
 			populateStatData(model);
 			return HOME_PAGE;
 		}
@@ -132,7 +140,7 @@ public class HomeController extends AbstractPublicPageController {
 	private void populateUserApplicationData(EkiUser user, Model model) {
 
 		List<EkiUserApplication> userApplications = userService.getUserApplications(user.getId());
-		boolean applicationNotSubmitted = (user.getEnabled() == null) && CollectionUtils.isEmpty(userApplications);
+		boolean applicationNotSubmitted = CollectionUtils.isEmpty(userApplications);
 		boolean applicationReviewPending = (user.getEnabled() == null) && CollectionUtils.isNotEmpty(userApplications);
 		boolean applicationDenied = Boolean.FALSE.equals(user.getEnabled());
 
