@@ -31,7 +31,7 @@ public abstract class AbstractCudService extends AbstractService {
 	protected TagDbService tagDbService;
 
 	@Transactional
-	public void createDefinition(
+	public Long createDefinition(
 			Long meaningId, String valuePrese, String languageCode, String datasetCode, Complexity complexity, String typeCode, boolean isPublic,
 			boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -40,6 +40,7 @@ public abstract class AbstractCudService extends AbstractService {
 		Long definitionId = cudDbService.createDefinition(meaningId, value, valuePrese, languageCode, typeCode, complexity, isPublic);
 		cudDbService.createDefinitionDataset(definitionId, datasetCode);
 		activityLogService.createActivityLog(activityLog, definitionId, ActivityEntity.DEFINITION);
+		return definitionId;
 	}
 
 	@Transactional
@@ -68,7 +69,7 @@ public abstract class AbstractCudService extends AbstractService {
 	}
 
 	@Transactional
-	public void createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public Long createUsage(Long lexemeId, String valuePrese, String lang, Complexity complexity, boolean isPublic, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		FreeForm freeform = new FreeForm();
 		freeform.setType(FreeformType.USAGE);
@@ -77,15 +78,17 @@ public abstract class AbstractCudService extends AbstractService {
 		freeform.setPublic(isPublic);
 		setFreeformValueTextAndValuePrese(freeform, valuePrese);
 
-		createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform, isManualEventOnUpdateEnabled);
+		Long usageId = createLexemeFreeform(ActivityEntity.USAGE, lexemeId, freeform, isManualEventOnUpdateEnabled);
+		return usageId;
 	}
 
-	protected void createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
+	protected Long createLexemeFreeform(ActivityEntity activityEntity, Long lexemeId, FreeForm freeform, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		String userName = userContext.getUserName();
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createLexemeFreeform", lexemeId, ActivityOwner.LEXEME, isManualEventOnUpdateEnabled);
 		Long lexemeFreeformId = cudDbService.createLexemeFreeform(lexemeId, freeform, userName);
 		activityLogService.createActivityLog(activityLog, lexemeFreeformId, activityEntity);
+		return lexemeFreeformId;
 	}
 
 	protected void setFreeformValueTextAndValuePrese(FreeForm freeform, String valuePrese) {
