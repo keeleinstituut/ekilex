@@ -87,6 +87,11 @@ public class LookupService extends AbstractWordSearchService {
 	}
 
 	@Transactional
+	public List<eki.ekilex.data.api.Word> getPublicWords(String datasetCode) {
+		return lookupDbService.getPublicWords(datasetCode);
+	}
+
+	@Transactional
 	public boolean wordExists(String wordValue, String language) {
 		return lookupDbService.wordExists(wordValue, language);
 	}

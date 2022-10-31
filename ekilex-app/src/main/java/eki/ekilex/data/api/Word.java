@@ -1,7 +1,10 @@
 package eki.ekilex.data.api;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import eki.common.data.AbstractDataObject;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Word extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -18,6 +21,8 @@ public class Word extends AbstractDataObject {
 
 	private String lang;
 
+	private Integer homonymNr;
+
 	private String displayMorphCode;
 
 	private String genderCode;
@@ -27,6 +32,8 @@ public class Word extends AbstractDataObject {
 	private String vocalForm;
 
 	private String morphophonoForm;
+
+	private boolean morphExists;
 
 	public Long getWordId() {
 		return wordId;
@@ -76,6 +83,14 @@ public class Word extends AbstractDataObject {
 		this.lang = lang;
 	}
 
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
+	}
+
 	public String getDisplayMorphCode() {
 		return displayMorphCode;
 	}
@@ -114,5 +129,13 @@ public class Word extends AbstractDataObject {
 
 	public void setMorphophonoForm(String morphophonoForm) {
 		this.morphophonoForm = morphophonoForm;
+	}
+
+	public boolean isMorphExists() {
+		return morphExists;
+	}
+
+	public void setMorphExists(boolean morphExists) {
+		this.morphExists = morphExists;
 	}
 }

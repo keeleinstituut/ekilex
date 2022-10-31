@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
@@ -48,10 +49,12 @@ import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
+import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningRelMapping;
 import eki.ekilex.data.db.tables.MeaningRelation;
+import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
@@ -263,6 +266,41 @@ public class LookupDbService extends AbstractDataDbService {
 				.where(l.WORD_ID.eq(wordId))
 				.orderBy(l.DATASET_CODE, l.LEVEL1, l.LEVEL2)
 				.fetchInto(WordLexeme.class);
+	}
+
+	public List<eki.ekilex.data.api.Word> getPublicWords(String datasetCode) {
+
+		Word w = WORD.as("w");
+		Lexeme l = LEXEME.as("l");
+		Dataset ds = DATASET.as("ds");
+		Paradigm p = PARADIGM.as("p");
+
+		Field<Boolean> me = DSL.field(DSL
+				.select(DSL.field(DSL.count(p.ID).gt(0)))
+				.from(p)
+				.where(p.WORD_ID.eq(w.ID).and(p.WORD_CLASS.isNotNull())));
+
+		return create
+				.select(
+						w.ID.as("word_id"),
+						w.VALUE,
+						w.LANG,
+						w.HOMONYM_NR,
+						me.as("morph_exists"))
+				.from(w)
+				.where(
+						w.IS_PUBLIC.isTrue()
+								.andExists(DSL
+										.select(l.ID)
+										.from(l, ds)
+										.where(
+												l.WORD_ID.eq(w.ID)
+														.and(l.DATASET_CODE.eq(datasetCode))
+														.and(l.IS_PUBLIC.isTrue())
+														.and(l.DATASET_CODE.eq(ds.CODE))
+														.and(ds.IS_PUBLIC.isTrue()))))
+				.orderBy(w.VALUE, w.HOMONYM_NR)
+				.fetchInto(eki.ekilex.data.api.Word.class);
 	}
 
 	public String getLexemeDatasetCode(Long lexemeId) {
