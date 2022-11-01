@@ -29,7 +29,7 @@
           <div class="form-group row">
             <label class="col-md-1 col-form-label" th:text="#{stat.language}">Keel</label>
             <div class="col-md-2">
-              <select class="form-control value-select" name="lang">
+              <select class="form-control value-select" name="searchLang">
                 <option value="" th:text="#{stat.all.languages}">Kõik keeled</option>
                 <option th:each="lang : ${allLanguages}"
                         th:value="${lang.code}"
