@@ -22,6 +22,8 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	private String valuePrese;
 
+	private String valuePreseCut;
+
 	private String lang;
 
 	private Complexity complexity;
@@ -31,8 +33,6 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 	private List<TypeSourceLink> sourceLinks;
 
 	private boolean subDataExists;
-
-	private boolean oversizeValue;
 
 	@Override
 	public Long getOwnerId() {
@@ -79,6 +79,14 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 		this.valuePrese = valuePrese;
 	}
 
+	public String getValuePreseCut() {
+		return valuePreseCut;
+	}
+
+	public void setValuePreseCut(String valuePreseCut) {
+		this.valuePreseCut = valuePreseCut;
+	}
+
 	@Override
 	public String getLang() {
 		return lang;
@@ -121,14 +129,6 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	public void setSubDataExists(boolean subDataExists) {
 		this.subDataExists = subDataExists;
-	}
-
-	public boolean isOversizeValue() {
-		return oversizeValue;
-	}
-
-	public void setOversizeValue(boolean oversizeValue) {
-		this.oversizeValue = oversizeValue;
 	}
 
 }

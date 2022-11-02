@@ -19,6 +19,8 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 
 	private String value;
 
+	private String valueCut;
+
 	private String lang;
 
 	private Complexity complexity;
@@ -60,6 +62,14 @@ public class TypeFreeform extends AbstractDataObject implements ComplexityType, 
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValueCut() {
+		return valueCut;
+	}
+
+	public void setValueCut(String valueCut) {
+		this.valueCut = valueCut;
 	}
 
 	public String getLang() {
