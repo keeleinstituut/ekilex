@@ -68,7 +68,7 @@ function doPostDelete(deleteUrl, callback, force) {
 					}
 				}
 
-			} else {
+			} else if (callback) {
 				callback();
 			}
 		} else {
@@ -88,11 +88,8 @@ function submitDialog(e, dlg, failMessage) {
 		return;
 	}
 
-	const successCallbackName = dlg.attr("data-callback");
-	let successCallbackFunc = undefined;
-	if (window[successCallbackName]) {
-		successCallbackFunc = () => window[successCallbackName]();
-	}
+	const successCallback = dlg.attr("data-callback");
+	let successCallbackFunc = createCallback(successCallback);
 	submitForm(form, failMessage, successCallbackFunc).always(function() {
 		dlg.modal('hide');
 	});
@@ -219,11 +216,9 @@ function executeDelete(deleteUrl) {
 			deleteUrl = `${deleteUrl}&value=${encodeURIComponent(value)}`;
 		}
 	}
-	const successCallbackName = $this.attr("data-callback");
-	let successCallbackFunc = undefined;
-	if (window[successCallbackName]) {
-		successCallbackFunc = () => window[successCallbackName]();
-	} else {
+	const successCallback = $this.attr("data-callback");
+	let successCallbackFunc = createCallback(successCallback);
+	if (!successCallback) {
 		successCallbackFunc = () => $('#refresh-details').click();
 	}
 	doPostDelete(deleteUrl, successCallbackFunc);
@@ -420,11 +415,8 @@ function initAddSourceLinkDlg(addDlg) {
 				const form = button.closest('form');
 
 				if (checkRequiredFields(form)) {
-					const successCallbackName = addDlg.attr("data-callback");
-					let successCallbackFunc = undefined;
-					if (window[successCallbackName]) {
-						successCallbackFunc = () => window[successCallbackName]();
-					}
+					const successCallback = addDlg.attr("data-callback");
+					let successCallbackFunc = createCallback(successCallback);
 					submitForm(form, messages["common.data.update.error"], successCallbackFunc).always(function() {
 						addDlg.modal('hide');
 					});
@@ -462,11 +454,8 @@ $.fn.updateSourceLink = function() {
 		e.preventDefault();
 		const updateSourceLinkForm = main.closest('form[name="sourceLinkForm"]');
 		const updateSourceLinkModal = updateSourceLinkForm.closest('.modal');
-		const successCallbackName = updateSourceLinkModal.attr("data-callback");
-		let successCallbackFunc = undefined;
-		if (window[successCallbackName]) {
-			successCallbackFunc = () => window[successCallbackName]();
-		}
+		const successCallback = updateSourceLinkModal.attr("data-callback");
+		let successCallbackFunc = createCallback(successCallback);
 		submitForm(updateSourceLinkForm, messages["common.data.update.error"], successCallbackFunc).always(function() {
 			updateSourceLinkModal.modal('hide');
 		});
@@ -543,9 +532,10 @@ function initMultiselectRelationDlg(dlg) {
 						data: selectRelationsForm.serialize(),
 						method: 'POST',
 					}).done(function() {
-						const successCallbackName = dlg.attr("data-callback");
-						if (window[successCallbackName]) {
-							window[successCallbackName]();
+						const successCallback = dlg.attr("data-callback");
+						let successCallbackFunc = createCallback(successCallback);
+						if (successCallbackFunc) {
+							successCallbackFunc();
 						} else {
 							refreshDetailsSearch(id);
 						}
@@ -743,8 +733,8 @@ function deleteLexemeAndWordAndMeaning() {
 	const opCode = "lexeme";
 	const element = $(this);
 	const lexemeId = element.attr("data-id");
-	const successCallbackName = element.attr("data-callback");
-	const successCallbackFunc = () => window[successCallbackName](element);
+	const successCallback = element.attr("data-callback");
+	const successCallbackFunc = createCallback(successCallback, element);
 
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, successCallbackFunc);
 };
@@ -754,13 +744,13 @@ function deleteLexemeAndRusMeaningLexemes() {
 	const opCode = "rus_meaning_lexemes";
 	const element = $(this);
 	const lexemeId = element.attr("data-id");
-	const successCallbackName = element.attr("data-callback");
-	const successCallbackFunc = () => window[successCallbackName](element);
+	const successCallback = element.attr("data-callback");
+	const successCallbackFunc = createCallback(successCallback, element);
 
 
 	executeMultiConfirmPostDelete(opName, opCode, lexemeId, function() {
 		const detailsLength = element.parents('[data-rel="details-area"]:first').find('[id*="lexeme-details-"]').length;
-		if (detailsLength <= 1) {
+		if (detailsLength <= 1 && successCallbackFunc) {
 			successCallbackFunc();
 		} else {
 			element.parents('[data-rel="details-area"]:first').find('[name="details-btn"]:first').trigger('click');
@@ -863,12 +853,12 @@ $.fn.langCollapsePlugin = function() {
 				opCode: "user_lang_selection",
 				code: lang
 			};
-			const successCallbackName = btn.attr("data-callback");
-			const successCallbackFunc = () => window[successCallbackName]();
+			const successCallback = btn.attr("data-callback");
+			const successCallbackFunc = createCallback(successCallback);
 			postJson(applicationUrl + 'update_item', itemData).done(function() {
 				if (viewType === 'term') {
 					refreshDetailsSearch(btn.parents('[data-rel="details-area"]').attr('data-id'));
-				} else {
+				} else if (successCallbackFunc) {
 					successCallbackFunc();
 				}
 			});
@@ -1156,9 +1146,9 @@ function getBreadcrumbsData(detailsDiv, word) {
 
 // Scroll to result when searching by id in lex view
 function scrollDetails(div, scrollPosition) {
+	let overflowDiv = div.find('.overflow-auto').first();
 	if (viewType === 'lex') {
 		const searchedId = $('#lex-meaning-id-search-meaning-id');
-		const overflowDiv = div.find('.overflow-auto').first();
 		if (searchedId.length) {
 			const searchResult = div.find(`#lexeme-meaning-${searchedId.attr('data-result-id')}`);
 			const scrollOffset = searchResult.offset().top - overflowDiv.offset().top;
@@ -1166,6 +1156,8 @@ function scrollDetails(div, scrollPosition) {
 		} else {
 			overflowDiv.scrollTop(scrollPosition);
 		}
+	} else if (viewType === 'term') {
+		overflowDiv.scrollTop(scrollPosition);
 	}
 }
 
@@ -1341,4 +1333,42 @@ function initBasicInlineEkiEditorOnContent(obj, callback) {
 			}
 		}
 	});
+}
+
+/**
+ * @param data Success callback created by BE and added to an element attribute
+ * @param optionalArgs Any optional args
+ * @returns Function that will trigger the callback with args applied
+ */
+function createCallback(data, optionalArgs) {
+	if (!data) return undefined;
+	let func;
+	let argsString = '';
+
+	if (data.includes('(')) {
+		// Remove end parenthesis and split string from the start of function args
+		[func, argsString] = data.replace(')', '').split('(');
+	} else {
+		func = data;
+	}
+	
+	// Check if the function exists
+	if (window[func]) {
+		// Split args by comma
+		const splitArgsString = argsString.replace(', ', ',').split(',');
+		// Check if first element of args has an actual length and return empty array if not
+		const callbackArgs = splitArgsString[0].toString().length ? [...splitArgsString] : [];
+		// Include optional argument if needed
+		const args = callbackArgs;
+		if (optionalArgs) {
+			if (Array.isArray(optionalArgs)) {
+				args.push(...optionalArgs);
+			} else {
+				args.push(optionalArgs);
+			}
+		}
+		// Return a function that uses callback with provided args
+		return () => window[func].apply(null, args);
+	}
+	return undefined
 }

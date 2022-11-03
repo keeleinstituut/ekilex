@@ -1,6 +1,8 @@
 package eki.ekilex.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,7 +27,6 @@ import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
-import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
@@ -110,15 +111,15 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	}
 
 	@Transactional
-	public void createSynMeaningWord(Long targetMeaningId, Long synWordId, Long wordRelationId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+	public void createSynMeaningWordWithCandidateData(Long targetMeaningId, Long synWordId, Long wordRelationId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		// TODO add activity log
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWord", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long sourceWordId = synSearchDbService.getSynCandidateWordId(wordRelationId);
 		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
 		String sourceWordValue = sourceWord.getWordValue();
 		String sourceWordLang = sourceWord.getLang();
 
-		List<Word> sameValueWords = lookupDbService.getWords(sourceWordValue, sourceWordLang);
+		updateWordRelationStatus("createSynMeaningWord", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
 
 		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
 		if (sourceWordLexemes.size() != 1) {
@@ -131,28 +132,49 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 		Long targetMeaningSameWordLexemeId = synSearchDbService.getMeaningFirstWordLexemeId(targetMeaningId, datasetCode, sourceWordValue, sourceWordLang);
 		boolean targetMeaningHasWord = targetMeaningSameWordLexemeId != null;
 		if (targetMeaningHasWord) {
-			// TODO in this case no activity log?
-			// TODO cloning logic needs to be specified
 			synSearchDbService.cloneSynLexemeData(targetMeaningSameWordLexemeId, sourceLexemeId);
 			synSearchDbService.cloneSynMeaningData(targetMeaningId, sourceMeaningId, datasetCode);
+			activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 			return;
 		}
 
-		if (sameValueWords.size() == 0) {
-			synWordId = synSearchDbService.createSynWord(sourceWordId);
-		} else if (sameValueWords.size() == 1) {
-			synWordId = sameValueWords.get(0).getWordId();
-		} else {
-			if (synWordId == null) {
-				throw new OperationDeniedException();
-			}
+		if (synWordId == null) {
+			int synWordHomNr = cudDbService.getWordNextHomonymNr(sourceWordValue, sourceWordLang);
+			synWordId = synSearchDbService.createSynWord(sourceWordId, synWordHomNr);
 		}
 
 		BigDecimal weight = synSearchDbService.getWordRelationParamValue(wordRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE);
-		synSearchDbService.createSynLexeme(sourceLexemeId, synWordId, targetMeaningId, datasetCode, weight);
+		int currentSynWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(synWordId, datasetCode);
+		int synLexemeLevel1 = currentSynWordLexemesMaxLevel1 + 1;
+		synSearchDbService.createSynLexeme(sourceLexemeId, synWordId, synLexemeLevel1, targetMeaningId, datasetCode, weight);
 		synSearchDbService.cloneSynMeaningData(targetMeaningId, sourceMeaningId, datasetCode);
 
-		updateWordRelationStatus("createSynMeaningWord", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
+		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
+	}
+
+	@Transactional
+	public void createSynMeaningWord(Long targetMeaningId, Long synWordId, String wordValue, String wordLang, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWord", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+		wordValue = textDecorationService.removeEkiElementMarkup(wordValue);
+
+		boolean targetMeaningHasWord = lookupDbService.meaningHasWord(targetMeaningId, datasetCode, wordValue, wordLang);
+		if (targetMeaningHasWord) {
+			return;
+		}
+
+		if (synWordId == null) {
+			int synWordHomNr = cudDbService.getWordNextHomonymNr(wordValue, wordLang);
+			String cleanValue = textDecorationService.unifyToApostrophe(wordValue);
+			String valueAsWord = textDecorationService.removeAccents(cleanValue);
+			synWordId = cudDbService.createWord(wordValue, wordValue, valueAsWord, wordLang, synWordHomNr);
+		}
+
+		int currentSynWordLexemesMaxLevel1 = lookupDbService.getWordLexemesMaxLevel1(synWordId, datasetCode);
+		int synLexemeLevel1 = currentSynWordLexemesMaxLevel1 + 1;
+		cudDbService.createLexeme(synWordId, datasetCode, targetMeaningId, synLexemeLevel1);
+
+		activityLogService.createActivityLog(activityLog, targetMeaningId, ActivityEntity.MEANING_WORD);
 	}
 
 	@Transactional
@@ -205,10 +227,10 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 
 	@Transactional
 	public void updateWordSynRelationsStatusDeleted(
-			Long wordId, String datasetCode, List<String> synCandidateLangCodes, boolean isManualEventOnUpdateEnabled) throws Exception {
+			Long wordId, String datasetCode, String synCandidateLangCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		List<SynRelation> wordSynRelations = synSearchDbService.getWordSynRelations(
-				wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes, true, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+		List<String> synCandidateLangCodes = new ArrayList<>(Collections.singletonList(synCandidateLangCode));
+		List<SynRelation> wordSynRelations = synSearchDbService.getWordPartSynRelations(wordId, WORD_REL_TYPE_CODE_RAW, datasetCode, synCandidateLangCodes);
 		List<SynRelation> filteredWordSynRelations = wordSynRelations.stream()
 				.filter(synRelation -> synRelation.getRelationStatus() == null || synRelation.getRelationStatus().equals(RelationStatus.UNDEFINED))
 				.collect(Collectors.toList());

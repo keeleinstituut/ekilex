@@ -16,13 +16,16 @@ import eki.common.constant.ActivityEntity;
 import eki.common.constant.ActivityOwner;
 import eki.common.constant.Complexity;
 import eki.common.constant.GlobalConstant;
+import eki.common.constant.ReferenceType;
 import eki.ekilex.data.ActivityLogData;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
+import eki.ekilex.data.api.SourceLink;
 import eki.ekilex.data.api.SynCandidacy;
 import eki.ekilex.data.api.SynCandidateWord;
 import eki.ekilex.data.api.TextWithSource;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.db.SourceLinkDbService;
 
 @Component
 public class SynCandidateService extends AbstractCudService implements GlobalConstant {
@@ -31,6 +34,9 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 
 	@Autowired
 	private LookupDbService lookupDbService;
+
+	@Autowired
+	private SourceLinkDbService sourceLinkDbService;
 
 	@Transactional
 	public void createFullSynCandidacy(SynCandidacy synCandidacy) throws Exception {
@@ -78,14 +84,32 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		}
 		if (CollectionUtils.isNotEmpty(synUsages)) {
 			for (TextWithSource usage : synUsages) {
-				createUsage(synCandidateLexemeId, usage.getValue(), synCandidateWordLang,
-						Complexity.DETAIL, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				String usageValue = usage.getValue();
+				List<SourceLink> usageSourceLinks = usage.getSourceLinks();
+				Long usageId = createUsage(synCandidateLexemeId, usageValue, synCandidateWordLang, Complexity.DETAIL, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				if (CollectionUtils.isNotEmpty(usageSourceLinks)) {
+					for (SourceLink usageSourceLink : usageSourceLinks) {
+						Long sourceId = usageSourceLink.getSourceId();
+						String sourceLinkValue = usageSourceLink.getValue();
+						createUsageSourceLink(usageId, sourceId, synCandidateLexemeId, sourceLinkValue);
+					}
+				}
 			}
 		}
 		if (CollectionUtils.isNotEmpty(synDefinitions)) {
 			for (TextWithSource definition : synDefinitions) {
-				createDefinition(synCandidateMeaningId, definition.getValue(), synCandidateWordLang, synCandidateDatasetCode,
-						Complexity.DETAIL, DEFINITION_TYPE_UNDEFINED, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				String definitionValue = definition.getValue();
+				List<SourceLink> definitionSourceLinks = definition.getSourceLinks();
+				Long definitionId = createDefinition(
+						synCandidateMeaningId, definitionValue, synCandidateWordLang, synCandidateDatasetCode, Complexity.DETAIL,
+						DEFINITION_TYPE_UNDEFINED, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
+					for (SourceLink definitionSourceLink : definitionSourceLinks) {
+						Long sourceId = definitionSourceLink.getSourceId();
+						String sourceLinkValue = definitionSourceLink.getValue();
+						createDefinitionSourceLink(definitionId, sourceId, synCandidateMeaningId, sourceLinkValue);
+					}
+				}
 			}
 		}
 
@@ -121,5 +145,23 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 		Long createdRelationId = cudDbService.createWordRelation(headwordId, synCandidateWordId, WORD_REL_TYPE_CODE_RAW, UNDEFINED_RELATION_STATUS);
 		cudDbService.createWordRelationParam(createdRelationId, WORD_RELATION_PARAM_NAME_SYN_CANDIDATE, weight);
 		activityLogService.createActivityLog(activityLog, createdRelationId, ActivityEntity.WORD_RELATION);
+	}
+
+	private void createUsageSourceLink(Long usageId, Long sourceId, Long lexemeId, String sourceLinkValue) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createUsageSourceLink", lexemeId, ActivityOwner.LEXEME, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ReferenceType refType = ReferenceType.ANY;
+		String sourceLinkName = null;
+		Long sourceLinkId = sourceLinkDbService.createFreeformSourceLink(usageId, sourceId, refType, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.USAGE_SOURCE_LINK);
+	}
+
+	private void createDefinitionSourceLink(Long definitionId, Long sourceId, Long meaningId, String sourceLinkValue) throws Exception {
+
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createDefinitionSourceLink", meaningId, ActivityOwner.MEANING, MANUAL_EVENT_ON_UPDATE_DISABLED);
+		ReferenceType refType = ReferenceType.ANY;
+		String sourceLinkName = null;
+		Long sourceLinkId = sourceLinkDbService.createDefinitionSourceLink(definitionId, sourceId, refType, sourceLinkValue, sourceLinkName);
+		activityLogService.createActivityLog(activityLog, sourceLinkId, ActivityEntity.DEFINITION_SOURCE_LINK);
 	}
 }

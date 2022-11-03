@@ -2,20 +2,14 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head></head>
 <body>
-  <div id="synCandidatesListDiv"
-       class="overflow-auto h-100"
-       data-panel-index="3"
-       th:fragment="syn_candidate_list">
+  <div id="synCandidatesListDiv" class="overflow-auto h-100" th:fragment="syn_candidate_list">
     <ul th:if="${not #lists.isEmpty(details.wordRelationDetails.wordSynRelations)}" width="100%" class="list-unstyled p-0">
       <li th:each="synRelation,relationIter : ${details.wordRelationDetails.wordSynRelations}"
+          th:with="meaning = ${synRelation.wordMeanings.get(0)}"
           class="border draggable-synonym drag-handle"
           th:data-syn-relation-id="${synRelation.id}"
-          th:data-word-count="${synRelation.sameValuePublicWordCount}"
-          th:data-orderby="${synRelation.orderBy}">
-        <div class="d-flex flex-row hover-actions-container align-items-center pl-1 bg-light"
-             th:data-word-id="${synRelation.wordId}"
-             th:data-word="${synRelation.wordValue}"
-             th:data-meaning-id="${synRelation.meaningId}">
+          th:data-word-count="${synRelation.sameValuePublicWordCount}">
+        <div class="d-flex flex-row hover-actions-container align-items-center pl-1 bg-light">
           <span class="px-2 handle drag-handle border-right border-light text-muted" title="Lohista siit">
             <i class="fa fa-ellipsis-v text-muted" aria-hidden="true"></i>
           </span>
@@ -55,9 +49,9 @@
             <i class="fa fa-bar-chart action-icon px-2 d-block" aria-hidden="true"></i>
           </button>
           <div class="syn-stats-content d-none">
-            <div th:if="${not #lists.isEmpty(synRelation.wordLexemesPoses)}">
+            <div th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
               <span th:text="#{syn.lexeme.pos}">Sõnaliik:</span>
-              <th:block th:each="lexemePos,lexemePosIter : ${synRelation.wordLexemesPoses}">
+              <th:block th:each="lexemePos,lexemePosIter : ${meaning.lexPosCodes}">
                 <span th:text="${lexemePos}"></span>
                 <span th:unless="${lexemePosIter.last}">, </span>
               </th:block>
@@ -74,15 +68,7 @@
             </div>
           </div>
         </div>
-        <!-- TODO remove unnecessary data attributes -->
-        <div th:with="meaning = ${synRelation.wordMeanings.get(0)}"
-             th:data-meaning-id="${meaning.meaningId}"
-             th:data-relation-id="${synRelation.id}"
-             th:data-id="${synRelation.id}"
-             th:data-navigate-index="${meaningCount.increment()}"
-             th:data-navigate-selected="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId}?'true'"
-             th:data-active-panel="${markedSynMeaningId != null}?'true'"
-             th:classappend="${markedSynMeaningId != null && markedSynMeaningId == meaning.meaningId ? 'navigate-marked' : ''}">
+        <div>
           <div data-toggle="tooltip" th:title="#{fullsyn.lexeme.pos}">
             <span class="pr-2 small" th:if="${not #lists.isEmpty(meaning.lexPosCodes)}">
               <span th:each="posCode : ${meaning.lexPosCodes}">
@@ -90,11 +76,23 @@
               </span>
             </span>
           </div>
-          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
-            <span class="small" th:utext="${definition}"></span>
+          <div class="d-flex flex-row small" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
+            <span th:utext="${definition.value}"></span>
+            <span th:each="sourceLink : ${definition.sourceLinks}">
+              [
+              <a th:href="@{'/def_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+              <span th:if="${sourceLink.name != null}" th:text="${sourceLink.name}"></span>
+              ]
+            </span>
           </div>
-          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
-            <span class="small text-info" th:utext="${usage}"></span>
+          <div class="d-flex flex-row small text-info" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
+            <span th:utext="${usage.value}"></span>
+            <span th:each="sourceLink : ${usage.sourceLinks}">
+              [
+              <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}" th:text="${sourceLink.value}"></a>
+              <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+              ]
+            </span>
           </div>
         </div>
       </li>
@@ -103,12 +101,20 @@
        class="text-secondary font-italic p-3"
        th:text="#{fullsyn.no.word.syn.relations}">Vastete kandidaadid puuduvad valitud keeltes</p>
   </div>
-  <div th:fragment="full_syn_data"
+  <div th:fragment="syn_data"
        th:if="${not #lists.isEmpty(lexeme.synonymLangGroups)}"
        class="orderable border-top">
-    <div class="orderable d-flex flex-row" th:each="synonymLangGroup : ${lexeme.synonymLangGroups}" >
-      <span th:if="${lexeme.wordLang == synonymLangGroup.lang}" class="mr-2" th:text="#{syn.abbreviation}"></span>
-      <span th:unless="${lexeme.wordLang == synonymLangGroup.lang}" th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+    <div class="orderable d-flex flex-row" th:each="synonymLangGroup,synonymLangGroupIter : ${lexeme.synonymLangGroups}">
+      <span th:text="${viewUtil.getLangIso2(synonymLangGroup.lang)}" class="mr-2"></span>
+      <th:block th:if="${synonymLangGroupIter.first}">
+        <div th:replace="fullsyndialog :: add_syn_meaning_word_dlg"></div>
+        <button type="button" class="btn btn-light badge mr-2"
+                th:title="#{fullsyn.add.new}"
+                data-toggle="modal"
+                th:data-target="${'#addSynMeaningWordDlg_' + lexeme.lexemeId}">
+          <i class="action-icon fa fa-plus" aria-hidden="true"></i>
+        </button>
+      </th:block>
       <div data-plugin="sorter" data-sorter:type="syn" data-sorter:handle=".syn-handle">
         <span th:each="syn,synIter : ${synonymLangGroup.synonyms}"
               class="hidden-buttons draggable-syn-rel droppable-syn-rel do-refresh"
@@ -130,6 +136,22 @@
                 <small th:each="registerCode,regIter : ${synWord.lexemeRegisterCodes}" th:text="${registerCode + (regIter.last ? '' : ', ')}"></small>
                 <small th:if="${synWordIter.last}" th:text="${'[' + viewUtil.getFormattedWeight(syn.weight) + ']'}"></small>
               </span>
+              <th:block th:if="${isMeaningWordSyn}">
+                <div th:replace="fullsyndialog :: edit_lexeme_weight_dlg"></div>
+                <button type="button" class="btn badge badge-secondary btn-xs"
+                        th:title="#{syn.edit.syn.lexeme.weight}"
+                        data-toggle="modal"
+                        th:data-target="${'#editLexemeWeightDlg_' + synWord.lexemeId}"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn badge badge-warning"
+                        th:data-id="${synWord.lexemeId}"
+                        data-toggle="delete-syn-lexeme-confirm"
+                        sec:authorize="#vars.lexeme.crudGrant">
+                  <i class="fa fa-remove" aria-hidden="true" data-toggle="tooltip" th:title="#{syn.delete.syn.lexeme}"></i>
+                </button>
+              </th:block>
               <span th:unless="${synWordIter.last}">,</span>
             </th:block>
             <span th:unless="${synIter.last}">|</span>
@@ -138,14 +160,20 @@
       </div>
     </div>
   </div>
-  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" th:fragment="full_syn_word_select">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document" th:fragment="full_syn_relation_word_select">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" th:text="#{fullsyn.select.homonym}">Vali sobiv keelend</h5>
+        <h5 class="modal-title" th:text="#{fullsyn.select.word.title}">Vali sobiv keelend või loo uus</h5>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-        <form id="submitSynWordForm" th:action="@{/full_syn_search_words/select}" method="post">
+        <form id="submitRelationHomonymForm" th:action="@{/syn_create_meaning_word_with_candidate_data/select}" method="post">
+          <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
+          <input type="hidden" name="wordRelationId" th:value="${wordRelationId}">
+          <button type="button" class="btn btn-secondary" data-plugin="submitRelationHomonymBtnPlugin" th:text="#{fullsyn.add.homonym}">Loo uus homonüüm</button>
+        </form>
+        <hr/>
+        <form id="submitRelationExistingWordForm" th:action="@{/syn_create_meaning_word_with_candidate_data/select}" method="post">
           <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
           <input type="hidden" name="wordRelationId" th:value="${wordRelationId}">
           <div class="mb-2 p-2" th:each="wordCandidate,wordCandidateIter : ${wordCandidates}">
@@ -182,13 +210,65 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="selectWordBtn" data-plugin="submitSynWordBtnPlugin" disabled th:text="#{common.add}">Lisa</button>
+        <button type="button" class="btn btn-primary" name="submitSelectedSynWordBtn" data-plugin="submitRelationExistingWordBtnPlugin" disabled th:text="#{fullsyn.select.word}">Vali keelend</button>
         <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
       </div>
     </div>
-    <script th:inline="javascript">
-		  initializeFullSynWordSearch();
-    </script>
+  </div>
+  <div data-name="dialogContent" th:fragment="full_syn_meaning_word_select">
+    <div class="card mb-2">
+      <div class="card-body p-2">
+        <form id="submitUserHomonymForm" th:action="@{/syn_create_meaning_word}" method="post">
+          <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
+          <input type="hidden" name="wordValue" th:value="${wordValue}">
+          <button type="button" class="btn btn-secondary" data-plugin="submitUserHomonymBtnPlugin" th:text="#{fullsyn.add.homonym}">Loo uus homonüüm</button>
+        </form>
+      </div>
+    </div>
+    <div class="card" th:if="${not #lists.isEmpty(wordCandidates)}">
+      <form id="submitUserExistingWordForm" th:action="@{/syn_create_meaning_word}" method="post">
+        <input type="hidden" name="targetMeaningId" th:value="${targetMeaningId}">
+        <input type="hidden" name="wordValue" th:value="${wordValue}">
+        <div class="card-body p-2">
+        <div class="mb-2 p-2" th:each="wordCandidate,wordCandidateIter : ${wordCandidates}">
+          <div class="row mb-2">
+            <input type="radio" name="wordId" class="ml-3 mr-3"
+                   th:value="${wordCandidate.word.wordId}"
+                   data-plugin="enableSelectSynWordBtnPlugin"/>
+            <span th:utext="${wordCandidate.word.wordValuePrese}"></span>
+            <span class="badge" th:text="${wordCandidate.word.homonymNr}"></span>
+            <small class="ml-3" th:text="'W' + ${wordCandidate.word.wordId}"></small>
+          </div>
+          <div class="border border-dark rounded mb-2 p-2">
+            <th:block th:each="lexeme,lexemeIter : ${wordCandidate.lexemes}">
+              <div class="row" th:fragment="word_candidate_lexeme_details">
+                <hr th:unless="${lexemeIter.first}">
+                <div class="col-2">
+                  <span class="lbl" th:text="#{fullsyn.definitions}">Seletused</span>
+                </div>
+                <div class="col-6">
+                  <th:block th:each="definition : ${lexeme.meaning.definitions}">
+                    <div style="display: list-item; position: absolute"></div>
+                    <div>
+                      <span th:utext="${definition.value}"></span>
+                    </div>
+                  </th:block>
+                </div>
+                <div class="col-2">
+                  <span th:text="${lexeme.datasetName}"></span>
+                </div>
+              </div>
+            </th:block>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+    <div class="card" th:if="${#lists.isEmpty(wordCandidates)}">
+      <div class="card-body">
+        <span th:text="#{fullsyn.word.not.found}">Sellist keelendit ei leitud</span>
+      </div>
+    </div>
   </div>
 </body>
 </html>

@@ -4,18 +4,23 @@
 <body>
   <div id="wwSearchStat" th:fragment="wwsearchstat">
     <div class="card mt-4 mb-4 shadow w-50">
-      <table class="table table-striped mb-0">
-        <tr>
-          <th th:text="#{stat.order}">Järjekord</th>
-          <th th:text="#{stat.search.word}">Otsingusõna</th>
-          <th th:text="#{stat.search.count}">Päringute arv</th>
-        </tr>
-        <tr th:each="statEntry,statEntryIter : ${searchStatMap}">
-          <td><span th:text="${statEntryIter.count}"></span></td>
-          <td><span th:text="${statEntry.key}"></span></td>
-          <td><span th:text="${statEntry.value}"></span></td>
-        </tr>
-      </table>
+      <th:block th:if="${#maps.isEmpty(searchStatMap)}">
+        <div th:text="#{common.not.found}" class="card-body">Not found.</div>
+      </th:block>
+      <th:block th:if="${not #maps.isEmpty(searchStatMap)}">
+        <table class="table table-striped mb-0">
+          <tr>
+            <th th:text="#{stat.order}">Järjekord</th>
+            <th th:text="#{stat.search.word}">Otsingusõna</th>
+            <th th:text="#{stat.search.count}">Päringute arv</th>
+          </tr>
+          <tr th:each="statEntry,statEntryIter : ${searchStatMap}">
+            <td><span th:text="${statEntryIter.count}"></span></td>
+            <td><span th:text="${statEntry.key}"></span></td>
+            <td><span th:text="${statEntry.value}"></span></td>
+          </tr>
+        </table>
+      </th:block>
     </div>
   </div>
 </body>

@@ -16,6 +16,8 @@ public interface ApiConstant {
 
 	String WORD_URI = "/word";
 
+	String PUBLIC_WORD_URI = "/public_word";
+
 	String SYN_CANDIDATE_URI = "/syn_candidate";
 
 	String WORD_TYPE_URI = "/word_type";
@@ -25,6 +27,8 @@ public interface ApiConstant {
 	String WORD_FORUM_URI = "/word_forum";
 
 	String MEANING_FORUM_URI = "/meaning_forum";
+
+	String LEXEME_POS_URI = "/lexeme_pos";
 
 	String OD_WORD_RECOMMENDATION = "/od_word_recommendation";
 

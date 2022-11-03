@@ -41,8 +41,10 @@ import eki.ekilex.data.TermSearchResult;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.data.api.ApiEndpointDescription;
+import eki.ekilex.data.api.Word;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.LookupService;
 import eki.ekilex.service.TermSearchService;
 
 @ConditionalOnWebApplication
@@ -57,6 +59,9 @@ public class ApiSearchController extends AbstractApiController {
 
 	@Autowired
 	private TermSearchService termSearchService;
+
+	@Autowired
+	private LookupService lookupService;
 
 	@Autowired
 	private RequestMappingHandlerMapping requestMappingHandlerMapping;
@@ -215,6 +220,14 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(106)
+	@GetMapping(API_SERVICES_URI + PUBLIC_WORD_URI)
+	public List<Word> getPublicWords(@RequestParam("datasetCode") String datasetCode) {
+
+		List<Word> publicWords = lookupService.getPublicWords(datasetCode);
+		return publicWords;
+	}
+
+	@Order(107)
 	@GetMapping(API_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
 	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
 
@@ -228,19 +241,19 @@ public class ApiSearchController extends AbstractApiController {
 		return commonDataService.getClassifiers(classifierName);
 	}
 
-	@Order(107)
+	@Order(108)
 	@GetMapping(API_SERVICES_URI + DOMAIN_ORIGINS_URI)
 	public List<Origin> getDomainOrigins() {
 		return commonDataService.getDomainOrigins();
 	}
 
-	@Order(108)
+	@Order(109)
 	@GetMapping(API_SERVICES_URI + DOMAINS_URI + "/{origin}")
 	public List<Classifier> getDomains(@PathVariable("origin") String origin) {
 		return commonDataService.getDomains(origin);
 	}
 
-	@Order(109)
+	@Order(110)
 	@GetMapping(API_SERVICES_URI + DATASETS_URI)
 	public List<Dataset> getDatasets() {
 		return commonDataService.getAllDatasets();

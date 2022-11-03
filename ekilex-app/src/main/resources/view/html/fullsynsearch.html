@@ -133,7 +133,7 @@
                   </div>
                   <th:block th:replace="syncomp :: definitions_data"></th:block>
                   <th:block th:replace="syncomp :: usages_data"></th:block>
-                  <th:block th:replace="fullsyncomp :: full_syn_data"></th:block>
+                  <th:block th:replace="fullsyncomp :: syn_data"></th:block>
                 </div>
               </div>
             </div>
@@ -148,6 +148,8 @@
                             data-toggle="delete-word-syn-relations-confirm"
                             data-placement="bottom"
                             th:data-word-id="${wordId}"
+                            th:data-lang="${synCandidateLangCode}"
+                            th:data-dataset="${synCandidateDatasetCode}"
                             sec:authorize="#vars.details.word.subGrant">
                       <span th:title="#{syn.delete.all}" data-toggle="tooltip">
                         <i class="action-icon fa fa-remove" aria-hidden="true"></i>
@@ -163,7 +165,7 @@
       </div>
     </div>
     <div th:replace="syndialog :: add_word_forum_dlg"></div>
-    <div id="wordSelectDlg" class="modal" role="dialog"></div>
+    <div id="relationWordSelectDlg" class="modal" role="dialog"></div>
     <script>
         $('[data-toggle=delete-confirm]').confirmation({
           btnOkLabel : /*[[#{common.yes}]]*/'Jah',
@@ -177,12 +179,19 @@
           title : /*[[#{syn.confirm.delete.all}]]*/'Kustuta kõik kinnitamata kandidaadid',
           onConfirm : updateWordSynRelationsStatusDeleted
         });
+        $('[data-toggle=delete-syn-lexeme-confirm]').confirmation({
+          btnOkLabel : /*[[#{common.yes}]]*/'Jah',
+          btnCancelLabel : /*[[#{common.no}]]*/'Ei',
+          title : /*[[#{common.confirm.delete}]]*/'Kinnita kustutamine',
+          onConfirm : deleteSynLexeme
+        });
     </script>
   </th:block>
   <div th:replace="common :: #waitDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #alertSmall"></div>
   <div th:replace="common :: #confirmDlg"></div>
+  <div th:replace="common :: #sourceDetailsDlg"></div>
   <script th:inline="javascript">
 	  initializeFullSynSearch();
   </script>

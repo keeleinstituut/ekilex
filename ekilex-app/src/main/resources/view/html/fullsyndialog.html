@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+  <div th:id="${'editLexemeWeightDlg_' + synWord.lexemeId}" class="modal"
+       role="dialog"
+       th:fragment="edit_lexeme_weight_dlg"
+       data-plugin="initGenericTextEditDlgPlugin">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <form th:action="@{/update_item}" method="post">
+          <div class="modal-body">
+            <input type="hidden" name="id" th:value="${synWord.lexemeId}">
+            <input type="hidden" name="opCode" value="lexeme_weight">
+            <div class="form-group row">
+              <div class="col-md-12">
+                <input type="number" min="0" max="1" step=".1" class="form-control required-field required-range" name="numberValue" th:value="${syn.weight}">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" th:text="#{common.save}">Salvesta</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:id="${'addSynMeaningWordDlg_' + lexeme.lexemeId}"
+       class="modal" role="dialog"
+       th:fragment="add_syn_meaning_word_dlg"
+       data-plugin="initAddSynMeaningWordDlgPlugin">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" th:text="#{fullsyn.select.word.title}">Vali sobiv keelend või loo uus</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form th:action="@{/full_syn_search_words}">
+            <input type="hidden" name="targetMeaningId" th:value="${lexeme.meaningId}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control required-field" name="wordValue" th:placeholder="#{lex.placeholder.word.search}">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary" th:text="#{common.search}">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div data-name="dialogContent"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" name="submitSelectedSynWordBtn" data-plugin="submitUserExistingWordBtnPlugin" disabled th:text="#{fullsyn.select.word}">Vali keelend</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" th:text="#{common.cancel}">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

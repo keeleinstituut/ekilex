@@ -22,8 +22,9 @@ create type type_word_rel_param as (
 
 create type type_word_rel_meaning as (
   meaning_id bigint,
-  definitions text array,
-  usages text array,
+  lexeme_id bigint,
+  definition_values text array,
+  usage_values text array,
   lex_register_codes varchar(100) array,
   lex_pos_codes varchar(100) array
 );
@@ -582,7 +583,7 @@ create table eki_user_profile
   active_tag_name varchar(100) references tag(name),
   preferred_part_syn_candidate_langs char(3) array,
   preferred_syn_lex_meaning_word_langs char(3) array,
-  preferred_full_syn_candidate_langs char(3) array,
+  preferred_full_syn_candidate_lang char(3) references language(code) null,
   preferred_full_syn_candidate_dataset_code varchar(10) references dataset(code) null,
   preferred_meaning_relation_word_langs char(3) array,
   show_lex_meaning_relation_source_lang_words boolean default true,

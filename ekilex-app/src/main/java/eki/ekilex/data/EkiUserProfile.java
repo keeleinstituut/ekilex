@@ -20,7 +20,7 @@ public class EkiUserProfile extends AbstractDataObject {
 
 	private List<String> preferredPartSynCandidateLangs;
 
-	private List<String> preferredFullSynCandidateLangs;
+	private String preferredFullSynCandidateLang;
 
 	private String preferredFullSynCandidateDatasetCode;
 
@@ -86,12 +86,12 @@ public class EkiUserProfile extends AbstractDataObject {
 		this.preferredPartSynCandidateLangs = preferredPartSynCandidateLangs;
 	}
 
-	public List<String> getPreferredFullSynCandidateLangs() {
-		return preferredFullSynCandidateLangs;
+	public String getPreferredFullSynCandidateLang() {
+		return preferredFullSynCandidateLang;
 	}
 
-	public void setPreferredFullSynCandidateLangs(List<String> preferredFullSynCandidateLangs) {
-		this.preferredFullSynCandidateLangs = preferredFullSynCandidateLangs;
+	public void setPreferredFullSynCandidateLang(String preferredFullSynCandidateLang) {
+		this.preferredFullSynCandidateLang = preferredFullSynCandidateLang;
 	}
 
 	public String getPreferredFullSynCandidateDatasetCode() {

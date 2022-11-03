@@ -47,6 +47,10 @@ public class EtymConversionUtil {
 				.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue().stream().distinct().collect(Collectors.toList()).get(0)));
 
 		WordEtymTuple headwordEtymTuple = wordEtymTupleMap.get(word.getWordId());
+		if (headwordEtymTuple == null) {
+			return;
+		}
+
 		WordEtymLevel headwordEtymLevel = composeEtymTree(headwordEtymTuple, wordEtymTupleMap, wordEtymSourceLinkMap);
 		word.setWordEtymologyTree(headwordEtymLevel);
 	}

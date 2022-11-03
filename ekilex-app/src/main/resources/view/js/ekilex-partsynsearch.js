@@ -152,7 +152,7 @@ function initializePartSynSearch() {
 
 		}).fail(function(data) {
 			console.log(data);
-			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+			alert(messages["common.error"]);
 		});
 	});
 

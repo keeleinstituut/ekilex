@@ -29,13 +29,13 @@ public class StatController extends AbstractPrivatePageController {
 	@GetMapping(WW_STAT_URI)
 	public String getWwSearchStat(
 			@RequestParam("datasetCode") String datasetCode,
-			@RequestParam("lang") String lang,
+			@RequestParam("searchLang") String searchLang,
 			@RequestParam("searchMode") String searchMode,
 			@RequestParam("resultsFrom") String resultsFrom,
 			@RequestParam("resultsUntil") String resultsUntil,
 			Model model) {
 
-		Map<String, Integer> searchStatMap = statDataService.getSearchStat(datasetCode, lang, searchMode, resultsFrom, resultsUntil);
+		Map<String, Integer> searchStatMap = statDataService.getSearchStat(datasetCode, searchLang, searchMode, resultsFrom, resultsUntil);
 		model.addAttribute("searchStatMap", searchStatMap);
 		return STAT_COMPONENTS_PAGE + PAGE_FRAGMENT_ELEM + "wwsearchstat";
 	}

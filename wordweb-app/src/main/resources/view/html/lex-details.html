@@ -53,26 +53,17 @@
                             th:text="${lexeme.proficiencyLevelCode}" th:title="#{label.lexeme.proficiency.level}" data-toggle="tooltip"></span>
                       <div class="flex-shrink-1" style="font-weight: 500;">
                         <span class="domain register mr-1 mb-2" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
-                        <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span> 
+                        <span class="domain mr-1 mb-2" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                         <th:block th:each="definition,definitionIter : ${definitionEntry.value}"
-                                th:with="isCollapsable=${#strings.length(definition.valuePrese) > 500}">
-                          <th:block th:if="${!definition.subDataExists}">    
+                                  th:with="isCollapsable=${not #strings.isEmpty(definition.valuePreseCut)}">
+                          <th:block th:if="${!definition.subDataExists}">
                             <span th:id="${'definition-entry-' + definition.definitionId}">
                               <th:block th:if="${isCollapsable}">
                                 <div class="definition-value mb-2 text-weight-medium text-dark collapse-text"
-                                      th:utext="${#strings.substring(definition.valuePrese, 0, 500)}">
+                                     th:utext="${definition.valuePreseCut}">
                                 </div>
                                 <div class="large-text-container">
-                                  <span 
-                                    class="large-text-addition"
-                                    th:utext="${#strings.substring(definition.valuePrese, 500)}">
-                                  </span>
-                                  <span
-                                    class="large-text-placeholder"
-                                    th:if="${definition.oversizeValue}"
-                                    th:text="' ' + #{label.definition.oversize.placeholder}"
-                                    th:title="#{label.definition.oversize.title}">
-                                  </span>
+                                  <span class="large-text-addition" th:utext="${definition.valuePrese}"></span>
                                 </div>
                                 <button
                                       th:id="${'definition-show-more-btn-' + definition.definitionId}"
@@ -99,20 +90,11 @@
                           <th:block th:if="${definition.subDataExists}">
                             <div th:id="${'definition-entry-' + definition.definitionId}">
                               <th:block th:if="${isCollapsable}">
-                                <div 
-                                  class="definition-value mb-2 text-weight-medium text-dark collapse-text"
-                                  th:utext="${#strings.substring(definition.valuePrese, 0, 500)}">
+                                <div class="definition-value mb-2 text-weight-medium text-dark collapse-text"
+                                     th:utext="${definition.valuePreseCut}">
                                 </div>
                                 <div class="large-text-container">
-                                  <span
-                                    class="large-text-addition"
-                                    th:utext="${#strings.substring(definition.valuePrese, 500)}">
-                                  </span>
-                                  <span
-                                    class="large-text-placeholder"
-                                    th:if="${definition.oversizeValue}"
-                                    th:text="#{label.definition.oversize.placeholder}"
-                                    th:title="#{label.definition.oversize.title}">
+                                  <span class="large-text-addition" th:utext="${definition.valuePrese}">
                                   </span>
                                 </div>
                                 <button

@@ -1,20 +1,10 @@
 function initializeFullSynSearch() {
-	let activeSearchResultID;
 	let sidebarScrollPosition = {};
 
 	$(document).on("click", ":button[name='synDetailsBtn']", function() {
 
-		// TODO remove unnecessary (keyboard mode) code and move common code with partsyn together to ekilex-synsearch.js
-
 		const button = $(this);
-		let savedScrollPositions = getScrollPositions();
-
 		const id = button.data('id');
-		$('#synSearchResultsDiv .list-group-item')
-			.removeClass('keyboard-nav-list-item-active active')
-			.removeAttr('data-navigate-selected');
-		// Make all results with the same id active, in case there are multiple with same id
-		$(`#synSearchResultsDiv button[data-id=${id}]`).parent().addClass('active').attr('data-navigate-selected', true);
 
 		$("[id^='syn_select_wait_']").hide();
 		$(`#syn_select_wait_${id}`).show();
@@ -34,6 +24,7 @@ function initializeFullSynSearch() {
 			closeWaitDlg();
 			$(`#syn_select_wait_${id}`).hide();
 			$('[data-toggle="tooltip"]').tooltip({trigger: 'hover'});
+			decorateSourceLinks($('#syn-details-area'));
 
 			$wpm.bindObjects();
 
@@ -85,7 +76,6 @@ function initializeFullSynSearch() {
 					const $this = $(this);
 					if ($this.is('.canAccept')) {
 						if (draggableDiv.hasClass("draggable-synonym")) {
-							// TODO is dragging always enabled?
 							return true;
 						}
 					}
@@ -102,37 +92,16 @@ function initializeFullSynSearch() {
 					const wordRelationId = draggableCandidate.data('syn-relation-id');
 					const wordCount = draggableCandidate.data('word-count');
 
-					if (wordCount > 1) {
-						const synCreateMeaningWordUrl = `${applicationUrl}full_syn_search_words/${targetMeaningId}/${wordRelationId}`;
-						$.post(synCreateMeaningWordUrl).done(function(wordSelectDlgHtml) {
-							const wordSelectDlg = $('#wordSelectDlg');
-							wordSelectDlg.html(wordSelectDlgHtml);
-							wordSelectDlg.modal('show');
-						}).fail(function(data) {
-							openAlertDlg(messages["common.error"]);
-							console.log(data);
-						});
+					if (wordCount === 0) {
+						createMeaningWordWithCandidateData(targetMeaningId, wordRelationId);
 					} else {
-						const synCreateMeaningWordUrl = `${applicationUrl}syn_create_meaning_word/${targetMeaningId}/${wordRelationId}`;
-						openWaitDlg();
-						const callbackFunc = () => refreshSynDetails();
-						doPostRelationChange(synCreateMeaningWordUrl, callbackFunc);
+						displayRelationWordSelect(targetMeaningId, wordRelationId);
 					}
 				}
 			});
-
-			//KEEP TRACK OF WHAT WAS THE LAST SEARCH RESULT DISPLAYED
-			if (activeSearchResultID !== id) {
-				activeSearchResultID = id;
-			}
-			//IF AN ALLREADY ACTIVE DETAILS VIEW WAS SELECTED KEEP THE SCROLLPOSITIONS
-			else if (activeSearchResultID === id) {
-				setScrollPositions(savedScrollPositions);
-			}
-
 		}).fail(function(data) {
 			console.log(data);
-			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+			alert(messages["common.error"]);
 		});
 	});
 
@@ -150,42 +119,137 @@ function initializeFullSynSearch() {
 	detailSearchBtn();
 }
 
-function initializeFullSynWordSearch() {
-	$wpm.bindObjects();
+function createMeaningWordWithCandidateData(targetMeaningId, wordRelationId) {
+	const synCreateMeaningWordUrl = `${applicationUrl}syn_create_meaning_word_with_candidate_data/${targetMeaningId}/${wordRelationId}`;
+	openWaitDlg();
+	const callbackFunc = () => refreshSynDetails();
+	doPostRelationChange(synCreateMeaningWordUrl, callbackFunc);
 }
 
-$.fn.submitSynWordBtnPlugin = function() {
+function displayRelationWordSelect(targetMeaningId, wordRelationId) {
+	const synSearchWordsUrl = `${applicationUrl}full_syn_search_words/${targetMeaningId}/${wordRelationId}`;
+	$.post(synSearchWordsUrl).done(function(wordSelectDlgHtml) {
+		const dlg = $('#relationWordSelectDlg');
+		dlg.html(wordSelectDlgHtml);
+		dlg.modal('show');
+		$wpm.bindObjects();
+	}).fail(function(data) {
+		openAlertDlg(messages["common.error"]);
+		console.log(data);
+	});
+}
+
+$.fn.submitRelationExistingWordBtnPlugin = function() {
 	return this.each(function() {
 		const btn = $(this);
 		btn.on('click', function() {
-			const form = $('#submitSynWordForm');
-			$.ajax({
-				url: form.attr('action'),
-				data: form.serialize(),
-				method: 'POST',
-			}).done(function() {
-				const wordSelectDlg = $('#wordSelectDlg');
-				wordSelectDlg.modal('hide');
-				refreshSynDetails();
-			}).fail(function(data) {
-				console.log(data);
-				openAlertDlg(messages["common.error"]);
-			});
+			const form = $('#submitRelationExistingWordForm');
+			submitSynWordForm(form);
 		})
 	})
 }
 
+$.fn.submitRelationHomonymBtnPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const form = $('#submitRelationHomonymForm');
+			submitSynWordForm(form);
+		})
+	})
+}
+
+$.fn.submitUserExistingWordBtnPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const form = $('#submitUserExistingWordForm');
+			submitSynWordForm(form);
+		})
+	})
+}
+
+$.fn.submitUserHomonymBtnPlugin = function() {
+	return this.each(function() {
+		const btn = $(this);
+		btn.on('click', function() {
+			const form = $('#submitUserHomonymForm');
+			submitSynWordForm(form);
+		})
+	})
+}
+
+function submitSynWordForm(form) {
+	$.ajax({
+		url: form.attr('action'),
+		data: form.serialize(),
+		method: 'POST',
+	}).done(function() {
+		let dlg = form.parents('.modal');
+		dlg.modal('hide');
+		refreshSynDetails();
+	}).fail(function(data) {
+		console.log(data);
+		openAlertDlg(messages["common.error"]);
+	});
+}
+
 $.fn.enableSelectSynWordBtnPlugin = function() {
 	return this.each(function() {
-		const obj = $(this);
-		obj.on('click', function() {
-			enableSelectSynWordBtn();
+		const radioBtn = $(this);
+		radioBtn.on('click', function() {
+			const form = radioBtn.closest('form');
+			enableSelectSynWordBtn(form);
 		});
 	});
 }
 
-function enableSelectSynWordBtn() {
-	if ($('input[type=radio][name="wordId"]:checked').length === 1) {
-		$("#selectWordBtn").removeAttr("disabled");
+function enableSelectSynWordBtn(form) {
+	if (form.find('input[type=radio][name="wordId"]:checked').length === 1) {
+		$(document).find('button[name="submitSelectedSynWordBtn"]').removeAttr("disabled");
 	}
+}
+
+function deleteSynLexeme() {
+	const opName = "delete";
+	const opCode = "lexeme";
+	const lexemeId = $(this).attr("data-id");
+	const callbackFunc = () => refreshSynDetails();
+
+	executeMultiConfirmPostDelete(opName, opCode, lexemeId, callbackFunc);
+}
+
+$.fn.initAddSynMeaningWordDlgPlugin = function() {
+	return this.each(function() {
+		const obj = $(this);
+		obj.on('show.bs.modal', function() {
+			initAddSynMeaningWordDlg(obj);
+		})
+	})
+}
+
+function initAddSynMeaningWordDlg(addDlg) {
+	$(document).find('button[name="submitSelectedSynWordBtn"]').attr("disabled", true);
+	addDlg.find('.form-control').val(null);
+	addDlg.find('[data-name=dialogContent]').html(null);
+
+	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+		e.preventDefault();
+		const button = $(this);
+		const content = button.html();
+		button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+		const form = button.closest('form');
+		const url = form.attr('action') + '?' + form.serialize();
+
+		$.get(url).done(function(data) {
+			addDlg.find('[data-name=dialogContent]').replaceWith(data);
+			$wpm.bindObjects();
+		}).fail(function(data) {
+			console.log(data);
+			openAlertDlg(messages["common.error"]);
+		}).always(function() {
+			button.html(content);
+		});
+	});
+
 }

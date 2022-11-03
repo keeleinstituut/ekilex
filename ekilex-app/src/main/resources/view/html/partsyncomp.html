@@ -114,10 +114,10 @@
               </span>
             </span>
           </div>
-          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitions}">
+          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.definition}" th:each="definition : ${meaning.definitionValues}">
             <span class="small" th:utext="${definition}"></span>
           </div>
-          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usages}">
+          <div class="d-flex flex-row" data-toggle="tooltip" th:title="#{syn.usage}" th:each="usage : ${meaning.usageValues}">
             <span class="small text-info" th:utext="${usage}"></span>
           </div>
         </div>

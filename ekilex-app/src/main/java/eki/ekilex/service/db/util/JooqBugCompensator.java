@@ -18,9 +18,9 @@ public class JooqBugCompensator extends AbstractJooqBugCompensator {
 		}
 
 		for (TypeWordRelMeaning wordMeaning : wordMeanings) {
-			List<String> definitions = wordMeaning.getDefinitions();
+			List<String> definitions = wordMeaning.getDefinitionValues();
 			definitions = decode(definitions);
-			wordMeaning.setDefinitions(definitions);
+			wordMeaning.setDefinitionValues(definitions);
 		}
 	}
 }

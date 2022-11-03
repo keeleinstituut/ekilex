@@ -691,7 +691,7 @@ class WordGame {
     this.htmlTemplate = await this.loadData(this.paths.template, 'text/html; charset=UTF-8');
     this.categorizeData();
     this.options.active_category = Object.keys(this.parsedData)[0];
-    this.options.level = "algtase";
+    this.options.level = "kesktase";
     this.options.text_transform = "lower";
     this.options.autoplay = "off";
     this.retrieveFromUrl();

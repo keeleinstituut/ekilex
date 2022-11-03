@@ -10,9 +10,15 @@ public class TypeWordRelMeaning extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private List<String> definitions;
+	private Long lexemeId;
 
-	private List<String> usages;
+	private List<String> definitionValues;
+
+	private List<Definition> definitions;
+
+	private List<String> usageValues;
+
+	private List<Usage> usages;
 
 	private List<String> lexRegisterCodes;
 
@@ -26,19 +32,43 @@ public class TypeWordRelMeaning extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public List<String> getDefinitions() {
+	public Long getLexemeId() {
+		return lexemeId;
+	}
+
+	public void setLexemeId(Long lexemeId) {
+		this.lexemeId = lexemeId;
+	}
+
+	public List<String> getDefinitionValues() {
+		return definitionValues;
+	}
+
+	public void setDefinitionValues(List<String> definitionValues) {
+		this.definitionValues = definitionValues;
+	}
+
+	public List<Definition> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<String> definitions) {
+	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
 	}
 
-	public List<String> getUsages() {
+	public List<String> getUsageValues() {
+		return usageValues;
+	}
+
+	public void setUsageValues(List<String> usageValues) {
+		this.usageValues = usageValues;
+	}
+
+	public List<Usage> getUsages() {
 		return usages;
 	}
 
-	public void setUsages(List<String> usages) {
+	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
 	}
 

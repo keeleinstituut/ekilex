@@ -117,6 +117,8 @@ public class PermCalculator implements PermConstant {
 		}
 
 		Long userId = userRole.getUserId();
+		AuthorityOperation authOperation = userRole.getAuthOperation();
+		boolean isCrudRole = AUTH_OPS_CRUD.contains(authOperation.name());
 
 		boolean isReadGrant = false;
 		boolean isCrudGrant = false;
@@ -124,7 +126,10 @@ public class PermCalculator implements PermConstant {
 		boolean isAnyGrant = false;
 
 		if (userRole.isSuperiorPermission()) {
-			isReadGrant = isCrudGrant = isSubGrant = isAnyGrant = true;
+			isReadGrant = true;
+			if (isCrudRole) {
+				isCrudGrant = isSubGrant = isAnyGrant = true;
+			}
 		} else if (crudEntity instanceof Word) {
 			Word word = (Word) crudEntity;
 			Long wordId = word.getWordId();

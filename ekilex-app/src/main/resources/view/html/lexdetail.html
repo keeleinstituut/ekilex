@@ -169,7 +169,7 @@
                        th:data-callback="${viewUtil.composeFunction('loadFullLexemeDetails', lexeme.lexemeId, lexeme.levels)}"
                        th:with="
                          isMeaningWordSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
-                         isMeaningWordDirectMatchSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD},
+                         isMeaningWordDirectMatchSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_WORD_DIRECT_MATCH},
                          isMeaningRelSyn=${syn.type == T(eki.common.constant.SynonymType).MEANING_REL}">
                     <th:block th:each="synWord, synWordIter : ${syn.words}">
                       <th:block th:if="${isMeaningWordSyn || isMeaningWordDirectMatchSyn}">

@@ -212,11 +212,9 @@ function addSourceAndSourceLink(addSourceForm) {
 	addSourceForm.append(sourceOwnerIdInput);
 	addSourceForm.append(sourceOwnerCodeInput);
 
-	const successCallbackName = sourceModal.attr("data-callback");
-	let successCallbackFunc;
-	if (window[successCallbackName]) {
-		successCallbackFunc = () => window[successCallbackName]();
-	} else {
+	const successCallback = sourceModal.attr("data-callback");
+	let successCallbackFunc = createCallback(successCallback);
+	if (!successCallbackFunc) {
 		successCallbackFunc = () => $('#refresh-details').click();
 	}
 

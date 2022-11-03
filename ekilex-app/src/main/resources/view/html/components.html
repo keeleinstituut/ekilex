@@ -355,7 +355,6 @@
             <span th:text="#{delete.lexeme.role.exists}">Ilmiku kustutamine pole ilma rollita õigustatud.</span>
           </th:block>
           <ul th:if="${lexemeDeleteConfirmation.userRoleExist}">
-            <li th:text="#{delete.confirmation.title}">Palun kinnita kustutamine</li>
             <li th:if="${lexemeDeleteConfirmation.meaningDelete}"
                 th:text="#{delete.lexeme.related.meanings}">Ilmiku(te) kustutamisega kaasneb ka tähenduse kustutamine. Palun kinnita tähenduse kustutamine.</li>
             <li th:if="${lexemeDeleteConfirmation.wordDelete}"

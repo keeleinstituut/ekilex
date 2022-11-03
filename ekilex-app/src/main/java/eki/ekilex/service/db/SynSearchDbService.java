@@ -13,15 +13,16 @@ import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION_PARAM;
-import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.Field;
-import org.jooq.Record18;
-import org.jooq.Record5;
+import org.jooq.Record14;
+import org.jooq.Record16;
+import org.jooq.Record3;
+import org.jooq.Record6;
 import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -44,7 +45,6 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordRelationParam;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -64,19 +64,19 @@ import eki.ekilex.service.db.util.SearchFilterHelper;
 @Component
 public class SynSearchDbService extends AbstractDataDbService {
 
+	private static final int DEFAULT_LEXEME_LEVEL = 1;
+
 	@Autowired
 	private SearchFilterHelper searchFilterHelper;
 
 	@Autowired
 	private JooqBugCompensator jooqBugCompensator;
 
-	public List<SynRelation> getWordSynRelations(
-			Long wordId, String relationType, String datasetCode, List<String> wordLangs, boolean isPublicDataOnly,
-			String classifierLabelLang, String classifierLabelTypeCode) {
+	public List<SynRelation> getWordPartSynRelations(Long wordId, String relationType, String datasetCode, List<String> wordLangs) {
 
+		boolean isPublicDataOnly = true;
 		WordRelation r = WORD_RELATION.as("r");
 		WordRelation oppr = WORD_RELATION.as("oppr");
-		WordRelTypeLabel rtl = WORD_REL_TYPE_LABEL.as("rtl");
 		Word w2 = WORD.as("w2");
 		Word wh = WORD.as("wh");
 		Lexeme l2 = LEXEME.as("l2");
@@ -89,9 +89,10 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<String[]> lrcf = getLexRegisterCodesField(l2.ID);
 		Field<String[]> lpcf = getLexPosCodesField(l2.ID);
 
-		Table<Record5<Long, String[], String[], String[], String[]>> relmt = DSL
+		Table<Record6<Long, Long, String[], String[], String[], String[]>> relmt = DSL
 				.select(
 						l2.MEANING_ID,
+						l2.ID.as("lexeme_id"),
 						df.as("definitions"),
 						uf.as("usages"),
 						lrcf.as("lex_register_codes"),
@@ -104,7 +105,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.asTable("relmt");
 
 		Field<TypeWordRelMeaningRecord[]> relm = DSL
-				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.definitions, relmt.usages, relmt.lex_register_codes, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.lexeme_id, relmt.definitions, relmt.usages, relmt.lex_register_codes, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
 				.from(relmt)
 				.asField("relm");
 
@@ -122,11 +123,9 @@ public class SynSearchDbService extends AbstractDataDbService {
 		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
 		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
 
-		Table<Record18<Long, String, String, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, TypeWordRelMeaningRecord[], String[]>> rr = DSL
+		Table<Record16<Long, String, String, TypeWordRelParamRecord[], Long, Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, TypeWordRelMeaningRecord[], String[]>> rr = DSL
 				.select(
 						r.ID,
-						r.WORD_REL_TYPE_CODE.as("rel_type_code"),
-						rtl.VALUE.as("rel_type_label"),
 						r.RELATION_STATUS,
 						oppr.RELATION_STATUS.as("opposite_relation_status"),
 						relpf.as("relation_params"),
@@ -152,11 +151,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						.leftOuterJoin(oppr).on(
 								oppr.WORD1_ID.eq(r.WORD2_ID)
 										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
-										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE)))
-						.leftOuterJoin(rtl).on(
-								r.WORD_REL_TYPE_CODE.eq(rtl.CODE)
-										.and(rtl.LANG.eq(classifierLabelLang)
-												.and(rtl.TYPE.eq(classifierLabelTypeCode)))))
+										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE))))
 				.where(
 						r.WORD1_ID.eq(wordId)
 								.and(r.WORD_REL_TYPE_CODE.eq(relationType))
@@ -167,7 +162,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 										.where(
 												l2.WORD_ID.eq(w2.ID)
 														.and(l2.DATASET_CODE.eq(datasetCode)))))
-				.groupBy(r.ID, rtl.VALUE, w2.ID, oppr.RELATION_STATUS)
+				.groupBy(r.ID, w2.ID, oppr.RELATION_STATUS)
 				.asTable("r");
 
 		Field<Boolean> rwhe = DSL
@@ -182,6 +177,109 @@ public class SynSearchDbService extends AbstractDataDbService {
 										.where(lh.WORD_ID.eq(wh.ID).and(lh.DATASET_CODE.eq(datasetCode)))))
 				.groupBy(wh.VALUE)
 				.asField();
+
+		return create
+				.select(
+						rr.field("id"),
+						rr.field("relation_status"),
+						rr.field("opposite_relation_status"),
+						rr.field("relation_params"),
+						rr.field("order_by"),
+						rr.field("word_id"),
+						rr.field("word_value"),
+						rr.field("word_value_prese"),
+						rr.field("word_homonym_nr"),
+						rwhe.as("homonyms_exist"),
+						rr.field("word_lang"),
+						rr.field("word_type_codes"),
+						rr.field("prefixoid"),
+						rr.field("suffixoid"),
+						rr.field("foreign"),
+						rr.field("word_meanings"),
+						rr.field("word_lexemes_poses"),
+						rr.field("word_lexemes_max_frequency"))
+				.from(rr)
+				.orderBy(rr.field("order_by"))
+				.fetch(record -> {
+					SynRelation pojo = record.into(SynRelation.class);
+					jooqBugCompensator.decodeWordMeaning(pojo.getWordMeanings());
+					return pojo;
+				});
+	}
+
+	public List<SynRelation> getWordFullSynRelations(Long wordId, String relationType, String datasetCode, String lang) {
+
+		WordRelation r = WORD_RELATION.as("r");
+		WordRelation oppr = WORD_RELATION.as("oppr");
+		Word w2 = WORD.as("w2");
+		Word wh = WORD.as("wh");
+		Lexeme l2 = LEXEME.as("l2");
+		Lexeme lh = LEXEME.as("lh");
+
+		Field<TypeWordRelParamRecord[]> relpf = getWordRelationParamField(r.ID);
+		Field<String[]> lpcf = getLexPosCodesField(l2.ID);
+
+		Table<Record3<Long, Long, String[]>> relmt = DSL
+				.select(
+						l2.MEANING_ID,
+						l2.ID.as("lexeme_id"),
+						lpcf.as("lex_pos_codes"))
+				.from(l2)
+				.where(
+						l2.WORD_ID.eq(r.WORD2_ID)
+								.and(l2.DATASET_CODE.eq(datasetCode)))
+				.groupBy(l2.ID)
+				.asTable("relmt");
+
+		Field<TypeWordRelMeaningRecord[]> relm = DSL
+				.select(DSL.field("array_agg(row(relmt.meaning_id, relmt.lexeme_id, null, null, null, relmt.lex_pos_codes)::type_word_rel_meaning)", TypeWordRelMeaningRecord[].class))
+				.from(relmt)
+				.asField("relm");
+
+		Field<String[]> wtf = getWordTypesField(w2.ID);
+		Field<Boolean> wtpf = getWordIsPrefixoidField(w2.ID);
+		Field<Boolean> wtsf = getWordIsSuffixoidField(w2.ID);
+		Field<Boolean> wtz = getWordIsForeignField(w2.ID);
+
+		Table<Record14<Long, String, String, TypeWordRelParamRecord[], Long, Long, String, String, String, String[], Boolean, Boolean, Boolean, TypeWordRelMeaningRecord[]>> rr = DSL
+				.select(
+						r.ID,
+						r.RELATION_STATUS,
+						oppr.RELATION_STATUS.as("opposite_relation_status"),
+						relpf.as("relation_params"),
+						r.ORDER_BY,
+						w2.ID.as("word_id"),
+						w2.VALUE.as("word_value"),
+						w2.VALUE_PRESE.as("word_value_prese"),
+						w2.LANG.as("word_lang"),
+						wtf.as("word_type_codes"),
+						wtpf.as("prefixoid"),
+						wtsf.as("suffixoid"),
+						wtz.as("foreign"),
+						relm.as("word_meanings"))
+				.from(r
+						.innerJoin(w2).on(
+								r.WORD2_ID.eq(w2.ID)
+										.andExists(DSL
+												.select(l2.ID)
+												.from(l2)
+												.where(l2.WORD_ID.eq(w2.ID))))
+						.leftOuterJoin(oppr).on(
+								oppr.WORD1_ID.eq(r.WORD2_ID)
+										.and(oppr.WORD2_ID.eq(r.WORD1_ID))
+										.and(oppr.WORD_REL_TYPE_CODE.eq(r.WORD_REL_TYPE_CODE))))
+				.where(
+						r.WORD1_ID.eq(wordId)
+								.and(r.WORD_REL_TYPE_CODE.eq(relationType))
+								.and(w2.LANG.eq(lang))
+								.andExists(DSL
+										.select(l2.ID)
+										.from(l2)
+										.where(
+												l2.WORD_ID.eq(w2.ID)
+														.and(l2.DATASET_CODE.eq(datasetCode)))))
+				.groupBy(r.ID, w2.ID, oppr.RELATION_STATUS)
+				.asTable("r");
 
 		Field<Integer> rwsvpwcf = DSL
 				.select(DSL.field(DSL.count(wh.ID)))
@@ -200,8 +298,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 		return create
 				.select(
 						rr.field("id"),
-						rr.field("rel_type_code"),
-						rr.field("rel_type_label"),
 						rr.field("relation_status"),
 						rr.field("opposite_relation_status"),
 						rr.field("relation_params"),
@@ -209,8 +305,6 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("word_id"),
 						rr.field("word_value"),
 						rr.field("word_value_prese"),
-						rr.field("word_homonym_nr"),
-						rwhe.as("homonyms_exist"),
 						rwsvpwcf.as("same_value_public_word_count"),
 						rr.field("word_lang"),
 						rr.field("word_type_codes"),
@@ -222,11 +316,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("word_lexemes_max_frequency"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
-				.fetch(record -> {
-					SynRelation pojo = record.into(SynRelation.class);
-					jooqBugCompensator.decodeWordMeaning(pojo.getWordMeanings());
-					return pojo;
-				});
+				.fetchInto(SynRelation.class);
 	}
 
 	public List<WordLexeme> getWordPrimarySynonymLexemes(
@@ -428,18 +518,18 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.execute();
 	}
 
-	public Long createSynWord(Long sourceWordId) {
+	public Long createSynWord(Long sourceWordId, int wordHomNr) {
 
 		WordRecord word = create.selectFrom(WORD).where(WORD.ID.eq(sourceWordId)).fetchOne();
 		WordRecord synWord = word.copy();
-		synWord.setHomonymNr(1);
+		synWord.setHomonymNr(wordHomNr);
 		synWord.setIsPublic(PUBLICITY_PUBLIC);
 		synWord.store();
 		Long synWordId = synWord.getId();
 		return synWordId;
 	}
 
-	public void createSynLexeme(Long sourceLexemeId, Long wordId, Long meaningId, String datasetCode, BigDecimal weight) {
+	public void createSynLexeme(Long sourceLexemeId, Long wordId, int synLexemeLevel1, Long meaningId, String datasetCode, BigDecimal weight) {
 
 		LexemeRecord sourceLexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne();
 		LexemeRecord synLexeme = sourceLexeme.copy();
@@ -447,6 +537,8 @@ public class SynSearchDbService extends AbstractDataDbService {
 		synLexeme.setWordId(wordId);
 		synLexeme.setDatasetCode(datasetCode);
 		synLexeme.setWeight(weight);
+		synLexeme.setLevel1(synLexemeLevel1);
+		synLexeme.setLevel2(DEFAULT_LEXEME_LEVEL);
 		synLexeme.setIsPublic(PUBLICITY_PUBLIC);
 		synLexeme.changed(LEXEME.ORDER_BY, false);
 		synLexeme.store();
@@ -525,7 +617,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 
 			LexemeFreeformRecord targetLexemeFreeform = create.newRecord(lexff);
 			targetLexemeFreeform.setLexemeId(targetLexemeId);
-			targetLexemeFreeform.setFreeformId(sourceUsageId);
+			targetLexemeFreeform.setFreeformId(targetUsageId);
 			targetLexemeFreeform.store();
 		}
 	}

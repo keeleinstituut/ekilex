@@ -96,9 +96,8 @@ $.fn.duplicateMeaningWordAndLexemePlugin = function() {
 	return this.each(function() {
 		const obj = $(this);
 		obj.on('click', function() {
-			const successCallbackName = obj.data("callback");
-			// Get the callback function from window object and execute it
-			const successCallbackFunc = () => window[successCallbackName]();
+			const successCallback = obj.data("callback");
+			const successCallbackFunc = createCallback(successCallback);
 			const url = `${applicationUrl}meaningwordandlexduplicate/${lexemeid}`;
 			$.post(url).done(function() {
 				successCallbackFunc();
