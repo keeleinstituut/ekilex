@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRecord> implements Record5<String, String, String, Long, TypeLangComplexityRecord[]> {
 
-    private static final long serialVersionUID = -945871578;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_word_search.sgroup</code>.
@@ -237,10 +237,10 @@ public class MviewWwWordSearchRecord extends TableRecordImpl<MviewWwWordSearchRe
     public MviewWwWordSearchRecord(String sgroup, String word, String crit, Long langOrderBy, TypeLangComplexityRecord[] langComplexities) {
         super(MviewWwWordSearch.MVIEW_WW_WORD_SEARCH);
 
-        set(0, sgroup);
-        set(1, word);
-        set(2, crit);
-        set(3, langOrderBy);
-        set(4, langComplexities);
+        setSgroup(sgroup);
+        setWord(word);
+        setCrit(crit);
+        setLangOrderBy(langOrderBy);
+        setLangComplexities(langComplexities);
     }
 }

@@ -18,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -27,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexemeSourceLink extends TableImpl<ViewWwLexemeSourceLinkRecord> {
 
-    private static final long serialVersionUID = -2102909850;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme_source_link</code>
@@ -45,18 +46,19 @@ public class ViewWwLexemeSourceLink extends TableImpl<ViewWwLexemeSourceLinkReco
     /**
      * The column <code>public.view_ww_lexeme_source_link.lexeme_id</code>.
      */
-    public final TableField<ViewWwLexemeSourceLinkRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwLexemeSourceLinkRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_lexeme_source_link.source_links</code>.
      */
     public final TableField<ViewWwLexemeSourceLinkRecord, TypeSourceLinkRecord[]> SOURCE_LINKS = createField(DSL.name("source_links"), eki.ekilex.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.view_ww_lexeme_source_link</code> table reference
-     */
-    public ViewWwLexemeSourceLink() {
-        this(DSL.name("view_ww_lexeme_source_link"), null);
+    private ViewWwLexemeSourceLink(Name alias, Table<ViewWwLexemeSourceLinkRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ViewWwLexemeSourceLink(Name alias, Table<ViewWwLexemeSourceLinkRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_lexeme_source_link\" as  SELECT l.id AS lexeme_id,\n    array_agg(ROW('LEXEME'::character varying(100), l.id, lsl.id, lsl.type, lsl.name, lsl.value, lsl.order_by, s.source_id, s.source_props)::type_source_link ORDER BY l.id, lsl.order_by) AS source_links\n   FROM lexeme l,\n    dataset ds,\n    lexeme_source_link lsl,\n    ( SELECT s_1.id AS source_id,\n            array_agg(encode_text(ff.value_prese) ORDER BY ff.order_by) AS source_props\n           FROM source s_1,\n            source_freeform sff,\n            freeform ff\n          WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n          GROUP BY s_1.id) s\n  WHERE ((l.is_public = true) AND (lsl.lexeme_id = l.id) AND (lsl.source_id = s.source_id) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))\n  GROUP BY l.id\n  ORDER BY l.id;"));
     }
 
     /**
@@ -73,12 +75,11 @@ public class ViewWwLexemeSourceLink extends TableImpl<ViewWwLexemeSourceLinkReco
         this(alias, VIEW_WW_LEXEME_SOURCE_LINK);
     }
 
-    private ViewWwLexemeSourceLink(Name alias, Table<ViewWwLexemeSourceLinkRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ViewWwLexemeSourceLink(Name alias, Table<ViewWwLexemeSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_lexeme_source_link\" as  SELECT l.id AS lexeme_id,\n    array_agg(ROW('LEXEME'::character varying(100), l.id, lsl.id, lsl.type, lsl.name, lsl.value, lsl.order_by, s.source_id, s.source_props)::type_source_link ORDER BY l.id, lsl.order_by) AS source_links\n   FROM lexeme l,\n    dataset ds,\n    lexeme_source_link lsl,\n    ( SELECT s_1.id AS source_id,\n            array_agg(encode_text(ff.value_prese) ORDER BY ff.order_by) AS source_props\n           FROM source s_1,\n            source_freeform sff,\n            freeform ff\n          WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n          GROUP BY s_1.id) s\n  WHERE ((l.is_public = true) AND (lsl.lexeme_id = l.id) AND (lsl.source_id = s.source_id) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))\n  GROUP BY l.id\n  ORDER BY l.id;"));
+    /**
+     * Create a <code>public.view_ww_lexeme_source_link</code> table reference
+     */
+    public ViewWwLexemeSourceLink() {
+        this(DSL.name("view_ww_lexeme_source_link"), null);
     }
 
     public <O extends Record> ViewWwLexemeSourceLink(Table<O> child, ForeignKey<O, ViewWwLexemeSourceLinkRecord> key) {

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordLastActivityLogRecord extends UpdatableRecordImpl<WordLastActivityLogRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = 1212741948;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_last_activity_log.id</code>.
@@ -174,8 +174,8 @@ public class WordLastActivityLogRecord extends UpdatableRecordImpl<WordLastActiv
     public WordLastActivityLogRecord(Long id, Long wordId, Long activityLogId) {
         super(WordLastActivityLog.WORD_LAST_ACTIVITY_LOG);
 
-        set(0, id);
-        set(1, wordId);
-        set(2, activityLogId);
+        setId(id);
+        setWordId(wordId);
+        setActivityLogId(activityLogId);
     }
 }

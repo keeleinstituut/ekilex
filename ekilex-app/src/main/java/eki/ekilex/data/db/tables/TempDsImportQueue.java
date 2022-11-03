@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.TempDsImportQueueRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TempDsImportQueue extends TableImpl<TempDsImportQueueRecord> {
 
-    private static final long serialVersionUID = -234170668;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.temp_ds_import_queue</code>
@@ -53,33 +52,34 @@ public class TempDsImportQueue extends TableImpl<TempDsImportQueueRecord> {
     /**
      * The column <code>public.temp_ds_import_queue.id</code>.
      */
-    public final TableField<TempDsImportQueueRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('temp_ds_import_queue_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<TempDsImportQueueRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.temp_ds_import_queue.import_code</code>.
      */
-    public final TableField<TempDsImportQueueRecord, String> IMPORT_CODE = createField(DSL.name("import_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<TempDsImportQueueRecord, String> IMPORT_CODE = createField(DSL.name("import_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.temp_ds_import_queue.created_on</code>.
      */
-    public final TableField<TempDsImportQueueRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TempDsImportQueueRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>public.temp_ds_import_queue.table_name</code>.
      */
-    public final TableField<TempDsImportQueueRecord, String> TABLE_NAME = createField(DSL.name("table_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TempDsImportQueueRecord, String> TABLE_NAME = createField(DSL.name("table_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.temp_ds_import_queue.content</code>.
      */
-    public final TableField<TempDsImportQueueRecord, String> CONTENT = createField(DSL.name("content"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TempDsImportQueueRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.temp_ds_import_queue</code> table reference
-     */
-    public TempDsImportQueue() {
-        this(DSL.name("temp_ds_import_queue"), null);
+    private TempDsImportQueue(Name alias, Table<TempDsImportQueueRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private TempDsImportQueue(Name alias, Table<TempDsImportQueueRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -96,12 +96,11 @@ public class TempDsImportQueue extends TableImpl<TempDsImportQueueRecord> {
         this(alias, TEMP_DS_IMPORT_QUEUE);
     }
 
-    private TempDsImportQueue(Name alias, Table<TempDsImportQueueRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private TempDsImportQueue(Name alias, Table<TempDsImportQueueRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.temp_ds_import_queue</code> table reference
+     */
+    public TempDsImportQueue() {
+        this(DSL.name("temp_ds_import_queue"), null);
     }
 
     public <O extends Record> TempDsImportQueue(Table<O> child, ForeignKey<O, TempDsImportQueueRecord> key) {
@@ -114,13 +113,8 @@ public class TempDsImportQueue extends TableImpl<TempDsImportQueueRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.TEMP_DS_IMPORT_QUEUE_IMPORT_CODE_IDX, Indexes.TEMP_DS_IMPORT_QUEUE_TABLE_NAME_IDX);
-    }
-
-    @Override
     public Identity<TempDsImportQueueRecord, Long> getIdentity() {
-        return Keys.IDENTITY_TEMP_DS_IMPORT_QUEUE;
+        return (Identity<TempDsImportQueueRecord, Long>) super.getIdentity();
     }
 
     @Override

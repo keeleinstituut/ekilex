@@ -4,17 +4,12 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRelationRecord;
 import eki.wordweb.data.db.udt.records.TypeLexemeRelationRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -23,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord> {
 
-    private static final long serialVersionUID = -354790366;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme_relation</code>
@@ -50,18 +46,19 @@ public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord
     /**
      * The column <code>public.mview_ww_lexeme_relation.lexeme_id</code>.
      */
-    public final TableField<MviewWwLexemeRelationRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRelationRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme_relation.related_lexemes</code>.
      */
     public final TableField<MviewWwLexemeRelationRecord, TypeLexemeRelationRecord[]> RELATED_LEXEMES = createField(DSL.name("related_lexemes"), eki.wordweb.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_lexeme_relation</code> table reference
-     */
-    public MviewWwLexemeRelation() {
-        this(DSL.name("mview_ww_lexeme_relation"), null);
+    private MviewWwLexemeRelation(Name alias, Table<MviewWwLexemeRelationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwLexemeRelation(Name alias, Table<MviewWwLexemeRelationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -78,12 +75,11 @@ public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord
         this(alias, MVIEW_WW_LEXEME_RELATION);
     }
 
-    private MviewWwLexemeRelation(Name alias, Table<MviewWwLexemeRelationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwLexemeRelation(Name alias, Table<MviewWwLexemeRelationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_lexeme_relation</code> table reference
+     */
+    public MviewWwLexemeRelation() {
+        this(DSL.name("mview_ww_lexeme_relation"), null);
     }
 
     public <O extends Record> MviewWwLexemeRelation(Table<O> child, ForeignKey<O, MviewWwLexemeRelationRecord> key) {
@@ -93,11 +89,6 @@ public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_RELATION_LEXEME_ID_IDX);
     }
 
     @Override

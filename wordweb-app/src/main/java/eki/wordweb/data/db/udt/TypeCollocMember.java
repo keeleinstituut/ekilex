@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -22,7 +23,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
 
-    private static final long serialVersionUID = 1199642265;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_colloc_member</code>
@@ -40,37 +41,37 @@ public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
     /**
      * The attribute <code>public.type_colloc_member.lexeme_id</code>.
      */
-    public static final UDTField<TypeCollocMemberRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_COLLOC_MEMBER, "");
+    public static final UDTField<TypeCollocMemberRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.word_id</code>.
      */
-    public static final UDTField<TypeCollocMemberRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_COLLOC_MEMBER, "");
+    public static final UDTField<TypeCollocMemberRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.word</code>.
      */
-    public static final UDTField<TypeCollocMemberRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
+    public static final UDTField<TypeCollocMemberRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.form</code>.
      */
-    public static final UDTField<TypeCollocMemberRecord, String> FORM = createField(DSL.name("form"), org.jooq.impl.SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
+    public static final UDTField<TypeCollocMemberRecord, String> FORM = createField(DSL.name("form"), SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.homonym_nr</code>.
      */
-    public static final UDTField<TypeCollocMemberRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER, TYPE_COLLOC_MEMBER, "");
+    public static final UDTField<TypeCollocMemberRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.conjunct</code>.
      */
-    public static final UDTField<TypeCollocMemberRecord, String> CONJUNCT = createField(DSL.name("conjunct"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_COLLOC_MEMBER, "");
+    public static final UDTField<TypeCollocMemberRecord, String> CONJUNCT = createField(DSL.name("conjunct"), SQLDataType.VARCHAR(100), TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.weight</code>.
      */
-    public static final UDTField<TypeCollocMemberRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), org.jooq.impl.SQLDataType.NUMERIC(14, 4), TYPE_COLLOC_MEMBER, "");
+    public static final UDTField<TypeCollocMemberRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), SQLDataType.NUMERIC(14, 4), TYPE_COLLOC_MEMBER, "");
 
     /**
      * No further instances allowed

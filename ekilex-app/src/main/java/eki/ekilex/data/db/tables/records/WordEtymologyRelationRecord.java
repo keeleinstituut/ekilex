@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymologyRelationRecord extends UpdatableRecordImpl<WordEtymologyRelationRecord> implements Record8<Long, Long, Long, String, String, Boolean, Boolean, Long> {
 
-    private static final long serialVersionUID = 1003941870;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_etymology_relation.id</code>.
@@ -354,13 +354,13 @@ public class WordEtymologyRelationRecord extends UpdatableRecordImpl<WordEtymolo
     public WordEtymologyRelationRecord(Long id, Long wordEtymId, Long relatedWordId, String comment, String commentPrese, Boolean isQuestionable, Boolean isCompound, Long orderBy) {
         super(WordEtymologyRelation.WORD_ETYMOLOGY_RELATION);
 
-        set(0, id);
-        set(1, wordEtymId);
-        set(2, relatedWordId);
-        set(3, comment);
-        set(4, commentPrese);
-        set(5, isQuestionable);
-        set(6, isCompound);
-        set(7, orderBy);
+        setId(id);
+        setWordEtymId(wordEtymId);
+        setRelatedWordId(relatedWordId);
+        setComment(comment);
+        setCommentPrese(commentPrese);
+        setIsQuestionable(isQuestionable);
+        setIsCompound(isCompound);
+        setOrderBy(orderBy);
     }
 }

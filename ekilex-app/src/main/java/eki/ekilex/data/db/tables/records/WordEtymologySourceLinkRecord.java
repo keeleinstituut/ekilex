@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymologySourceLinkRecord extends UpdatableRecordImpl<WordEtymologySourceLinkRecord> implements Record7<Long, Long, Long, String, String, String, Long> {
 
-    private static final long serialVersionUID = -782099566;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_etymology_source_link.id</code>.
@@ -318,12 +318,12 @@ public class WordEtymologySourceLinkRecord extends UpdatableRecordImpl<WordEtymo
     public WordEtymologySourceLinkRecord(Long id, Long wordEtymId, Long sourceId, String type, String name, String value, Long orderBy) {
         super(WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK);
 
-        set(0, id);
-        set(1, wordEtymId);
-        set(2, sourceId);
-        set(3, type);
-        set(4, name);
-        set(5, value);
-        set(6, orderBy);
+        setId(id);
+        setWordEtymId(wordEtymId);
+        setSourceId(sourceId);
+        setType(type);
+        setName(name);
+        setValue(value);
+        setOrderBy(orderBy);
     }
 }

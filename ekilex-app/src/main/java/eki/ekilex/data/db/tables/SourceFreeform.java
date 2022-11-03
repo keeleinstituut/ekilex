@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.SourceFreeformRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceFreeform extends TableImpl<SourceFreeformRecord> {
 
-    private static final long serialVersionUID = -1833802006;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.source_freeform</code>
@@ -52,23 +51,24 @@ public class SourceFreeform extends TableImpl<SourceFreeformRecord> {
     /**
      * The column <code>public.source_freeform.id</code>.
      */
-    public final TableField<SourceFreeformRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('source_freeform_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<SourceFreeformRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.source_freeform.source_id</code>.
      */
-    public final TableField<SourceFreeformRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SourceFreeformRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.source_freeform.freeform_id</code>.
      */
-    public final TableField<SourceFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SourceFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.source_freeform</code> table reference
-     */
-    public SourceFreeform() {
-        this(DSL.name("source_freeform"), null);
+    private SourceFreeform(Name alias, Table<SourceFreeformRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SourceFreeform(Name alias, Table<SourceFreeformRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class SourceFreeform extends TableImpl<SourceFreeformRecord> {
         this(alias, SOURCE_FREEFORM);
     }
 
-    private SourceFreeform(Name alias, Table<SourceFreeformRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SourceFreeform(Name alias, Table<SourceFreeformRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.source_freeform</code> table reference
+     */
+    public SourceFreeform() {
+        this(DSL.name("source_freeform"), null);
     }
 
     public <O extends Record> SourceFreeform(Table<O> child, ForeignKey<O, SourceFreeformRecord> key) {
@@ -103,13 +102,8 @@ public class SourceFreeform extends TableImpl<SourceFreeformRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SOURCE_FREEFORM_FREEFORM_ID_IDX, Indexes.SOURCE_FREEFORM_SOURCE_ID_IDX);
-    }
-
-    @Override
     public Identity<SourceFreeformRecord, Long> getIdentity() {
-        return Keys.IDENTITY_SOURCE_FREEFORM;
+        return (Identity<SourceFreeformRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class SourceFreeform extends TableImpl<SourceFreeformRecord> {
         return Arrays.<ForeignKey<SourceFreeformRecord, ?>>asList(Keys.SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY, Keys.SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY);
     }
 
+    private transient Source _source;
+    private transient Freeform _freeform;
+
     public Source source() {
-        return new Source(this, Keys.SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY);
+        if (_source == null)
+            _source = new Source(this, Keys.SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY);
+
+        return _source;
     }
 
     public Freeform freeform() {
-        return new Freeform(this, Keys.SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY);
+        if (_freeform == null)
+            _freeform = new Freeform(this, Keys.SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY);
+
+        return _freeform;
     }
 
     @Override

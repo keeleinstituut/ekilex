@@ -4,17 +4,12 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRelationRecord;
 import eki.wordweb.data.db.udt.records.TypeWordRelationRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -23,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
 
-    private static final long serialVersionUID = -1025260859;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_word_relation</code>
@@ -50,7 +46,7 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
     /**
      * The column <code>public.mview_ww_word_relation.word_id</code>.
      */
-    public final TableField<MviewWwWordRelationRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordRelationRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_word_relation.related_words</code>.
@@ -62,11 +58,12 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
      */
     public final TableField<MviewWwWordRelationRecord, TypeWordRelationRecord[]> WORD_GROUP_MEMBERS = createField(DSL.name("word_group_members"), eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_word_relation</code> table reference
-     */
-    public MviewWwWordRelation() {
-        this(DSL.name("mview_ww_word_relation"), null);
+    private MviewWwWordRelation(Name alias, Table<MviewWwWordRelationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwWordRelation(Name alias, Table<MviewWwWordRelationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -83,12 +80,11 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
         this(alias, MVIEW_WW_WORD_RELATION);
     }
 
-    private MviewWwWordRelation(Name alias, Table<MviewWwWordRelationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwWordRelation(Name alias, Table<MviewWwWordRelationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_word_relation</code> table reference
+     */
+    public MviewWwWordRelation() {
+        this(DSL.name("mview_ww_word_relation"), null);
     }
 
     public <O extends Record> MviewWwWordRelation(Table<O> child, ForeignKey<O, MviewWwWordRelationRecord> key) {
@@ -98,11 +94,6 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_RELATION_WORD_ID_IDX);
     }
 
     @Override

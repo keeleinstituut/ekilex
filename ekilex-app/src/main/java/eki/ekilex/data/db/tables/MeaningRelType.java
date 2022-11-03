@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelType extends TableImpl<MeaningRelTypeRecord> {
 
-    private static final long serialVersionUID = -1207333354;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_rel_type</code>
@@ -50,23 +51,24 @@ public class MeaningRelType extends TableImpl<MeaningRelTypeRecord> {
     /**
      * The column <code>public.meaning_rel_type.code</code>.
      */
-    public final TableField<MeaningRelTypeRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningRelTypeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_rel_type.datasets</code>.
      */
-    public final TableField<MeaningRelTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<MeaningRelTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.meaning_rel_type.order_by</code>.
      */
-    public final TableField<MeaningRelTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_rel_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningRelTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.meaning_rel_type</code> table reference
-     */
-    public MeaningRelType() {
-        this(DSL.name("meaning_rel_type"), null);
+    private MeaningRelType(Name alias, Table<MeaningRelTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningRelType(Name alias, Table<MeaningRelTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class MeaningRelType extends TableImpl<MeaningRelTypeRecord> {
         this(alias, MEANING_REL_TYPE);
     }
 
-    private MeaningRelType(Name alias, Table<MeaningRelTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningRelType(Name alias, Table<MeaningRelTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_rel_type</code> table reference
+     */
+    public MeaningRelType() {
+        this(DSL.name("meaning_rel_type"), null);
     }
 
     public <O extends Record> MeaningRelType(Table<O> child, ForeignKey<O, MeaningRelTypeRecord> key) {
@@ -102,7 +103,7 @@ public class MeaningRelType extends TableImpl<MeaningRelTypeRecord> {
 
     @Override
     public Identity<MeaningRelTypeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_REL_TYPE;
+        return (Identity<MeaningRelTypeRecord, Long>) super.getIdentity();
     }
 
     @Override

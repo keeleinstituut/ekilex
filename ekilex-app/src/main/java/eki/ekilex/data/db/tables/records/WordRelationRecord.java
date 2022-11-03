@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelationRecord extends UpdatableRecordImpl<WordRelationRecord> implements Record6<Long, Long, Long, String, String, Long> {
 
-    private static final long serialVersionUID = 1981229443;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_relation.id</code>.
@@ -282,11 +282,11 @@ public class WordRelationRecord extends UpdatableRecordImpl<WordRelationRecord> 
     public WordRelationRecord(Long id, Long word1Id, Long word2Id, String wordRelTypeCode, String relationStatus, Long orderBy) {
         super(WordRelation.WORD_RELATION);
 
-        set(0, id);
-        set(1, word1Id);
-        set(2, word2Id);
-        set(3, wordRelTypeCode);
-        set(4, relationStatus);
-        set(5, orderBy);
+        setId(id);
+        setWord1Id(word1Id);
+        setWord2Id(word2Id);
+        setWordRelTypeCode(wordRelTypeCode);
+        setRelationStatus(relationStatus);
+        setOrderBy(orderBy);
     }
 }

@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordRelMappingRecord;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -24,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelMapping extends TableImpl<WordRelMappingRecord> {
 
-    private static final long serialVersionUID = 375144804;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_rel_mapping</code>
@@ -51,18 +50,19 @@ public class WordRelMapping extends TableImpl<WordRelMappingRecord> {
     /**
      * The column <code>public.word_rel_mapping.code1</code>.
      */
-    public final TableField<WordRelMappingRecord, String> CODE1 = createField(DSL.name("code1"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<WordRelMappingRecord, String> CODE1 = createField(DSL.name("code1"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.word_rel_mapping.code2</code>.
      */
-    public final TableField<WordRelMappingRecord, String> CODE2 = createField(DSL.name("code2"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<WordRelMappingRecord, String> CODE2 = createField(DSL.name("code2"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.word_rel_mapping</code> table reference
-     */
-    public WordRelMapping() {
-        this(DSL.name("word_rel_mapping"), null);
+    private WordRelMapping(Name alias, Table<WordRelMappingRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordRelMapping(Name alias, Table<WordRelMappingRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -79,12 +79,11 @@ public class WordRelMapping extends TableImpl<WordRelMappingRecord> {
         this(alias, WORD_REL_MAPPING);
     }
 
-    private WordRelMapping(Name alias, Table<WordRelMappingRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordRelMapping(Name alias, Table<WordRelMappingRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_rel_mapping</code> table reference
+     */
+    public WordRelMapping() {
+        this(DSL.name("word_rel_mapping"), null);
     }
 
     public <O extends Record> WordRelMapping(Table<O> child, ForeignKey<O, WordRelMappingRecord> key) {
@@ -97,11 +96,6 @@ public class WordRelMapping extends TableImpl<WordRelMappingRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_REL_MAPPING_CODE1_IDX, Indexes.WORD_REL_MAPPING_CODE2_IDX);
-    }
-
-    @Override
     public List<UniqueKey<WordRelMappingRecord>> getKeys() {
         return Arrays.<UniqueKey<WordRelMappingRecord>>asList(Keys.WORD_REL_MAPPING_CODE1_CODE2_KEY);
     }
@@ -111,12 +105,21 @@ public class WordRelMapping extends TableImpl<WordRelMappingRecord> {
         return Arrays.<ForeignKey<WordRelMappingRecord, ?>>asList(Keys.WORD_REL_MAPPING__WORD_REL_MAPPING_CODE1_FKEY, Keys.WORD_REL_MAPPING__WORD_REL_MAPPING_CODE2_FKEY);
     }
 
+    private transient WordRelType _wordRelMappingCode1Fkey;
+    private transient WordRelType _wordRelMappingCode2Fkey;
+
     public WordRelType wordRelMappingCode1Fkey() {
-        return new WordRelType(this, Keys.WORD_REL_MAPPING__WORD_REL_MAPPING_CODE1_FKEY);
+        if (_wordRelMappingCode1Fkey == null)
+            _wordRelMappingCode1Fkey = new WordRelType(this, Keys.WORD_REL_MAPPING__WORD_REL_MAPPING_CODE1_FKEY);
+
+        return _wordRelMappingCode1Fkey;
     }
 
     public WordRelType wordRelMappingCode2Fkey() {
-        return new WordRelType(this, Keys.WORD_REL_MAPPING__WORD_REL_MAPPING_CODE2_FKEY);
+        if (_wordRelMappingCode2Fkey == null)
+            _wordRelMappingCode2Fkey = new WordRelType(this, Keys.WORD_REL_MAPPING__WORD_REL_MAPPING_CODE2_FKEY);
+
+        return _wordRelMappingCode2Fkey;
     }
 
     @Override

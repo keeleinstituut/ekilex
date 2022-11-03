@@ -21,7 +21,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -1070533725;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_lexeme.lexeme_id</code>.
@@ -404,31 +404,31 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages) {
         super(ViewWwLexeme.VIEW_WW_LEXEME);
 
-        set(0, lexemeId);
-        set(1, wordId);
-        set(2, meaningId);
-        set(3, datasetCode);
-        set(4, datasetType);
-        set(5, datasetName);
-        set(6, valueStateCode);
-        set(7, proficiencyLevelCode);
-        set(8, reliability);
-        set(9, level1);
-        set(10, level2);
-        set(11, weight);
-        set(12, complexity);
-        set(13, datasetOrderBy);
-        set(14, lexemeOrderBy);
-        set(15, langComplexities);
-        set(16, registerCodes);
-        set(17, posCodes);
-        set(18, regionCodes);
-        set(19, derivCodes);
-        set(20, meaningWords);
-        set(21, adviceNotes);
-        set(22, notes);
-        set(23, grammars);
-        set(24, governments);
-        set(25, usages);
+        setLexemeId(lexemeId);
+        setWordId(wordId);
+        setMeaningId(meaningId);
+        setDatasetCode(datasetCode);
+        setDatasetType(datasetType);
+        setDatasetName(datasetName);
+        setValueStateCode(valueStateCode);
+        setProficiencyLevelCode(proficiencyLevelCode);
+        setReliability(reliability);
+        setLevel1(level1);
+        setLevel2(level2);
+        setWeight(weight);
+        setComplexity(complexity);
+        setDatasetOrderBy(datasetOrderBy);
+        setLexemeOrderBy(lexemeOrderBy);
+        setLangComplexities(langComplexities);
+        setRegisterCodes(registerCodes);
+        setPosCodes(posCodes);
+        setRegionCodes(regionCodes);
+        setDerivCodes(derivCodes);
+        setMeaningWords(meaningWords);
+        setAdviceNotes(adviceNotes);
+        setNotes(notes);
+        setGrammars(grammars);
+        setGovernments(governments);
+        setUsages(usages);
     }
 }

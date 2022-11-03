@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexRelMappingRecord;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -24,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelMapping extends TableImpl<LexRelMappingRecord> {
 
-    private static final long serialVersionUID = -555078376;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lex_rel_mapping</code>
@@ -51,18 +50,19 @@ public class LexRelMapping extends TableImpl<LexRelMappingRecord> {
     /**
      * The column <code>public.lex_rel_mapping.code1</code>.
      */
-    public final TableField<LexRelMappingRecord, String> CODE1 = createField(DSL.name("code1"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexRelMappingRecord, String> CODE1 = createField(DSL.name("code1"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lex_rel_mapping.code2</code>.
      */
-    public final TableField<LexRelMappingRecord, String> CODE2 = createField(DSL.name("code2"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexRelMappingRecord, String> CODE2 = createField(DSL.name("code2"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.lex_rel_mapping</code> table reference
-     */
-    public LexRelMapping() {
-        this(DSL.name("lex_rel_mapping"), null);
+    private LexRelMapping(Name alias, Table<LexRelMappingRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexRelMapping(Name alias, Table<LexRelMappingRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -79,12 +79,11 @@ public class LexRelMapping extends TableImpl<LexRelMappingRecord> {
         this(alias, LEX_REL_MAPPING);
     }
 
-    private LexRelMapping(Name alias, Table<LexRelMappingRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexRelMapping(Name alias, Table<LexRelMappingRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lex_rel_mapping</code> table reference
+     */
+    public LexRelMapping() {
+        this(DSL.name("lex_rel_mapping"), null);
     }
 
     public <O extends Record> LexRelMapping(Table<O> child, ForeignKey<O, LexRelMappingRecord> key) {
@@ -97,11 +96,6 @@ public class LexRelMapping extends TableImpl<LexRelMappingRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEX_REL_MAPPING_CODE1_IDX, Indexes.LEX_REL_MAPPING_CODE2_IDX);
-    }
-
-    @Override
     public List<UniqueKey<LexRelMappingRecord>> getKeys() {
         return Arrays.<UniqueKey<LexRelMappingRecord>>asList(Keys.LEX_REL_MAPPING_CODE1_CODE2_KEY);
     }
@@ -111,12 +105,21 @@ public class LexRelMapping extends TableImpl<LexRelMappingRecord> {
         return Arrays.<ForeignKey<LexRelMappingRecord, ?>>asList(Keys.LEX_REL_MAPPING__LEX_REL_MAPPING_CODE1_FKEY, Keys.LEX_REL_MAPPING__LEX_REL_MAPPING_CODE2_FKEY);
     }
 
+    private transient LexRelType _lexRelMappingCode1Fkey;
+    private transient LexRelType _lexRelMappingCode2Fkey;
+
     public LexRelType lexRelMappingCode1Fkey() {
-        return new LexRelType(this, Keys.LEX_REL_MAPPING__LEX_REL_MAPPING_CODE1_FKEY);
+        if (_lexRelMappingCode1Fkey == null)
+            _lexRelMappingCode1Fkey = new LexRelType(this, Keys.LEX_REL_MAPPING__LEX_REL_MAPPING_CODE1_FKEY);
+
+        return _lexRelMappingCode1Fkey;
     }
 
     public LexRelType lexRelMappingCode2Fkey() {
-        return new LexRelType(this, Keys.LEX_REL_MAPPING__LEX_REL_MAPPING_CODE2_FKEY);
+        if (_lexRelMappingCode2Fkey == null)
+            _lexRelMappingCode2Fkey = new LexRelType(this, Keys.LEX_REL_MAPPING__LEX_REL_MAPPING_CODE2_FKEY);
+
+        return _lexRelMappingCode2Fkey;
     }
 
     @Override

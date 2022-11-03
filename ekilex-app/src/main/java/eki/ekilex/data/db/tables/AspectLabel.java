@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AspectLabel extends TableImpl<AspectLabelRecord> {
 
-    private static final long serialVersionUID = -875608600;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.aspect_label</code>
@@ -49,28 +50,29 @@ public class AspectLabel extends TableImpl<AspectLabelRecord> {
     /**
      * The column <code>public.aspect_label.code</code>.
      */
-    public final TableField<AspectLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<AspectLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.aspect_label.value</code>.
      */
-    public final TableField<AspectLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<AspectLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.aspect_label.lang</code>.
      */
-    public final TableField<AspectLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<AspectLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.aspect_label.type</code>.
      */
-    public final TableField<AspectLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<AspectLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.aspect_label</code> table reference
-     */
-    public AspectLabel() {
-        this(DSL.name("aspect_label"), null);
+    private AspectLabel(Name alias, Table<AspectLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private AspectLabel(Name alias, Table<AspectLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class AspectLabel extends TableImpl<AspectLabelRecord> {
         this(alias, ASPECT_LABEL);
     }
 
-    private AspectLabel(Name alias, Table<AspectLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private AspectLabel(Name alias, Table<AspectLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.aspect_label</code> table reference
+     */
+    public AspectLabel() {
+        this(DSL.name("aspect_label"), null);
     }
 
     public <O extends Record> AspectLabel(Table<O> child, ForeignKey<O, AspectLabelRecord> key) {
@@ -114,16 +115,29 @@ public class AspectLabel extends TableImpl<AspectLabelRecord> {
         return Arrays.<ForeignKey<AspectLabelRecord, ?>>asList(Keys.ASPECT_LABEL__ASPECT_LABEL_CODE_FKEY, Keys.ASPECT_LABEL__ASPECT_LABEL_LANG_FKEY, Keys.ASPECT_LABEL__ASPECT_LABEL_TYPE_FKEY);
     }
 
+    private transient Aspect _aspect;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public Aspect aspect() {
-        return new Aspect(this, Keys.ASPECT_LABEL__ASPECT_LABEL_CODE_FKEY);
+        if (_aspect == null)
+            _aspect = new Aspect(this, Keys.ASPECT_LABEL__ASPECT_LABEL_CODE_FKEY);
+
+        return _aspect;
     }
 
     public Language language() {
-        return new Language(this, Keys.ASPECT_LABEL__ASPECT_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.ASPECT_LABEL__ASPECT_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.ASPECT_LABEL__ASPECT_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.ASPECT_LABEL__ASPECT_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

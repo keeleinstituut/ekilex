@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningLastActivityLogRecord extends UpdatableRecordImpl<MeaningLastActivityLogRecord> implements Record4<Long, Long, Long, String> {
 
-    private static final long serialVersionUID = 875093043;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.meaning_last_activity_log.id</code>.
@@ -210,9 +210,9 @@ public class MeaningLastActivityLogRecord extends UpdatableRecordImpl<MeaningLas
     public MeaningLastActivityLogRecord(Long id, Long meaningId, Long activityLogId, String type) {
         super(MeaningLastActivityLog.MEANING_LAST_ACTIVITY_LOG);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, activityLogId);
-        set(3, type);
+        setId(id);
+        setMeaningId(meaningId);
+        setActivityLogId(activityLogId);
+        setType(type);
     }
 }

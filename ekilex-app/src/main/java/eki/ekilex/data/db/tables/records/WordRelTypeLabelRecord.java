@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelTypeLabelRecord extends TableRecordImpl<WordRelTypeLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = 1072254104;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_rel_type_label.code</code>.
@@ -200,9 +200,9 @@ public class WordRelTypeLabelRecord extends TableRecordImpl<WordRelTypeLabelReco
     public WordRelTypeLabelRecord(String code, String value, String lang, String type) {
         super(WordRelTypeLabel.WORD_REL_TYPE_LABEL);
 
-        set(0, code);
-        set(1, value);
-        set(2, lang);
-        set(3, type);
+        setCode(code);
+        setValue(value);
+        setLang(lang);
+        setType(type);
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFreeformRecord extends UpdatableRecordImpl<LexemeFreeformRecord> implements Record4<Long, Long, Long, Long> {
 
-    private static final long serialVersionUID = 444499297;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexeme_freeform.id</code>.
@@ -210,9 +210,9 @@ public class LexemeFreeformRecord extends UpdatableRecordImpl<LexemeFreeformReco
     public LexemeFreeformRecord(Long id, Long lexemeId, Long freeformId, Long orderBy) {
         super(LexemeFreeform.LEXEME_FREEFORM);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, freeformId);
-        set(3, orderBy);
+        setId(id);
+        setLexemeId(lexemeId);
+        setFreeformId(freeformId);
+        setOrderBy(orderBy);
     }
 }

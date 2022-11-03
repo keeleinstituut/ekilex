@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreqCorpRecord extends UpdatableRecordImpl<FreqCorpRecord> implements Record4<Long, String, Date, Boolean> {
 
-    private static final long serialVersionUID = -1921564222;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.freq_corp.id</code>.
@@ -212,9 +212,9 @@ public class FreqCorpRecord extends UpdatableRecordImpl<FreqCorpRecord> implemen
     public FreqCorpRecord(Long id, String name, Date corpDate, Boolean isPublic) {
         super(FreqCorp.FREQ_CORP);
 
-        set(0, id);
-        set(1, name);
-        set(2, corpDate);
-        set(3, isPublic);
+        setId(id);
+        setName(name);
+        setCorpDate(corpDate);
+        setIsPublic(isPublic);
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetPermissionRecord extends UpdatableRecordImpl<DatasetPermissionRecord> implements Record6<Long, String, Long, String, String, String> {
 
-    private static final long serialVersionUID = -1501459913;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.dataset_permission.id</code>.
@@ -282,11 +282,11 @@ public class DatasetPermissionRecord extends UpdatableRecordImpl<DatasetPermissi
     public DatasetPermissionRecord(Long id, String datasetCode, Long userId, String authOperation, String authItem, String authLang) {
         super(DatasetPermission.DATASET_PERMISSION);
 
-        set(0, id);
-        set(1, datasetCode);
-        set(2, userId);
-        set(3, authOperation);
-        set(4, authItem);
-        set(5, authLang);
+        setId(id);
+        setDatasetCode(datasetCode);
+        setUserId(userId);
+        setAuthOperation(authOperation);
+        setAuthItem(authItem);
+        setAuthLang(authLang);
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceActivityLogRecord extends UpdatableRecordImpl<SourceActivityLogRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = -1638848872;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.source_activity_log.id</code>.
@@ -174,8 +174,8 @@ public class SourceActivityLogRecord extends UpdatableRecordImpl<SourceActivityL
     public SourceActivityLogRecord(Long id, Long sourceId, Long activityLogId) {
         super(SourceActivityLog.SOURCE_ACTIVITY_LOG);
 
-        set(0, id);
-        set(1, sourceId);
-        set(2, activityLogId);
+        setId(id);
+        setSourceId(sourceId);
+        setActivityLogId(activityLogId);
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordRelationRecord extends TableRecordImpl<ViewWwWordRelationRecord> implements Record3<Long, TypeWordRelationRecord[], TypeWordRelationRecord[]> {
 
-    private static final long serialVersionUID = 1796691050;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_word_relation.word_id</code>.
@@ -165,8 +165,8 @@ public class ViewWwWordRelationRecord extends TableRecordImpl<ViewWwWordRelation
     public ViewWwWordRelationRecord(Long wordId, TypeWordRelationRecord[] relatedWords, TypeWordRelationRecord[] wordGroupMembers) {
         super(ViewWwWordRelation.VIEW_WW_WORD_RELATION);
 
-        set(0, wordId);
-        set(1, relatedWords);
-        set(2, wordGroupMembers);
+        setWordId(wordId);
+        setRelatedWords(relatedWords);
+        setWordGroupMembers(wordGroupMembers);
     }
 }

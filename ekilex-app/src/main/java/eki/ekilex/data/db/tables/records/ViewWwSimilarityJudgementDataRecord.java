@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwSimilarityJudgementDataRecord extends TableRecordImpl<ViewWwSimilarityJudgementDataRecord> implements Record4<Long, String, String, String> {
 
-    private static final long serialVersionUID = 128789420;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_similarity_judgement_data.meaning_id</code>.
@@ -200,9 +200,9 @@ public class ViewWwSimilarityJudgementDataRecord extends TableRecordImpl<ViewWwS
     public ViewWwSimilarityJudgementDataRecord(Long meaningId, String word, String lang, String datasetCode) {
         super(ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA);
 
-        set(0, meaningId);
-        set(1, word);
-        set(2, lang);
-        set(3, datasetCode);
+        setMeaningId(meaningId);
+        setWord(word);
+        setLang(lang);
+        setDatasetCode(datasetCode);
     }
 }

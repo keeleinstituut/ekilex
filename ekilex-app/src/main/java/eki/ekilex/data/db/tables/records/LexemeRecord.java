@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements Record13<Long, Long, Long, String, Integer, Integer, String, String, Long, BigDecimal, Boolean, Integer, String> {
 
-    private static final long serialVersionUID = 922868004;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexeme.id</code>.
@@ -536,18 +536,18 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
     public LexemeRecord(Long id, Long wordId, Long meaningId, String datasetCode, Integer level1, Integer level2, String valueStateCode, String complexity, Long orderBy, BigDecimal weight, Boolean isPublic, Integer reliability, String proficiencyLevelCode) {
         super(Lexeme.LEXEME);
 
-        set(0, id);
-        set(1, wordId);
-        set(2, meaningId);
-        set(3, datasetCode);
-        set(4, level1);
-        set(5, level2);
-        set(6, valueStateCode);
-        set(7, complexity);
-        set(8, orderBy);
-        set(9, weight);
-        set(10, isPublic);
-        set(11, reliability);
-        set(12, proficiencyLevelCode);
+        setId(id);
+        setWordId(wordId);
+        setMeaningId(meaningId);
+        setDatasetCode(datasetCode);
+        setLevel1(level1);
+        setLevel2(level2);
+        setValueStateCode(valueStateCode);
+        setComplexity(complexity);
+        setOrderBy(orderBy);
+        setWeight(weight);
+        setIsPublic(isPublic);
+        setReliability(reliability);
+        setProficiencyLevelCode(proficiencyLevelCode);
     }
 }

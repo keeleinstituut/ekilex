@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordEtymologyRelationRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row8;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymologyRelation extends TableImpl<WordEtymologyRelationRecord> {
 
-    private static final long serialVersionUID = -1867966632;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_etymology_relation</code>
@@ -52,48 +51,49 @@ public class WordEtymologyRelation extends TableImpl<WordEtymologyRelationRecord
     /**
      * The column <code>public.word_etymology_relation.id</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_etymology_relation_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordEtymologyRelationRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_etymology_relation.word_etym_id</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, Long> WORD_ETYM_ID = createField(DSL.name("word_etym_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordEtymologyRelationRecord, Long> WORD_ETYM_ID = createField(DSL.name("word_etym_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_etymology_relation.related_word_id</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, Long> RELATED_WORD_ID = createField(DSL.name("related_word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordEtymologyRelationRecord, Long> RELATED_WORD_ID = createField(DSL.name("related_word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_etymology_relation.comment</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, String> COMMENT = createField(DSL.name("comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WordEtymologyRelationRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_etymology_relation.comment_prese</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, String> COMMENT_PRESE = createField(DSL.name("comment_prese"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WordEtymologyRelationRecord, String> COMMENT_PRESE = createField(DSL.name("comment_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_etymology_relation.is_questionable</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<WordEtymologyRelationRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.word_etymology_relation.is_compound</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, Boolean> IS_COMPOUND = createField(DSL.name("is_compound"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<WordEtymologyRelationRecord, Boolean> IS_COMPOUND = createField(DSL.name("is_compound"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.word_etymology_relation.order_by</code>.
      */
-    public final TableField<WordEtymologyRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_etymology_relation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordEtymologyRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.word_etymology_relation</code> table reference
-     */
-    public WordEtymologyRelation() {
-        this(DSL.name("word_etymology_relation"), null);
+    private WordEtymologyRelation(Name alias, Table<WordEtymologyRelationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordEtymologyRelation(Name alias, Table<WordEtymologyRelationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -110,12 +110,11 @@ public class WordEtymologyRelation extends TableImpl<WordEtymologyRelationRecord
         this(alias, WORD_ETYMOLOGY_RELATION);
     }
 
-    private WordEtymologyRelation(Name alias, Table<WordEtymologyRelationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordEtymologyRelation(Name alias, Table<WordEtymologyRelationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_etymology_relation</code> table reference
+     */
+    public WordEtymologyRelation() {
+        this(DSL.name("word_etymology_relation"), null);
     }
 
     public <O extends Record> WordEtymologyRelation(Table<O> child, ForeignKey<O, WordEtymologyRelationRecord> key) {
@@ -128,13 +127,8 @@ public class WordEtymologyRelation extends TableImpl<WordEtymologyRelationRecord
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_ETYM_REL_REL_WORD_ID_IDX, Indexes.WORD_ETYM_REL_WORD_ETYM_ID_IDX);
-    }
-
-    @Override
     public Identity<WordEtymologyRelationRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_ETYMOLOGY_RELATION;
+        return (Identity<WordEtymologyRelationRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -152,12 +146,21 @@ public class WordEtymologyRelation extends TableImpl<WordEtymologyRelationRecord
         return Arrays.<ForeignKey<WordEtymologyRelationRecord, ?>>asList(Keys.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_FKEY, Keys.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_RELATED_WORD_ID_FKEY);
     }
 
+    private transient WordEtymology _wordEtymology;
+    private transient Word _word;
+
     public WordEtymology wordEtymology() {
-        return new WordEtymology(this, Keys.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_FKEY);
+        if (_wordEtymology == null)
+            _wordEtymology = new WordEtymology(this, Keys.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_WORD_ETYM_ID_FKEY);
+
+        return _wordEtymology;
     }
 
     public Word word() {
-        return new Word(this, Keys.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_RELATED_WORD_ID_FKEY);
+        if (_word == null)
+            _word = new Word(this, Keys.WORD_ETYMOLOGY_RELATION__WORD_ETYMOLOGY_RELATION_RELATED_WORD_ID_FKEY);
+
+        return _word;
     }
 
     @Override

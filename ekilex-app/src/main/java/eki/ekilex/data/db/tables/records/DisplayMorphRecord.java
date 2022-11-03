@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DisplayMorphRecord extends UpdatableRecordImpl<DisplayMorphRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = 52213488;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.display_morph.code</code>.
@@ -174,8 +174,8 @@ public class DisplayMorphRecord extends UpdatableRecordImpl<DisplayMorphRecord> 
     public DisplayMorphRecord(String code, String[] datasets, Long orderBy) {
         super(DisplayMorph.DISPLAY_MORPH);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

@@ -17,6 +17,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -26,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
 
-    private static final long serialVersionUID = -110273732;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_dataset</code>
@@ -44,48 +45,49 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
     /**
      * The column <code>public.mview_ww_dataset.code</code>.
      */
-    public final TableField<MviewWwDatasetRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MviewWwDatasetRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.type</code>.
      */
-    public final TableField<MviewWwDatasetRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MviewWwDatasetRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.name</code>.
      */
-    public final TableField<MviewWwDatasetRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwDatasetRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.description</code>.
      */
-    public final TableField<MviewWwDatasetRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwDatasetRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.contact</code>.
      */
-    public final TableField<MviewWwDatasetRecord, String> CONTACT = createField(DSL.name("contact"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwDatasetRecord, String> CONTACT = createField(DSL.name("contact"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.image_url</code>.
      */
-    public final TableField<MviewWwDatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwDatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.is_superior</code>.
      */
-    public final TableField<MviewWwDatasetRecord, Boolean> IS_SUPERIOR = createField(DSL.name("is_superior"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<MviewWwDatasetRecord, Boolean> IS_SUPERIOR = createField(DSL.name("is_superior"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.mview_ww_dataset.order_by</code>.
      */
-    public final TableField<MviewWwDatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwDatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
 
-    /**
-     * Create a <code>public.mview_ww_dataset</code> table reference
-     */
-    public MviewWwDataset() {
-        this(DSL.name("mview_ww_dataset"), null);
+    private MviewWwDataset(Name alias, Table<MviewWwDatasetRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwDataset(Name alias, Table<MviewWwDatasetRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -102,12 +104,11 @@ public class MviewWwDataset extends TableImpl<MviewWwDatasetRecord> {
         this(alias, MVIEW_WW_DATASET);
     }
 
-    private MviewWwDataset(Name alias, Table<MviewWwDatasetRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwDataset(Name alias, Table<MviewWwDatasetRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_dataset</code> table reference
+     */
+    public MviewWwDataset() {
+        this(DSL.name("mview_ww_dataset"), null);
     }
 
     public <O extends Record> MviewWwDataset(Table<O> child, ForeignKey<O, MviewWwDatasetRecord> key) {

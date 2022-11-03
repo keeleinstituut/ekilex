@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
 
-    private static final long serialVersionUID = 1987206102;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_domain</code>
@@ -52,33 +51,34 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
     /**
      * The column <code>public.meaning_domain.id</code>.
      */
-    public final TableField<MeaningDomainRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_domain_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningDomainRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning_domain.meaning_id</code>.
      */
-    public final TableField<MeaningDomainRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningDomainRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_domain.domain_origin</code>.
      */
-    public final TableField<MeaningDomainRecord, String> DOMAIN_ORIGIN = createField(DSL.name("domain_origin"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningDomainRecord, String> DOMAIN_ORIGIN = createField(DSL.name("domain_origin"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_domain.domain_code</code>.
      */
-    public final TableField<MeaningDomainRecord, String> DOMAIN_CODE = createField(DSL.name("domain_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningDomainRecord, String> DOMAIN_CODE = createField(DSL.name("domain_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_domain.order_by</code>.
      */
-    public final TableField<MeaningDomainRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_domain_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningDomainRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.meaning_domain</code> table reference
-     */
-    public MeaningDomain() {
-        this(DSL.name("meaning_domain"), null);
+    private MeaningDomain(Name alias, Table<MeaningDomainRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningDomain(Name alias, Table<MeaningDomainRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -95,12 +95,11 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
         this(alias, MEANING_DOMAIN);
     }
 
-    private MeaningDomain(Name alias, Table<MeaningDomainRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningDomain(Name alias, Table<MeaningDomainRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_domain</code> table reference
+     */
+    public MeaningDomain() {
+        this(DSL.name("meaning_domain"), null);
     }
 
     public <O extends Record> MeaningDomain(Table<O> child, ForeignKey<O, MeaningDomainRecord> key) {
@@ -113,13 +112,8 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_DOMAIN_CODE_ORIGIN_IDX, Indexes.MEANING_DOMAIN_LEXEME_ID_IDX);
-    }
-
-    @Override
     public Identity<MeaningDomainRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_DOMAIN;
+        return (Identity<MeaningDomainRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -137,12 +131,21 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
         return Arrays.<ForeignKey<MeaningDomainRecord, ?>>asList(Keys.MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY, Keys.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient Domain _domain;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public Domain domain() {
-        return new Domain(this, Keys.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY);
+        if (_domain == null)
+            _domain = new Domain(this, Keys.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY);
+
+        return _domain;
     }
 
     @Override

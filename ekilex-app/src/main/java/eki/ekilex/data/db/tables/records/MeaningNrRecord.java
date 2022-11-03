@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningNrRecord extends UpdatableRecordImpl<MeaningNrRecord> implements Record4<Long, Long, String, String> {
 
-    private static final long serialVersionUID = 257564296;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.meaning_nr.id</code>.
@@ -210,9 +210,9 @@ public class MeaningNrRecord extends UpdatableRecordImpl<MeaningNrRecord> implem
     public MeaningNrRecord(Long id, Long meaningId, String mnr, String datasetCode) {
         super(MeaningNr.MEANING_NR);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, mnr);
-        set(3, datasetCode);
+        setId(id);
+        setMeaningId(meaningId);
+        setMnr(mnr);
+        setDatasetCode(datasetCode);
     }
 }

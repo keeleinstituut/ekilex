@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordHomNrDataTupleRecord extends UDTRecordImpl<TypeWordHomNrDataTupleRecord> implements Record2<Long, Integer> {
 
-    private static final long serialVersionUID = -45292630;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_word_hom_nr_data_tuple.word_id</code>.
@@ -128,7 +128,7 @@ public class TypeWordHomNrDataTupleRecord extends UDTRecordImpl<TypeWordHomNrDat
     public TypeWordHomNrDataTupleRecord(Long wordId, Integer homonymNr) {
         super(TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE);
 
-        set(0, wordId);
-        set(1, homonymNr);
+        setWordId(wordId);
+        setHomonymNr(homonymNr);
     }
 }

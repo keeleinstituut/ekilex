@@ -10,6 +10,7 @@ import org.jooq.Field;
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.Internal;
+import org.jooq.impl.SQLDataType;
 
 
 /**
@@ -18,23 +19,23 @@ import org.jooq.impl.Internal;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SetLimit extends AbstractRoutine<Float> {
 
-    private static final long serialVersionUID = -1874118631;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The parameter <code>public.set_limit.RETURN_VALUE</code>.
      */
-    public static final Parameter<Float> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", org.jooq.impl.SQLDataType.REAL, false, false);
+    public static final Parameter<Float> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", SQLDataType.REAL, false, false);
 
     /**
      * The parameter <code>public.set_limit._1</code>.
      */
-    public static final Parameter<Float> _1 = Internal.createParameter("_1", org.jooq.impl.SQLDataType.REAL, false, true);
+    public static final Parameter<Float> _1 = Internal.createParameter("_1", SQLDataType.REAL, false, true);
 
     /**
      * Create a new routine call instance
      */
     public SetLimit() {
-        super("set_limit", Public.PUBLIC, org.jooq.impl.SQLDataType.REAL);
+        super("set_limit", Public.PUBLIC, SQLDataType.REAL);
 
         setReturnParameter(RETURN_VALUE);
         addInParameter(_1);

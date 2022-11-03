@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LanguageLabel extends TableImpl<LanguageLabelRecord> {
 
-    private static final long serialVersionUID = -976240834;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.language_label</code>
@@ -49,28 +50,29 @@ public class LanguageLabel extends TableImpl<LanguageLabelRecord> {
     /**
      * The column <code>public.language_label.code</code>.
      */
-    public final TableField<LanguageLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<LanguageLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.language_label.value</code>.
      */
-    public final TableField<LanguageLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LanguageLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.language_label.lang</code>.
      */
-    public final TableField<LanguageLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<LanguageLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.language_label.type</code>.
      */
-    public final TableField<LanguageLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<LanguageLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.language_label</code> table reference
-     */
-    public LanguageLabel() {
-        this(DSL.name("language_label"), null);
+    private LanguageLabel(Name alias, Table<LanguageLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LanguageLabel(Name alias, Table<LanguageLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class LanguageLabel extends TableImpl<LanguageLabelRecord> {
         this(alias, LANGUAGE_LABEL);
     }
 
-    private LanguageLabel(Name alias, Table<LanguageLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LanguageLabel(Name alias, Table<LanguageLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.language_label</code> table reference
+     */
+    public LanguageLabel() {
+        this(DSL.name("language_label"), null);
     }
 
     public <O extends Record> LanguageLabel(Table<O> child, ForeignKey<O, LanguageLabelRecord> key) {
@@ -114,16 +115,29 @@ public class LanguageLabel extends TableImpl<LanguageLabelRecord> {
         return Arrays.<ForeignKey<LanguageLabelRecord, ?>>asList(Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_CODE_FKEY, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_LANG_FKEY, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_TYPE_FKEY);
     }
 
+    private transient Language _languageLabelCodeFkey;
+    private transient Language _languageLabelLangFkey;
+    private transient LabelType _labelType;
+
     public Language languageLabelCodeFkey() {
-        return new Language(this, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_CODE_FKEY);
+        if (_languageLabelCodeFkey == null)
+            _languageLabelCodeFkey = new Language(this, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_CODE_FKEY);
+
+        return _languageLabelCodeFkey;
     }
 
     public Language languageLabelLangFkey() {
-        return new Language(this, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_LANG_FKEY);
+        if (_languageLabelLangFkey == null)
+            _languageLabelLangFkey = new Language(this, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_LANG_FKEY);
+
+        return _languageLabelLangFkey;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.LANGUAGE_LABEL__LANGUAGE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

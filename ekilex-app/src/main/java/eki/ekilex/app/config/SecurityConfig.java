@@ -2,6 +2,7 @@ package eki.ekilex.app.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -103,6 +104,7 @@ public class SecurityConfig {
 			web.httpFirewall(firewall);
 		}
 
+		@Bean
 		@Override
 		public AuthenticationManager authenticationManager() throws Exception {
 			return new EkiUserAuthenticationManager(userService, passwordEncoder);

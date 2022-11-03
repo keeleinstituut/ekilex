@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordEtymologyRecord extends TableRecordImpl<MviewWwWordEtymologyRecord> implements Record12<Long, Long, Long, String, String, String[], String, String, String, Boolean, Long, TypeWordEtymRelationRecord[]> {
 
-    private static final long serialVersionUID = -1742107793;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_word_etymology.word_id</code>.
@@ -489,17 +489,17 @@ public class MviewWwWordEtymologyRecord extends TableRecordImpl<MviewWwWordEtymo
     public MviewWwWordEtymologyRecord(Long wordId, Long wordEtymId, Long wordEtymWordId, String wordEtymWord, String wordEtymWordLang, String[] wordEtymWordMeaningWords, String etymologyTypeCode, String etymologyYear, String wordEtymComment, Boolean wordEtymIsQuestionable, Long wordEtymOrderBy, TypeWordEtymRelationRecord[] wordEtymRelations) {
         super(MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY);
 
-        set(0, wordId);
-        set(1, wordEtymId);
-        set(2, wordEtymWordId);
-        set(3, wordEtymWord);
-        set(4, wordEtymWordLang);
-        set(5, wordEtymWordMeaningWords);
-        set(6, etymologyTypeCode);
-        set(7, etymologyYear);
-        set(8, wordEtymComment);
-        set(9, wordEtymIsQuestionable);
-        set(10, wordEtymOrderBy);
-        set(11, wordEtymRelations);
+        setWordId(wordId);
+        setWordEtymId(wordEtymId);
+        setWordEtymWordId(wordEtymWordId);
+        setWordEtymWord(wordEtymWord);
+        setWordEtymWordLang(wordEtymWordLang);
+        setWordEtymWordMeaningWords(wordEtymWordMeaningWords);
+        setEtymologyTypeCode(etymologyTypeCode);
+        setEtymologyYear(etymologyYear);
+        setWordEtymComment(wordEtymComment);
+        setWordEtymIsQuestionable(wordEtymIsQuestionable);
+        setWordEtymOrderBy(wordEtymOrderBy);
+        setWordEtymRelations(wordEtymRelations);
     }
 }

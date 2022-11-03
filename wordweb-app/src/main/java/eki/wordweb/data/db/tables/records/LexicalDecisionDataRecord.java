@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionDataRecord extends UpdatableRecordImpl<LexicalDecisionDataRecord> implements Record4<Long, String, String, Boolean> {
 
-    private static final long serialVersionUID = 356723097;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexical_decision_data.id</code>.
@@ -210,9 +210,9 @@ public class LexicalDecisionDataRecord extends UpdatableRecordImpl<LexicalDecisi
     public LexicalDecisionDataRecord(Long id, String word, String lang, Boolean isWord) {
         super(LexicalDecisionData.LEXICAL_DECISION_DATA);
 
-        set(0, id);
-        set(1, word);
-        set(2, lang);
-        set(3, isWord);
+        setId(id);
+        setWord(word);
+        setLang(lang);
+        setIsWord(isWord);
     }
 }

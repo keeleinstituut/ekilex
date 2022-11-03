@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Morph extends TableImpl<MorphRecord> {
 
-    private static final long serialVersionUID = 1905272880;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.morph</code>
@@ -50,23 +51,24 @@ public class Morph extends TableImpl<MorphRecord> {
     /**
      * The column <code>public.morph.code</code>.
      */
-    public final TableField<MorphRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MorphRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.morph.datasets</code>.
      */
-    public final TableField<MorphRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<MorphRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.morph.order_by</code>.
      */
-    public final TableField<MorphRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('morph_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MorphRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.morph</code> table reference
-     */
-    public Morph() {
-        this(DSL.name("morph"), null);
+    private Morph(Name alias, Table<MorphRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Morph(Name alias, Table<MorphRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Morph extends TableImpl<MorphRecord> {
         this(alias, MORPH);
     }
 
-    private Morph(Name alias, Table<MorphRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Morph(Name alias, Table<MorphRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.morph</code> table reference
+     */
+    public Morph() {
+        this(DSL.name("morph"), null);
     }
 
     public <O extends Record> Morph(Table<O> child, ForeignKey<O, MorphRecord> key) {
@@ -102,7 +103,7 @@ public class Morph extends TableImpl<MorphRecord> {
 
     @Override
     public Identity<MorphRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MORPH;
+        return (Identity<MorphRecord, Long>) super.getIdentity();
     }
 
     @Override

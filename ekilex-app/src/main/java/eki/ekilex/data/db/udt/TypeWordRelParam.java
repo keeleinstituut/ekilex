@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -22,7 +23,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelParam extends UDTImpl<TypeWordRelParamRecord> {
 
-    private static final long serialVersionUID = 2126493682;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_word_rel_param</code>
@@ -40,12 +41,12 @@ public class TypeWordRelParam extends UDTImpl<TypeWordRelParamRecord> {
     /**
      * The attribute <code>public.type_word_rel_param.name</code>.
      */
-    public static final UDTField<TypeWordRelParamRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, TYPE_WORD_REL_PARAM, "");
+    public static final UDTField<TypeWordRelParamRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, TYPE_WORD_REL_PARAM, "");
 
     /**
      * The attribute <code>public.type_word_rel_param.value</code>.
      */
-    public static final UDTField<TypeWordRelParamRecord, BigDecimal> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.NUMERIC(5, 4), TYPE_WORD_REL_PARAM, "");
+    public static final UDTField<TypeWordRelParamRecord, BigDecimal> VALUE = createField(DSL.name("value"), SQLDataType.NUMERIC(5, 4), TYPE_WORD_REL_PARAM, "");
 
     /**
      * No further instances allowed

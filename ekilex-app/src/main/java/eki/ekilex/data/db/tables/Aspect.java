@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Aspect extends TableImpl<AspectRecord> {
 
-    private static final long serialVersionUID = 1808611764;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.aspect</code>
@@ -50,23 +51,24 @@ public class Aspect extends TableImpl<AspectRecord> {
     /**
      * The column <code>public.aspect.code</code>.
      */
-    public final TableField<AspectRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<AspectRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.aspect.datasets</code>.
      */
-    public final TableField<AspectRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<AspectRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.aspect.order_by</code>.
      */
-    public final TableField<AspectRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('aspect_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<AspectRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.aspect</code> table reference
-     */
-    public Aspect() {
-        this(DSL.name("aspect"), null);
+    private Aspect(Name alias, Table<AspectRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Aspect(Name alias, Table<AspectRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Aspect extends TableImpl<AspectRecord> {
         this(alias, ASPECT);
     }
 
-    private Aspect(Name alias, Table<AspectRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Aspect(Name alias, Table<AspectRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.aspect</code> table reference
+     */
+    public Aspect() {
+        this(DSL.name("aspect"), null);
     }
 
     public <O extends Record> Aspect(Table<O> child, ForeignKey<O, AspectRecord> key) {
@@ -102,7 +103,7 @@ public class Aspect extends TableImpl<AspectRecord> {
 
     @Override
     public Identity<AspectRecord, Long> getIdentity() {
-        return Keys.IDENTITY_ASPECT;
+        return (Identity<AspectRecord, Long>) super.getIdentity();
     }
 
     @Override

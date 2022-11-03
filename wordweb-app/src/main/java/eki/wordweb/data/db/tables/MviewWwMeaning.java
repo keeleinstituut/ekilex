@@ -4,7 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
@@ -13,12 +12,9 @@ import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeMediaFileRecord;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row11;
@@ -27,6 +23,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -36,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = -348060457;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -54,17 +51,17 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.meaning_id</code>.
      */
-    public final TableField<MviewWwMeaningRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwMeaningRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.manual_event_on</code>.
      */
-    public final TableField<MviewWwMeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MviewWwMeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(0), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.last_approve_or_edit_event_on</code>.
      */
-    public final TableField<MviewWwMeaningRecord, Timestamp> LAST_APPROVE_OR_EDIT_EVENT_ON = createField(DSL.name("last_approve_or_edit_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MviewWwMeaningRecord, Timestamp> LAST_APPROVE_OR_EDIT_EVENT_ON = createField(DSL.name("last_approve_or_edit_event_on"), SQLDataType.TIMESTAMP(0), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.domain_codes</code>.
@@ -84,17 +81,17 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.systematic_polysemy_patterns</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String[]> SYSTEMATIC_POLYSEMY_PATTERNS = createField(DSL.name("systematic_polysemy_patterns"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> SYSTEMATIC_POLYSEMY_PATTERNS = createField(DSL.name("systematic_polysemy_patterns"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.semantic_types</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String[]> SEMANTIC_TYPES = createField(DSL.name("semantic_types"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> SEMANTIC_TYPES = createField(DSL.name("semantic_types"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.learner_comments</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField(DSL.name("learner_comments"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField(DSL.name("learner_comments"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.notes</code>.
@@ -106,11 +103,12 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      */
     public final TableField<MviewWwMeaningRecord, TypeDefinitionRecord[]> DEFINITIONS = createField(DSL.name("definitions"), eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_meaning</code> table reference
-     */
-    public MviewWwMeaning() {
-        this(DSL.name("mview_ww_meaning"), null);
+    private MviewWwMeaning(Name alias, Table<MviewWwMeaningRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwMeaning(Name alias, Table<MviewWwMeaningRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -127,12 +125,11 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
         this(alias, MVIEW_WW_MEANING);
     }
 
-    private MviewWwMeaning(Name alias, Table<MviewWwMeaningRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwMeaning(Name alias, Table<MviewWwMeaningRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_meaning</code> table reference
+     */
+    public MviewWwMeaning() {
+        this(DSL.name("mview_ww_meaning"), null);
     }
 
     public <O extends Record> MviewWwMeaning(Table<O> child, ForeignKey<O, MviewWwMeaningRecord> key) {
@@ -142,11 +139,6 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_MEANING_ID_IDX);
     }
 
     @Override

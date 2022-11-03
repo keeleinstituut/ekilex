@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -1253221674;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.gender.code</code>.
@@ -174,8 +174,8 @@ public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements R
     public GenderRecord(String code, String[] datasets, Long orderBy) {
         super(Gender.GENDER);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

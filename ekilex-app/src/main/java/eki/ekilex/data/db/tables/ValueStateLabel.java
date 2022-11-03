@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ValueStateLabel extends TableImpl<ValueStateLabelRecord> {
 
-    private static final long serialVersionUID = 1859713320;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.value_state_label</code>
@@ -49,28 +50,29 @@ public class ValueStateLabel extends TableImpl<ValueStateLabelRecord> {
     /**
      * The column <code>public.value_state_label.code</code>.
      */
-    public final TableField<ValueStateLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<ValueStateLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.value_state_label.value</code>.
      */
-    public final TableField<ValueStateLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ValueStateLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.value_state_label.lang</code>.
      */
-    public final TableField<ValueStateLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<ValueStateLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.value_state_label.type</code>.
      */
-    public final TableField<ValueStateLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<ValueStateLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.value_state_label</code> table reference
-     */
-    public ValueStateLabel() {
-        this(DSL.name("value_state_label"), null);
+    private ValueStateLabel(Name alias, Table<ValueStateLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ValueStateLabel(Name alias, Table<ValueStateLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class ValueStateLabel extends TableImpl<ValueStateLabelRecord> {
         this(alias, VALUE_STATE_LABEL);
     }
 
-    private ValueStateLabel(Name alias, Table<ValueStateLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ValueStateLabel(Name alias, Table<ValueStateLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.value_state_label</code> table reference
+     */
+    public ValueStateLabel() {
+        this(DSL.name("value_state_label"), null);
     }
 
     public <O extends Record> ValueStateLabel(Table<O> child, ForeignKey<O, ValueStateLabelRecord> key) {
@@ -114,16 +115,29 @@ public class ValueStateLabel extends TableImpl<ValueStateLabelRecord> {
         return Arrays.<ForeignKey<ValueStateLabelRecord, ?>>asList(Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_CODE_FKEY, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY);
     }
 
+    private transient ValueState _valueState;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public ValueState valueState() {
-        return new ValueState(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_CODE_FKEY);
+        if (_valueState == null)
+            _valueState = new ValueState(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_CODE_FKEY);
+
+        return _valueState;
     }
 
     public Language language() {
-        return new Language(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

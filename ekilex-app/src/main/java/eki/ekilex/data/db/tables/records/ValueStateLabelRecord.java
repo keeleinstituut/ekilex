@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ValueStateLabelRecord extends TableRecordImpl<ValueStateLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = 762935150;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.value_state_label.code</code>.
@@ -200,9 +200,9 @@ public class ValueStateLabelRecord extends TableRecordImpl<ValueStateLabelRecord
     public ValueStateLabelRecord(String code, String value, String lang, String type) {
         super(ValueStateLabel.VALUE_STATE_LABEL);
 
-        set(0, code);
-        set(1, value);
-        set(2, lang);
-        set(3, type);
+        setCode(code);
+        setValue(value);
+        setLang(lang);
+        setType(type);
     }
 }

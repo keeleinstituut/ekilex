@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningActivityLogRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningActivityLog extends TableImpl<MeaningActivityLogRecord> {
 
-    private static final long serialVersionUID = -804701466;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_activity_log</code>
@@ -52,23 +51,24 @@ public class MeaningActivityLog extends TableImpl<MeaningActivityLogRecord> {
     /**
      * The column <code>public.meaning_activity_log.id</code>.
      */
-    public final TableField<MeaningActivityLogRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_activity_log_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningActivityLogRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning_activity_log.meaning_id</code>.
      */
-    public final TableField<MeaningActivityLogRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningActivityLogRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_activity_log.activity_log_id</code>.
      */
-    public final TableField<MeaningActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.meaning_activity_log</code> table reference
-     */
-    public MeaningActivityLog() {
-        this(DSL.name("meaning_activity_log"), null);
+    private MeaningActivityLog(Name alias, Table<MeaningActivityLogRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningActivityLog(Name alias, Table<MeaningActivityLogRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class MeaningActivityLog extends TableImpl<MeaningActivityLogRecord> {
         this(alias, MEANING_ACTIVITY_LOG);
     }
 
-    private MeaningActivityLog(Name alias, Table<MeaningActivityLogRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningActivityLog(Name alias, Table<MeaningActivityLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_activity_log</code> table reference
+     */
+    public MeaningActivityLog() {
+        this(DSL.name("meaning_activity_log"), null);
     }
 
     public <O extends Record> MeaningActivityLog(Table<O> child, ForeignKey<O, MeaningActivityLogRecord> key) {
@@ -103,13 +102,8 @@ public class MeaningActivityLog extends TableImpl<MeaningActivityLogRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_ACTIVITY_LOG_LOG_ID_IDX, Indexes.MEANING_ACTIVITY_LOG_MEANING_ID_IDX);
-    }
-
-    @Override
     public Identity<MeaningActivityLogRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_ACTIVITY_LOG;
+        return (Identity<MeaningActivityLogRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class MeaningActivityLog extends TableImpl<MeaningActivityLogRecord> {
         return Arrays.<ForeignKey<MeaningActivityLogRecord, ?>>asList(Keys.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_MEANING_ID_FKEY, Keys.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient ActivityLog _activityLog;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public ActivityLog activityLog() {
-        return new ActivityLog(this, Keys.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+        if (_activityLog == null)
+            _activityLog = new ActivityLog(this, Keys.MEANING_ACTIVITY_LOG__MEANING_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+
+        return _activityLog;
     }
 
     @Override

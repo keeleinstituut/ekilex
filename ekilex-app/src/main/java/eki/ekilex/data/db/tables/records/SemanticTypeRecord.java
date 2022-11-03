@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SemanticTypeRecord extends UpdatableRecordImpl<SemanticTypeRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -2111724696;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.semantic_type.code</code>.
@@ -174,8 +174,8 @@ public class SemanticTypeRecord extends UpdatableRecordImpl<SemanticTypeRecord> 
     public SemanticTypeRecord(String code, String[] datasets, Long orderBy) {
         super(SemanticType.SEMANTIC_TYPE);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

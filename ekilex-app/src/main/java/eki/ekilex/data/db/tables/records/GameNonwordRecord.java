@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GameNonwordRecord extends UpdatableRecordImpl<GameNonwordRecord> implements Record3<Long, String, String> {
 
-    private static final long serialVersionUID = 926468073;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.game_nonword.id</code>.
@@ -174,8 +174,8 @@ public class GameNonwordRecord extends UpdatableRecordImpl<GameNonwordRecord> im
     public GameNonwordRecord(Long id, String word, String lang) {
         super(GameNonword.GAME_NONWORD);
 
-        set(0, id);
-        set(1, word);
-        set(2, lang);
+        setId(id);
+        setWord(word);
+        setLang(lang);
     }
 }

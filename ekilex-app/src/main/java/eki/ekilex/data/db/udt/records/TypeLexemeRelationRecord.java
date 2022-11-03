@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeLexemeRelationRecord extends UDTRecordImpl<TypeLexemeRelationRecord> implements Record9<Long, Long, String, String, Integer, String, String[], String, String> {
 
-    private static final long serialVersionUID = 752649322;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_lexeme_relation.lexeme_id</code>.
@@ -380,14 +380,14 @@ public class TypeLexemeRelationRecord extends UDTRecordImpl<TypeLexemeRelationRe
     public TypeLexemeRelationRecord(Long lexemeId, Long wordId, String word, String wordPrese, Integer homonymNr, String lang, String[] wordTypeCodes, String complexity, String lexRelTypeCode) {
         super(TypeLexemeRelation.TYPE_LEXEME_RELATION);
 
-        set(0, lexemeId);
-        set(1, wordId);
-        set(2, word);
-        set(3, wordPrese);
-        set(4, homonymNr);
-        set(5, lang);
-        set(6, wordTypeCodes);
-        set(7, complexity);
-        set(8, lexRelTypeCode);
+        setLexemeId(lexemeId);
+        setWordId(wordId);
+        setWord(word);
+        setWordPrese(wordPrese);
+        setHomonymNr(homonymNr);
+        setLang(lang);
+        setWordTypeCodes(wordTypeCodes);
+        setComplexity(complexity);
+        setLexRelTypeCode(lexRelTypeCode);
     }
 }

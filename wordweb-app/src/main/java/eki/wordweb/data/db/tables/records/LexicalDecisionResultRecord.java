@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionResultRecord extends UpdatableRecordImpl<LexicalDecisionResultRecord> implements Record7<Long, Long, String, String, Boolean, Long, Timestamp> {
 
-    private static final long serialVersionUID = 1393239343;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexical_decision_result.id</code>.
@@ -320,12 +320,12 @@ public class LexicalDecisionResultRecord extends UpdatableRecordImpl<LexicalDeci
     public LexicalDecisionResultRecord(Long id, Long dataId, String remoteAddr, String sessionId, Boolean answer, Long delay, Timestamp created) {
         super(LexicalDecisionResult.LEXICAL_DECISION_RESULT);
 
-        set(0, id);
-        set(1, dataId);
-        set(2, remoteAddr);
-        set(3, sessionId);
-        set(4, answer);
-        set(5, delay);
-        set(6, created);
+        setId(id);
+        setDataId(dataId);
+        setRemoteAddr(remoteAddr);
+        setSessionId(sessionId);
+        setAnswer(answer);
+        setDelay(delay);
+        setCreated(created);
     }
 }

@@ -22,7 +22,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implements Record18<Long, Long, String, String, String, Timestamp, BigDecimal, String[], String, String, String, String, Long, Boolean, String, Timestamp, String, Timestamp> {
 
-    private static final long serialVersionUID = 699388160;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.freeform.id</code>.
@@ -717,23 +717,23 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
     public FreeformRecord(Long id, Long parentId, String type, String valueText, String valuePrese, Timestamp valueDate, BigDecimal valueNumber, String[] valueArray, String classifName, String classifCode, String lang, String complexity, Long orderBy, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
         super(Freeform.FREEFORM);
 
-        set(0, id);
-        set(1, parentId);
-        set(2, type);
-        set(3, valueText);
-        set(4, valuePrese);
-        set(5, valueDate);
-        set(6, valueNumber);
-        set(7, valueArray);
-        set(8, classifName);
-        set(9, classifCode);
-        set(10, lang);
-        set(11, complexity);
-        set(12, orderBy);
-        set(13, isPublic);
-        set(14, createdBy);
-        set(15, createdOn);
-        set(16, modifiedBy);
-        set(17, modifiedOn);
+        setId(id);
+        setParentId(parentId);
+        setType(type);
+        setValueText(valueText);
+        setValuePrese(valuePrese);
+        setValueDate(valueDate);
+        setValueNumber(valueNumber);
+        setValueArray(valueArray);
+        setClassifName(classifName);
+        setClassifCode(classifCode);
+        setLang(lang);
+        setComplexity(complexity);
+        setOrderBy(orderBy);
+        setIsPublic(isPublic);
+        setCreatedBy(createdBy);
+        setCreatedOn(createdOn);
+        setModifiedBy(modifiedBy);
+        setModifiedOn(modifiedOn);
     }
 }

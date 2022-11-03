@@ -24,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WwException extends TableImpl<WwExceptionRecord> {
 
-    private static final long serialVersionUID = -296618000;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.ww_exception</code>
@@ -51,28 +52,29 @@ public class WwException extends TableImpl<WwExceptionRecord> {
     /**
      * The column <code>public.ww_exception.id</code>.
      */
-    public final TableField<WwExceptionRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('ww_exception_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WwExceptionRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.ww_exception.exception_name</code>.
      */
-    public final TableField<WwExceptionRecord, String> EXCEPTION_NAME = createField(DSL.name("exception_name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WwExceptionRecord, String> EXCEPTION_NAME = createField(DSL.name("exception_name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.ww_exception.exception_message</code>.
      */
-    public final TableField<WwExceptionRecord, String> EXCEPTION_MESSAGE = createField(DSL.name("exception_message"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WwExceptionRecord, String> EXCEPTION_MESSAGE = createField(DSL.name("exception_message"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.ww_exception.event_on</code>.
      */
-    public final TableField<WwExceptionRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<WwExceptionRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
-    /**
-     * Create a <code>public.ww_exception</code> table reference
-     */
-    public WwException() {
-        this(DSL.name("ww_exception"), null);
+    private WwException(Name alias, Table<WwExceptionRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WwException(Name alias, Table<WwExceptionRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -89,12 +91,11 @@ public class WwException extends TableImpl<WwExceptionRecord> {
         this(alias, WW_EXCEPTION);
     }
 
-    private WwException(Name alias, Table<WwExceptionRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WwException(Name alias, Table<WwExceptionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.ww_exception</code> table reference
+     */
+    public WwException() {
+        this(DSL.name("ww_exception"), null);
     }
 
     public <O extends Record> WwException(Table<O> child, ForeignKey<O, WwExceptionRecord> key) {
@@ -108,7 +109,7 @@ public class WwException extends TableImpl<WwExceptionRecord> {
 
     @Override
     public Identity<WwExceptionRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WW_EXCEPTION;
+        return (Identity<WwExceptionRecord, Long>) super.getIdentity();
     }
 
     @Override

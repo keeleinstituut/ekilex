@@ -45,7 +45,7 @@ import org.jooq.Field;
 
 
 /**
- * Convenience access to all stored procedures and functions in public
+ * Convenience access to all stored procedures and functions in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
@@ -53,7 +53,11 @@ public class Routines {
     /**
      * Call <code>public.difference</code>
      */
-    public static Integer difference(Configuration configuration, String __1, String __2) {
+    public static Integer difference(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         Difference f = new Difference();
         f.set__1(__1);
         f.set__2(__2);
@@ -65,7 +69,10 @@ public class Routines {
     /**
      * Get <code>public.difference</code> as a field.
      */
-    public static Field<Integer> difference(String __1, String __2) {
+    public static Field<Integer> difference(
+          String __1
+        , String __2
+    ) {
         Difference f = new Difference();
         f.set__1(__1);
         f.set__2(__2);
@@ -76,7 +83,10 @@ public class Routines {
     /**
      * Get <code>public.difference</code> as a field.
      */
-    public static Field<Integer> difference(Field<String> __1, Field<String> __2) {
+    public static Field<Integer> difference(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         Difference f = new Difference();
         f.set__1(__1);
         f.set__2(__2);
@@ -87,7 +97,10 @@ public class Routines {
     /**
      * Call <code>public.dmetaphone</code>
      */
-    public static String dmetaphone(Configuration configuration, String __1) {
+    public static String dmetaphone(
+          Configuration configuration
+        , String __1
+    ) {
         Dmetaphone f = new Dmetaphone();
         f.set__1(__1);
 
@@ -98,7 +111,9 @@ public class Routines {
     /**
      * Get <code>public.dmetaphone</code> as a field.
      */
-    public static Field<String> dmetaphone(String __1) {
+    public static Field<String> dmetaphone(
+          String __1
+    ) {
         Dmetaphone f = new Dmetaphone();
         f.set__1(__1);
 
@@ -108,7 +123,9 @@ public class Routines {
     /**
      * Get <code>public.dmetaphone</code> as a field.
      */
-    public static Field<String> dmetaphone(Field<String> __1) {
+    public static Field<String> dmetaphone(
+          Field<String> __1
+    ) {
         Dmetaphone f = new Dmetaphone();
         f.set__1(__1);
 
@@ -118,7 +135,10 @@ public class Routines {
     /**
      * Call <code>public.dmetaphone_alt</code>
      */
-    public static String dmetaphoneAlt(Configuration configuration, String __1) {
+    public static String dmetaphoneAlt(
+          Configuration configuration
+        , String __1
+    ) {
         DmetaphoneAlt f = new DmetaphoneAlt();
         f.set__1(__1);
 
@@ -129,7 +149,9 @@ public class Routines {
     /**
      * Get <code>public.dmetaphone_alt</code> as a field.
      */
-    public static Field<String> dmetaphoneAlt(String __1) {
+    public static Field<String> dmetaphoneAlt(
+          String __1
+    ) {
         DmetaphoneAlt f = new DmetaphoneAlt();
         f.set__1(__1);
 
@@ -139,7 +161,9 @@ public class Routines {
     /**
      * Get <code>public.dmetaphone_alt</code> as a field.
      */
-    public static Field<String> dmetaphoneAlt(Field<String> __1) {
+    public static Field<String> dmetaphoneAlt(
+          Field<String> __1
+    ) {
         DmetaphoneAlt f = new DmetaphoneAlt();
         f.set__1(__1);
 
@@ -149,8 +173,17 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object ginExtractQueryTrgm(Configuration configuration, String __1, Object __2, Short __3, Object __4, Object __5, Object __6, Object __7) {
+    @Deprecated
+    public static Object ginExtractQueryTrgm(
+          Configuration configuration
+        , String __1
+        , Object __2
+        , Short __3
+        , Object __4
+        , Object __5
+        , Object __6
+        , Object __7
+    ) {
         GinExtractQueryTrgm f = new GinExtractQueryTrgm();
         f.set__1(__1);
         f.set__2(__2);
@@ -167,8 +200,16 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> ginExtractQueryTrgm(String __1, Object __2, Short __3, Object __4, Object __5, Object __6, Object __7) {
+    @Deprecated
+    public static Field<Object> ginExtractQueryTrgm(
+          String __1
+        , Object __2
+        , Short __3
+        , Object __4
+        , Object __5
+        , Object __6
+        , Object __7
+    ) {
         GinExtractQueryTrgm f = new GinExtractQueryTrgm();
         f.set__1(__1);
         f.set__2(__2);
@@ -184,8 +225,16 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> ginExtractQueryTrgm(Field<String> __1, Field<Object> __2, Field<Short> __3, Field<Object> __4, Field<Object> __5, Field<Object> __6, Field<Object> __7) {
+    @Deprecated
+    public static Field<Object> ginExtractQueryTrgm(
+          Field<String> __1
+        , Field<Object> __2
+        , Field<Short> __3
+        , Field<Object> __4
+        , Field<Object> __5
+        , Field<Object> __6
+        , Field<Object> __7
+    ) {
         GinExtractQueryTrgm f = new GinExtractQueryTrgm();
         f.set__1(__1);
         f.set__2(__2);
@@ -201,8 +250,12 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object ginExtractValueTrgm(Configuration configuration, String __1, Object __2) {
+    @Deprecated
+    public static Object ginExtractValueTrgm(
+          Configuration configuration
+        , String __1
+        , Object __2
+    ) {
         GinExtractValueTrgm f = new GinExtractValueTrgm();
         f.set__1(__1);
         f.set__2(__2);
@@ -214,8 +267,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> ginExtractValueTrgm(String __1, Object __2) {
+    @Deprecated
+    public static Field<Object> ginExtractValueTrgm(
+          String __1
+        , Object __2
+    ) {
         GinExtractValueTrgm f = new GinExtractValueTrgm();
         f.set__1(__1);
         f.set__2(__2);
@@ -226,8 +282,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> ginExtractValueTrgm(Field<String> __1, Field<Object> __2) {
+    @Deprecated
+    public static Field<Object> ginExtractValueTrgm(
+          Field<String> __1
+        , Field<Object> __2
+    ) {
         GinExtractValueTrgm f = new GinExtractValueTrgm();
         f.set__1(__1);
         f.set__2(__2);
@@ -238,8 +297,18 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Boolean ginTrgmConsistent(Configuration configuration, Object __1, Short __2, String __3, Integer __4, Object __5, Object __6, Object __7, Object __8) {
+    @Deprecated
+    public static Boolean ginTrgmConsistent(
+          Configuration configuration
+        , Object __1
+        , Short __2
+        , String __3
+        , Integer __4
+        , Object __5
+        , Object __6
+        , Object __7
+        , Object __8
+    ) {
         GinTrgmConsistent f = new GinTrgmConsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -257,8 +326,17 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Boolean> ginTrgmConsistent(Object __1, Short __2, String __3, Integer __4, Object __5, Object __6, Object __7, Object __8) {
+    @Deprecated
+    public static Field<Boolean> ginTrgmConsistent(
+          Object __1
+        , Short __2
+        , String __3
+        , Integer __4
+        , Object __5
+        , Object __6
+        , Object __7
+        , Object __8
+    ) {
         GinTrgmConsistent f = new GinTrgmConsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -275,8 +353,17 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Boolean> ginTrgmConsistent(Field<Object> __1, Field<Short> __2, Field<String> __3, Field<Integer> __4, Field<Object> __5, Field<Object> __6, Field<Object> __7, Field<Object> __8) {
+    @Deprecated
+    public static Field<Boolean> ginTrgmConsistent(
+          Field<Object> __1
+        , Field<Short> __2
+        , Field<String> __3
+        , Field<Integer> __4
+        , Field<Object> __5
+        , Field<Object> __6
+        , Field<Object> __7
+        , Field<Object> __8
+    ) {
         GinTrgmConsistent f = new GinTrgmConsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -293,8 +380,17 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static String ginTrgmTriconsistent(Configuration configuration, Object __1, Short __2, String __3, Integer __4, Object __5, Object __6, Object __7) {
+    @Deprecated
+    public static String ginTrgmTriconsistent(
+          Configuration configuration
+        , Object __1
+        , Short __2
+        , String __3
+        , Integer __4
+        , Object __5
+        , Object __6
+        , Object __7
+    ) {
         GinTrgmTriconsistent f = new GinTrgmTriconsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -311,8 +407,16 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<String> ginTrgmTriconsistent(Object __1, Short __2, String __3, Integer __4, Object __5, Object __6, Object __7) {
+    @Deprecated
+    public static Field<String> ginTrgmTriconsistent(
+          Object __1
+        , Short __2
+        , String __3
+        , Integer __4
+        , Object __5
+        , Object __6
+        , Object __7
+    ) {
         GinTrgmTriconsistent f = new GinTrgmTriconsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -328,8 +432,16 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<String> ginTrgmTriconsistent(Field<Object> __1, Field<Short> __2, Field<String> __3, Field<Integer> __4, Field<Object> __5, Field<Object> __6, Field<Object> __7) {
+    @Deprecated
+    public static Field<String> ginTrgmTriconsistent(
+          Field<Object> __1
+        , Field<Short> __2
+        , Field<String> __3
+        , Field<Integer> __4
+        , Field<Object> __5
+        , Field<Object> __6
+        , Field<Object> __7
+    ) {
         GinTrgmTriconsistent f = new GinTrgmTriconsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -345,8 +457,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmCompress(Configuration configuration, Object __1) {
+    @Deprecated
+    public static Object gtrgmCompress(
+          Configuration configuration
+        , Object __1
+    ) {
         GtrgmCompress f = new GtrgmCompress();
         f.set__1(__1);
 
@@ -357,8 +472,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmCompress(Object __1) {
+    @Deprecated
+    public static Field<Object> gtrgmCompress(
+          Object __1
+    ) {
         GtrgmCompress f = new GtrgmCompress();
         f.set__1(__1);
 
@@ -368,8 +485,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmCompress(Field<Object> __1) {
+    @Deprecated
+    public static Field<Object> gtrgmCompress(
+          Field<Object> __1
+    ) {
         GtrgmCompress f = new GtrgmCompress();
         f.set__1(__1);
 
@@ -379,8 +498,15 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Boolean gtrgmConsistent(Configuration configuration, Object __1, String __2, Short __3, Long __4, Object __5) {
+    @Deprecated
+    public static Boolean gtrgmConsistent(
+          Configuration configuration
+        , Object __1
+        , String __2
+        , Short __3
+        , Long __4
+        , Object __5
+    ) {
         GtrgmConsistent f = new GtrgmConsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -395,8 +521,14 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Boolean> gtrgmConsistent(Object __1, String __2, Short __3, Long __4, Object __5) {
+    @Deprecated
+    public static Field<Boolean> gtrgmConsistent(
+          Object __1
+        , String __2
+        , Short __3
+        , Long __4
+        , Object __5
+    ) {
         GtrgmConsistent f = new GtrgmConsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -410,8 +542,14 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Boolean> gtrgmConsistent(Field<Object> __1, Field<String> __2, Field<Short> __3, Field<Long> __4, Field<Object> __5) {
+    @Deprecated
+    public static Field<Boolean> gtrgmConsistent(
+          Field<Object> __1
+        , Field<String> __2
+        , Field<Short> __3
+        , Field<Long> __4
+        , Field<Object> __5
+    ) {
         GtrgmConsistent f = new GtrgmConsistent();
         f.set__1(__1);
         f.set__2(__2);
@@ -425,8 +563,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmDecompress(Configuration configuration, Object __1) {
+    @Deprecated
+    public static Object gtrgmDecompress(
+          Configuration configuration
+        , Object __1
+    ) {
         GtrgmDecompress f = new GtrgmDecompress();
         f.set__1(__1);
 
@@ -437,8 +578,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmDecompress(Object __1) {
+    @Deprecated
+    public static Field<Object> gtrgmDecompress(
+          Object __1
+    ) {
         GtrgmDecompress f = new GtrgmDecompress();
         f.set__1(__1);
 
@@ -448,8 +591,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmDecompress(Field<Object> __1) {
+    @Deprecated
+    public static Field<Object> gtrgmDecompress(
+          Field<Object> __1
+    ) {
         GtrgmDecompress f = new GtrgmDecompress();
         f.set__1(__1);
 
@@ -459,8 +604,15 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Double gtrgmDistance(Configuration configuration, Object __1, String __2, Short __3, Long __4, Object __5) {
+    @Deprecated
+    public static Double gtrgmDistance(
+          Configuration configuration
+        , Object __1
+        , String __2
+        , Short __3
+        , Long __4
+        , Object __5
+    ) {
         GtrgmDistance f = new GtrgmDistance();
         f.set__1(__1);
         f.set__2(__2);
@@ -475,8 +627,14 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Double> gtrgmDistance(Object __1, String __2, Short __3, Long __4, Object __5) {
+    @Deprecated
+    public static Field<Double> gtrgmDistance(
+          Object __1
+        , String __2
+        , Short __3
+        , Long __4
+        , Object __5
+    ) {
         GtrgmDistance f = new GtrgmDistance();
         f.set__1(__1);
         f.set__2(__2);
@@ -490,8 +648,14 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Double> gtrgmDistance(Field<Object> __1, Field<String> __2, Field<Short> __3, Field<Long> __4, Field<Object> __5) {
+    @Deprecated
+    public static Field<Double> gtrgmDistance(
+          Field<Object> __1
+        , Field<String> __2
+        , Field<Short> __3
+        , Field<Long> __4
+        , Field<Object> __5
+    ) {
         GtrgmDistance f = new GtrgmDistance();
         f.set__1(__1);
         f.set__2(__2);
@@ -505,8 +669,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmIn(Configuration configuration, Object __1) {
+    @Deprecated
+    public static Object gtrgmIn(
+          Configuration configuration
+        , Object __1
+    ) {
         GtrgmIn f = new GtrgmIn();
         f.set__1(__1);
 
@@ -517,8 +684,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmIn(Object __1) {
+    @Deprecated
+    public static Field<Object> gtrgmIn(
+          Object __1
+    ) {
         GtrgmIn f = new GtrgmIn();
         f.set__1(__1);
 
@@ -528,8 +697,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmIn(Field<Object> __1) {
+    @Deprecated
+    public static Field<Object> gtrgmIn(
+          Field<Object> __1
+    ) {
         GtrgmIn f = new GtrgmIn();
         f.set__1(__1);
 
@@ -539,8 +710,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmOut(Configuration configuration, Object __1) {
+    @Deprecated
+    public static Object gtrgmOut(
+          Configuration configuration
+        , Object __1
+    ) {
         GtrgmOut f = new GtrgmOut();
         f.set__1(__1);
 
@@ -551,8 +725,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmOut(Object __1) {
+    @Deprecated
+    public static Field<Object> gtrgmOut(
+          Object __1
+    ) {
         GtrgmOut f = new GtrgmOut();
         f.set__1(__1);
 
@@ -562,8 +738,10 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmOut(Field<Object> __1) {
+    @Deprecated
+    public static Field<Object> gtrgmOut(
+          Field<Object> __1
+    ) {
         GtrgmOut f = new GtrgmOut();
         f.set__1(__1);
 
@@ -573,8 +751,13 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmPenalty(Configuration configuration, Object __1, Object __2, Object __3) {
+    @Deprecated
+    public static Object gtrgmPenalty(
+          Configuration configuration
+        , Object __1
+        , Object __2
+        , Object __3
+    ) {
         GtrgmPenalty f = new GtrgmPenalty();
         f.set__1(__1);
         f.set__2(__2);
@@ -587,8 +770,12 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmPenalty(Object __1, Object __2, Object __3) {
+    @Deprecated
+    public static Field<Object> gtrgmPenalty(
+          Object __1
+        , Object __2
+        , Object __3
+    ) {
         GtrgmPenalty f = new GtrgmPenalty();
         f.set__1(__1);
         f.set__2(__2);
@@ -600,8 +787,12 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmPenalty(Field<Object> __1, Field<Object> __2, Field<Object> __3) {
+    @Deprecated
+    public static Field<Object> gtrgmPenalty(
+          Field<Object> __1
+        , Field<Object> __2
+        , Field<Object> __3
+    ) {
         GtrgmPenalty f = new GtrgmPenalty();
         f.set__1(__1);
         f.set__2(__2);
@@ -613,8 +804,12 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmPicksplit(Configuration configuration, Object __1, Object __2) {
+    @Deprecated
+    public static Object gtrgmPicksplit(
+          Configuration configuration
+        , Object __1
+        , Object __2
+    ) {
         GtrgmPicksplit f = new GtrgmPicksplit();
         f.set__1(__1);
         f.set__2(__2);
@@ -626,8 +821,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmPicksplit(Object __1, Object __2) {
+    @Deprecated
+    public static Field<Object> gtrgmPicksplit(
+          Object __1
+        , Object __2
+    ) {
         GtrgmPicksplit f = new GtrgmPicksplit();
         f.set__1(__1);
         f.set__2(__2);
@@ -638,8 +836,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmPicksplit(Field<Object> __1, Field<Object> __2) {
+    @Deprecated
+    public static Field<Object> gtrgmPicksplit(
+          Field<Object> __1
+        , Field<Object> __2
+    ) {
         GtrgmPicksplit f = new GtrgmPicksplit();
         f.set__1(__1);
         f.set__2(__2);
@@ -650,8 +851,13 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmSame(Configuration configuration, Object __1, Object __2, Object __3) {
+    @Deprecated
+    public static Object gtrgmSame(
+          Configuration configuration
+        , Object __1
+        , Object __2
+        , Object __3
+    ) {
         GtrgmSame f = new GtrgmSame();
         f.set__1(__1);
         f.set__2(__2);
@@ -664,8 +870,12 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmSame(Object __1, Object __2, Object __3) {
+    @Deprecated
+    public static Field<Object> gtrgmSame(
+          Object __1
+        , Object __2
+        , Object __3
+    ) {
         GtrgmSame f = new GtrgmSame();
         f.set__1(__1);
         f.set__2(__2);
@@ -677,8 +887,12 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmSame(Field<Object> __1, Field<Object> __2, Field<Object> __3) {
+    @Deprecated
+    public static Field<Object> gtrgmSame(
+          Field<Object> __1
+        , Field<Object> __2
+        , Field<Object> __3
+    ) {
         GtrgmSame f = new GtrgmSame();
         f.set__1(__1);
         f.set__2(__2);
@@ -690,8 +904,12 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Object gtrgmUnion(Configuration configuration, Object __1, Object __2) {
+    @Deprecated
+    public static Object gtrgmUnion(
+          Configuration configuration
+        , Object __1
+        , Object __2
+    ) {
         GtrgmUnion f = new GtrgmUnion();
         f.set__1(__1);
         f.set__2(__2);
@@ -703,8 +921,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmUnion(Object __1, Object __2) {
+    @Deprecated
+    public static Field<Object> gtrgmUnion(
+          Object __1
+        , Object __2
+    ) {
         GtrgmUnion f = new GtrgmUnion();
         f.set__1(__1);
         f.set__2(__2);
@@ -715,8 +936,11 @@ public class Routines {
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
-    public static Field<Object> gtrgmUnion(Field<Object> __1, Field<Object> __2) {
+    @Deprecated
+    public static Field<Object> gtrgmUnion(
+          Field<Object> __1
+        , Field<Object> __2
+    ) {
         GtrgmUnion f = new GtrgmUnion();
         f.set__1(__1);
         f.set__2(__2);
@@ -727,7 +951,11 @@ public class Routines {
     /**
      * Call <code>public.levenshtein</code>
      */
-    public static Integer levenshtein1(Configuration configuration, String __1, String __2) {
+    public static Integer levenshtein1(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         Levenshtein1 f = new Levenshtein1();
         f.set__1(__1);
         f.set__2(__2);
@@ -739,7 +967,10 @@ public class Routines {
     /**
      * Get <code>public.levenshtein</code> as a field.
      */
-    public static Field<Integer> levenshtein1(String __1, String __2) {
+    public static Field<Integer> levenshtein1(
+          String __1
+        , String __2
+    ) {
         Levenshtein1 f = new Levenshtein1();
         f.set__1(__1);
         f.set__2(__2);
@@ -750,7 +981,10 @@ public class Routines {
     /**
      * Get <code>public.levenshtein</code> as a field.
      */
-    public static Field<Integer> levenshtein1(Field<String> __1, Field<String> __2) {
+    public static Field<Integer> levenshtein1(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         Levenshtein1 f = new Levenshtein1();
         f.set__1(__1);
         f.set__2(__2);
@@ -761,7 +995,14 @@ public class Routines {
     /**
      * Call <code>public.levenshtein</code>
      */
-    public static Integer levenshtein2(Configuration configuration, String __1, String __2, Integer __3, Integer __4, Integer __5) {
+    public static Integer levenshtein2(
+          Configuration configuration
+        , String __1
+        , String __2
+        , Integer __3
+        , Integer __4
+        , Integer __5
+    ) {
         Levenshtein2 f = new Levenshtein2();
         f.set__1(__1);
         f.set__2(__2);
@@ -776,7 +1017,13 @@ public class Routines {
     /**
      * Get <code>public.levenshtein</code> as a field.
      */
-    public static Field<Integer> levenshtein2(String __1, String __2, Integer __3, Integer __4, Integer __5) {
+    public static Field<Integer> levenshtein2(
+          String __1
+        , String __2
+        , Integer __3
+        , Integer __4
+        , Integer __5
+    ) {
         Levenshtein2 f = new Levenshtein2();
         f.set__1(__1);
         f.set__2(__2);
@@ -790,7 +1037,13 @@ public class Routines {
     /**
      * Get <code>public.levenshtein</code> as a field.
      */
-    public static Field<Integer> levenshtein2(Field<String> __1, Field<String> __2, Field<Integer> __3, Field<Integer> __4, Field<Integer> __5) {
+    public static Field<Integer> levenshtein2(
+          Field<String> __1
+        , Field<String> __2
+        , Field<Integer> __3
+        , Field<Integer> __4
+        , Field<Integer> __5
+    ) {
         Levenshtein2 f = new Levenshtein2();
         f.set__1(__1);
         f.set__2(__2);
@@ -804,7 +1057,12 @@ public class Routines {
     /**
      * Call <code>public.levenshtein_less_equal</code>
      */
-    public static Integer levenshteinLessEqual1(Configuration configuration, String __1, String __2, Integer __3) {
+    public static Integer levenshteinLessEqual1(
+          Configuration configuration
+        , String __1
+        , String __2
+        , Integer __3
+    ) {
         LevenshteinLessEqual1 f = new LevenshteinLessEqual1();
         f.set__1(__1);
         f.set__2(__2);
@@ -817,7 +1075,11 @@ public class Routines {
     /**
      * Get <code>public.levenshtein_less_equal</code> as a field.
      */
-    public static Field<Integer> levenshteinLessEqual1(String __1, String __2, Integer __3) {
+    public static Field<Integer> levenshteinLessEqual1(
+          String __1
+        , String __2
+        , Integer __3
+    ) {
         LevenshteinLessEqual1 f = new LevenshteinLessEqual1();
         f.set__1(__1);
         f.set__2(__2);
@@ -829,7 +1091,11 @@ public class Routines {
     /**
      * Get <code>public.levenshtein_less_equal</code> as a field.
      */
-    public static Field<Integer> levenshteinLessEqual1(Field<String> __1, Field<String> __2, Field<Integer> __3) {
+    public static Field<Integer> levenshteinLessEqual1(
+          Field<String> __1
+        , Field<String> __2
+        , Field<Integer> __3
+    ) {
         LevenshteinLessEqual1 f = new LevenshteinLessEqual1();
         f.set__1(__1);
         f.set__2(__2);
@@ -841,7 +1107,15 @@ public class Routines {
     /**
      * Call <code>public.levenshtein_less_equal</code>
      */
-    public static Integer levenshteinLessEqual2(Configuration configuration, String __1, String __2, Integer __3, Integer __4, Integer __5, Integer __6) {
+    public static Integer levenshteinLessEqual2(
+          Configuration configuration
+        , String __1
+        , String __2
+        , Integer __3
+        , Integer __4
+        , Integer __5
+        , Integer __6
+    ) {
         LevenshteinLessEqual2 f = new LevenshteinLessEqual2();
         f.set__1(__1);
         f.set__2(__2);
@@ -857,7 +1131,14 @@ public class Routines {
     /**
      * Get <code>public.levenshtein_less_equal</code> as a field.
      */
-    public static Field<Integer> levenshteinLessEqual2(String __1, String __2, Integer __3, Integer __4, Integer __5, Integer __6) {
+    public static Field<Integer> levenshteinLessEqual2(
+          String __1
+        , String __2
+        , Integer __3
+        , Integer __4
+        , Integer __5
+        , Integer __6
+    ) {
         LevenshteinLessEqual2 f = new LevenshteinLessEqual2();
         f.set__1(__1);
         f.set__2(__2);
@@ -872,7 +1153,14 @@ public class Routines {
     /**
      * Get <code>public.levenshtein_less_equal</code> as a field.
      */
-    public static Field<Integer> levenshteinLessEqual2(Field<String> __1, Field<String> __2, Field<Integer> __3, Field<Integer> __4, Field<Integer> __5, Field<Integer> __6) {
+    public static Field<Integer> levenshteinLessEqual2(
+          Field<String> __1
+        , Field<String> __2
+        , Field<Integer> __3
+        , Field<Integer> __4
+        , Field<Integer> __5
+        , Field<Integer> __6
+    ) {
         LevenshteinLessEqual2 f = new LevenshteinLessEqual2();
         f.set__1(__1);
         f.set__2(__2);
@@ -887,7 +1175,11 @@ public class Routines {
     /**
      * Call <code>public.metaphone</code>
      */
-    public static String metaphone(Configuration configuration, String __1, Integer __2) {
+    public static String metaphone(
+          Configuration configuration
+        , String __1
+        , Integer __2
+    ) {
         Metaphone f = new Metaphone();
         f.set__1(__1);
         f.set__2(__2);
@@ -899,7 +1191,10 @@ public class Routines {
     /**
      * Get <code>public.metaphone</code> as a field.
      */
-    public static Field<String> metaphone(String __1, Integer __2) {
+    public static Field<String> metaphone(
+          String __1
+        , Integer __2
+    ) {
         Metaphone f = new Metaphone();
         f.set__1(__1);
         f.set__2(__2);
@@ -910,7 +1205,10 @@ public class Routines {
     /**
      * Get <code>public.metaphone</code> as a field.
      */
-    public static Field<String> metaphone(Field<String> __1, Field<Integer> __2) {
+    public static Field<String> metaphone(
+          Field<String> __1
+        , Field<Integer> __2
+    ) {
         Metaphone f = new Metaphone();
         f.set__1(__1);
         f.set__2(__2);
@@ -921,7 +1219,10 @@ public class Routines {
     /**
      * Call <code>public.set_limit</code>
      */
-    public static Float setLimit(Configuration configuration, Float __1) {
+    public static Float setLimit(
+          Configuration configuration
+        , Float __1
+    ) {
         SetLimit f = new SetLimit();
         f.set__1(__1);
 
@@ -932,7 +1233,9 @@ public class Routines {
     /**
      * Get <code>public.set_limit</code> as a field.
      */
-    public static Field<Float> setLimit(Float __1) {
+    public static Field<Float> setLimit(
+          Float __1
+    ) {
         SetLimit f = new SetLimit();
         f.set__1(__1);
 
@@ -942,7 +1245,9 @@ public class Routines {
     /**
      * Get <code>public.set_limit</code> as a field.
      */
-    public static Field<Float> setLimit(Field<Float> __1) {
+    public static Field<Float> setLimit(
+          Field<Float> __1
+    ) {
         SetLimit f = new SetLimit();
         f.set__1(__1);
 
@@ -952,7 +1257,9 @@ public class Routines {
     /**
      * Call <code>public.show_limit</code>
      */
-    public static Float showLimit(Configuration configuration) {
+    public static Float showLimit(
+          Configuration configuration
+    ) {
         ShowLimit f = new ShowLimit();
 
         f.execute(configuration);
@@ -971,7 +1278,10 @@ public class Routines {
     /**
      * Call <code>public.show_trgm</code>
      */
-    public static String[] showTrgm(Configuration configuration, String __1) {
+    public static String[] showTrgm(
+          Configuration configuration
+        , String __1
+    ) {
         ShowTrgm f = new ShowTrgm();
         f.set__1(__1);
 
@@ -982,7 +1292,9 @@ public class Routines {
     /**
      * Get <code>public.show_trgm</code> as a field.
      */
-    public static Field<String[]> showTrgm(String __1) {
+    public static Field<String[]> showTrgm(
+          String __1
+    ) {
         ShowTrgm f = new ShowTrgm();
         f.set__1(__1);
 
@@ -992,7 +1304,9 @@ public class Routines {
     /**
      * Get <code>public.show_trgm</code> as a field.
      */
-    public static Field<String[]> showTrgm(Field<String> __1) {
+    public static Field<String[]> showTrgm(
+          Field<String> __1
+    ) {
         ShowTrgm f = new ShowTrgm();
         f.set__1(__1);
 
@@ -1002,7 +1316,11 @@ public class Routines {
     /**
      * Call <code>public.similarity</code>
      */
-    public static Float similarity(Configuration configuration, String __1, String __2) {
+    public static Float similarity(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         Similarity f = new Similarity();
         f.set__1(__1);
         f.set__2(__2);
@@ -1014,7 +1332,10 @@ public class Routines {
     /**
      * Get <code>public.similarity</code> as a field.
      */
-    public static Field<Float> similarity(String __1, String __2) {
+    public static Field<Float> similarity(
+          String __1
+        , String __2
+    ) {
         Similarity f = new Similarity();
         f.set__1(__1);
         f.set__2(__2);
@@ -1025,7 +1346,10 @@ public class Routines {
     /**
      * Get <code>public.similarity</code> as a field.
      */
-    public static Field<Float> similarity(Field<String> __1, Field<String> __2) {
+    public static Field<Float> similarity(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         Similarity f = new Similarity();
         f.set__1(__1);
         f.set__2(__2);
@@ -1036,7 +1360,11 @@ public class Routines {
     /**
      * Call <code>public.similarity_dist</code>
      */
-    public static Float similarityDist(Configuration configuration, String __1, String __2) {
+    public static Float similarityDist(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         SimilarityDist f = new SimilarityDist();
         f.set__1(__1);
         f.set__2(__2);
@@ -1048,7 +1376,10 @@ public class Routines {
     /**
      * Get <code>public.similarity_dist</code> as a field.
      */
-    public static Field<Float> similarityDist(String __1, String __2) {
+    public static Field<Float> similarityDist(
+          String __1
+        , String __2
+    ) {
         SimilarityDist f = new SimilarityDist();
         f.set__1(__1);
         f.set__2(__2);
@@ -1059,7 +1390,10 @@ public class Routines {
     /**
      * Get <code>public.similarity_dist</code> as a field.
      */
-    public static Field<Float> similarityDist(Field<String> __1, Field<String> __2) {
+    public static Field<Float> similarityDist(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         SimilarityDist f = new SimilarityDist();
         f.set__1(__1);
         f.set__2(__2);
@@ -1070,7 +1404,11 @@ public class Routines {
     /**
      * Call <code>public.similarity_op</code>
      */
-    public static Boolean similarityOp(Configuration configuration, String __1, String __2) {
+    public static Boolean similarityOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         SimilarityOp f = new SimilarityOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1082,7 +1420,10 @@ public class Routines {
     /**
      * Get <code>public.similarity_op</code> as a field.
      */
-    public static Field<Boolean> similarityOp(String __1, String __2) {
+    public static Field<Boolean> similarityOp(
+          String __1
+        , String __2
+    ) {
         SimilarityOp f = new SimilarityOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1093,7 +1434,10 @@ public class Routines {
     /**
      * Get <code>public.similarity_op</code> as a field.
      */
-    public static Field<Boolean> similarityOp(Field<String> __1, Field<String> __2) {
+    public static Field<Boolean> similarityOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         SimilarityOp f = new SimilarityOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1104,7 +1448,10 @@ public class Routines {
     /**
      * Call <code>public.soundex</code>
      */
-    public static String soundex(Configuration configuration, String __1) {
+    public static String soundex(
+          Configuration configuration
+        , String __1
+    ) {
         Soundex f = new Soundex();
         f.set__1(__1);
 
@@ -1115,7 +1462,9 @@ public class Routines {
     /**
      * Get <code>public.soundex</code> as a field.
      */
-    public static Field<String> soundex(String __1) {
+    public static Field<String> soundex(
+          String __1
+    ) {
         Soundex f = new Soundex();
         f.set__1(__1);
 
@@ -1125,7 +1474,9 @@ public class Routines {
     /**
      * Get <code>public.soundex</code> as a field.
      */
-    public static Field<String> soundex(Field<String> __1) {
+    public static Field<String> soundex(
+          Field<String> __1
+    ) {
         Soundex f = new Soundex();
         f.set__1(__1);
 
@@ -1135,7 +1486,10 @@ public class Routines {
     /**
      * Call <code>public.text_soundex</code>
      */
-    public static String textSoundex(Configuration configuration, String __1) {
+    public static String textSoundex(
+          Configuration configuration
+        , String __1
+    ) {
         TextSoundex f = new TextSoundex();
         f.set__1(__1);
 
@@ -1146,7 +1500,9 @@ public class Routines {
     /**
      * Get <code>public.text_soundex</code> as a field.
      */
-    public static Field<String> textSoundex(String __1) {
+    public static Field<String> textSoundex(
+          String __1
+    ) {
         TextSoundex f = new TextSoundex();
         f.set__1(__1);
 
@@ -1156,7 +1512,9 @@ public class Routines {
     /**
      * Get <code>public.text_soundex</code> as a field.
      */
-    public static Field<String> textSoundex(Field<String> __1) {
+    public static Field<String> textSoundex(
+          Field<String> __1
+    ) {
         TextSoundex f = new TextSoundex();
         f.set__1(__1);
 
@@ -1166,7 +1524,11 @@ public class Routines {
     /**
      * Call <code>public.word_similarity</code>
      */
-    public static Float wordSimilarity(Configuration configuration, String __1, String __2) {
+    public static Float wordSimilarity(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         WordSimilarity f = new WordSimilarity();
         f.set__1(__1);
         f.set__2(__2);
@@ -1178,7 +1540,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity</code> as a field.
      */
-    public static Field<Float> wordSimilarity(String __1, String __2) {
+    public static Field<Float> wordSimilarity(
+          String __1
+        , String __2
+    ) {
         WordSimilarity f = new WordSimilarity();
         f.set__1(__1);
         f.set__2(__2);
@@ -1189,7 +1554,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity</code> as a field.
      */
-    public static Field<Float> wordSimilarity(Field<String> __1, Field<String> __2) {
+    public static Field<Float> wordSimilarity(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         WordSimilarity f = new WordSimilarity();
         f.set__1(__1);
         f.set__2(__2);
@@ -1200,7 +1568,11 @@ public class Routines {
     /**
      * Call <code>public.word_similarity_commutator_op</code>
      */
-    public static Boolean wordSimilarityCommutatorOp(Configuration configuration, String __1, String __2) {
+    public static Boolean wordSimilarityCommutatorOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         WordSimilarityCommutatorOp f = new WordSimilarityCommutatorOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1212,7 +1584,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_commutator_op</code> as a field.
      */
-    public static Field<Boolean> wordSimilarityCommutatorOp(String __1, String __2) {
+    public static Field<Boolean> wordSimilarityCommutatorOp(
+          String __1
+        , String __2
+    ) {
         WordSimilarityCommutatorOp f = new WordSimilarityCommutatorOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1223,7 +1598,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_commutator_op</code> as a field.
      */
-    public static Field<Boolean> wordSimilarityCommutatorOp(Field<String> __1, Field<String> __2) {
+    public static Field<Boolean> wordSimilarityCommutatorOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         WordSimilarityCommutatorOp f = new WordSimilarityCommutatorOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1234,7 +1612,11 @@ public class Routines {
     /**
      * Call <code>public.word_similarity_dist_commutator_op</code>
      */
-    public static Float wordSimilarityDistCommutatorOp(Configuration configuration, String __1, String __2) {
+    public static Float wordSimilarityDistCommutatorOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         WordSimilarityDistCommutatorOp f = new WordSimilarityDistCommutatorOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1246,7 +1628,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_dist_commutator_op</code> as a field.
      */
-    public static Field<Float> wordSimilarityDistCommutatorOp(String __1, String __2) {
+    public static Field<Float> wordSimilarityDistCommutatorOp(
+          String __1
+        , String __2
+    ) {
         WordSimilarityDistCommutatorOp f = new WordSimilarityDistCommutatorOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1257,7 +1642,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_dist_commutator_op</code> as a field.
      */
-    public static Field<Float> wordSimilarityDistCommutatorOp(Field<String> __1, Field<String> __2) {
+    public static Field<Float> wordSimilarityDistCommutatorOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         WordSimilarityDistCommutatorOp f = new WordSimilarityDistCommutatorOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1268,7 +1656,11 @@ public class Routines {
     /**
      * Call <code>public.word_similarity_dist_op</code>
      */
-    public static Float wordSimilarityDistOp(Configuration configuration, String __1, String __2) {
+    public static Float wordSimilarityDistOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         WordSimilarityDistOp f = new WordSimilarityDistOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1280,7 +1672,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_dist_op</code> as a field.
      */
-    public static Field<Float> wordSimilarityDistOp(String __1, String __2) {
+    public static Field<Float> wordSimilarityDistOp(
+          String __1
+        , String __2
+    ) {
         WordSimilarityDistOp f = new WordSimilarityDistOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1291,7 +1686,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_dist_op</code> as a field.
      */
-    public static Field<Float> wordSimilarityDistOp(Field<String> __1, Field<String> __2) {
+    public static Field<Float> wordSimilarityDistOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         WordSimilarityDistOp f = new WordSimilarityDistOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1302,7 +1700,11 @@ public class Routines {
     /**
      * Call <code>public.word_similarity_op</code>
      */
-    public static Boolean wordSimilarityOp(Configuration configuration, String __1, String __2) {
+    public static Boolean wordSimilarityOp(
+          Configuration configuration
+        , String __1
+        , String __2
+    ) {
         WordSimilarityOp f = new WordSimilarityOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1314,7 +1716,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_op</code> as a field.
      */
-    public static Field<Boolean> wordSimilarityOp(String __1, String __2) {
+    public static Field<Boolean> wordSimilarityOp(
+          String __1
+        , String __2
+    ) {
         WordSimilarityOp f = new WordSimilarityOp();
         f.set__1(__1);
         f.set__2(__2);
@@ -1325,7 +1730,10 @@ public class Routines {
     /**
      * Get <code>public.word_similarity_op</code> as a field.
      */
-    public static Field<Boolean> wordSimilarityOp(Field<String> __1, Field<String> __2) {
+    public static Field<Boolean> wordSimilarityOp(
+          Field<String> __1
+        , Field<String> __2
+    ) {
         WordSimilarityOp f = new WordSimilarityOp();
         f.set__1(__1);
         f.set__2(__2);

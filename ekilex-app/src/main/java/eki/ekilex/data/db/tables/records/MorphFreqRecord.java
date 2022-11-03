@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphFreqRecord extends UpdatableRecordImpl<MorphFreqRecord> implements Record5<Long, Long, String, BigDecimal, Long> {
 
-    private static final long serialVersionUID = -50611126;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.morph_freq.id</code>.
@@ -248,10 +248,10 @@ public class MorphFreqRecord extends UpdatableRecordImpl<MorphFreqRecord> implem
     public MorphFreqRecord(Long id, Long freqCorpId, String morphCode, BigDecimal value, Long rank) {
         super(MorphFreq.MORPH_FREQ);
 
-        set(0, id);
-        set(1, freqCorpId);
-        set(2, morphCode);
-        set(3, value);
-        set(4, rank);
+        setId(id);
+        setFreqCorpId(freqCorpId);
+        setMorphCode(morphCode);
+        setValue(value);
+        setRank(rank);
     }
 }

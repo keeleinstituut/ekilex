@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelTypeLabel extends TableImpl<WordRelTypeLabelRecord> {
 
-    private static final long serialVersionUID = -1603774331;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_rel_type_label</code>
@@ -49,28 +50,29 @@ public class WordRelTypeLabel extends TableImpl<WordRelTypeLabelRecord> {
     /**
      * The column <code>public.word_rel_type_label.code</code>.
      */
-    public final TableField<WordRelTypeLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<WordRelTypeLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.word_rel_type_label.value</code>.
      */
-    public final TableField<WordRelTypeLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<WordRelTypeLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.word_rel_type_label.lang</code>.
      */
-    public final TableField<WordRelTypeLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<WordRelTypeLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.word_rel_type_label.type</code>.
      */
-    public final TableField<WordRelTypeLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<WordRelTypeLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.word_rel_type_label</code> table reference
-     */
-    public WordRelTypeLabel() {
-        this(DSL.name("word_rel_type_label"), null);
+    private WordRelTypeLabel(Name alias, Table<WordRelTypeLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordRelTypeLabel(Name alias, Table<WordRelTypeLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class WordRelTypeLabel extends TableImpl<WordRelTypeLabelRecord> {
         this(alias, WORD_REL_TYPE_LABEL);
     }
 
-    private WordRelTypeLabel(Name alias, Table<WordRelTypeLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordRelTypeLabel(Name alias, Table<WordRelTypeLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_rel_type_label</code> table reference
+     */
+    public WordRelTypeLabel() {
+        this(DSL.name("word_rel_type_label"), null);
     }
 
     public <O extends Record> WordRelTypeLabel(Table<O> child, ForeignKey<O, WordRelTypeLabelRecord> key) {
@@ -114,16 +115,29 @@ public class WordRelTypeLabel extends TableImpl<WordRelTypeLabelRecord> {
         return Arrays.<ForeignKey<WordRelTypeLabelRecord, ?>>asList(Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_LANG_FKEY, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_TYPE_FKEY);
     }
 
+    private transient WordRelType _wordRelType;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public WordRelType wordRelType() {
-        return new WordRelType(this, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY);
+        if (_wordRelType == null)
+            _wordRelType = new WordRelType(this, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY);
+
+        return _wordRelType;
     }
 
     public Language language() {
-        return new Language(this, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

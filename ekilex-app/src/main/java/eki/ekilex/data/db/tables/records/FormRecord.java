@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Record15<Long, Long, String, String, String, Integer, String, Boolean, String, String, String[], String, String, Long, Boolean> {
 
-    private static final long serialVersionUID = 853525744;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.form.id</code>.
@@ -606,20 +606,20 @@ public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Recor
     public FormRecord(Long id, Long paradigmId, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, String value, String valuePrese, String[] components, String displayForm, String audioFile, Long orderBy, Boolean isQuestionable) {
         super(Form.FORM);
 
-        set(0, id);
-        set(1, paradigmId);
-        set(2, morphGroup1);
-        set(3, morphGroup2);
-        set(4, morphGroup3);
-        set(5, displayLevel);
-        set(6, morphCode);
-        set(7, morphExists);
-        set(8, value);
-        set(9, valuePrese);
-        set(10, components);
-        set(11, displayForm);
-        set(12, audioFile);
-        set(13, orderBy);
-        set(14, isQuestionable);
+        setId(id);
+        setParadigmId(paradigmId);
+        setMorphGroup1(morphGroup1);
+        setMorphGroup2(morphGroup2);
+        setMorphGroup3(morphGroup3);
+        setDisplayLevel(displayLevel);
+        setMorphCode(morphCode);
+        setMorphExists(morphExists);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setComponents(components);
+        setDisplayForm(displayForm);
+        setAudioFile(audioFile);
+        setOrderBy(orderBy);
+        setIsQuestionable(isQuestionable);
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements Record12<String, String, String, String, Boolean, Boolean, Long, Boolean, String, String, String, String> {
 
-    private static final long serialVersionUID = 932239243;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.dataset.code</code>.
@@ -498,17 +498,17 @@ public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements
     public DatasetRecord(String code, String type, String name, String description, Boolean isVisible, Boolean isPublic, Long orderBy, Boolean isSuperior, String contact, String imageUrl, String fedTermCollectionId, String fedTermDomainId) {
         super(Dataset.DATASET);
 
-        set(0, code);
-        set(1, type);
-        set(2, name);
-        set(3, description);
-        set(4, isVisible);
-        set(5, isPublic);
-        set(6, orderBy);
-        set(7, isSuperior);
-        set(8, contact);
-        set(9, imageUrl);
-        set(10, fedTermCollectionId);
-        set(11, fedTermDomainId);
+        setCode(code);
+        setType(type);
+        setName(name);
+        setDescription(description);
+        setIsVisible(isVisible);
+        setIsPublic(isPublic);
+        setOrderBy(orderBy);
+        setIsSuperior(isSuperior);
+        setContact(contact);
+        setImageUrl(imageUrl);
+        setFedTermCollectionId(fedTermCollectionId);
+        setFedTermDomainId(fedTermDomainId);
     }
 }

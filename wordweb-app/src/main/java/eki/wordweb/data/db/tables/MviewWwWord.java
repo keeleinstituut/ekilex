@@ -4,7 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
 import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
@@ -14,12 +13,9 @@ import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -27,6 +23,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -36,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = -312216347;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -54,72 +51,72 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     /**
      * The column <code>public.mview_ww_word.word_id</code>.
      */
-    public final TableField<MviewWwWordRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_word.word</code>.
      */
-    public final TableField<MviewWwWordRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word.word_prese</code>.
      */
-    public final TableField<MviewWwWordRecord, String> WORD_PRESE = createField(DSL.name("word_prese"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordRecord, String> WORD_PRESE = createField(DSL.name("word_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word.as_word</code>.
      */
-    public final TableField<MviewWwWordRecord, String> AS_WORD = createField(DSL.name("as_word"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordRecord, String> AS_WORD = createField(DSL.name("as_word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word.lang</code>.
      */
-    public final TableField<MviewWwWordRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<MviewWwWordRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.mview_ww_word.lang_order_by</code>.
      */
-    public final TableField<MviewWwWordRecord, Long> LANG_ORDER_BY = createField(DSL.name("lang_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordRecord, Long> LANG_ORDER_BY = createField(DSL.name("lang_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_word.homonym_nr</code>.
      */
-    public final TableField<MviewWwWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_word.word_type_codes</code>.
      */
-    public final TableField<MviewWwWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word.display_morph_code</code>.
      */
-    public final TableField<MviewWwWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwWordRecord, String> DISPLAY_MORPH_CODE = createField(DSL.name("display_morph_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_word.gender_code</code>.
      */
-    public final TableField<MviewWwWordRecord, String> GENDER_CODE = createField(DSL.name("gender_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwWordRecord, String> GENDER_CODE = createField(DSL.name("gender_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_word.aspect_code</code>.
      */
-    public final TableField<MviewWwWordRecord, String> ASPECT_CODE = createField(DSL.name("aspect_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwWordRecord, String> ASPECT_CODE = createField(DSL.name("aspect_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_word.vocal_form</code>.
      */
-    public final TableField<MviewWwWordRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordRecord, String> VOCAL_FORM = createField(DSL.name("vocal_form"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word.manual_event_on</code>.
      */
-    public final TableField<MviewWwWordRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MviewWwWordRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(0), this, "");
 
     /**
      * The column <code>public.mview_ww_word.last_activity_event_on</code>.
      */
-    public final TableField<MviewWwWordRecord, Timestamp> LAST_ACTIVITY_EVENT_ON = createField(DSL.name("last_activity_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MviewWwWordRecord, Timestamp> LAST_ACTIVITY_EVENT_ON = createField(DSL.name("last_activity_event_on"), SQLDataType.TIMESTAMP(0), this, "");
 
     /**
      * The column <code>public.mview_ww_word.lang_complexities</code>.
@@ -144,33 +141,34 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     /**
      * The column <code>public.mview_ww_word.freq_value</code>.
      */
-    public final TableField<MviewWwWordRecord, BigDecimal> FREQ_VALUE = createField(DSL.name("freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+    public final TableField<MviewWwWordRecord, BigDecimal> FREQ_VALUE = createField(DSL.name("freq_value"), SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
      * The column <code>public.mview_ww_word.freq_rank</code>.
      */
-    public final TableField<MviewWwWordRecord, Long> FREQ_RANK = createField(DSL.name("freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordRecord, Long> FREQ_RANK = createField(DSL.name("freq_rank"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_word.forms_exist</code>.
      */
-    public final TableField<MviewWwWordRecord, Boolean> FORMS_EXIST = createField(DSL.name("forms_exist"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<MviewWwWordRecord, Boolean> FORMS_EXIST = createField(DSL.name("forms_exist"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.mview_ww_word.min_ds_order_by</code>.
      */
-    public final TableField<MviewWwWordRecord, Long> MIN_DS_ORDER_BY = createField(DSL.name("min_ds_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordRecord, Long> MIN_DS_ORDER_BY = createField(DSL.name("min_ds_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_word.word_type_order_by</code>.
      */
-    public final TableField<MviewWwWordRecord, Integer> WORD_TYPE_ORDER_BY = createField(DSL.name("word_type_order_by"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwWordRecord, Integer> WORD_TYPE_ORDER_BY = createField(DSL.name("word_type_order_by"), SQLDataType.INTEGER, this, "");
 
-    /**
-     * Create a <code>public.mview_ww_word</code> table reference
-     */
-    public MviewWwWord() {
-        this(DSL.name("mview_ww_word"), null);
+    private MviewWwWord(Name alias, Table<MviewWwWordRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwWord(Name alias, Table<MviewWwWordRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -187,12 +185,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
         this(alias, MVIEW_WW_WORD);
     }
 
-    private MviewWwWord(Name alias, Table<MviewWwWordRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwWord(Name alias, Table<MviewWwWordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_word</code> table reference
+     */
+    public MviewWwWord() {
+        this(DSL.name("mview_ww_word"), null);
     }
 
     public <O extends Record> MviewWwWord(Table<O> child, ForeignKey<O, MviewWwWordRecord> key) {
@@ -202,11 +199,6 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_AS_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_LANG_IDX, Indexes.MVIEW_WW_WORD_VALUE_IDX, Indexes.MVIEW_WW_WORD_VALUE_PREFIX_IDX, Indexes.MVIEW_WW_WORD_WORD_ID_IDX);
     }
 
     @Override

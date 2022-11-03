@@ -4,7 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Keys;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.SimilarityJudgementDataRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SimilarityJudgementData extends TableImpl<SimilarityJudgementDataRecord> {
 
-    private static final long serialVersionUID = -261754879;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.similarity_judgement_data</code>
@@ -52,33 +51,34 @@ public class SimilarityJudgementData extends TableImpl<SimilarityJudgementDataRe
     /**
      * The column <code>public.similarity_judgement_data.id</code>.
      */
-    public final TableField<SimilarityJudgementDataRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('similarity_judgement_data_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<SimilarityJudgementDataRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.similarity_judgement_data.meaning_id</code>.
      */
-    public final TableField<SimilarityJudgementDataRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SimilarityJudgementDataRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_data.word</code>.
      */
-    public final TableField<SimilarityJudgementDataRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<SimilarityJudgementDataRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_data.lang</code>.
      */
-    public final TableField<SimilarityJudgementDataRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<SimilarityJudgementDataRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_data.dataset_code</code>.
      */
-    public final TableField<SimilarityJudgementDataRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SimilarityJudgementDataRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.similarity_judgement_data</code> table reference
-     */
-    public SimilarityJudgementData() {
-        this(DSL.name("similarity_judgement_data"), null);
+    private SimilarityJudgementData(Name alias, Table<SimilarityJudgementDataRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SimilarityJudgementData(Name alias, Table<SimilarityJudgementDataRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -95,12 +95,11 @@ public class SimilarityJudgementData extends TableImpl<SimilarityJudgementDataRe
         this(alias, SIMILARITY_JUDGEMENT_DATA);
     }
 
-    private SimilarityJudgementData(Name alias, Table<SimilarityJudgementDataRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SimilarityJudgementData(Name alias, Table<SimilarityJudgementDataRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.similarity_judgement_data</code> table reference
+     */
+    public SimilarityJudgementData() {
+        this(DSL.name("similarity_judgement_data"), null);
     }
 
     public <O extends Record> SimilarityJudgementData(Table<O> child, ForeignKey<O, SimilarityJudgementDataRecord> key) {
@@ -113,13 +112,8 @@ public class SimilarityJudgementData extends TableImpl<SimilarityJudgementDataRe
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX, Indexes.SIMILARITY_JUDGEMENT_DATA_LANG_IDX, Indexes.SIMILARITY_JUDGEMENT_DATA_MEANING_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_DATA_WORD_IDX);
-    }
-
-    @Override
     public Identity<SimilarityJudgementDataRecord, Long> getIdentity() {
-        return Keys.IDENTITY_SIMILARITY_JUDGEMENT_DATA;
+        return (Identity<SimilarityJudgementDataRecord, Long>) super.getIdentity();
     }
 
     @Override

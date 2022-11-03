@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRegisterRecord extends UpdatableRecordImpl<LexemeRegisterRecord> implements Record4<Long, Long, String, Long> {
 
-    private static final long serialVersionUID = 394482811;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexeme_register.id</code>.
@@ -210,9 +210,9 @@ public class LexemeRegisterRecord extends UpdatableRecordImpl<LexemeRegisterReco
     public LexemeRegisterRecord(Long id, Long lexemeId, String registerCode, Long orderBy) {
         super(LexemeRegister.LEXEME_REGISTER);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, registerCode);
-        set(3, orderBy);
+        setId(id);
+        setLexemeId(lexemeId);
+        setRegisterCode(registerCode);
+        setOrderBy(orderBy);
     }
 }

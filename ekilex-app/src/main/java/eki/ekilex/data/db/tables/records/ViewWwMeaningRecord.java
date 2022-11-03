@@ -24,7 +24,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> implements Record11<Long, Timestamp, Timestamp, TypeDomainRecord[], TypeMediaFileRecord[], TypeMediaFileRecord[], String[], String[], String[], TypeFreeformRecord[], TypeDefinitionRecord[]> {
 
-    private static final long serialVersionUID = -1306682292;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_meaning.meaning_id</code>.
@@ -458,16 +458,16 @@ public class ViewWwMeaningRecord extends TableRecordImpl<ViewWwMeaningRecord> im
     public ViewWwMeaningRecord(Long meaningId, Timestamp manualEventOn, Timestamp lastApproveOrEditEventOn, TypeDomainRecord[] domainCodes, TypeMediaFileRecord[] imageFiles, TypeMediaFileRecord[] mediaFiles, String[] systematicPolysemyPatterns, String[] semanticTypes, String[] learnerComments, TypeFreeformRecord[] notes, TypeDefinitionRecord[] definitions) {
         super(ViewWwMeaning.VIEW_WW_MEANING);
 
-        set(0, meaningId);
-        set(1, manualEventOn);
-        set(2, lastApproveOrEditEventOn);
-        set(3, domainCodes);
-        set(4, imageFiles);
-        set(5, mediaFiles);
-        set(6, systematicPolysemyPatterns);
-        set(7, semanticTypes);
-        set(8, learnerComments);
-        set(9, notes);
-        set(10, definitions);
+        setMeaningId(meaningId);
+        setManualEventOn(manualEventOn);
+        setLastApproveOrEditEventOn(lastApproveOrEditEventOn);
+        setDomainCodes(domainCodes);
+        setImageFiles(imageFiles);
+        setMediaFiles(mediaFiles);
+        setSystematicPolysemyPatterns(systematicPolysemyPatterns);
+        setSemanticTypes(semanticTypes);
+        setLearnerComments(learnerComments);
+        setNotes(notes);
+        setDefinitions(definitions);
     }
 }

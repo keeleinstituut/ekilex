@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row7;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
 
-    private static final long serialVersionUID = -791353442;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.freeform_source_link</code>
@@ -52,43 +51,44 @@ public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
     /**
      * The column <code>public.freeform_source_link.id</code>.
      */
-    public final TableField<FreeformSourceLinkRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('freeform_source_link_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FreeformSourceLinkRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.freeform_source_link.freeform_id</code>.
      */
-    public final TableField<FreeformSourceLinkRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<FreeformSourceLinkRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.freeform_source_link.source_id</code>.
      */
-    public final TableField<FreeformSourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<FreeformSourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.freeform_source_link.type</code>.
      */
-    public final TableField<FreeformSourceLinkRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FreeformSourceLinkRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.freeform_source_link.name</code>.
      */
-    public final TableField<FreeformSourceLinkRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FreeformSourceLinkRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.freeform_source_link.value</code>.
      */
-    public final TableField<FreeformSourceLinkRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FreeformSourceLinkRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.freeform_source_link.order_by</code>.
      */
-    public final TableField<FreeformSourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('freeform_source_link_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FreeformSourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.freeform_source_link</code> table reference
-     */
-    public FreeformSourceLink() {
-        this(DSL.name("freeform_source_link"), null);
+    private FreeformSourceLink(Name alias, Table<FreeformSourceLinkRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private FreeformSourceLink(Name alias, Table<FreeformSourceLinkRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -105,12 +105,11 @@ public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
         this(alias, FREEFORM_SOURCE_LINK);
     }
 
-    private FreeformSourceLink(Name alias, Table<FreeformSourceLinkRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private FreeformSourceLink(Name alias, Table<FreeformSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.freeform_source_link</code> table reference
+     */
+    public FreeformSourceLink() {
+        this(DSL.name("freeform_source_link"), null);
     }
 
     public <O extends Record> FreeformSourceLink(Table<O> child, ForeignKey<O, FreeformSourceLinkRecord> key) {
@@ -123,13 +122,8 @@ public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FREEFORM_SOURCE_LINK_FREEFORM_ID_IDX, Indexes.FREEFORM_SOURCE_LINK_NAME_IDX, Indexes.FREEFORM_SOURCE_LINK_SOURCE_ID_IDX, Indexes.FREEFORM_SOURCE_LINK_VALUE_IDX);
-    }
-
-    @Override
     public Identity<FreeformSourceLinkRecord, Long> getIdentity() {
-        return Keys.IDENTITY_FREEFORM_SOURCE_LINK;
+        return (Identity<FreeformSourceLinkRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -147,12 +141,21 @@ public class FreeformSourceLink extends TableImpl<FreeformSourceLinkRecord> {
         return Arrays.<ForeignKey<FreeformSourceLinkRecord, ?>>asList(Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_FREEFORM_ID_FKEY, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_SOURCE_ID_FKEY);
     }
 
+    private transient Freeform _freeform;
+    private transient Source _source;
+
     public Freeform freeform() {
-        return new Freeform(this, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_FREEFORM_ID_FKEY);
+        if (_freeform == null)
+            _freeform = new Freeform(this, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_FREEFORM_ID_FKEY);
+
+        return _freeform;
     }
 
     public Source source() {
-        return new Source(this, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_SOURCE_ID_FKEY);
+        if (_source == null)
+            _source = new Source(this, Keys.FREEFORM_SOURCE_LINK__FREEFORM_SOURCE_LINK_SOURCE_ID_FKEY);
+
+        return _source;
     }
 
     @Override

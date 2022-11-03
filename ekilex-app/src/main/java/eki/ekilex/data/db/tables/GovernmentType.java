@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
 
-    private static final long serialVersionUID = -2066272409;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.government_type</code>
@@ -50,23 +51,24 @@ public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
     /**
      * The column <code>public.government_type.code</code>.
      */
-    public final TableField<GovernmentTypeRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<GovernmentTypeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.government_type.datasets</code>.
      */
-    public final TableField<GovernmentTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<GovernmentTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.government_type.order_by</code>.
      */
-    public final TableField<GovernmentTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('government_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<GovernmentTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.government_type</code> table reference
-     */
-    public GovernmentType() {
-        this(DSL.name("government_type"), null);
+    private GovernmentType(Name alias, Table<GovernmentTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private GovernmentType(Name alias, Table<GovernmentTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
         this(alias, GOVERNMENT_TYPE);
     }
 
-    private GovernmentType(Name alias, Table<GovernmentTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private GovernmentType(Name alias, Table<GovernmentTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.government_type</code> table reference
+     */
+    public GovernmentType() {
+        this(DSL.name("government_type"), null);
     }
 
     public <O extends Record> GovernmentType(Table<O> child, ForeignKey<O, GovernmentTypeRecord> key) {
@@ -102,7 +103,7 @@ public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
 
     @Override
     public Identity<GovernmentTypeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_GOVERNMENT_TYPE;
+        return (Identity<GovernmentTypeRecord, Long>) super.getIdentity();
     }
 
     @Override

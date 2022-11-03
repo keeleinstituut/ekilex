@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningTagRecord extends UpdatableRecordImpl<MeaningTagRecord> implements Record4<Long, Long, String, Timestamp> {
 
-    private static final long serialVersionUID = 1866914797;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.meaning_tag.id</code>.
@@ -212,9 +212,9 @@ public class MeaningTagRecord extends UpdatableRecordImpl<MeaningTagRecord> impl
     public MeaningTagRecord(Long id, Long meaningId, String tagName, Timestamp createdOn) {
         super(MeaningTag.MEANING_TAG);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, tagName);
-        set(3, createdOn);
+        setId(id);
+        setMeaningId(meaningId);
+        setTagName(tagName);
+        setCreatedOn(createdOn);
     }
 }

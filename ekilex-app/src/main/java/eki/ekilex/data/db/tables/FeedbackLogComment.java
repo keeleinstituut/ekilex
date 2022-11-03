@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
 
-    private static final long serialVersionUID = 1248372743;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.feedback_log_comment</code>
@@ -53,33 +52,34 @@ public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
     /**
      * The column <code>public.feedback_log_comment.id</code>.
      */
-    public final TableField<FeedbackLogCommentRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('feedback_log_comment_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FeedbackLogCommentRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.feedback_log_comment.feedback_log_id</code>.
      */
-    public final TableField<FeedbackLogCommentRecord, Long> FEEDBACK_LOG_ID = createField(DSL.name("feedback_log_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<FeedbackLogCommentRecord, Long> FEEDBACK_LOG_ID = createField(DSL.name("feedback_log_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.feedback_log_comment.comment</code>.
      */
-    public final TableField<FeedbackLogCommentRecord, String> COMMENT = createField(DSL.name("comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogCommentRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log_comment.user_name</code>.
      */
-    public final TableField<FeedbackLogCommentRecord, String> USER_NAME = createField(DSL.name("user_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FeedbackLogCommentRecord, String> USER_NAME = createField(DSL.name("user_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.feedback_log_comment.created_on</code>.
      */
-    public final TableField<FeedbackLogCommentRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<FeedbackLogCommentRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
-    /**
-     * Create a <code>public.feedback_log_comment</code> table reference
-     */
-    public FeedbackLogComment() {
-        this(DSL.name("feedback_log_comment"), null);
+    private FeedbackLogComment(Name alias, Table<FeedbackLogCommentRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private FeedbackLogComment(Name alias, Table<FeedbackLogCommentRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -96,12 +96,11 @@ public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
         this(alias, FEEDBACK_LOG_COMMENT);
     }
 
-    private FeedbackLogComment(Name alias, Table<FeedbackLogCommentRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private FeedbackLogComment(Name alias, Table<FeedbackLogCommentRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.feedback_log_comment</code> table reference
+     */
+    public FeedbackLogComment() {
+        this(DSL.name("feedback_log_comment"), null);
     }
 
     public <O extends Record> FeedbackLogComment(Table<O> child, ForeignKey<O, FeedbackLogCommentRecord> key) {
@@ -114,13 +113,8 @@ public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FEEDBACK_LOG_COMMENT_LOG_ID_IDX);
-    }
-
-    @Override
     public Identity<FeedbackLogCommentRecord, Long> getIdentity() {
-        return Keys.IDENTITY_FEEDBACK_LOG_COMMENT;
+        return (Identity<FeedbackLogCommentRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -138,8 +132,13 @@ public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
         return Arrays.<ForeignKey<FeedbackLogCommentRecord, ?>>asList(Keys.FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY);
     }
 
+    private transient FeedbackLog _feedbackLog;
+
     public FeedbackLog feedbackLog() {
-        return new FeedbackLog(this, Keys.FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY);
+        if (_feedbackLog == null)
+            _feedbackLog = new FeedbackLog(this, Keys.FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY);
+
+        return _feedbackLog;
     }
 
     @Override

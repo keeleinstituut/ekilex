@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MorphFreqRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphFreq extends TableImpl<MorphFreqRecord> {
 
-    private static final long serialVersionUID = 681719716;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.morph_freq</code>
@@ -53,33 +52,34 @@ public class MorphFreq extends TableImpl<MorphFreqRecord> {
     /**
      * The column <code>public.morph_freq.id</code>.
      */
-    public final TableField<MorphFreqRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('morph_freq_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MorphFreqRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.morph_freq.freq_corp_id</code>.
      */
-    public final TableField<MorphFreqRecord, Long> FREQ_CORP_ID = createField(DSL.name("freq_corp_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MorphFreqRecord, Long> FREQ_CORP_ID = createField(DSL.name("freq_corp_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.morph_freq.morph_code</code>.
      */
-    public final TableField<MorphFreqRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MorphFreqRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.morph_freq.value</code>.
      */
-    public final TableField<MorphFreqRecord, BigDecimal> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7).nullable(false), this, "");
+    public final TableField<MorphFreqRecord, BigDecimal> VALUE = createField(DSL.name("value"), SQLDataType.NUMERIC(12, 7).nullable(false), this, "");
 
     /**
      * The column <code>public.morph_freq.rank</code>.
      */
-    public final TableField<MorphFreqRecord, Long> RANK = createField(DSL.name("rank"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MorphFreqRecord, Long> RANK = createField(DSL.name("rank"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.morph_freq</code> table reference
-     */
-    public MorphFreq() {
-        this(DSL.name("morph_freq"), null);
+    private MorphFreq(Name alias, Table<MorphFreqRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MorphFreq(Name alias, Table<MorphFreqRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -96,12 +96,11 @@ public class MorphFreq extends TableImpl<MorphFreqRecord> {
         this(alias, MORPH_FREQ);
     }
 
-    private MorphFreq(Name alias, Table<MorphFreqRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MorphFreq(Name alias, Table<MorphFreqRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.morph_freq</code> table reference
+     */
+    public MorphFreq() {
+        this(DSL.name("morph_freq"), null);
     }
 
     public <O extends Record> MorphFreq(Table<O> child, ForeignKey<O, MorphFreqRecord> key) {
@@ -114,13 +113,8 @@ public class MorphFreq extends TableImpl<MorphFreqRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MORPH_FREQ_CORP_ID_IDX, Indexes.MORPH_FREQ_MORPH_CODE_IDX, Indexes.MORPH_FREQ_RANK_IDX, Indexes.MORPH_FREQ_VALUE_IDX);
-    }
-
-    @Override
     public Identity<MorphFreqRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MORPH_FREQ;
+        return (Identity<MorphFreqRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -138,12 +132,21 @@ public class MorphFreq extends TableImpl<MorphFreqRecord> {
         return Arrays.<ForeignKey<MorphFreqRecord, ?>>asList(Keys.MORPH_FREQ__MORPH_FREQ_FREQ_CORP_ID_FKEY, Keys.MORPH_FREQ__MORPH_FREQ_MORPH_CODE_FKEY);
     }
 
+    private transient FreqCorp _freqCorp;
+    private transient Morph _morph;
+
     public FreqCorp freqCorp() {
-        return new FreqCorp(this, Keys.MORPH_FREQ__MORPH_FREQ_FREQ_CORP_ID_FKEY);
+        if (_freqCorp == null)
+            _freqCorp = new FreqCorp(this, Keys.MORPH_FREQ__MORPH_FREQ_FREQ_CORP_ID_FKEY);
+
+        return _freqCorp;
     }
 
     public Morph morph() {
-        return new Morph(this, Keys.MORPH_FREQ__MORPH_FREQ_MORPH_CODE_FKEY);
+        if (_morph == null)
+            _morph = new Morph(this, Keys.MORPH_FREQ__MORPH_FREQ_MORPH_CODE_FKEY);
+
+        return _morph;
     }
 
     @Override

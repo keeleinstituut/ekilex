@@ -17,6 +17,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -26,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwSimilarityJudgementData extends TableImpl<ViewWwSimilarityJudgementDataRecord> {
 
-    private static final long serialVersionUID = 1554374026;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.view_ww_similarity_judgement_data</code>
@@ -44,28 +45,29 @@ public class ViewWwSimilarityJudgementData extends TableImpl<ViewWwSimilarityJud
     /**
      * The column <code>public.view_ww_similarity_judgement_data.meaning_id</code>.
      */
-    public final TableField<ViewWwSimilarityJudgementDataRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwSimilarityJudgementDataRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_similarity_judgement_data.word</code>.
      */
-    public final TableField<ViewWwSimilarityJudgementDataRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwSimilarityJudgementDataRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_similarity_judgement_data.lang</code>.
      */
-    public final TableField<ViewWwSimilarityJudgementDataRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<ViewWwSimilarityJudgementDataRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.view_ww_similarity_judgement_data.dataset_code</code>.
      */
-    public final TableField<ViewWwSimilarityJudgementDataRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwSimilarityJudgementDataRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.CLOB, this, "");
 
-    /**
-     * Create a <code>public.view_ww_similarity_judgement_data</code> table reference
-     */
-    public ViewWwSimilarityJudgementData() {
-        this(DSL.name("view_ww_similarity_judgement_data"), null);
+    private ViewWwSimilarityJudgementData(Name alias, Table<ViewWwSimilarityJudgementDataRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ViewWwSimilarityJudgementData(Name alias, Table<ViewWwSimilarityJudgementDataRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_similarity_judgement_data\" as  SELECT w.meaning_id,\n    w.word,\n    w.lang,\n    w.dataset_code\n   FROM (( SELECT w_1.meaning_id,\n            w_1.word,\n            w_1.lang,\n            'qq2'::text AS dataset_code\n           FROM ( SELECT DISTINCT l.meaning_id,\n                    w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2,\n                    lexeme l\n                  WHERE ((w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2) AND (l.word_id = w_2.id) AND ((l.dataset_code)::text = 'qq2'::text))) w_1\n          ORDER BY (random()))\n        UNION ALL\n        ( SELECT w_1.meaning_id,\n            w_1.word,\n            w_1.lang,\n            'ev2'::text AS dataset_code\n           FROM ( SELECT DISTINCT l.meaning_id,\n                    w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2,\n                    lexeme l\n                  WHERE ((w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2) AND (l.word_id = w_2.id) AND ((l.dataset_code)::text = 'ev2'::text))) w_1\n          WHERE (NOT (EXISTS ( SELECT w2.id\n                   FROM word w2,\n                    lexeme l2\n                  WHERE ((l2.word_id = w2.id) AND ((l2.dataset_code)::text = 'qq2'::text) AND (w_1.word = w2.value)))))\n          ORDER BY (random()))\n        UNION ALL\n        ( SELECT w_1.meaning_id,\n            w_1.word,\n            w_1.lang,\n            'psv'::text AS dataset_code\n           FROM ( SELECT DISTINCT l.meaning_id,\n                    w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2,\n                    lexeme l\n                  WHERE ((w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2) AND (l.word_id = w_2.id) AND ((l.dataset_code)::text = 'psv'::text))) w_1\n          ORDER BY (random()))) w;"));
     }
 
     /**
@@ -82,12 +84,11 @@ public class ViewWwSimilarityJudgementData extends TableImpl<ViewWwSimilarityJud
         this(alias, VIEW_WW_SIMILARITY_JUDGEMENT_DATA);
     }
 
-    private ViewWwSimilarityJudgementData(Name alias, Table<ViewWwSimilarityJudgementDataRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ViewWwSimilarityJudgementData(Name alias, Table<ViewWwSimilarityJudgementDataRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_similarity_judgement_data\" as  SELECT w.meaning_id,\n    w.word,\n    w.lang,\n    w.dataset_code\n   FROM (( SELECT w_1.meaning_id,\n            w_1.word,\n            w_1.lang,\n            'qq2'::text AS dataset_code\n           FROM ( SELECT DISTINCT l.meaning_id,\n                    w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2,\n                    lexeme l\n                  WHERE ((w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2) AND (l.word_id = w_2.id) AND ((l.dataset_code)::text = 'qq2'::text))) w_1\n          ORDER BY (random()))\n        UNION ALL\n        ( SELECT w_1.meaning_id,\n            w_1.word,\n            w_1.lang,\n            'ev2'::text AS dataset_code\n           FROM ( SELECT DISTINCT l.meaning_id,\n                    w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2,\n                    lexeme l\n                  WHERE ((w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2) AND (l.word_id = w_2.id) AND ((l.dataset_code)::text = 'ev2'::text))) w_1\n          WHERE (NOT (EXISTS ( SELECT w2.id\n                   FROM word w2,\n                    lexeme l2\n                  WHERE ((l2.word_id = w2.id) AND ((l2.dataset_code)::text = 'qq2'::text) AND (w_1.word = w2.value)))))\n          ORDER BY (random()))\n        UNION ALL\n        ( SELECT w_1.meaning_id,\n            w_1.word,\n            w_1.lang,\n            'psv'::text AS dataset_code\n           FROM ( SELECT DISTINCT l.meaning_id,\n                    w_2.value AS word,\n                    w_2.lang\n                   FROM word w_2,\n                    lexeme l\n                  WHERE ((w_2.value !~~ '% %'::text) AND (length(w_2.value) > 2) AND (l.word_id = w_2.id) AND ((l.dataset_code)::text = 'psv'::text))) w_1\n          ORDER BY (random()))) w;"));
+    /**
+     * Create a <code>public.view_ww_similarity_judgement_data</code> table reference
+     */
+    public ViewWwSimilarityJudgementData() {
+        this(DSL.name("view_ww_similarity_judgement_data"), null);
     }
 
     public <O extends Record> ViewWwSimilarityJudgementData(Table<O> child, ForeignKey<O, ViewWwSimilarityJudgementDataRecord> key) {

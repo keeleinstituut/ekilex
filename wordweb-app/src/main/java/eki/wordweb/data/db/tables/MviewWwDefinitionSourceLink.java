@@ -4,17 +4,12 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwDefinitionSourceLinkRecord;
 import eki.wordweb.data.db.udt.records.TypeSourceLinkRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -23,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwDefinitionSourceLink extends TableImpl<MviewWwDefinitionSourceLinkRecord> {
 
-    private static final long serialVersionUID = 1867086013;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_definition_source_link</code>
@@ -50,18 +46,19 @@ public class MviewWwDefinitionSourceLink extends TableImpl<MviewWwDefinitionSour
     /**
      * The column <code>public.mview_ww_definition_source_link.meaning_id</code>.
      */
-    public final TableField<MviewWwDefinitionSourceLinkRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwDefinitionSourceLinkRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_definition_source_link.source_links</code>.
      */
     public final TableField<MviewWwDefinitionSourceLinkRecord, TypeSourceLinkRecord[]> SOURCE_LINKS = createField(DSL.name("source_links"), eki.wordweb.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_definition_source_link</code> table reference
-     */
-    public MviewWwDefinitionSourceLink() {
-        this(DSL.name("mview_ww_definition_source_link"), null);
+    private MviewWwDefinitionSourceLink(Name alias, Table<MviewWwDefinitionSourceLinkRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwDefinitionSourceLink(Name alias, Table<MviewWwDefinitionSourceLinkRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -78,12 +75,11 @@ public class MviewWwDefinitionSourceLink extends TableImpl<MviewWwDefinitionSour
         this(alias, MVIEW_WW_DEFINITION_SOURCE_LINK);
     }
 
-    private MviewWwDefinitionSourceLink(Name alias, Table<MviewWwDefinitionSourceLinkRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwDefinitionSourceLink(Name alias, Table<MviewWwDefinitionSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_definition_source_link</code> table reference
+     */
+    public MviewWwDefinitionSourceLink() {
+        this(DSL.name("mview_ww_definition_source_link"), null);
     }
 
     public <O extends Record> MviewWwDefinitionSourceLink(Table<O> child, ForeignKey<O, MviewWwDefinitionSourceLinkRecord> key) {
@@ -93,11 +89,6 @@ public class MviewWwDefinitionSourceLink extends TableImpl<MviewWwDefinitionSour
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_DEFINITION_SOURCE_LINK_MEANING_ID_IDX);
     }
 
     @Override

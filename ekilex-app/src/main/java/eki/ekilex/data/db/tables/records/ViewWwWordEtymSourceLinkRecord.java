@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordEtymSourceLinkRecord extends TableRecordImpl<ViewWwWordEtymSourceLinkRecord> implements Record2<Long, TypeSourceLinkRecord[]> {
 
-    private static final long serialVersionUID = -110073012;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_word_etym_source_link.word_id</code>.
@@ -129,7 +129,7 @@ public class ViewWwWordEtymSourceLinkRecord extends TableRecordImpl<ViewWwWordEt
     public ViewWwWordEtymSourceLinkRecord(Long wordId, TypeSourceLinkRecord[] sourceLinks) {
         super(ViewWwWordEtymSourceLink.VIEW_WW_WORD_ETYM_SOURCE_LINK);
 
-        set(0, wordId);
-        set(1, sourceLinks);
+        setWordId(wordId);
+        setSourceLinks(sourceLinks);
     }
 }

@@ -4,16 +4,11 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwDatasetWordMenuRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -22,6 +17,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwDatasetWordMenu extends TableImpl<MviewWwDatasetWordMenuRecord> {
 
-    private static final long serialVersionUID = 1803922497;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_dataset_word_menu</code>
@@ -49,23 +45,24 @@ public class MviewWwDatasetWordMenu extends TableImpl<MviewWwDatasetWordMenuReco
     /**
      * The column <code>public.mview_ww_dataset_word_menu.dataset_code</code>.
      */
-    public final TableField<MviewWwDatasetWordMenuRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MviewWwDatasetWordMenuRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_dataset_word_menu.first_letter</code>.
      */
-    public final TableField<MviewWwDatasetWordMenuRecord, String> FIRST_LETTER = createField(DSL.name("first_letter"), org.jooq.impl.SQLDataType.CHAR(1), this, "");
+    public final TableField<MviewWwDatasetWordMenuRecord, String> FIRST_LETTER = createField(DSL.name("first_letter"), SQLDataType.CHAR(1), this, "");
 
     /**
      * The column <code>public.mview_ww_dataset_word_menu.words</code>.
      */
-    public final TableField<MviewWwDatasetWordMenuRecord, String[]> WORDS = createField(DSL.name("words"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwDatasetWordMenuRecord, String[]> WORDS = createField(DSL.name("words"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_dataset_word_menu</code> table reference
-     */
-    public MviewWwDatasetWordMenu() {
-        this(DSL.name("mview_ww_dataset_word_menu"), null);
+    private MviewWwDatasetWordMenu(Name alias, Table<MviewWwDatasetWordMenuRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwDatasetWordMenu(Name alias, Table<MviewWwDatasetWordMenuRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -82,12 +79,11 @@ public class MviewWwDatasetWordMenu extends TableImpl<MviewWwDatasetWordMenuReco
         this(alias, MVIEW_WW_DATASET_WORD_MENU);
     }
 
-    private MviewWwDatasetWordMenu(Name alias, Table<MviewWwDatasetWordMenuRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwDatasetWordMenu(Name alias, Table<MviewWwDatasetWordMenuRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_dataset_word_menu</code> table reference
+     */
+    public MviewWwDatasetWordMenu() {
+        this(DSL.name("mview_ww_dataset_word_menu"), null);
     }
 
     public <O extends Record> MviewWwDatasetWordMenu(Table<O> child, ForeignKey<O, MviewWwDatasetWordMenuRecord> key) {
@@ -97,11 +93,6 @@ public class MviewWwDatasetWordMenu extends TableImpl<MviewWwDatasetWordMenuReco
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_DATASET_WORD_MENU_DATASET_FLETTER_IDX);
     }
 
     @Override

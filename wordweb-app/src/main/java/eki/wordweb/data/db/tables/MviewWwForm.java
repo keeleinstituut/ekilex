@@ -4,17 +4,13 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwFormRecord;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -22,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -1427860208;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -49,148 +46,149 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     /**
      * The column <code>public.mview_ww_form.word_id</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_form.word_class</code>.
      */
-    public final TableField<MviewWwFormRecord, String> WORD_CLASS = createField(DSL.name("word_class"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwFormRecord, String> WORD_CLASS = createField(DSL.name("word_class"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_form.word</code>.
      */
-    public final TableField<MviewWwFormRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.lang</code>.
      */
-    public final TableField<MviewWwFormRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<MviewWwFormRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.mview_ww_form.paradigm_id</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_form.paradigm_comment</code>.
      */
-    public final TableField<MviewWwFormRecord, String> PARADIGM_COMMENT = createField(DSL.name("paradigm_comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> PARADIGM_COMMENT = createField(DSL.name("paradigm_comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.inflection_type</code>.
      */
-    public final TableField<MviewWwFormRecord, String> INFLECTION_TYPE = createField(DSL.name("inflection_type"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwFormRecord, String> INFLECTION_TYPE = createField(DSL.name("inflection_type"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_form.inflection_type_nr</code>.
      */
-    public final TableField<MviewWwFormRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwFormRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_form.form_id</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> FORM_ID = createField(DSL.name("form_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> FORM_ID = createField(DSL.name("form_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_group1</code>.
      */
-    public final TableField<MviewWwFormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_group2</code>.
      */
-    public final TableField<MviewWwFormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_group3</code>.
      */
-    public final TableField<MviewWwFormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.display_level</code>.
      */
-    public final TableField<MviewWwFormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwFormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_code</code>.
      */
-    public final TableField<MviewWwFormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwFormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_exists</code>.
      */
-    public final TableField<MviewWwFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<MviewWwFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.mview_ww_form.is_questionable</code>.
      */
-    public final TableField<MviewWwFormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<MviewWwFormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.mview_ww_form.value</code>.
      */
-    public final TableField<MviewWwFormRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.value_prese</code>.
      */
-    public final TableField<MviewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.components</code>.
      */
-    public final TableField<MviewWwFormRecord, String[]> COMPONENTS = createField(DSL.name("components"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwFormRecord, String[]> COMPONENTS = createField(DSL.name("components"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_form.display_form</code>.
      */
-    public final TableField<MviewWwFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<MviewWwFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.mview_ww_form.audio_file</code>.
      */
-    public final TableField<MviewWwFormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<MviewWwFormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.mview_ww_form.order_by</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_form.form_freq_value</code>.
      */
-    public final TableField<MviewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+    public final TableField<MviewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
      * The column <code>public.mview_ww_form.form_freq_rank</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> FORM_FREQ_RANK = createField(DSL.name("form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> FORM_FREQ_RANK = createField(DSL.name("form_freq_rank"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_form.form_freq_rank_max</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> FORM_FREQ_RANK_MAX = createField(DSL.name("form_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> FORM_FREQ_RANK_MAX = createField(DSL.name("form_freq_rank_max"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_freq_value</code>.
      */
-    public final TableField<MviewWwFormRecord, BigDecimal> MORPH_FREQ_VALUE = createField(DSL.name("morph_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+    public final TableField<MviewWwFormRecord, BigDecimal> MORPH_FREQ_VALUE = createField(DSL.name("morph_freq_value"), SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_freq_rank</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> MORPH_FREQ_RANK = createField(DSL.name("morph_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> MORPH_FREQ_RANK = createField(DSL.name("morph_freq_rank"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_freq_rank_max</code>.
      */
-    public final TableField<MviewWwFormRecord, Long> MORPH_FREQ_RANK_MAX = createField(DSL.name("morph_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwFormRecord, Long> MORPH_FREQ_RANK_MAX = createField(DSL.name("morph_freq_rank_max"), SQLDataType.BIGINT, this, "");
 
-    /**
-     * Create a <code>public.mview_ww_form</code> table reference
-     */
-    public MviewWwForm() {
-        this(DSL.name("mview_ww_form"), null);
+    private MviewWwForm(Name alias, Table<MviewWwFormRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwForm(Name alias, Table<MviewWwFormRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -207,12 +205,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
         this(alias, MVIEW_WW_FORM);
     }
 
-    private MviewWwForm(Name alias, Table<MviewWwFormRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwForm(Name alias, Table<MviewWwFormRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_form</code> table reference
+     */
+    public MviewWwForm() {
+        this(DSL.name("mview_ww_form"), null);
     }
 
     public <O extends Record> MviewWwForm(Table<O> child, ForeignKey<O, MviewWwFormRecord> key) {
@@ -222,11 +219,6 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_FORM_DISPLAY_LEVEL_IDX, Indexes.MVIEW_WW_FORM_LANG_IDX, Indexes.MVIEW_WW_FORM_PARADIGM_ID_IDX, Indexes.MVIEW_WW_FORM_VALUE_IDX, Indexes.MVIEW_WW_FORM_WORD_ID_IDX, Indexes.MVIEW_WW_FORM_WORD_IDX);
     }
 
     @Override

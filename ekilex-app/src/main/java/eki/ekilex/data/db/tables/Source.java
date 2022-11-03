@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.SourceRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Source extends TableImpl<SourceRecord> {
 
-    private static final long serialVersionUID = -340379788;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.source</code>
@@ -52,18 +51,19 @@ public class Source extends TableImpl<SourceRecord> {
     /**
      * The column <code>public.source.id</code>.
      */
-    public final TableField<SourceRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('source_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<SourceRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.source.type</code>.
      */
-    public final TableField<SourceRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<SourceRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.source</code> table reference
-     */
-    public Source() {
-        this(DSL.name("source"), null);
+    private Source(Name alias, Table<SourceRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Source(Name alias, Table<SourceRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -80,12 +80,11 @@ public class Source extends TableImpl<SourceRecord> {
         this(alias, SOURCE);
     }
 
-    private Source(Name alias, Table<SourceRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Source(Name alias, Table<SourceRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.source</code> table reference
+     */
+    public Source() {
+        this(DSL.name("source"), null);
     }
 
     public <O extends Record> Source(Table<O> child, ForeignKey<O, SourceRecord> key) {
@@ -98,13 +97,8 @@ public class Source extends TableImpl<SourceRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SOURCE_TYPE_IDX);
-    }
-
-    @Override
     public Identity<SourceRecord, Long> getIdentity() {
-        return Keys.IDENTITY_SOURCE;
+        return (Identity<SourceRecord, Long>) super.getIdentity();
     }
 
     @Override

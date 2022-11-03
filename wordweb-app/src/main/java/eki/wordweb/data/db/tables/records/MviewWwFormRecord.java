@@ -17,7 +17,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = -1392366777;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_form.word_id</code>.
@@ -428,33 +428,33 @@ public class MviewWwFormRecord extends TableRecordImpl<MviewWwFormRecord> {
     public MviewWwFormRecord(Long wordId, String wordClass, String word, String lang, Long paradigmId, String paradigmComment, String inflectionType, String inflectionTypeNr, Long formId, String morphGroup1, String morphGroup2, String morphGroup3, Integer displayLevel, String morphCode, Boolean morphExists, Boolean isQuestionable, String value, String valuePrese, String[] components, String displayForm, String audioFile, Long orderBy, BigDecimal formFreqValue, Long formFreqRank, Long formFreqRankMax, BigDecimal morphFreqValue, Long morphFreqRank, Long morphFreqRankMax) {
         super(MviewWwForm.MVIEW_WW_FORM);
 
-        set(0, wordId);
-        set(1, wordClass);
-        set(2, word);
-        set(3, lang);
-        set(4, paradigmId);
-        set(5, paradigmComment);
-        set(6, inflectionType);
-        set(7, inflectionTypeNr);
-        set(8, formId);
-        set(9, morphGroup1);
-        set(10, morphGroup2);
-        set(11, morphGroup3);
-        set(12, displayLevel);
-        set(13, morphCode);
-        set(14, morphExists);
-        set(15, isQuestionable);
-        set(16, value);
-        set(17, valuePrese);
-        set(18, components);
-        set(19, displayForm);
-        set(20, audioFile);
-        set(21, orderBy);
-        set(22, formFreqValue);
-        set(23, formFreqRank);
-        set(24, formFreqRankMax);
-        set(25, morphFreqValue);
-        set(26, morphFreqRank);
-        set(27, morphFreqRankMax);
+        setWordId(wordId);
+        setWordClass(wordClass);
+        setWord(word);
+        setLang(lang);
+        setParadigmId(paradigmId);
+        setParadigmComment(paradigmComment);
+        setInflectionType(inflectionType);
+        setInflectionTypeNr(inflectionTypeNr);
+        setFormId(formId);
+        setMorphGroup1(morphGroup1);
+        setMorphGroup2(morphGroup2);
+        setMorphGroup3(morphGroup3);
+        setDisplayLevel(displayLevel);
+        setMorphCode(morphCode);
+        setMorphExists(morphExists);
+        setIsQuestionable(isQuestionable);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setComponents(components);
+        setDisplayForm(displayForm);
+        setAudioFile(audioFile);
+        setOrderBy(orderBy);
+        setFormFreqValue(formFreqValue);
+        setFormFreqRank(formFreqRank);
+        setFormFreqRankMax(formFreqRankMax);
+        setMorphFreqValue(morphFreqValue);
+        setMorphFreqRank(morphFreqRank);
+        setMorphFreqRankMax(morphFreqRankMax);
     }
 }

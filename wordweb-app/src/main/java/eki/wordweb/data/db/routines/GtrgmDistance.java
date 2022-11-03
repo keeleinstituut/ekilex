@@ -10,6 +10,7 @@ import org.jooq.Field;
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.Internal;
+import org.jooq.impl.SQLDataType;
 
 
 /**
@@ -18,45 +19,45 @@ import org.jooq.impl.Internal;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GtrgmDistance extends AbstractRoutine<Double> {
 
-    private static final long serialVersionUID = -1203021386;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The parameter <code>public.gtrgm_distance.RETURN_VALUE</code>.
      */
-    public static final Parameter<Double> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", org.jooq.impl.SQLDataType.DOUBLE, false, false);
+    public static final Parameter<Double> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", SQLDataType.DOUBLE, false, false);
 
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
+    @Deprecated
     public static final Parameter<Object> _1 = Internal.createParameter("_1", org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"internal\""), false, true);
 
     /**
      * The parameter <code>public.gtrgm_distance._2</code>.
      */
-    public static final Parameter<String> _2 = Internal.createParameter("_2", org.jooq.impl.SQLDataType.CLOB, false, true);
+    public static final Parameter<String> _2 = Internal.createParameter("_2", SQLDataType.CLOB, false, true);
 
     /**
      * The parameter <code>public.gtrgm_distance._3</code>.
      */
-    public static final Parameter<Short> _3 = Internal.createParameter("_3", org.jooq.impl.SQLDataType.SMALLINT, false, true);
+    public static final Parameter<Short> _3 = Internal.createParameter("_3", SQLDataType.SMALLINT, false, true);
 
     /**
      * The parameter <code>public.gtrgm_distance._4</code>.
      */
-    public static final Parameter<Long> _4 = Internal.createParameter("_4", org.jooq.impl.SQLDataType.BIGINT, false, true);
+    public static final Parameter<Long> _4 = Internal.createParameter("_4", SQLDataType.BIGINT, false, true);
 
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
+    @Deprecated
     public static final Parameter<Object> _5 = Internal.createParameter("_5", org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"internal\""), false, true);
 
     /**
      * Create a new routine call instance
      */
     public GtrgmDistance() {
-        super("gtrgm_distance", Public.PUBLIC, org.jooq.impl.SQLDataType.DOUBLE);
+        super("gtrgm_distance", Public.PUBLIC, SQLDataType.DOUBLE);
 
         setReturnParameter(RETURN_VALUE);
         addInParameter(_1);

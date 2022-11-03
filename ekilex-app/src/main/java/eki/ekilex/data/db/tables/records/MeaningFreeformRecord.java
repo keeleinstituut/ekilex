@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningFreeformRecord extends UpdatableRecordImpl<MeaningFreeformRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = 404682671;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.meaning_freeform.id</code>.
@@ -174,8 +174,8 @@ public class MeaningFreeformRecord extends UpdatableRecordImpl<MeaningFreeformRe
     public MeaningFreeformRecord(Long id, Long meaningId, Long freeformId) {
         super(MeaningFreeform.MEANING_FREEFORM);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, freeformId);
+        setId(id);
+        setMeaningId(meaningId);
+        setFreeformId(freeformId);
     }
 }

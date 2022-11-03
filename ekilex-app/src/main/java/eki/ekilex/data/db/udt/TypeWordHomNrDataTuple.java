@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeWordHomNrDataTupleRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordHomNrDataTuple extends UDTImpl<TypeWordHomNrDataTupleRecord> {
 
-    private static final long serialVersionUID = 1140069309;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_word_hom_nr_data_tuple</code>
@@ -38,12 +39,12 @@ public class TypeWordHomNrDataTuple extends UDTImpl<TypeWordHomNrDataTupleRecord
     /**
      * The attribute <code>public.type_word_hom_nr_data_tuple.word_id</code>.
      */
-    public static final UDTField<TypeWordHomNrDataTupleRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_WORD_HOM_NR_DATA_TUPLE, "");
+    public static final UDTField<TypeWordHomNrDataTupleRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, TYPE_WORD_HOM_NR_DATA_TUPLE, "");
 
     /**
      * The attribute <code>public.type_word_hom_nr_data_tuple.homonym_nr</code>.
      */
-    public static final UDTField<TypeWordHomNrDataTupleRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER, TYPE_WORD_HOM_NR_DATA_TUPLE, "");
+    public static final UDTField<TypeWordHomNrDataTupleRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, TYPE_WORD_HOM_NR_DATA_TUPLE, "");
 
     /**
      * No further instances allowed

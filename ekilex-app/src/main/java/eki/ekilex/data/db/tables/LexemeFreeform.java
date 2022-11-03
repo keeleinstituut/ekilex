@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
 
-    private static final long serialVersionUID = -26164110;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexeme_freeform</code>
@@ -52,28 +51,29 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
     /**
      * The column <code>public.lexeme_freeform.id</code>.
      */
-    public final TableField<LexemeFreeformRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_freeform_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeFreeformRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme_freeform.lexeme_id</code>.
      */
-    public final TableField<LexemeFreeformRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeFreeformRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_freeform.freeform_id</code>.
      */
-    public final TableField<LexemeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_freeform.order_by</code>.
      */
-    public final TableField<LexemeFreeformRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_freeform_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeFreeformRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.lexeme_freeform</code> table reference
-     */
-    public LexemeFreeform() {
-        this(DSL.name("lexeme_freeform"), null);
+    private LexemeFreeform(Name alias, Table<LexemeFreeformRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexemeFreeform(Name alias, Table<LexemeFreeformRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
         this(alias, LEXEME_FREEFORM);
     }
 
-    private LexemeFreeform(Name alias, Table<LexemeFreeformRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexemeFreeform(Name alias, Table<LexemeFreeformRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexeme_freeform</code> table reference
+     */
+    public LexemeFreeform() {
+        this(DSL.name("lexeme_freeform"), null);
     }
 
     public <O extends Record> LexemeFreeform(Table<O> child, ForeignKey<O, LexemeFreeformRecord> key) {
@@ -108,13 +107,8 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_FREEFORM_FREEFORM_ID_IDX, Indexes.LEXEME_FREEFORM_LEXEME_ID_IDX);
-    }
-
-    @Override
     public Identity<LexemeFreeformRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXEME_FREEFORM;
+        return (Identity<LexemeFreeformRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
         return Arrays.<ForeignKey<LexemeFreeformRecord, ?>>asList(Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_FREEFORM_ID_FKEY);
     }
 
+    private transient Lexeme _lexeme;
+    private transient Freeform _freeform;
+
     public Lexeme lexeme() {
-        return new Lexeme(this, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY);
+        if (_lexeme == null)
+            _lexeme = new Lexeme(this, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY);
+
+        return _lexeme;
     }
 
     public Freeform freeform() {
-        return new Freeform(this, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_FREEFORM_ID_FKEY);
+        if (_freeform == null)
+            _freeform = new Freeform(this, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_FREEFORM_ID_FKEY);
+
+        return _freeform;
     }
 
     @Override

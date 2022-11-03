@@ -4,16 +4,11 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwClassifierRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row7;
@@ -22,6 +17,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
 
-    private static final long serialVersionUID = -2000189792;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_classifier</code>
@@ -49,43 +45,44 @@ public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
     /**
      * The column <code>public.mview_ww_classifier.name</code>.
      */
-    public final TableField<MviewWwClassifierRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwClassifierRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_classifier.origin</code>.
      */
-    public final TableField<MviewWwClassifierRecord, String> ORIGIN = createField(DSL.name("origin"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwClassifierRecord, String> ORIGIN = createField(DSL.name("origin"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_classifier.code</code>.
      */
-    public final TableField<MviewWwClassifierRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwClassifierRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_classifier.value</code>.
      */
-    public final TableField<MviewWwClassifierRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwClassifierRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_classifier.lang</code>.
      */
-    public final TableField<MviewWwClassifierRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<MviewWwClassifierRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.mview_ww_classifier.type</code>.
      */
-    public final TableField<MviewWwClassifierRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MviewWwClassifierRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_classifier.order_by</code>.
      */
-    public final TableField<MviewWwClassifierRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwClassifierRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
 
-    /**
-     * Create a <code>public.mview_ww_classifier</code> table reference
-     */
-    public MviewWwClassifier() {
-        this(DSL.name("mview_ww_classifier"), null);
+    private MviewWwClassifier(Name alias, Table<MviewWwClassifierRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwClassifier(Name alias, Table<MviewWwClassifierRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -102,12 +99,11 @@ public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
         this(alias, MVIEW_WW_CLASSIFIER);
     }
 
-    private MviewWwClassifier(Name alias, Table<MviewWwClassifierRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwClassifier(Name alias, Table<MviewWwClassifierRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_classifier</code> table reference
+     */
+    public MviewWwClassifier() {
+        this(DSL.name("mview_ww_classifier"), null);
     }
 
     public <O extends Record> MviewWwClassifier(Table<O> child, ForeignKey<O, MviewWwClassifierRecord> key) {
@@ -117,11 +113,6 @@ public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_CLASSIFIER_NAME_CODE_LANG_TYPE_IDX, Indexes.MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_TYPE_IDX);
     }
 
     @Override

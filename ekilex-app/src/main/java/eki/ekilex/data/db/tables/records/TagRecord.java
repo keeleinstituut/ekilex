@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record5<String, Boolean, Boolean, Long, String> {
 
-    private static final long serialVersionUID = 406558220;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.tag.name</code>.
@@ -246,10 +246,10 @@ public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record5
     public TagRecord(String name, Boolean setAutomatically, Boolean removeToComplete, Long orderBy, String type) {
         super(Tag.TAG);
 
-        set(0, name);
-        set(1, setAutomatically);
-        set(2, removeToComplete);
-        set(3, orderBy);
-        set(4, type);
+        setName(name);
+        setSetAutomatically(setAutomatically);
+        setRemoveToComplete(removeToComplete);
+        setOrderBy(orderBy);
+        setType(type);
     }
 }

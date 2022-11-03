@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
 
-    private static final long serialVersionUID = -1682551861;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.register_label</code>
@@ -49,28 +50,29 @@ public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
     /**
      * The column <code>public.register_label.code</code>.
      */
-    public final TableField<RegisterLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<RegisterLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.register_label.value</code>.
      */
-    public final TableField<RegisterLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<RegisterLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.register_label.lang</code>.
      */
-    public final TableField<RegisterLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<RegisterLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.register_label.type</code>.
      */
-    public final TableField<RegisterLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<RegisterLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.register_label</code> table reference
-     */
-    public RegisterLabel() {
-        this(DSL.name("register_label"), null);
+    private RegisterLabel(Name alias, Table<RegisterLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private RegisterLabel(Name alias, Table<RegisterLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
         this(alias, REGISTER_LABEL);
     }
 
-    private RegisterLabel(Name alias, Table<RegisterLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private RegisterLabel(Name alias, Table<RegisterLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.register_label</code> table reference
+     */
+    public RegisterLabel() {
+        this(DSL.name("register_label"), null);
     }
 
     public <O extends Record> RegisterLabel(Table<O> child, ForeignKey<O, RegisterLabelRecord> key) {
@@ -114,16 +115,29 @@ public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
         return Arrays.<ForeignKey<RegisterLabelRecord, ?>>asList(Keys.REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY, Keys.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY, Keys.REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY);
     }
 
+    private transient Register _register;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public Register register() {
-        return new Register(this, Keys.REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY);
+        if (_register == null)
+            _register = new Register(this, Keys.REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY);
+
+        return _register;
     }
 
     public Language language() {
-        return new Language(this, Keys.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

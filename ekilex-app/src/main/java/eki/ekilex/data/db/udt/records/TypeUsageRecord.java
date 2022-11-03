@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements Record8<Long, String, String, String, String, String, String[], String[]> {
 
-    private static final long serialVersionUID = 2099385965;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_usage.usage_id</code>.
@@ -344,13 +344,13 @@ public class TypeUsageRecord extends UDTRecordImpl<TypeUsageRecord> implements R
     public TypeUsageRecord(Long usageId, String usage, String usagePrese, String usageLang, String complexity, String usageTypeCode, String[] usageTranslations, String[] usageDefinitions) {
         super(TypeUsage.TYPE_USAGE);
 
-        set(0, usageId);
-        set(1, usage);
-        set(2, usagePrese);
-        set(3, usageLang);
-        set(4, complexity);
-        set(5, usageTypeCode);
-        set(6, usageTranslations);
-        set(7, usageDefinitions);
+        setUsageId(usageId);
+        setUsage(usage);
+        setUsagePrese(usagePrese);
+        setUsageLang(usageLang);
+        setComplexity(complexity);
+        setUsageTypeCode(usageTypeCode);
+        setUsageTranslations(usageTranslations);
+        setUsageDefinitions(usageDefinitions);
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProficiencyLevelRecord extends UpdatableRecordImpl<ProficiencyLevelRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -349366463;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.proficiency_level.code</code>.
@@ -174,8 +174,8 @@ public class ProficiencyLevelRecord extends UpdatableRecordImpl<ProficiencyLevel
     public ProficiencyLevelRecord(String code, String[] datasets, Long orderBy) {
         super(ProficiencyLevel.PROFICIENCY_LEVEL);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

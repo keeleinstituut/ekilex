@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -370471824;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.register.code</code>.
@@ -174,8 +174,8 @@ public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implemen
     public RegisterRecord(String code, String[] datasets, Long orderBy) {
         super(Register.REGISTER);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

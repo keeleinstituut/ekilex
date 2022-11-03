@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -22,7 +23,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMtLexemeFreeform extends UDTImpl<TypeMtLexemeFreeformRecord> {
 
-    private static final long serialVersionUID = 450047500;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_mt_lexeme_freeform</code>
@@ -40,62 +41,62 @@ public class TypeMtLexemeFreeform extends UDTImpl<TypeMtLexemeFreeformRecord> {
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.lexeme_id</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.freeform_id</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.type</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.value_text</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> VALUE_TEXT = createField(DSL.name("value_text"), org.jooq.impl.SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> VALUE_TEXT = createField(DSL.name("value_text"), SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.value_prese</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.lang</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.complexity</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.is_public</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.created_by</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> CREATED_BY = createField(DSL.name("created_by"), org.jooq.impl.SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.created_on</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(0), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.modified_by</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), org.jooq.impl.SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), SQLDataType.CLOB, TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme_freeform.modified_on</code>.
      */
-    public static final UDTField<TypeMtLexemeFreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), org.jooq.impl.SQLDataType.TIMESTAMP, TYPE_MT_LEXEME_FREEFORM, "");
+    public static final UDTField<TypeMtLexemeFreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(0), TYPE_MT_LEXEME_FREEFORM, "");
 
     /**
      * No further instances allowed

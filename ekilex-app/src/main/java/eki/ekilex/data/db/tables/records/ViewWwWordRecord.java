@@ -22,7 +22,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = -543913284;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_word.word_id</code>.
@@ -363,28 +363,28 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     public ViewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, TypeMeaningWordRecord[] meaningWords, TypeDefinitionRecord[] definitions, TypeFreeformRecord[] odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy) {
         super(ViewWwWord.VIEW_WW_WORD);
 
-        set(0, wordId);
-        set(1, word);
-        set(2, wordPrese);
-        set(3, asWord);
-        set(4, lang);
-        set(5, langOrderBy);
-        set(6, homonymNr);
-        set(7, wordTypeCodes);
-        set(8, displayMorphCode);
-        set(9, genderCode);
-        set(10, aspectCode);
-        set(11, vocalForm);
-        set(12, manualEventOn);
-        set(13, lastActivityEventOn);
-        set(14, langComplexities);
-        set(15, meaningWords);
-        set(16, definitions);
-        set(17, odWordRecommendations);
-        set(18, freqValue);
-        set(19, freqRank);
-        set(20, formsExist);
-        set(21, minDsOrderBy);
-        set(22, wordTypeOrderBy);
+        setWordId(wordId);
+        setWord(word);
+        setWordPrese(wordPrese);
+        setAsWord(asWord);
+        setLang(lang);
+        setLangOrderBy(langOrderBy);
+        setHomonymNr(homonymNr);
+        setWordTypeCodes(wordTypeCodes);
+        setDisplayMorphCode(displayMorphCode);
+        setGenderCode(genderCode);
+        setAspectCode(aspectCode);
+        setVocalForm(vocalForm);
+        setManualEventOn(manualEventOn);
+        setLastActivityEventOn(lastActivityEventOn);
+        setLangComplexities(langComplexities);
+        setMeaningWords(meaningWords);
+        setDefinitions(definitions);
+        setOdWordRecommendations(odWordRecommendations);
+        setFreqValue(freqValue);
+        setFreqRank(freqRank);
+        setFormsExist(formsExist);
+        setMinDsOrderBy(minDsOrderBy);
+        setWordTypeOrderBy(wordTypeOrderBy);
     }
 }

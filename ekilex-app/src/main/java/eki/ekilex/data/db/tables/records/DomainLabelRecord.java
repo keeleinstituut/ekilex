@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainLabelRecord extends TableRecordImpl<DomainLabelRecord> implements Record5<String, String, String, String, String> {
 
-    private static final long serialVersionUID = 974853178;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.domain_label.code</code>.
@@ -236,10 +236,10 @@ public class DomainLabelRecord extends TableRecordImpl<DomainLabelRecord> implem
     public DomainLabelRecord(String code, String origin, String value, String lang, String type) {
         super(DomainLabel.DOMAIN_LABEL);
 
-        set(0, code);
-        set(1, origin);
-        set(2, value);
-        set(3, lang);
-        set(4, type);
+        setCode(code);
+        setOrigin(origin);
+        setValue(value);
+        setLang(lang);
+        setType(type);
     }
 }

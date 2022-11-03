@@ -31,7 +31,7 @@ import eki.ekilex.data.db.udt.TypeWordRelation;
 
 
 /**
- * Convenience access to all UDTs in public
+ * Convenience access to all UDTs in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UDTs {
@@ -39,120 +39,120 @@ public class UDTs {
     /**
      * The type <code>public.type_activity_log_diff</code>
      */
-    public static TypeActivityLogDiff TYPE_ACTIVITY_LOG_DIFF = eki.ekilex.data.db.udt.TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF;
+    public static final TypeActivityLogDiff TYPE_ACTIVITY_LOG_DIFF = eki.ekilex.data.db.udt.TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF;
 
     /**
      * The type <code>public.type_classifier</code>
      */
-    public static TypeClassifier TYPE_CLASSIFIER = eki.ekilex.data.db.udt.TypeClassifier.TYPE_CLASSIFIER;
+    public static final TypeClassifier TYPE_CLASSIFIER = eki.ekilex.data.db.udt.TypeClassifier.TYPE_CLASSIFIER;
 
     /**
      * The type <code>public.type_colloc_member</code>
      */
-    public static TypeCollocMember TYPE_COLLOC_MEMBER = eki.ekilex.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER;
+    public static final TypeCollocMember TYPE_COLLOC_MEMBER = eki.ekilex.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER;
 
     /**
      * The type <code>public.type_definition</code>
      */
-    public static TypeDefinition TYPE_DEFINITION = eki.ekilex.data.db.udt.TypeDefinition.TYPE_DEFINITION;
+    public static final TypeDefinition TYPE_DEFINITION = eki.ekilex.data.db.udt.TypeDefinition.TYPE_DEFINITION;
 
     /**
      * The type <code>public.type_domain</code>
      */
-    public static TypeDomain TYPE_DOMAIN = eki.ekilex.data.db.udt.TypeDomain.TYPE_DOMAIN;
+    public static final TypeDomain TYPE_DOMAIN = eki.ekilex.data.db.udt.TypeDomain.TYPE_DOMAIN;
 
     /**
      * The type <code>public.type_freeform</code>
      */
-    public static TypeFreeform TYPE_FREEFORM = eki.ekilex.data.db.udt.TypeFreeform.TYPE_FREEFORM;
+    public static final TypeFreeform TYPE_FREEFORM = eki.ekilex.data.db.udt.TypeFreeform.TYPE_FREEFORM;
 
     /**
      * The type <code>public.type_lang_complexity</code>
      */
-    public static TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
+    public static final TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.ekilex.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
 
     /**
      * The type <code>public.type_lexeme_relation</code>
      */
-    public static TypeLexemeRelation TYPE_LEXEME_RELATION = eki.ekilex.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION;
+    public static final TypeLexemeRelation TYPE_LEXEME_RELATION = eki.ekilex.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION;
 
     /**
      * The type <code>public.type_meaning_relation</code>
      */
-    public static TypeMeaningRelation TYPE_MEANING_RELATION = eki.ekilex.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION;
+    public static final TypeMeaningRelation TYPE_MEANING_RELATION = eki.ekilex.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION;
 
     /**
      * The type <code>public.type_meaning_word</code>
      */
-    public static TypeMeaningWord TYPE_MEANING_WORD = eki.ekilex.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
+    public static final TypeMeaningWord TYPE_MEANING_WORD = eki.ekilex.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
 
     /**
      * The type <code>public.type_media_file</code>
      */
-    public static TypeMediaFile TYPE_MEDIA_FILE = eki.ekilex.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE;
+    public static final TypeMediaFile TYPE_MEDIA_FILE = eki.ekilex.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE;
 
     /**
      * The type <code>public.type_mt_definition</code>
      */
-    public static TypeMtDefinition TYPE_MT_DEFINITION = eki.ekilex.data.db.udt.TypeMtDefinition.TYPE_MT_DEFINITION;
+    public static final TypeMtDefinition TYPE_MT_DEFINITION = eki.ekilex.data.db.udt.TypeMtDefinition.TYPE_MT_DEFINITION;
 
     /**
      * The type <code>public.type_mt_lexeme</code>
      */
-    public static TypeMtLexeme TYPE_MT_LEXEME = eki.ekilex.data.db.udt.TypeMtLexeme.TYPE_MT_LEXEME;
+    public static final TypeMtLexeme TYPE_MT_LEXEME = eki.ekilex.data.db.udt.TypeMtLexeme.TYPE_MT_LEXEME;
 
     /**
      * The type <code>public.type_mt_lexeme_freeform</code>
      */
-    public static TypeMtLexemeFreeform TYPE_MT_LEXEME_FREEFORM = eki.ekilex.data.db.udt.TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM;
+    public static final TypeMtLexemeFreeform TYPE_MT_LEXEME_FREEFORM = eki.ekilex.data.db.udt.TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM;
 
     /**
      * The type <code>public.type_mt_word</code>
      */
-    public static TypeMtWord TYPE_MT_WORD = eki.ekilex.data.db.udt.TypeMtWord.TYPE_MT_WORD;
+    public static final TypeMtWord TYPE_MT_WORD = eki.ekilex.data.db.udt.TypeMtWord.TYPE_MT_WORD;
 
     /**
      * The type <code>public.type_source_link</code>
      */
-    public static TypeSourceLink TYPE_SOURCE_LINK = eki.ekilex.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK;
+    public static final TypeSourceLink TYPE_SOURCE_LINK = eki.ekilex.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK;
 
     /**
      * The type <code>public.type_term_meaning_word</code>
      */
-    public static TypeTermMeaningWord TYPE_TERM_MEANING_WORD = eki.ekilex.data.db.udt.TypeTermMeaningWord.TYPE_TERM_MEANING_WORD;
+    public static final TypeTermMeaningWord TYPE_TERM_MEANING_WORD = eki.ekilex.data.db.udt.TypeTermMeaningWord.TYPE_TERM_MEANING_WORD;
 
     /**
      * The type <code>public.type_usage</code>
      */
-    public static TypeUsage TYPE_USAGE = eki.ekilex.data.db.udt.TypeUsage.TYPE_USAGE;
+    public static final TypeUsage TYPE_USAGE = eki.ekilex.data.db.udt.TypeUsage.TYPE_USAGE;
 
     /**
      * The type <code>public.type_value_name_lang</code>
      */
-    public static TypeValueNameLang TYPE_VALUE_NAME_LANG = eki.ekilex.data.db.udt.TypeValueNameLang.TYPE_VALUE_NAME_LANG;
+    public static final TypeValueNameLang TYPE_VALUE_NAME_LANG = eki.ekilex.data.db.udt.TypeValueNameLang.TYPE_VALUE_NAME_LANG;
 
     /**
      * The type <code>public.type_word_etym_relation</code>
      */
-    public static TypeWordEtymRelation TYPE_WORD_ETYM_RELATION = eki.ekilex.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION;
+    public static final TypeWordEtymRelation TYPE_WORD_ETYM_RELATION = eki.ekilex.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION;
 
     /**
      * The type <code>public.type_word_hom_nr_data_tuple</code>
      */
-    public static TypeWordHomNrDataTuple TYPE_WORD_HOM_NR_DATA_TUPLE = eki.ekilex.data.db.udt.TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE;
+    public static final TypeWordHomNrDataTuple TYPE_WORD_HOM_NR_DATA_TUPLE = eki.ekilex.data.db.udt.TypeWordHomNrDataTuple.TYPE_WORD_HOM_NR_DATA_TUPLE;
 
     /**
      * The type <code>public.type_word_rel_meaning</code>
      */
-    public static TypeWordRelMeaning TYPE_WORD_REL_MEANING = eki.ekilex.data.db.udt.TypeWordRelMeaning.TYPE_WORD_REL_MEANING;
+    public static final TypeWordRelMeaning TYPE_WORD_REL_MEANING = eki.ekilex.data.db.udt.TypeWordRelMeaning.TYPE_WORD_REL_MEANING;
 
     /**
      * The type <code>public.type_word_rel_param</code>
      */
-    public static TypeWordRelParam TYPE_WORD_REL_PARAM = eki.ekilex.data.db.udt.TypeWordRelParam.TYPE_WORD_REL_PARAM;
+    public static final TypeWordRelParam TYPE_WORD_REL_PARAM = eki.ekilex.data.db.udt.TypeWordRelParam.TYPE_WORD_REL_PARAM;
 
     /**
      * The type <code>public.type_word_relation</code>
      */
-    public static TypeWordRelation TYPE_WORD_RELATION = eki.ekilex.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION;
+    public static final TypeWordRelation TYPE_WORD_RELATION = eki.ekilex.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION;
 }

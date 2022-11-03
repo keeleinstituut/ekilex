@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SemanticTypeLabel extends TableImpl<SemanticTypeLabelRecord> {
 
-    private static final long serialVersionUID = -362162456;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.semantic_type_label</code>
@@ -49,28 +50,29 @@ public class SemanticTypeLabel extends TableImpl<SemanticTypeLabelRecord> {
     /**
      * The column <code>public.semantic_type_label.code</code>.
      */
-    public final TableField<SemanticTypeLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<SemanticTypeLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.semantic_type_label.value</code>.
      */
-    public final TableField<SemanticTypeLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<SemanticTypeLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.semantic_type_label.lang</code>.
      */
-    public final TableField<SemanticTypeLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<SemanticTypeLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.semantic_type_label.type</code>.
      */
-    public final TableField<SemanticTypeLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<SemanticTypeLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.semantic_type_label</code> table reference
-     */
-    public SemanticTypeLabel() {
-        this(DSL.name("semantic_type_label"), null);
+    private SemanticTypeLabel(Name alias, Table<SemanticTypeLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SemanticTypeLabel(Name alias, Table<SemanticTypeLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class SemanticTypeLabel extends TableImpl<SemanticTypeLabelRecord> {
         this(alias, SEMANTIC_TYPE_LABEL);
     }
 
-    private SemanticTypeLabel(Name alias, Table<SemanticTypeLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SemanticTypeLabel(Name alias, Table<SemanticTypeLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.semantic_type_label</code> table reference
+     */
+    public SemanticTypeLabel() {
+        this(DSL.name("semantic_type_label"), null);
     }
 
     public <O extends Record> SemanticTypeLabel(Table<O> child, ForeignKey<O, SemanticTypeLabelRecord> key) {
@@ -114,16 +115,29 @@ public class SemanticTypeLabel extends TableImpl<SemanticTypeLabelRecord> {
         return Arrays.<ForeignKey<SemanticTypeLabelRecord, ?>>asList(Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_CODE_FKEY, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_LANG_FKEY, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_TYPE_FKEY);
     }
 
+    private transient SemanticType _semanticType;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public SemanticType semanticType() {
-        return new SemanticType(this, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_CODE_FKEY);
+        if (_semanticType == null)
+            _semanticType = new SemanticType(this, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_CODE_FKEY);
+
+        return _semanticType;
     }
 
     public Language language() {
-        return new Language(this, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.SEMANTIC_TYPE_LABEL__SEMANTIC_TYPE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

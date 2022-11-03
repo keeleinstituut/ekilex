@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Meaning extends TableImpl<MeaningRecord> {
 
-    private static final long serialVersionUID = 1691912138;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning</code>
@@ -53,18 +52,19 @@ public class Meaning extends TableImpl<MeaningRecord> {
     /**
      * The column <code>public.meaning.id</code>.
      */
-    public final TableField<MeaningRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning.manual_event_on</code>.
      */
-    public final TableField<MeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MeaningRecord, Timestamp> MANUAL_EVENT_ON = createField(DSL.name("manual_event_on"), SQLDataType.TIMESTAMP(6), this, "");
 
-    /**
-     * Create a <code>public.meaning</code> table reference
-     */
-    public Meaning() {
-        this(DSL.name("meaning"), null);
+    private Meaning(Name alias, Table<MeaningRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Meaning(Name alias, Table<MeaningRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -81,12 +81,11 @@ public class Meaning extends TableImpl<MeaningRecord> {
         this(alias, MEANING);
     }
 
-    private Meaning(Name alias, Table<MeaningRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Meaning(Name alias, Table<MeaningRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning</code> table reference
+     */
+    public Meaning() {
+        this(DSL.name("meaning"), null);
     }
 
     public <O extends Record> Meaning(Table<O> child, ForeignKey<O, MeaningRecord> key) {
@@ -99,13 +98,8 @@ public class Meaning extends TableImpl<MeaningRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_MANUAL_EVENT_ON_IDX);
-    }
-
-    @Override
     public Identity<MeaningRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING;
+        return (Identity<MeaningRecord, Long>) super.getIdentity();
     }
 
     @Override

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ValueStateRecord extends UpdatableRecordImpl<ValueStateRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -1032910728;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.value_state.code</code>.
@@ -174,8 +174,8 @@ public class ValueStateRecord extends UpdatableRecordImpl<ValueStateRecord> impl
     public ValueStateRecord(String code, String[] datasets, Long orderBy) {
         super(ValueState.VALUE_STATE);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexemeSourceLinkRecord extends TableRecordImpl<MviewWwLexemeSourceLinkRecord> implements Record2<Long, TypeSourceLinkRecord[]> {
 
-    private static final long serialVersionUID = -1247158910;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_lexeme_source_link.lexeme_id</code>.
@@ -129,7 +129,7 @@ public class MviewWwLexemeSourceLinkRecord extends TableRecordImpl<MviewWwLexeme
     public MviewWwLexemeSourceLinkRecord(Long lexemeId, TypeSourceLinkRecord[] sourceLinks) {
         super(MviewWwLexemeSourceLink.MVIEW_WW_LEXEME_SOURCE_LINK);
 
-        set(0, lexemeId);
-        set(1, sourceLinks);
+        setLexemeId(lexemeId);
+        setSourceLinks(sourceLinks);
     }
 }

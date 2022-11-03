@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderLabel extends TableImpl<GenderLabelRecord> {
 
-    private static final long serialVersionUID = 1483594457;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.gender_label</code>
@@ -49,28 +50,29 @@ public class GenderLabel extends TableImpl<GenderLabelRecord> {
     /**
      * The column <code>public.gender_label.code</code>.
      */
-    public final TableField<GenderLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<GenderLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.gender_label.value</code>.
      */
-    public final TableField<GenderLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<GenderLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.gender_label.lang</code>.
      */
-    public final TableField<GenderLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<GenderLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.gender_label.type</code>.
      */
-    public final TableField<GenderLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<GenderLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.gender_label</code> table reference
-     */
-    public GenderLabel() {
-        this(DSL.name("gender_label"), null);
+    private GenderLabel(Name alias, Table<GenderLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private GenderLabel(Name alias, Table<GenderLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class GenderLabel extends TableImpl<GenderLabelRecord> {
         this(alias, GENDER_LABEL);
     }
 
-    private GenderLabel(Name alias, Table<GenderLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private GenderLabel(Name alias, Table<GenderLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.gender_label</code> table reference
+     */
+    public GenderLabel() {
+        this(DSL.name("gender_label"), null);
     }
 
     public <O extends Record> GenderLabel(Table<O> child, ForeignKey<O, GenderLabelRecord> key) {
@@ -114,16 +115,29 @@ public class GenderLabel extends TableImpl<GenderLabelRecord> {
         return Arrays.<ForeignKey<GenderLabelRecord, ?>>asList(Keys.GENDER_LABEL__GENDER_LABEL_CODE_FKEY, Keys.GENDER_LABEL__GENDER_LABEL_LANG_FKEY, Keys.GENDER_LABEL__GENDER_LABEL_TYPE_FKEY);
     }
 
+    private transient Gender _gender;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public Gender gender() {
-        return new Gender(this, Keys.GENDER_LABEL__GENDER_LABEL_CODE_FKEY);
+        if (_gender == null)
+            _gender = new Gender(this, Keys.GENDER_LABEL__GENDER_LABEL_CODE_FKEY);
+
+        return _gender;
     }
 
     public Language language() {
-        return new Language(this, Keys.GENDER_LABEL__GENDER_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.GENDER_LABEL__GENDER_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.GENDER_LABEL__GENDER_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.GENDER_LABEL__GENDER_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

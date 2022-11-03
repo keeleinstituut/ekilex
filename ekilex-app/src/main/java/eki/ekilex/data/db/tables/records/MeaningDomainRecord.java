@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord> implements Record5<Long, Long, String, String, Long> {
 
-    private static final long serialVersionUID = 174275069;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.meaning_domain.id</code>.
@@ -246,10 +246,10 @@ public class MeaningDomainRecord extends UpdatableRecordImpl<MeaningDomainRecord
     public MeaningDomainRecord(Long id, Long meaningId, String domainOrigin, String domainCode, Long orderBy) {
         super(MeaningDomain.MEANING_DOMAIN);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, domainOrigin);
-        set(3, domainCode);
-        set(4, orderBy);
+        setId(id);
+        setMeaningId(meaningId);
+        setDomainOrigin(domainOrigin);
+        setDomainCode(domainCode);
+        setOrderBy(orderBy);
     }
 }

@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserRecord extends UpdatableRecordImpl<EkiUserRecord> implements Record14<Long, String, String, String, String, String, Boolean, Boolean, String, Timestamp, Boolean, String, String, Boolean> {
 
-    private static final long serialVersionUID = -301982653;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.eki_user.id</code>.
@@ -572,19 +572,19 @@ public class EkiUserRecord extends UpdatableRecordImpl<EkiUserRecord> implements
     public EkiUserRecord(Long id, String name, String email, String password, String activationKey, String recoveryKey, Boolean isAdmin, Boolean isEnabled, String reviewComment, Timestamp created, Boolean isMaster, String termsVer, String apiKey, Boolean isApiCrud) {
         super(EkiUser.EKI_USER);
 
-        set(0, id);
-        set(1, name);
-        set(2, email);
-        set(3, password);
-        set(4, activationKey);
-        set(5, recoveryKey);
-        set(6, isAdmin);
-        set(7, isEnabled);
-        set(8, reviewComment);
-        set(9, created);
-        set(10, isMaster);
-        set(11, termsVer);
-        set(12, apiKey);
-        set(13, isApiCrud);
+        setId(id);
+        setName(name);
+        setEmail(email);
+        setPassword(password);
+        setActivationKey(activationKey);
+        setRecoveryKey(recoveryKey);
+        setIsAdmin(isAdmin);
+        setIsEnabled(isEnabled);
+        setReviewComment(reviewComment);
+        setCreated(created);
+        setIsMaster(isMaster);
+        setTermsVer(termsVer);
+        setApiKey(apiKey);
+        setIsApiCrud(isApiCrud);
     }
 }

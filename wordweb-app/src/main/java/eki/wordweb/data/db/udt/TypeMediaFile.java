@@ -10,6 +10,7 @@ import eki.wordweb.data.db.udt.records.TypeMediaFileRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMediaFile extends UDTImpl<TypeMediaFileRecord> {
 
-    private static final long serialVersionUID = 3951923;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_media_file</code>
@@ -38,22 +39,22 @@ public class TypeMediaFile extends UDTImpl<TypeMediaFileRecord> {
     /**
      * The attribute <code>public.type_media_file.freeform_id</code>.
      */
-    public static final UDTField<TypeMediaFileRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_MEDIA_FILE, "");
+    public static final UDTField<TypeMediaFileRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT, TYPE_MEDIA_FILE, "");
 
     /**
      * The attribute <code>public.type_media_file.source_url</code>.
      */
-    public static final UDTField<TypeMediaFileRecord, String> SOURCE_URL = createField(DSL.name("source_url"), org.jooq.impl.SQLDataType.CLOB, TYPE_MEDIA_FILE, "");
+    public static final UDTField<TypeMediaFileRecord, String> SOURCE_URL = createField(DSL.name("source_url"), SQLDataType.CLOB, TYPE_MEDIA_FILE, "");
 
     /**
      * The attribute <code>public.type_media_file.title</code>.
      */
-    public static final UDTField<TypeMediaFileRecord, String> TITLE = createField(DSL.name("title"), org.jooq.impl.SQLDataType.CLOB, TYPE_MEDIA_FILE, "");
+    public static final UDTField<TypeMediaFileRecord, String> TITLE = createField(DSL.name("title"), SQLDataType.CLOB, TYPE_MEDIA_FILE, "");
 
     /**
      * The attribute <code>public.type_media_file.complexity</code>.
      */
-    public static final UDTField<TypeMediaFileRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MEDIA_FILE, "");
+    public static final UDTField<TypeMediaFileRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_MEDIA_FILE, "");
 
     /**
      * No further instances allowed

@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserApplicationRecord extends UpdatableRecordImpl<EkiUserApplicationRecord> implements Record6<Long, Long, String[], String, Timestamp, Boolean> {
 
-    private static final long serialVersionUID = 866310430;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.eki_user_application.id</code>.
@@ -284,11 +284,11 @@ public class EkiUserApplicationRecord extends UpdatableRecordImpl<EkiUserApplica
     public EkiUserApplicationRecord(Long id, Long userId, String[] datasets, String comment, Timestamp created, Boolean isReviewed) {
         super(EkiUserApplication.EKI_USER_APPLICATION);
 
-        set(0, id);
-        set(1, userId);
-        set(2, datasets);
-        set(3, comment);
-        set(4, created);
-        set(5, isReviewed);
+        setId(id);
+        setUserId(userId);
+        setDatasets(datasets);
+        setComment(comment);
+        setCreated(created);
+        setIsReviewed(isReviewed);
     }
 }

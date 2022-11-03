@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EtymologyType extends TableImpl<EtymologyTypeRecord> {
 
-    private static final long serialVersionUID = -860236337;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.etymology_type</code>
@@ -50,23 +51,24 @@ public class EtymologyType extends TableImpl<EtymologyTypeRecord> {
     /**
      * The column <code>public.etymology_type.code</code>.
      */
-    public final TableField<EtymologyTypeRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<EtymologyTypeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.etymology_type.datasets</code>.
      */
-    public final TableField<EtymologyTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<EtymologyTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.etymology_type.order_by</code>.
      */
-    public final TableField<EtymologyTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('etymology_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<EtymologyTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.etymology_type</code> table reference
-     */
-    public EtymologyType() {
-        this(DSL.name("etymology_type"), null);
+    private EtymologyType(Name alias, Table<EtymologyTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private EtymologyType(Name alias, Table<EtymologyTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class EtymologyType extends TableImpl<EtymologyTypeRecord> {
         this(alias, ETYMOLOGY_TYPE);
     }
 
-    private EtymologyType(Name alias, Table<EtymologyTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private EtymologyType(Name alias, Table<EtymologyTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.etymology_type</code> table reference
+     */
+    public EtymologyType() {
+        this(DSL.name("etymology_type"), null);
     }
 
     public <O extends Record> EtymologyType(Table<O> child, ForeignKey<O, EtymologyTypeRecord> key) {
@@ -102,7 +103,7 @@ public class EtymologyType extends TableImpl<EtymologyTypeRecord> {
 
     @Override
     public Identity<EtymologyTypeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_ETYMOLOGY_TYPE;
+        return (Identity<EtymologyTypeRecord, Long>) super.getIdentity();
     }
 
     @Override

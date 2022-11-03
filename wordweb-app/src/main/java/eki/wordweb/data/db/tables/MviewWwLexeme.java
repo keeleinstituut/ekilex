@@ -4,7 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
 import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
@@ -13,12 +12,9 @@ import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -26,6 +22,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -400072981;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -53,77 +50,77 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.lexeme_id</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.word_id</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.meaning_id</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.dataset_code</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MviewWwLexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.dataset_type</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String> DATASET_TYPE = createField(DSL.name("dataset_type"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MviewWwLexemeRecord, String> DATASET_TYPE = createField(DSL.name("dataset_type"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.dataset_name</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String> DATASET_NAME = createField(DSL.name("dataset_name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwLexemeRecord, String> DATASET_NAME = createField(DSL.name("dataset_name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.value_state_code</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwLexemeRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.proficiency_level_code</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String> PROFICIENCY_LEVEL_CODE = createField(DSL.name("proficiency_level_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwLexemeRecord, String> PROFICIENCY_LEVEL_CODE = createField(DSL.name("proficiency_level_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.reliability</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Integer> RELIABILITY = createField(DSL.name("reliability"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwLexemeRecord, Integer> RELIABILITY = createField(DSL.name("reliability"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.level1</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Integer> LEVEL1 = createField(DSL.name("level1"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwLexemeRecord, Integer> LEVEL1 = createField(DSL.name("level1"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.level2</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Integer> LEVEL2 = createField(DSL.name("level2"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwLexemeRecord, Integer> LEVEL2 = createField(DSL.name("level2"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.weight</code>.
      */
-    public final TableField<MviewWwLexemeRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), org.jooq.impl.SQLDataType.NUMERIC(5, 4), this, "");
+    public final TableField<MviewWwLexemeRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), SQLDataType.NUMERIC(5, 4), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.complexity</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwLexemeRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.dataset_order_by</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Long> DATASET_ORDER_BY = createField(DSL.name("dataset_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRecord, Long> DATASET_ORDER_BY = createField(DSL.name("dataset_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.lexeme_order_by</code>.
      */
-    public final TableField<MviewWwLexemeRecord, Long> LEXEME_ORDER_BY = createField(DSL.name("lexeme_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRecord, Long> LEXEME_ORDER_BY = createField(DSL.name("lexeme_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.lang_complexities</code>.
@@ -133,22 +130,22 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.register_codes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> REGISTER_CODES = createField(DSL.name("register_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, String[]> REGISTER_CODES = createField(DSL.name("register_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.pos_codes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> POS_CODES = createField(DSL.name("pos_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, String[]> POS_CODES = createField(DSL.name("pos_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.region_codes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> REGION_CODES = createField(DSL.name("region_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, String[]> REGION_CODES = createField(DSL.name("region_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.deriv_codes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> DERIV_CODES = createField(DSL.name("deriv_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, String[]> DERIV_CODES = createField(DSL.name("deriv_codes"), SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.meaning_words</code>.
@@ -158,7 +155,7 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.advice_notes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, String[]> ADVICE_NOTES = createField(DSL.name("advice_notes"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, String[]> ADVICE_NOTES = createField(DSL.name("advice_notes"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.notes</code>.
@@ -180,11 +177,12 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      */
     public final TableField<MviewWwLexemeRecord, TypeUsageRecord[]> USAGES = createField(DSL.name("usages"), eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_lexeme</code> table reference
-     */
-    public MviewWwLexeme() {
-        this(DSL.name("mview_ww_lexeme"), null);
+    private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -201,12 +199,11 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
         this(alias, MVIEW_WW_LEXEME);
     }
 
-    private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_lexeme</code> table reference
+     */
+    public MviewWwLexeme() {
+        this(DSL.name("mview_ww_lexeme"), null);
     }
 
     public <O extends Record> MviewWwLexeme(Table<O> child, ForeignKey<O, MviewWwLexemeRecord> key) {
@@ -216,11 +213,6 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_COMPLEXITY_IDX, Indexes.MVIEW_WW_LEXEME_DATASET_CODE_IDX, Indexes.MVIEW_WW_LEXEME_DATASET_TYPE_IDX, Indexes.MVIEW_WW_LEXEME_LEXEME_ID_IDX, Indexes.MVIEW_WW_LEXEME_MEANING_ID_IDX, Indexes.MVIEW_WW_LEXEME_WORD_ID_IDX);
     }
 
     @Override

@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionType extends TableImpl<DefinitionTypeRecord> {
 
-    private static final long serialVersionUID = 1776304529;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.definition_type</code>
@@ -50,23 +51,24 @@ public class DefinitionType extends TableImpl<DefinitionTypeRecord> {
     /**
      * The column <code>public.definition_type.code</code>.
      */
-    public final TableField<DefinitionTypeRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DefinitionTypeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition_type.datasets</code>.
      */
-    public final TableField<DefinitionTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<DefinitionTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.definition_type.order_by</code>.
      */
-    public final TableField<DefinitionTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DefinitionTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.definition_type</code> table reference
-     */
-    public DefinitionType() {
-        this(DSL.name("definition_type"), null);
+    private DefinitionType(Name alias, Table<DefinitionTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DefinitionType(Name alias, Table<DefinitionTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class DefinitionType extends TableImpl<DefinitionTypeRecord> {
         this(alias, DEFINITION_TYPE);
     }
 
-    private DefinitionType(Name alias, Table<DefinitionTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DefinitionType(Name alias, Table<DefinitionTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.definition_type</code> table reference
+     */
+    public DefinitionType() {
+        this(DSL.name("definition_type"), null);
     }
 
     public <O extends Record> DefinitionType(Table<O> child, ForeignKey<O, DefinitionTypeRecord> key) {
@@ -102,7 +103,7 @@ public class DefinitionType extends TableImpl<DefinitionTypeRecord> {
 
     @Override
     public Identity<DefinitionTypeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DEFINITION_TYPE;
+        return (Identity<DefinitionTypeRecord, Long>) super.getIdentity();
     }
 
     @Override

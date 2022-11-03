@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WwExceptionRecord extends UpdatableRecordImpl<WwExceptionRecord> implements Record4<Long, String, String, Timestamp> {
 
-    private static final long serialVersionUID = 1598881261;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.ww_exception.id</code>.
@@ -212,9 +212,9 @@ public class WwExceptionRecord extends UpdatableRecordImpl<WwExceptionRecord> im
     public WwExceptionRecord(Long id, String exceptionName, String exceptionMessage, Timestamp eventOn) {
         super(WwException.WW_EXCEPTION);
 
-        set(0, id);
-        set(1, exceptionName);
-        set(2, exceptionMessage);
-        set(3, eventOn);
+        setId(id);
+        setExceptionName(exceptionName);
+        setExceptionMessage(exceptionMessage);
+        setEventOn(eventOn);
     }
 }

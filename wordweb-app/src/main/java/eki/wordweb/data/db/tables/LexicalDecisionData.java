@@ -4,7 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Keys;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.LexicalDecisionDataRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
 
-    private static final long serialVersionUID = -1844888870;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexical_decision_data</code>
@@ -52,28 +51,29 @@ public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
     /**
      * The column <code>public.lexical_decision_data.id</code>.
      */
-    public final TableField<LexicalDecisionDataRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexical_decision_data_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexicalDecisionDataRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexical_decision_data.word</code>.
      */
-    public final TableField<LexicalDecisionDataRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LexicalDecisionDataRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.lexical_decision_data.lang</code>.
      */
-    public final TableField<LexicalDecisionDataRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<LexicalDecisionDataRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.lexical_decision_data.is_word</code>.
      */
-    public final TableField<LexicalDecisionDataRecord, Boolean> IS_WORD = createField(DSL.name("is_word"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<LexicalDecisionDataRecord, Boolean> IS_WORD = createField(DSL.name("is_word"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.lexical_decision_data</code> table reference
-     */
-    public LexicalDecisionData() {
-        this(DSL.name("lexical_decision_data"), null);
+    private LexicalDecisionData(Name alias, Table<LexicalDecisionDataRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexicalDecisionData(Name alias, Table<LexicalDecisionDataRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
         this(alias, LEXICAL_DECISION_DATA);
     }
 
-    private LexicalDecisionData(Name alias, Table<LexicalDecisionDataRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexicalDecisionData(Name alias, Table<LexicalDecisionDataRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexical_decision_data</code> table reference
+     */
+    public LexicalDecisionData() {
+        this(DSL.name("lexical_decision_data"), null);
     }
 
     public <O extends Record> LexicalDecisionData(Table<O> child, ForeignKey<O, LexicalDecisionDataRecord> key) {
@@ -108,13 +107,8 @@ public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXICAL_DECISION_DATA_LANG_IDX);
-    }
-
-    @Override
     public Identity<LexicalDecisionDataRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXICAL_DECISION_DATA;
+        return (Identity<LexicalDecisionDataRecord, Long>) super.getIdentity();
     }
 
     @Override

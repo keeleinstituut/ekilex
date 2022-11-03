@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningForumRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row10;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningForum extends TableImpl<MeaningForumRecord> {
 
-    private static final long serialVersionUID = 1778730181;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_forum</code>
@@ -53,58 +52,59 @@ public class MeaningForum extends TableImpl<MeaningForumRecord> {
     /**
      * The column <code>public.meaning_forum.id</code>.
      */
-    public final TableField<MeaningForumRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_forum_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningForumRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning_forum.meaning_id</code>.
      */
-    public final TableField<MeaningForumRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningForumRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_forum.value</code>.
      */
-    public final TableField<MeaningForumRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<MeaningForumRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_forum.value_prese</code>.
      */
-    public final TableField<MeaningForumRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<MeaningForumRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_forum.creator_id</code>.
      */
-    public final TableField<MeaningForumRecord, Long> CREATOR_ID = createField(DSL.name("creator_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MeaningForumRecord, Long> CREATOR_ID = createField(DSL.name("creator_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.meaning_forum.created_by</code>.
      */
-    public final TableField<MeaningForumRecord, String> CREATED_BY = createField(DSL.name("created_by"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MeaningForumRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.meaning_forum.created_on</code>.
      */
-    public final TableField<MeaningForumRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MeaningForumRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6), this, "");
 
     /**
      * The column <code>public.meaning_forum.modified_by</code>.
      */
-    public final TableField<MeaningForumRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MeaningForumRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.meaning_forum.modified_on</code>.
      */
-    public final TableField<MeaningForumRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<MeaningForumRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(6), this, "");
 
     /**
      * The column <code>public.meaning_forum.order_by</code>.
      */
-    public final TableField<MeaningForumRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_forum_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningForumRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.meaning_forum</code> table reference
-     */
-    public MeaningForum() {
-        this(DSL.name("meaning_forum"), null);
+    private MeaningForum(Name alias, Table<MeaningForumRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningForum(Name alias, Table<MeaningForumRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -121,12 +121,11 @@ public class MeaningForum extends TableImpl<MeaningForumRecord> {
         this(alias, MEANING_FORUM);
     }
 
-    private MeaningForum(Name alias, Table<MeaningForumRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningForum(Name alias, Table<MeaningForumRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_forum</code> table reference
+     */
+    public MeaningForum() {
+        this(DSL.name("meaning_forum"), null);
     }
 
     public <O extends Record> MeaningForum(Table<O> child, ForeignKey<O, MeaningForumRecord> key) {
@@ -139,13 +138,8 @@ public class MeaningForum extends TableImpl<MeaningForumRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_FORUM_CREATOR_ID_IDX, Indexes.MEANING_FORUM_MEANING_ID_IDX);
-    }
-
-    @Override
     public Identity<MeaningForumRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_FORUM;
+        return (Identity<MeaningForumRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -163,12 +157,21 @@ public class MeaningForum extends TableImpl<MeaningForumRecord> {
         return Arrays.<ForeignKey<MeaningForumRecord, ?>>asList(Keys.MEANING_FORUM__MEANING_FORUM_MEANING_ID_FKEY, Keys.MEANING_FORUM__MEANING_FORUM_CREATOR_ID_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient EkiUser _ekiUser;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.MEANING_FORUM__MEANING_FORUM_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.MEANING_FORUM__MEANING_FORUM_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public EkiUser ekiUser() {
-        return new EkiUser(this, Keys.MEANING_FORUM__MEANING_FORUM_CREATOR_ID_FKEY);
+        if (_ekiUser == null)
+            _ekiUser = new EkiUser(this, Keys.MEANING_FORUM__MEANING_FORUM_CREATOR_ID_FKEY);
+
+        return _ekiUser;
     }
 
     @Override

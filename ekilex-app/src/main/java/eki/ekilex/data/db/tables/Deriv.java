@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Deriv extends TableImpl<DerivRecord> {
 
-    private static final long serialVersionUID = 1778335630;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.deriv</code>
@@ -50,23 +51,24 @@ public class Deriv extends TableImpl<DerivRecord> {
     /**
      * The column <code>public.deriv.code</code>.
      */
-    public final TableField<DerivRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DerivRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.deriv.datasets</code>.
      */
-    public final TableField<DerivRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<DerivRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.deriv.order_by</code>.
      */
-    public final TableField<DerivRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('deriv_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DerivRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.deriv</code> table reference
-     */
-    public Deriv() {
-        this(DSL.name("deriv"), null);
+    private Deriv(Name alias, Table<DerivRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Deriv(Name alias, Table<DerivRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Deriv extends TableImpl<DerivRecord> {
         this(alias, DERIV);
     }
 
-    private Deriv(Name alias, Table<DerivRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Deriv(Name alias, Table<DerivRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.deriv</code> table reference
+     */
+    public Deriv() {
+        this(DSL.name("deriv"), null);
     }
 
     public <O extends Record> Deriv(Table<O> child, ForeignKey<O, DerivRecord> key) {
@@ -102,7 +103,7 @@ public class Deriv extends TableImpl<DerivRecord> {
 
     @Override
     public Identity<DerivRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DERIV;
+        return (Identity<DerivRecord, Long>) super.getIdentity();
     }
 
     @Override

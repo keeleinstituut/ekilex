@@ -20,7 +20,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeCollocMemberRecord extends UDTRecordImpl<TypeCollocMemberRecord> implements Record7<Long, Long, String, String, Integer, String, BigDecimal> {
 
-    private static final long serialVersionUID = -1546959077;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_colloc_member.lexeme_id</code>.
@@ -310,12 +310,12 @@ public class TypeCollocMemberRecord extends UDTRecordImpl<TypeCollocMemberRecord
     public TypeCollocMemberRecord(Long lexemeId, Long wordId, String word, String form, Integer homonymNr, String conjunct, BigDecimal weight) {
         super(TypeCollocMember.TYPE_COLLOC_MEMBER);
 
-        set(0, lexemeId);
-        set(1, wordId);
-        set(2, word);
-        set(3, form);
-        set(4, homonymNr);
-        set(5, conjunct);
-        set(6, weight);
+        setLexemeId(lexemeId);
+        setWordId(wordId);
+        setWord(word);
+        setForm(form);
+        setHomonymNr(homonymNr);
+        setConjunct(conjunct);
+        setWeight(weight);
     }
 }

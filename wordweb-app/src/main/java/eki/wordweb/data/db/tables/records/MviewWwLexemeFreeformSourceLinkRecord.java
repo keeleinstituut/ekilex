@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexemeFreeformSourceLinkRecord extends TableRecordImpl<MviewWwLexemeFreeformSourceLinkRecord> implements Record2<Long, TypeSourceLinkRecord[]> {
 
-    private static final long serialVersionUID = -943389818;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_lexeme_freeform_source_link.lexeme_id</code>.
@@ -129,7 +129,7 @@ public class MviewWwLexemeFreeformSourceLinkRecord extends TableRecordImpl<Mview
     public MviewWwLexemeFreeformSourceLinkRecord(Long lexemeId, TypeSourceLinkRecord[] sourceLinks) {
         super(MviewWwLexemeFreeformSourceLink.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK);
 
-        set(0, lexemeId);
-        set(1, sourceLinks);
+        setLexemeId(lexemeId);
+        setSourceLinks(sourceLinks);
     }
 }

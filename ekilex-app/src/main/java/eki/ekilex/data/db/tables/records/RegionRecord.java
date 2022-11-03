@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RegionRecord extends UpdatableRecordImpl<RegionRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = 109611741;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.region.code</code>.
@@ -174,8 +174,8 @@ public class RegionRecord extends UpdatableRecordImpl<RegionRecord> implements R
     public RegionRecord(String code, String[] datasets, Long orderBy) {
         super(Region.REGION);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

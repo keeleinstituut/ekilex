@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TermsOfUse extends TableImpl<TermsOfUseRecord> {
 
-    private static final long serialVersionUID = -1656769565;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.terms_of_use</code>
@@ -50,28 +51,29 @@ public class TermsOfUse extends TableImpl<TermsOfUseRecord> {
     /**
      * The column <code>public.terms_of_use.id</code>.
      */
-    public final TableField<TermsOfUseRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('terms_of_use_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<TermsOfUseRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.terms_of_use.version</code>.
      */
-    public final TableField<TermsOfUseRecord, String> VERSION = createField(DSL.name("version"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<TermsOfUseRecord, String> VERSION = createField(DSL.name("version"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.terms_of_use.value</code>.
      */
-    public final TableField<TermsOfUseRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TermsOfUseRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.terms_of_use.is_active</code>.
      */
-    public final TableField<TermsOfUseRecord, Boolean> IS_ACTIVE = createField(DSL.name("is_active"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<TermsOfUseRecord, Boolean> IS_ACTIVE = createField(DSL.name("is_active"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
-    /**
-     * Create a <code>public.terms_of_use</code> table reference
-     */
-    public TermsOfUse() {
-        this(DSL.name("terms_of_use"), null);
+    private TermsOfUse(Name alias, Table<TermsOfUseRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private TermsOfUse(Name alias, Table<TermsOfUseRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -88,12 +90,11 @@ public class TermsOfUse extends TableImpl<TermsOfUseRecord> {
         this(alias, TERMS_OF_USE);
     }
 
-    private TermsOfUse(Name alias, Table<TermsOfUseRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private TermsOfUse(Name alias, Table<TermsOfUseRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.terms_of_use</code> table reference
+     */
+    public TermsOfUse() {
+        this(DSL.name("terms_of_use"), null);
     }
 
     public <O extends Record> TermsOfUse(Table<O> child, ForeignKey<O, TermsOfUseRecord> key) {
@@ -107,7 +108,7 @@ public class TermsOfUse extends TableImpl<TermsOfUseRecord> {
 
     @Override
     public Identity<TermsOfUseRecord, Long> getIdentity() {
-        return Keys.IDENTITY_TERMS_OF_USE;
+        return (Identity<TermsOfUseRecord, Long>) super.getIdentity();
     }
 
     @Override

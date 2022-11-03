@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormFreqRecord extends UpdatableRecordImpl<FormFreqRecord> implements Record5<Long, Long, Long, BigDecimal, Long> {
 
-    private static final long serialVersionUID = 1120967342;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.form_freq.id</code>.
@@ -248,10 +248,10 @@ public class FormFreqRecord extends UpdatableRecordImpl<FormFreqRecord> implemen
     public FormFreqRecord(Long id, Long freqCorpId, Long formId, BigDecimal value, Long rank) {
         super(FormFreq.FORM_FREQ);
 
-        set(0, id);
-        set(1, freqCorpId);
-        set(2, formId);
-        set(3, value);
-        set(4, rank);
+        setId(id);
+        setFreqCorpId(freqCorpId);
+        setFormId(formId);
+        setValue(value);
+        setRank(rank);
     }
 }

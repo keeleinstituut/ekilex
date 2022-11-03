@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelation extends TableImpl<LexRelationRecord> {
 
-    private static final long serialVersionUID = 1985863959;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lex_relation</code>
@@ -52,33 +51,34 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
     /**
      * The column <code>public.lex_relation.id</code>.
      */
-    public final TableField<LexRelationRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lex_relation_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexRelationRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lex_relation.lexeme1_id</code>.
      */
-    public final TableField<LexRelationRecord, Long> LEXEME1_ID = createField(DSL.name("lexeme1_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexRelationRecord, Long> LEXEME1_ID = createField(DSL.name("lexeme1_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lex_relation.lexeme2_id</code>.
      */
-    public final TableField<LexRelationRecord, Long> LEXEME2_ID = createField(DSL.name("lexeme2_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexRelationRecord, Long> LEXEME2_ID = createField(DSL.name("lexeme2_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lex_relation.lex_rel_type_code</code>.
      */
-    public final TableField<LexRelationRecord, String> LEX_REL_TYPE_CODE = createField(DSL.name("lex_rel_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexRelationRecord, String> LEX_REL_TYPE_CODE = createField(DSL.name("lex_rel_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lex_relation.order_by</code>.
      */
-    public final TableField<LexRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lex_relation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.lex_relation</code> table reference
-     */
-    public LexRelation() {
-        this(DSL.name("lex_relation"), null);
+    private LexRelation(Name alias, Table<LexRelationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexRelation(Name alias, Table<LexRelationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -95,12 +95,11 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
         this(alias, LEX_RELATION);
     }
 
-    private LexRelation(Name alias, Table<LexRelationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexRelation(Name alias, Table<LexRelationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lex_relation</code> table reference
+     */
+    public LexRelation() {
+        this(DSL.name("lex_relation"), null);
     }
 
     public <O extends Record> LexRelation(Table<O> child, ForeignKey<O, LexRelationRecord> key) {
@@ -113,13 +112,8 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEX_RELATION_LEXEME1_ID_IDX, Indexes.LEX_RELATION_LEXEME2_ID_IDX);
-    }
-
-    @Override
     public Identity<LexRelationRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEX_RELATION;
+        return (Identity<LexRelationRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -137,16 +131,29 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
         return Arrays.<ForeignKey<LexRelationRecord, ?>>asList(Keys.LEX_RELATION__LEX_RELATION_LEXEME1_ID_FKEY, Keys.LEX_RELATION__LEX_RELATION_LEXEME2_ID_FKEY, Keys.LEX_RELATION__LEX_RELATION_LEX_REL_TYPE_CODE_FKEY);
     }
 
+    private transient Lexeme _lexRelationLexeme1IdFkey;
+    private transient Lexeme _lexRelationLexeme2IdFkey;
+    private transient LexRelType _lexRelType;
+
     public Lexeme lexRelationLexeme1IdFkey() {
-        return new Lexeme(this, Keys.LEX_RELATION__LEX_RELATION_LEXEME1_ID_FKEY);
+        if (_lexRelationLexeme1IdFkey == null)
+            _lexRelationLexeme1IdFkey = new Lexeme(this, Keys.LEX_RELATION__LEX_RELATION_LEXEME1_ID_FKEY);
+
+        return _lexRelationLexeme1IdFkey;
     }
 
     public Lexeme lexRelationLexeme2IdFkey() {
-        return new Lexeme(this, Keys.LEX_RELATION__LEX_RELATION_LEXEME2_ID_FKEY);
+        if (_lexRelationLexeme2IdFkey == null)
+            _lexRelationLexeme2IdFkey = new Lexeme(this, Keys.LEX_RELATION__LEX_RELATION_LEXEME2_ID_FKEY);
+
+        return _lexRelationLexeme2IdFkey;
     }
 
     public LexRelType lexRelType() {
-        return new LexRelType(this, Keys.LEX_RELATION__LEX_RELATION_LEX_REL_TYPE_CODE_FKEY);
+        if (_lexRelType == null)
+            _lexRelType = new LexRelType(this, Keys.LEX_RELATION__LEX_RELATION_LEX_REL_TYPE_CODE_FKEY);
+
+        return _lexRelType;
     }
 
     @Override

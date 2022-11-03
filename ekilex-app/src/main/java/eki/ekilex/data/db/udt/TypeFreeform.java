@@ -12,6 +12,7 @@ import java.sql.Timestamp;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -22,7 +23,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
 
-    private static final long serialVersionUID = -1861685553;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_freeform</code>
@@ -40,47 +41,47 @@ public class TypeFreeform extends UDTImpl<TypeFreeformRecord> {
     /**
      * The attribute <code>public.type_freeform.freeform_id</code>.
      */
-    public static final UDTField<TypeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT, TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.type</code>.
      */
-    public static final UDTField<TypeFreeformRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100), TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.value</code>.
      */
-    public static final UDTField<TypeFreeformRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.lang</code>.
      */
-    public static final UDTField<TypeFreeformRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.complexity</code>.
      */
-    public static final UDTField<TypeFreeformRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.created_by</code>.
      */
-    public static final UDTField<TypeFreeformRecord, String> CREATED_BY = createField(DSL.name("created_by"), org.jooq.impl.SQLDataType.CLOB, TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.CLOB, TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.created_on</code>.
      */
-    public static final UDTField<TypeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP, TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(0), TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.modified_by</code>.
      */
-    public static final UDTField<TypeFreeformRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), org.jooq.impl.SQLDataType.CLOB, TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), SQLDataType.CLOB, TYPE_FREEFORM, "");
 
     /**
      * The attribute <code>public.type_freeform.modified_on</code>.
      */
-    public static final UDTField<TypeFreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), org.jooq.impl.SQLDataType.TIMESTAMP, TYPE_FREEFORM, "");
+    public static final UDTField<TypeFreeformRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(0), TYPE_FREEFORM, "");
 
     /**
      * No further instances allowed

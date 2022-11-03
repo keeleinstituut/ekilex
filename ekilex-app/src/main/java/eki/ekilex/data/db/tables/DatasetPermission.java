@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DatasetPermissionRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
 
-    private static final long serialVersionUID = 2114317054;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.dataset_permission</code>
@@ -52,38 +51,39 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
     /**
      * The column <code>public.dataset_permission.id</code>.
      */
-    public final TableField<DatasetPermissionRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('dataset_permission_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DatasetPermissionRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.dataset_permission.dataset_code</code>.
      */
-    public final TableField<DatasetPermissionRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<DatasetPermissionRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
      * The column <code>public.dataset_permission.user_id</code>.
      */
-    public final TableField<DatasetPermissionRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DatasetPermissionRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.dataset_permission.auth_operation</code>.
      */
-    public final TableField<DatasetPermissionRecord, String> AUTH_OPERATION = createField(DSL.name("auth_operation"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DatasetPermissionRecord, String> AUTH_OPERATION = createField(DSL.name("auth_operation"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.dataset_permission.auth_item</code>.
      */
-    public final TableField<DatasetPermissionRecord, String> AUTH_ITEM = createField(DSL.name("auth_item"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DatasetPermissionRecord, String> AUTH_ITEM = createField(DSL.name("auth_item"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.dataset_permission.auth_lang</code>.
      */
-    public final TableField<DatasetPermissionRecord, String> AUTH_LANG = createField(DSL.name("auth_lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<DatasetPermissionRecord, String> AUTH_LANG = createField(DSL.name("auth_lang"), SQLDataType.CHAR(3), this, "");
 
-    /**
-     * Create a <code>public.dataset_permission</code> table reference
-     */
-    public DatasetPermission() {
-        this(DSL.name("dataset_permission"), null);
+    private DatasetPermission(Name alias, Table<DatasetPermissionRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DatasetPermission(Name alias, Table<DatasetPermissionRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -100,12 +100,11 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
         this(alias, DATASET_PERMISSION);
     }
 
-    private DatasetPermission(Name alias, Table<DatasetPermissionRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DatasetPermission(Name alias, Table<DatasetPermissionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.dataset_permission</code> table reference
+     */
+    public DatasetPermission() {
+        this(DSL.name("dataset_permission"), null);
     }
 
     public <O extends Record> DatasetPermission(Table<O> child, ForeignKey<O, DatasetPermissionRecord> key) {
@@ -118,13 +117,8 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DATASET_PERM_DATASET_CODE_IDX, Indexes.DATASET_PERM_DATASET_FULL_CMPLX_IDX, Indexes.DATASET_PERM_USER_ID_IDX);
-    }
-
-    @Override
     public Identity<DatasetPermissionRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DATASET_PERMISSION;
+        return (Identity<DatasetPermissionRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -142,16 +136,29 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
         return Arrays.<ForeignKey<DatasetPermissionRecord, ?>>asList(Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY);
     }
 
+    private transient Dataset _dataset;
+    private transient EkiUser _ekiUser;
+    private transient Language _language;
+
     public Dataset dataset() {
-        return new Dataset(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY);
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY);
+
+        return _dataset;
     }
 
     public EkiUser ekiUser() {
-        return new EkiUser(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY);
+        if (_ekiUser == null)
+            _ekiUser = new EkiUser(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY);
+
+        return _ekiUser;
     }
 
     public Language language() {
-        return new Language(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY);
+
+        return _language;
     }
 
     @Override

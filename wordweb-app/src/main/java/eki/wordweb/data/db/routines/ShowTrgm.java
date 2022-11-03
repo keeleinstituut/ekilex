@@ -10,6 +10,7 @@ import org.jooq.Field;
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.Internal;
+import org.jooq.impl.SQLDataType;
 
 
 /**
@@ -18,23 +19,23 @@ import org.jooq.impl.Internal;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShowTrgm extends AbstractRoutine<String[]> {
 
-    private static final long serialVersionUID = 1783371432;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The parameter <code>public.show_trgm.RETURN_VALUE</code>.
      */
-    public static final Parameter<String[]> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), false, false);
+    public static final Parameter<String[]> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", SQLDataType.CLOB.getArrayDataType(), false, false);
 
     /**
      * The parameter <code>public.show_trgm._1</code>.
      */
-    public static final Parameter<String> _1 = Internal.createParameter("_1", org.jooq.impl.SQLDataType.CLOB, false, true);
+    public static final Parameter<String> _1 = Internal.createParameter("_1", SQLDataType.CLOB, false, true);
 
     /**
      * Create a new routine call instance
      */
     public ShowTrgm() {
-        super("show_trgm", Public.PUBLIC, org.jooq.impl.SQLDataType.CLOB.getArrayDataType());
+        super("show_trgm", Public.PUBLIC, SQLDataType.CLOB.getArrayDataType());
 
         setReturnParameter(RETURN_VALUE);
         addInParameter(_1);

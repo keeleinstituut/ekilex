@@ -4,16 +4,11 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwCountsRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -22,6 +17,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCounts extends TableImpl<MviewWwCountsRecord> {
 
-    private static final long serialVersionUID = 1807680857;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_counts</code>
@@ -49,33 +45,34 @@ public class MviewWwCounts extends TableImpl<MviewWwCountsRecord> {
     /**
      * The column <code>public.mview_ww_counts.dataset_code</code>.
      */
-    public final TableField<MviewWwCountsRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR, this, "");
+    public final TableField<MviewWwCountsRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>public.mview_ww_counts.lang</code>.
      */
-    public final TableField<MviewWwCountsRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<MviewWwCountsRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.mview_ww_counts.word_record_count</code>.
      */
-    public final TableField<MviewWwCountsRecord, Long> WORD_RECORD_COUNT = createField(DSL.name("word_record_count"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCountsRecord, Long> WORD_RECORD_COUNT = createField(DSL.name("word_record_count"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_counts.word_value_count</code>.
      */
-    public final TableField<MviewWwCountsRecord, Long> WORD_VALUE_COUNT = createField(DSL.name("word_value_count"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCountsRecord, Long> WORD_VALUE_COUNT = createField(DSL.name("word_value_count"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_counts.meaning_record_count</code>.
      */
-    public final TableField<MviewWwCountsRecord, Long> MEANING_RECORD_COUNT = createField(DSL.name("meaning_record_count"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCountsRecord, Long> MEANING_RECORD_COUNT = createField(DSL.name("meaning_record_count"), SQLDataType.BIGINT, this, "");
 
-    /**
-     * Create a <code>public.mview_ww_counts</code> table reference
-     */
-    public MviewWwCounts() {
-        this(DSL.name("mview_ww_counts"), null);
+    private MviewWwCounts(Name alias, Table<MviewWwCountsRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwCounts(Name alias, Table<MviewWwCountsRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -92,12 +89,11 @@ public class MviewWwCounts extends TableImpl<MviewWwCountsRecord> {
         this(alias, MVIEW_WW_COUNTS);
     }
 
-    private MviewWwCounts(Name alias, Table<MviewWwCountsRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwCounts(Name alias, Table<MviewWwCountsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_counts</code> table reference
+     */
+    public MviewWwCounts() {
+        this(DSL.name("mview_ww_counts"), null);
     }
 
     public <O extends Record> MviewWwCounts(Table<O> child, ForeignKey<O, MviewWwCountsRecord> key) {
@@ -107,11 +103,6 @@ public class MviewWwCounts extends TableImpl<MviewWwCountsRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_COUNTS_DATASET_CODE_IDX, Indexes.MVIEW_WW_COUNTS_LANG_IDX);
     }
 
     @Override

@@ -89,6 +89,8 @@
 								<database>
 									<name>org.jooq.meta.postgres.PostgresDatabase</name>
 									<includes>.*</includes>
+									<includeIndexes>false</includeIndexes>
+									<includeSystemIndexes>false</includeSystemIndexes>
 									<excludes>dblink.*</excludes>
 									<inputSchema>public</inputSchema>
 								</database>

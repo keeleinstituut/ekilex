@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordForumRecord extends UpdatableRecordImpl<WordForumRecord> implements Record10<Long, Long, String, String, Long, String, Timestamp, String, Timestamp, Long> {
 
-    private static final long serialVersionUID = -358164589;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_forum.id</code>.
@@ -428,15 +428,15 @@ public class WordForumRecord extends UpdatableRecordImpl<WordForumRecord> implem
     public WordForumRecord(Long id, Long wordId, String value, String valuePrese, Long creatorId, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn, Long orderBy) {
         super(WordForum.WORD_FORUM);
 
-        set(0, id);
-        set(1, wordId);
-        set(2, value);
-        set(3, valuePrese);
-        set(4, creatorId);
-        set(5, createdBy);
-        set(6, createdOn);
-        set(7, modifiedBy);
-        set(8, modifiedOn);
-        set(9, orderBy);
+        setId(id);
+        setWordId(wordId);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setCreatorId(creatorId);
+        setCreatedBy(createdBy);
+        setCreatedOn(createdOn);
+        setModifiedBy(modifiedBy);
+        setModifiedOn(modifiedOn);
+        setOrderBy(orderBy);
     }
 }

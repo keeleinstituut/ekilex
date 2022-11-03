@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionSourceLinkRecord extends UpdatableRecordImpl<DefinitionSourceLinkRecord> implements Record7<Long, Long, Long, String, String, String, Long> {
 
-    private static final long serialVersionUID = 1711893082;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.definition_source_link.id</code>.
@@ -318,12 +318,12 @@ public class DefinitionSourceLinkRecord extends UpdatableRecordImpl<DefinitionSo
     public DefinitionSourceLinkRecord(Long id, Long definitionId, Long sourceId, String type, String name, String value, Long orderBy) {
         super(DefinitionSourceLink.DEFINITION_SOURCE_LINK);
 
-        set(0, id);
-        set(1, definitionId);
-        set(2, sourceId);
-        set(3, type);
-        set(4, name);
-        set(5, value);
-        set(6, orderBy);
+        setId(id);
+        setDefinitionId(definitionId);
+        setSourceId(sourceId);
+        setType(type);
+        setName(name);
+        setValue(value);
+        setOrderBy(orderBy);
     }
 }

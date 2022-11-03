@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row9;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = -1015503901;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -52,53 +51,54 @@ public class Definition extends TableImpl<DefinitionRecord> {
     /**
      * The column <code>public.definition.id</code>.
      */
-    public final TableField<DefinitionRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DefinitionRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.definition.meaning_id</code>.
      */
-    public final TableField<DefinitionRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DefinitionRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.definition.definition_type_code</code>.
      */
-    public final TableField<DefinitionRecord, String> DEFINITION_TYPE_CODE = createField(DSL.name("definition_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DefinitionRecord, String> DEFINITION_TYPE_CODE = createField(DSL.name("definition_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition.value</code>.
      */
-    public final TableField<DefinitionRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DefinitionRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.definition.value_prese</code>.
      */
-    public final TableField<DefinitionRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DefinitionRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.definition.lang</code>.
      */
-    public final TableField<DefinitionRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<DefinitionRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.definition.complexity</code>.
      */
-    public final TableField<DefinitionRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DefinitionRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition.order_by</code>.
      */
-    public final TableField<DefinitionRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DefinitionRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.definition.is_public</code>.
      */
-    public final TableField<DefinitionRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<DefinitionRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
-    /**
-     * Create a <code>public.definition</code> table reference
-     */
-    public Definition() {
-        this(DSL.name("definition"), null);
+    private Definition(Name alias, Table<DefinitionRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Definition(Name alias, Table<DefinitionRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -115,12 +115,11 @@ public class Definition extends TableImpl<DefinitionRecord> {
         this(alias, DEFINITION);
     }
 
-    private Definition(Name alias, Table<DefinitionRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Definition(Name alias, Table<DefinitionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.definition</code> table reference
+     */
+    public Definition() {
+        this(DSL.name("definition"), null);
     }
 
     public <O extends Record> Definition(Table<O> child, ForeignKey<O, DefinitionRecord> key) {
@@ -133,13 +132,8 @@ public class Definition extends TableImpl<DefinitionRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DEFINITION_COMPLEXITY_IDX, Indexes.DEFINITION_IS_PUBLIC_IDX, Indexes.DEFINITION_LANG_IDX, Indexes.DEFINITION_MEANING_ID_IDX);
-    }
-
-    @Override
     public Identity<DefinitionRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DEFINITION;
+        return (Identity<DefinitionRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -157,16 +151,29 @@ public class Definition extends TableImpl<DefinitionRecord> {
         return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient DefinitionType _definitionType;
+    private transient Language _language;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public DefinitionType definitionType() {
-        return new DefinitionType(this, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY);
+        if (_definitionType == null)
+            _definitionType = new DefinitionType(this, Keys.DEFINITION__DEFINITION_DEFINITION_TYPE_CODE_FKEY);
+
+        return _definitionType;
     }
 
     public Language language() {
-        return new Language(this, Keys.DEFINITION__DEFINITION_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.DEFINITION__DEFINITION_LANG_FKEY);
+
+        return _language;
     }
 
     @Override

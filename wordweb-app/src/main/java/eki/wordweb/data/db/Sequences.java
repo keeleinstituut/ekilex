@@ -6,10 +6,11 @@ package eki.wordweb.data.db;
 
 import org.jooq.Sequence;
 import org.jooq.impl.Internal;
+import org.jooq.impl.SQLDataType;
 
 
 /**
- * Convenience access to all sequences in public
+ * Convenience access to all sequences in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Sequences {
@@ -17,20 +18,20 @@ public class Sequences {
     /**
      * The sequence <code>public.lexical_decision_data_id_seq</code>
      */
-    public static final Sequence<Long> LEXICAL_DECISION_DATA_ID_SEQ = Internal.createSequence("lexical_decision_data_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> LEXICAL_DECISION_DATA_ID_SEQ = Internal.createSequence("lexical_decision_data_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.lexical_decision_result_id_seq</code>
      */
-    public static final Sequence<Long> LEXICAL_DECISION_RESULT_ID_SEQ = Internal.createSequence("lexical_decision_result_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> LEXICAL_DECISION_RESULT_ID_SEQ = Internal.createSequence("lexical_decision_result_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.similarity_judgement_data_id_seq</code>
      */
-    public static final Sequence<Long> SIMILARITY_JUDGEMENT_DATA_ID_SEQ = Internal.createSequence("similarity_judgement_data_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> SIMILARITY_JUDGEMENT_DATA_ID_SEQ = Internal.createSequence("similarity_judgement_data_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 
     /**
      * The sequence <code>public.similarity_judgement_result_id_seq</code>
      */
-    public static final Sequence<Long> SIMILARITY_JUDGEMENT_RESULT_ID_SEQ = Internal.createSequence("similarity_judgement_result_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
+    public static final Sequence<Long> SIMILARITY_JUDGEMENT_RESULT_ID_SEQ = Internal.createSequence("similarity_judgement_result_id_seq", Public.PUBLIC, SQLDataType.BIGINT.nullable(false), null, null, null, null, false, null);
 }

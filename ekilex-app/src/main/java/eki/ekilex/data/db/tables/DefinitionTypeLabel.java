@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionTypeLabel extends TableImpl<DefinitionTypeLabelRecord> {
 
-    private static final long serialVersionUID = -992149725;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.definition_type_label</code>
@@ -49,28 +50,29 @@ public class DefinitionTypeLabel extends TableImpl<DefinitionTypeLabelRecord> {
     /**
      * The column <code>public.definition_type_label.code</code>.
      */
-    public final TableField<DefinitionTypeLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DefinitionTypeLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition_type_label.value</code>.
      */
-    public final TableField<DefinitionTypeLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DefinitionTypeLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.definition_type_label.lang</code>.
      */
-    public final TableField<DefinitionTypeLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<DefinitionTypeLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.definition_type_label.type</code>.
      */
-    public final TableField<DefinitionTypeLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<DefinitionTypeLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.definition_type_label</code> table reference
-     */
-    public DefinitionTypeLabel() {
-        this(DSL.name("definition_type_label"), null);
+    private DefinitionTypeLabel(Name alias, Table<DefinitionTypeLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DefinitionTypeLabel(Name alias, Table<DefinitionTypeLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class DefinitionTypeLabel extends TableImpl<DefinitionTypeLabelRecord> {
         this(alias, DEFINITION_TYPE_LABEL);
     }
 
-    private DefinitionTypeLabel(Name alias, Table<DefinitionTypeLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DefinitionTypeLabel(Name alias, Table<DefinitionTypeLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.definition_type_label</code> table reference
+     */
+    public DefinitionTypeLabel() {
+        this(DSL.name("definition_type_label"), null);
     }
 
     public <O extends Record> DefinitionTypeLabel(Table<O> child, ForeignKey<O, DefinitionTypeLabelRecord> key) {
@@ -114,16 +115,29 @@ public class DefinitionTypeLabel extends TableImpl<DefinitionTypeLabelRecord> {
         return Arrays.<ForeignKey<DefinitionTypeLabelRecord, ?>>asList(Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_CODE_FKEY, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_LANG_FKEY, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_TYPE_FKEY);
     }
 
+    private transient DefinitionType _definitionType;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public DefinitionType definitionType() {
-        return new DefinitionType(this, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_CODE_FKEY);
+        if (_definitionType == null)
+            _definitionType = new DefinitionType(this, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_CODE_FKEY);
+
+        return _definitionType;
     }
 
     public Language language() {
-        return new Language(this, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.DEFINITION_TYPE_LABEL__DEFINITION_TYPE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

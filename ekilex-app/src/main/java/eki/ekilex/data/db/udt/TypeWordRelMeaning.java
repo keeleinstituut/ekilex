@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeWordRelMeaningRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelMeaning extends UDTImpl<TypeWordRelMeaningRecord> {
 
-    private static final long serialVersionUID = 271404732;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_word_rel_meaning</code>
@@ -38,32 +39,32 @@ public class TypeWordRelMeaning extends UDTImpl<TypeWordRelMeaningRecord> {
     /**
      * The attribute <code>public.type_word_rel_meaning.meaning_id</code>.
      */
-    public static final UDTField<TypeWordRelMeaningRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_WORD_REL_MEANING, "");
+    public static final UDTField<TypeWordRelMeaningRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, TYPE_WORD_REL_MEANING, "");
 
     /**
      * The attribute <code>public.type_word_rel_meaning.lexeme_id</code>.
      */
-    public static final UDTField<TypeWordRelMeaningRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_WORD_REL_MEANING, "");
+    public static final UDTField<TypeWordRelMeaningRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, TYPE_WORD_REL_MEANING, "");
 
     /**
      * The attribute <code>public.type_word_rel_meaning.definition_values</code>.
      */
-    public static final UDTField<TypeWordRelMeaningRecord, String[]> DEFINITION_VALUES = createField(DSL.name("definition_values"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
+    public static final UDTField<TypeWordRelMeaningRecord, String[]> DEFINITION_VALUES = createField(DSL.name("definition_values"), SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
 
     /**
      * The attribute <code>public.type_word_rel_meaning.usage_values</code>.
      */
-    public static final UDTField<TypeWordRelMeaningRecord, String[]> USAGE_VALUES = createField(DSL.name("usage_values"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
+    public static final UDTField<TypeWordRelMeaningRecord, String[]> USAGE_VALUES = createField(DSL.name("usage_values"), SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
 
     /**
      * The attribute <code>public.type_word_rel_meaning.lex_register_codes</code>.
      */
-    public static final UDTField<TypeWordRelMeaningRecord, String[]> LEX_REGISTER_CODES = createField(DSL.name("lex_register_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
+    public static final UDTField<TypeWordRelMeaningRecord, String[]> LEX_REGISTER_CODES = createField(DSL.name("lex_register_codes"), SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
 
     /**
      * The attribute <code>public.type_word_rel_meaning.lex_pos_codes</code>.
      */
-    public static final UDTField<TypeWordRelMeaningRecord, String[]> LEX_POS_CODES = createField(DSL.name("lex_pos_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
+    public static final UDTField<TypeWordRelMeaningRecord, String[]> LEX_POS_CODES = createField(DSL.name("lex_pos_codes"), SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD_REL_MEANING, "");
 
     /**
      * No further instances allowed

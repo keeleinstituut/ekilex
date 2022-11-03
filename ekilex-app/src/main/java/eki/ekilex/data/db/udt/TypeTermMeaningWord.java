@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeTermMeaningWordRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeTermMeaningWord extends UDTImpl<TypeTermMeaningWordRecord> {
 
-    private static final long serialVersionUID = 1928003007;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_term_meaning_word</code>
@@ -38,72 +39,72 @@ public class TypeTermMeaningWord extends UDTImpl<TypeTermMeaningWordRecord> {
     /**
      * The attribute <code>public.type_term_meaning_word.word_id</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.word_value</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, String> WORD_VALUE = createField(DSL.name("word_value"), org.jooq.impl.SQLDataType.CLOB, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, String> WORD_VALUE = createField(DSL.name("word_value"), SQLDataType.CLOB, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.word_value_prese</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, String> WORD_VALUE_PRESE = createField(DSL.name("word_value_prese"), org.jooq.impl.SQLDataType.CLOB, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, String> WORD_VALUE_PRESE = createField(DSL.name("word_value_prese"), SQLDataType.CLOB, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.homonym_nr</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), org.jooq.impl.SQLDataType.INTEGER, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Integer> HOMONYM_NR = createField(DSL.name("homonym_nr"), SQLDataType.INTEGER, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.lang</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.word_type_codes</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, String[]> WORD_TYPE_CODES = createField(DSL.name("word_type_codes"), SQLDataType.VARCHAR.getArrayDataType(), TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.prefixoid</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> PREFIXOID = createField(DSL.name("prefixoid"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> PREFIXOID = createField(DSL.name("prefixoid"), SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.suffixoid</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> SUFFIXOID = createField(DSL.name("suffixoid"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> SUFFIXOID = createField(DSL.name("suffixoid"), SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.foreign</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> FOREIGN = createField(DSL.name("foreign"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> FOREIGN = createField(DSL.name("foreign"), SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.matching_word</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> MATCHING_WORD = createField(DSL.name("matching_word"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> MATCHING_WORD = createField(DSL.name("matching_word"), SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.most_preferred</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> MOST_PREFERRED = createField(DSL.name("most_preferred"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> MOST_PREFERRED = createField(DSL.name("most_preferred"), SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.least_preferred</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> LEAST_PREFERRED = createField(DSL.name("least_preferred"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> LEAST_PREFERRED = createField(DSL.name("least_preferred"), SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.is_public</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN, TYPE_TERM_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_term_meaning_word.dataset_codes</code>.
      */
-    public static final UDTField<TypeTermMeaningWordRecord, String[]> DATASET_CODES = createField(DSL.name("dataset_codes"), org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_TERM_MEANING_WORD, "");
+    public static final UDTField<TypeTermMeaningWordRecord, String[]> DATASET_CODES = createField(DSL.name("dataset_codes"), SQLDataType.VARCHAR.getArrayDataType(), TYPE_TERM_MEANING_WORD, "");
 
     /**
      * No further instances allowed

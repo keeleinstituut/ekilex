@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> implements Record9<Long, Long, String, String, String, String, String, Long, Boolean> {
 
-    private static final long serialVersionUID = -390260896;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.definition.id</code>.
@@ -390,14 +390,14 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
     public DefinitionRecord(Long id, Long meaningId, String definitionTypeCode, String value, String valuePrese, String lang, String complexity, Long orderBy, Boolean isPublic) {
         super(Definition.DEFINITION);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, definitionTypeCode);
-        set(3, value);
-        set(4, valuePrese);
-        set(5, lang);
-        set(6, complexity);
-        set(7, orderBy);
-        set(8, isPublic);
+        setId(id);
+        setMeaningId(meaningId);
+        setDefinitionTypeCode(definitionTypeCode);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setLang(lang);
+        setComplexity(complexity);
+        setOrderBy(orderBy);
+        setIsPublic(isPublic);
     }
 }

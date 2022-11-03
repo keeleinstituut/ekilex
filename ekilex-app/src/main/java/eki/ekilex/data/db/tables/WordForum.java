@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordForumRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row10;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordForum extends TableImpl<WordForumRecord> {
 
-    private static final long serialVersionUID = 1045179198;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_forum</code>
@@ -53,58 +52,59 @@ public class WordForum extends TableImpl<WordForumRecord> {
     /**
      * The column <code>public.word_forum.id</code>.
      */
-    public final TableField<WordForumRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_forum_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordForumRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_forum.word_id</code>.
      */
-    public final TableField<WordForumRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordForumRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_forum.value</code>.
      */
-    public final TableField<WordForumRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<WordForumRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.word_forum.value_prese</code>.
      */
-    public final TableField<WordForumRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<WordForumRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.word_forum.creator_id</code>.
      */
-    public final TableField<WordForumRecord, Long> CREATOR_ID = createField(DSL.name("creator_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<WordForumRecord, Long> CREATOR_ID = createField(DSL.name("creator_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.word_forum.created_by</code>.
      */
-    public final TableField<WordForumRecord, String> CREATED_BY = createField(DSL.name("created_by"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WordForumRecord, String> CREATED_BY = createField(DSL.name("created_by"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_forum.created_on</code>.
      */
-    public final TableField<WordForumRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<WordForumRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6), this, "");
 
     /**
      * The column <code>public.word_forum.modified_by</code>.
      */
-    public final TableField<WordForumRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WordForumRecord, String> MODIFIED_BY = createField(DSL.name("modified_by"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_forum.modified_on</code>.
      */
-    public final TableField<WordForumRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<WordForumRecord, Timestamp> MODIFIED_ON = createField(DSL.name("modified_on"), SQLDataType.TIMESTAMP(6), this, "");
 
     /**
      * The column <code>public.word_forum.order_by</code>.
      */
-    public final TableField<WordForumRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_forum_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordForumRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.word_forum</code> table reference
-     */
-    public WordForum() {
-        this(DSL.name("word_forum"), null);
+    private WordForum(Name alias, Table<WordForumRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordForum(Name alias, Table<WordForumRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -121,12 +121,11 @@ public class WordForum extends TableImpl<WordForumRecord> {
         this(alias, WORD_FORUM);
     }
 
-    private WordForum(Name alias, Table<WordForumRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordForum(Name alias, Table<WordForumRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_forum</code> table reference
+     */
+    public WordForum() {
+        this(DSL.name("word_forum"), null);
     }
 
     public <O extends Record> WordForum(Table<O> child, ForeignKey<O, WordForumRecord> key) {
@@ -139,13 +138,8 @@ public class WordForum extends TableImpl<WordForumRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_FORUM_CREATOR_ID_IDX, Indexes.WORD_FORUM_WORD_ID_IDX);
-    }
-
-    @Override
     public Identity<WordForumRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_FORUM;
+        return (Identity<WordForumRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -163,12 +157,21 @@ public class WordForum extends TableImpl<WordForumRecord> {
         return Arrays.<ForeignKey<WordForumRecord, ?>>asList(Keys.WORD_FORUM__WORD_FORUM_WORD_ID_FKEY, Keys.WORD_FORUM__WORD_FORUM_CREATOR_ID_FKEY);
     }
 
+    private transient Word _word;
+    private transient EkiUser _ekiUser;
+
     public Word word() {
-        return new Word(this, Keys.WORD_FORUM__WORD_FORUM_WORD_ID_FKEY);
+        if (_word == null)
+            _word = new Word(this, Keys.WORD_FORUM__WORD_FORUM_WORD_ID_FKEY);
+
+        return _word;
     }
 
     public EkiUser ekiUser() {
-        return new EkiUser(this, Keys.WORD_FORUM__WORD_FORUM_CREATOR_ID_FKEY);
+        if (_ekiUser == null)
+            _ekiUser = new EkiUser(this, Keys.WORD_FORUM__WORD_FORUM_CREATOR_ID_FKEY);
+
+        return _ekiUser;
     }
 
     @Override

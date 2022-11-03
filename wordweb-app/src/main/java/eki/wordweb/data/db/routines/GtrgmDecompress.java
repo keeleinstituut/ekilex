@@ -16,22 +16,22 @@ import org.jooq.impl.Internal;
 /**
  * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
  */
-@java.lang.Deprecated
+@Deprecated
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GtrgmDecompress extends AbstractRoutine<Object> {
 
-    private static final long serialVersionUID = 1437213139;
+    private static final long serialVersionUID = 1L;
 
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
+    @Deprecated
     public static final Parameter<Object> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"internal\""), false, false);
 
     /**
      * @deprecated Unknown data type. Please define an explicit {@link org.jooq.Binding} to specify how this type should be handled. Deprecation can be turned off using {@literal <deprecationOnUnknownTypes/>} in your code generator configuration.
      */
-    @java.lang.Deprecated
+    @Deprecated
     public static final Parameter<Object> _1 = Internal.createParameter("_1", org.jooq.impl.DefaultDataType.getDefaultDataType("\"pg_catalog\".\"internal\""), false, true);
 
     /**

@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProficiencyLevelLabel extends TableImpl<ProficiencyLevelLabelRecord> {
 
-    private static final long serialVersionUID = -174517383;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.proficiency_level_label</code>
@@ -49,28 +50,29 @@ public class ProficiencyLevelLabel extends TableImpl<ProficiencyLevelLabelRecord
     /**
      * The column <code>public.proficiency_level_label.code</code>.
      */
-    public final TableField<ProficiencyLevelLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<ProficiencyLevelLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.proficiency_level_label.value</code>.
      */
-    public final TableField<ProficiencyLevelLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ProficiencyLevelLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.proficiency_level_label.lang</code>.
      */
-    public final TableField<ProficiencyLevelLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<ProficiencyLevelLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.proficiency_level_label.type</code>.
      */
-    public final TableField<ProficiencyLevelLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<ProficiencyLevelLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.proficiency_level_label</code> table reference
-     */
-    public ProficiencyLevelLabel() {
-        this(DSL.name("proficiency_level_label"), null);
+    private ProficiencyLevelLabel(Name alias, Table<ProficiencyLevelLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ProficiencyLevelLabel(Name alias, Table<ProficiencyLevelLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class ProficiencyLevelLabel extends TableImpl<ProficiencyLevelLabelRecord
         this(alias, PROFICIENCY_LEVEL_LABEL);
     }
 
-    private ProficiencyLevelLabel(Name alias, Table<ProficiencyLevelLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ProficiencyLevelLabel(Name alias, Table<ProficiencyLevelLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.proficiency_level_label</code> table reference
+     */
+    public ProficiencyLevelLabel() {
+        this(DSL.name("proficiency_level_label"), null);
     }
 
     public <O extends Record> ProficiencyLevelLabel(Table<O> child, ForeignKey<O, ProficiencyLevelLabelRecord> key) {
@@ -114,16 +115,29 @@ public class ProficiencyLevelLabel extends TableImpl<ProficiencyLevelLabelRecord
         return Arrays.<ForeignKey<ProficiencyLevelLabelRecord, ?>>asList(Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_CODE_FKEY, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_LANG_FKEY, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_TYPE_FKEY);
     }
 
+    private transient ProficiencyLevel _proficiencyLevel;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public ProficiencyLevel proficiencyLevel() {
-        return new ProficiencyLevel(this, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_CODE_FKEY);
+        if (_proficiencyLevel == null)
+            _proficiencyLevel = new ProficiencyLevel(this, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_CODE_FKEY);
+
+        return _proficiencyLevel;
     }
 
     public Language language() {
-        return new Language(this, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.PROFICIENCY_LEVEL_LABEL__PROFICIENCY_LEVEL_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

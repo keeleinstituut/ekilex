@@ -17,6 +17,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -26,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwDatasetWordMenu extends TableImpl<ViewWwDatasetWordMenuRecord> {
 
-    private static final long serialVersionUID = -897826245;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.view_ww_dataset_word_menu</code>
@@ -44,23 +45,24 @@ public class ViewWwDatasetWordMenu extends TableImpl<ViewWwDatasetWordMenuRecord
     /**
      * The column <code>public.view_ww_dataset_word_menu.dataset_code</code>.
      */
-    public final TableField<ViewWwDatasetWordMenuRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<ViewWwDatasetWordMenuRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.view_ww_dataset_word_menu.first_letter</code>.
      */
-    public final TableField<ViewWwDatasetWordMenuRecord, String> FIRST_LETTER = createField(DSL.name("first_letter"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwDatasetWordMenuRecord, String> FIRST_LETTER = createField(DSL.name("first_letter"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_dataset_word_menu.words</code>.
      */
-    public final TableField<ViewWwDatasetWordMenuRecord, String[]> WORDS = createField(DSL.name("words"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwDatasetWordMenuRecord, String[]> WORDS = createField(DSL.name("words"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.view_ww_dataset_word_menu</code> table reference
-     */
-    public ViewWwDatasetWordMenu() {
-        this(DSL.name("view_ww_dataset_word_menu"), null);
+    private ViewWwDatasetWordMenu(Name alias, Table<ViewWwDatasetWordMenuRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ViewWwDatasetWordMenu(Name alias, Table<ViewWwDatasetWordMenuRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset_word_menu\" as  SELECT w.dataset_code,\n    w.first_letter,\n    array_agg(w.word ORDER BY w.word) AS words\n   FROM ( SELECT \"left\"(w_1.value, 1) AS first_letter,\n            w_1.value AS word,\n            l.dataset_code\n           FROM word w_1,\n            lexeme l,\n            dataset ds\n          WHERE ((w_1.value <> ''::text) AND (w_1.is_public = true) AND (l.word_id = w_1.id) AND (l.is_public = true) AND ((l.dataset_code)::text = (ds.code)::text) AND (ds.is_public = true) AND ((ds.code)::text <> ALL ((ARRAY['ety'::character varying, 'eki'::character varying])::text[])))) w\n  GROUP BY w.dataset_code, w.first_letter\n  ORDER BY w.dataset_code, w.first_letter;"));
     }
 
     /**
@@ -77,12 +79,11 @@ public class ViewWwDatasetWordMenu extends TableImpl<ViewWwDatasetWordMenuRecord
         this(alias, VIEW_WW_DATASET_WORD_MENU);
     }
 
-    private ViewWwDatasetWordMenu(Name alias, Table<ViewWwDatasetWordMenuRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ViewWwDatasetWordMenu(Name alias, Table<ViewWwDatasetWordMenuRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset_word_menu\" as  SELECT w.dataset_code,\n    w.first_letter,\n    array_agg(w.word ORDER BY w.word) AS words\n   FROM ( SELECT \"left\"(w_1.value, 1) AS first_letter,\n            w_1.value AS word,\n            l.dataset_code\n           FROM word w_1,\n            lexeme l,\n            dataset ds\n          WHERE ((w_1.value <> ''::text) AND (l.word_id = w_1.id) AND (l.is_public = true) AND ((l.dataset_code)::text = (ds.code)::text) AND (ds.is_public = true) AND ((ds.code)::text <> ALL ((ARRAY['ety'::character varying, 'eki'::character varying])::text[])))) w\n  GROUP BY w.dataset_code, w.first_letter\n  ORDER BY w.dataset_code, w.first_letter;"));
+    /**
+     * Create a <code>public.view_ww_dataset_word_menu</code> table reference
+     */
+    public ViewWwDatasetWordMenu() {
+        this(DSL.name("view_ww_dataset_word_menu"), null);
     }
 
     public <O extends Record> ViewWwDatasetWordMenu(Table<O> child, ForeignKey<O, ViewWwDatasetWordMenuRecord> key) {

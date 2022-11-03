@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordGroupMemberRecord extends UpdatableRecordImpl<WordGroupMemberRecord> implements Record4<Long, Long, Long, Long> {
 
-    private static final long serialVersionUID = 85751924;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_group_member.id</code>.
@@ -210,9 +210,9 @@ public class WordGroupMemberRecord extends UpdatableRecordImpl<WordGroupMemberRe
     public WordGroupMemberRecord(Long id, Long wordGroupId, Long wordId, Long orderBy) {
         super(WordGroupMember.WORD_GROUP_MEMBER);
 
-        set(0, id);
-        set(1, wordGroupId);
-        set(2, wordId);
-        set(3, orderBy);
+        setId(id);
+        setWordGroupId(wordGroupId);
+        setWordId(wordId);
+        setOrderBy(orderBy);
     }
 }

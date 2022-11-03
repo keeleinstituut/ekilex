@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SimilarityJudgementDataRecord extends UpdatableRecordImpl<SimilarityJudgementDataRecord> implements Record5<Long, Long, String, String, String> {
 
-    private static final long serialVersionUID = 366014995;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.similarity_judgement_data.id</code>.
@@ -246,10 +246,10 @@ public class SimilarityJudgementDataRecord extends UpdatableRecordImpl<Similarit
     public SimilarityJudgementDataRecord(Long id, Long meaningId, String word, String lang, String datasetCode) {
         super(SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, word);
-        set(3, lang);
-        set(4, datasetCode);
+        setId(id);
+        setMeaningId(meaningId);
+        setWord(word);
+        setLang(lang);
+        setDatasetCode(datasetCode);
     }
 }

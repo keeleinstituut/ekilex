@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SemanticType extends TableImpl<SemanticTypeRecord> {
 
-    private static final long serialVersionUID = 499931760;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.semantic_type</code>
@@ -50,23 +51,24 @@ public class SemanticType extends TableImpl<SemanticTypeRecord> {
     /**
      * The column <code>public.semantic_type.code</code>.
      */
-    public final TableField<SemanticTypeRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<SemanticTypeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.semantic_type.datasets</code>.
      */
-    public final TableField<SemanticTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<SemanticTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.semantic_type.order_by</code>.
      */
-    public final TableField<SemanticTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('semantic_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<SemanticTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.semantic_type</code> table reference
-     */
-    public SemanticType() {
-        this(DSL.name("semantic_type"), null);
+    private SemanticType(Name alias, Table<SemanticTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SemanticType(Name alias, Table<SemanticTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class SemanticType extends TableImpl<SemanticTypeRecord> {
         this(alias, SEMANTIC_TYPE);
     }
 
-    private SemanticType(Name alias, Table<SemanticTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SemanticType(Name alias, Table<SemanticTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.semantic_type</code> table reference
+     */
+    public SemanticType() {
+        this(DSL.name("semantic_type"), null);
     }
 
     public <O extends Record> SemanticType(Table<O> child, ForeignKey<O, SemanticTypeRecord> key) {
@@ -102,7 +103,7 @@ public class SemanticType extends TableImpl<SemanticTypeRecord> {
 
     @Override
     public Identity<SemanticTypeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_SEMANTIC_TYPE;
+        return (Identity<SemanticTypeRecord, Long>) super.getIdentity();
     }
 
     @Override

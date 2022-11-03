@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DefinitionSourceLinkRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row7;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> {
 
-    private static final long serialVersionUID = -1349050871;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.definition_source_link</code>
@@ -52,43 +51,44 @@ public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> 
     /**
      * The column <code>public.definition_source_link.id</code>.
      */
-    public final TableField<DefinitionSourceLinkRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_source_link_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DefinitionSourceLinkRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.definition_source_link.definition_id</code>.
      */
-    public final TableField<DefinitionSourceLinkRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DefinitionSourceLinkRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.definition_source_link.source_id</code>.
      */
-    public final TableField<DefinitionSourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DefinitionSourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.definition_source_link.type</code>.
      */
-    public final TableField<DefinitionSourceLinkRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DefinitionSourceLinkRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.definition_source_link.name</code>.
      */
-    public final TableField<DefinitionSourceLinkRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<DefinitionSourceLinkRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.definition_source_link.value</code>.
      */
-    public final TableField<DefinitionSourceLinkRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<DefinitionSourceLinkRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.definition_source_link.order_by</code>.
      */
-    public final TableField<DefinitionSourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_source_link_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DefinitionSourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.definition_source_link</code> table reference
-     */
-    public DefinitionSourceLink() {
-        this(DSL.name("definition_source_link"), null);
+    private DefinitionSourceLink(Name alias, Table<DefinitionSourceLinkRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DefinitionSourceLink(Name alias, Table<DefinitionSourceLinkRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -105,12 +105,11 @@ public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> 
         this(alias, DEFINITION_SOURCE_LINK);
     }
 
-    private DefinitionSourceLink(Name alias, Table<DefinitionSourceLinkRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DefinitionSourceLink(Name alias, Table<DefinitionSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.definition_source_link</code> table reference
+     */
+    public DefinitionSourceLink() {
+        this(DSL.name("definition_source_link"), null);
     }
 
     public <O extends Record> DefinitionSourceLink(Table<O> child, ForeignKey<O, DefinitionSourceLinkRecord> key) {
@@ -123,13 +122,8 @@ public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> 
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DEFINITION_SOURCE_LINK_DEFINITION_ID_IDX, Indexes.DEFINITION_SOURCE_LINK_NAME_IDX, Indexes.DEFINITION_SOURCE_LINK_SOURCE_ID_IDX, Indexes.DEFINITION_SOURCE_LINK_VALUE_IDX);
-    }
-
-    @Override
     public Identity<DefinitionSourceLinkRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DEFINITION_SOURCE_LINK;
+        return (Identity<DefinitionSourceLinkRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -147,12 +141,21 @@ public class DefinitionSourceLink extends TableImpl<DefinitionSourceLinkRecord> 
         return Arrays.<ForeignKey<DefinitionSourceLinkRecord, ?>>asList(Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY);
     }
 
+    private transient Definition _definition;
+    private transient Source _source;
+
     public Definition definition() {
-        return new Definition(this, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY);
+        if (_definition == null)
+            _definition = new Definition(this, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_DEFINITION_ID_FKEY);
+
+        return _definition;
     }
 
     public Source source() {
-        return new Source(this, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY);
+        if (_source == null)
+            _source = new Source(this, Keys.DEFINITION_SOURCE_LINK__DEFINITION_SOURCE_LINK_SOURCE_ID_FKEY);
+
+        return _source;
     }
 
     @Override

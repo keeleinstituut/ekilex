@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordEtymologySourceLinkRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row7;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymologySourceLink extends TableImpl<WordEtymologySourceLinkRecord> {
 
-    private static final long serialVersionUID = -714356938;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_etymology_source_link</code>
@@ -52,43 +51,44 @@ public class WordEtymologySourceLink extends TableImpl<WordEtymologySourceLinkRe
     /**
      * The column <code>public.word_etymology_source_link.id</code>.
      */
-    public final TableField<WordEtymologySourceLinkRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_etymology_source_link_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordEtymologySourceLinkRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_etymology_source_link.word_etym_id</code>.
      */
-    public final TableField<WordEtymologySourceLinkRecord, Long> WORD_ETYM_ID = createField(DSL.name("word_etym_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordEtymologySourceLinkRecord, Long> WORD_ETYM_ID = createField(DSL.name("word_etym_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_etymology_source_link.source_id</code>.
      */
-    public final TableField<WordEtymologySourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordEtymologySourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_etymology_source_link.type</code>.
      */
-    public final TableField<WordEtymologySourceLinkRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<WordEtymologySourceLinkRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.word_etymology_source_link.name</code>.
      */
-    public final TableField<WordEtymologySourceLinkRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WordEtymologySourceLinkRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_etymology_source_link.value</code>.
      */
-    public final TableField<WordEtymologySourceLinkRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<WordEtymologySourceLinkRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_etymology_source_link.order_by</code>.
      */
-    public final TableField<WordEtymologySourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_etymology_source_link_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordEtymologySourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.word_etymology_source_link</code> table reference
-     */
-    public WordEtymologySourceLink() {
-        this(DSL.name("word_etymology_source_link"), null);
+    private WordEtymologySourceLink(Name alias, Table<WordEtymologySourceLinkRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordEtymologySourceLink(Name alias, Table<WordEtymologySourceLinkRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -105,12 +105,11 @@ public class WordEtymologySourceLink extends TableImpl<WordEtymologySourceLinkRe
         this(alias, WORD_ETYMOLOGY_SOURCE_LINK);
     }
 
-    private WordEtymologySourceLink(Name alias, Table<WordEtymologySourceLinkRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordEtymologySourceLink(Name alias, Table<WordEtymologySourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_etymology_source_link</code> table reference
+     */
+    public WordEtymologySourceLink() {
+        this(DSL.name("word_etymology_source_link"), null);
     }
 
     public <O extends Record> WordEtymologySourceLink(Table<O> child, ForeignKey<O, WordEtymologySourceLinkRecord> key) {
@@ -123,13 +122,8 @@ public class WordEtymologySourceLink extends TableImpl<WordEtymologySourceLinkRe
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_ETYM_SOURCE_LINK_SOURCE_ID_IDX, Indexes.WORD_ETYM_SOURCE_LINK_WORD_ETYM_ID_IDX);
-    }
-
-    @Override
     public Identity<WordEtymologySourceLinkRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_ETYMOLOGY_SOURCE_LINK;
+        return (Identity<WordEtymologySourceLinkRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -147,12 +141,21 @@ public class WordEtymologySourceLink extends TableImpl<WordEtymologySourceLinkRe
         return Arrays.<ForeignKey<WordEtymologySourceLinkRecord, ?>>asList(Keys.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYM_ID_FKEY, Keys.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_FKEY);
     }
 
+    private transient WordEtymology _wordEtymology;
+    private transient Source _source;
+
     public WordEtymology wordEtymology() {
-        return new WordEtymology(this, Keys.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYM_ID_FKEY);
+        if (_wordEtymology == null)
+            _wordEtymology = new WordEtymology(this, Keys.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYM_ID_FKEY);
+
+        return _wordEtymology;
     }
 
     public Source source() {
-        return new Source(this, Keys.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_FKEY);
+        if (_source == null)
+            _source = new Source(this, Keys.WORD_ETYMOLOGY_SOURCE_LINK__WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_FKEY);
+
+        return _source;
     }
 
     @Override

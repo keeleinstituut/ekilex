@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Region extends TableImpl<RegionRecord> {
 
-    private static final long serialVersionUID = -1342352280;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.region</code>
@@ -50,23 +51,24 @@ public class Region extends TableImpl<RegionRecord> {
     /**
      * The column <code>public.region.code</code>.
      */
-    public final TableField<RegionRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<RegionRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.region.datasets</code>.
      */
-    public final TableField<RegionRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<RegionRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.region.order_by</code>.
      */
-    public final TableField<RegionRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('region_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<RegionRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.region</code> table reference
-     */
-    public Region() {
-        this(DSL.name("region"), null);
+    private Region(Name alias, Table<RegionRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Region(Name alias, Table<RegionRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Region extends TableImpl<RegionRecord> {
         this(alias, REGION);
     }
 
-    private Region(Name alias, Table<RegionRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Region(Name alias, Table<RegionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.region</code> table reference
+     */
+    public Region() {
+        this(DSL.name("region"), null);
     }
 
     public <O extends Record> Region(Table<O> child, ForeignKey<O, RegionRecord> key) {
@@ -102,7 +103,7 @@ public class Region extends TableImpl<RegionRecord> {
 
     @Override
     public Identity<RegionRecord, Long> getIdentity() {
-        return Keys.IDENTITY_REGION;
+        return (Identity<RegionRecord, Long>) super.getIdentity();
     }
 
     @Override

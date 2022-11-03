@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordGroup extends TableImpl<WordGroupRecord> {
 
-    private static final long serialVersionUID = 2067692983;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_group</code>
@@ -50,18 +51,19 @@ public class WordGroup extends TableImpl<WordGroupRecord> {
     /**
      * The column <code>public.word_group.id</code>.
      */
-    public final TableField<WordGroupRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_group_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordGroupRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_group.word_rel_type_code</code>.
      */
-    public final TableField<WordGroupRecord, String> WORD_REL_TYPE_CODE = createField(DSL.name("word_rel_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<WordGroupRecord, String> WORD_REL_TYPE_CODE = createField(DSL.name("word_rel_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.word_group</code> table reference
-     */
-    public WordGroup() {
-        this(DSL.name("word_group"), null);
+    private WordGroup(Name alias, Table<WordGroupRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordGroup(Name alias, Table<WordGroupRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -78,12 +80,11 @@ public class WordGroup extends TableImpl<WordGroupRecord> {
         this(alias, WORD_GROUP);
     }
 
-    private WordGroup(Name alias, Table<WordGroupRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordGroup(Name alias, Table<WordGroupRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_group</code> table reference
+     */
+    public WordGroup() {
+        this(DSL.name("word_group"), null);
     }
 
     public <O extends Record> WordGroup(Table<O> child, ForeignKey<O, WordGroupRecord> key) {
@@ -97,7 +98,7 @@ public class WordGroup extends TableImpl<WordGroupRecord> {
 
     @Override
     public Identity<WordGroupRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_GROUP;
+        return (Identity<WordGroupRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -115,8 +116,13 @@ public class WordGroup extends TableImpl<WordGroupRecord> {
         return Arrays.<ForeignKey<WordGroupRecord, ?>>asList(Keys.WORD_GROUP__WORD_GROUP_WORD_REL_TYPE_CODE_FKEY);
     }
 
+    private transient WordRelType _wordRelType;
+
     public WordRelType wordRelType() {
-        return new WordRelType(this, Keys.WORD_GROUP__WORD_GROUP_WORD_REL_TYPE_CODE_FKEY);
+        if (_wordRelType == null)
+            _wordRelType = new WordRelType(this, Keys.WORD_GROUP__WORD_GROUP_WORD_REL_TYPE_CODE_FKEY);
+
+        return _wordRelType;
     }
 
     @Override

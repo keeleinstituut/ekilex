@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.FormRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row15;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = -927448163;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -52,83 +51,84 @@ public class Form extends TableImpl<FormRecord> {
     /**
      * The column <code>public.form.id</code>.
      */
-    public final TableField<FormRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FormRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.form.paradigm_id</code>.
      */
-    public final TableField<FormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<FormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.form.morph_group1</code>.
      */
-    public final TableField<FormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.form.morph_group2</code>.
      */
-    public final TableField<FormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.form.morph_group3</code>.
      */
-    public final TableField<FormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.form.display_level</code>.
      */
-    public final TableField<FormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<FormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("1", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.form.morph_code</code>.
      */
-    public final TableField<FormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.form.morph_exists</code>.
      */
-    public final TableField<FormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<FormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.form.value</code>.
      */
-    public final TableField<FormRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FormRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.form.value_prese</code>.
      */
-    public final TableField<FormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.form.components</code>.
      */
-    public final TableField<FormRecord, String[]> COMPONENTS = createField(DSL.name("components"), org.jooq.impl.SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
+    public final TableField<FormRecord, String[]> COMPONENTS = createField(DSL.name("components"), SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.form.display_form</code>.
      */
-    public final TableField<FormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<FormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.form.audio_file</code>.
      */
-    public final TableField<FormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<FormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.form.order_by</code>.
      */
-    public final TableField<FormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.form.is_questionable</code>.
      */
-    public final TableField<FormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<FormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
-    /**
-     * Create a <code>public.form</code> table reference
-     */
-    public Form() {
-        this(DSL.name("form"), null);
+    private Form(Name alias, Table<FormRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Form(Name alias, Table<FormRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -145,12 +145,11 @@ public class Form extends TableImpl<FormRecord> {
         this(alias, FORM);
     }
 
-    private Form(Name alias, Table<FormRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Form(Name alias, Table<FormRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.form</code> table reference
+     */
+    public Form() {
+        this(DSL.name("form"), null);
     }
 
     public <O extends Record> Form(Table<O> child, ForeignKey<O, FormRecord> key) {
@@ -163,13 +162,8 @@ public class Form extends TableImpl<FormRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FORM_MORPH_CODE_IDX, Indexes.FORM_PARADIGM_ID_IDX, Indexes.FORM_VALUE_IDX);
-    }
-
-    @Override
     public Identity<FormRecord, Long> getIdentity() {
-        return Keys.IDENTITY_FORM;
+        return (Identity<FormRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -187,12 +181,21 @@ public class Form extends TableImpl<FormRecord> {
         return Arrays.<ForeignKey<FormRecord, ?>>asList(Keys.FORM__FORM_PARADIGM_ID_FKEY, Keys.FORM__FORM_MORPH_CODE_FKEY);
     }
 
+    private transient Paradigm _paradigm;
+    private transient Morph _morph;
+
     public Paradigm paradigm() {
-        return new Paradigm(this, Keys.FORM__FORM_PARADIGM_ID_FKEY);
+        if (_paradigm == null)
+            _paradigm = new Paradigm(this, Keys.FORM__FORM_PARADIGM_ID_FKEY);
+
+        return _paradigm;
     }
 
     public Morph morph() {
-        return new Morph(this, Keys.FORM__FORM_MORPH_CODE_FKEY);
+        if (_morph == null)
+            _morph = new Morph(this, Keys.FORM__FORM_MORPH_CODE_FKEY);
+
+        return _morph;
     }
 
     @Override

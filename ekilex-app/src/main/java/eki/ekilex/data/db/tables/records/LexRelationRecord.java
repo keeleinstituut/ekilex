@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> implements Record5<Long, Long, Long, String, Long> {
 
-    private static final long serialVersionUID = 951239895;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lex_relation.id</code>.
@@ -246,10 +246,10 @@ public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> im
     public LexRelationRecord(Long id, Long lexeme1Id, Long lexeme2Id, String lexRelTypeCode, Long orderBy) {
         super(LexRelation.LEX_RELATION);
 
-        set(0, id);
-        set(1, lexeme1Id);
-        set(2, lexeme2Id);
-        set(3, lexRelTypeCode);
-        set(4, orderBy);
+        setId(id);
+        setLexeme1Id(lexeme1Id);
+        setLexeme2Id(lexeme2Id);
+        setLexRelTypeCode(lexRelTypeCode);
+        setOrderBy(orderBy);
     }
 }

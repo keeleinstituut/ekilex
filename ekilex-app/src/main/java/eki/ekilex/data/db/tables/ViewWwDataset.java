@@ -17,6 +17,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -26,7 +27,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
 
-    private static final long serialVersionUID = 1477241404;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.view_ww_dataset</code>
@@ -44,48 +45,49 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
     /**
      * The column <code>public.view_ww_dataset.code</code>.
      */
-    public final TableField<ViewWwDatasetRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<ViewWwDatasetRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.view_ww_dataset.type</code>.
      */
-    public final TableField<ViewWwDatasetRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<ViewWwDatasetRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.view_ww_dataset.name</code>.
      */
-    public final TableField<ViewWwDatasetRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwDatasetRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_dataset.description</code>.
      */
-    public final TableField<ViewWwDatasetRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwDatasetRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_dataset.contact</code>.
      */
-    public final TableField<ViewWwDatasetRecord, String> CONTACT = createField(DSL.name("contact"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwDatasetRecord, String> CONTACT = createField(DSL.name("contact"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_dataset.image_url</code>.
      */
-    public final TableField<ViewWwDatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwDatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_dataset.is_superior</code>.
      */
-    public final TableField<ViewWwDatasetRecord, Boolean> IS_SUPERIOR = createField(DSL.name("is_superior"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<ViewWwDatasetRecord, Boolean> IS_SUPERIOR = createField(DSL.name("is_superior"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.view_ww_dataset.order_by</code>.
      */
-    public final TableField<ViewWwDatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwDatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
 
-    /**
-     * Create a <code>public.view_ww_dataset</code> table reference
-     */
-    public ViewWwDataset() {
-        this(DSL.name("view_ww_dataset"), null);
+    private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT dataset.code,\n    dataset.type,\n    dataset.name,\n    dataset.description,\n    dataset.contact,\n    dataset.image_url,\n    dataset.is_superior,\n    dataset.order_by\n   FROM dataset\n  WHERE (dataset.is_public = true)\n  ORDER BY dataset.order_by;"));
     }
 
     /**
@@ -102,12 +104,11 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
         this(alias, VIEW_WW_DATASET);
     }
 
-    private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ViewWwDataset(Name alias, Table<ViewWwDatasetRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_dataset\" as  SELECT dataset.code,\n    dataset.type,\n    dataset.name,\n    dataset.description,\n    dataset.contact,\n    dataset.image_url,\n    dataset.is_superior,\n    dataset.order_by\n   FROM dataset\n  WHERE (dataset.is_public = true)\n  ORDER BY dataset.order_by;"));
+    /**
+     * Create a <code>public.view_ww_dataset</code> table reference
+     */
+    public ViewWwDataset() {
+        this(DSL.name("view_ww_dataset"), null);
     }
 
     public <O extends Record> ViewWwDataset(Table<O> child, ForeignKey<O, ViewWwDatasetRecord> key) {

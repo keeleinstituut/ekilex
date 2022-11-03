@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GovernmentTypeLabel extends TableImpl<GovernmentTypeLabelRecord> {
 
-    private static final long serialVersionUID = 1678963509;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.government_type_label</code>
@@ -49,28 +50,29 @@ public class GovernmentTypeLabel extends TableImpl<GovernmentTypeLabelRecord> {
     /**
      * The column <code>public.government_type_label.code</code>.
      */
-    public final TableField<GovernmentTypeLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<GovernmentTypeLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.government_type_label.value</code>.
      */
-    public final TableField<GovernmentTypeLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<GovernmentTypeLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.government_type_label.lang</code>.
      */
-    public final TableField<GovernmentTypeLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<GovernmentTypeLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.government_type_label.type</code>.
      */
-    public final TableField<GovernmentTypeLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<GovernmentTypeLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.government_type_label</code> table reference
-     */
-    public GovernmentTypeLabel() {
-        this(DSL.name("government_type_label"), null);
+    private GovernmentTypeLabel(Name alias, Table<GovernmentTypeLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private GovernmentTypeLabel(Name alias, Table<GovernmentTypeLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class GovernmentTypeLabel extends TableImpl<GovernmentTypeLabelRecord> {
         this(alias, GOVERNMENT_TYPE_LABEL);
     }
 
-    private GovernmentTypeLabel(Name alias, Table<GovernmentTypeLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private GovernmentTypeLabel(Name alias, Table<GovernmentTypeLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.government_type_label</code> table reference
+     */
+    public GovernmentTypeLabel() {
+        this(DSL.name("government_type_label"), null);
     }
 
     public <O extends Record> GovernmentTypeLabel(Table<O> child, ForeignKey<O, GovernmentTypeLabelRecord> key) {
@@ -114,16 +115,29 @@ public class GovernmentTypeLabel extends TableImpl<GovernmentTypeLabelRecord> {
         return Arrays.<ForeignKey<GovernmentTypeLabelRecord, ?>>asList(Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_CODE_FKEY, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_LANG_FKEY, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_TYPE_FKEY);
     }
 
+    private transient GovernmentType _governmentType;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public GovernmentType governmentType() {
-        return new GovernmentType(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_CODE_FKEY);
+        if (_governmentType == null)
+            _governmentType = new GovernmentType(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_CODE_FKEY);
+
+        return _governmentType;
     }
 
     public Language language() {
-        return new Language(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

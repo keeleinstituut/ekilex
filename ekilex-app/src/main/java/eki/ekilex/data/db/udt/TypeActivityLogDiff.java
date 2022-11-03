@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeActivityLogDiffRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeActivityLogDiff extends UDTImpl<TypeActivityLogDiffRecord> {
 
-    private static final long serialVersionUID = 521805950;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_activity_log_diff</code>
@@ -38,17 +39,17 @@ public class TypeActivityLogDiff extends UDTImpl<TypeActivityLogDiffRecord> {
     /**
      * The attribute <code>public.type_activity_log_diff.op</code>.
      */
-    public static final UDTField<TypeActivityLogDiffRecord, String> OP = createField(DSL.name("op"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_ACTIVITY_LOG_DIFF, "");
+    public static final UDTField<TypeActivityLogDiffRecord, String> OP = createField(DSL.name("op"), SQLDataType.VARCHAR(100), TYPE_ACTIVITY_LOG_DIFF, "");
 
     /**
      * The attribute <code>public.type_activity_log_diff.path</code>.
      */
-    public static final UDTField<TypeActivityLogDiffRecord, String> PATH = createField(DSL.name("path"), org.jooq.impl.SQLDataType.CLOB, TYPE_ACTIVITY_LOG_DIFF, "");
+    public static final UDTField<TypeActivityLogDiffRecord, String> PATH = createField(DSL.name("path"), SQLDataType.CLOB, TYPE_ACTIVITY_LOG_DIFF, "");
 
     /**
      * The attribute <code>public.type_activity_log_diff.value</code>.
      */
-    public static final UDTField<TypeActivityLogDiffRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, TYPE_ACTIVITY_LOG_DIFF, "");
+    public static final UDTField<TypeActivityLogDiffRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_ACTIVITY_LOG_DIFF, "");
 
     /**
      * No further instances allowed

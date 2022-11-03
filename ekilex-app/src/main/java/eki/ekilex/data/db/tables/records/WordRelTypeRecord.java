@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelTypeRecord extends UpdatableRecordImpl<WordRelTypeRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -1976652362;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_rel_type.code</code>.
@@ -174,8 +174,8 @@ public class WordRelTypeRecord extends UpdatableRecordImpl<WordRelTypeRecord> im
     public WordRelTypeRecord(String code, String[] datasets, Long orderBy) {
         super(WordRelType.WORD_REL_TYPE);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

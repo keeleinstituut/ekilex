@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UsageType extends TableImpl<UsageTypeRecord> {
 
-    private static final long serialVersionUID = -1614141777;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.usage_type</code>
@@ -50,23 +51,24 @@ public class UsageType extends TableImpl<UsageTypeRecord> {
     /**
      * The column <code>public.usage_type.code</code>.
      */
-    public final TableField<UsageTypeRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<UsageTypeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.usage_type.datasets</code>.
      */
-    public final TableField<UsageTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<UsageTypeRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.usage_type.order_by</code>.
      */
-    public final TableField<UsageTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('usage_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<UsageTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.usage_type</code> table reference
-     */
-    public UsageType() {
-        this(DSL.name("usage_type"), null);
+    private UsageType(Name alias, Table<UsageTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private UsageType(Name alias, Table<UsageTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class UsageType extends TableImpl<UsageTypeRecord> {
         this(alias, USAGE_TYPE);
     }
 
-    private UsageType(Name alias, Table<UsageTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private UsageType(Name alias, Table<UsageTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.usage_type</code> table reference
+     */
+    public UsageType() {
+        this(DSL.name("usage_type"), null);
     }
 
     public <O extends Record> UsageType(Table<O> child, ForeignKey<O, UsageTypeRecord> key) {
@@ -102,7 +103,7 @@ public class UsageType extends TableImpl<UsageTypeRecord> {
 
     @Override
     public Identity<UsageTypeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_USAGE_TYPE;
+        return (Identity<UsageTypeRecord, Long>) super.getIdentity();
     }
 
     @Override

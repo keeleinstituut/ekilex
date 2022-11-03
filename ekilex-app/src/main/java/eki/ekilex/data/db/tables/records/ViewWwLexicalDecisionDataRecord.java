@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexicalDecisionDataRecord extends TableRecordImpl<ViewWwLexicalDecisionDataRecord> implements Record3<String, String, Boolean> {
 
-    private static final long serialVersionUID = 545175197;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_lexical_decision_data.word</code>.
@@ -164,8 +164,8 @@ public class ViewWwLexicalDecisionDataRecord extends TableRecordImpl<ViewWwLexic
     public ViewWwLexicalDecisionDataRecord(String word, String lang, Boolean isWord) {
         super(ViewWwLexicalDecisionData.VIEW_WW_LEXICAL_DECISION_DATA);
 
-        set(0, word);
-        set(1, lang);
-        set(2, isWord);
+        setWord(word);
+        setLang(lang);
+        setIsWord(isWord);
     }
 }

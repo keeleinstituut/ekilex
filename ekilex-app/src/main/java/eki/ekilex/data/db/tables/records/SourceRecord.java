@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements Record2<Long, String> {
 
-    private static final long serialVersionUID = -771147634;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.source.id</code>.
@@ -138,7 +138,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
     public SourceRecord(Long id, String type) {
         super(Source.SOURCE);
 
-        set(0, id);
-        set(1, type);
+        setId(id);
+        setType(type);
     }
 }

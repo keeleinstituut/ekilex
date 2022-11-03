@@ -20,7 +20,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelParamRecord extends UDTRecordImpl<TypeWordRelParamRecord> implements Record2<String, BigDecimal> {
 
-    private static final long serialVersionUID = -582175029;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_word_rel_param.name</code>.
@@ -130,7 +130,7 @@ public class TypeWordRelParamRecord extends UDTRecordImpl<TypeWordRelParamRecord
     public TypeWordRelParamRecord(String name, BigDecimal value) {
         super(TypeWordRelParam.TYPE_WORD_REL_PARAM);
 
-        set(0, name);
-        set(1, value);
+        setName(name);
+        setValue(value);
     }
 }

@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.SourceActivityLogRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceActivityLog extends TableImpl<SourceActivityLogRecord> {
 
-    private static final long serialVersionUID = -2118810730;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.source_activity_log</code>
@@ -52,23 +51,24 @@ public class SourceActivityLog extends TableImpl<SourceActivityLogRecord> {
     /**
      * The column <code>public.source_activity_log.id</code>.
      */
-    public final TableField<SourceActivityLogRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('source_activity_log_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<SourceActivityLogRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.source_activity_log.source_id</code>.
      */
-    public final TableField<SourceActivityLogRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SourceActivityLogRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.source_activity_log.activity_log_id</code>.
      */
-    public final TableField<SourceActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SourceActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.source_activity_log</code> table reference
-     */
-    public SourceActivityLog() {
-        this(DSL.name("source_activity_log"), null);
+    private SourceActivityLog(Name alias, Table<SourceActivityLogRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SourceActivityLog(Name alias, Table<SourceActivityLogRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class SourceActivityLog extends TableImpl<SourceActivityLogRecord> {
         this(alias, SOURCE_ACTIVITY_LOG);
     }
 
-    private SourceActivityLog(Name alias, Table<SourceActivityLogRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SourceActivityLog(Name alias, Table<SourceActivityLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.source_activity_log</code> table reference
+     */
+    public SourceActivityLog() {
+        this(DSL.name("source_activity_log"), null);
     }
 
     public <O extends Record> SourceActivityLog(Table<O> child, ForeignKey<O, SourceActivityLogRecord> key) {
@@ -103,13 +102,8 @@ public class SourceActivityLog extends TableImpl<SourceActivityLogRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SOURCE_ACTIVITY_LOG_LOG_ID_IDX, Indexes.SOURCE_ACTIVITY_LOG_SOURCE_ID_IDX);
-    }
-
-    @Override
     public Identity<SourceActivityLogRecord, Long> getIdentity() {
-        return Keys.IDENTITY_SOURCE_ACTIVITY_LOG;
+        return (Identity<SourceActivityLogRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class SourceActivityLog extends TableImpl<SourceActivityLogRecord> {
         return Arrays.<ForeignKey<SourceActivityLogRecord, ?>>asList(Keys.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_SOURCE_ID_FKEY, Keys.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
     }
 
+    private transient Source _source;
+    private transient ActivityLog _activityLog;
+
     public Source source() {
-        return new Source(this, Keys.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_SOURCE_ID_FKEY);
+        if (_source == null)
+            _source = new Source(this, Keys.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_SOURCE_ID_FKEY);
+
+        return _source;
     }
 
     public ActivityLog activityLog() {
-        return new ActivityLog(this, Keys.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+        if (_activityLog == null)
+            _activityLog = new ActivityLog(this, Keys.SOURCE_ACTIVITY_LOG__SOURCE_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+
+        return _activityLog;
     }
 
     @Override

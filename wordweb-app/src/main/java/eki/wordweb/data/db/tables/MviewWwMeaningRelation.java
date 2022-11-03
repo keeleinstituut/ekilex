@@ -4,17 +4,12 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRelationRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningRelationRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -23,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationRecord> {
 
-    private static final long serialVersionUID = -571776578;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning_relation</code>
@@ -50,18 +46,19 @@ public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationReco
     /**
      * The column <code>public.mview_ww_meaning_relation.meaning_id</code>.
      */
-    public final TableField<MviewWwMeaningRelationRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwMeaningRelationRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning_relation.related_meanings</code>.
      */
     public final TableField<MviewWwMeaningRelationRecord, TypeMeaningRelationRecord[]> RELATED_MEANINGS = createField(DSL.name("related_meanings"), eki.wordweb.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_meaning_relation</code> table reference
-     */
-    public MviewWwMeaningRelation() {
-        this(DSL.name("mview_ww_meaning_relation"), null);
+    private MviewWwMeaningRelation(Name alias, Table<MviewWwMeaningRelationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwMeaningRelation(Name alias, Table<MviewWwMeaningRelationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -78,12 +75,11 @@ public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationReco
         this(alias, MVIEW_WW_MEANING_RELATION);
     }
 
-    private MviewWwMeaningRelation(Name alias, Table<MviewWwMeaningRelationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwMeaningRelation(Name alias, Table<MviewWwMeaningRelationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_meaning_relation</code> table reference
+     */
+    public MviewWwMeaningRelation() {
+        this(DSL.name("mview_ww_meaning_relation"), null);
     }
 
     public <O extends Record> MviewWwMeaningRelation(Table<O> child, ForeignKey<O, MviewWwMeaningRelationRecord> key) {
@@ -93,11 +89,6 @@ public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationReco
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX);
     }
 
     @Override

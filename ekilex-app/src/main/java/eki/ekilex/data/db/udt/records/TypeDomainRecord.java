@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDomainRecord extends UDTRecordImpl<TypeDomainRecord> implements Record2<String, String> {
 
-    private static final long serialVersionUID = -1072951668;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_domain.origin</code>.
@@ -128,7 +128,7 @@ public class TypeDomainRecord extends UDTRecordImpl<TypeDomainRecord> implements
     public TypeDomainRecord(String origin, String code) {
         super(TypeDomain.TYPE_DOMAIN);
 
-        set(0, origin);
-        set(1, code);
+        setOrigin(origin);
+        setCode(code);
     }
 }

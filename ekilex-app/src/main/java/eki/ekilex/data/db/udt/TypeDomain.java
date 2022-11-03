@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeDomainRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDomain extends UDTImpl<TypeDomainRecord> {
 
-    private static final long serialVersionUID = -620920105;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_domain</code>
@@ -38,12 +39,12 @@ public class TypeDomain extends UDTImpl<TypeDomainRecord> {
     /**
      * The attribute <code>public.type_domain.origin</code>.
      */
-    public static final UDTField<TypeDomainRecord, String> ORIGIN = createField(DSL.name("origin"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_DOMAIN, "");
+    public static final UDTField<TypeDomainRecord, String> ORIGIN = createField(DSL.name("origin"), SQLDataType.VARCHAR(100), TYPE_DOMAIN, "");
 
     /**
      * The attribute <code>public.type_domain.code</code>.
      */
-    public static final UDTField<TypeDomainRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_DOMAIN, "");
+    public static final UDTField<TypeDomainRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100), TYPE_DOMAIN, "");
 
     /**
      * No further instances allowed

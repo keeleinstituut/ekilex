@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row13;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -66294124;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -53,73 +52,74 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     /**
      * The column <code>public.lexeme.id</code>.
      */
-    public final TableField<LexemeRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme.word_id</code>.
      */
-    public final TableField<LexemeRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.meaning_id</code>.
      */
-    public final TableField<LexemeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.dataset_code</code>.
      */
-    public final TableField<LexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<LexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.level1</code>.
      */
-    public final TableField<LexemeRecord, Integer> LEVEL1 = createField(DSL.name("level1"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LexemeRecord, Integer> LEVEL1 = createField(DSL.name("level1"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.lexeme.level2</code>.
      */
-    public final TableField<LexemeRecord, Integer> LEVEL2 = createField(DSL.name("level2"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<LexemeRecord, Integer> LEVEL2 = createField(DSL.name("level2"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.lexeme.value_state_code</code>.
      */
-    public final TableField<LexemeRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<LexemeRecord, String> VALUE_STATE_CODE = createField(DSL.name("value_state_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme.complexity</code>.
      */
-    public final TableField<LexemeRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemeRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme.order_by</code>.
      */
-    public final TableField<LexemeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme.weight</code>.
      */
-    public final TableField<LexemeRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), org.jooq.impl.SQLDataType.NUMERIC(5, 4).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.NUMERIC)), this, "");
+    public final TableField<LexemeRecord, BigDecimal> WEIGHT = createField(DSL.name("weight"), SQLDataType.NUMERIC(5, 4).defaultValue(DSL.field("1", SQLDataType.NUMERIC)), this, "");
 
     /**
      * The column <code>public.lexeme.is_public</code>.
      */
-    public final TableField<LexemeRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<LexemeRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.lexeme.reliability</code>.
      */
-    public final TableField<LexemeRecord, Integer> RELIABILITY = createField(DSL.name("reliability"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<LexemeRecord, Integer> RELIABILITY = createField(DSL.name("reliability"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.lexeme.proficiency_level_code</code>.
      */
-    public final TableField<LexemeRecord, String> PROFICIENCY_LEVEL_CODE = createField(DSL.name("proficiency_level_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<LexemeRecord, String> PROFICIENCY_LEVEL_CODE = createField(DSL.name("proficiency_level_code"), SQLDataType.VARCHAR(100), this, "");
 
-    /**
-     * Create a <code>public.lexeme</code> table reference
-     */
-    public Lexeme() {
-        this(DSL.name("lexeme"), null);
+    private Lexeme(Name alias, Table<LexemeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Lexeme(Name alias, Table<LexemeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -136,12 +136,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
         this(alias, LEXEME);
     }
 
-    private Lexeme(Name alias, Table<LexemeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Lexeme(Name alias, Table<LexemeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexeme</code> table reference
+     */
+    public Lexeme() {
+        this(DSL.name("lexeme"), null);
     }
 
     public <O extends Record> Lexeme(Table<O> child, ForeignKey<O, LexemeRecord> key) {
@@ -154,13 +153,8 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_COMPLEXITY_IDX, Indexes.LEXEME_DATASET_CODE_IDX, Indexes.LEXEME_IS_PUBLIC_IDX, Indexes.LEXEME_MEANING_ID_IDX, Indexes.LEXEME_PROFICIENCY_LEVEL_CODE_IDX, Indexes.LEXEME_VALUE_STATE_CODE_IDX, Indexes.LEXEME_WORD_ID_IDX);
-    }
-
-    @Override
     public Identity<LexemeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXEME;
+        return (Identity<LexemeRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -178,24 +172,45 @@ public class Lexeme extends TableImpl<LexemeRecord> {
         return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY, Keys.LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY);
     }
 
+    private transient Word _word;
+    private transient Meaning _meaning;
+    private transient Dataset _dataset;
+    private transient ValueState _valueState;
+    private transient ProficiencyLevel _proficiencyLevel;
+
     public Word word() {
-        return new Word(this, Keys.LEXEME__LEXEME_WORD_ID_FKEY);
+        if (_word == null)
+            _word = new Word(this, Keys.LEXEME__LEXEME_WORD_ID_FKEY);
+
+        return _word;
     }
 
     public Meaning meaning() {
-        return new Meaning(this, Keys.LEXEME__LEXEME_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.LEXEME__LEXEME_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public Dataset dataset() {
-        return new Dataset(this, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY);
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY);
+
+        return _dataset;
     }
 
     public ValueState valueState() {
-        return new ValueState(this, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
+        if (_valueState == null)
+            _valueState = new ValueState(this, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
+
+        return _valueState;
     }
 
     public ProficiencyLevel proficiencyLevel() {
-        return new ProficiencyLevel(this, Keys.LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY);
+        if (_proficiencyLevel == null)
+            _proficiencyLevel = new ProficiencyLevel(this, Keys.LEXEME__LEXEME_PROFICIENCY_LEVEL_CODE_FKEY);
+
+        return _proficiencyLevel;
     }
 
     @Override

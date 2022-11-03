@@ -20,7 +20,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implements Record9<Long, String, String, String, String, String, Timestamp, String, Timestamp> {
 
-    private static final long serialVersionUID = 20214428;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_freeform.freeform_id</code>.
@@ -382,14 +382,14 @@ public class TypeFreeformRecord extends UDTRecordImpl<TypeFreeformRecord> implem
     public TypeFreeformRecord(Long freeformId, String type, String value, String lang, String complexity, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
         super(TypeFreeform.TYPE_FREEFORM);
 
-        set(0, freeformId);
-        set(1, type);
-        set(2, value);
-        set(3, lang);
-        set(4, complexity);
-        set(5, createdBy);
-        set(6, createdOn);
-        set(7, modifiedBy);
-        set(8, modifiedOn);
+        setFreeformId(freeformId);
+        setType(type);
+        setValue(value);
+        setLang(lang);
+        setComplexity(complexity);
+        setCreatedBy(createdBy);
+        setCreatedOn(createdOn);
+        setModifiedBy(modifiedBy);
+        setModifiedOn(modifiedOn);
     }
 }

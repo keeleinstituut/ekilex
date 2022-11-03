@@ -4,17 +4,12 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwCollocationRecord;
 import eki.wordweb.data.db.udt.records.TypeCollocMemberRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row15;
@@ -23,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
 
-    private static final long serialVersionUID = -529397968;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_collocation</code>
@@ -50,67 +46,67 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
     /**
      * The column <code>public.mview_ww_collocation.lexeme_id</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCollocationRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.word_id</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCollocationRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.pos_group_id</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Long> POS_GROUP_ID = createField(DSL.name("pos_group_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCollocationRecord, Long> POS_GROUP_ID = createField(DSL.name("pos_group_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.pos_group_code</code>.
      */
-    public final TableField<MviewWwCollocationRecord, String> POS_GROUP_CODE = createField(DSL.name("pos_group_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwCollocationRecord, String> POS_GROUP_CODE = createField(DSL.name("pos_group_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.pos_group_order_by</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Long> POS_GROUP_ORDER_BY = createField(DSL.name("pos_group_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCollocationRecord, Long> POS_GROUP_ORDER_BY = createField(DSL.name("pos_group_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.rel_group_id</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Long> REL_GROUP_ID = createField(DSL.name("rel_group_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCollocationRecord, Long> REL_GROUP_ID = createField(DSL.name("rel_group_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.rel_group_name</code>.
      */
-    public final TableField<MviewWwCollocationRecord, String> REL_GROUP_NAME = createField(DSL.name("rel_group_name"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwCollocationRecord, String> REL_GROUP_NAME = createField(DSL.name("rel_group_name"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.rel_group_order_by</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Long> REL_GROUP_ORDER_BY = createField(DSL.name("rel_group_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCollocationRecord, Long> REL_GROUP_ORDER_BY = createField(DSL.name("rel_group_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.colloc_group_order</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Integer> COLLOC_GROUP_ORDER = createField(DSL.name("colloc_group_order"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<MviewWwCollocationRecord, Integer> COLLOC_GROUP_ORDER = createField(DSL.name("colloc_group_order"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.colloc_id</code>.
      */
-    public final TableField<MviewWwCollocationRecord, Long> COLLOC_ID = createField(DSL.name("colloc_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwCollocationRecord, Long> COLLOC_ID = createField(DSL.name("colloc_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.colloc_value</code>.
      */
-    public final TableField<MviewWwCollocationRecord, String> COLLOC_VALUE = createField(DSL.name("colloc_value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwCollocationRecord, String> COLLOC_VALUE = createField(DSL.name("colloc_value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.colloc_definition</code>.
      */
-    public final TableField<MviewWwCollocationRecord, String> COLLOC_DEFINITION = createField(DSL.name("colloc_definition"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwCollocationRecord, String> COLLOC_DEFINITION = createField(DSL.name("colloc_definition"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.colloc_usages</code>.
      */
-    public final TableField<MviewWwCollocationRecord, String[]> COLLOC_USAGES = createField(DSL.name("colloc_usages"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<MviewWwCollocationRecord, String[]> COLLOC_USAGES = createField(DSL.name("colloc_usages"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.colloc_members</code>.
@@ -120,13 +116,14 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
     /**
      * The column <code>public.mview_ww_collocation.complexity</code>.
      */
-    public final TableField<MviewWwCollocationRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwCollocationRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_collocation</code> table reference
-     */
-    public MviewWwCollocation() {
-        this(DSL.name("mview_ww_collocation"), null);
+    private MviewWwCollocation(Name alias, Table<MviewWwCollocationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwCollocation(Name alias, Table<MviewWwCollocationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -143,12 +140,11 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
         this(alias, MVIEW_WW_COLLOCATION);
     }
 
-    private MviewWwCollocation(Name alias, Table<MviewWwCollocationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwCollocation(Name alias, Table<MviewWwCollocationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_collocation</code> table reference
+     */
+    public MviewWwCollocation() {
+        this(DSL.name("mview_ww_collocation"), null);
     }
 
     public <O extends Record> MviewWwCollocation(Table<O> child, ForeignKey<O, MviewWwCollocationRecord> key) {
@@ -158,11 +154,6 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_COLLOCATION_COMPLEXITY_IDX, Indexes.MVIEW_WW_COLLOCATION_LEXEME_ID_IDX, Indexes.MVIEW_WW_COLLOCATION_WORD_ID_IDX);
     }
 
     @Override

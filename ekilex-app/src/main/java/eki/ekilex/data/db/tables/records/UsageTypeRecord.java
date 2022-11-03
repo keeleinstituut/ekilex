@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UsageTypeRecord extends UpdatableRecordImpl<UsageTypeRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -1730110659;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.usage_type.code</code>.
@@ -174,8 +174,8 @@ public class UsageTypeRecord extends UpdatableRecordImpl<UsageTypeRecord> implem
     public UsageTypeRecord(String code, String[] datasets, Long orderBy) {
         super(UsageType.USAGE_TYPE);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

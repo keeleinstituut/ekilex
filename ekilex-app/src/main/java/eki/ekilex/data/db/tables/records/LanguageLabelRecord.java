@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LanguageLabelRecord extends TableRecordImpl<LanguageLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = -1397529756;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.language_label.code</code>.
@@ -200,9 +200,9 @@ public class LanguageLabelRecord extends TableRecordImpl<LanguageLabelRecord> im
     public LanguageLabelRecord(String code, String value, String lang, String type) {
         super(LanguageLabel.LANGUAGE_LABEL);
 
-        set(0, code);
-        set(1, value);
-        set(2, lang);
-        set(3, type);
+        setCode(code);
+        setValue(value);
+        setLang(lang);
+        setType(type);
     }
 }

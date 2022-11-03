@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.CollocationRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row7;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Collocation extends TableImpl<CollocationRecord> {
 
-    private static final long serialVersionUID = -261588727;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.collocation</code>
@@ -53,43 +52,44 @@ public class Collocation extends TableImpl<CollocationRecord> {
     /**
      * The column <code>public.collocation.id</code>.
      */
-    public final TableField<CollocationRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('collocation_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<CollocationRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.collocation.value</code>.
      */
-    public final TableField<CollocationRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<CollocationRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.collocation.definition</code>.
      */
-    public final TableField<CollocationRecord, String> DEFINITION = createField(DSL.name("definition"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<CollocationRecord, String> DEFINITION = createField(DSL.name("definition"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.collocation.frequency</code>.
      */
-    public final TableField<CollocationRecord, BigDecimal> FREQUENCY = createField(DSL.name("frequency"), org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
+    public final TableField<CollocationRecord, BigDecimal> FREQUENCY = createField(DSL.name("frequency"), SQLDataType.NUMERIC(14, 4), this, "");
 
     /**
      * The column <code>public.collocation.score</code>.
      */
-    public final TableField<CollocationRecord, BigDecimal> SCORE = createField(DSL.name("score"), org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
+    public final TableField<CollocationRecord, BigDecimal> SCORE = createField(DSL.name("score"), SQLDataType.NUMERIC(14, 4), this, "");
 
     /**
      * The column <code>public.collocation.usages</code>.
      */
-    public final TableField<CollocationRecord, String[]> USAGES = createField(DSL.name("usages"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<CollocationRecord, String[]> USAGES = createField(DSL.name("usages"), SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.collocation.complexity</code>.
      */
-    public final TableField<CollocationRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<CollocationRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.collocation</code> table reference
-     */
-    public Collocation() {
-        this(DSL.name("collocation"), null);
+    private Collocation(Name alias, Table<CollocationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Collocation(Name alias, Table<CollocationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -106,12 +106,11 @@ public class Collocation extends TableImpl<CollocationRecord> {
         this(alias, COLLOCATION);
     }
 
-    private Collocation(Name alias, Table<CollocationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Collocation(Name alias, Table<CollocationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.collocation</code> table reference
+     */
+    public Collocation() {
+        this(DSL.name("collocation"), null);
     }
 
     public <O extends Record> Collocation(Table<O> child, ForeignKey<O, CollocationRecord> key) {
@@ -124,13 +123,8 @@ public class Collocation extends TableImpl<CollocationRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.COLLOCATION_VALUE_IDX);
-    }
-
-    @Override
     public Identity<CollocationRecord, Long> getIdentity() {
-        return Keys.IDENTITY_COLLOCATION;
+        return (Identity<CollocationRecord, Long>) super.getIdentity();
     }
 
     @Override

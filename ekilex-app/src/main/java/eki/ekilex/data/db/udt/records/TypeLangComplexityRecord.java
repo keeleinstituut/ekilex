@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeLangComplexityRecord extends UDTRecordImpl<TypeLangComplexityRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = -204689217;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_lang_complexity.lang</code>.
@@ -200,9 +200,9 @@ public class TypeLangComplexityRecord extends UDTRecordImpl<TypeLangComplexityRe
     public TypeLangComplexityRecord(String lang, String datasetCode, String lexComplexity, String dataComplexity) {
         super(TypeLangComplexity.TYPE_LANG_COMPLEXITY);
 
-        set(0, lang);
-        set(1, datasetCode);
-        set(2, lexComplexity);
-        set(3, dataComplexity);
+        setLang(lang);
+        setDatasetCode(datasetCode);
+        setLexComplexity(lexComplexity);
+        setDataComplexity(dataComplexity);
     }
 }

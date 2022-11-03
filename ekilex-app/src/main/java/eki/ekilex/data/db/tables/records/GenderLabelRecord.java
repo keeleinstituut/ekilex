@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderLabelRecord extends TableRecordImpl<GenderLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = 723283598;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.gender_label.code</code>.
@@ -200,9 +200,9 @@ public class GenderLabelRecord extends TableRecordImpl<GenderLabelRecord> implem
     public GenderLabelRecord(String code, String value, String lang, String type) {
         super(GenderLabel.GENDER_LABEL);
 
-        set(0, code);
-        set(1, value);
-        set(2, lang);
-        set(3, type);
+        setCode(code);
+        setValue(value);
+        setLang(lang);
+        setType(type);
     }
 }

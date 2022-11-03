@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeDerivRecord extends UpdatableRecordImpl<LexemeDerivRecord> implements Record4<Long, Long, String, Long> {
 
-    private static final long serialVersionUID = 299615879;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexeme_deriv.id</code>.
@@ -210,9 +210,9 @@ public class LexemeDerivRecord extends UpdatableRecordImpl<LexemeDerivRecord> im
     public LexemeDerivRecord(Long id, Long lexemeId, String derivCode, Long orderBy) {
         super(LexemeDeriv.LEXEME_DERIV);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, derivCode);
-        set(3, orderBy);
+        setId(id);
+        setLexemeId(lexemeId);
+        setDerivCode(derivCode);
+        setOrderBy(orderBy);
     }
 }

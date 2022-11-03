@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> implements Record7<Long, String, String, BigDecimal, BigDecimal, String[], String> {
 
-    private static final long serialVersionUID = -1710290209;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.collocation.id</code>.
@@ -320,12 +320,12 @@ public class CollocationRecord extends UpdatableRecordImpl<CollocationRecord> im
     public CollocationRecord(Long id, String value, String definition, BigDecimal frequency, BigDecimal score, String[] usages, String complexity) {
         super(Collocation.COLLOCATION);
 
-        set(0, id);
-        set(1, value);
-        set(2, definition);
-        set(3, frequency);
-        set(4, score);
-        set(5, usages);
-        set(6, complexity);
+        setId(id);
+        setValue(value);
+        setDefinition(definition);
+        setFrequency(frequency);
+        setScore(score);
+        setUsages(usages);
+        setComplexity(complexity);
     }
 }

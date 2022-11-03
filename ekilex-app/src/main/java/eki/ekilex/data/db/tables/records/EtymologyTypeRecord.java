@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EtymologyTypeRecord extends UpdatableRecordImpl<EtymologyTypeRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -419772323;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.etymology_type.code</code>.
@@ -174,8 +174,8 @@ public class EtymologyTypeRecord extends UpdatableRecordImpl<EtymologyTypeRecord
     public EtymologyTypeRecord(String code, String[] datasets, Long orderBy) {
         super(EtymologyType.ETYMOLOGY_TYPE);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

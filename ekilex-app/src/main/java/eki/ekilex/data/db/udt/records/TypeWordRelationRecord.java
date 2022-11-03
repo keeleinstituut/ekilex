@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord> implements Record13<Long, String, String, Long, Long, String, String, Integer, Boolean, String, String, String[], String[]> {
 
-    private static final long serialVersionUID = -1395143481;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_word_relation.word_group_id</code>.
@@ -524,18 +524,18 @@ public class TypeWordRelationRecord extends UDTRecordImpl<TypeWordRelationRecord
     public TypeWordRelationRecord(Long wordGroupId, String wordRelTypeCode, String relationStatus, Long orderBy, Long wordId, String word, String wordPrese, Integer homonymNr, Boolean homonymsExist, String lang, String aspectCode, String[] wordTypeCodes, String[] lexComplexities) {
         super(TypeWordRelation.TYPE_WORD_RELATION);
 
-        set(0, wordGroupId);
-        set(1, wordRelTypeCode);
-        set(2, relationStatus);
-        set(3, orderBy);
-        set(4, wordId);
-        set(5, word);
-        set(6, wordPrese);
-        set(7, homonymNr);
-        set(8, homonymsExist);
-        set(9, lang);
-        set(10, aspectCode);
-        set(11, wordTypeCodes);
-        set(12, lexComplexities);
+        setWordGroupId(wordGroupId);
+        setWordRelTypeCode(wordRelTypeCode);
+        setRelationStatus(relationStatus);
+        setOrderBy(orderBy);
+        setWordId(wordId);
+        setWord(word);
+        setWordPrese(wordPrese);
+        setHomonymNr(homonymNr);
+        setHomonymsExist(homonymsExist);
+        setLang(lang);
+        setAspectCode(aspectCode);
+        setWordTypeCodes(wordTypeCodes);
+        setLexComplexities(lexComplexities);
     }
 }

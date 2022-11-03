@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeActivityLogRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeActivityLog extends TableImpl<LexemeActivityLogRecord> {
 
-    private static final long serialVersionUID = -374957374;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexeme_activity_log</code>
@@ -52,23 +51,24 @@ public class LexemeActivityLog extends TableImpl<LexemeActivityLogRecord> {
     /**
      * The column <code>public.lexeme_activity_log.id</code>.
      */
-    public final TableField<LexemeActivityLogRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_activity_log_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeActivityLogRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme_activity_log.lexeme_id</code>.
      */
-    public final TableField<LexemeActivityLogRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeActivityLogRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_activity_log.activity_log_id</code>.
      */
-    public final TableField<LexemeActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.lexeme_activity_log</code> table reference
-     */
-    public LexemeActivityLog() {
-        this(DSL.name("lexeme_activity_log"), null);
+    private LexemeActivityLog(Name alias, Table<LexemeActivityLogRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexemeActivityLog(Name alias, Table<LexemeActivityLogRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class LexemeActivityLog extends TableImpl<LexemeActivityLogRecord> {
         this(alias, LEXEME_ACTIVITY_LOG);
     }
 
-    private LexemeActivityLog(Name alias, Table<LexemeActivityLogRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexemeActivityLog(Name alias, Table<LexemeActivityLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexeme_activity_log</code> table reference
+     */
+    public LexemeActivityLog() {
+        this(DSL.name("lexeme_activity_log"), null);
     }
 
     public <O extends Record> LexemeActivityLog(Table<O> child, ForeignKey<O, LexemeActivityLogRecord> key) {
@@ -103,13 +102,8 @@ public class LexemeActivityLog extends TableImpl<LexemeActivityLogRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_ACTIVITY_LOG_LEXEME_ID_IDX, Indexes.LEXEME_ACTIVITY_LOG_LOG_ID_IDX);
-    }
-
-    @Override
     public Identity<LexemeActivityLogRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXEME_ACTIVITY_LOG;
+        return (Identity<LexemeActivityLogRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class LexemeActivityLog extends TableImpl<LexemeActivityLogRecord> {
         return Arrays.<ForeignKey<LexemeActivityLogRecord, ?>>asList(Keys.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY, Keys.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
     }
 
+    private transient Lexeme _lexeme;
+    private transient ActivityLog _activityLog;
+
     public Lexeme lexeme() {
-        return new Lexeme(this, Keys.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY);
+        if (_lexeme == null)
+            _lexeme = new Lexeme(this, Keys.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_LEXEME_ID_FKEY);
+
+        return _lexeme;
     }
 
     public ActivityLog activityLog() {
-        return new ActivityLog(this, Keys.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+        if (_activityLog == null)
+            _activityLog = new ActivityLog(this, Keys.LEXEME_ACTIVITY_LOG__LEXEME_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+
+        return _activityLog;
     }
 
     @Override

@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TempDsImportQueueRecord extends UpdatableRecordImpl<TempDsImportQueueRecord> implements Record5<Long, String, Timestamp, String, String> {
 
-    private static final long serialVersionUID = 1564853222;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.temp_ds_import_queue.id</code>.
@@ -248,10 +248,10 @@ public class TempDsImportQueueRecord extends UpdatableRecordImpl<TempDsImportQue
     public TempDsImportQueueRecord(Long id, String importCode, Timestamp createdOn, String tableName, String content) {
         super(TempDsImportQueue.TEMP_DS_IMPORT_QUEUE);
 
-        set(0, id);
-        set(1, importCode);
-        set(2, createdOn);
-        set(3, tableName);
-        set(4, content);
+        setId(id);
+        setImportCode(importCode);
+        setCreatedOn(createdOn);
+        setTableName(tableName);
+        setContent(content);
     }
 }

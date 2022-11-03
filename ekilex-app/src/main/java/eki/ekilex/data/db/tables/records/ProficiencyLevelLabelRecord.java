@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProficiencyLevelLabelRecord extends TableRecordImpl<ProficiencyLevelLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = 678520880;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.proficiency_level_label.code</code>.
@@ -200,9 +200,9 @@ public class ProficiencyLevelLabelRecord extends TableRecordImpl<ProficiencyLeve
     public ProficiencyLevelLabelRecord(String code, String value, String lang, String type) {
         super(ProficiencyLevelLabel.PROFICIENCY_LEVEL_LABEL);
 
-        set(0, code);
-        set(1, value);
-        set(2, lang);
-        set(3, type);
+        setCode(code);
+        setValue(value);
+        setLang(lang);
+        setType(type);
     }
 }

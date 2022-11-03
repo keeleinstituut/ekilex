@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DomainRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domain extends TableImpl<DomainRecord> {
 
-    private static final long serialVersionUID = 1419687592;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.domain</code>
@@ -52,38 +51,39 @@ public class Domain extends TableImpl<DomainRecord> {
     /**
      * The column <code>public.domain.code</code>.
      */
-    public final TableField<DomainRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DomainRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.domain.origin</code>.
      */
-    public final TableField<DomainRecord, String> ORIGIN = createField(DSL.name("origin"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DomainRecord, String> ORIGIN = createField(DSL.name("origin"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.domain.parent_code</code>.
      */
-    public final TableField<DomainRecord, String> PARENT_CODE = createField(DSL.name("parent_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<DomainRecord, String> PARENT_CODE = createField(DSL.name("parent_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.domain.parent_origin</code>.
      */
-    public final TableField<DomainRecord, String> PARENT_ORIGIN = createField(DSL.name("parent_origin"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<DomainRecord, String> PARENT_ORIGIN = createField(DSL.name("parent_origin"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.domain.datasets</code>.
      */
-    public final TableField<DomainRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<DomainRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.domain.order_by</code>.
      */
-    public final TableField<DomainRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('domain_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DomainRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.domain</code> table reference
-     */
-    public Domain() {
-        this(DSL.name("domain"), null);
+    private Domain(Name alias, Table<DomainRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Domain(Name alias, Table<DomainRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -100,12 +100,11 @@ public class Domain extends TableImpl<DomainRecord> {
         this(alias, DOMAIN);
     }
 
-    private Domain(Name alias, Table<DomainRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Domain(Name alias, Table<DomainRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.domain</code> table reference
+     */
+    public Domain() {
+        this(DSL.name("domain"), null);
     }
 
     public <O extends Record> Domain(Table<O> child, ForeignKey<O, DomainRecord> key) {
@@ -118,13 +117,8 @@ public class Domain extends TableImpl<DomainRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DOMAIN_CODE_ORIGIN_IDX, Indexes.DOMAIN_PARENT_CODE_ORIGIN_IDX);
-    }
-
-    @Override
     public Identity<DomainRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DOMAIN;
+        return (Identity<DomainRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -142,8 +136,13 @@ public class Domain extends TableImpl<DomainRecord> {
         return Arrays.<ForeignKey<DomainRecord, ?>>asList(Keys.DOMAIN__DOMAIN_PARENT_CODE_FKEY);
     }
 
+    private transient Domain _domain;
+
     public Domain domain() {
-        return new Domain(this, Keys.DOMAIN__DOMAIN_PARENT_CODE_FKEY);
+        if (_domain == null)
+            _domain = new Domain(this, Keys.DOMAIN__DOMAIN_PARENT_CODE_FKEY);
+
+        return _domain;
     }
 
     @Override

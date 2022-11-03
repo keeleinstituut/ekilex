@@ -23,7 +23,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ActivityLogRecord extends UpdatableRecordImpl<ActivityLogRecord> implements Record12<Long, String, Timestamp, String, Long, String, Long, String, JSONB, JSONB, TypeActivityLogDiffRecord[], TypeActivityLogDiffRecord[]> {
 
-    private static final long serialVersionUID = -855685056;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.activity_log.id</code>.
@@ -502,17 +502,17 @@ public class ActivityLogRecord extends UpdatableRecordImpl<ActivityLogRecord> im
     public ActivityLogRecord(Long id, String eventBy, Timestamp eventOn, String functName, Long ownerId, String ownerName, Long entityId, String entityName, JSONB prevData, JSONB currData, TypeActivityLogDiffRecord[] prevDiffs, TypeActivityLogDiffRecord[] currDiffs) {
         super(ActivityLog.ACTIVITY_LOG);
 
-        set(0, id);
-        set(1, eventBy);
-        set(2, eventOn);
-        set(3, functName);
-        set(4, ownerId);
-        set(5, ownerName);
-        set(6, entityId);
-        set(7, entityName);
-        set(8, prevData);
-        set(9, currData);
-        set(10, prevDiffs);
-        set(11, currDiffs);
+        setId(id);
+        setEventBy(eventBy);
+        setEventOn(eventOn);
+        setFunctName(functName);
+        setOwnerId(ownerId);
+        setOwnerName(ownerName);
+        setEntityId(entityId);
+        setEntityName(entityName);
+        setPrevData(prevData);
+        setCurrData(currData);
+        setPrevDiffs(prevDiffs);
+        setCurrDiffs(currDiffs);
     }
 }

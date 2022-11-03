@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AspectRecord extends UpdatableRecordImpl<AspectRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = 1800731185;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.aspect.code</code>.
@@ -174,8 +174,8 @@ public class AspectRecord extends UpdatableRecordImpl<AspectRecord> implements R
     public AspectRecord(String code, String[] datasets, Long orderBy) {
         super(Aspect.ASPECT);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

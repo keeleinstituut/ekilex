@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMtLexemeRecord extends UDTRecordImpl<TypeMtLexemeRecord> implements Record5<Long, Long, Long, String, Boolean> {
 
-    private static final long serialVersionUID = -1744947244;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_mt_lexeme.lexeme_id</code>.
@@ -236,10 +236,10 @@ public class TypeMtLexemeRecord extends UDTRecordImpl<TypeMtLexemeRecord> implem
     public TypeMtLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, Boolean isPublic) {
         super(TypeMtLexeme.TYPE_MT_LEXEME);
 
-        set(0, lexemeId);
-        set(1, wordId);
-        set(2, meaningId);
-        set(3, datasetCode);
-        set(4, isPublic);
+        setLexemeId(lexemeId);
+        setWordId(wordId);
+        setMeaningId(meaningId);
+        setDatasetCode(datasetCode);
+        setIsPublic(isPublic);
     }
 }

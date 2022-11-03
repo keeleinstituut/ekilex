@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordLastActivityLogRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordLastActivityLog extends TableImpl<WordLastActivityLogRecord> {
 
-    private static final long serialVersionUID = 1479428124;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_last_activity_log</code>
@@ -52,23 +51,24 @@ public class WordLastActivityLog extends TableImpl<WordLastActivityLogRecord> {
     /**
      * The column <code>public.word_last_activity_log.id</code>.
      */
-    public final TableField<WordLastActivityLogRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_last_activity_log_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordLastActivityLogRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_last_activity_log.word_id</code>.
      */
-    public final TableField<WordLastActivityLogRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordLastActivityLogRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_last_activity_log.activity_log_id</code>.
      */
-    public final TableField<WordLastActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordLastActivityLogRecord, Long> ACTIVITY_LOG_ID = createField(DSL.name("activity_log_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.word_last_activity_log</code> table reference
-     */
-    public WordLastActivityLog() {
-        this(DSL.name("word_last_activity_log"), null);
+    private WordLastActivityLog(Name alias, Table<WordLastActivityLogRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordLastActivityLog(Name alias, Table<WordLastActivityLogRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class WordLastActivityLog extends TableImpl<WordLastActivityLogRecord> {
         this(alias, WORD_LAST_ACTIVITY_LOG);
     }
 
-    private WordLastActivityLog(Name alias, Table<WordLastActivityLogRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordLastActivityLog(Name alias, Table<WordLastActivityLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_last_activity_log</code> table reference
+     */
+    public WordLastActivityLog() {
+        this(DSL.name("word_last_activity_log"), null);
     }
 
     public <O extends Record> WordLastActivityLog(Table<O> child, ForeignKey<O, WordLastActivityLogRecord> key) {
@@ -103,13 +102,8 @@ public class WordLastActivityLog extends TableImpl<WordLastActivityLogRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_LAST_ACTIVITY_LOG_LOG_ID_IDX, Indexes.WORD_LAST_ACTIVITY_LOG_WORD_ID_IDX);
-    }
-
-    @Override
     public Identity<WordLastActivityLogRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_LAST_ACTIVITY_LOG;
+        return (Identity<WordLastActivityLogRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class WordLastActivityLog extends TableImpl<WordLastActivityLogRecord> {
         return Arrays.<ForeignKey<WordLastActivityLogRecord, ?>>asList(Keys.WORD_LAST_ACTIVITY_LOG__WORD_LAST_ACTIVITY_LOG_WORD_ID_FKEY, Keys.WORD_LAST_ACTIVITY_LOG__WORD_LAST_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
     }
 
+    private transient Word _word;
+    private transient ActivityLog _activityLog;
+
     public Word word() {
-        return new Word(this, Keys.WORD_LAST_ACTIVITY_LOG__WORD_LAST_ACTIVITY_LOG_WORD_ID_FKEY);
+        if (_word == null)
+            _word = new Word(this, Keys.WORD_LAST_ACTIVITY_LOG__WORD_LAST_ACTIVITY_LOG_WORD_ID_FKEY);
+
+        return _word;
     }
 
     public ActivityLog activityLog() {
-        return new ActivityLog(this, Keys.WORD_LAST_ACTIVITY_LOG__WORD_LAST_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+        if (_activityLog == null)
+            _activityLog = new ActivityLog(this, Keys.WORD_LAST_ACTIVITY_LOG__WORD_LAST_ACTIVITY_LOG_ACTIVITY_LOG_ID_FKEY);
+
+        return _activityLog;
     }
 
     @Override

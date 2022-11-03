@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeActivityLogDiffRecord extends UDTRecordImpl<TypeActivityLogDiffRecord> implements Record3<String, String, String> {
 
-    private static final long serialVersionUID = -1538503435;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_activity_log_diff.op</code>.
@@ -164,8 +164,8 @@ public class TypeActivityLogDiffRecord extends UDTRecordImpl<TypeActivityLogDiff
     public TypeActivityLogDiffRecord(String op, String path, String value) {
         super(TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF);
 
-        set(0, op);
-        set(1, path);
-        set(2, value);
+        setOp(op);
+        setPath(path);
+        setValue(value);
     }
 }

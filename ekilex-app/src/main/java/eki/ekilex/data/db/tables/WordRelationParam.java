@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordRelationParamRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
 
-    private static final long serialVersionUID = 118852183;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_relation_param</code>
@@ -53,28 +52,29 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
     /**
      * The column <code>public.word_relation_param.id</code>.
      */
-    public final TableField<WordRelationParamRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_relation_param_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordRelationParamRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_relation_param.word_relation_id</code>.
      */
-    public final TableField<WordRelationParamRecord, Long> WORD_RELATION_ID = createField(DSL.name("word_relation_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordRelationParamRecord, Long> WORD_RELATION_ID = createField(DSL.name("word_relation_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_relation_param.name</code>.
      */
-    public final TableField<WordRelationParamRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<WordRelationParamRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.word_relation_param.value</code>.
      */
-    public final TableField<WordRelationParamRecord, BigDecimal> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.NUMERIC(5, 4).nullable(false), this, "");
+    public final TableField<WordRelationParamRecord, BigDecimal> VALUE = createField(DSL.name("value"), SQLDataType.NUMERIC(5, 4).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.word_relation_param</code> table reference
-     */
-    public WordRelationParam() {
-        this(DSL.name("word_relation_param"), null);
+    private WordRelationParam(Name alias, Table<WordRelationParamRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordRelationParam(Name alias, Table<WordRelationParamRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -91,12 +91,11 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
         this(alias, WORD_RELATION_PARAM);
     }
 
-    private WordRelationParam(Name alias, Table<WordRelationParamRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordRelationParam(Name alias, Table<WordRelationParamRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_relation_param</code> table reference
+     */
+    public WordRelationParam() {
+        this(DSL.name("word_relation_param"), null);
     }
 
     public <O extends Record> WordRelationParam(Table<O> child, ForeignKey<O, WordRelationParamRecord> key) {
@@ -109,13 +108,8 @@ public class WordRelationParam extends TableImpl<WordRelationParamRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_RELATION_PARAM_WORD_RELATION_ID_IDX);
-    }
-
-    @Override
     public Identity<WordRelationParamRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_RELATION_PARAM;
+        return (Identity<WordRelationParamRecord, Long>) super.getIdentity();
     }
 
     @Override

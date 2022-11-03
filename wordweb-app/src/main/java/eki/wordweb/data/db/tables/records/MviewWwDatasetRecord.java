@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwDatasetRecord extends TableRecordImpl<MviewWwDatasetRecord> implements Record8<String, String, String, String, String, String, Boolean, Long> {
 
-    private static final long serialVersionUID = 1110764281;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_dataset.code</code>.
@@ -344,13 +344,13 @@ public class MviewWwDatasetRecord extends TableRecordImpl<MviewWwDatasetRecord> 
     public MviewWwDatasetRecord(String code, String type, String name, String description, String contact, String imageUrl, Boolean isSuperior, Long orderBy) {
         super(MviewWwDataset.MVIEW_WW_DATASET);
 
-        set(0, code);
-        set(1, type);
-        set(2, name);
-        set(3, description);
-        set(4, contact);
-        set(5, imageUrl);
-        set(6, isSuperior);
-        set(7, orderBy);
+        setCode(code);
+        setType(type);
+        setName(name);
+        setDescription(description);
+        setContact(contact);
+        setImageUrl(imageUrl);
+        setIsSuperior(isSuperior);
+        setOrderBy(orderBy);
     }
 }

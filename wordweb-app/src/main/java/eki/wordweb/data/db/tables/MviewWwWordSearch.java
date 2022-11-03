@@ -4,17 +4,12 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordSearchRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -23,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
 
-    private static final long serialVersionUID = 287718948;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_word_search</code>
@@ -50,33 +46,34 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     /**
      * The column <code>public.mview_ww_word_search.sgroup</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, String> SGROUP = createField(DSL.name("sgroup"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<MviewWwWordSearchRecord, String> SGROUP = createField(DSL.name("sgroup"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.word</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordSearchRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.crit</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, String> CRIT = createField(DSL.name("crit"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwWordSearchRecord, String> CRIT = createField(DSL.name("crit"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.lang_order_by</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, Long> LANG_ORDER_BY = createField(DSL.name("lang_order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordSearchRecord, Long> LANG_ORDER_BY = createField(DSL.name("lang_order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_word_search.lang_complexities</code>.
      */
     public final TableField<MviewWwWordSearchRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField(DSL.name("lang_complexities"), eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_word_search</code> table reference
-     */
-    public MviewWwWordSearch() {
-        this(DSL.name("mview_ww_word_search"), null);
+    private MviewWwWordSearch(Name alias, Table<MviewWwWordSearchRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwWordSearch(Name alias, Table<MviewWwWordSearchRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -93,12 +90,11 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
         this(alias, MVIEW_WW_WORD_SEARCH);
     }
 
-    private MviewWwWordSearch(Name alias, Table<MviewWwWordSearchRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwWordSearch(Name alias, Table<MviewWwWordSearchRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_word_search</code> table reference
+     */
+    public MviewWwWordSearch() {
+        this(DSL.name("mview_ww_word_search"), null);
     }
 
     public <O extends Record> MviewWwWordSearch(Table<O> child, ForeignKey<O, MviewWwWordSearchRecord> key) {
@@ -108,11 +104,6 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_SEARCH_CRIT_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_PREFIX_IDX, Indexes.MVIEW_WW_WORD_SEARCH_CRIT_TRI_IDX, Indexes.MVIEW_WW_WORD_SEARCH_SGROUP_IDX);
     }
 
     @Override

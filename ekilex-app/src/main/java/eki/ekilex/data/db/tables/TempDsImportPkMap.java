@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.TempDsImportPkMapRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TempDsImportPkMap extends TableImpl<TempDsImportPkMapRecord> {
 
-    private static final long serialVersionUID = 1348026850;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.temp_ds_import_pk_map</code>
@@ -53,38 +52,39 @@ public class TempDsImportPkMap extends TableImpl<TempDsImportPkMapRecord> {
     /**
      * The column <code>public.temp_ds_import_pk_map.id</code>.
      */
-    public final TableField<TempDsImportPkMapRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('temp_ds_import_pk_map_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<TempDsImportPkMapRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.temp_ds_import_pk_map.import_code</code>.
      */
-    public final TableField<TempDsImportPkMapRecord, String> IMPORT_CODE = createField(DSL.name("import_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<TempDsImportPkMapRecord, String> IMPORT_CODE = createField(DSL.name("import_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.temp_ds_import_pk_map.created_on</code>.
      */
-    public final TableField<TempDsImportPkMapRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<TempDsImportPkMapRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>public.temp_ds_import_pk_map.table_name</code>.
      */
-    public final TableField<TempDsImportPkMapRecord, String> TABLE_NAME = createField(DSL.name("table_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TempDsImportPkMapRecord, String> TABLE_NAME = createField(DSL.name("table_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.temp_ds_import_pk_map.source_pk</code>.
      */
-    public final TableField<TempDsImportPkMapRecord, Long> SOURCE_PK = createField(DSL.name("source_pk"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TempDsImportPkMapRecord, Long> SOURCE_PK = createField(DSL.name("source_pk"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.temp_ds_import_pk_map.target_pk</code>.
      */
-    public final TableField<TempDsImportPkMapRecord, Long> TARGET_PK = createField(DSL.name("target_pk"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<TempDsImportPkMapRecord, Long> TARGET_PK = createField(DSL.name("target_pk"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.temp_ds_import_pk_map</code> table reference
-     */
-    public TempDsImportPkMap() {
-        this(DSL.name("temp_ds_import_pk_map"), null);
+    private TempDsImportPkMap(Name alias, Table<TempDsImportPkMapRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private TempDsImportPkMap(Name alias, Table<TempDsImportPkMapRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -101,12 +101,11 @@ public class TempDsImportPkMap extends TableImpl<TempDsImportPkMapRecord> {
         this(alias, TEMP_DS_IMPORT_PK_MAP);
     }
 
-    private TempDsImportPkMap(Name alias, Table<TempDsImportPkMapRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private TempDsImportPkMap(Name alias, Table<TempDsImportPkMapRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.temp_ds_import_pk_map</code> table reference
+     */
+    public TempDsImportPkMap() {
+        this(DSL.name("temp_ds_import_pk_map"), null);
     }
 
     public <O extends Record> TempDsImportPkMap(Table<O> child, ForeignKey<O, TempDsImportPkMapRecord> key) {
@@ -119,13 +118,8 @@ public class TempDsImportPkMap extends TableImpl<TempDsImportPkMapRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.TEMP_DS_IMPORT_PK_MAP_IMPORT_CODE_IDX, Indexes.TEMP_DS_IMPORT_PK_MAP_SOURCE_PK_IDX, Indexes.TEMP_DS_IMPORT_PK_MAP_TABLE_NAME_IDX, Indexes.TEMP_DS_IMPORT_PK_MAP_TARGET_PK_IDX);
-    }
-
-    @Override
     public Identity<TempDsImportPkMapRecord, Long> getIdentity() {
-        return Keys.IDENTITY_TEMP_DS_IMPORT_PK_MAP;
+        return (Identity<TempDsImportPkMapRecord, Long>) super.getIdentity();
     }
 
     @Override

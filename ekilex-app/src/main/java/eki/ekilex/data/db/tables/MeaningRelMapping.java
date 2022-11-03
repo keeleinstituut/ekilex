@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningRelMappingRecord;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -24,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelMapping extends TableImpl<MeaningRelMappingRecord> {
 
-    private static final long serialVersionUID = -2017550504;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_rel_mapping</code>
@@ -51,18 +50,19 @@ public class MeaningRelMapping extends TableImpl<MeaningRelMappingRecord> {
     /**
      * The column <code>public.meaning_rel_mapping.code1</code>.
      */
-    public final TableField<MeaningRelMappingRecord, String> CODE1 = createField(DSL.name("code1"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningRelMappingRecord, String> CODE1 = createField(DSL.name("code1"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_rel_mapping.code2</code>.
      */
-    public final TableField<MeaningRelMappingRecord, String> CODE2 = createField(DSL.name("code2"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningRelMappingRecord, String> CODE2 = createField(DSL.name("code2"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.meaning_rel_mapping</code> table reference
-     */
-    public MeaningRelMapping() {
-        this(DSL.name("meaning_rel_mapping"), null);
+    private MeaningRelMapping(Name alias, Table<MeaningRelMappingRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningRelMapping(Name alias, Table<MeaningRelMappingRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -79,12 +79,11 @@ public class MeaningRelMapping extends TableImpl<MeaningRelMappingRecord> {
         this(alias, MEANING_REL_MAPPING);
     }
 
-    private MeaningRelMapping(Name alias, Table<MeaningRelMappingRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningRelMapping(Name alias, Table<MeaningRelMappingRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_rel_mapping</code> table reference
+     */
+    public MeaningRelMapping() {
+        this(DSL.name("meaning_rel_mapping"), null);
     }
 
     public <O extends Record> MeaningRelMapping(Table<O> child, ForeignKey<O, MeaningRelMappingRecord> key) {
@@ -97,11 +96,6 @@ public class MeaningRelMapping extends TableImpl<MeaningRelMappingRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_REL_MAPPING_CODE1_IDX, Indexes.MEANING_REL_MAPPING_CODE2_IDX);
-    }
-
-    @Override
     public List<UniqueKey<MeaningRelMappingRecord>> getKeys() {
         return Arrays.<UniqueKey<MeaningRelMappingRecord>>asList(Keys.MEANING_REL_MAPPING_CODE1_CODE2_KEY);
     }
@@ -111,12 +105,21 @@ public class MeaningRelMapping extends TableImpl<MeaningRelMappingRecord> {
         return Arrays.<ForeignKey<MeaningRelMappingRecord, ?>>asList(Keys.MEANING_REL_MAPPING__MEANING_REL_MAPPING_CODE1_FKEY, Keys.MEANING_REL_MAPPING__MEANING_REL_MAPPING_CODE2_FKEY);
     }
 
+    private transient MeaningRelType _meaningRelMappingCode1Fkey;
+    private transient MeaningRelType _meaningRelMappingCode2Fkey;
+
     public MeaningRelType meaningRelMappingCode1Fkey() {
-        return new MeaningRelType(this, Keys.MEANING_REL_MAPPING__MEANING_REL_MAPPING_CODE1_FKEY);
+        if (_meaningRelMappingCode1Fkey == null)
+            _meaningRelMappingCode1Fkey = new MeaningRelType(this, Keys.MEANING_REL_MAPPING__MEANING_REL_MAPPING_CODE1_FKEY);
+
+        return _meaningRelMappingCode1Fkey;
     }
 
     public MeaningRelType meaningRelMappingCode2Fkey() {
-        return new MeaningRelType(this, Keys.MEANING_REL_MAPPING__MEANING_REL_MAPPING_CODE2_FKEY);
+        if (_meaningRelMappingCode2Fkey == null)
+            _meaningRelMappingCode2Fkey = new MeaningRelType(this, Keys.MEANING_REL_MAPPING__MEANING_REL_MAPPING_CODE2_FKEY);
+
+        return _meaningRelMappingCode2Fkey;
     }
 
     @Override

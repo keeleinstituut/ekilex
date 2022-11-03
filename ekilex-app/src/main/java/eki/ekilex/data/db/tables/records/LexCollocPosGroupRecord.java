@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexCollocPosGroupRecord extends UpdatableRecordImpl<LexCollocPosGroupRecord> implements Record4<Long, Long, String, Long> {
 
-    private static final long serialVersionUID = -17577862;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lex_colloc_pos_group.id</code>.
@@ -210,9 +210,9 @@ public class LexCollocPosGroupRecord extends UpdatableRecordImpl<LexCollocPosGro
     public LexCollocPosGroupRecord(Long id, Long lexemeId, String posGroupCode, Long orderBy) {
         super(LexCollocPosGroup.LEX_COLLOC_POS_GROUP);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, posGroupCode);
-        set(3, orderBy);
+        setId(id);
+        setLexemeId(lexemeId);
+        setPosGroupCode(posGroupCode);
+        setOrderBy(orderBy);
     }
 }

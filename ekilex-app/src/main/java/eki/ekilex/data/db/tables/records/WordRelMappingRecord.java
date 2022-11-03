@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelMappingRecord extends TableRecordImpl<WordRelMappingRecord> implements Record2<String, String> {
 
-    private static final long serialVersionUID = 1119704850;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_rel_mapping.code1</code>.
@@ -128,7 +128,7 @@ public class WordRelMappingRecord extends TableRecordImpl<WordRelMappingRecord> 
     public WordRelMappingRecord(String code1, String code2) {
         super(WordRelMapping.WORD_REL_MAPPING);
 
-        set(0, code1);
-        set(1, code2);
+        setCode1(code1);
+        setCode2(code2);
     }
 }

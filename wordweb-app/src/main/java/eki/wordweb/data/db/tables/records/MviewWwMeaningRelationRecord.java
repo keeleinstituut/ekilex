@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaningRelationRecord extends TableRecordImpl<MviewWwMeaningRelationRecord> implements Record2<Long, TypeMeaningRelationRecord[]> {
 
-    private static final long serialVersionUID = -621912408;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_meaning_relation.meaning_id</code>.
@@ -129,7 +129,7 @@ public class MviewWwMeaningRelationRecord extends TableRecordImpl<MviewWwMeaning
     public MviewWwMeaningRelationRecord(Long meaningId, TypeMeaningRelationRecord[] relatedMeanings) {
         super(MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION);
 
-        set(0, meaningId);
-        set(1, relatedMeanings);
+        setMeaningId(meaningId);
+        setRelatedMeanings(relatedMeanings);
     }
 }

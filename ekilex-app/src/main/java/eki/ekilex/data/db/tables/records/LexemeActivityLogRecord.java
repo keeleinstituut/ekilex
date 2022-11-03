@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeActivityLogRecord extends UpdatableRecordImpl<LexemeActivityLogRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = -1169342649;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexeme_activity_log.id</code>.
@@ -174,8 +174,8 @@ public class LexemeActivityLogRecord extends UpdatableRecordImpl<LexemeActivityL
     public LexemeActivityLogRecord(Long id, Long lexemeId, Long activityLogId) {
         super(LexemeActivityLog.LEXEME_ACTIVITY_LOG);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, activityLogId);
+        setId(id);
+        setLexemeId(lexemeId);
+        setActivityLogId(activityLogId);
     }
 }

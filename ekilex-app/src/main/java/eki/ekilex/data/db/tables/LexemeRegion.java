@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeRegionRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
 
-    private static final long serialVersionUID = -354706746;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexeme_region</code>
@@ -52,28 +51,29 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
     /**
      * The column <code>public.lexeme_region.id</code>.
      */
-    public final TableField<LexemeRegionRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_region_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeRegionRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme_region.lexeme_id</code>.
      */
-    public final TableField<LexemeRegionRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeRegionRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_region.region_code</code>.
      */
-    public final TableField<LexemeRegionRecord, String> REGION_CODE = createField(DSL.name("region_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemeRegionRecord, String> REGION_CODE = createField(DSL.name("region_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_region.order_by</code>.
      */
-    public final TableField<LexemeRegionRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_region_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeRegionRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.lexeme_region</code> table reference
-     */
-    public LexemeRegion() {
-        this(DSL.name("lexeme_region"), null);
+    private LexemeRegion(Name alias, Table<LexemeRegionRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexemeRegion(Name alias, Table<LexemeRegionRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
         this(alias, LEXEME_REGION);
     }
 
-    private LexemeRegion(Name alias, Table<LexemeRegionRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexemeRegion(Name alias, Table<LexemeRegionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexeme_region</code> table reference
+     */
+    public LexemeRegion() {
+        this(DSL.name("lexeme_region"), null);
     }
 
     public <O extends Record> LexemeRegion(Table<O> child, ForeignKey<O, LexemeRegionRecord> key) {
@@ -108,13 +107,8 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_REGION_LEXEME_ID_IDX);
-    }
-
-    @Override
     public Identity<LexemeRegionRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXEME_REGION;
+        return (Identity<LexemeRegionRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class LexemeRegion extends TableImpl<LexemeRegionRecord> {
         return Arrays.<ForeignKey<LexemeRegionRecord, ?>>asList(Keys.LEXEME_REGION__LEXEME_REGION_LEXEME_ID_FKEY, Keys.LEXEME_REGION__LEXEME_REGION_REGION_CODE_FKEY);
     }
 
+    private transient Lexeme _lexeme;
+    private transient Region _region;
+
     public Lexeme lexeme() {
-        return new Lexeme(this, Keys.LEXEME_REGION__LEXEME_REGION_LEXEME_ID_FKEY);
+        if (_lexeme == null)
+            _lexeme = new Lexeme(this, Keys.LEXEME_REGION__LEXEME_REGION_LEXEME_ID_FKEY);
+
+        return _lexeme;
     }
 
     public Region region() {
-        return new Region(this, Keys.LEXEME_REGION__LEXEME_REGION_REGION_CODE_FKEY);
+        if (_region == null)
+            _region = new Region(this, Keys.LEXEME_REGION__LEXEME_REGION_REGION_CODE_FKEY);
+
+        return _region;
     }
 
     @Override

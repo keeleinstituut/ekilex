@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Record13<Long, String, Integer, String, String, String, String, String, String, String, Timestamp, String, Boolean> {
 
-    private static final long serialVersionUID = -354533379;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word.id</code>.
@@ -536,18 +536,18 @@ public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Recor
     public WordRecord(Long id, String lang, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String value, String valuePrese, String valueAsWord, String vocalForm, Timestamp manualEventOn, String morphophonoForm, Boolean isPublic) {
         super(Word.WORD);
 
-        set(0, id);
-        set(1, lang);
-        set(2, homonymNr);
-        set(3, displayMorphCode);
-        set(4, genderCode);
-        set(5, aspectCode);
-        set(6, value);
-        set(7, valuePrese);
-        set(8, valueAsWord);
-        set(9, vocalForm);
-        set(10, manualEventOn);
-        set(11, morphophonoForm);
-        set(12, isPublic);
+        setId(id);
+        setLang(lang);
+        setHomonymNr(homonymNr);
+        setDisplayMorphCode(displayMorphCode);
+        setGenderCode(genderCode);
+        setAspectCode(aspectCode);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setValueAsWord(valueAsWord);
+        setVocalForm(vocalForm);
+        setManualEventOn(manualEventOn);
+        setMorphophonoForm(morphophonoForm);
+        setIsPublic(isPublic);
     }
 }

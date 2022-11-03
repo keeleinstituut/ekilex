@@ -24,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreqCorp extends TableImpl<FreqCorpRecord> {
 
-    private static final long serialVersionUID = -382028584;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.freq_corp</code>
@@ -51,28 +52,29 @@ public class FreqCorp extends TableImpl<FreqCorpRecord> {
     /**
      * The column <code>public.freq_corp.id</code>.
      */
-    public final TableField<FreqCorpRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('freq_corp_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FreqCorpRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.freq_corp.name</code>.
      */
-    public final TableField<FreqCorpRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FreqCorpRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.freq_corp.corp_date</code>.
      */
-    public final TableField<FreqCorpRecord, Date> CORP_DATE = createField(DSL.name("corp_date"), org.jooq.impl.SQLDataType.DATE.nullable(false), this, "");
+    public final TableField<FreqCorpRecord, Date> CORP_DATE = createField(DSL.name("corp_date"), SQLDataType.DATE.nullable(false), this, "");
 
     /**
      * The column <code>public.freq_corp.is_public</code>.
      */
-    public final TableField<FreqCorpRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<FreqCorpRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.freq_corp</code> table reference
-     */
-    public FreqCorp() {
-        this(DSL.name("freq_corp"), null);
+    private FreqCorp(Name alias, Table<FreqCorpRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private FreqCorp(Name alias, Table<FreqCorpRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -89,12 +91,11 @@ public class FreqCorp extends TableImpl<FreqCorpRecord> {
         this(alias, FREQ_CORP);
     }
 
-    private FreqCorp(Name alias, Table<FreqCorpRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private FreqCorp(Name alias, Table<FreqCorpRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.freq_corp</code> table reference
+     */
+    public FreqCorp() {
+        this(DSL.name("freq_corp"), null);
     }
 
     public <O extends Record> FreqCorp(Table<O> child, ForeignKey<O, FreqCorpRecord> key) {
@@ -108,7 +109,7 @@ public class FreqCorp extends TableImpl<FreqCorpRecord> {
 
     @Override
     public Identity<FreqCorpRecord, Long> getIdentity() {
-        return Keys.IDENTITY_FREQ_CORP;
+        return (Identity<FreqCorpRecord, Long>) super.getIdentity();
     }
 
     @Override

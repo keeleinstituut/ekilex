@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelationParamRecord extends UpdatableRecordImpl<WordRelationParamRecord> implements Record4<Long, Long, String, BigDecimal> {
 
-    private static final long serialVersionUID = 357697539;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_relation_param.id</code>.
@@ -212,9 +212,9 @@ public class WordRelationParamRecord extends UpdatableRecordImpl<WordRelationPar
     public WordRelationParamRecord(Long id, Long wordRelationId, String name, BigDecimal value) {
         super(WordRelationParam.WORD_RELATION_PARAM);
 
-        set(0, id);
-        set(1, wordRelationId);
-        set(2, name);
-        set(3, value);
+        setId(id);
+        setWordRelationId(wordRelationId);
+        setName(name);
+        setValue(value);
     }
 }

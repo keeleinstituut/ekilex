@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordEtymRelationRecord extends UDTRecordImpl<TypeWordEtymRelationRecord> implements Record5<Long, String, Boolean, Boolean, Long> {
 
-    private static final long serialVersionUID = -80611250;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_word_etym_relation.word_etym_rel_id</code>.
@@ -236,10 +236,10 @@ public class TypeWordEtymRelationRecord extends UDTRecordImpl<TypeWordEtymRelati
     public TypeWordEtymRelationRecord(Long wordEtymRelId, String comment, Boolean isQuestionable, Boolean isCompound, Long relatedWordId) {
         super(TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION);
 
-        set(0, wordEtymRelId);
-        set(1, comment);
-        set(2, isQuestionable);
-        set(3, isCompound);
-        set(4, relatedWordId);
+        setWordEtymRelId(wordEtymRelId);
+        setComment(comment);
+        setIsQuestionable(isQuestionable);
+        setIsCompound(isCompound);
+        setRelatedWordId(relatedWordId);
     }
 }

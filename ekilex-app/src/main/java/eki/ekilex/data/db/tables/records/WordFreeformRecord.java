@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordFreeformRecord extends UpdatableRecordImpl<WordFreeformRecord> implements Record4<Long, Long, Long, Long> {
 
-    private static final long serialVersionUID = -569382239;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_freeform.id</code>.
@@ -210,9 +210,9 @@ public class WordFreeformRecord extends UpdatableRecordImpl<WordFreeformRecord> 
     public WordFreeformRecord(Long id, Long wordId, Long freeformId, Long orderBy) {
         super(WordFreeform.WORD_FREEFORM);
 
-        set(0, id);
-        set(1, wordId);
-        set(2, freeformId);
-        set(3, orderBy);
+        setId(id);
+        setWordId(wordId);
+        setFreeformId(freeformId);
+        setOrderBy(orderBy);
     }
 }

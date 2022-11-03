@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row14;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = 1962403368;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -53,78 +52,79 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     /**
      * The column <code>public.eki_user.id</code>.
      */
-    public final TableField<EkiUserRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('eki_user_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<EkiUserRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.eki_user.name</code>.
      */
-    public final TableField<EkiUserRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<EkiUserRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.eki_user.email</code>.
      */
-    public final TableField<EkiUserRecord, String> EMAIL = createField(DSL.name("email"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<EkiUserRecord, String> EMAIL = createField(DSL.name("email"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.eki_user.password</code>.
      */
-    public final TableField<EkiUserRecord, String> PASSWORD = createField(DSL.name("password"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<EkiUserRecord, String> PASSWORD = createField(DSL.name("password"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.eki_user.activation_key</code>.
      */
-    public final TableField<EkiUserRecord, String> ACTIVATION_KEY = createField(DSL.name("activation_key"), org.jooq.impl.SQLDataType.VARCHAR(60), this, "");
+    public final TableField<EkiUserRecord, String> ACTIVATION_KEY = createField(DSL.name("activation_key"), SQLDataType.VARCHAR(60), this, "");
 
     /**
      * The column <code>public.eki_user.recovery_key</code>.
      */
-    public final TableField<EkiUserRecord, String> RECOVERY_KEY = createField(DSL.name("recovery_key"), org.jooq.impl.SQLDataType.VARCHAR(60), this, "");
+    public final TableField<EkiUserRecord, String> RECOVERY_KEY = createField(DSL.name("recovery_key"), SQLDataType.VARCHAR(60), this, "");
 
     /**
      * The column <code>public.eki_user.is_admin</code>.
      */
-    public final TableField<EkiUserRecord, Boolean> IS_ADMIN = createField(DSL.name("is_admin"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserRecord, Boolean> IS_ADMIN = createField(DSL.name("is_admin"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user.is_enabled</code>.
      */
-    public final TableField<EkiUserRecord, Boolean> IS_ENABLED = createField(DSL.name("is_enabled"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<EkiUserRecord, Boolean> IS_ENABLED = createField(DSL.name("is_enabled"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.eki_user.review_comment</code>.
      */
-    public final TableField<EkiUserRecord, String> REVIEW_COMMENT = createField(DSL.name("review_comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<EkiUserRecord, String> REVIEW_COMMENT = createField(DSL.name("review_comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.eki_user.created</code>.
      */
-    public final TableField<EkiUserRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<EkiUserRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>public.eki_user.is_master</code>.
      */
-    public final TableField<EkiUserRecord, Boolean> IS_MASTER = createField(DSL.name("is_master"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserRecord, Boolean> IS_MASTER = createField(DSL.name("is_master"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user.terms_ver</code>.
      */
-    public final TableField<EkiUserRecord, String> TERMS_VER = createField(DSL.name("terms_ver"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<EkiUserRecord, String> TERMS_VER = createField(DSL.name("terms_ver"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.eki_user.api_key</code>.
      */
-    public final TableField<EkiUserRecord, String> API_KEY = createField(DSL.name("api_key"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<EkiUserRecord, String> API_KEY = createField(DSL.name("api_key"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.eki_user.is_api_crud</code>.
      */
-    public final TableField<EkiUserRecord, Boolean> IS_API_CRUD = createField(DSL.name("is_api_crud"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserRecord, Boolean> IS_API_CRUD = createField(DSL.name("is_api_crud"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
-    /**
-     * Create a <code>public.eki_user</code> table reference
-     */
-    public EkiUser() {
-        this(DSL.name("eki_user"), null);
+    private EkiUser(Name alias, Table<EkiUserRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private EkiUser(Name alias, Table<EkiUserRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -141,12 +141,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
         this(alias, EKI_USER);
     }
 
-    private EkiUser(Name alias, Table<EkiUserRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private EkiUser(Name alias, Table<EkiUserRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.eki_user</code> table reference
+     */
+    public EkiUser() {
+        this(DSL.name("eki_user"), null);
     }
 
     public <O extends Record> EkiUser(Table<O> child, ForeignKey<O, EkiUserRecord> key) {
@@ -159,13 +158,8 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.EKI_USER_API_KEY_IDX, Indexes.EKI_USER_EMAIL_IDX);
-    }
-
-    @Override
     public Identity<EkiUserRecord, Long> getIdentity() {
-        return Keys.IDENTITY_EKI_USER;
+        return (Identity<EkiUserRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -183,8 +177,13 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
         return Arrays.<ForeignKey<EkiUserRecord, ?>>asList(Keys.EKI_USER__EKI_USER_TERMS_VER_FKEY);
     }
 
+    private transient TermsOfUse _termsOfUse;
+
     public TermsOfUse termsOfUse() {
-        return new TermsOfUse(this, Keys.EKI_USER__EKI_USER_TERMS_VER_FKEY);
+        if (_termsOfUse == null)
+            _termsOfUse = new TermsOfUse(this, Keys.EKI_USER__EKI_USER_TERMS_VER_FKEY);
+
+        return _termsOfUse;
     }
 
     @Override

@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMediaFileRecord extends UDTRecordImpl<TypeMediaFileRecord> implements Record4<Long, String, String, String> {
 
-    private static final long serialVersionUID = -1194999256;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_media_file.freeform_id</code>.
@@ -200,9 +200,9 @@ public class TypeMediaFileRecord extends UDTRecordImpl<TypeMediaFileRecord> impl
     public TypeMediaFileRecord(Long freeformId, String sourceUrl, String title, String complexity) {
         super(TypeMediaFile.TYPE_MEDIA_FILE);
 
-        set(0, freeformId);
-        set(1, sourceUrl);
-        set(2, title);
-        set(3, complexity);
+        setFreeformId(freeformId);
+        setSourceUrl(sourceUrl);
+        setTitle(title);
+        setComplexity(complexity);
     }
 }

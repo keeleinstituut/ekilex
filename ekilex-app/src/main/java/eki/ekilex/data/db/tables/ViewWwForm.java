@@ -18,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -27,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = -895595908;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.view_ww_form</code>
@@ -45,148 +46,149 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     /**
      * The column <code>public.view_ww_form.word_id</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_form.word_class</code>.
      */
-    public final TableField<ViewWwFormRecord, String> WORD_CLASS = createField(DSL.name("word_class"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ViewWwFormRecord, String> WORD_CLASS = createField(DSL.name("word_class"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_form.word</code>.
      */
-    public final TableField<ViewWwFormRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.lang</code>.
      */
-    public final TableField<ViewWwFormRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<ViewWwFormRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.view_ww_form.paradigm_id</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> PARADIGM_ID = createField(DSL.name("paradigm_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_form.paradigm_comment</code>.
      */
-    public final TableField<ViewWwFormRecord, String> PARADIGM_COMMENT = createField(DSL.name("paradigm_comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> PARADIGM_COMMENT = createField(DSL.name("paradigm_comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.inflection_type</code>.
      */
-    public final TableField<ViewWwFormRecord, String> INFLECTION_TYPE = createField(DSL.name("inflection_type"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ViewWwFormRecord, String> INFLECTION_TYPE = createField(DSL.name("inflection_type"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_form.inflection_type_nr</code>.
      */
-    public final TableField<ViewWwFormRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ViewWwFormRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_form.form_id</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> FORM_ID = createField(DSL.name("form_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> FORM_ID = createField(DSL.name("form_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_group1</code>.
      */
-    public final TableField<ViewWwFormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> MORPH_GROUP1 = createField(DSL.name("morph_group1"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_group2</code>.
      */
-    public final TableField<ViewWwFormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> MORPH_GROUP2 = createField(DSL.name("morph_group2"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_group3</code>.
      */
-    public final TableField<ViewWwFormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> MORPH_GROUP3 = createField(DSL.name("morph_group3"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.display_level</code>.
      */
-    public final TableField<ViewWwFormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ViewWwFormRecord, Integer> DISPLAY_LEVEL = createField(DSL.name("display_level"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_code</code>.
      */
-    public final TableField<ViewWwFormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ViewWwFormRecord, String> MORPH_CODE = createField(DSL.name("morph_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_exists</code>.
      */
-    public final TableField<ViewWwFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<ViewWwFormRecord, Boolean> MORPH_EXISTS = createField(DSL.name("morph_exists"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.view_ww_form.is_questionable</code>.
      */
-    public final TableField<ViewWwFormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<ViewWwFormRecord, Boolean> IS_QUESTIONABLE = createField(DSL.name("is_questionable"), SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.view_ww_form.value</code>.
      */
-    public final TableField<ViewWwFormRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.value_prese</code>.
      */
-    public final TableField<ViewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwFormRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.view_ww_form.components</code>.
      */
-    public final TableField<ViewWwFormRecord, String[]> COMPONENTS = createField(DSL.name("components"), org.jooq.impl.SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
+    public final TableField<ViewWwFormRecord, String[]> COMPONENTS = createField(DSL.name("components"), SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_form.display_form</code>.
      */
-    public final TableField<ViewWwFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<ViewWwFormRecord, String> DISPLAY_FORM = createField(DSL.name("display_form"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.view_ww_form.audio_file</code>.
      */
-    public final TableField<ViewWwFormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+    public final TableField<ViewWwFormRecord, String> AUDIO_FILE = createField(DSL.name("audio_file"), SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.view_ww_form.order_by</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_form.form_freq_value</code>.
      */
-    public final TableField<ViewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+    public final TableField<ViewWwFormRecord, BigDecimal> FORM_FREQ_VALUE = createField(DSL.name("form_freq_value"), SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
      * The column <code>public.view_ww_form.form_freq_rank</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> FORM_FREQ_RANK = createField(DSL.name("form_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> FORM_FREQ_RANK = createField(DSL.name("form_freq_rank"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_form.form_freq_rank_max</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> FORM_FREQ_RANK_MAX = createField(DSL.name("form_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> FORM_FREQ_RANK_MAX = createField(DSL.name("form_freq_rank_max"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_freq_value</code>.
      */
-    public final TableField<ViewWwFormRecord, BigDecimal> MORPH_FREQ_VALUE = createField(DSL.name("morph_freq_value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7), this, "");
+    public final TableField<ViewWwFormRecord, BigDecimal> MORPH_FREQ_VALUE = createField(DSL.name("morph_freq_value"), SQLDataType.NUMERIC(12, 7), this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_freq_rank</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> MORPH_FREQ_RANK = createField(DSL.name("morph_freq_rank"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> MORPH_FREQ_RANK = createField(DSL.name("morph_freq_rank"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_form.morph_freq_rank_max</code>.
      */
-    public final TableField<ViewWwFormRecord, Long> MORPH_FREQ_RANK_MAX = createField(DSL.name("morph_freq_rank_max"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwFormRecord, Long> MORPH_FREQ_RANK_MAX = createField(DSL.name("morph_freq_rank_max"), SQLDataType.BIGINT, this, "");
 
-    /**
-     * Create a <code>public.view_ww_form</code> table reference
-     */
-    public ViewWwForm() {
-        this(DSL.name("view_ww_form"), null);
+    private ViewWwForm(Name alias, Table<ViewWwFormRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ViewWwForm(Name alias, Table<ViewWwFormRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    p.word_class,\n    w.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.comment AS paradigm_comment,\n    p.inflection_type,\n    p.inflection_type_nr,\n    f.id AS form_id,\n    f.morph_group1,\n    f.morph_group2,\n    f.morph_group3,\n    f.display_level,\n    f.morph_code,\n    f.morph_exists,\n    f.is_questionable,\n    f.value,\n    f.value_prese,\n    f.components,\n    f.display_form,\n    f.audio_file,\n    f.order_by,\n    ff.form_freq_value,\n    ff.form_freq_rank,\n    ff.form_freq_rank_max,\n    mf.morph_freq_value,\n    mf.morph_freq_rank,\n    mf.morph_freq_rank_max\n   FROM ((((word w\n     JOIN paradigm p ON ((p.word_id = w.id)))\n     JOIN form f ON ((f.paradigm_id = p.id)))\n     LEFT JOIN ( SELECT ff_1.form_id,\n            ff_1.value AS form_freq_value,\n            ff_1.rank AS form_freq_rank,\n            fc.corp_date,\n            ( SELECT max(fff.rank) AS max\n                   FROM form_freq fff\n                  WHERE (fff.freq_corp_id = fc.id)) AS form_freq_rank_max\n           FROM form_freq ff_1,\n            freq_corp fc\n          WHERE ((ff_1.freq_corp_id = fc.id) AND (fc.is_public = true))) ff ON (((ff.form_id = f.id) AND (ff.corp_date = ( SELECT max(fcc.corp_date) AS max\n           FROM form_freq fff,\n            freq_corp fcc\n          WHERE ((fff.freq_corp_id = fcc.id) AND (fcc.is_public = true) AND (fff.form_id = f.id)))))))\n     LEFT JOIN ( SELECT mf_1.morph_code,\n            mf_1.value AS morph_freq_value,\n            mf_1.rank AS morph_freq_rank,\n            fc.corp_date,\n            ( SELECT max(mff.rank) AS max\n                   FROM morph_freq mff\n                  WHERE (mff.freq_corp_id = fc.id)) AS morph_freq_rank_max\n           FROM morph_freq mf_1,\n            freq_corp fc\n          WHERE ((mf_1.freq_corp_id = fc.id) AND (fc.is_public = true))) mf ON ((((mf.morph_code)::text = (f.morph_code)::text) AND (mf.corp_date = ( SELECT max(fcc.corp_date) AS max\n           FROM morph_freq mff,\n            freq_corp fcc\n          WHERE ((mff.freq_corp_id = fcc.id) AND (fcc.is_public = true) AND ((mff.morph_code)::text = (f.morph_code)::text)))))))\n  WHERE ((w.is_public = true) AND (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))))\n  ORDER BY w.id, p.id, f.id;"));
     }
 
     /**
@@ -203,12 +205,11 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
         this(alias, VIEW_WW_FORM);
     }
 
-    private ViewWwForm(Name alias, Table<ViewWwFormRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ViewWwForm(Name alias, Table<ViewWwFormRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_form\" as  SELECT w.id AS word_id,\n    p.word_class,\n    w.value AS word,\n    w.lang,\n    p.id AS paradigm_id,\n    p.comment AS paradigm_comment,\n    p.inflection_type,\n    p.inflection_type_nr,\n    f.id AS form_id,\n    f.morph_group1,\n    f.morph_group2,\n    f.morph_group3,\n    f.display_level,\n    f.morph_code,\n    f.morph_exists,\n    f.is_questionable,\n    f.value,\n    f.value_prese,\n    f.components,\n    f.display_form,\n    f.audio_file,\n    f.order_by,\n    ff.form_freq_value,\n    ff.form_freq_rank,\n    ff.form_freq_rank_max,\n    mf.morph_freq_value,\n    mf.morph_freq_rank,\n    mf.morph_freq_rank_max\n   FROM ((((word w\n     JOIN paradigm p ON ((p.word_id = w.id)))\n     JOIN form f ON ((f.paradigm_id = p.id)))\n     LEFT JOIN ( SELECT ff_1.form_id,\n            ff_1.value AS form_freq_value,\n            ff_1.rank AS form_freq_rank,\n            fc.corp_date,\n            ( SELECT max(fff.rank) AS max\n                   FROM form_freq fff\n                  WHERE (fff.freq_corp_id = fc.id)) AS form_freq_rank_max\n           FROM form_freq ff_1,\n            freq_corp fc\n          WHERE ((ff_1.freq_corp_id = fc.id) AND (fc.is_public = true))) ff ON (((ff.form_id = f.id) AND (ff.corp_date = ( SELECT max(fcc.corp_date) AS max\n           FROM form_freq fff,\n            freq_corp fcc\n          WHERE ((fff.freq_corp_id = fcc.id) AND (fcc.is_public = true) AND (fff.form_id = f.id)))))))\n     LEFT JOIN ( SELECT mf_1.morph_code,\n            mf_1.value AS morph_freq_value,\n            mf_1.rank AS morph_freq_rank,\n            fc.corp_date,\n            ( SELECT max(mff.rank) AS max\n                   FROM morph_freq mff\n                  WHERE (mff.freq_corp_id = fc.id)) AS morph_freq_rank_max\n           FROM morph_freq mf_1,\n            freq_corp fc\n          WHERE ((mf_1.freq_corp_id = fc.id) AND (fc.is_public = true))) mf ON ((((mf.morph_code)::text = (f.morph_code)::text) AND (mf.corp_date = ( SELECT max(fcc.corp_date) AS max\n           FROM morph_freq mff,\n            freq_corp fcc\n          WHERE ((mff.freq_corp_id = fcc.id) AND (fcc.is_public = true) AND ((mff.morph_code)::text = (f.morph_code)::text)))))))\n  WHERE (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = w.id) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))))\n  ORDER BY w.id, p.id, f.id;"));
+    /**
+     * Create a <code>public.view_ww_form</code> table reference
+     */
+    public ViewWwForm() {
+        this(DSL.name("view_ww_form"), null);
     }
 
     public <O extends Record> ViewWwForm(Table<O> child, ForeignKey<O, ViewWwFormRecord> key) {

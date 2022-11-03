@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeClassifierRecord extends UDTRecordImpl<TypeClassifierRecord> implements Record3<String, String, String> {
 
-    private static final long serialVersionUID = -1156960245;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_classifier.name</code>.
@@ -164,8 +164,8 @@ public class TypeClassifierRecord extends UDTRecordImpl<TypeClassifierRecord> im
     public TypeClassifierRecord(String name, String code, String value) {
         super(TypeClassifier.TYPE_CLASSIFIER);
 
-        set(0, name);
-        set(1, code);
-        set(2, value);
+        setName(name);
+        setCode(code);
+        setValue(value);
     }
 }

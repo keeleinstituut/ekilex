@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelTypeLabel extends TableImpl<MeaningRelTypeLabelRecord> {
 
-    private static final long serialVersionUID = 998182222;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_rel_type_label</code>
@@ -49,28 +50,29 @@ public class MeaningRelTypeLabel extends TableImpl<MeaningRelTypeLabelRecord> {
     /**
      * The column <code>public.meaning_rel_type_label.code</code>.
      */
-    public final TableField<MeaningRelTypeLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningRelTypeLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_rel_type_label.value</code>.
      */
-    public final TableField<MeaningRelTypeLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<MeaningRelTypeLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_rel_type_label.lang</code>.
      */
-    public final TableField<MeaningRelTypeLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<MeaningRelTypeLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_rel_type_label.type</code>.
      */
-    public final TableField<MeaningRelTypeLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<MeaningRelTypeLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.meaning_rel_type_label</code> table reference
-     */
-    public MeaningRelTypeLabel() {
-        this(DSL.name("meaning_rel_type_label"), null);
+    private MeaningRelTypeLabel(Name alias, Table<MeaningRelTypeLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningRelTypeLabel(Name alias, Table<MeaningRelTypeLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class MeaningRelTypeLabel extends TableImpl<MeaningRelTypeLabelRecord> {
         this(alias, MEANING_REL_TYPE_LABEL);
     }
 
-    private MeaningRelTypeLabel(Name alias, Table<MeaningRelTypeLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningRelTypeLabel(Name alias, Table<MeaningRelTypeLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_rel_type_label</code> table reference
+     */
+    public MeaningRelTypeLabel() {
+        this(DSL.name("meaning_rel_type_label"), null);
     }
 
     public <O extends Record> MeaningRelTypeLabel(Table<O> child, ForeignKey<O, MeaningRelTypeLabelRecord> key) {
@@ -114,16 +115,29 @@ public class MeaningRelTypeLabel extends TableImpl<MeaningRelTypeLabelRecord> {
         return Arrays.<ForeignKey<MeaningRelTypeLabelRecord, ?>>asList(Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_CODE_FKEY, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_LANG_FKEY, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_TYPE_FKEY);
     }
 
+    private transient MeaningRelType _meaningRelType;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public MeaningRelType meaningRelType() {
-        return new MeaningRelType(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_CODE_FKEY);
+        if (_meaningRelType == null)
+            _meaningRelType = new MeaningRelType(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_CODE_FKEY);
+
+        return _meaningRelType;
     }
 
     public Language language() {
-        return new Language(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

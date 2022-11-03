@@ -20,7 +20,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreeformRecord> implements Record12<Long, Long, String, String, String, String, String, Boolean, String, Timestamp, String, Timestamp> {
 
-    private static final long serialVersionUID = -200961698;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_mt_lexeme_freeform.lexeme_id</code>.
@@ -490,17 +490,17 @@ public class TypeMtLexemeFreeformRecord extends UDTRecordImpl<TypeMtLexemeFreefo
     public TypeMtLexemeFreeformRecord(Long lexemeId, Long freeformId, String type, String valueText, String valuePrese, String lang, String complexity, Boolean isPublic, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn) {
         super(TypeMtLexemeFreeform.TYPE_MT_LEXEME_FREEFORM);
 
-        set(0, lexemeId);
-        set(1, freeformId);
-        set(2, type);
-        set(3, valueText);
-        set(4, valuePrese);
-        set(5, lang);
-        set(6, complexity);
-        set(7, isPublic);
-        set(8, createdBy);
-        set(9, createdOn);
-        set(10, modifiedBy);
-        set(11, modifiedOn);
+        setLexemeId(lexemeId);
+        setFreeformId(freeformId);
+        setType(type);
+        setValueText(valueText);
+        setValuePrese(valuePrese);
+        setLang(lang);
+        setComplexity(complexity);
+        setIsPublic(isPublic);
+        setCreatedBy(createdBy);
+        setCreatedOn(createdOn);
+        setModifiedBy(modifiedBy);
+        setModifiedOn(modifiedOn);
     }
 }

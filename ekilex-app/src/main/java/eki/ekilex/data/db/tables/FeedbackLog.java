@@ -24,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
 
-    private static final long serialVersionUID = -1551427432;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.feedback_log</code>
@@ -51,88 +52,89 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
     /**
      * The column <code>public.feedback_log.id</code>.
      */
-    public final TableField<FeedbackLogRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('feedback_log_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FeedbackLogRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.feedback_log.feedback_type</code>.
      */
-    public final TableField<FeedbackLogRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<FeedbackLogRecord, String> FEEDBACK_TYPE = createField(DSL.name("feedback_type"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.feedback_log.sender_name</code>.
      */
-    public final TableField<FeedbackLogRecord, String> SENDER_NAME = createField(DSL.name("sender_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FeedbackLogRecord, String> SENDER_NAME = createField(DSL.name("sender_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.feedback_log.sender_email</code>.
      */
-    public final TableField<FeedbackLogRecord, String> SENDER_EMAIL = createField(DSL.name("sender_email"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<FeedbackLogRecord, String> SENDER_EMAIL = createField(DSL.name("sender_email"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.feedback_log.created_on</code>.
      */
-    public final TableField<FeedbackLogRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<FeedbackLogRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>public.feedback_log.word</code>.
      */
-    public final TableField<FeedbackLogRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.definition</code>.
      */
-    public final TableField<FeedbackLogRecord, String> DEFINITION = createField(DSL.name("definition"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> DEFINITION = createField(DSL.name("definition"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.comments</code>.
      */
-    public final TableField<FeedbackLogRecord, String> COMMENTS = createField(DSL.name("comments"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> COMMENTS = createField(DSL.name("comments"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.usage</code>.
      */
-    public final TableField<FeedbackLogRecord, String> USAGE = createField(DSL.name("usage"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> USAGE = createField(DSL.name("usage"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.other_info</code>.
      */
-    public final TableField<FeedbackLogRecord, String> OTHER_INFO = createField(DSL.name("other_info"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> OTHER_INFO = createField(DSL.name("other_info"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.last_search</code>.
      */
-    public final TableField<FeedbackLogRecord, String> LAST_SEARCH = createField(DSL.name("last_search"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> LAST_SEARCH = createField(DSL.name("last_search"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.description</code>.
      */
-    public final TableField<FeedbackLogRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.definition_source</code>.
      */
-    public final TableField<FeedbackLogRecord, String> DEFINITION_SOURCE = createField(DSL.name("definition_source"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> DEFINITION_SOURCE = createField(DSL.name("definition_source"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.usage_source</code>.
      */
-    public final TableField<FeedbackLogRecord, String> USAGE_SOURCE = createField(DSL.name("usage_source"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> USAGE_SOURCE = createField(DSL.name("usage_source"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.company</code>.
      */
-    public final TableField<FeedbackLogRecord, String> COMPANY = createField(DSL.name("company"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> COMPANY = createField(DSL.name("company"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.feedback_log.domain</code>.
      */
-    public final TableField<FeedbackLogRecord, String> DOMAIN = createField(DSL.name("domain"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<FeedbackLogRecord, String> DOMAIN = createField(DSL.name("domain"), SQLDataType.CLOB, this, "");
 
-    /**
-     * Create a <code>public.feedback_log</code> table reference
-     */
-    public FeedbackLog() {
-        this(DSL.name("feedback_log"), null);
+    private FeedbackLog(Name alias, Table<FeedbackLogRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private FeedbackLog(Name alias, Table<FeedbackLogRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -149,12 +151,11 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
         this(alias, FEEDBACK_LOG);
     }
 
-    private FeedbackLog(Name alias, Table<FeedbackLogRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private FeedbackLog(Name alias, Table<FeedbackLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.feedback_log</code> table reference
+     */
+    public FeedbackLog() {
+        this(DSL.name("feedback_log"), null);
     }
 
     public <O extends Record> FeedbackLog(Table<O> child, ForeignKey<O, FeedbackLogRecord> key) {
@@ -168,7 +169,7 @@ public class FeedbackLog extends TableImpl<FeedbackLogRecord> {
 
     @Override
     public Identity<FeedbackLogRecord, Long> getIdentity() {
-        return Keys.IDENTITY_FEEDBACK_LOG;
+        return (Identity<FeedbackLogRecord, Long>) super.getIdentity();
     }
 
     @Override

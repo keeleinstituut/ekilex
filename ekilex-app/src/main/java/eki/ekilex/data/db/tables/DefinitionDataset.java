@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionDataset extends TableImpl<DefinitionDatasetRecord> {
 
-    private static final long serialVersionUID = 1153796220;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.definition_dataset</code>
@@ -49,18 +50,19 @@ public class DefinitionDataset extends TableImpl<DefinitionDatasetRecord> {
     /**
      * The column <code>public.definition_dataset.definition_id</code>.
      */
-    public final TableField<DefinitionDatasetRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DefinitionDatasetRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.definition_dataset.dataset_code</code>.
      */
-    public final TableField<DefinitionDatasetRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<DefinitionDatasetRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.definition_dataset</code> table reference
-     */
-    public DefinitionDataset() {
-        this(DSL.name("definition_dataset"), null);
+    private DefinitionDataset(Name alias, Table<DefinitionDatasetRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DefinitionDataset(Name alias, Table<DefinitionDatasetRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -77,12 +79,11 @@ public class DefinitionDataset extends TableImpl<DefinitionDatasetRecord> {
         this(alias, DEFINITION_DATASET);
     }
 
-    private DefinitionDataset(Name alias, Table<DefinitionDatasetRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DefinitionDataset(Name alias, Table<DefinitionDatasetRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.definition_dataset</code> table reference
+     */
+    public DefinitionDataset() {
+        this(DSL.name("definition_dataset"), null);
     }
 
     public <O extends Record> DefinitionDataset(Table<O> child, ForeignKey<O, DefinitionDatasetRecord> key) {
@@ -109,12 +110,21 @@ public class DefinitionDataset extends TableImpl<DefinitionDatasetRecord> {
         return Arrays.<ForeignKey<DefinitionDatasetRecord, ?>>asList(Keys.DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY, Keys.DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY);
     }
 
+    private transient Definition _definition;
+    private transient Dataset _dataset;
+
     public Definition definition() {
-        return new Definition(this, Keys.DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY);
+        if (_definition == null)
+            _definition = new Definition(this, Keys.DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY);
+
+        return _definition;
     }
 
     public Dataset dataset() {
-        return new Dataset(this, Keys.DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY);
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY);
+
+        return _dataset;
     }
 
     @Override

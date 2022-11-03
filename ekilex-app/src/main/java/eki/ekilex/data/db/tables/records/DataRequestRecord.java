@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DataRequestRecord extends UpdatableRecordImpl<DataRequestRecord> implements Record6<Long, Long, String, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1428019540;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.data_request.id</code>.
@@ -284,11 +284,11 @@ public class DataRequestRecord extends UpdatableRecordImpl<DataRequestRecord> im
     public DataRequestRecord(Long id, Long userId, String requestKey, String content, Timestamp accessed, Timestamp created) {
         super(DataRequest.DATA_REQUEST);
 
-        set(0, id);
-        set(1, userId);
-        set(2, requestKey);
-        set(3, content);
-        set(4, accessed);
-        set(5, created);
+        setId(id);
+        setUserId(userId);
+        setRequestKey(requestKey);
+        setContent(content);
+        setAccessed(accessed);
+        setCreated(created);
     }
 }

@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DisplayMorphLabel extends TableImpl<DisplayMorphLabelRecord> {
 
-    private static final long serialVersionUID = 2041649946;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.display_morph_label</code>
@@ -49,28 +50,29 @@ public class DisplayMorphLabel extends TableImpl<DisplayMorphLabelRecord> {
     /**
      * The column <code>public.display_morph_label.code</code>.
      */
-    public final TableField<DisplayMorphLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DisplayMorphLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.display_morph_label.value</code>.
      */
-    public final TableField<DisplayMorphLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DisplayMorphLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.display_morph_label.lang</code>.
      */
-    public final TableField<DisplayMorphLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<DisplayMorphLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.display_morph_label.type</code>.
      */
-    public final TableField<DisplayMorphLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<DisplayMorphLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.display_morph_label</code> table reference
-     */
-    public DisplayMorphLabel() {
-        this(DSL.name("display_morph_label"), null);
+    private DisplayMorphLabel(Name alias, Table<DisplayMorphLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DisplayMorphLabel(Name alias, Table<DisplayMorphLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class DisplayMorphLabel extends TableImpl<DisplayMorphLabelRecord> {
         this(alias, DISPLAY_MORPH_LABEL);
     }
 
-    private DisplayMorphLabel(Name alias, Table<DisplayMorphLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DisplayMorphLabel(Name alias, Table<DisplayMorphLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.display_morph_label</code> table reference
+     */
+    public DisplayMorphLabel() {
+        this(DSL.name("display_morph_label"), null);
     }
 
     public <O extends Record> DisplayMorphLabel(Table<O> child, ForeignKey<O, DisplayMorphLabelRecord> key) {
@@ -114,16 +115,29 @@ public class DisplayMorphLabel extends TableImpl<DisplayMorphLabelRecord> {
         return Arrays.<ForeignKey<DisplayMorphLabelRecord, ?>>asList(Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_CODE_FKEY, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_LANG_FKEY, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_TYPE_FKEY);
     }
 
+    private transient DisplayMorph _displayMorph;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public DisplayMorph displayMorph() {
-        return new DisplayMorph(this, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_CODE_FKEY);
+        if (_displayMorph == null)
+            _displayMorph = new DisplayMorph(this, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_CODE_FKEY);
+
+        return _displayMorph;
     }
 
     public Language language() {
-        return new Language(this, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

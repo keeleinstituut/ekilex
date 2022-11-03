@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionTypeRecord extends UpdatableRecordImpl<DefinitionTypeRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = -1375603371;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.definition_type.code</code>.
@@ -174,8 +174,8 @@ public class DefinitionTypeRecord extends UpdatableRecordImpl<DefinitionTypeReco
     public DefinitionTypeRecord(String code, String[] datasets, Long orderBy) {
         super(DefinitionType.DEFINITION_TYPE);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

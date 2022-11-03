@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
 
-    private static final long serialVersionUID = 1180483380;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.definition_freeform</code>
@@ -52,23 +51,24 @@ public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
     /**
      * The column <code>public.definition_freeform.id</code>.
      */
-    public final TableField<DefinitionFreeformRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_freeform_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DefinitionFreeformRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.definition_freeform.definition_id</code>.
      */
-    public final TableField<DefinitionFreeformRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DefinitionFreeformRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.definition_freeform.freeform_id</code>.
      */
-    public final TableField<DefinitionFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DefinitionFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.definition_freeform</code> table reference
-     */
-    public DefinitionFreeform() {
-        this(DSL.name("definition_freeform"), null);
+    private DefinitionFreeform(Name alias, Table<DefinitionFreeformRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DefinitionFreeform(Name alias, Table<DefinitionFreeformRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
         this(alias, DEFINITION_FREEFORM);
     }
 
-    private DefinitionFreeform(Name alias, Table<DefinitionFreeformRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DefinitionFreeform(Name alias, Table<DefinitionFreeformRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.definition_freeform</code> table reference
+     */
+    public DefinitionFreeform() {
+        this(DSL.name("definition_freeform"), null);
     }
 
     public <O extends Record> DefinitionFreeform(Table<O> child, ForeignKey<O, DefinitionFreeformRecord> key) {
@@ -103,13 +102,8 @@ public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DEFINITION_FREEFORM_DEFINITION_ID_IDX, Indexes.DEFINITION_FREEFORM_FREEFORM_ID_IDX);
-    }
-
-    @Override
     public Identity<DefinitionFreeformRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DEFINITION_FREEFORM;
+        return (Identity<DefinitionFreeformRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
         return Arrays.<ForeignKey<DefinitionFreeformRecord, ?>>asList(Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY);
     }
 
+    private transient Definition _definition;
+    private transient Freeform _freeform;
+
     public Definition definition() {
-        return new Definition(this, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY);
+        if (_definition == null)
+            _definition = new Definition(this, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY);
+
+        return _definition;
     }
 
     public Freeform freeform() {
-        return new Freeform(this, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY);
+        if (_freeform == null)
+            _freeform = new Freeform(this, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY);
+
+        return _freeform;
     }
 
     @Override

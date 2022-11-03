@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeSourceLinkRecord extends UDTRecordImpl<TypeSourceLinkRecord> implements Record9<String, Long, Long, String, String, String, Long, Long, String[]> {
 
-    private static final long serialVersionUID = -596316202;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_source_link.ref_owner</code>.
@@ -380,14 +380,14 @@ public class TypeSourceLinkRecord extends UDTRecordImpl<TypeSourceLinkRecord> im
     public TypeSourceLinkRecord(String refOwner, Long ownerId, Long sourceLinkId, String sourceLinkType, String name, String value, Long orderBy, Long sourceId, String[] sourceProps) {
         super(TypeSourceLink.TYPE_SOURCE_LINK);
 
-        set(0, refOwner);
-        set(1, ownerId);
-        set(2, sourceLinkId);
-        set(3, sourceLinkType);
-        set(4, name);
-        set(5, value);
-        set(6, orderBy);
-        set(7, sourceId);
-        set(8, sourceProps);
+        setRefOwner(refOwner);
+        setOwnerId(ownerId);
+        setSourceLinkId(sourceLinkId);
+        setSourceLinkType(sourceLinkType);
+        setName(name);
+        setValue(value);
+        setOrderBy(orderBy);
+        setSourceId(sourceId);
+        setSourceProps(sourceProps);
     }
 }

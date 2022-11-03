@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeClassifierRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeClassifier extends UDTImpl<TypeClassifierRecord> {
 
-    private static final long serialVersionUID = -372532095;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_classifier</code>
@@ -38,17 +39,17 @@ public class TypeClassifier extends UDTImpl<TypeClassifierRecord> {
     /**
      * The attribute <code>public.type_classifier.name</code>.
      */
-    public static final UDTField<TypeClassifierRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_CLASSIFIER, "");
+    public static final UDTField<TypeClassifierRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100), TYPE_CLASSIFIER, "");
 
     /**
      * The attribute <code>public.type_classifier.code</code>.
      */
-    public static final UDTField<TypeClassifierRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_CLASSIFIER, "");
+    public static final UDTField<TypeClassifierRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100), TYPE_CLASSIFIER, "");
 
     /**
      * The attribute <code>public.type_classifier.value</code>.
      */
-    public static final UDTField<TypeClassifierRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, TYPE_CLASSIFIER, "");
+    public static final UDTField<TypeClassifierRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_CLASSIFIER, "");
 
     /**
      * No further instances allowed

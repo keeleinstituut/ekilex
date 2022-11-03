@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeValueNameLangRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeValueNameLang extends UDTImpl<TypeValueNameLangRecord> {
 
-    private static final long serialVersionUID = -1292574063;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_value_name_lang</code>
@@ -38,22 +39,22 @@ public class TypeValueNameLang extends UDTImpl<TypeValueNameLangRecord> {
     /**
      * The attribute <code>public.type_value_name_lang.value_id</code>.
      */
-    public static final UDTField<TypeValueNameLangRecord, Long> VALUE_ID = createField(DSL.name("value_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_VALUE_NAME_LANG, "");
+    public static final UDTField<TypeValueNameLangRecord, Long> VALUE_ID = createField(DSL.name("value_id"), SQLDataType.BIGINT, TYPE_VALUE_NAME_LANG, "");
 
     /**
      * The attribute <code>public.type_value_name_lang.value</code>.
      */
-    public static final UDTField<TypeValueNameLangRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, TYPE_VALUE_NAME_LANG, "");
+    public static final UDTField<TypeValueNameLangRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_VALUE_NAME_LANG, "");
 
     /**
      * The attribute <code>public.type_value_name_lang.name</code>.
      */
-    public static final UDTField<TypeValueNameLangRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, TYPE_VALUE_NAME_LANG, "");
+    public static final UDTField<TypeValueNameLangRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, TYPE_VALUE_NAME_LANG, "");
 
     /**
      * The attribute <code>public.type_value_name_lang.lang</code>.
      */
-    public static final UDTField<TypeValueNameLangRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_VALUE_NAME_LANG, "");
+    public static final UDTField<TypeValueNameLangRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), TYPE_VALUE_NAME_LANG, "");
 
     /**
      * No further instances allowed

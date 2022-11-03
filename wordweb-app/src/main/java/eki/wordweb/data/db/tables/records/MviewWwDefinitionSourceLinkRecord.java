@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwDefinitionSourceLinkRecord extends TableRecordImpl<MviewWwDefinitionSourceLinkRecord> implements Record2<Long, TypeSourceLinkRecord[]> {
 
-    private static final long serialVersionUID = -1843201362;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_definition_source_link.meaning_id</code>.
@@ -129,7 +129,7 @@ public class MviewWwDefinitionSourceLinkRecord extends TableRecordImpl<MviewWwDe
     public MviewWwDefinitionSourceLinkRecord(Long meaningId, TypeSourceLinkRecord[] sourceLinks) {
         super(MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK);
 
-        set(0, meaningId);
-        set(1, sourceLinks);
+        setMeaningId(meaningId);
+        setSourceLinks(sourceLinks);
     }
 }

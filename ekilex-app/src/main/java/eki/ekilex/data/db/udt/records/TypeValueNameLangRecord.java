@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeValueNameLangRecord extends UDTRecordImpl<TypeValueNameLangRecord> implements Record4<Long, String, String, String> {
 
-    private static final long serialVersionUID = -1808163269;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_value_name_lang.value_id</code>.
@@ -200,9 +200,9 @@ public class TypeValueNameLangRecord extends UDTRecordImpl<TypeValueNameLangReco
     public TypeValueNameLangRecord(Long valueId, String value, String name, String lang) {
         super(TypeValueNameLang.TYPE_VALUE_NAME_LANG);
 
-        set(0, valueId);
-        set(1, value);
-        set(2, name);
-        set(3, lang);
+        setValueId(valueId);
+        setValue(value);
+        setName(name);
+        setLang(lang);
     }
 }

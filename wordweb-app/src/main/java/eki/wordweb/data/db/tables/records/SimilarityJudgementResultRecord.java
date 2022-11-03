@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SimilarityJudgementResultRecord extends UpdatableRecordImpl<SimilarityJudgementResultRecord> implements Record12<Long, String, Long, Long, Long, Long, String, String, Boolean, Boolean, Long, Timestamp> {
 
-    private static final long serialVersionUID = -572269354;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.similarity_judgement_result.id</code>.
@@ -500,17 +500,17 @@ public class SimilarityJudgementResultRecord extends UpdatableRecordImpl<Similar
     public SimilarityJudgementResultRecord(Long id, String gameKey, Long pair11DataId, Long pair12DataId, Long pair21DataId, Long pair22DataId, String remoteAddr, String sessionId, Boolean answerPair1, Boolean answerPair2, Long delay, Timestamp created) {
         super(SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT);
 
-        set(0, id);
-        set(1, gameKey);
-        set(2, pair11DataId);
-        set(3, pair12DataId);
-        set(4, pair21DataId);
-        set(5, pair22DataId);
-        set(6, remoteAddr);
-        set(7, sessionId);
-        set(8, answerPair1);
-        set(9, answerPair2);
-        set(10, delay);
-        set(11, created);
+        setId(id);
+        setGameKey(gameKey);
+        setPair11DataId(pair11DataId);
+        setPair12DataId(pair12DataId);
+        setPair21DataId(pair21DataId);
+        setPair22DataId(pair22DataId);
+        setRemoteAddr(remoteAddr);
+        setSessionId(sessionId);
+        setAnswerPair1(answerPair1);
+        setAnswerPair2(answerPair2);
+        setDelay(delay);
+        setCreated(created);
     }
 }

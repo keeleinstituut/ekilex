@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WwSearchRecord extends UpdatableRecordImpl<WwSearchRecord> implements Record15<Long, String, Integer, String, String[], String[], String, Integer, Boolean, Boolean, String, String, String, String, Timestamp> {
 
-    private static final long serialVersionUID = -792947671;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.ww_search.id</code>.
@@ -608,20 +608,20 @@ public class WwSearchRecord extends UpdatableRecordImpl<WwSearchRecord> implemen
     public WwSearchRecord(Long id, String searchWord, Integer homonymNr, String searchMode, String[] destinLangs, String[] datasetCodes, String searchUri, Integer resultCount, Boolean resultsExist, Boolean singleResult, String userAgent, String referrerDomain, String sessionId, String requestOrigin, Timestamp eventOn) {
         super(WwSearch.WW_SEARCH);
 
-        set(0, id);
-        set(1, searchWord);
-        set(2, homonymNr);
-        set(3, searchMode);
-        set(4, destinLangs);
-        set(5, datasetCodes);
-        set(6, searchUri);
-        set(7, resultCount);
-        set(8, resultsExist);
-        set(9, singleResult);
-        set(10, userAgent);
-        set(11, referrerDomain);
-        set(12, sessionId);
-        set(13, requestOrigin);
-        set(14, eventOn);
+        setId(id);
+        setSearchWord(searchWord);
+        setHomonymNr(homonymNr);
+        setSearchMode(searchMode);
+        setDestinLangs(destinLangs);
+        setDatasetCodes(datasetCodes);
+        setSearchUri(searchUri);
+        setResultCount(resultCount);
+        setResultsExist(resultsExist);
+        setSingleResult(singleResult);
+        setUserAgent(userAgent);
+        setReferrerDomain(referrerDomain);
+        setSessionId(sessionId);
+        setRequestOrigin(requestOrigin);
+        setEventOn(eventOn);
     }
 }

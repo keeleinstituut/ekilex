@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DatasetRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row12;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dataset extends TableImpl<DatasetRecord> {
 
-    private static final long serialVersionUID = 998795719;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.dataset</code>
@@ -52,68 +51,69 @@ public class Dataset extends TableImpl<DatasetRecord> {
     /**
      * The column <code>public.dataset.code</code>.
      */
-    public final TableField<DatasetRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<DatasetRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
      * The column <code>public.dataset.type</code>.
      */
-    public final TableField<DatasetRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<DatasetRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
      * The column <code>public.dataset.name</code>.
      */
-    public final TableField<DatasetRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DatasetRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.dataset.description</code>.
      */
-    public final TableField<DatasetRecord, String> DESCRIPTION = createField(DSL.name("description"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<DatasetRecord, String> DESCRIPTION = createField(DSL.name("description"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.dataset.is_visible</code>.
      */
-    public final TableField<DatasetRecord, Boolean> IS_VISIBLE = createField(DSL.name("is_visible"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<DatasetRecord, Boolean> IS_VISIBLE = createField(DSL.name("is_visible"), SQLDataType.BOOLEAN.defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.dataset.is_public</code>.
      */
-    public final TableField<DatasetRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<DatasetRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN.defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.dataset.order_by</code>.
      */
-    public final TableField<DatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('dataset_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DatasetRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.dataset.is_superior</code>.
      */
-    public final TableField<DatasetRecord, Boolean> IS_SUPERIOR = createField(DSL.name("is_superior"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<DatasetRecord, Boolean> IS_SUPERIOR = createField(DSL.name("is_superior"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.dataset.contact</code>.
      */
-    public final TableField<DatasetRecord, String> CONTACT = createField(DSL.name("contact"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<DatasetRecord, String> CONTACT = createField(DSL.name("contact"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.dataset.image_url</code>.
      */
-    public final TableField<DatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<DatasetRecord, String> IMAGE_URL = createField(DSL.name("image_url"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.dataset.fed_term_collection_id</code>.
      */
-    public final TableField<DatasetRecord, String> FED_TERM_COLLECTION_ID = createField(DSL.name("fed_term_collection_id"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<DatasetRecord, String> FED_TERM_COLLECTION_ID = createField(DSL.name("fed_term_collection_id"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.dataset.fed_term_domain_id</code>.
      */
-    public final TableField<DatasetRecord, String> FED_TERM_DOMAIN_ID = createField(DSL.name("fed_term_domain_id"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<DatasetRecord, String> FED_TERM_DOMAIN_ID = createField(DSL.name("fed_term_domain_id"), SQLDataType.VARCHAR(100), this, "");
 
-    /**
-     * Create a <code>public.dataset</code> table reference
-     */
-    public Dataset() {
-        this(DSL.name("dataset"), null);
+    private Dataset(Name alias, Table<DatasetRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Dataset(Name alias, Table<DatasetRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -130,12 +130,11 @@ public class Dataset extends TableImpl<DatasetRecord> {
         this(alias, DATASET);
     }
 
-    private Dataset(Name alias, Table<DatasetRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Dataset(Name alias, Table<DatasetRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.dataset</code> table reference
+     */
+    public Dataset() {
+        this(DSL.name("dataset"), null);
     }
 
     public <O extends Record> Dataset(Table<O> child, ForeignKey<O, DatasetRecord> key) {
@@ -148,13 +147,8 @@ public class Dataset extends TableImpl<DatasetRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DATASET_CODE_IDX, Indexes.DATASET_TYPE_IDX);
-    }
-
-    @Override
     public Identity<DatasetRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DATASET;
+        return (Identity<DatasetRecord, Long>) super.getIdentity();
     }
 
     @Override

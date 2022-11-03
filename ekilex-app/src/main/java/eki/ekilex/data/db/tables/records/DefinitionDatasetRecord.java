@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionDatasetRecord extends UpdatableRecordImpl<DefinitionDatasetRecord> implements Record2<Long, String> {
 
-    private static final long serialVersionUID = 1309063272;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.definition_dataset.definition_id</code>.
@@ -137,7 +137,7 @@ public class DefinitionDatasetRecord extends UpdatableRecordImpl<DefinitionDatas
     public DefinitionDatasetRecord(Long definitionId, String datasetCode) {
         super(DefinitionDataset.DEFINITION_DATASET);
 
-        set(0, definitionId);
-        set(1, datasetCode);
+        setDefinitionId(definitionId);
+        setDatasetCode(datasetCode);
     }
 }

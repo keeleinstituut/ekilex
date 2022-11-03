@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningNrRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningNr extends TableImpl<MeaningNrRecord> {
 
-    private static final long serialVersionUID = -1556178158;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_nr</code>
@@ -52,28 +51,29 @@ public class MeaningNr extends TableImpl<MeaningNrRecord> {
     /**
      * The column <code>public.meaning_nr.id</code>.
      */
-    public final TableField<MeaningNrRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_nr_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningNrRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning_nr.meaning_id</code>.
      */
-    public final TableField<MeaningNrRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningNrRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_nr.mnr</code>.
      */
-    public final TableField<MeaningNrRecord, String> MNR = createField(DSL.name("mnr"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningNrRecord, String> MNR = createField(DSL.name("mnr"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_nr.dataset_code</code>.
      */
-    public final TableField<MeaningNrRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<MeaningNrRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.meaning_nr</code> table reference
-     */
-    public MeaningNr() {
-        this(DSL.name("meaning_nr"), null);
+    private MeaningNr(Name alias, Table<MeaningNrRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningNr(Name alias, Table<MeaningNrRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class MeaningNr extends TableImpl<MeaningNrRecord> {
         this(alias, MEANING_NR);
     }
 
-    private MeaningNr(Name alias, Table<MeaningNrRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningNr(Name alias, Table<MeaningNrRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_nr</code> table reference
+     */
+    public MeaningNr() {
+        this(DSL.name("meaning_nr"), null);
     }
 
     public <O extends Record> MeaningNr(Table<O> child, ForeignKey<O, MeaningNrRecord> key) {
@@ -108,13 +107,8 @@ public class MeaningNr extends TableImpl<MeaningNrRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_NR_DATASET_CODE_IDX, Indexes.MEANING_NR_MEANING_ID_IDX, Indexes.MEANING_NR_MNR_IDX);
-    }
-
-    @Override
     public Identity<MeaningNrRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_NR;
+        return (Identity<MeaningNrRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class MeaningNr extends TableImpl<MeaningNrRecord> {
         return Arrays.<ForeignKey<MeaningNrRecord, ?>>asList(Keys.MEANING_NR__MEANING_NR_MEANING_ID_FKEY, Keys.MEANING_NR__MEANING_NR_DATASET_CODE_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient Dataset _dataset;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.MEANING_NR__MEANING_NR_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.MEANING_NR__MEANING_NR_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public Dataset dataset() {
-        return new Dataset(this, Keys.MEANING_NR__MEANING_NR_DATASET_CODE_FKEY);
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.MEANING_NR__MEANING_NR_DATASET_CODE_FKEY);
+
+        return _dataset;
     }
 
     @Override

@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexCollocRecord extends UpdatableRecordImpl<LexCollocRecord> implements Record9<Long, Long, Long, Long, String, String, BigDecimal, Integer, Integer> {
 
-    private static final long serialVersionUID = 742742559;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lex_colloc.id</code>.
@@ -392,14 +392,14 @@ public class LexCollocRecord extends UpdatableRecordImpl<LexCollocRecord> implem
     public LexCollocRecord(Long id, Long lexemeId, Long relGroupId, Long collocationId, String memberForm, String conjunct, BigDecimal weight, Integer memberOrder, Integer groupOrder) {
         super(LexColloc.LEX_COLLOC);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, relGroupId);
-        set(3, collocationId);
-        set(4, memberForm);
-        set(5, conjunct);
-        set(6, weight);
-        set(7, memberOrder);
-        set(8, groupOrder);
+        setId(id);
+        setLexemeId(lexemeId);
+        setRelGroupId(relGroupId);
+        setCollocationId(collocationId);
+        setMemberForm(memberForm);
+        setConjunct(conjunct);
+        setWeight(weight);
+        setMemberOrder(memberOrder);
+        setGroupOrder(groupOrder);
     }
 }

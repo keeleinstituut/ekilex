@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexCollocRelGroupRecord extends UpdatableRecordImpl<LexCollocRelGroupRecord> implements Record6<Long, Long, String, BigDecimal, BigDecimal, Long> {
 
-    private static final long serialVersionUID = 1196714918;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lex_colloc_rel_group.id</code>.
@@ -284,11 +284,11 @@ public class LexCollocRelGroupRecord extends UpdatableRecordImpl<LexCollocRelGro
     public LexCollocRelGroupRecord(Long id, Long posGroupId, String name, BigDecimal frequency, BigDecimal score, Long orderBy) {
         super(LexCollocRelGroup.LEX_COLLOC_REL_GROUP);
 
-        set(0, id);
-        set(1, posGroupId);
-        set(2, name);
-        set(3, frequency);
-        set(4, score);
-        set(5, orderBy);
+        setId(id);
+        setPosGroupId(posGroupId);
+        setName(name);
+        setFrequency(frequency);
+        setScore(score);
+        setOrderBy(orderBy);
     }
 }

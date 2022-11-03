@@ -15,7 +15,7 @@ import org.jooq.impl.AbstractRoutine;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AdjustHomonymNrs extends AbstractRoutine<java.lang.Void> {
 
-    private static final long serialVersionUID = 14820254;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Create a new routine call instance

@@ -20,7 +20,7 @@ import eki.wordweb.data.db.udt.TypeWordRelation;
 
 
 /**
- * Convenience access to all UDTs in public
+ * Convenience access to all UDTs in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UDTs {
@@ -28,65 +28,65 @@ public class UDTs {
     /**
      * The type <code>public.type_colloc_member</code>
      */
-    public static TypeCollocMember TYPE_COLLOC_MEMBER = eki.wordweb.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER;
+    public static final TypeCollocMember TYPE_COLLOC_MEMBER = eki.wordweb.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER;
 
     /**
      * The type <code>public.type_definition</code>
      */
-    public static TypeDefinition TYPE_DEFINITION = eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION;
+    public static final TypeDefinition TYPE_DEFINITION = eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION;
 
     /**
      * The type <code>public.type_domain</code>
      */
-    public static TypeDomain TYPE_DOMAIN = eki.wordweb.data.db.udt.TypeDomain.TYPE_DOMAIN;
+    public static final TypeDomain TYPE_DOMAIN = eki.wordweb.data.db.udt.TypeDomain.TYPE_DOMAIN;
 
     /**
      * The type <code>public.type_freeform</code>
      */
-    public static TypeFreeform TYPE_FREEFORM = eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM;
+    public static final TypeFreeform TYPE_FREEFORM = eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM;
 
     /**
      * The type <code>public.type_lang_complexity</code>
      */
-    public static TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
+    public static final TypeLangComplexity TYPE_LANG_COMPLEXITY = eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY;
 
     /**
      * The type <code>public.type_lexeme_relation</code>
      */
-    public static TypeLexemeRelation TYPE_LEXEME_RELATION = eki.wordweb.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION;
+    public static final TypeLexemeRelation TYPE_LEXEME_RELATION = eki.wordweb.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION;
 
     /**
      * The type <code>public.type_meaning_relation</code>
      */
-    public static TypeMeaningRelation TYPE_MEANING_RELATION = eki.wordweb.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION;
+    public static final TypeMeaningRelation TYPE_MEANING_RELATION = eki.wordweb.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION;
 
     /**
      * The type <code>public.type_meaning_word</code>
      */
-    public static TypeMeaningWord TYPE_MEANING_WORD = eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
+    public static final TypeMeaningWord TYPE_MEANING_WORD = eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD;
 
     /**
      * The type <code>public.type_media_file</code>
      */
-    public static TypeMediaFile TYPE_MEDIA_FILE = eki.wordweb.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE;
+    public static final TypeMediaFile TYPE_MEDIA_FILE = eki.wordweb.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE;
 
     /**
      * The type <code>public.type_source_link</code>
      */
-    public static TypeSourceLink TYPE_SOURCE_LINK = eki.wordweb.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK;
+    public static final TypeSourceLink TYPE_SOURCE_LINK = eki.wordweb.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK;
 
     /**
      * The type <code>public.type_usage</code>
      */
-    public static TypeUsage TYPE_USAGE = eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE;
+    public static final TypeUsage TYPE_USAGE = eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE;
 
     /**
      * The type <code>public.type_word_etym_relation</code>
      */
-    public static TypeWordEtymRelation TYPE_WORD_ETYM_RELATION = eki.wordweb.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION;
+    public static final TypeWordEtymRelation TYPE_WORD_ETYM_RELATION = eki.wordweb.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION;
 
     /**
      * The type <code>public.type_word_relation</code>
      */
-    public static TypeWordRelation TYPE_WORD_RELATION = eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION;
+    public static final TypeWordRelation TYPE_WORD_RELATION = eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION;
 }

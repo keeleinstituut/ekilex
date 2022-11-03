@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocationRecord> implements Record15<Long, Long, Long, String, Long, Long, String, Long, Integer, Long, String, String, String[], TypeCollocMemberRecord[], String> {
 
-    private static final long serialVersionUID = 1439429681;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_collocation.lexeme_id</code>.
@@ -597,20 +597,20 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
     public MviewWwCollocationRecord(Long lexemeId, Long wordId, Long posGroupId, String posGroupCode, Long posGroupOrderBy, Long relGroupId, String relGroupName, Long relGroupOrderBy, Integer collocGroupOrder, Long collocId, String collocValue, String collocDefinition, String[] collocUsages, TypeCollocMemberRecord[] collocMembers, String complexity) {
         super(MviewWwCollocation.MVIEW_WW_COLLOCATION);
 
-        set(0, lexemeId);
-        set(1, wordId);
-        set(2, posGroupId);
-        set(3, posGroupCode);
-        set(4, posGroupOrderBy);
-        set(5, relGroupId);
-        set(6, relGroupName);
-        set(7, relGroupOrderBy);
-        set(8, collocGroupOrder);
-        set(9, collocId);
-        set(10, collocValue);
-        set(11, collocDefinition);
-        set(12, collocUsages);
-        set(13, collocMembers);
-        set(14, complexity);
+        setLexemeId(lexemeId);
+        setWordId(wordId);
+        setPosGroupId(posGroupId);
+        setPosGroupCode(posGroupCode);
+        setPosGroupOrderBy(posGroupOrderBy);
+        setRelGroupId(relGroupId);
+        setRelGroupName(relGroupName);
+        setRelGroupOrderBy(relGroupOrderBy);
+        setCollocGroupOrder(collocGroupOrder);
+        setCollocId(collocId);
+        setCollocValue(collocValue);
+        setCollocDefinition(collocDefinition);
+        setCollocUsages(collocUsages);
+        setCollocMembers(collocMembers);
+        setComplexity(complexity);
     }
 }

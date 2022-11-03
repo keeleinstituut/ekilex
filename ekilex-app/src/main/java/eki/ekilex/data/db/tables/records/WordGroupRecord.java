@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordGroupRecord extends UpdatableRecordImpl<WordGroupRecord> implements Record2<Long, String> {
 
-    private static final long serialVersionUID = -1267330033;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_group.id</code>.
@@ -138,7 +138,7 @@ public class WordGroupRecord extends UpdatableRecordImpl<WordGroupRecord> implem
     public WordGroupRecord(Long id, String wordRelTypeCode) {
         super(WordGroup.WORD_GROUP);
 
-        set(0, id);
-        set(1, wordRelTypeCode);
+        setId(id);
+        setWordRelTypeCode(wordRelTypeCode);
     }
 }

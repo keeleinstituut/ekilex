@@ -20,7 +20,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningRelationRecord extends UDTRecordImpl<TypeMeaningRelationRecord> implements Record14<Long, Long, String, String, Integer, String, String, String[], String, BigDecimal, String[], String[], String[], String> {
 
-    private static final long serialVersionUID = -680273891;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_meaning_relation.meaning_id</code>.
@@ -562,19 +562,19 @@ public class TypeMeaningRelationRecord extends UDTRecordImpl<TypeMeaningRelation
     public TypeMeaningRelationRecord(Long meaningId, Long wordId, String word, String wordPrese, Integer homonymNr, String lang, String aspectCode, String[] wordTypeCodes, String complexity, BigDecimal weight, String[] lexValueStateCodes, String[] lexRegisterCodes, String[] lexGovernmentValues, String meaningRelTypeCode) {
         super(TypeMeaningRelation.TYPE_MEANING_RELATION);
 
-        set(0, meaningId);
-        set(1, wordId);
-        set(2, word);
-        set(3, wordPrese);
-        set(4, homonymNr);
-        set(5, lang);
-        set(6, aspectCode);
-        set(7, wordTypeCodes);
-        set(8, complexity);
-        set(9, weight);
-        set(10, lexValueStateCodes);
-        set(11, lexRegisterCodes);
-        set(12, lexGovernmentValues);
-        set(13, meaningRelTypeCode);
+        setMeaningId(meaningId);
+        setWordId(wordId);
+        setWord(word);
+        setWordPrese(wordPrese);
+        setHomonymNr(homonymNr);
+        setLang(lang);
+        setAspectCode(aspectCode);
+        setWordTypeCodes(wordTypeCodes);
+        setComplexity(complexity);
+        setWeight(weight);
+        setLexValueStateCodes(lexValueStateCodes);
+        setLexRegisterCodes(lexRegisterCodes);
+        setLexGovernmentValues(lexGovernmentValues);
+        setMeaningRelTypeCode(meaningRelTypeCode);
     }
 }

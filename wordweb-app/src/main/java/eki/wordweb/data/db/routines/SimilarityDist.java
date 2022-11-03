@@ -10,6 +10,7 @@ import org.jooq.Field;
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.Internal;
+import org.jooq.impl.SQLDataType;
 
 
 /**
@@ -18,28 +19,28 @@ import org.jooq.impl.Internal;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SimilarityDist extends AbstractRoutine<Float> {
 
-    private static final long serialVersionUID = -1043097230;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The parameter <code>public.similarity_dist.RETURN_VALUE</code>.
      */
-    public static final Parameter<Float> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", org.jooq.impl.SQLDataType.REAL, false, false);
+    public static final Parameter<Float> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", SQLDataType.REAL, false, false);
 
     /**
      * The parameter <code>public.similarity_dist._1</code>.
      */
-    public static final Parameter<String> _1 = Internal.createParameter("_1", org.jooq.impl.SQLDataType.CLOB, false, true);
+    public static final Parameter<String> _1 = Internal.createParameter("_1", SQLDataType.CLOB, false, true);
 
     /**
      * The parameter <code>public.similarity_dist._2</code>.
      */
-    public static final Parameter<String> _2 = Internal.createParameter("_2", org.jooq.impl.SQLDataType.CLOB, false, true);
+    public static final Parameter<String> _2 = Internal.createParameter("_2", SQLDataType.CLOB, false, true);
 
     /**
      * Create a new routine call instance
      */
     public SimilarityDist() {
-        super("similarity_dist", Public.PUBLIC, org.jooq.impl.SQLDataType.REAL);
+        super("similarity_dist", Public.PUBLIC, SQLDataType.REAL);
 
         setReturnParameter(RETURN_VALUE);
         addInParameter(_1);

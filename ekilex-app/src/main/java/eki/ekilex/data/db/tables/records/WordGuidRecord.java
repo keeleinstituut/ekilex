@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordGuidRecord extends UpdatableRecordImpl<WordGuidRecord> implements Record4<Long, Long, String, String> {
 
-    private static final long serialVersionUID = 20659334;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_guid.id</code>.
@@ -210,9 +210,9 @@ public class WordGuidRecord extends UpdatableRecordImpl<WordGuidRecord> implemen
     public WordGuidRecord(Long id, Long wordId, String guid, String datasetCode) {
         super(WordGuid.WORD_GUID);
 
-        set(0, id);
-        set(1, wordId);
-        set(2, guid);
-        set(3, datasetCode);
+        setId(id);
+        setWordId(wordId);
+        setGuid(guid);
+        setDatasetCode(datasetCode);
     }
 }

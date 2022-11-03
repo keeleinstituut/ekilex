@@ -12,7 +12,7 @@ import org.jooq.Field;
 
 
 /**
- * Convenience access to all stored procedures and functions in public
+ * Convenience access to all stored procedures and functions in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Routines {
@@ -20,7 +20,9 @@ public class Routines {
     /**
      * Call <code>public.adjust_homonym_nrs</code>
      */
-    public static void adjustHomonymNrs(Configuration configuration) {
+    public static void adjustHomonymNrs(
+          Configuration configuration
+    ) {
         AdjustHomonymNrs p = new AdjustHomonymNrs();
 
         p.execute(configuration);
@@ -29,7 +31,10 @@ public class Routines {
     /**
      * Call <code>public.encode_text</code>
      */
-    public static String encodeText(Configuration configuration, String initialText) {
+    public static String encodeText(
+          Configuration configuration
+        , String initialText
+    ) {
         EncodeText f = new EncodeText();
         f.setInitialText(initialText);
 
@@ -40,7 +45,9 @@ public class Routines {
     /**
      * Get <code>public.encode_text</code> as a field.
      */
-    public static Field<String> encodeText(String initialText) {
+    public static Field<String> encodeText(
+          String initialText
+    ) {
         EncodeText f = new EncodeText();
         f.setInitialText(initialText);
 
@@ -50,7 +57,9 @@ public class Routines {
     /**
      * Get <code>public.encode_text</code> as a field.
      */
-    public static Field<String> encodeText(Field<String> initialText) {
+    public static Field<String> encodeText(
+          Field<String> initialText
+    ) {
         EncodeText f = new EncodeText();
         f.setInitialText(initialText);
 

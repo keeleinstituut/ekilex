@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FeedbackLogCommentRecord extends UpdatableRecordImpl<FeedbackLogCommentRecord> implements Record5<Long, Long, String, String, Timestamp> {
 
-    private static final long serialVersionUID = 1337832551;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.feedback_log_comment.id</code>.
@@ -248,10 +248,10 @@ public class FeedbackLogCommentRecord extends UpdatableRecordImpl<FeedbackLogCom
     public FeedbackLogCommentRecord(Long id, Long feedbackLogId, String comment, String userName, Timestamp createdOn) {
         super(FeedbackLogComment.FEEDBACK_LOG_COMMENT);
 
-        set(0, id);
-        set(1, feedbackLogId);
-        set(2, comment);
-        set(3, userName);
-        set(4, createdOn);
+        setId(id);
+        setFeedbackLogId(feedbackLogId);
+        setComment(comment);
+        setUserName(userName);
+        setCreatedOn(createdOn);
     }
 }

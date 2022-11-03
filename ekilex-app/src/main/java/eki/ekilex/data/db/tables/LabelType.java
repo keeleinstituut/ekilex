@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LabelType extends TableImpl<LabelTypeRecord> {
 
-    private static final long serialVersionUID = 306036563;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.label_type</code>
@@ -49,18 +50,19 @@ public class LabelType extends TableImpl<LabelTypeRecord> {
     /**
      * The column <code>public.label_type.code</code>.
      */
-    public final TableField<LabelTypeRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<LabelTypeRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
     /**
      * The column <code>public.label_type.value</code>.
      */
-    public final TableField<LabelTypeRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LabelTypeRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.label_type</code> table reference
-     */
-    public LabelType() {
-        this(DSL.name("label_type"), null);
+    private LabelType(Name alias, Table<LabelTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LabelType(Name alias, Table<LabelTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -77,12 +79,11 @@ public class LabelType extends TableImpl<LabelTypeRecord> {
         this(alias, LABEL_TYPE);
     }
 
-    private LabelType(Name alias, Table<LabelTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LabelType(Name alias, Table<LabelTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.label_type</code> table reference
+     */
+    public LabelType() {
+        this(DSL.name("label_type"), null);
     }
 
     public <O extends Record> LabelType(Table<O> child, ForeignKey<O, LabelTypeRecord> key) {

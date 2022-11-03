@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeTagRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeTag extends TableImpl<LexemeTagRecord> {
 
-    private static final long serialVersionUID = 1387960994;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexeme_tag</code>
@@ -53,28 +52,29 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
     /**
      * The column <code>public.lexeme_tag.id</code>.
      */
-    public final TableField<LexemeTagRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_tag_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeTagRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme_tag.lexeme_id</code>.
      */
-    public final TableField<LexemeTagRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeTagRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_tag.tag_name</code>.
      */
-    public final TableField<LexemeTagRecord, String> TAG_NAME = createField(DSL.name("tag_name"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemeTagRecord, String> TAG_NAME = createField(DSL.name("tag_name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_tag.created_on</code>.
      */
-    public final TableField<LexemeTagRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<LexemeTagRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
-    /**
-     * Create a <code>public.lexeme_tag</code> table reference
-     */
-    public LexemeTag() {
-        this(DSL.name("lexeme_tag"), null);
+    private LexemeTag(Name alias, Table<LexemeTagRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexemeTag(Name alias, Table<LexemeTagRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -91,12 +91,11 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
         this(alias, LEXEME_TAG);
     }
 
-    private LexemeTag(Name alias, Table<LexemeTagRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexemeTag(Name alias, Table<LexemeTagRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexeme_tag</code> table reference
+     */
+    public LexemeTag() {
+        this(DSL.name("lexeme_tag"), null);
     }
 
     public <O extends Record> LexemeTag(Table<O> child, ForeignKey<O, LexemeTagRecord> key) {
@@ -109,13 +108,8 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_TAG_LEXEME_ID_IDX, Indexes.LEXEME_TAG_TAG_NAME_IDX);
-    }
-
-    @Override
     public Identity<LexemeTagRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXEME_TAG;
+        return (Identity<LexemeTagRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -133,12 +127,21 @@ public class LexemeTag extends TableImpl<LexemeTagRecord> {
         return Arrays.<ForeignKey<LexemeTagRecord, ?>>asList(Keys.LEXEME_TAG__LEXEME_TAG_LEXEME_ID_FKEY, Keys.LEXEME_TAG__LEXEME_TAG_TAG_NAME_FKEY);
     }
 
+    private transient Lexeme _lexeme;
+    private transient Tag _tag;
+
     public Lexeme lexeme() {
-        return new Lexeme(this, Keys.LEXEME_TAG__LEXEME_TAG_LEXEME_ID_FKEY);
+        if (_lexeme == null)
+            _lexeme = new Lexeme(this, Keys.LEXEME_TAG__LEXEME_TAG_LEXEME_ID_FKEY);
+
+        return _lexeme;
     }
 
     public Tag tag() {
-        return new Tag(this, Keys.LEXEME_TAG__LEXEME_TAG_TAG_NAME_FKEY);
+        if (_tag == null)
+            _tag = new Tag(this, Keys.LEXEME_TAG__LEXEME_TAG_TAG_NAME_FKEY);
+
+        return _tag;
     }
 
     @Override

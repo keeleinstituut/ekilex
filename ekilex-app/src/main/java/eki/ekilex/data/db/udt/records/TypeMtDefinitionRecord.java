@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMtDefinitionRecord extends UDTRecordImpl<TypeMtDefinitionRecord> implements Record7<Long, String, String, String, String, String, Boolean> {
 
-    private static final long serialVersionUID = 804632164;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_mt_definition.definition_id</code>.
@@ -308,12 +308,12 @@ public class TypeMtDefinitionRecord extends UDTRecordImpl<TypeMtDefinitionRecord
     public TypeMtDefinitionRecord(Long definitionId, String definitionTypeCode, String value, String valuePrese, String lang, String complexity, Boolean isPublic) {
         super(TypeMtDefinition.TYPE_MT_DEFINITION);
 
-        set(0, definitionId);
-        set(1, definitionTypeCode);
-        set(2, value);
-        set(3, valuePrese);
-        set(4, lang);
-        set(5, complexity);
-        set(6, isPublic);
+        setDefinitionId(definitionId);
+        setDefinitionTypeCode(definitionTypeCode);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setLang(lang);
+        setComplexity(complexity);
+        setIsPublic(isPublic);
     }
 }

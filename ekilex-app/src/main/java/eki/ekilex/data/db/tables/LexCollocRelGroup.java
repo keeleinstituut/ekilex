@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexCollocRelGroupRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexCollocRelGroup extends TableImpl<LexCollocRelGroupRecord> {
 
-    private static final long serialVersionUID = -732627547;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lex_colloc_rel_group</code>
@@ -53,38 +52,39 @@ public class LexCollocRelGroup extends TableImpl<LexCollocRelGroupRecord> {
     /**
      * The column <code>public.lex_colloc_rel_group.id</code>.
      */
-    public final TableField<LexCollocRelGroupRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lex_colloc_rel_group_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexCollocRelGroupRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lex_colloc_rel_group.pos_group_id</code>.
      */
-    public final TableField<LexCollocRelGroupRecord, Long> POS_GROUP_ID = createField(DSL.name("pos_group_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexCollocRelGroupRecord, Long> POS_GROUP_ID = createField(DSL.name("pos_group_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lex_colloc_rel_group.name</code>.
      */
-    public final TableField<LexCollocRelGroupRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<LexCollocRelGroupRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.lex_colloc_rel_group.frequency</code>.
      */
-    public final TableField<LexCollocRelGroupRecord, BigDecimal> FREQUENCY = createField(DSL.name("frequency"), org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
+    public final TableField<LexCollocRelGroupRecord, BigDecimal> FREQUENCY = createField(DSL.name("frequency"), SQLDataType.NUMERIC(14, 4), this, "");
 
     /**
      * The column <code>public.lex_colloc_rel_group.score</code>.
      */
-    public final TableField<LexCollocRelGroupRecord, BigDecimal> SCORE = createField(DSL.name("score"), org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
+    public final TableField<LexCollocRelGroupRecord, BigDecimal> SCORE = createField(DSL.name("score"), SQLDataType.NUMERIC(14, 4), this, "");
 
     /**
      * The column <code>public.lex_colloc_rel_group.order_by</code>.
      */
-    public final TableField<LexCollocRelGroupRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lex_colloc_rel_group_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexCollocRelGroupRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.lex_colloc_rel_group</code> table reference
-     */
-    public LexCollocRelGroup() {
-        this(DSL.name("lex_colloc_rel_group"), null);
+    private LexCollocRelGroup(Name alias, Table<LexCollocRelGroupRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexCollocRelGroup(Name alias, Table<LexCollocRelGroupRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -101,12 +101,11 @@ public class LexCollocRelGroup extends TableImpl<LexCollocRelGroupRecord> {
         this(alias, LEX_COLLOC_REL_GROUP);
     }
 
-    private LexCollocRelGroup(Name alias, Table<LexCollocRelGroupRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexCollocRelGroup(Name alias, Table<LexCollocRelGroupRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lex_colloc_rel_group</code> table reference
+     */
+    public LexCollocRelGroup() {
+        this(DSL.name("lex_colloc_rel_group"), null);
     }
 
     public <O extends Record> LexCollocRelGroup(Table<O> child, ForeignKey<O, LexCollocRelGroupRecord> key) {
@@ -119,13 +118,8 @@ public class LexCollocRelGroup extends TableImpl<LexCollocRelGroupRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEX_COLLOC_REL_GROUP_POS_GROUP_ID_IDX);
-    }
-
-    @Override
     public Identity<LexCollocRelGroupRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEX_COLLOC_REL_GROUP;
+        return (Identity<LexCollocRelGroupRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -143,8 +137,13 @@ public class LexCollocRelGroup extends TableImpl<LexCollocRelGroupRecord> {
         return Arrays.<ForeignKey<LexCollocRelGroupRecord, ?>>asList(Keys.LEX_COLLOC_REL_GROUP__LEX_COLLOC_REL_GROUP_POS_GROUP_ID_FKEY);
     }
 
+    private transient LexCollocPosGroup _lexCollocPosGroup;
+
     public LexCollocPosGroup lexCollocPosGroup() {
-        return new LexCollocPosGroup(this, Keys.LEX_COLLOC_REL_GROUP__LEX_COLLOC_REL_GROUP_POS_GROUP_ID_FKEY);
+        if (_lexCollocPosGroup == null)
+            _lexCollocPosGroup = new LexCollocPosGroup(this, Keys.LEX_COLLOC_REL_GROUP__LEX_COLLOC_REL_GROUP_POS_GROUP_ID_FKEY);
+
+        return _lexCollocPosGroup;
     }
 
     @Override

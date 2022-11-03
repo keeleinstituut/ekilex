@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordRelMeaningRecord extends UDTRecordImpl<TypeWordRelMeaningRecord> implements Record6<Long, Long, String[], String[], String[], String[]> {
 
-    private static final long serialVersionUID = 1074243244;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_word_rel_meaning.meaning_id</code>.
@@ -272,11 +272,11 @@ public class TypeWordRelMeaningRecord extends UDTRecordImpl<TypeWordRelMeaningRe
     public TypeWordRelMeaningRecord(Long meaningId, Long lexemeId, String[] definitionValues, String[] usageValues, String[] lexRegisterCodes, String[] lexPosCodes) {
         super(TypeWordRelMeaning.TYPE_WORD_REL_MEANING);
 
-        set(0, meaningId);
-        set(1, lexemeId);
-        set(2, definitionValues);
-        set(3, usageValues);
-        set(4, lexRegisterCodes);
-        set(5, lexPosCodes);
+        setMeaningId(meaningId);
+        setLexemeId(lexemeId);
+        setDefinitionValues(definitionValues);
+        setUsageValues(usageValues);
+        setLexRegisterCodes(lexRegisterCodes);
+        setLexPosCodes(lexPosCodes);
     }
 }

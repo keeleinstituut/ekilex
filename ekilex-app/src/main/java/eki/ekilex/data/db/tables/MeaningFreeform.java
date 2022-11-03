@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
 
-    private static final long serialVersionUID = 2051158696;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_freeform</code>
@@ -52,23 +51,24 @@ public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
     /**
      * The column <code>public.meaning_freeform.id</code>.
      */
-    public final TableField<MeaningFreeformRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_freeform_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningFreeformRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning_freeform.meaning_id</code>.
      */
-    public final TableField<MeaningFreeformRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningFreeformRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_freeform.freeform_id</code>.
      */
-    public final TableField<MeaningFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.meaning_freeform</code> table reference
-     */
-    public MeaningFreeform() {
-        this(DSL.name("meaning_freeform"), null);
+    private MeaningFreeform(Name alias, Table<MeaningFreeformRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningFreeform(Name alias, Table<MeaningFreeformRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
         this(alias, MEANING_FREEFORM);
     }
 
-    private MeaningFreeform(Name alias, Table<MeaningFreeformRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningFreeform(Name alias, Table<MeaningFreeformRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_freeform</code> table reference
+     */
+    public MeaningFreeform() {
+        this(DSL.name("meaning_freeform"), null);
     }
 
     public <O extends Record> MeaningFreeform(Table<O> child, ForeignKey<O, MeaningFreeformRecord> key) {
@@ -103,13 +102,8 @@ public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_FREEFORM_FREEFORM_ID_IDX, Indexes.MEANING_FREEFORM_MEANING_ID_IDX);
-    }
-
-    @Override
     public Identity<MeaningFreeformRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_FREEFORM;
+        return (Identity<MeaningFreeformRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
         return Arrays.<ForeignKey<MeaningFreeformRecord, ?>>asList(Keys.MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY, Keys.MEANING_FREEFORM__MEANING_FREEFORM_FREEFORM_ID_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient Freeform _freeform;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public Freeform freeform() {
-        return new Freeform(this, Keys.MEANING_FREEFORM__MEANING_FREEFORM_FREEFORM_ID_FKEY);
+        if (_freeform == null)
+            _freeform = new Freeform(this, Keys.MEANING_FREEFORM__MEANING_FREEFORM_FREEFORM_ID_FKEY);
+
+        return _freeform;
     }
 
     @Override

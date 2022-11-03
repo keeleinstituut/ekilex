@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeSourceLinkRecord extends UpdatableRecordImpl<LexemeSourceLinkRecord> implements Record7<Long, Long, Long, String, String, String, Long> {
 
-    private static final long serialVersionUID = -1491171037;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexeme_source_link.id</code>.
@@ -318,12 +318,12 @@ public class LexemeSourceLinkRecord extends UpdatableRecordImpl<LexemeSourceLink
     public LexemeSourceLinkRecord(Long id, Long lexemeId, Long sourceId, String type, String name, String value, Long orderBy) {
         super(LexemeSourceLink.LEXEME_SOURCE_LINK);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, sourceId);
-        set(3, type);
-        set(4, name);
-        set(5, value);
-        set(6, orderBy);
+        setId(id);
+        setLexemeId(lexemeId);
+        setSourceId(sourceId);
+        setType(type);
+        setName(name);
+        setValue(value);
+        setOrderBy(orderBy);
     }
 }

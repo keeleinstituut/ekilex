@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pos extends TableImpl<PosRecord> {
 
-    private static final long serialVersionUID = -1021474996;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.pos</code>
@@ -50,23 +51,24 @@ public class Pos extends TableImpl<PosRecord> {
     /**
      * The column <code>public.pos.code</code>.
      */
-    public final TableField<PosRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<PosRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.pos.datasets</code>.
      */
-    public final TableField<PosRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<PosRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.pos.order_by</code>.
      */
-    public final TableField<PosRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('pos_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<PosRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.pos</code> table reference
-     */
-    public Pos() {
-        this(DSL.name("pos"), null);
+    private Pos(Name alias, Table<PosRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Pos(Name alias, Table<PosRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Pos extends TableImpl<PosRecord> {
         this(alias, POS);
     }
 
-    private Pos(Name alias, Table<PosRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Pos(Name alias, Table<PosRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.pos</code> table reference
+     */
+    public Pos() {
+        this(DSL.name("pos"), null);
     }
 
     public <O extends Record> Pos(Table<O> child, ForeignKey<O, PosRecord> key) {
@@ -102,7 +103,7 @@ public class Pos extends TableImpl<PosRecord> {
 
     @Override
     public Identity<PosRecord, Long> getIdentity() {
-        return Keys.IDENTITY_POS;
+        return (Identity<PosRecord, Long>) super.getIdentity();
     }
 
     @Override

@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeTermMeaningWordRecord extends UDTRecordImpl<TypeTermMeaningWordRecord> implements Record14<Long, String, String, Integer, String, String[], Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, Boolean, String[]> {
 
-    private static final long serialVersionUID = -979943919;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_term_meaning_word.word_id</code>.
@@ -560,19 +560,19 @@ public class TypeTermMeaningWordRecord extends UDTRecordImpl<TypeTermMeaningWord
     public TypeTermMeaningWordRecord(Long wordId, String wordValue, String wordValuePrese, Integer homonymNr, String lang, String[] wordTypeCodes, Boolean prefixoid, Boolean suffixoid, Boolean foreign, Boolean matchingWord, Boolean mostPreferred, Boolean leastPreferred, Boolean isPublic, String[] datasetCodes) {
         super(TypeTermMeaningWord.TYPE_TERM_MEANING_WORD);
 
-        set(0, wordId);
-        set(1, wordValue);
-        set(2, wordValuePrese);
-        set(3, homonymNr);
-        set(4, lang);
-        set(5, wordTypeCodes);
-        set(6, prefixoid);
-        set(7, suffixoid);
-        set(8, foreign);
-        set(9, matchingWord);
-        set(10, mostPreferred);
-        set(11, leastPreferred);
-        set(12, isPublic);
-        set(13, datasetCodes);
+        setWordId(wordId);
+        setWordValue(wordValue);
+        setWordValuePrese(wordValuePrese);
+        setHomonymNr(homonymNr);
+        setLang(lang);
+        setWordTypeCodes(wordTypeCodes);
+        setPrefixoid(prefixoid);
+        setSuffixoid(suffixoid);
+        setForeign(foreign);
+        setMatchingWord(matchingWord);
+        setMostPreferred(mostPreferred);
+        setLeastPreferred(leastPreferred);
+        setIsPublic(isPublic);
+        setDatasetCodes(datasetCodes);
     }
 }

@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningTagRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningTag extends TableImpl<MeaningTagRecord> {
 
-    private static final long serialVersionUID = -696017624;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_tag</code>
@@ -53,28 +52,29 @@ public class MeaningTag extends TableImpl<MeaningTagRecord> {
     /**
      * The column <code>public.meaning_tag.id</code>.
      */
-    public final TableField<MeaningTagRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_tag_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningTagRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning_tag.meaning_id</code>.
      */
-    public final TableField<MeaningTagRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningTagRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_tag.tag_name</code>.
      */
-    public final TableField<MeaningTagRecord, String> TAG_NAME = createField(DSL.name("tag_name"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningTagRecord, String> TAG_NAME = createField(DSL.name("tag_name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_tag.created_on</code>.
      */
-    public final TableField<MeaningTagRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<MeaningTagRecord, Timestamp> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
-    /**
-     * Create a <code>public.meaning_tag</code> table reference
-     */
-    public MeaningTag() {
-        this(DSL.name("meaning_tag"), null);
+    private MeaningTag(Name alias, Table<MeaningTagRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningTag(Name alias, Table<MeaningTagRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -91,12 +91,11 @@ public class MeaningTag extends TableImpl<MeaningTagRecord> {
         this(alias, MEANING_TAG);
     }
 
-    private MeaningTag(Name alias, Table<MeaningTagRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningTag(Name alias, Table<MeaningTagRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_tag</code> table reference
+     */
+    public MeaningTag() {
+        this(DSL.name("meaning_tag"), null);
     }
 
     public <O extends Record> MeaningTag(Table<O> child, ForeignKey<O, MeaningTagRecord> key) {
@@ -109,13 +108,8 @@ public class MeaningTag extends TableImpl<MeaningTagRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_TAG_MEANING_ID_IDX, Indexes.MEANING_TAG_TAG_NAME_IDX);
-    }
-
-    @Override
     public Identity<MeaningTagRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_TAG;
+        return (Identity<MeaningTagRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -133,12 +127,21 @@ public class MeaningTag extends TableImpl<MeaningTagRecord> {
         return Arrays.<ForeignKey<MeaningTagRecord, ?>>asList(Keys.MEANING_TAG__MEANING_TAG_MEANING_ID_FKEY, Keys.MEANING_TAG__MEANING_TAG_TAG_NAME_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient Tag _tag;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.MEANING_TAG__MEANING_TAG_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.MEANING_TAG__MEANING_TAG_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public Tag tag() {
-        return new Tag(this, Keys.MEANING_TAG__MEANING_TAG_TAG_NAME_FKEY);
+        if (_tag == null)
+            _tag = new Tag(this, Keys.MEANING_TAG__MEANING_TAG_TAG_NAME_FKEY);
+
+        return _tag;
     }
 
     @Override

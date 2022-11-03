@@ -141,7 +141,7 @@ import eki.ekilex.data.db.tables.WordWordType;
 
 
 /**
- * Convenience access to all tables in public
+ * Convenience access to all tables in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {

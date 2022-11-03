@@ -9,7 +9,7 @@ import eki.stat.data.db.tables.WwSearch;
 
 
 /**
- * Convenience access to all tables in public
+ * Convenience access to all tables in public.
  */
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {

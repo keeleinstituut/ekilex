@@ -20,7 +20,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMeaningWordRecord extends UDTRecordImpl<TypeMeaningWordRecord> implements Record15<Long, Long, Long, String, BigDecimal, TypeFreeformRecord[], String[], String, Long, String, String, Integer, String, String, String[]> {
 
-    private static final long serialVersionUID = -722391612;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_meaning_word.lexeme_id</code>.
@@ -598,20 +598,20 @@ public class TypeMeaningWordRecord extends UDTRecordImpl<TypeMeaningWordRecord> 
     public TypeMeaningWordRecord(Long lexemeId, Long meaningId, Long mwLexemeId, String mwLexComplexity, BigDecimal mwLexWeight, TypeFreeformRecord[] mwLexGovernments, String[] mwLexRegisterCodes, String mwLexValueStateCode, Long wordId, String word, String wordPrese, Integer homonymNr, String lang, String aspectCode, String[] wordTypeCodes) {
         super(TypeMeaningWord.TYPE_MEANING_WORD);
 
-        set(0, lexemeId);
-        set(1, meaningId);
-        set(2, mwLexemeId);
-        set(3, mwLexComplexity);
-        set(4, mwLexWeight);
-        set(5, mwLexGovernments);
-        set(6, mwLexRegisterCodes);
-        set(7, mwLexValueStateCode);
-        set(8, wordId);
-        set(9, word);
-        set(10, wordPrese);
-        set(11, homonymNr);
-        set(12, lang);
-        set(13, aspectCode);
-        set(14, wordTypeCodes);
+        setLexemeId(lexemeId);
+        setMeaningId(meaningId);
+        setMwLexemeId(mwLexemeId);
+        setMwLexComplexity(mwLexComplexity);
+        setMwLexWeight(mwLexWeight);
+        setMwLexGovernments(mwLexGovernments);
+        setMwLexRegisterCodes(mwLexRegisterCodes);
+        setMwLexValueStateCode(mwLexValueStateCode);
+        setWordId(wordId);
+        setWord(word);
+        setWordPrese(wordPrese);
+        setHomonymNr(homonymNr);
+        setLang(lang);
+        setAspectCode(aspectCode);
+        setWordTypeCodes(wordTypeCodes);
     }
 }

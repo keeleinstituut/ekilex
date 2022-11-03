@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = 611006133;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.deriv.code</code>.
@@ -174,8 +174,8 @@ public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Rec
     public DerivRecord(String code, String[] datasets, Long orderBy) {
         super(Deriv.DERIV);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

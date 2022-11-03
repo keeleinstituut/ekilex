@@ -24,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
 
-    private static final long serialVersionUID = -1570701333;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.eki_user_application</code>
@@ -51,38 +52,39 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
     /**
      * The column <code>public.eki_user_application.id</code>.
      */
-    public final TableField<EkiUserApplicationRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('eki_user_application_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<EkiUserApplicationRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.eki_user_application.user_id</code>.
      */
-    public final TableField<EkiUserApplicationRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<EkiUserApplicationRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.eki_user_application.datasets</code>.
      */
-    public final TableField<EkiUserApplicationRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<EkiUserApplicationRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.eki_user_application.comment</code>.
      */
-    public final TableField<EkiUserApplicationRecord, String> COMMENT = createField(DSL.name("comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<EkiUserApplicationRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.eki_user_application.created</code>.
      */
-    public final TableField<EkiUserApplicationRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<EkiUserApplicationRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>public.eki_user_application.is_reviewed</code>.
      */
-    public final TableField<EkiUserApplicationRecord, Boolean> IS_REVIEWED = createField(DSL.name("is_reviewed"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserApplicationRecord, Boolean> IS_REVIEWED = createField(DSL.name("is_reviewed"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
-    /**
-     * Create a <code>public.eki_user_application</code> table reference
-     */
-    public EkiUserApplication() {
-        this(DSL.name("eki_user_application"), null);
+    private EkiUserApplication(Name alias, Table<EkiUserApplicationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private EkiUserApplication(Name alias, Table<EkiUserApplicationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -99,12 +101,11 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
         this(alias, EKI_USER_APPLICATION);
     }
 
-    private EkiUserApplication(Name alias, Table<EkiUserApplicationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private EkiUserApplication(Name alias, Table<EkiUserApplicationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.eki_user_application</code> table reference
+     */
+    public EkiUserApplication() {
+        this(DSL.name("eki_user_application"), null);
     }
 
     public <O extends Record> EkiUserApplication(Table<O> child, ForeignKey<O, EkiUserApplicationRecord> key) {
@@ -118,7 +119,7 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
 
     @Override
     public Identity<EkiUserApplicationRecord, Long> getIdentity() {
-        return Keys.IDENTITY_EKI_USER_APPLICATION;
+        return (Identity<EkiUserApplicationRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -136,8 +137,13 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
         return Arrays.<ForeignKey<EkiUserApplicationRecord, ?>>asList(Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY);
     }
 
+    private transient EkiUser _ekiUser;
+
     public EkiUser ekiUser() {
-        return new EkiUser(this, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY);
+        if (_ekiUser == null)
+            _ekiUser = new EkiUser(this, Keys.EKI_USER_APPLICATION__EKI_USER_APPLICATION_USER_ID_FKEY);
+
+        return _ekiUser;
     }
 
     @Override

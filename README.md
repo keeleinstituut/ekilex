@@ -8,11 +8,11 @@ Olulisemad tehnoloogiad
 
 * Java JDK 8 (x64 u144) 
 * Apache Maven 3.5.0
-* Spring Boot 2.3.0
+* Spring Boot 2.6.12
 * Spring Framework 5.2.6
 * Spring Security 5.3.2
 * Thymeleaf 3.0.9
-* Jooq 3.13.2
+* Jooq 3.14.16
 * Postgres 9.6
 
 Rakenduslikud moodulid

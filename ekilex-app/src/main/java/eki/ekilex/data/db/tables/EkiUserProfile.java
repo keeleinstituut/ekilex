@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.EkiUserProfileRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row16;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
 
-    private static final long serialVersionUID = 128630028;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.eki_user_profile</code>
@@ -52,88 +51,89 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     /**
      * The column <code>public.eki_user_profile.id</code>.
      */
-    public final TableField<EkiUserProfileRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('eki_user_profile_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<EkiUserProfileRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.eki_user_profile.user_id</code>.
      */
-    public final TableField<EkiUserProfileRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<EkiUserProfileRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.eki_user_profile.recent_dataset_permission_id</code>.
      */
-    public final TableField<EkiUserProfileRecord, Long> RECENT_DATASET_PERMISSION_ID = createField(DSL.name("recent_dataset_permission_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<EkiUserProfileRecord, Long> RECENT_DATASET_PERMISSION_ID = createField(DSL.name("recent_dataset_permission_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_datasets</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_DATASETS = createField(DSL.name("preferred_datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_DATASETS = createField(DSL.name("preferred_datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_part_syn_candidate_langs</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_PART_SYN_CANDIDATE_LANGS = createField(DSL.name("preferred_part_syn_candidate_langs"), org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_PART_SYN_CANDIDATE_LANGS = createField(DSL.name("preferred_part_syn_candidate_langs"), SQLDataType.CHAR(3).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_syn_lex_meaning_word_langs</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_SYN_LEX_MEANING_WORD_LANGS = createField(DSL.name("preferred_syn_lex_meaning_word_langs"), org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_SYN_LEX_MEANING_WORD_LANGS = createField(DSL.name("preferred_syn_lex_meaning_word_langs"), SQLDataType.CHAR(3).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_meaning_relation_word_langs</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_MEANING_RELATION_WORD_LANGS = createField(DSL.name("preferred_meaning_relation_word_langs"), org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_MEANING_RELATION_WORD_LANGS = createField(DSL.name("preferred_meaning_relation_word_langs"), SQLDataType.CHAR(3).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.eki_user_profile.show_lex_meaning_relation_source_lang_words</code>.
      */
-    public final TableField<EkiUserProfileRecord, Boolean> SHOW_LEX_MEANING_RELATION_SOURCE_LANG_WORDS = createField(DSL.name("show_lex_meaning_relation_source_lang_words"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_LEX_MEANING_RELATION_SOURCE_LANG_WORDS = createField(DSL.name("show_lex_meaning_relation_source_lang_words"), SQLDataType.BOOLEAN.defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user_profile.show_meaning_relation_first_word_only</code>.
      */
-    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_FIRST_WORD_ONLY = createField(DSL.name("show_meaning_relation_first_word_only"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_FIRST_WORD_ONLY = createField(DSL.name("show_meaning_relation_first_word_only"), SQLDataType.BOOLEAN.defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user_profile.show_meaning_relation_meaning_id</code>.
      */
-    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_MEANING_ID = createField(DSL.name("show_meaning_relation_meaning_id"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_MEANING_ID = createField(DSL.name("show_meaning_relation_meaning_id"), SQLDataType.BOOLEAN.defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user_profile.show_meaning_relation_word_datasets</code>.
      */
-    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_WORD_DATASETS = createField(DSL.name("show_meaning_relation_word_datasets"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserProfileRecord, Boolean> SHOW_MEANING_RELATION_WORD_DATASETS = createField(DSL.name("show_meaning_relation_word_datasets"), SQLDataType.BOOLEAN.defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_tag_names</code>.
      */
-    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_TAG_NAMES = createField(DSL.name("preferred_tag_names"), org.jooq.impl.SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
+    public final TableField<EkiUserProfileRecord, String[]> PREFERRED_TAG_NAMES = createField(DSL.name("preferred_tag_names"), SQLDataType.VARCHAR(100).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.eki_user_profile.active_tag_name</code>.
      */
-    public final TableField<EkiUserProfileRecord, String> ACTIVE_TAG_NAME = createField(DSL.name("active_tag_name"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<EkiUserProfileRecord, String> ACTIVE_TAG_NAME = createField(DSL.name("active_tag_name"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.eki_user_profile.is_approve_meaning_enabled</code>.
      */
-    public final TableField<EkiUserProfileRecord, Boolean> IS_APPROVE_MEANING_ENABLED = createField(DSL.name("is_approve_meaning_enabled"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<EkiUserProfileRecord, Boolean> IS_APPROVE_MEANING_ENABLED = createField(DSL.name("is_approve_meaning_enabled"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_full_syn_candidate_dataset_code</code>.
      */
-    public final TableField<EkiUserProfileRecord, String> PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE = createField(DSL.name("preferred_full_syn_candidate_dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+    public final TableField<EkiUserProfileRecord, String> PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE = createField(DSL.name("preferred_full_syn_candidate_dataset_code"), SQLDataType.VARCHAR(10), this, "");
 
     /**
      * The column <code>public.eki_user_profile.preferred_full_syn_candidate_lang</code>.
      */
-    public final TableField<EkiUserProfileRecord, String> PREFERRED_FULL_SYN_CANDIDATE_LANG = createField(DSL.name("preferred_full_syn_candidate_lang"), org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<EkiUserProfileRecord, String> PREFERRED_FULL_SYN_CANDIDATE_LANG = createField(DSL.name("preferred_full_syn_candidate_lang"), SQLDataType.CHAR(3), this, "");
 
-    /**
-     * Create a <code>public.eki_user_profile</code> table reference
-     */
-    public EkiUserProfile() {
-        this(DSL.name("eki_user_profile"), null);
+    private EkiUserProfile(Name alias, Table<EkiUserProfileRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private EkiUserProfile(Name alias, Table<EkiUserProfileRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -150,12 +150,11 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
         this(alias, EKI_USER_PROFILE);
     }
 
-    private EkiUserProfile(Name alias, Table<EkiUserProfileRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private EkiUserProfile(Name alias, Table<EkiUserProfileRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.eki_user_profile</code> table reference
+     */
+    public EkiUserProfile() {
+        this(DSL.name("eki_user_profile"), null);
     }
 
     public <O extends Record> EkiUserProfile(Table<O> child, ForeignKey<O, EkiUserProfileRecord> key) {
@@ -168,13 +167,8 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_IDX, Indexes.EKI_USER_PROFILE_USER_ID_IDX);
-    }
-
-    @Override
     public Identity<EkiUserProfileRecord, Long> getIdentity() {
-        return Keys.IDENTITY_EKI_USER_PROFILE;
+        return (Identity<EkiUserProfileRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -192,24 +186,45 @@ public class EkiUserProfile extends TableImpl<EkiUserProfileRecord> {
         return Arrays.<ForeignKey<EkiUserProfileRecord, ?>>asList(Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE_FKEY, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_LANG_FKEY);
     }
 
+    private transient EkiUser _ekiUser;
+    private transient DatasetPermission _datasetPermission;
+    private transient Tag _tag;
+    private transient Dataset _dataset;
+    private transient Language _language;
+
     public EkiUser ekiUser() {
-        return new EkiUser(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY);
+        if (_ekiUser == null)
+            _ekiUser = new EkiUser(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_USER_ID_FKEY);
+
+        return _ekiUser;
     }
 
     public DatasetPermission datasetPermission() {
-        return new DatasetPermission(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY);
+        if (_datasetPermission == null)
+            _datasetPermission = new DatasetPermission(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_RECENT_DATASET_PERMISSION_ID_FKEY);
+
+        return _datasetPermission;
     }
 
     public Tag tag() {
-        return new Tag(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY);
+        if (_tag == null)
+            _tag = new Tag(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_ACTIVE_TAG_NAME_FKEY);
+
+        return _tag;
     }
 
     public Dataset dataset() {
-        return new Dataset(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE_FKEY);
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_DATASET_CODE_FKEY);
+
+        return _dataset;
     }
 
     public Language language() {
-        return new Language(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.EKI_USER_PROFILE__EKI_USER_PROFILE_PREFERRED_FULL_SYN_CANDIDATE_LANG_FKEY);
+
+        return _language;
     }
 
     @Override

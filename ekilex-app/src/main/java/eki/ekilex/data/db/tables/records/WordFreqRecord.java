@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordFreqRecord extends UpdatableRecordImpl<WordFreqRecord> implements Record5<Long, Long, Long, BigDecimal, Long> {
 
-    private static final long serialVersionUID = -217462988;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.word_freq.id</code>.
@@ -248,10 +248,10 @@ public class WordFreqRecord extends UpdatableRecordImpl<WordFreqRecord> implemen
     public WordFreqRecord(Long id, Long freqCorpId, Long wordId, BigDecimal value, Long rank) {
         super(WordFreq.WORD_FREQ);
 
-        set(0, id);
-        set(1, freqCorpId);
-        set(2, wordId);
-        set(3, value);
-        set(4, rank);
+        setId(id);
+        setFreqCorpId(freqCorpId);
+        setWordId(wordId);
+        setValue(value);
+        setRank(rank);
     }
 }

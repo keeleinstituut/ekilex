@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwClassifierRecord extends TableRecordImpl<MviewWwClassifierRecord> implements Record7<String, String, String, String, String, String, Long> {
 
-    private static final long serialVersionUID = 2033143813;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_classifier.name</code>.
@@ -308,12 +308,12 @@ public class MviewWwClassifierRecord extends TableRecordImpl<MviewWwClassifierRe
     public MviewWwClassifierRecord(String name, String origin, String code, String value, String lang, String type, Long orderBy) {
         super(MviewWwClassifier.MVIEW_WW_CLASSIFIER);
 
-        set(0, name);
-        set(1, origin);
-        set(2, code);
-        set(3, value);
-        set(4, lang);
-        set(5, type);
-        set(6, orderBy);
+        setName(name);
+        setOrigin(origin);
+        setCode(code);
+        setValue(value);
+        setLang(lang);
+        setType(type);
+        setOrderBy(orderBy);
     }
 }

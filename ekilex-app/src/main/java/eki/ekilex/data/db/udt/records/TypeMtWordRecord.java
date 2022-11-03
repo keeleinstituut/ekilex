@@ -20,7 +20,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMtWordRecord extends UDTRecordImpl<TypeMtWordRecord> implements Record12<Long, Long, String, String, String, Integer, String, String, String, String, String, Timestamp> {
 
-    private static final long serialVersionUID = -1439750505;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_mt_word.lexeme_id</code>.
@@ -490,17 +490,17 @@ public class TypeMtWordRecord extends UDTRecordImpl<TypeMtWordRecord> implements
     public TypeMtWordRecord(Long lexemeId, Long wordId, String value, String valuePrese, String lang, Integer homonymNr, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, String morphophonoForm, Timestamp manualEventOn) {
         super(TypeMtWord.TYPE_MT_WORD);
 
-        set(0, lexemeId);
-        set(1, wordId);
-        set(2, value);
-        set(3, valuePrese);
-        set(4, lang);
-        set(5, homonymNr);
-        set(6, displayMorphCode);
-        set(7, genderCode);
-        set(8, aspectCode);
-        set(9, vocalForm);
-        set(10, morphophonoForm);
-        set(11, manualEventOn);
+        setLexemeId(lexemeId);
+        setWordId(wordId);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setLang(lang);
+        setHomonymNr(homonymNr);
+        setDisplayMorphCode(displayMorphCode);
+        setGenderCode(genderCode);
+        setAspectCode(aspectCode);
+        setVocalForm(vocalForm);
+        setMorphophonoForm(morphophonoForm);
+        setManualEventOn(manualEventOn);
     }
 }

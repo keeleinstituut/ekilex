@@ -18,7 +18,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> implements Record8<Long, Long, Long, String, String, String, String, String[]> {
 
-    private static final long serialVersionUID = 1073474216;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.type_definition.lexeme_id</code>.
@@ -344,13 +344,13 @@ public class TypeDefinitionRecord extends UDTRecordImpl<TypeDefinitionRecord> im
     public TypeDefinitionRecord(Long lexemeId, Long meaningId, Long definitionId, String value, String valuePrese, String lang, String complexity, String[] notes) {
         super(TypeDefinition.TYPE_DEFINITION);
 
-        set(0, lexemeId);
-        set(1, meaningId);
-        set(2, definitionId);
-        set(3, value);
-        set(4, valuePrese);
-        set(5, lang);
-        set(6, complexity);
-        set(7, notes);
+        setLexemeId(lexemeId);
+        setMeaningId(meaningId);
+        setDefinitionId(definitionId);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setLang(lang);
+        setComplexity(complexity);
+        setNotes(notes);
     }
 }

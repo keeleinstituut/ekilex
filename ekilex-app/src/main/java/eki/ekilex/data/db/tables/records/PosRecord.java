@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record3<String, String[], Long> {
 
-    private static final long serialVersionUID = 773621999;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.pos.code</code>.
@@ -174,8 +174,8 @@ public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record3
     public PosRecord(String code, String[] datasets, Long orderBy) {
         super(Pos.POS);
 
-        set(0, code);
-        set(1, datasets);
-        set(2, orderBy);
+        setCode(code);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

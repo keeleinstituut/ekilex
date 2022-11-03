@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CollocationFreeformRecord extends UpdatableRecordImpl<CollocationFreeformRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = -972374697;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.collocation_freeform.id</code>.
@@ -174,8 +174,8 @@ public class CollocationFreeformRecord extends UpdatableRecordImpl<CollocationFr
     public CollocationFreeformRecord(Long id, Long collocationId, Long freeformId) {
         super(CollocationFreeform.COLLOCATION_FREEFORM);
 
-        set(0, id);
-        set(1, collocationId);
-        set(2, freeformId);
+        setId(id);
+        setCollocationId(collocationId);
+        setFreeformId(freeformId);
     }
 }

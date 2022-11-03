@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemePos extends TableImpl<LexemePosRecord> {
 
-    private static final long serialVersionUID = -3201186;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexeme_pos</code>
@@ -52,28 +51,29 @@ public class LexemePos extends TableImpl<LexemePosRecord> {
     /**
      * The column <code>public.lexeme_pos.id</code>.
      */
-    public final TableField<LexemePosRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_pos_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemePosRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme_pos.lexeme_id</code>.
      */
-    public final TableField<LexemePosRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemePosRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_pos.pos_code</code>.
      */
-    public final TableField<LexemePosRecord, String> POS_CODE = createField(DSL.name("pos_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemePosRecord, String> POS_CODE = createField(DSL.name("pos_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_pos.order_by</code>.
      */
-    public final TableField<LexemePosRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_pos_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemePosRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.lexeme_pos</code> table reference
-     */
-    public LexemePos() {
-        this(DSL.name("lexeme_pos"), null);
+    private LexemePos(Name alias, Table<LexemePosRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexemePos(Name alias, Table<LexemePosRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class LexemePos extends TableImpl<LexemePosRecord> {
         this(alias, LEXEME_POS);
     }
 
-    private LexemePos(Name alias, Table<LexemePosRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexemePos(Name alias, Table<LexemePosRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexeme_pos</code> table reference
+     */
+    public LexemePos() {
+        this(DSL.name("lexeme_pos"), null);
     }
 
     public <O extends Record> LexemePos(Table<O> child, ForeignKey<O, LexemePosRecord> key) {
@@ -108,13 +107,8 @@ public class LexemePos extends TableImpl<LexemePosRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_POS_LEXEME_ID_IDX, Indexes.LEXEME_POS_POS_CODE_IDX);
-    }
-
-    @Override
     public Identity<LexemePosRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXEME_POS;
+        return (Identity<LexemePosRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class LexemePos extends TableImpl<LexemePosRecord> {
         return Arrays.<ForeignKey<LexemePosRecord, ?>>asList(Keys.LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY, Keys.LEXEME_POS__LEXEME_POS_POS_CODE_FKEY);
     }
 
+    private transient Lexeme _lexeme;
+    private transient Pos _pos;
+
     public Lexeme lexeme() {
-        return new Lexeme(this, Keys.LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY);
+        if (_lexeme == null)
+            _lexeme = new Lexeme(this, Keys.LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY);
+
+        return _lexeme;
     }
 
     public Pos pos() {
-        return new Pos(this, Keys.LEXEME_POS__LEXEME_POS_POS_CODE_FKEY);
+        if (_pos == null)
+            _pos = new Pos(this, Keys.LEXEME_POS__LEXEME_POS_POS_CODE_FKEY);
+
+        return _pos;
     }
 
     @Override

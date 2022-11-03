@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Language extends TableImpl<LanguageRecord> {
 
-    private static final long serialVersionUID = -2023244343;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.language</code>
@@ -50,23 +51,24 @@ public class Language extends TableImpl<LanguageRecord> {
     /**
      * The column <code>public.language.code</code>.
      */
-    public final TableField<LanguageRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<LanguageRecord, String> CODE = createField(DSL.name("code"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.language.datasets</code>.
      */
-    public final TableField<LanguageRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<LanguageRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.language.order_by</code>.
      */
-    public final TableField<LanguageRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('language_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LanguageRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.language</code> table reference
-     */
-    public Language() {
-        this(DSL.name("language"), null);
+    private Language(Name alias, Table<LanguageRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Language(Name alias, Table<LanguageRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Language extends TableImpl<LanguageRecord> {
         this(alias, LANGUAGE);
     }
 
-    private Language(Name alias, Table<LanguageRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Language(Name alias, Table<LanguageRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.language</code> table reference
+     */
+    public Language() {
+        this(DSL.name("language"), null);
     }
 
     public <O extends Record> Language(Table<O> child, ForeignKey<O, LanguageRecord> key) {
@@ -102,7 +103,7 @@ public class Language extends TableImpl<LanguageRecord> {
 
     @Override
     public Identity<LanguageRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LANGUAGE;
+        return (Identity<LanguageRecord, Long>) super.getIdentity();
     }
 
     @Override

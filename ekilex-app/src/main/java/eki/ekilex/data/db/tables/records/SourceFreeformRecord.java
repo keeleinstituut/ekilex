@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceFreeformRecord extends UpdatableRecordImpl<SourceFreeformRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = 1813776321;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.source_freeform.id</code>.
@@ -174,8 +174,8 @@ public class SourceFreeformRecord extends UpdatableRecordImpl<SourceFreeformReco
     public SourceFreeformRecord(Long id, Long sourceId, Long freeformId) {
         super(SourceFreeform.SOURCE_FREEFORM);
 
-        set(0, id);
-        set(1, sourceId);
-        set(2, freeformId);
+        setId(id);
+        setSourceId(sourceId);
+        setFreeformId(freeformId);
     }
 }

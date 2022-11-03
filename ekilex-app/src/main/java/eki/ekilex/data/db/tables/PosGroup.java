@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosGroup extends TableImpl<PosGroupRecord> {
 
-    private static final long serialVersionUID = 1085239839;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.pos_group</code>
@@ -50,23 +51,24 @@ public class PosGroup extends TableImpl<PosGroupRecord> {
     /**
      * The column <code>public.pos_group.code</code>.
      */
-    public final TableField<PosGroupRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<PosGroupRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.pos_group.datasets</code>.
      */
-    public final TableField<PosGroupRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<PosGroupRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.pos_group.order_by</code>.
      */
-    public final TableField<PosGroupRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('pos_group_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<PosGroupRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.pos_group</code> table reference
-     */
-    public PosGroup() {
-        this(DSL.name("pos_group"), null);
+    private PosGroup(Name alias, Table<PosGroupRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private PosGroup(Name alias, Table<PosGroupRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class PosGroup extends TableImpl<PosGroupRecord> {
         this(alias, POS_GROUP);
     }
 
-    private PosGroup(Name alias, Table<PosGroupRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private PosGroup(Name alias, Table<PosGroupRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.pos_group</code> table reference
+     */
+    public PosGroup() {
+        this(DSL.name("pos_group"), null);
     }
 
     public <O extends Record> PosGroup(Table<O> child, ForeignKey<O, PosGroupRecord> key) {
@@ -102,7 +103,7 @@ public class PosGroup extends TableImpl<PosGroupRecord> {
 
     @Override
     public Identity<PosGroupRecord, Long> getIdentity() {
-        return Keys.IDENTITY_POS_GROUP;
+        return (Identity<PosGroupRecord, Long>) super.getIdentity();
     }
 
     @Override

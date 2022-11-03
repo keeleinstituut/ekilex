@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordGuidRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordGuid extends TableImpl<WordGuidRecord> {
 
-    private static final long serialVersionUID = -88592268;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_guid</code>
@@ -52,28 +51,29 @@ public class WordGuid extends TableImpl<WordGuidRecord> {
     /**
      * The column <code>public.word_guid.id</code>.
      */
-    public final TableField<WordGuidRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_guid_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordGuidRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_guid.word_id</code>.
      */
-    public final TableField<WordGuidRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordGuidRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_guid.guid</code>.
      */
-    public final TableField<WordGuidRecord, String> GUID = createField(DSL.name("guid"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<WordGuidRecord, String> GUID = createField(DSL.name("guid"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.word_guid.dataset_code</code>.
      */
-    public final TableField<WordGuidRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<WordGuidRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.word_guid</code> table reference
-     */
-    public WordGuid() {
-        this(DSL.name("word_guid"), null);
+    private WordGuid(Name alias, Table<WordGuidRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordGuid(Name alias, Table<WordGuidRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class WordGuid extends TableImpl<WordGuidRecord> {
         this(alias, WORD_GUID);
     }
 
-    private WordGuid(Name alias, Table<WordGuidRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordGuid(Name alias, Table<WordGuidRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_guid</code> table reference
+     */
+    public WordGuid() {
+        this(DSL.name("word_guid"), null);
     }
 
     public <O extends Record> WordGuid(Table<O> child, ForeignKey<O, WordGuidRecord> key) {
@@ -108,13 +107,8 @@ public class WordGuid extends TableImpl<WordGuidRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_GUID_DATASET_CODE_IDX, Indexes.WORD_GUID_GUID_IDX, Indexes.WORD_GUID_WORD_ID_IDX);
-    }
-
-    @Override
     public Identity<WordGuidRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_GUID;
+        return (Identity<WordGuidRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class WordGuid extends TableImpl<WordGuidRecord> {
         return Arrays.<ForeignKey<WordGuidRecord, ?>>asList(Keys.WORD_GUID__WORD_GUID_WORD_ID_FKEY, Keys.WORD_GUID__WORD_GUID_DATASET_CODE_FKEY);
     }
 
+    private transient Word _word;
+    private transient Dataset _dataset;
+
     public Word word() {
-        return new Word(this, Keys.WORD_GUID__WORD_GUID_WORD_ID_FKEY);
+        if (_word == null)
+            _word = new Word(this, Keys.WORD_GUID__WORD_GUID_WORD_ID_FKEY);
+
+        return _word;
     }
 
     public Dataset dataset() {
-        return new Dataset(this, Keys.WORD_GUID__WORD_GUID_DATASET_CODE_FKEY);
+        if (_dataset == null)
+            _dataset = new Dataset(this, Keys.WORD_GUID__WORD_GUID_DATASET_CODE_FKEY);
+
+        return _dataset;
     }
 
     @Override

@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileRecord> implements Record16<Long, Long, Long, String[], String[], String[], String[], Boolean, Boolean, Boolean, Boolean, String[], String, Boolean, String, String> {
 
-    private static final long serialVersionUID = -481873822;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.eki_user_profile.id</code>.
@@ -642,21 +642,21 @@ public class EkiUserProfileRecord extends UpdatableRecordImpl<EkiUserProfileReco
     public EkiUserProfileRecord(Long id, Long userId, Long recentDatasetPermissionId, String[] preferredDatasets, String[] preferredPartSynCandidateLangs, String[] preferredSynLexMeaningWordLangs, String[] preferredMeaningRelationWordLangs, Boolean showLexMeaningRelationSourceLangWords, Boolean showMeaningRelationFirstWordOnly, Boolean showMeaningRelationMeaningId, Boolean showMeaningRelationWordDatasets, String[] preferredTagNames, String activeTagName, Boolean isApproveMeaningEnabled, String preferredFullSynCandidateDatasetCode, String preferredFullSynCandidateLang) {
         super(EkiUserProfile.EKI_USER_PROFILE);
 
-        set(0, id);
-        set(1, userId);
-        set(2, recentDatasetPermissionId);
-        set(3, preferredDatasets);
-        set(4, preferredPartSynCandidateLangs);
-        set(5, preferredSynLexMeaningWordLangs);
-        set(6, preferredMeaningRelationWordLangs);
-        set(7, showLexMeaningRelationSourceLangWords);
-        set(8, showMeaningRelationFirstWordOnly);
-        set(9, showMeaningRelationMeaningId);
-        set(10, showMeaningRelationWordDatasets);
-        set(11, preferredTagNames);
-        set(12, activeTagName);
-        set(13, isApproveMeaningEnabled);
-        set(14, preferredFullSynCandidateDatasetCode);
-        set(15, preferredFullSynCandidateLang);
+        setId(id);
+        setUserId(userId);
+        setRecentDatasetPermissionId(recentDatasetPermissionId);
+        setPreferredDatasets(preferredDatasets);
+        setPreferredPartSynCandidateLangs(preferredPartSynCandidateLangs);
+        setPreferredSynLexMeaningWordLangs(preferredSynLexMeaningWordLangs);
+        setPreferredMeaningRelationWordLangs(preferredMeaningRelationWordLangs);
+        setShowLexMeaningRelationSourceLangWords(showLexMeaningRelationSourceLangWords);
+        setShowMeaningRelationFirstWordOnly(showMeaningRelationFirstWordOnly);
+        setShowMeaningRelationMeaningId(showMeaningRelationMeaningId);
+        setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
+        setPreferredTagNames(preferredTagNames);
+        setActiveTagName(activeTagName);
+        setIsApproveMeaningEnabled(isApproveMeaningEnabled);
+        setPreferredFullSynCandidateDatasetCode(preferredFullSynCandidateDatasetCode);
+        setPreferredFullSynCandidateLang(preferredFullSynCandidateLang);
     }
 }

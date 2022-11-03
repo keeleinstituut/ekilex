@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDatasetWordMenuRecord> implements Record3<String, String, String[]> {
 
-    private static final long serialVersionUID = 823553862;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_dataset_word_menu.dataset_code</code>.
@@ -164,8 +164,8 @@ public class MviewWwDatasetWordMenuRecord extends TableRecordImpl<MviewWwDataset
     public MviewWwDatasetWordMenuRecord(String datasetCode, String firstLetter, String[] words) {
         super(MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU);
 
-        set(0, datasetCode);
-        set(1, firstLetter);
-        set(2, words);
+        setDatasetCode(datasetCode);
+        setFirstLetter(firstLetter);
+        setWords(words);
     }
 }

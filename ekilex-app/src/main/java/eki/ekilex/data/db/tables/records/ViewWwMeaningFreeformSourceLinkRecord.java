@@ -19,7 +19,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwMeaningFreeformSourceLinkRecord extends TableRecordImpl<ViewWwMeaningFreeformSourceLinkRecord> implements Record2<Long, TypeSourceLinkRecord[]> {
 
-    private static final long serialVersionUID = -1759992530;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.view_ww_meaning_freeform_source_link.meaning_id</code>.
@@ -129,7 +129,7 @@ public class ViewWwMeaningFreeformSourceLinkRecord extends TableRecordImpl<ViewW
     public ViewWwMeaningFreeformSourceLinkRecord(Long meaningId, TypeSourceLinkRecord[] sourceLinks) {
         super(ViewWwMeaningFreeformSourceLink.VIEW_WW_MEANING_FREEFORM_SOURCE_LINK);
 
-        set(0, meaningId);
-        set(1, sourceLinks);
+        setMeaningId(meaningId);
+        setSourceLinks(sourceLinks);
     }
 }

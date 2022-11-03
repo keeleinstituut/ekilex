@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Gender extends TableImpl<GenderRecord> {
 
-    private static final long serialVersionUID = 2099199159;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.gender</code>
@@ -50,23 +51,24 @@ public class Gender extends TableImpl<GenderRecord> {
     /**
      * The column <code>public.gender.code</code>.
      */
-    public final TableField<GenderRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<GenderRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.gender.datasets</code>.
      */
-    public final TableField<GenderRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<GenderRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.gender.order_by</code>.
      */
-    public final TableField<GenderRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('gender_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<GenderRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.gender</code> table reference
-     */
-    public Gender() {
-        this(DSL.name("gender"), null);
+    private Gender(Name alias, Table<GenderRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Gender(Name alias, Table<GenderRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class Gender extends TableImpl<GenderRecord> {
         this(alias, GENDER);
     }
 
-    private Gender(Name alias, Table<GenderRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Gender(Name alias, Table<GenderRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.gender</code> table reference
+     */
+    public Gender() {
+        this(DSL.name("gender"), null);
     }
 
     public <O extends Record> Gender(Table<O> child, ForeignKey<O, GenderRecord> key) {
@@ -102,7 +103,7 @@ public class Gender extends TableImpl<GenderRecord> {
 
     @Override
     public Identity<GenderRecord, Long> getIdentity() {
-        return Keys.IDENTITY_GENDER;
+        return (Identity<GenderRecord, Long>) super.getIdentity();
     }
 
     @Override

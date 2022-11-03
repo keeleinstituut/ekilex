@@ -22,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UsageTypeLabel extends TableImpl<UsageTypeLabelRecord> {
 
-    private static final long serialVersionUID = 207743691;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.usage_type_label</code>
@@ -49,28 +50,29 @@ public class UsageTypeLabel extends TableImpl<UsageTypeLabelRecord> {
     /**
      * The column <code>public.usage_type_label.code</code>.
      */
-    public final TableField<UsageTypeLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<UsageTypeLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.usage_type_label.value</code>.
      */
-    public final TableField<UsageTypeLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<UsageTypeLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.usage_type_label.lang</code>.
      */
-    public final TableField<UsageTypeLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<UsageTypeLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.usage_type_label.type</code>.
      */
-    public final TableField<UsageTypeLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<UsageTypeLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.usage_type_label</code> table reference
-     */
-    public UsageTypeLabel() {
-        this(DSL.name("usage_type_label"), null);
+    private UsageTypeLabel(Name alias, Table<UsageTypeLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private UsageTypeLabel(Name alias, Table<UsageTypeLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -87,12 +89,11 @@ public class UsageTypeLabel extends TableImpl<UsageTypeLabelRecord> {
         this(alias, USAGE_TYPE_LABEL);
     }
 
-    private UsageTypeLabel(Name alias, Table<UsageTypeLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private UsageTypeLabel(Name alias, Table<UsageTypeLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.usage_type_label</code> table reference
+     */
+    public UsageTypeLabel() {
+        this(DSL.name("usage_type_label"), null);
     }
 
     public <O extends Record> UsageTypeLabel(Table<O> child, ForeignKey<O, UsageTypeLabelRecord> key) {
@@ -114,16 +115,29 @@ public class UsageTypeLabel extends TableImpl<UsageTypeLabelRecord> {
         return Arrays.<ForeignKey<UsageTypeLabelRecord, ?>>asList(Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY);
     }
 
+    private transient UsageType _usageType;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public UsageType usageType() {
-        return new UsageType(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY);
+        if (_usageType == null)
+            _usageType = new UsageType(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY);
+
+        return _usageType;
     }
 
     public Language language() {
-        return new Language(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

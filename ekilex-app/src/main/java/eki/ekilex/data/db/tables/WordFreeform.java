@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordFreeformRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordFreeform extends TableImpl<WordFreeformRecord> {
 
-    private static final long serialVersionUID = -508766594;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_freeform</code>
@@ -52,28 +51,29 @@ public class WordFreeform extends TableImpl<WordFreeformRecord> {
     /**
      * The column <code>public.word_freeform.id</code>.
      */
-    public final TableField<WordFreeformRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_freeform_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordFreeformRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_freeform.word_id</code>.
      */
-    public final TableField<WordFreeformRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordFreeformRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_freeform.freeform_id</code>.
      */
-    public final TableField<WordFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_freeform.order_by</code>.
      */
-    public final TableField<WordFreeformRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_freeform_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordFreeformRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.word_freeform</code> table reference
-     */
-    public WordFreeform() {
-        this(DSL.name("word_freeform"), null);
+    private WordFreeform(Name alias, Table<WordFreeformRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordFreeform(Name alias, Table<WordFreeformRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class WordFreeform extends TableImpl<WordFreeformRecord> {
         this(alias, WORD_FREEFORM);
     }
 
-    private WordFreeform(Name alias, Table<WordFreeformRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordFreeform(Name alias, Table<WordFreeformRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_freeform</code> table reference
+     */
+    public WordFreeform() {
+        this(DSL.name("word_freeform"), null);
     }
 
     public <O extends Record> WordFreeform(Table<O> child, ForeignKey<O, WordFreeformRecord> key) {
@@ -108,13 +107,8 @@ public class WordFreeform extends TableImpl<WordFreeformRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_FREEFORM_FREEFORM_ID_IDX, Indexes.WORD_FREEFORM_WORD_ID_IDX);
-    }
-
-    @Override
     public Identity<WordFreeformRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_FREEFORM;
+        return (Identity<WordFreeformRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class WordFreeform extends TableImpl<WordFreeformRecord> {
         return Arrays.<ForeignKey<WordFreeformRecord, ?>>asList(Keys.WORD_FREEFORM__WORD_FREEFORM_WORD_ID_FKEY, Keys.WORD_FREEFORM__WORD_FREEFORM_FREEFORM_ID_FKEY);
     }
 
+    private transient Word _word;
+    private transient Freeform _freeform;
+
     public Word word() {
-        return new Word(this, Keys.WORD_FREEFORM__WORD_FREEFORM_WORD_ID_FKEY);
+        if (_word == null)
+            _word = new Word(this, Keys.WORD_FREEFORM__WORD_FREEFORM_WORD_ID_FKEY);
+
+        return _word;
     }
 
     public Freeform freeform() {
-        return new Freeform(this, Keys.WORD_FREEFORM__WORD_FREEFORM_FREEFORM_ID_FKEY);
+        if (_freeform == null)
+            _freeform = new Freeform(this, Keys.WORD_FREEFORM__WORD_FREEFORM_FREEFORM_ID_FKEY);
+
+        return _freeform;
     }
 
     @Override

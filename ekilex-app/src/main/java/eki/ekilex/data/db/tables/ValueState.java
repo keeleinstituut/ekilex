@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ValueState extends TableImpl<ValueStateRecord> {
 
-    private static final long serialVersionUID = -377026224;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.value_state</code>
@@ -50,23 +51,24 @@ public class ValueState extends TableImpl<ValueStateRecord> {
     /**
      * The column <code>public.value_state.code</code>.
      */
-    public final TableField<ValueStateRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<ValueStateRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.value_state.datasets</code>.
      */
-    public final TableField<ValueStateRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<ValueStateRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.value_state.order_by</code>.
      */
-    public final TableField<ValueStateRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('value_state_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<ValueStateRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.value_state</code> table reference
-     */
-    public ValueState() {
-        this(DSL.name("value_state"), null);
+    private ValueState(Name alias, Table<ValueStateRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ValueState(Name alias, Table<ValueStateRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class ValueState extends TableImpl<ValueStateRecord> {
         this(alias, VALUE_STATE);
     }
 
-    private ValueState(Name alias, Table<ValueStateRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ValueState(Name alias, Table<ValueStateRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.value_state</code> table reference
+     */
+    public ValueState() {
+        this(DSL.name("value_state"), null);
     }
 
     public <O extends Record> ValueState(Table<O> child, ForeignKey<O, ValueStateRecord> key) {
@@ -102,7 +103,7 @@ public class ValueState extends TableImpl<ValueStateRecord> {
 
     @Override
     public Identity<ValueStateRecord, Long> getIdentity() {
-        return Keys.IDENTITY_VALUE_STATE;
+        return (Identity<ValueStateRecord, Long>) super.getIdentity();
     }
 
     @Override

@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
 
-    private static final long serialVersionUID = -197134274;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.lexeme_deriv</code>
@@ -52,28 +51,29 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
     /**
      * The column <code>public.lexeme_deriv.id</code>.
      */
-    public final TableField<LexemeDerivRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_deriv_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeDerivRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.lexeme_deriv.lexeme_id</code>.
      */
-    public final TableField<LexemeDerivRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LexemeDerivRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_deriv.deriv_code</code>.
      */
-    public final TableField<LexemeDerivRecord, String> DERIV_CODE = createField(DSL.name("deriv_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemeDerivRecord, String> DERIV_CODE = createField(DSL.name("deriv_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lexeme_deriv.order_by</code>.
      */
-    public final TableField<LexemeDerivRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_deriv_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeDerivRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.lexeme_deriv</code> table reference
-     */
-    public LexemeDeriv() {
-        this(DSL.name("lexeme_deriv"), null);
+    private LexemeDeriv(Name alias, Table<LexemeDerivRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private LexemeDeriv(Name alias, Table<LexemeDerivRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
         this(alias, LEXEME_DERIV);
     }
 
-    private LexemeDeriv(Name alias, Table<LexemeDerivRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private LexemeDeriv(Name alias, Table<LexemeDerivRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.lexeme_deriv</code> table reference
+     */
+    public LexemeDeriv() {
+        this(DSL.name("lexeme_deriv"), null);
     }
 
     public <O extends Record> LexemeDeriv(Table<O> child, ForeignKey<O, LexemeDerivRecord> key) {
@@ -108,13 +107,8 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_DERIV_LEXEME_ID_IDX);
-    }
-
-    @Override
     public Identity<LexemeDerivRecord, Long> getIdentity() {
-        return Keys.IDENTITY_LEXEME_DERIV;
+        return (Identity<LexemeDerivRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
         return Arrays.<ForeignKey<LexemeDerivRecord, ?>>asList(Keys.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY, Keys.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY);
     }
 
+    private transient Lexeme _lexeme;
+    private transient Deriv _deriv;
+
     public Lexeme lexeme() {
-        return new Lexeme(this, Keys.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY);
+        if (_lexeme == null)
+            _lexeme = new Lexeme(this, Keys.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY);
+
+        return _lexeme;
     }
 
     public Deriv deriv() {
-        return new Deriv(this, Keys.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY);
+        if (_deriv == null)
+            _deriv = new Deriv(this, Keys.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY);
+
+        return _deriv;
     }
 
     @Override

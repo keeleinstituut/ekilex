@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DomainLabelRecord;
@@ -14,7 +13,6 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -24,6 +22,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainLabel extends TableImpl<DomainLabelRecord> {
 
-    private static final long serialVersionUID = -2086337166;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.domain_label</code>
@@ -51,33 +50,34 @@ public class DomainLabel extends TableImpl<DomainLabelRecord> {
     /**
      * The column <code>public.domain_label.code</code>.
      */
-    public final TableField<DomainLabelRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DomainLabelRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.domain_label.origin</code>.
      */
-    public final TableField<DomainLabelRecord, String> ORIGIN = createField(DSL.name("origin"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DomainLabelRecord, String> ORIGIN = createField(DSL.name("origin"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.domain_label.value</code>.
      */
-    public final TableField<DomainLabelRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DomainLabelRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.domain_label.lang</code>.
      */
-    public final TableField<DomainLabelRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<DomainLabelRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.domain_label.type</code>.
      */
-    public final TableField<DomainLabelRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<DomainLabelRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.domain_label</code> table reference
-     */
-    public DomainLabel() {
-        this(DSL.name("domain_label"), null);
+    private DomainLabel(Name alias, Table<DomainLabelRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DomainLabel(Name alias, Table<DomainLabelRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -94,12 +94,11 @@ public class DomainLabel extends TableImpl<DomainLabelRecord> {
         this(alias, DOMAIN_LABEL);
     }
 
-    private DomainLabel(Name alias, Table<DomainLabelRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DomainLabel(Name alias, Table<DomainLabelRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.domain_label</code> table reference
+     */
+    public DomainLabel() {
+        this(DSL.name("domain_label"), null);
     }
 
     public <O extends Record> DomainLabel(Table<O> child, ForeignKey<O, DomainLabelRecord> key) {
@@ -112,11 +111,6 @@ public class DomainLabel extends TableImpl<DomainLabelRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DOMAIN_LABEL_CODE_ORIGIN_IDX);
-    }
-
-    @Override
     public List<UniqueKey<DomainLabelRecord>> getKeys() {
         return Arrays.<UniqueKey<DomainLabelRecord>>asList(Keys.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY);
     }
@@ -126,16 +120,29 @@ public class DomainLabel extends TableImpl<DomainLabelRecord> {
         return Arrays.<ForeignKey<DomainLabelRecord, ?>>asList(Keys.DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY, Keys.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY, Keys.DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY);
     }
 
+    private transient Domain _domain;
+    private transient Language _language;
+    private transient LabelType _labelType;
+
     public Domain domain() {
-        return new Domain(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY);
+        if (_domain == null)
+            _domain = new Domain(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY);
+
+        return _domain;
     }
 
     public Language language() {
-        return new Language(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY);
+
+        return _language;
     }
 
     public LabelType labelType() {
-        return new LabelType(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY);
+        if (_labelType == null)
+            _labelType = new LabelType(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY);
+
+        return _labelType;
     }
 
     @Override

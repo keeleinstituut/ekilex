@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implements Record7<Long, Long, String, String, String, Boolean, String> {
 
-    private static final long serialVersionUID = 555284904;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.paradigm.id</code>.
@@ -318,12 +318,12 @@ public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implemen
     public ParadigmRecord(Long id, Long wordId, String comment, String inflectionTypeNr, String inflectionType, Boolean isSecondary, String wordClass) {
         super(Paradigm.PARADIGM);
 
-        set(0, id);
-        set(1, wordId);
-        set(2, comment);
-        set(3, inflectionTypeNr);
-        set(4, inflectionType);
-        set(5, isSecondary);
-        set(6, wordClass);
+        setId(id);
+        setWordId(wordId);
+        setComment(comment);
+        setInflectionTypeNr(inflectionTypeNr);
+        setInflectionType(inflectionType);
+        setIsSecondary(isSecondary);
+        setWordClass(wordClass);
     }
 }

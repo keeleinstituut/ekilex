@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelationRecord extends UpdatableRecordImpl<MeaningRelationRecord> implements Record6<Long, Long, Long, String, Long, BigDecimal> {
 
-    private static final long serialVersionUID = -1608997717;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.meaning_relation.id</code>.
@@ -284,11 +284,11 @@ public class MeaningRelationRecord extends UpdatableRecordImpl<MeaningRelationRe
     public MeaningRelationRecord(Long id, Long meaning1Id, Long meaning2Id, String meaningRelTypeCode, Long orderBy, BigDecimal weight) {
         super(MeaningRelation.MEANING_RELATION);
 
-        set(0, id);
-        set(1, meaning1Id);
-        set(2, meaning2Id);
-        set(3, meaningRelTypeCode);
-        set(4, orderBy);
-        set(5, weight);
+        setId(id);
+        setMeaning1Id(meaning1Id);
+        setMeaning2Id(meaning2Id);
+        setMeaningRelTypeCode(meaningRelTypeCode);
+        setOrderBy(orderBy);
+        setWeight(weight);
     }
 }

@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeMtLexemeRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMtLexeme extends UDTImpl<TypeMtLexemeRecord> {
 
-    private static final long serialVersionUID = -2077025688;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_mt_lexeme</code>
@@ -38,27 +39,27 @@ public class TypeMtLexeme extends UDTImpl<TypeMtLexemeRecord> {
     /**
      * The attribute <code>public.type_mt_lexeme.lexeme_id</code>.
      */
-    public static final UDTField<TypeMtLexemeRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_MT_LEXEME, "");
+    public static final UDTField<TypeMtLexemeRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, TYPE_MT_LEXEME, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme.word_id</code>.
      */
-    public static final UDTField<TypeMtLexemeRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_MT_LEXEME, "");
+    public static final UDTField<TypeMtLexemeRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT, TYPE_MT_LEXEME, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme.meaning_id</code>.
      */
-    public static final UDTField<TypeMtLexemeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_MT_LEXEME, "");
+    public static final UDTField<TypeMtLexemeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT, TYPE_MT_LEXEME, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme.dataset_code</code>.
      */
-    public static final UDTField<TypeMtLexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), org.jooq.impl.SQLDataType.VARCHAR(10), TYPE_MT_LEXEME, "");
+    public static final UDTField<TypeMtLexemeRecord, String> DATASET_CODE = createField(DSL.name("dataset_code"), SQLDataType.VARCHAR(10), TYPE_MT_LEXEME, "");
 
     /**
      * The attribute <code>public.type_mt_lexeme.is_public</code>.
      */
-    public static final UDTField<TypeMtLexemeRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_MT_LEXEME, "");
+    public static final UDTField<TypeMtLexemeRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN, TYPE_MT_LEXEME, "");
 
     /**
      * No further instances allowed

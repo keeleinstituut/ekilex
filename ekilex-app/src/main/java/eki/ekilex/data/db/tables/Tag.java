@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tag extends TableImpl<TagRecord> {
 
-    private static final long serialVersionUID = 1608685157;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.tag</code>
@@ -50,33 +51,34 @@ public class Tag extends TableImpl<TagRecord> {
     /**
      * The column <code>public.tag.name</code>.
      */
-    public final TableField<TagRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<TagRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.tag.set_automatically</code>.
      */
-    public final TableField<TagRecord, Boolean> SET_AUTOMATICALLY = createField(DSL.name("set_automatically"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<TagRecord, Boolean> SET_AUTOMATICALLY = createField(DSL.name("set_automatically"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.tag.remove_to_complete</code>.
      */
-    public final TableField<TagRecord, Boolean> REMOVE_TO_COMPLETE = createField(DSL.name("remove_to_complete"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<TagRecord, Boolean> REMOVE_TO_COMPLETE = createField(DSL.name("remove_to_complete"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.tag.order_by</code>.
      */
-    public final TableField<TagRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('tag_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<TagRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.tag.type</code>.
      */
-    public final TableField<TagRecord, String> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<TagRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(10).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.tag</code> table reference
-     */
-    public Tag() {
-        this(DSL.name("tag"), null);
+    private Tag(Name alias, Table<TagRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Tag(Name alias, Table<TagRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -93,12 +95,11 @@ public class Tag extends TableImpl<TagRecord> {
         this(alias, TAG);
     }
 
-    private Tag(Name alias, Table<TagRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Tag(Name alias, Table<TagRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.tag</code> table reference
+     */
+    public Tag() {
+        this(DSL.name("tag"), null);
     }
 
     public <O extends Record> Tag(Table<O> child, ForeignKey<O, TagRecord> key) {
@@ -112,7 +113,7 @@ public class Tag extends TableImpl<TagRecord> {
 
     @Override
     public Identity<TagRecord, Long> getIdentity() {
-        return Keys.IDENTITY_TAG;
+        return (Identity<TagRecord, Long>) super.getIdentity();
     }
 
     @Override

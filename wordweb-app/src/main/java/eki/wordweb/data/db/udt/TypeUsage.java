@@ -10,6 +10,7 @@ import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeUsage extends UDTImpl<TypeUsageRecord> {
 
-    private static final long serialVersionUID = -1474196478;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_usage</code>
@@ -38,42 +39,42 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
     /**
      * The attribute <code>public.type_usage.usage_id</code>.
      */
-    public static final UDTField<TypeUsageRecord, Long> USAGE_ID = createField(DSL.name("usage_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, Long> USAGE_ID = createField(DSL.name("usage_id"), SQLDataType.BIGINT, TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE = createField(DSL.name("usage"), org.jooq.impl.SQLDataType.CLOB, TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> USAGE = createField(DSL.name("usage"), SQLDataType.CLOB, TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage_prese</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE_PRESE = createField(DSL.name("usage_prese"), org.jooq.impl.SQLDataType.CLOB, TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> USAGE_PRESE = createField(DSL.name("usage_prese"), SQLDataType.CLOB, TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage_lang</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE_LANG = createField(DSL.name("usage_lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> USAGE_LANG = createField(DSL.name("usage_lang"), SQLDataType.CHAR(3), TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.complexity</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage_type_code</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE_TYPE_CODE = createField(DSL.name("usage_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> USAGE_TYPE_CODE = createField(DSL.name("usage_type_code"), SQLDataType.VARCHAR(100), TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage_translations</code>.
      */
-    public static final UDTField<TypeUsageRecord, String[]> USAGE_TRANSLATIONS = createField(DSL.name("usage_translations"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String[]> USAGE_TRANSLATIONS = createField(DSL.name("usage_translations"), SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
 
     /**
      * The attribute <code>public.type_usage.usage_definitions</code>.
      */
-    public static final UDTField<TypeUsageRecord, String[]> USAGE_DEFINITIONS = createField(DSL.name("usage_definitions"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String[]> USAGE_DEFINITIONS = createField(DSL.name("usage_definitions"), SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
 
     /**
      * No further instances allowed

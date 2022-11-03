@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRelation extends TableImpl<WordRelationRecord> {
 
-    private static final long serialVersionUID = 811606654;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.word_relation</code>
@@ -52,38 +51,39 @@ public class WordRelation extends TableImpl<WordRelationRecord> {
     /**
      * The column <code>public.word_relation.id</code>.
      */
-    public final TableField<WordRelationRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_relation_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordRelationRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.word_relation.word1_id</code>.
      */
-    public final TableField<WordRelationRecord, Long> WORD1_ID = createField(DSL.name("word1_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordRelationRecord, Long> WORD1_ID = createField(DSL.name("word1_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_relation.word2_id</code>.
      */
-    public final TableField<WordRelationRecord, Long> WORD2_ID = createField(DSL.name("word2_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<WordRelationRecord, Long> WORD2_ID = createField(DSL.name("word2_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.word_relation.word_rel_type_code</code>.
      */
-    public final TableField<WordRelationRecord, String> WORD_REL_TYPE_CODE = createField(DSL.name("word_rel_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<WordRelationRecord, String> WORD_REL_TYPE_CODE = createField(DSL.name("word_rel_type_code"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word_relation.relation_status</code>.
      */
-    public final TableField<WordRelationRecord, String> RELATION_STATUS = createField(DSL.name("relation_status"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<WordRelationRecord, String> RELATION_STATUS = createField(DSL.name("relation_status"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word_relation.order_by</code>.
      */
-    public final TableField<WordRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_relation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<WordRelationRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.word_relation</code> table reference
-     */
-    public WordRelation() {
-        this(DSL.name("word_relation"), null);
+    private WordRelation(Name alias, Table<WordRelationRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private WordRelation(Name alias, Table<WordRelationRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -100,12 +100,11 @@ public class WordRelation extends TableImpl<WordRelationRecord> {
         this(alias, WORD_RELATION);
     }
 
-    private WordRelation(Name alias, Table<WordRelationRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private WordRelation(Name alias, Table<WordRelationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.word_relation</code> table reference
+     */
+    public WordRelation() {
+        this(DSL.name("word_relation"), null);
     }
 
     public <O extends Record> WordRelation(Table<O> child, ForeignKey<O, WordRelationRecord> key) {
@@ -118,13 +117,8 @@ public class WordRelation extends TableImpl<WordRelationRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_RELATION_WORD1_ID_IDX, Indexes.WORD_RELATION_WORD2_ID_IDX, Indexes.WORD_RELATION_WORD_REL_TYPE_CODE_IDX);
-    }
-
-    @Override
     public Identity<WordRelationRecord, Long> getIdentity() {
-        return Keys.IDENTITY_WORD_RELATION;
+        return (Identity<WordRelationRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -142,16 +136,29 @@ public class WordRelation extends TableImpl<WordRelationRecord> {
         return Arrays.<ForeignKey<WordRelationRecord, ?>>asList(Keys.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY, Keys.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY, Keys.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY);
     }
 
+    private transient Word _wordRelationWord1IdFkey;
+    private transient Word _wordRelationWord2IdFkey;
+    private transient WordRelType _wordRelType;
+
     public Word wordRelationWord1IdFkey() {
-        return new Word(this, Keys.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY);
+        if (_wordRelationWord1IdFkey == null)
+            _wordRelationWord1IdFkey = new Word(this, Keys.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY);
+
+        return _wordRelationWord1IdFkey;
     }
 
     public Word wordRelationWord2IdFkey() {
-        return new Word(this, Keys.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY);
+        if (_wordRelationWord2IdFkey == null)
+            _wordRelationWord2IdFkey = new Word(this, Keys.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY);
+
+        return _wordRelationWord2IdFkey;
     }
 
     public WordRelType wordRelType() {
-        return new WordRelType(this, Keys.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY);
+        if (_wordRelType == null)
+            _wordRelType = new WordRelType(this, Keys.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY);
+
+        return _wordRelType;
     }
 
     @Override

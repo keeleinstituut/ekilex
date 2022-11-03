@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.CollocationFreeformRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CollocationFreeform extends TableImpl<CollocationFreeformRecord> {
 
-    private static final long serialVersionUID = -1033336610;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.collocation_freeform</code>
@@ -52,23 +51,24 @@ public class CollocationFreeform extends TableImpl<CollocationFreeformRecord> {
     /**
      * The column <code>public.collocation_freeform.id</code>.
      */
-    public final TableField<CollocationFreeformRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('collocation_freeform_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<CollocationFreeformRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.collocation_freeform.collocation_id</code>.
      */
-    public final TableField<CollocationFreeformRecord, Long> COLLOCATION_ID = createField(DSL.name("collocation_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<CollocationFreeformRecord, Long> COLLOCATION_ID = createField(DSL.name("collocation_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.collocation_freeform.freeform_id</code>.
      */
-    public final TableField<CollocationFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<CollocationFreeformRecord, Long> FREEFORM_ID = createField(DSL.name("freeform_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.collocation_freeform</code> table reference
-     */
-    public CollocationFreeform() {
-        this(DSL.name("collocation_freeform"), null);
+    private CollocationFreeform(Name alias, Table<CollocationFreeformRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private CollocationFreeform(Name alias, Table<CollocationFreeformRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -85,12 +85,11 @@ public class CollocationFreeform extends TableImpl<CollocationFreeformRecord> {
         this(alias, COLLOCATION_FREEFORM);
     }
 
-    private CollocationFreeform(Name alias, Table<CollocationFreeformRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private CollocationFreeform(Name alias, Table<CollocationFreeformRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.collocation_freeform</code> table reference
+     */
+    public CollocationFreeform() {
+        this(DSL.name("collocation_freeform"), null);
     }
 
     public <O extends Record> CollocationFreeform(Table<O> child, ForeignKey<O, CollocationFreeformRecord> key) {
@@ -103,13 +102,8 @@ public class CollocationFreeform extends TableImpl<CollocationFreeformRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.COLLOCATION_FREEFORM_COLLOCATION_ID_IDX, Indexes.COLLOCATION_FREEFORM_FREEFORM_ID_IDX);
-    }
-
-    @Override
     public Identity<CollocationFreeformRecord, Long> getIdentity() {
-        return Keys.IDENTITY_COLLOCATION_FREEFORM;
+        return (Identity<CollocationFreeformRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -127,12 +121,21 @@ public class CollocationFreeform extends TableImpl<CollocationFreeformRecord> {
         return Arrays.<ForeignKey<CollocationFreeformRecord, ?>>asList(Keys.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY, Keys.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY);
     }
 
+    private transient Collocation _collocation;
+    private transient Freeform _freeform;
+
     public Collocation collocation() {
-        return new Collocation(this, Keys.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY);
+        if (_collocation == null)
+            _collocation = new Collocation(this, Keys.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY);
+
+        return _collocation;
     }
 
     public Freeform freeform() {
-        return new Freeform(this, Keys.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY);
+        if (_freeform == null)
+            _freeform = new Freeform(this, Keys.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY);
+
+        return _freeform;
     }
 
     @Override

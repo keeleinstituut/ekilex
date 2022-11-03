@@ -10,6 +10,7 @@ import eki.wordweb.data.db.udt.records.TypeSourceLinkRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
 
-    private static final long serialVersionUID = 505108257;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_source_link</code>
@@ -38,47 +39,47 @@ public class TypeSourceLink extends UDTImpl<TypeSourceLinkRecord> {
     /**
      * The attribute <code>public.type_source_link.ref_owner</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, String> REF_OWNER = createField(DSL.name("ref_owner"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String> REF_OWNER = createField(DSL.name("ref_owner"), SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.owner_id</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, Long> OWNER_ID = createField(DSL.name("owner_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, Long> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.source_link_id</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_LINK_ID = createField(DSL.name("source_link_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_LINK_ID = createField(DSL.name("source_link_id"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.source_link_type</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_LINK_TYPE = createField(DSL.name("source_link_type"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String> SOURCE_LINK_TYPE = createField(DSL.name("source_link_type"), SQLDataType.VARCHAR(100), TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.name</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, String> NAME = createField(DSL.name("name"), org.jooq.impl.SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String> NAME = createField(DSL.name("name"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.value</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.order_by</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.source_id</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, Long> SOURCE_ID = createField(DSL.name("source_id"), SQLDataType.BIGINT, TYPE_SOURCE_LINK, "");
 
     /**
      * The attribute <code>public.type_source_link.source_props</code>.
      */
-    public static final UDTField<TypeSourceLinkRecord, String[]> SOURCE_PROPS = createField(DSL.name("source_props"), org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_SOURCE_LINK, "");
+    public static final UDTField<TypeSourceLinkRecord, String[]> SOURCE_PROPS = createField(DSL.name("source_props"), SQLDataType.CLOB.getArrayDataType(), TYPE_SOURCE_LINK, "");
 
     /**
      * No further instances allowed

@@ -18,7 +18,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCountsRecord extends TableRecordImpl<MviewWwCountsRecord> implements Record5<String, String, Long, Long, Long> {
 
-    private static final long serialVersionUID = -301078264;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.mview_ww_counts.dataset_code</code>.
@@ -236,10 +236,10 @@ public class MviewWwCountsRecord extends TableRecordImpl<MviewWwCountsRecord> im
     public MviewWwCountsRecord(String datasetCode, String lang, Long wordRecordCount, Long wordValueCount, Long meaningRecordCount) {
         super(MviewWwCounts.MVIEW_WW_COUNTS);
 
-        set(0, datasetCode);
-        set(1, lang);
-        set(2, wordRecordCount);
-        set(3, wordValueCount);
-        set(4, meaningRecordCount);
+        setDatasetCode(datasetCode);
+        setLang(lang);
+        setWordRecordCount(wordRecordCount);
+        setWordValueCount(wordValueCount);
+        setMeaningRecordCount(meaningRecordCount);
     }
 }

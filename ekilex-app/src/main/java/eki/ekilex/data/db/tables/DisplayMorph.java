@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DisplayMorph extends TableImpl<DisplayMorphRecord> {
 
-    private static final long serialVersionUID = -1047993958;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.display_morph</code>
@@ -50,23 +51,24 @@ public class DisplayMorph extends TableImpl<DisplayMorphRecord> {
     /**
      * The column <code>public.display_morph.code</code>.
      */
-    public final TableField<DisplayMorphRecord, String> CODE = createField(DSL.name("code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<DisplayMorphRecord, String> CODE = createField(DSL.name("code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.display_morph.datasets</code>.
      */
-    public final TableField<DisplayMorphRecord, String[]> DATASETS = createField(DSL.name("datasets"), org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<DisplayMorphRecord, String[]> DATASETS = createField(DSL.name("datasets"), SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
 
     /**
      * The column <code>public.display_morph.order_by</code>.
      */
-    public final TableField<DisplayMorphRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('display_morph_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DisplayMorphRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.display_morph</code> table reference
-     */
-    public DisplayMorph() {
-        this(DSL.name("display_morph"), null);
+    private DisplayMorph(Name alias, Table<DisplayMorphRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DisplayMorph(Name alias, Table<DisplayMorphRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class DisplayMorph extends TableImpl<DisplayMorphRecord> {
         this(alias, DISPLAY_MORPH);
     }
 
-    private DisplayMorph(Name alias, Table<DisplayMorphRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DisplayMorph(Name alias, Table<DisplayMorphRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.display_morph</code> table reference
+     */
+    public DisplayMorph() {
+        this(DSL.name("display_morph"), null);
     }
 
     public <O extends Record> DisplayMorph(Table<O> child, ForeignKey<O, DisplayMorphRecord> key) {
@@ -102,7 +103,7 @@ public class DisplayMorph extends TableImpl<DisplayMorphRecord> {
 
     @Override
     public Identity<DisplayMorphRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DISPLAY_MORPH;
+        return (Identity<DisplayMorphRecord, Long>) super.getIdentity();
     }
 
     @Override

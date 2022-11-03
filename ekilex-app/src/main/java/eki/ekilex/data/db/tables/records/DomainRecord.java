@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements Record6<String, String, String, String, String[], Long> {
 
-    private static final long serialVersionUID = 331146538;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.domain.code</code>.
@@ -282,11 +282,11 @@ public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements R
     public DomainRecord(String code, String origin, String parentCode, String parentOrigin, String[] datasets, Long orderBy) {
         super(Domain.DOMAIN);
 
-        set(0, code);
-        set(1, origin);
-        set(2, parentCode);
-        set(3, parentOrigin);
-        set(4, datasets);
-        set(5, orderBy);
+        setCode(code);
+        setOrigin(origin);
+        setParentCode(parentCode);
+        setParentOrigin(parentOrigin);
+        setDatasets(datasets);
+        setOrderBy(orderBy);
     }
 }

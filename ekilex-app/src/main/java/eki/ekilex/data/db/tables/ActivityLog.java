@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ActivityLogRecord;
@@ -17,7 +16,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.JSONB;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -28,6 +26,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -37,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ActivityLog extends TableImpl<ActivityLogRecord> {
 
-    private static final long serialVersionUID = -1689184797;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.activity_log</code>
@@ -55,52 +54,52 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     /**
      * The column <code>public.activity_log.id</code>.
      */
-    public final TableField<ActivityLogRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('activity_log_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<ActivityLogRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.activity_log.event_by</code>.
      */
-    public final TableField<ActivityLogRecord, String> EVENT_BY = createField(DSL.name("event_by"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, String> EVENT_BY = createField(DSL.name("event_by"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.event_on</code>.
      */
-    public final TableField<ActivityLogRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ActivityLogRecord, Timestamp> EVENT_ON = createField(DSL.name("event_on"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>public.activity_log.funct_name</code>.
      */
-    public final TableField<ActivityLogRecord, String> FUNCT_NAME = createField(DSL.name("funct_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, String> FUNCT_NAME = createField(DSL.name("funct_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.owner_id</code>.
      */
-    public final TableField<ActivityLogRecord, Long> OWNER_ID = createField(DSL.name("owner_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, Long> OWNER_ID = createField(DSL.name("owner_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.owner_name</code>.
      */
-    public final TableField<ActivityLogRecord, String> OWNER_NAME = createField(DSL.name("owner_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, String> OWNER_NAME = createField(DSL.name("owner_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.entity_id</code>.
      */
-    public final TableField<ActivityLogRecord, Long> ENTITY_ID = createField(DSL.name("entity_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, Long> ENTITY_ID = createField(DSL.name("entity_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.entity_name</code>.
      */
-    public final TableField<ActivityLogRecord, String> ENTITY_NAME = createField(DSL.name("entity_name"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, String> ENTITY_NAME = createField(DSL.name("entity_name"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.prev_data</code>.
      */
-    public final TableField<ActivityLogRecord, JSONB> PREV_DATA = createField(DSL.name("prev_data"), org.jooq.impl.SQLDataType.JSONB.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, JSONB> PREV_DATA = createField(DSL.name("prev_data"), SQLDataType.JSONB.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.curr_data</code>.
      */
-    public final TableField<ActivityLogRecord, JSONB> CURR_DATA = createField(DSL.name("curr_data"), org.jooq.impl.SQLDataType.JSONB.nullable(false), this, "");
+    public final TableField<ActivityLogRecord, JSONB> CURR_DATA = createField(DSL.name("curr_data"), SQLDataType.JSONB.nullable(false), this, "");
 
     /**
      * The column <code>public.activity_log.prev_diffs</code>.
@@ -112,11 +111,12 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
      */
     public final TableField<ActivityLogRecord, TypeActivityLogDiffRecord[]> CURR_DIFFS = createField(DSL.name("curr_diffs"), eki.ekilex.data.db.udt.TypeActivityLogDiff.TYPE_ACTIVITY_LOG_DIFF.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.activity_log</code> table reference
-     */
-    public ActivityLog() {
-        this(DSL.name("activity_log"), null);
+    private ActivityLog(Name alias, Table<ActivityLogRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private ActivityLog(Name alias, Table<ActivityLogRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -133,12 +133,11 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
         this(alias, ACTIVITY_LOG);
     }
 
-    private ActivityLog(Name alias, Table<ActivityLogRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private ActivityLog(Name alias, Table<ActivityLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.activity_log</code> table reference
+     */
+    public ActivityLog() {
+        this(DSL.name("activity_log"), null);
     }
 
     public <O extends Record> ActivityLog(Table<O> child, ForeignKey<O, ActivityLogRecord> key) {
@@ -151,13 +150,8 @@ public class ActivityLog extends TableImpl<ActivityLogRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.ACTIVITY_ENTITY_ID_IDX, Indexes.ACTIVITY_ENTITY_NAME_IDX, Indexes.ACTIVITY_FUNCT_NAME_IDX, Indexes.ACTIVITY_LOG_EVENT_BY_IDX, Indexes.ACTIVITY_LOG_EVENT_ON_DESC_IDX, Indexes.ACTIVITY_LOG_EVENT_ON_IDX, Indexes.ACTIVITY_LOG_OWNER_IDX, Indexes.ACTIVITY_LOG_OWNER_NAME_IDX);
-    }
-
-    @Override
     public Identity<ActivityLogRecord, Long> getIdentity() {
-        return Keys.IDENTITY_ACTIVITY_LOG;
+        return (Identity<ActivityLogRecord, Long>) super.getIdentity();
     }
 
     @Override

@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeTagRecord extends UpdatableRecordImpl<LexemeTagRecord> implements Record4<Long, Long, String, Timestamp> {
 
-    private static final long serialVersionUID = 1602902219;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.lexeme_tag.id</code>.
@@ -212,9 +212,9 @@ public class LexemeTagRecord extends UpdatableRecordImpl<LexemeTagRecord> implem
     public LexemeTagRecord(Long id, Long lexemeId, String tagName, Timestamp createdOn) {
         super(LexemeTag.LEXEME_TAG);
 
-        set(0, id);
-        set(1, lexemeId);
-        set(2, tagName);
-        set(3, createdOn);
+        setId(id);
+        setLexemeId(lexemeId);
+        setTagName(tagName);
+        setCreatedOn(createdOn);
     }
 }

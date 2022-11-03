@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.MeaningSemanticTypeRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row4;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningSemanticType extends TableImpl<MeaningSemanticTypeRecord> {
 
-    private static final long serialVersionUID = 280203610;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.meaning_semantic_type</code>
@@ -52,28 +51,29 @@ public class MeaningSemanticType extends TableImpl<MeaningSemanticTypeRecord> {
     /**
      * The column <code>public.meaning_semantic_type.id</code>.
      */
-    public final TableField<MeaningSemanticTypeRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_semantic_type_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningSemanticTypeRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.meaning_semantic_type.meaning_id</code>.
      */
-    public final TableField<MeaningSemanticTypeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<MeaningSemanticTypeRecord, Long> MEANING_ID = createField(DSL.name("meaning_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_semantic_type.semantic_type_code</code>.
      */
-    public final TableField<MeaningSemanticTypeRecord, String> SEMANTIC_TYPE_CODE = createField(DSL.name("semantic_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<MeaningSemanticTypeRecord, String> SEMANTIC_TYPE_CODE = createField(DSL.name("semantic_type_code"), SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.meaning_semantic_type.order_by</code>.
      */
-    public final TableField<MeaningSemanticTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_semantic_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<MeaningSemanticTypeRecord, Long> ORDER_BY = createField(DSL.name("order_by"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
-    /**
-     * Create a <code>public.meaning_semantic_type</code> table reference
-     */
-    public MeaningSemanticType() {
-        this(DSL.name("meaning_semantic_type"), null);
+    private MeaningSemanticType(Name alias, Table<MeaningSemanticTypeRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MeaningSemanticType(Name alias, Table<MeaningSemanticTypeRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -90,12 +90,11 @@ public class MeaningSemanticType extends TableImpl<MeaningSemanticTypeRecord> {
         this(alias, MEANING_SEMANTIC_TYPE);
     }
 
-    private MeaningSemanticType(Name alias, Table<MeaningSemanticTypeRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MeaningSemanticType(Name alias, Table<MeaningSemanticTypeRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.meaning_semantic_type</code> table reference
+     */
+    public MeaningSemanticType() {
+        this(DSL.name("meaning_semantic_type"), null);
     }
 
     public <O extends Record> MeaningSemanticType(Table<O> child, ForeignKey<O, MeaningSemanticTypeRecord> key) {
@@ -108,13 +107,8 @@ public class MeaningSemanticType extends TableImpl<MeaningSemanticTypeRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_SEMANTIC_TYPE_MEANING_ID_IDX);
-    }
-
-    @Override
     public Identity<MeaningSemanticTypeRecord, Long> getIdentity() {
-        return Keys.IDENTITY_MEANING_SEMANTIC_TYPE;
+        return (Identity<MeaningSemanticTypeRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -132,12 +126,21 @@ public class MeaningSemanticType extends TableImpl<MeaningSemanticTypeRecord> {
         return Arrays.<ForeignKey<MeaningSemanticTypeRecord, ?>>asList(Keys.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_MEANING_ID_FKEY, Keys.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_SEMANTIC_TYPE_CODE_FKEY);
     }
 
+    private transient Meaning _meaning;
+    private transient SemanticType _semanticType;
+
     public Meaning meaning() {
-        return new Meaning(this, Keys.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_MEANING_ID_FKEY);
+        if (_meaning == null)
+            _meaning = new Meaning(this, Keys.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_MEANING_ID_FKEY);
+
+        return _meaning;
     }
 
     public SemanticType semanticType() {
-        return new SemanticType(this, Keys.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_SEMANTIC_TYPE_CODE_FKEY);
+        if (_semanticType == null)
+            _semanticType = new SemanticType(this, Keys.MEANING_SEMANTIC_TYPE__MEANING_SEMANTIC_TYPE_SEMANTIC_TYPE_CODE_FKEY);
+
+        return _semanticType;
     }
 
     @Override

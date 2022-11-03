@@ -23,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GameNonword extends TableImpl<GameNonwordRecord> {
 
-    private static final long serialVersionUID = -2132626326;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.game_nonword</code>
@@ -50,23 +51,24 @@ public class GameNonword extends TableImpl<GameNonwordRecord> {
     /**
      * The column <code>public.game_nonword.id</code>.
      */
-    public final TableField<GameNonwordRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('game_nonword_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<GameNonwordRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.game_nonword.word</code>.
      */
-    public final TableField<GameNonwordRecord, String> WORD = createField(DSL.name("word"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<GameNonwordRecord, String> WORD = createField(DSL.name("word"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.game_nonword.lang</code>.
      */
-    public final TableField<GameNonwordRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+    public final TableField<GameNonwordRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3).nullable(false), this, "");
 
-    /**
-     * Create a <code>public.game_nonword</code> table reference
-     */
-    public GameNonword() {
-        this(DSL.name("game_nonword"), null);
+    private GameNonword(Name alias, Table<GameNonwordRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private GameNonword(Name alias, Table<GameNonwordRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -83,12 +85,11 @@ public class GameNonword extends TableImpl<GameNonwordRecord> {
         this(alias, GAME_NONWORD);
     }
 
-    private GameNonword(Name alias, Table<GameNonwordRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private GameNonword(Name alias, Table<GameNonwordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.game_nonword</code> table reference
+     */
+    public GameNonword() {
+        this(DSL.name("game_nonword"), null);
     }
 
     public <O extends Record> GameNonword(Table<O> child, ForeignKey<O, GameNonwordRecord> key) {
@@ -102,7 +103,7 @@ public class GameNonword extends TableImpl<GameNonwordRecord> {
 
     @Override
     public Identity<GameNonwordRecord, Long> getIdentity() {
-        return Keys.IDENTITY_GAME_NONWORD;
+        return (Identity<GameNonwordRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -120,8 +121,13 @@ public class GameNonword extends TableImpl<GameNonwordRecord> {
         return Arrays.<ForeignKey<GameNonwordRecord, ?>>asList(Keys.GAME_NONWORD__GAME_NONWORD_LANG_FKEY);
     }
 
+    private transient Language _language;
+
     public Language language() {
-        return new Language(this, Keys.GAME_NONWORD__GAME_NONWORD_LANG_FKEY);
+        if (_language == null)
+            _language = new Language(this, Keys.GAME_NONWORD__GAME_NONWORD_LANG_FKEY);
+
+        return _language;
     }
 
     @Override

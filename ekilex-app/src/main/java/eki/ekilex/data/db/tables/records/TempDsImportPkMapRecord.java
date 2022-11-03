@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TempDsImportPkMapRecord extends UpdatableRecordImpl<TempDsImportPkMapRecord> implements Record6<Long, String, Timestamp, String, Long, Long> {
 
-    private static final long serialVersionUID = 1319774825;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.temp_ds_import_pk_map.id</code>.
@@ -284,11 +284,11 @@ public class TempDsImportPkMapRecord extends UpdatableRecordImpl<TempDsImportPkM
     public TempDsImportPkMapRecord(Long id, String importCode, Timestamp createdOn, String tableName, Long sourcePk, Long targetPk) {
         super(TempDsImportPkMap.TEMP_DS_IMPORT_PK_MAP);
 
-        set(0, id);
-        set(1, importCode);
-        set(2, createdOn);
-        set(3, tableName);
-        set(4, sourcePk);
-        set(5, targetPk);
+        setId(id);
+        setImportCode(importCode);
+        setCreatedOn(createdOn);
+        setTableName(tableName);
+        setSourcePk(sourcePk);
+        setTargetPk(targetPk);
     }
 }

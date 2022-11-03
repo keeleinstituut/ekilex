@@ -4,7 +4,6 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Keys;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.SimilarityJudgementResultRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row12;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResultRecord> {
 
-    private static final long serialVersionUID = 2133246032;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.similarity_judgement_result</code>
@@ -53,68 +52,69 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
     /**
      * The column <code>public.similarity_judgement_result.id</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('similarity_judgement_result_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.game_key</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, String> GAME_KEY = createField(DSL.name("game_key"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, String> GAME_KEY = createField(DSL.name("game_key"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.pair11_data_id</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Long> PAIR11_DATA_ID = createField(DSL.name("pair11_data_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Long> PAIR11_DATA_ID = createField(DSL.name("pair11_data_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.pair12_data_id</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Long> PAIR12_DATA_ID = createField(DSL.name("pair12_data_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Long> PAIR12_DATA_ID = createField(DSL.name("pair12_data_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.pair21_data_id</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Long> PAIR21_DATA_ID = createField(DSL.name("pair21_data_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Long> PAIR21_DATA_ID = createField(DSL.name("pair21_data_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.pair22_data_id</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Long> PAIR22_DATA_ID = createField(DSL.name("pair22_data_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Long> PAIR22_DATA_ID = createField(DSL.name("pair22_data_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.remote_addr</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, String> REMOTE_ADDR = createField(DSL.name("remote_addr"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, String> REMOTE_ADDR = createField(DSL.name("remote_addr"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.session_id</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, String> SESSION_ID = createField(DSL.name("session_id"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, String> SESSION_ID = createField(DSL.name("session_id"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.answer_pair1</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Boolean> ANSWER_PAIR1 = createField(DSL.name("answer_pair1"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Boolean> ANSWER_PAIR1 = createField(DSL.name("answer_pair1"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.answer_pair2</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Boolean> ANSWER_PAIR2 = createField(DSL.name("answer_pair2"), org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Boolean> ANSWER_PAIR2 = createField(DSL.name("answer_pair2"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.delay</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Long> DELAY = createField(DSL.name("delay"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Long> DELAY = createField(DSL.name("delay"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.similarity_judgement_result.created</code>.
      */
-    public final TableField<SimilarityJudgementResultRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<SimilarityJudgementResultRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
-    /**
-     * Create a <code>public.similarity_judgement_result</code> table reference
-     */
-    public SimilarityJudgementResult() {
-        this(DSL.name("similarity_judgement_result"), null);
+    private SimilarityJudgementResult(Name alias, Table<SimilarityJudgementResultRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private SimilarityJudgementResult(Name alias, Table<SimilarityJudgementResultRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -131,12 +131,11 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
         this(alias, SIMILARITY_JUDGEMENT_RESULT);
     }
 
-    private SimilarityJudgementResult(Name alias, Table<SimilarityJudgementResultRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private SimilarityJudgementResult(Name alias, Table<SimilarityJudgementResultRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.similarity_judgement_result</code> table reference
+     */
+    public SimilarityJudgementResult() {
+        this(DSL.name("similarity_judgement_result"), null);
     }
 
     public <O extends Record> SimilarityJudgementResult(Table<O> child, ForeignKey<O, SimilarityJudgementResultRecord> key) {
@@ -149,13 +148,8 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_IDX);
-    }
-
-    @Override
     public Identity<SimilarityJudgementResultRecord, Long> getIdentity() {
-        return Keys.IDENTITY_SIMILARITY_JUDGEMENT_RESULT;
+        return (Identity<SimilarityJudgementResultRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -173,20 +167,37 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
         return Arrays.<ForeignKey<SimilarityJudgementResultRecord, ?>>asList(Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_FKEY, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_FKEY, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_FKEY, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_FKEY);
     }
 
+    private transient SimilarityJudgementData _similarityJudgementResultPair11DataIdFkey;
+    private transient SimilarityJudgementData _similarityJudgementResultPair12DataIdFkey;
+    private transient SimilarityJudgementData _similarityJudgementResultPair21DataIdFkey;
+    private transient SimilarityJudgementData _similarityJudgementResultPair22DataIdFkey;
+
     public SimilarityJudgementData similarityJudgementResultPair11DataIdFkey() {
-        return new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_FKEY);
+        if (_similarityJudgementResultPair11DataIdFkey == null)
+            _similarityJudgementResultPair11DataIdFkey = new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_FKEY);
+
+        return _similarityJudgementResultPair11DataIdFkey;
     }
 
     public SimilarityJudgementData similarityJudgementResultPair12DataIdFkey() {
-        return new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_FKEY);
+        if (_similarityJudgementResultPair12DataIdFkey == null)
+            _similarityJudgementResultPair12DataIdFkey = new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_FKEY);
+
+        return _similarityJudgementResultPair12DataIdFkey;
     }
 
     public SimilarityJudgementData similarityJudgementResultPair21DataIdFkey() {
-        return new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_FKEY);
+        if (_similarityJudgementResultPair21DataIdFkey == null)
+            _similarityJudgementResultPair21DataIdFkey = new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_FKEY);
+
+        return _similarityJudgementResultPair21DataIdFkey;
     }
 
     public SimilarityJudgementData similarityJudgementResultPair22DataIdFkey() {
-        return new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_FKEY);
+        if (_similarityJudgementResultPair22DataIdFkey == null)
+            _similarityJudgementResultPair22DataIdFkey = new SimilarityJudgementData(this, Keys.SIMILARITY_JUDGEMENT_RESULT__SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_FKEY);
+
+        return _similarityJudgementResultPair22DataIdFkey;
     }
 
     @Override

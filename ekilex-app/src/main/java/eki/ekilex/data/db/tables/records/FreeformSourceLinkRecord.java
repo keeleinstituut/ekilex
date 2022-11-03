@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeformSourceLinkRecord extends UpdatableRecordImpl<FreeformSourceLinkRecord> implements Record7<Long, Long, Long, String, String, String, Long> {
 
-    private static final long serialVersionUID = -1260523479;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.freeform_source_link.id</code>.
@@ -318,12 +318,12 @@ public class FreeformSourceLinkRecord extends UpdatableRecordImpl<FreeformSource
     public FreeformSourceLinkRecord(Long id, Long freeformId, Long sourceId, String type, String name, String value, Long orderBy) {
         super(FreeformSourceLink.FREEFORM_SOURCE_LINK);
 
-        set(0, id);
-        set(1, freeformId);
-        set(2, sourceId);
-        set(3, type);
-        set(4, name);
-        set(5, value);
-        set(6, orderBy);
+        setId(id);
+        setFreeformId(freeformId);
+        setSourceId(sourceId);
+        setType(type);
+        setName(name);
+        setValue(value);
+        setOrderBy(orderBy);
     }
 }

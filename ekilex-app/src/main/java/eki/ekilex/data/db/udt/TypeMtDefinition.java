@@ -10,6 +10,7 @@ import eki.ekilex.data.db.udt.records.TypeMtDefinitionRecord;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.SchemaImpl;
 import org.jooq.impl.UDTImpl;
 
@@ -20,7 +21,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeMtDefinition extends UDTImpl<TypeMtDefinitionRecord> {
 
-    private static final long serialVersionUID = -182510337;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.type_mt_definition</code>
@@ -38,37 +39,37 @@ public class TypeMtDefinition extends UDTImpl<TypeMtDefinitionRecord> {
     /**
      * The attribute <code>public.type_mt_definition.definition_id</code>.
      */
-    public static final UDTField<TypeMtDefinitionRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), org.jooq.impl.SQLDataType.BIGINT, TYPE_MT_DEFINITION, "");
+    public static final UDTField<TypeMtDefinitionRecord, Long> DEFINITION_ID = createField(DSL.name("definition_id"), SQLDataType.BIGINT, TYPE_MT_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_mt_definition.definition_type_code</code>.
      */
-    public static final UDTField<TypeMtDefinitionRecord, String> DEFINITION_TYPE_CODE = createField(DSL.name("definition_type_code"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MT_DEFINITION, "");
+    public static final UDTField<TypeMtDefinitionRecord, String> DEFINITION_TYPE_CODE = createField(DSL.name("definition_type_code"), SQLDataType.VARCHAR(100), TYPE_MT_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_mt_definition.value</code>.
      */
-    public static final UDTField<TypeMtDefinitionRecord, String> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.CLOB, TYPE_MT_DEFINITION, "");
+    public static final UDTField<TypeMtDefinitionRecord, String> VALUE = createField(DSL.name("value"), SQLDataType.CLOB, TYPE_MT_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_mt_definition.value_prese</code>.
      */
-    public static final UDTField<TypeMtDefinitionRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), org.jooq.impl.SQLDataType.CLOB, TYPE_MT_DEFINITION, "");
+    public static final UDTField<TypeMtDefinitionRecord, String> VALUE_PRESE = createField(DSL.name("value_prese"), SQLDataType.CLOB, TYPE_MT_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_mt_definition.lang</code>.
      */
-    public static final UDTField<TypeMtDefinitionRecord, String> LANG = createField(DSL.name("lang"), org.jooq.impl.SQLDataType.CHAR(3), TYPE_MT_DEFINITION, "");
+    public static final UDTField<TypeMtDefinitionRecord, String> LANG = createField(DSL.name("lang"), SQLDataType.CHAR(3), TYPE_MT_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_mt_definition.complexity</code>.
      */
-    public static final UDTField<TypeMtDefinitionRecord, String> COMPLEXITY = createField(DSL.name("complexity"), org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_MT_DEFINITION, "");
+    public static final UDTField<TypeMtDefinitionRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_MT_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_mt_definition.is_public</code>.
      */
-    public static final UDTField<TypeMtDefinitionRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), org.jooq.impl.SQLDataType.BOOLEAN, TYPE_MT_DEFINITION, "");
+    public static final UDTField<TypeMtDefinitionRecord, Boolean> IS_PUBLIC = createField(DSL.name("is_public"), SQLDataType.BOOLEAN, TYPE_MT_DEFINITION, "");
 
     /**
      * No further instances allowed

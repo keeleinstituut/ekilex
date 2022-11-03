@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningForumRecord extends UpdatableRecordImpl<MeaningForumRecord> implements Record10<Long, Long, String, String, Long, String, Timestamp, String, Timestamp, Long> {
 
-    private static final long serialVersionUID = 1632030813;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.meaning_forum.id</code>.
@@ -428,15 +428,15 @@ public class MeaningForumRecord extends UpdatableRecordImpl<MeaningForumRecord> 
     public MeaningForumRecord(Long id, Long meaningId, String value, String valuePrese, Long creatorId, String createdBy, Timestamp createdOn, String modifiedBy, Timestamp modifiedOn, Long orderBy) {
         super(MeaningForum.MEANING_FORUM);
 
-        set(0, id);
-        set(1, meaningId);
-        set(2, value);
-        set(3, valuePrese);
-        set(4, creatorId);
-        set(5, createdBy);
-        set(6, createdOn);
-        set(7, modifiedBy);
-        set(8, modifiedOn);
-        set(9, orderBy);
+        setId(id);
+        setMeaningId(meaningId);
+        setValue(value);
+        setValuePrese(valuePrese);
+        setCreatorId(creatorId);
+        setCreatedBy(createdBy);
+        setCreatedOn(createdOn);
+        setModifiedBy(modifiedBy);
+        setModifiedOn(modifiedOn);
+        setOrderBy(orderBy);
     }
 }

@@ -9,6 +9,7 @@ import eki.wordweb.data.db.Public;
 import org.jooq.Parameter;
 import org.jooq.impl.AbstractRoutine;
 import org.jooq.impl.Internal;
+import org.jooq.impl.SQLDataType;
 
 
 /**
@@ -17,18 +18,18 @@ import org.jooq.impl.Internal;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShowLimit extends AbstractRoutine<Float> {
 
-    private static final long serialVersionUID = 2045932681;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The parameter <code>public.show_limit.RETURN_VALUE</code>.
      */
-    public static final Parameter<Float> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", org.jooq.impl.SQLDataType.REAL, false, false);
+    public static final Parameter<Float> RETURN_VALUE = Internal.createParameter("RETURN_VALUE", SQLDataType.REAL, false, false);
 
     /**
      * Create a new routine call instance
      */
     public ShowLimit() {
-        super("show_limit", Public.PUBLIC, org.jooq.impl.SQLDataType.REAL);
+        super("show_limit", Public.PUBLIC, SQLDataType.REAL);
 
         setReturnParameter(RETURN_VALUE);
     }

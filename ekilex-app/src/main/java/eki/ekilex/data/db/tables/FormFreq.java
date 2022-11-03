@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.FormFreqRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormFreq extends TableImpl<FormFreqRecord> {
 
-    private static final long serialVersionUID = -412675956;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.form_freq</code>
@@ -53,33 +52,34 @@ public class FormFreq extends TableImpl<FormFreqRecord> {
     /**
      * The column <code>public.form_freq.id</code>.
      */
-    public final TableField<FormFreqRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_freq_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<FormFreqRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.form_freq.freq_corp_id</code>.
      */
-    public final TableField<FormFreqRecord, Long> FREQ_CORP_ID = createField(DSL.name("freq_corp_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<FormFreqRecord, Long> FREQ_CORP_ID = createField(DSL.name("freq_corp_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.form_freq.form_id</code>.
      */
-    public final TableField<FormFreqRecord, Long> FORM_ID = createField(DSL.name("form_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<FormFreqRecord, Long> FORM_ID = createField(DSL.name("form_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.form_freq.value</code>.
      */
-    public final TableField<FormFreqRecord, BigDecimal> VALUE = createField(DSL.name("value"), org.jooq.impl.SQLDataType.NUMERIC(12, 7).nullable(false), this, "");
+    public final TableField<FormFreqRecord, BigDecimal> VALUE = createField(DSL.name("value"), SQLDataType.NUMERIC(12, 7).nullable(false), this, "");
 
     /**
      * The column <code>public.form_freq.rank</code>.
      */
-    public final TableField<FormFreqRecord, Long> RANK = createField(DSL.name("rank"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<FormFreqRecord, Long> RANK = createField(DSL.name("rank"), SQLDataType.BIGINT.nullable(false), this, "");
 
-    /**
-     * Create a <code>public.form_freq</code> table reference
-     */
-    public FormFreq() {
-        this(DSL.name("form_freq"), null);
+    private FormFreq(Name alias, Table<FormFreqRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private FormFreq(Name alias, Table<FormFreqRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -96,12 +96,11 @@ public class FormFreq extends TableImpl<FormFreqRecord> {
         this(alias, FORM_FREQ);
     }
 
-    private FormFreq(Name alias, Table<FormFreqRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private FormFreq(Name alias, Table<FormFreqRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.form_freq</code> table reference
+     */
+    public FormFreq() {
+        this(DSL.name("form_freq"), null);
     }
 
     public <O extends Record> FormFreq(Table<O> child, ForeignKey<O, FormFreqRecord> key) {
@@ -114,13 +113,8 @@ public class FormFreq extends TableImpl<FormFreqRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FORM_FREQ_CORP_ID_IDX, Indexes.FORM_FREQ_FORM_ID_IDX, Indexes.FORM_FREQ_RANK_IDX, Indexes.FORM_FREQ_VALUE_IDX);
-    }
-
-    @Override
     public Identity<FormFreqRecord, Long> getIdentity() {
-        return Keys.IDENTITY_FORM_FREQ;
+        return (Identity<FormFreqRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -138,12 +132,21 @@ public class FormFreq extends TableImpl<FormFreqRecord> {
         return Arrays.<ForeignKey<FormFreqRecord, ?>>asList(Keys.FORM_FREQ__FORM_FREQ_FREQ_CORP_ID_FKEY, Keys.FORM_FREQ__FORM_FREQ_FORM_ID_FKEY);
     }
 
+    private transient FreqCorp _freqCorp;
+    private transient Form _form;
+
     public FreqCorp freqCorp() {
-        return new FreqCorp(this, Keys.FORM_FREQ__FORM_FREQ_FREQ_CORP_ID_FKEY);
+        if (_freqCorp == null)
+            _freqCorp = new FreqCorp(this, Keys.FORM_FREQ__FORM_FREQ_FREQ_CORP_ID_FKEY);
+
+        return _freqCorp;
     }
 
     public Form form() {
-        return new Form(this, Keys.FORM_FREQ__FORM_FREQ_FORM_ID_FKEY);
+        if (_form == null)
+            _form = new Form(this, Keys.FORM_FREQ__FORM_FREQ_FORM_ID_FKEY);
+
+        return _form;
     }
 
     @Override

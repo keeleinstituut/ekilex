@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ParadigmRecord;
@@ -15,7 +14,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row7;
@@ -25,6 +23,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Paradigm extends TableImpl<ParadigmRecord> {
 
-    private static final long serialVersionUID = 2077089299;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.paradigm</code>
@@ -52,43 +51,44 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
     /**
      * The column <code>public.paradigm.id</code>.
      */
-    public final TableField<ParadigmRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('paradigm_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<ParadigmRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.paradigm.word_id</code>.
      */
-    public final TableField<ParadigmRecord, Long> WORD_ID = createField(DSL.name("word_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ParadigmRecord, Long> WORD_ID = createField(DSL.name("word_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.paradigm.comment</code>.
      */
-    public final TableField<ParadigmRecord, String> COMMENT = createField(DSL.name("comment"), org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ParadigmRecord, String> COMMENT = createField(DSL.name("comment"), SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.paradigm.inflection_type_nr</code>.
      */
-    public final TableField<ParadigmRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ParadigmRecord, String> INFLECTION_TYPE_NR = createField(DSL.name("inflection_type_nr"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.paradigm.inflection_type</code>.
      */
-    public final TableField<ParadigmRecord, String> INFLECTION_TYPE = createField(DSL.name("inflection_type"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ParadigmRecord, String> INFLECTION_TYPE = createField(DSL.name("inflection_type"), SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.paradigm.is_secondary</code>.
      */
-    public final TableField<ParadigmRecord, Boolean> IS_SECONDARY = createField(DSL.name("is_secondary"), org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+    public final TableField<ParadigmRecord, Boolean> IS_SECONDARY = createField(DSL.name("is_secondary"), SQLDataType.BOOLEAN.defaultValue(DSL.field("false", SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>public.paradigm.word_class</code>.
      */
-    public final TableField<ParadigmRecord, String> WORD_CLASS = createField(DSL.name("word_class"), org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ParadigmRecord, String> WORD_CLASS = createField(DSL.name("word_class"), SQLDataType.VARCHAR(100), this, "");
 
-    /**
-     * Create a <code>public.paradigm</code> table reference
-     */
-    public Paradigm() {
-        this(DSL.name("paradigm"), null);
+    private Paradigm(Name alias, Table<ParadigmRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private Paradigm(Name alias, Table<ParadigmRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -105,12 +105,11 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
         this(alias, PARADIGM);
     }
 
-    private Paradigm(Name alias, Table<ParadigmRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private Paradigm(Name alias, Table<ParadigmRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.paradigm</code> table reference
+     */
+    public Paradigm() {
+        this(DSL.name("paradigm"), null);
     }
 
     public <O extends Record> Paradigm(Table<O> child, ForeignKey<O, ParadigmRecord> key) {
@@ -123,13 +122,8 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.PARADIGM_WORD_ID_IDX);
-    }
-
-    @Override
     public Identity<ParadigmRecord, Long> getIdentity() {
-        return Keys.IDENTITY_PARADIGM;
+        return (Identity<ParadigmRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -147,8 +141,13 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
         return Arrays.<ForeignKey<ParadigmRecord, ?>>asList(Keys.PARADIGM__PARADIGM_WORD_ID_FKEY);
     }
 
+    private transient Word _word;
+
     public Word word() {
-        return new Word(this, Keys.PARADIGM__PARADIGM_WORD_ID_FKEY);
+        if (_word == null)
+            _word = new Word(this, Keys.PARADIGM__PARADIGM_WORD_ID_FKEY);
+
+        return _word;
     }
 
     @Override

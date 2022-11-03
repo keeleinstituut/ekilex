@@ -21,7 +21,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> implements Record16<Long, String, String, String, Timestamp, String, String, String, String, String, String, String, String, String, String, String> {
 
-    private static final long serialVersionUID = 1725930563;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.feedback_log.id</code>.
@@ -644,21 +644,21 @@ public class FeedbackLogRecord extends UpdatableRecordImpl<FeedbackLogRecord> im
     public FeedbackLogRecord(Long id, String feedbackType, String senderName, String senderEmail, Timestamp createdOn, String word, String definition, String comments, String usage, String otherInfo, String lastSearch, String description, String definitionSource, String usageSource, String company, String domain) {
         super(FeedbackLog.FEEDBACK_LOG);
 
-        set(0, id);
-        set(1, feedbackType);
-        set(2, senderName);
-        set(3, senderEmail);
-        set(4, createdOn);
-        set(5, word);
-        set(6, definition);
-        set(7, comments);
-        set(8, usage);
-        set(9, otherInfo);
-        set(10, lastSearch);
-        set(11, description);
-        set(12, definitionSource);
-        set(13, usageSource);
-        set(14, company);
-        set(15, domain);
+        setId(id);
+        setFeedbackType(feedbackType);
+        setSenderName(senderName);
+        setSenderEmail(senderEmail);
+        setCreatedOn(createdOn);
+        setWord(word);
+        setDefinition(definition);
+        setComments(comments);
+        setUsage(usage);
+        setOtherInfo(otherInfo);
+        setLastSearch(lastSearch);
+        setDescription(description);
+        setDefinitionSource(definitionSource);
+        setUsageSource(usageSource);
+        setCompany(company);
+        setDomain(domain);
     }
 }

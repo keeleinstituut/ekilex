@@ -4,17 +4,12 @@
 package eki.wordweb.data.db.tables;
 
 
-import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeSourceLinkRecord;
 import eki.wordweb.data.db.udt.records.TypeSourceLinkRecord;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.jooq.Field;
 import org.jooq.ForeignKey;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -23,6 +18,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -32,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexemeSourceLink extends TableImpl<MviewWwLexemeSourceLinkRecord> {
 
-    private static final long serialVersionUID = 1672175661;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme_source_link</code>
@@ -50,18 +46,19 @@ public class MviewWwLexemeSourceLink extends TableImpl<MviewWwLexemeSourceLinkRe
     /**
      * The column <code>public.mview_ww_lexeme_source_link.lexeme_id</code>.
      */
-    public final TableField<MviewWwLexemeSourceLinkRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeSourceLinkRecord, Long> LEXEME_ID = createField(DSL.name("lexeme_id"), SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme_source_link.source_links</code>.
      */
     public final TableField<MviewWwLexemeSourceLinkRecord, TypeSourceLinkRecord[]> SOURCE_LINKS = createField(DSL.name("source_links"), eki.wordweb.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK.getDataType().getArrayDataType(), this, "");
 
-    /**
-     * Create a <code>public.mview_ww_lexeme_source_link</code> table reference
-     */
-    public MviewWwLexemeSourceLink() {
-        this(DSL.name("mview_ww_lexeme_source_link"), null);
+    private MviewWwLexemeSourceLink(Name alias, Table<MviewWwLexemeSourceLinkRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private MviewWwLexemeSourceLink(Name alias, Table<MviewWwLexemeSourceLinkRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
     }
 
     /**
@@ -78,12 +75,11 @@ public class MviewWwLexemeSourceLink extends TableImpl<MviewWwLexemeSourceLinkRe
         this(alias, MVIEW_WW_LEXEME_SOURCE_LINK);
     }
 
-    private MviewWwLexemeSourceLink(Name alias, Table<MviewWwLexemeSourceLinkRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private MviewWwLexemeSourceLink(Name alias, Table<MviewWwLexemeSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.materializedView());
+    /**
+     * Create a <code>public.mview_ww_lexeme_source_link</code> table reference
+     */
+    public MviewWwLexemeSourceLink() {
+        this(DSL.name("mview_ww_lexeme_source_link"), null);
     }
 
     public <O extends Record> MviewWwLexemeSourceLink(Table<O> child, ForeignKey<O, MviewWwLexemeSourceLinkRecord> key) {
@@ -93,11 +89,6 @@ public class MviewWwLexemeSourceLink extends TableImpl<MviewWwLexemeSourceLinkRe
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
-    }
-
-    @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_SOURCE_LINK_WORD_ID_IDX);
     }
 
     @Override

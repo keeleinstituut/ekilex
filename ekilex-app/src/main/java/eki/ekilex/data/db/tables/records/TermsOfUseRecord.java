@@ -19,7 +19,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TermsOfUseRecord extends UpdatableRecordImpl<TermsOfUseRecord> implements Record4<Long, String, String, Boolean> {
 
-    private static final long serialVersionUID = 1874972849;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Setter for <code>public.terms_of_use.id</code>.
@@ -210,9 +210,9 @@ public class TermsOfUseRecord extends UpdatableRecordImpl<TermsOfUseRecord> impl
     public TermsOfUseRecord(Long id, String version, String value, Boolean isActive) {
         super(TermsOfUse.TERMS_OF_USE);
 
-        set(0, id);
-        set(1, version);
-        set(2, value);
-        set(3, isActive);
+        setId(id);
+        setVersion(version);
+        setValue(value);
+        setIsActive(isActive);
     }
 }

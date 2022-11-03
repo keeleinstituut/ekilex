@@ -4,7 +4,6 @@
 package eki.ekilex.data.db.tables;
 
 
-import eki.ekilex.data.db.Indexes;
 import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.DataRequestRecord;
@@ -16,7 +15,6 @@ import java.util.List;
 import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
-import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row6;
@@ -26,6 +24,7 @@ import org.jooq.TableField;
 import org.jooq.TableOptions;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
 import org.jooq.impl.TableImpl;
 
 
@@ -35,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DataRequest extends TableImpl<DataRequestRecord> {
 
-    private static final long serialVersionUID = 399412232;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The reference instance of <code>public.data_request</code>
@@ -53,38 +52,39 @@ public class DataRequest extends TableImpl<DataRequestRecord> {
     /**
      * The column <code>public.data_request.id</code>.
      */
-    public final TableField<DataRequestRecord, Long> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('data_request_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<DataRequestRecord, Long> ID = createField(DSL.name("id"), SQLDataType.BIGINT.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.data_request.user_id</code>.
      */
-    public final TableField<DataRequestRecord, Long> USER_ID = createField(DSL.name("user_id"), org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DataRequestRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.data_request.request_key</code>.
      */
-    public final TableField<DataRequestRecord, String> REQUEST_KEY = createField(DSL.name("request_key"), org.jooq.impl.SQLDataType.VARCHAR(60).nullable(false), this, "");
+    public final TableField<DataRequestRecord, String> REQUEST_KEY = createField(DSL.name("request_key"), SQLDataType.VARCHAR(60).nullable(false), this, "");
 
     /**
      * The column <code>public.data_request.content</code>.
      */
-    public final TableField<DataRequestRecord, String> CONTENT = createField(DSL.name("content"), org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<DataRequestRecord, String> CONTENT = createField(DSL.name("content"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.data_request.accessed</code>.
      */
-    public final TableField<DataRequestRecord, Timestamp> ACCESSED = createField(DSL.name("accessed"), org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<DataRequestRecord, Timestamp> ACCESSED = createField(DSL.name("accessed"), SQLDataType.TIMESTAMP(6), this, "");
 
     /**
      * The column <code>public.data_request.created</code>.
      */
-    public final TableField<DataRequestRecord, Timestamp> CREATED = createField(DSL.name("created"), org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<DataRequestRecord, Timestamp> CREATED = createField(DSL.name("created"), SQLDataType.TIMESTAMP(6).nullable(false).defaultValue(DSL.field("statement_timestamp()", SQLDataType.TIMESTAMP)), this, "");
 
-    /**
-     * Create a <code>public.data_request</code> table reference
-     */
-    public DataRequest() {
-        this(DSL.name("data_request"), null);
+    private DataRequest(Name alias, Table<DataRequestRecord> aliased) {
+        this(alias, aliased, null);
+    }
+
+    private DataRequest(Name alias, Table<DataRequestRecord> aliased, Field<?>[] parameters) {
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
     }
 
     /**
@@ -101,12 +101,11 @@ public class DataRequest extends TableImpl<DataRequestRecord> {
         this(alias, DATA_REQUEST);
     }
 
-    private DataRequest(Name alias, Table<DataRequestRecord> aliased) {
-        this(alias, aliased, null);
-    }
-
-    private DataRequest(Name alias, Table<DataRequestRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.table());
+    /**
+     * Create a <code>public.data_request</code> table reference
+     */
+    public DataRequest() {
+        this(DSL.name("data_request"), null);
     }
 
     public <O extends Record> DataRequest(Table<O> child, ForeignKey<O, DataRequestRecord> key) {
@@ -119,13 +118,8 @@ public class DataRequest extends TableImpl<DataRequestRecord> {
     }
 
     @Override
-    public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DATA_REQUEST_USER_ID_IDX);
-    }
-
-    @Override
     public Identity<DataRequestRecord, Long> getIdentity() {
-        return Keys.IDENTITY_DATA_REQUEST;
+        return (Identity<DataRequestRecord, Long>) super.getIdentity();
     }
 
     @Override
@@ -143,8 +137,13 @@ public class DataRequest extends TableImpl<DataRequestRecord> {
         return Arrays.<ForeignKey<DataRequestRecord, ?>>asList(Keys.DATA_REQUEST__DATA_REQUEST_USER_ID_FKEY);
     }
 
+    private transient EkiUser _ekiUser;
+
     public EkiUser ekiUser() {
-        return new EkiUser(this, Keys.DATA_REQUEST__DATA_REQUEST_USER_ID_FKEY);
+        if (_ekiUser == null)
+            _ekiUser = new EkiUser(this, Keys.DATA_REQUEST__DATA_REQUEST_USER_ID_FKEY);
+
+        return _ekiUser;
     }
 
     @Override
