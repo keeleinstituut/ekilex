@@ -1,5 +1,7 @@
 package eki.ekilex.service.api;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +16,7 @@ import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.api.Word;
 import eki.ekilex.service.AbstractService;
+import eki.ekilex.service.api.db.WordDbService;
 import eki.ekilex.service.db.CudDbService;
 import eki.ekilex.service.db.TagDbService;
 
@@ -29,6 +32,14 @@ public class WordService extends AbstractService {
 	@Autowired
 	private TagDbService tagDbService;
 
+	@Autowired
+	private WordDbService wordDbService;
+
+	@Transactional
+	public List<Word> getPublicWords(String datasetCode) {
+		return wordDbService.getPublicWords(datasetCode);
+	}
+
 	@Transactional
 	public Long createWord(Word word, boolean isManualEventOnUpdateEnabled) throws Exception {
 
@@ -37,7 +48,7 @@ public class WordService extends AbstractService {
 		Long meaningId = word.getMeaningId();
 		boolean isMeaningCreate = meaningId == null;
 
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = cudDbService.createWordAndLexemeAndMeaning(word, valueAsWord);
+		WordLexemeMeaningIdTuple wordLexemeMeaningId = wordDbService.createWordAndLexemeAndMeaning(word, valueAsWord);
 		Long wordId = wordLexemeMeaningId.getWordId();
 		Long lexemeId = wordLexemeMeaningId.getLexemeId();
 		meaningId = wordLexemeMeaningId.getMeaningId();
@@ -62,8 +73,8 @@ public class WordService extends AbstractService {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("updateWord", wordId, ActivityOwner.WORD, isManualEventOnUpdateEnabled);
 
-		SimpleWord originalWord = cudDbService.getSimpleWord(wordId);
-		cudDbService.updateWord(word, valueAsWord);
+		SimpleWord originalWord = wordDbService.getSimpleWord(wordId);
+		wordDbService.updateWord(word, valueAsWord);
 		SimpleWord updatedWord = new SimpleWord(wordId, value, lang);
 
 		cudDbService.adjustWordHomonymNrs(originalWord);

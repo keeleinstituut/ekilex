@@ -87,6 +87,24 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.fetchInto(String.class);
 	}
 
+	public int getWordNextHomonymNr(String wordValue, String wordLang) {
+
+		Integer currentHomonymNr = create
+				.select(DSL.max(WORD.HOMONYM_NR))
+				.from(WORD)
+				.where(
+						WORD.LANG.eq(wordLang)
+								.and(WORD.VALUE.eq(wordValue))
+								.and(WORD.IS_PUBLIC.isTrue()))
+				.fetchOneInto(Integer.class);
+
+		int homonymNr = 1;
+		if (currentHomonymNr != null) {
+			homonymNr = currentHomonymNr + 1;
+		}
+		return homonymNr;
+	}
+
 	protected Field<String[]> getWordTypesField(Field<Long> wordIdField) {
 		Field<String[]> wtf = DSL.field(DSL
 				.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))

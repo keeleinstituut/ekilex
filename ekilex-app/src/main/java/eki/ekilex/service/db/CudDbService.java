@@ -63,7 +63,6 @@ import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeTagRecord;
 import eki.ekilex.data.db.tables.records.MeaningForumRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
@@ -73,7 +72,6 @@ import eki.ekilex.data.db.tables.records.WordForumRecord;
 import eki.ekilex.data.db.tables.records.WordFreeformRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
-import eki.ekilex.data.db.tables.records.WordRecord;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
 
 @Component
@@ -349,32 +347,6 @@ public class CudDbService extends AbstractDataDbService {
 
 	public void updateAsWordValue(Long wordId, String valueAsWord) {
 		create.update(WORD).set(WORD.VALUE_AS_WORD, valueAsWord).where(WORD.ID.eq(wordId)).execute();
-	}
-
-	public void updateWord(eki.ekilex.data.api.Word word, String valueAsWord) {
-
-		Long wordId = word.getWordId();
-		String value = word.getValue();
-		String valuePrese = word.getValuePrese();
-		String lang = word.getLang();
-		String displayMorphCode = word.getDisplayMorphCode();
-		String genderCode = word.getGenderCode();
-		String aspectCode = word.getAspectCode();
-		String vocalForm = word.getVocalForm();
-		String morphophonoForm = word.getMorphophonoForm();
-
-		create.update(WORD)
-				.set(WORD.VALUE, value)
-				.set(WORD.VALUE_PRESE, valuePrese)
-				.set(WORD.VALUE_AS_WORD, valueAsWord)
-				.set(WORD.LANG, lang)
-				.set(WORD.DISPLAY_MORPH_CODE, displayMorphCode)
-				.set(WORD.GENDER_CODE, genderCode)
-				.set(WORD.ASPECT_CODE, aspectCode)
-				.set(WORD.VOCAL_FORM, vocalForm)
-				.set(WORD.MORPHOPHONO_FORM, morphophonoForm)
-				.where(WORD.ID.eq(wordId))
-				.execute();
 	}
 
 	public void updateWordVocalForm(Long wordId, String vocalForm) {
@@ -667,57 +639,6 @@ public class CudDbService extends AbstractDataDbService {
 				.returning(LEXEME.ID)
 				.fetchOne()
 				.getId();
-
-		wordLexemeMeaningId.setWordId(wordId);
-		wordLexemeMeaningId.setLexemeId(lexemeId);
-		wordLexemeMeaningId.setMeaningId(meaningId);
-
-		return wordLexemeMeaningId;
-	}
-
-	public WordLexemeMeaningIdTuple createWordAndLexemeAndMeaning(eki.ekilex.data.api.Word word, String valueAsWord) {
-
-		WordLexemeMeaningIdTuple wordLexemeMeaningId = new WordLexemeMeaningIdTuple();
-		Long meaningId = word.getMeaningId();
-		String lexemeDataset = word.getLexemeDataset();
-		String value = word.getValue();
-		String valuePrese = word.getValuePrese();
-		String lang = word.getLang();
-		String displayMorphCode = word.getDisplayMorphCode();
-		String genderCode = word.getGenderCode();
-		String aspectCode = word.getAspectCode();
-		String vocalForm = word.getVocalForm();
-		String morphophonoForm = word.getMorphophonoForm();
-		int homonymNr = getWordNextHomonymNr(value, lang);
-
-		WordRecord wordRecord = create.newRecord(WORD);
-		wordRecord.setValue(value);
-		wordRecord.setValuePrese(valuePrese);
-		wordRecord.setValueAsWord(valueAsWord);
-		wordRecord.setLang(lang);
-		wordRecord.setHomonymNr(homonymNr);
-		wordRecord.setDisplayMorphCode(displayMorphCode);
-		wordRecord.setGenderCode(genderCode);
-		wordRecord.setAspectCode(aspectCode);
-		wordRecord.setVocalForm(vocalForm);
-		wordRecord.setMorphophonoForm(morphophonoForm);
-		wordRecord.store();
-		Long wordId = wordRecord.getId();
-
-		if (meaningId == null) {
-			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-		}
-
-		LexemeRecord lexemeRecord = create.newRecord(LEXEME);
-		lexemeRecord.setMeaningId(meaningId);
-		lexemeRecord.setWordId(wordId);
-		lexemeRecord.setDatasetCode(lexemeDataset);
-		lexemeRecord.setLevel1(1);
-		lexemeRecord.setLevel2(1);
-		lexemeRecord.setIsPublic(PUBLICITY_PUBLIC);
-		lexemeRecord.setComplexity(COMPLEXITY_DETAIL);
-		lexemeRecord.store();
-		Long lexemeId = lexemeRecord.getId();
 
 		wordLexemeMeaningId.setWordId(wordId);
 		wordLexemeMeaningId.setLexemeId(lexemeId);
@@ -1434,24 +1355,6 @@ public class CudDbService extends AbstractDataDbService {
 				.from(DEFINITION)
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.fetchInto(Long.class);
-	}
-
-	public int getWordNextHomonymNr(String wordValue, String wordLang) {
-
-		Integer currentHomonymNr = create
-				.select(DSL.max(WORD.HOMONYM_NR))
-				.from(WORD)
-				.where(
-						WORD.LANG.eq(wordLang)
-								.and(WORD.VALUE.eq(wordValue))
-								.and(WORD.IS_PUBLIC.isTrue()))
-				.fetchOneInto(Integer.class);
-
-		int homonymNr = 1;
-		if (currentHomonymNr != null) {
-			homonymNr = currentHomonymNr + 1;
-		}
-		return homonymNr;
 	}
 
 	private void deleteDefinitionFreeforms(Long definitionId) {
