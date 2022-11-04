@@ -1250,6 +1250,13 @@ with recursive word_etym_recursion (word_id, word_etym_word_id, word_etym_id, re
     from
       word_etymology we
       left outer join word_etymology_relation wer on wer.word_etym_id = we.id
+    where exists(select l.id
+                 from lexeme l,
+                      dataset ds
+                 where l.word_id = we.word_id
+                   and l.is_public = true
+                   and ds.code = l.dataset_code
+                   and ds.type = 'LEX')
     order by
       we.order_by,
       wer.order_by
