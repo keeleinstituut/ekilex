@@ -196,8 +196,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("suffixoid"),
 						rr.field("foreign"),
 						rr.field("word_meanings"),
-						rr.field("word_lexemes_poses"),
-						rr.field("word_lexemes_max_frequency"))
+						rr.field("word_lexemes_poses"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
 				.fetch(record -> {
@@ -312,8 +311,7 @@ public class SynSearchDbService extends AbstractDataDbService {
 						rr.field("suffixoid"),
 						rr.field("foreign"),
 						rr.field("word_meanings"),
-						rr.field("word_lexemes_poses"),
-						rr.field("word_lexemes_max_frequency"))
+						rr.field("word_lexemes_poses"))
 				.from(rr)
 				.orderBy(rr.field("order_by"))
 				.fetchInto(SynRelation.class);

@@ -10,8 +10,6 @@ public class SynRelation extends AbstractRelation {
 
 	private List<String> wordLexemesPoses;
 
-	private Float wordLexemesMaxFrequency;
-
 	private RelationStatus relationStatus;
 
 	private RelationStatus oppositeRelationStatus;
@@ -28,14 +26,6 @@ public class SynRelation extends AbstractRelation {
 
 	public void setWordLexemesPoses(List<String> wordLexemesPoses) {
 		this.wordLexemesPoses = wordLexemesPoses;
-	}
-
-	public Float getWordLexemesMaxFrequency() {
-		return wordLexemesMaxFrequency;
-	}
-
-	public void setWordLexemesMaxFrequency(Float wordLexemesMaxFrequency) {
-		this.wordLexemesMaxFrequency = wordLexemesMaxFrequency;
 	}
 
 	public RelationStatus getRelationStatus() {
