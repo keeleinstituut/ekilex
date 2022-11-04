@@ -36,7 +36,7 @@ import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.SynSearchService;
+import eki.ekilex.service.FullSynSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
@@ -47,7 +47,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 	private static final Logger logger = LoggerFactory.getLogger(FullSynSearchController.class);
 
 	@Autowired
-	protected SynSearchService synSearchService;
+	private FullSynSearchService fullSynSearchService;
 
 	@GetMapping(value = FULL_SYN_SEARCH_URI)
 	public String initPage(Model model) {
@@ -121,9 +121,9 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			searchHelper.addValidationMessages(detailSearchFilter);
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = fullSynSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = fullSynSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, DEFAULT_OFFSET, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
@@ -154,7 +154,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		EkiUserProfile userProfile = userProfileService.getUserProfile(userId);
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
 		Count meaningCount = new Count();
-		WordDetails details = synSearchService.getWordFullSynDetails(
+		WordDetails details = fullSynSearchService.getWordFullSynDetails(
 				wordId, languagesOrder, synCandidateDatasetCode, synCandidateLangCode, synMeaningWordLangCodes, activeTag, user, userProfile);
 
 		model.addAttribute("wordId", wordId);
@@ -174,7 +174,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
-		List<WordDescript> wordCandidates = synSearchService.getRelationWordCandidates(wordRelationId, userRole);
+		List<WordDescript> wordCandidates = fullSynSearchService.getRelationWordCandidates(wordRelationId, userRole);
 
 		model.addAttribute("wordCandidates", wordCandidates);
 		model.addAttribute("targetMeaningId", targetMeaningId);
@@ -194,7 +194,7 @@ public class FullSynSearchController extends AbstractPrivateSearchController {
 		UserContextData userContextData = getUserContextData();
 		DatasetPermission userRole = userContextData.getUserRole();
 		String wordLang = userContextData.getFullSynCandidateLangCode();
-		List<WordDescript> wordCandidates = synSearchService.getMeaningWordCandidates(wordValue, wordLang, userRole);
+		List<WordDescript> wordCandidates = fullSynSearchService.getMeaningWordCandidates(wordValue, wordLang, userRole);
 
 		model.addAttribute("wordCandidates", wordCandidates);
 		model.addAttribute("targetMeaningId", targetMeaningId);

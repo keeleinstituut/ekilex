@@ -23,7 +23,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.SearchUriData;
 import eki.ekilex.data.UserContextData;
 import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.SynSearchService;
+import eki.ekilex.service.FullSynSearchService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -33,7 +33,7 @@ public class SynSearchController extends AbstractPrivateSearchController {
 	private static final Logger logger = LoggerFactory.getLogger(SynSearchController.class);
 
 	@Autowired
-	protected SynSearchService synSearchService;
+	private FullSynSearchService fullSynSearchService;
 
 	@PostMapping(SYN_PAGING_URI)
 	public String paging(
@@ -69,9 +69,9 @@ public class SynSearchController extends AbstractPrivateSearchController {
 
 		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			wordsResult = synSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = fullSynSearchService.getWords(detailSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		} else {
-			wordsResult = synSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
+			wordsResult = fullSynSearchService.getWords(simpleSearchFilter, datasetCodes, userRole, tagNames, offset, DEFAULT_MAX_RESULTS_LIMIT, noLimit);
 		}
 
 		wordsResult.setOffset(offset);

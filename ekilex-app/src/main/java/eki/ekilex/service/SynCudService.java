@@ -113,13 +113,13 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	@Transactional
 	public void createSynMeaningWordWithCandidateData(Long targetMeaningId, Long synWordId, Long wordRelationId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
-		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWord", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
+		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWordWithCandidateData", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
 		Long sourceWordId = synSearchDbService.getSynCandidateWordId(wordRelationId);
 		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
 		String sourceWordValue = sourceWord.getWordValue();
 		String sourceWordLang = sourceWord.getLang();
 
-		updateWordRelationStatus("createSynMeaningWord", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
+		updateWordRelationStatus("createSynMeaningWordWithCandidateData", wordRelationId, RelationStatus.PROCESSED.name(), isManualEventOnUpdateEnabled);
 
 		List<LexemeRecord> sourceWordLexemes = compositionDbService.getWordLexemes(sourceWordId);
 		if (sourceWordLexemes.size() != 1) {
@@ -270,15 +270,15 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	}
 
 	private void moveChangedRelationToLast(Long relationId) {
-		List<WordRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, WORD_REL_TYPE_CODE_RAW);
 
+		List<WordRelation> existingRelations = synSearchDbService.getExistingFollowingRelationsForWord(relationId, WORD_REL_TYPE_CODE_RAW);
 		if (existingRelations.size() > 1) {
+
 			WordRelation lastRelation = existingRelations.get(existingRelations.size() - 1);
 			List<Long> existingOrderByValues = existingRelations.stream().map(WordRelation::getOrderBy).collect(Collectors.toList());
 
 			cudDbService.updateWordRelationOrderBy(relationId, lastRelation.getOrderBy());
 			existingRelations.remove(0);
-
 			existingOrderByValues.remove(existingOrderByValues.size() - 1);
 
 			int relIdx = 0;

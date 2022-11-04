@@ -95,10 +95,10 @@ public class UserProfileDbService {
 		ekiUserProfile.setShowMeaningRelationWordDatasets(showMeaningRelationWordDatasets);
 		ekiUserProfile.setIsApproveMeaningEnabled(isApproveMeaningEnabled);
 		ekiUserProfile.setActiveTagName(activeTagName);
-		if (StringUtils.isNotEmpty(preferredFullSynCandidateLang)) {
+		if (StringUtils.isNotBlank(preferredFullSynCandidateLang)) {
 			ekiUserProfile.setPreferredFullSynCandidateLang(preferredFullSynCandidateLang);
 		}
-		if (StringUtils.isNotEmpty(preferredFullSynCandidateDatasetCode)) {
+		if (StringUtils.isNotBlank(preferredFullSynCandidateDatasetCode)) {
 			ekiUserProfile.setPreferredFullSynCandidateDatasetCode(preferredFullSynCandidateDatasetCode);
 		}
 		if (CollectionUtils.isNotEmpty(preferredTagNames)) {
