@@ -545,11 +545,7 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		if (isOversizeValue) {
 			if (containsMarkup) {
 				valuePreseCut = StringUtils.substring(valuePrese, 0, oversizeLimitForMarkupBuffering);
-				int markupOpeningCount = StringUtils.countMatches(valuePreseCut, GENERIC_EKI_MARKUP_OPENING_PREFIX);
-				int markupClosingCount = StringUtils.countMatches(valuePreseCut, GENERIC_EKI_MARKUP_CLOSING_PREFIX);
-				if (markupOpeningCount > markupClosingCount) {
-					valuePreseCut = StringUtils.substringBeforeLast(valuePreseCut, GENERIC_EKI_MARKUP_OPENING_PREFIX);
-				}
+				valuePreseCut = getAllMarkupClosedCut(valuePreseCut);
 			} else {
 				valuePreseCut = StringUtils.substring(valuePrese, 0, oversizeLimit);
 			}
@@ -561,6 +557,25 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 		}
 
 		return null;
+	}
+
+	private String getAllMarkupClosedCut(String valuePrese) {
+
+		boolean containsUnclosedMarkup = containsUnclosedMarkup(valuePrese);
+
+		while (containsUnclosedMarkup) {
+			valuePrese = StringUtils.substringBeforeLast(valuePrese, GENERIC_EKI_MARKUP_OPENING_PREFIX);
+			containsUnclosedMarkup = containsUnclosedMarkup(valuePrese);
+		}
+
+		return valuePrese;
+	}
+
+	private boolean containsUnclosedMarkup(String valuePrese) {
+
+		int markupOpeningCount = StringUtils.countMatches(valuePrese, GENERIC_EKI_MARKUP_OPENING_PREFIX);
+		int markupClosingCount = StringUtils.countMatches(valuePrese, GENERIC_EKI_MARKUP_CLOSING_PREFIX);
+		return markupOpeningCount > markupClosingCount;
 	}
 
 }
