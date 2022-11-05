@@ -52,7 +52,7 @@
     <p th:utext="${paradigm.comment}" class="paradigm-comment"></p>
   </th:block>
   <th:block th:fragment="morpho-paradigm-footer(paradigm)">
-    <div th:if="${paradigm.inflectionTypeNr} != 41" class="modal-button">
+    <div class="modal-button">
       <button type="button" class="btn btn-bold pl-0 pr-0" data-toggle="modal" th:data-target="${'#morpho-modal-' + paradigmIter.index}">
         <i class="fa fa-expand-alt"></i>
         <span th:text="#{button.morpho.show}">Näita tabelina</span>
