@@ -32,4 +32,4 @@ If you want to add new styles then you should do your work in the `src/main/reso
 ## Running developer server
 * Start a tunnel between test database and your computer `ssh username@ekitest.tripledev.ee -L 5433:127.0.0.1:5432 -N` - run it at the root folder of the project. If there is no output from the command then it means everything is working. Otherwise it will output errors.
 * Install Maven application (at root folder) - `mvn clean install -D skipTests`
-* Start Ekilex server (at ekilex-app folder) - `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+* Start Ekilex server (at ekilex-app folder) - `mvn spring-boot:run -D spring-boot.run.profiles=dev`

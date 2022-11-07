@@ -193,6 +193,28 @@ function getSelectedElement( selection, tags) {
 		return element;
 	}
 }
+function addEmptySpaceAfterLink(editor) {
+	const root = editor.document.getBody();
+	const range = editor.getSelection().getRanges()[0];
+	const newRange = editor.createRange();
+	newRange.selectNodeContents(root);
+	const rangeEnd = range.endContainer.$.parentNode;
+	const newRangeEnd = newRange.getBoundaryNodes().endNode.$.parentNode;
+
+	// Add an empty space inside the editor if the link is the last element
+	if (newRangeEnd === rangeEnd) {
+		root.appendHtml('&nbsp;');
+		newRange.selectNodeContents(root);
+		newRange.collapse(false);
+		editor.getSelection().selectRanges([newRange]);
+	} else {
+		newRange.selectNodeContents(root);
+		newRange.collapse(false);
+		editor.getSelection().selectRanges([newRange]);
+		const activeElement = $(range.endContainer.$.parentNode);
+		activeElement.after('&nbsp;');
+	}
+}
 
 CKEDITOR.plugins.add('removeEkilink', {
 	icons: 'removeekilink',
@@ -203,24 +225,7 @@ CKEDITOR.plugins.add('removeEkilink', {
 				const range = editor.getSelection().getRanges()[0];
 				// Collapsed means there's nothing selected
 				if (range.collapsed) {
-					const root = editor.document.getBody();
-					const newRange = editor.createRange();
-					newRange.selectNodeContents(root);
-					const rangeEnd = range.endContainer.$.parentNode;
-					const newRangeEnd = newRange.getBoundaryNodes().endNode.$.parentNode;
-
-					// Add an empty space inside the editor if the link is the last element
-					if (newRangeEnd === rangeEnd) {
-						root.appendHtml('&nbsp;');
-						newRange.selectNodeContents(root);
-						newRange.collapse(false);
-						editor.getSelection().selectRanges([newRange]);
-					} else {
-						// Add an usable empty space after the link
-						// Currently doesn't focus the cursor on that space
-						const activeElement = $(range.endContainer.$.parentNode);
-						activeElement.after('&nbsp;');
-					}
+					addEmptySpaceAfterLink(editor);
 				} else {
 					try {
 					const element = getSelectedElement(editor.getSelection(), ['eki-link', 'ext-link']);
@@ -419,27 +424,45 @@ class ckLink {
 		}
 		
 	}
+	insertSpace() {
+		// Add a non-breaking space after the link
+		this.editor.insertHtml('&nbsp;');
+	}
 
-	insertLink() {
+	insertLink () {
 		this.validateFields();
-
 		if (this.activeType === 'external') {
 			if (!this.valid.external) {
 				return false;
 			}
+			this.checkForExistingLink()
 			const content = CKEDITOR.dom.element.createFromHtml(`<ext-link href="${this.outerLink.url.val()}" target="ext-link">${this.outerLink.title.val()}</ext-link>`);
 			this.editor.insertElement(content);
 			this.toggle('hide');
+			this.insertSpace();
 		} else {
 			if (!this.valid.internal) {
 				return false;
 			}
+			this.checkForExistingLink()
 			const content = CKEDITOR.dom.element.createFromHtml(`<eki-link data-link-id="${this.activeID}" data-link-type="${this.internalType}">${this.internalLink.title.val()}</eki-link>`);
 			this.editor.insertElement(content);
 			this.toggle('hide');
+			this.insertSpace();
 		}
-		// Add a non-breaking space after the link
-		this.editor.insertHtml('&nbsp;');
+	}
+
+	checkForExistingLink() {
+		const [selection] = this.editor.getSelection()?.getRanges();
+		if (selection) {
+			// Get the parent node of the current selection
+			const parentElement = selection?.startContainer?.$?.parentNode;
+			const linkElements = ['eki-link', 'ext-link'];
+			// Break out of parent element and add an empty space if the parent element happens to be a link
+			if (parentElement && linkElements.includes(parentElement?.localName)) {
+				addEmptySpaceAfterLink(this.editor, true);
+			}
+		}
 	}
 
 	init() {

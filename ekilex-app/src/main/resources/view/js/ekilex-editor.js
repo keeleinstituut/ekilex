@@ -29,7 +29,12 @@ function initEkiEditorDlg(editDlg, editorOptions) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		if (editFld.val()) {
 			let editFldValue = editFld.val();
-			editFldValue = editFldValue.replace("<br>", "").replaceAll("&nbsp;", " ").replaceAll('class="eki-selected"', '');
+			// Remove empty values, eki-selected class and empty elements.
+			editFldValue = editFldValue
+				.replace("<br>", "")
+				.replaceAll("&nbsp;", " ")
+				.replaceAll('class="eki-selected"', '')
+				.replace(/<[^/>][^>]*><\/[^>]+>/gm, '');
 			valueInput.val(editFldValue);
 			editFld.removeClass('is-invalid');
 			submitDialog(e, editDlg, messages["common.data.update.error"]);
