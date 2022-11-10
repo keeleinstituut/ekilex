@@ -220,8 +220,9 @@ public class ApiSearchController extends AbstractApiController {
 	}
 
 	@Order(106)
-	@GetMapping(API_SERVICES_URI + PUBLIC_WORD_URI)
-	public List<Word> getPublicWords(@RequestParam("datasetCode") String datasetCode) {
+	@GetMapping(API_SERVICES_URI + PUBLIC_WORD_URI + "/{datasetCode}")
+	@ResponseBody
+	public List<Word> getPublicWords(@PathVariable("datasetCode") String datasetCode) {
 
 		List<Word> publicWords = wordService.getPublicWords(datasetCode);
 		return publicWords;

@@ -41,7 +41,6 @@ public class WordDbService extends AbstractDataDbService {
 						w.ID.as("word_id"),
 						w.VALUE,
 						w.LANG,
-						w.HOMONYM_NR,
 						me.as("morph_exists"))
 				.from(w)
 				.where(
