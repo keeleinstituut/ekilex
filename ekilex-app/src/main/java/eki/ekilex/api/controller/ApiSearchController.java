@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
@@ -80,8 +79,7 @@ public class ApiSearchController extends AbstractApiController {
 					String requestMethod = mappingInfo.getMethodsCondition().getMethods().stream()
 							.map(RequestMethod::name)
 							.findFirst().orElse(null);
-					PatternsRequestCondition patternsCondition = mappingInfo.getPatternsCondition();
-					Set<String> allPatterns = patternsCondition.getPatterns();
+					Set<String> allPatterns = mappingInfo.getPatternValues();
 					List<String> apiPatterns = allPatterns.stream()
 							.filter(pattern -> StringUtils.startsWith(pattern, API_SERVICES_URI))
 							.collect(Collectors.toList());
