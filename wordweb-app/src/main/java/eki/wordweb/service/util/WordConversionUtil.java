@@ -39,17 +39,37 @@ public class WordConversionUtil extends AbstractConversionUtil {
 
 		for (Word word : words) {
 			String wordLang = word.getLang();
+			List<TypeDefinition> definitions = word.getDefinitions();
 			List<TypeMeaningWord> meaningWords = word.getMeaningWords();
-			if (CollectionUtils.isNotEmpty(meaningWords)) {
+			Long definitionMeaningId = null;
+
+			if (CollectionUtils.isNotEmpty(definitions)) {
+				List<TypeDefinition> primaryDefinitions = definitions.stream()
+						.filter(definition -> isComplexityMatch(definition.getComplexity(), lexComplexity))
+						.collect(Collectors.toList());
+				if (CollectionUtils.isNotEmpty(primaryDefinitions)) {
+					TypeDefinition firstDefinition = primaryDefinitions.get(0);
+					if (StringUtils.isNotBlank(firstDefinition.getValue())) {
+						Long lexemeId = firstDefinition.getLexemeId();
+						definitionMeaningId = firstDefinition.getMeaningId();
+						List<String> definitionValues = primaryDefinitions.stream()
+								.filter(definition -> definition.getLexemeId().equals(lexemeId))
+								.map(TypeDefinition::getValue)
+								.collect(Collectors.toList());
+						String definitionsWrapup = StringUtils.join(definitionValues, ", ");
+						word.setDefinitionsWrapup(definitionsWrapup);
+					}
+				}
+			}
+
+			if (definitionMeaningId != null && CollectionUtils.isNotEmpty(meaningWords)) {
 				List<TypeMeaningWord> primaryMeaningWords = meaningWords.stream()
 						.filter(meaningWord -> isComplexityMatch(meaningWord.getMwLexComplexity(), lexComplexity))
 						.collect(Collectors.toList());
 				if (CollectionUtils.isNotEmpty(primaryMeaningWords)) {
-					TypeMeaningWord firstMeaningWord = primaryMeaningWords.get(0);
-					if (StringUtils.isNotBlank(firstMeaningWord.getWord())) {
-						Long lexemeId = firstMeaningWord.getLexemeId();
-						List<String> meaningWordValues = primaryMeaningWords.stream()
-								.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
+					Long meaningWordMeaningId = definitionMeaningId;
+					List<String> meaningWordValues = primaryMeaningWords.stream()
+								.filter(meaningWord -> meaningWord.getMeaningId().equals(meaningWordMeaningId))
 								.filter(meaningWord -> StringUtils.equals(wordLang, meaningWord.getLang()))
 								.map(meaningWord -> {
 									if (meaningWord.isPrefixoid()) {
@@ -64,25 +84,6 @@ public class WordConversionUtil extends AbstractConversionUtil {
 								.collect(Collectors.toList());
 						String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
 						word.setMeaningWordsWrapup(meaningWordsWrapup);
-					}
-				}
-			}
-			List<TypeDefinition> definitions = word.getDefinitions();
-			if (CollectionUtils.isNotEmpty(definitions)) {
-				List<TypeDefinition> primaryDefinitions = definitions.stream()
-						.filter(definition -> isComplexityMatch(definition.getComplexity(), lexComplexity))
-						.collect(Collectors.toList());
-				if (CollectionUtils.isNotEmpty(primaryDefinitions)) {
-					TypeDefinition firstDefinition = primaryDefinitions.get(0);
-					if (StringUtils.isNotBlank(firstDefinition.getValue())) {
-						Long lexemeId = firstDefinition.getLexemeId();
-						List<String> definitionValues = primaryDefinitions.stream()
-								.filter(definition -> definition.getLexemeId().equals(lexemeId))
-								.map(TypeDefinition::getValue)
-								.collect(Collectors.toList());
-						String definitionsWrapup = StringUtils.join(definitionValues, ", ");
-						word.setDefinitionsWrapup(definitionsWrapup);
-					}
 				}
 			}
 		}
