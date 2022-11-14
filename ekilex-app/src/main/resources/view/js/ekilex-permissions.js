@@ -131,7 +131,7 @@ $(function() {
 			e.preventDefault();
 			const datasetCode = main.val();
 			const $languages = main.closest('form').find('[name="authLang"]');
-			const getDatasetLanguagesUrl = `${applicationUrl}permissions/dataset_languages/$${datasetCode}`;
+			const getDatasetLanguagesUrl = `${applicationUrl}permissions/dataset_languages/${datasetCode}`;
 			$.get(getDatasetLanguagesUrl).done(function(response) {
 				$languages.empty();
 				$languages.append($("<option value=''></option>"));
