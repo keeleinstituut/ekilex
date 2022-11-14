@@ -390,23 +390,33 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			Meaning tuple, Map<String, Long> langOrderByMap, List<String> destinLangs, Complexity lexComplexity, String displayLang) {
 
 		List<TypeDefinition> definitions = tuple.getDefinitions();
-		List<TypeSourceLink> allDefinitionSourceLinks = tuple.getDefinitionSourceLinks();
 		List<TypeSourceLink> meaningFreeformSourceLinks = tuple.getFreeformSourceLinks();
 
 		if (CollectionUtils.isNotEmpty(definitions)) {
 			definitions = filter(definitions, wordLang, destinLangs);
 			definitions = filter(definitions, lexComplexity);
-			applySourceLinks(definitions, allDefinitionSourceLinks);
 			lexemeWord.setDefinitions(definitions);
 			Map<String, List<TypeDefinition>> definitionsByLangUnordered = definitions.stream().collect(Collectors.groupingBy(TypeDefinition::getLang));
 			Map<String, List<TypeDefinition>> definitionsByLangOrdered = composeOrderedMap(definitionsByLangUnordered, langOrderByMap);
 			lexemeWord.setDefinitionsByLang(definitionsByLangOrdered);
 			definitions.forEach(definition -> {
+				List<TypeFreeform> notes = definition.getNotes();
+				List<TypeSourceLink> sourceLinks = definition.getSourceLinks();
 				String valuePrese = definition.getValuePrese();
 				String valuePreseCut = getOversizeValuePreseCut(valuePrese, DEFINITION_OVERSIZE_LIMIT);
-				boolean subDataExists = CollectionUtils.isNotEmpty(definition.getNotes()) || CollectionUtils.isNotEmpty(definition.getSourceLinks());
+				boolean notesExists = CollectionUtils.isNotEmpty(notes);
+				boolean sourceLinksExists = CollectionUtils.isNotEmpty(sourceLinks);
+				boolean subDataExists = notesExists || sourceLinksExists;
 				definition.setSubDataExists(subDataExists);
 				definition.setValuePreseCut(valuePreseCut);
+
+				convertUrlsToHrefs(sourceLinks);
+				if (notesExists) {
+					notes.forEach(note -> {
+						List<TypeSourceLink> noteSourceLinks = note.getSourceLinks();
+						convertUrlsToHrefs(noteSourceLinks);
+					});
+				}
 			});
 		}
 

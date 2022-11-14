@@ -34,23 +34,6 @@ public class JooqBugCompensator extends AbstractJooqBugCompensator {
 		}
 	}
 
-	public void trimDefinitions(List<TypeDefinition> definitions) {
-
-		if (CollectionUtils.isEmpty(definitions)) {
-			return;
-		}
-
-		String value;
-		for (TypeDefinition definition : definitions) {
-			value = definition.getValue();
-			value = StringUtils.trim(value);
-			definition.setValue(value);
-			value = definition.getValuePrese();
-			value = StringUtils.trim(value);
-			definition.setValuePrese(value);
-		}
-	}
-
 	public void trimUsages(List<TypeUsage> usages) {
 
 		if (CollectionUtils.isEmpty(usages)) {
@@ -106,9 +89,16 @@ public class JooqBugCompensator extends AbstractJooqBugCompensator {
 		}
 
 		for (TypeDefinition definition : definitions) {
-			List<String> notes = definition.getNotes();
-			notes = decode(notes);
-			definition.setNotes(notes);
+			List<TypeSourceLink> definitionSourceLinks = definition.getSourceLinks();
+			decodeSourceLinks(definitionSourceLinks);
+
+			List<TypeFreeform> notes = definition.getNotes();
+			if (CollectionUtils.isNotEmpty(notes)) {
+				for (TypeFreeform note : notes) {
+					List<TypeSourceLink> noteSourceLinks = note.getSourceLinks();
+					decodeSourceLinks(noteSourceLinks);
+				}
+			}
 		}
 	}
 

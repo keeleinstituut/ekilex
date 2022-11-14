@@ -11,7 +11,6 @@ import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
-import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink;
@@ -69,11 +68,6 @@ public class Tables {
      * The table <code>public.mview_ww_dataset_word_menu</code>.
      */
     public static final MviewWwDatasetWordMenu MVIEW_WW_DATASET_WORD_MENU = MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU;
-
-    /**
-     * The table <code>public.mview_ww_definition_source_link</code>.
-     */
-    public static final MviewWwDefinitionSourceLink MVIEW_WW_DEFINITION_SOURCE_LINK = MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_form</code>.

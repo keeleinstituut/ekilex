@@ -2,7 +2,6 @@ package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COUNTS;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_DEFINITION_SOURCE_LINK;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK;
@@ -58,7 +57,6 @@ import eki.wordweb.data.WordSearchElement;
 import eki.wordweb.data.db.Routines;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwCounts;
-import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink;
@@ -243,7 +241,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 					List<TypeMeaningWord> meaningWords = pojo.getMeaningWords();
 					List<TypeDefinition> definitions = pojo.getDefinitions();
 					jooqBugCompensator.trimWordTypeData(meaningWords);
-					jooqBugCompensator.trimDefinitions(definitions);
 					jooqBugCompensator.decodeDefinitions(definitions);
 					jooqBugCompensator.decodeSourceLinks(pojo.getWordEtymSourceLinks());
 					return pojo;
@@ -504,7 +501,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 				.fetchOne(record -> {
 					Word pojo = record.into(Word.class);
 					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
-					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
 					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
 					jooqBugCompensator.decodeSourceLinks(pojo.getWordEtymSourceLinks());
 					return pojo;
@@ -585,7 +581,6 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
 		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
 		MviewWwMeaningFreeformSourceLink ffsl = MVIEW_WW_MEANING_FREEFORM_SOURCE_LINK.as("ffsl");
-		MviewWwDefinitionSourceLink dsl = MVIEW_WW_DEFINITION_SOURCE_LINK.as("dsl");
 
 		Condition where = l.WORD_ID.eq(wordId);
 
@@ -604,22 +599,17 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						m.NOTES,
 						m.DEFINITIONS,
 						mr.RELATED_MEANINGS,
-						ffsl.SOURCE_LINKS.as("freeform_source_links"),
-						dsl.SOURCE_LINKS.as("definition_source_links"))
+						ffsl.SOURCE_LINKS.as("freeform_source_links"))
 				.from(
 						l.innerJoin(m).on(m.MEANING_ID.eq(l.MEANING_ID))
 								.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID))
-								.leftOuterJoin(ffsl).on(ffsl.MEANING_ID.eq(m.MEANING_ID))
-								.leftOuterJoin(dsl).on(dsl.MEANING_ID.eq(m.MEANING_ID)))
+								.leftOuterJoin(ffsl).on(ffsl.MEANING_ID.eq(m.MEANING_ID)))
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
 				.fetch(record -> {
 					Meaning pojo = record.into(Meaning.class);
-					jooqBugCompensator.trimDefinitions(pojo.getDefinitions());
-					jooqBugCompensator.trimFreeforms(pojo.getNotes());
 					jooqBugCompensator.trimWordTypeData(pojo.getRelatedMeanings());
 					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
-					jooqBugCompensator.decodeSourceLinks(pojo.getDefinitionSourceLinks());
 					jooqBugCompensator.decodeSourceLinks(pojo.getFreeformSourceLinks());
 					return pojo;
 				});

@@ -6,7 +6,6 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
-import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeDomainRecord;
 import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeMediaFileRecord;
@@ -15,6 +14,7 @@ import java.sql.Timestamp;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row11;
@@ -101,7 +101,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.definitions</code>.
      */
-    public final TableField<MviewWwMeaningRecord, TypeDefinitionRecord[]> DEFINITIONS = createField(DSL.name("definitions"), eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> DEFINITIONS = createField(DSL.name("definitions"), SQLDataType.JSON, this, "");
 
     private MviewWwMeaning(Name alias, Table<MviewWwMeaningRecord> aliased) {
         this(alias, aliased, null);
@@ -172,7 +172,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Timestamp, Timestamp, TypeDomainRecord[], TypeMediaFileRecord[], TypeMediaFileRecord[], String[], String[], String[], TypeFreeformRecord[], TypeDefinitionRecord[]> fieldsRow() {
+    public Row11<Long, Timestamp, Timestamp, TypeDomainRecord[], TypeMediaFileRecord[], TypeMediaFileRecord[], String[], String[], String[], TypeFreeformRecord[], JSON> fieldsRow() {
         return (Row11) super.fieldsRow();
     }
 }

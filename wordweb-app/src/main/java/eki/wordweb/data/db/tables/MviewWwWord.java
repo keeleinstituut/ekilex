@@ -6,7 +6,6 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
-import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
@@ -16,6 +15,7 @@ import java.sql.Timestamp;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -131,7 +131,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     /**
      * The column <code>public.mview_ww_word.definitions</code>.
      */
-    public final TableField<MviewWwWordRecord, TypeDefinitionRecord[]> DEFINITIONS = createField(DSL.name("definitions"), eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, JSON> DEFINITIONS = createField(DSL.name("definitions"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_word.od_word_recommendations</code>.

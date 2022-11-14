@@ -3,12 +3,16 @@ package eki.wordweb.data.type;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.constant.Complexity;
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.SourceLinkType;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TypeFreeform extends AbstractDataObject implements ComplexityType, SourceLinkType {
 
 	private static final long serialVersionUID = 1L;

@@ -2,10 +2,15 @@ package eki.wordweb.data.type;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TypeSourceLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -16,6 +21,7 @@ public class TypeSourceLink extends AbstractDataObject {
 
 	private Long sourceLinkId;
 
+	@JsonProperty("source_link_type")
 	private ReferenceType type;
 
 	private String name;

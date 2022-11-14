@@ -11,7 +11,6 @@ import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwCounts;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwDatasetWordMenu;
-import eki.wordweb.data.db.tables.MviewWwDefinitionSourceLink;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeFreeformSourceLink;
@@ -98,11 +97,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_dataset_word_menu</code>.
      */
     public final MviewWwDatasetWordMenu MVIEW_WW_DATASET_WORD_MENU = MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU;
-
-    /**
-     * The table <code>public.mview_ww_definition_source_link</code>.
-     */
-    public final MviewWwDefinitionSourceLink MVIEW_WW_DEFINITION_SOURCE_LINK = MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK;
 
     /**
      * The table <code>public.mview_ww_form</code>.
@@ -211,7 +205,6 @@ public class Public extends SchemaImpl {
             MviewWwCounts.MVIEW_WW_COUNTS,
             MviewWwDataset.MVIEW_WW_DATASET,
             MviewWwDatasetWordMenu.MVIEW_WW_DATASET_WORD_MENU,
-            MviewWwDefinitionSourceLink.MVIEW_WW_DEFINITION_SOURCE_LINK,
             MviewWwForm.MVIEW_WW_FORM,
             MviewWwLexeme.MVIEW_WW_LEXEME,
             MviewWwLexemeFreeformSourceLink.MVIEW_WW_LEXEME_FREEFORM_SOURCE_LINK,

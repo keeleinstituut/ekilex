@@ -43,8 +43,6 @@ public class Meaning extends AbstractDataObject {
 
 	private List<TypeSourceLink> freeformSourceLinks;
 
-	private List<TypeSourceLink> definitionSourceLinks;
-
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -155,14 +153,6 @@ public class Meaning extends AbstractDataObject {
 
 	public void setFreeformSourceLinks(List<TypeSourceLink> freeformSourceLinks) {
 		this.freeformSourceLinks = freeformSourceLinks;
-	}
-
-	public List<TypeSourceLink> getDefinitionSourceLinks() {
-		return definitionSourceLinks;
-	}
-
-	public void setDefinitionSourceLinks(List<TypeSourceLink> definitionSourceLinks) {
-		this.definitionSourceLinks = definitionSourceLinks;
 	}
 
 }

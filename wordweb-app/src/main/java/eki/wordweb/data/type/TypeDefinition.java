@@ -2,12 +2,16 @@ package eki.wordweb.data.type;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.LangType;
 import eki.wordweb.data.SourceLinkType;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TypeDefinition extends AbstractDataObject implements ComplexityType, LangType, SourceLinkType {
 
 	private static final long serialVersionUID = 1L;
@@ -28,7 +32,7 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 
 	private Complexity complexity;
 
-	private List<String> notes;
+	private List<TypeFreeform> notes;
 
 	private List<TypeSourceLink> sourceLinks;
 
@@ -105,11 +109,11 @@ public class TypeDefinition extends AbstractDataObject implements ComplexityType
 		this.complexity = complexity;
 	}
 
-	public List<String> getNotes() {
+	public List<TypeFreeform> getNotes() {
 		return notes;
 	}
 
-	public void setNotes(List<String> notes) {
+	public void setNotes(List<TypeFreeform> notes) {
 		this.notes = notes;
 	}
 

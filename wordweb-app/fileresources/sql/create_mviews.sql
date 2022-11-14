@@ -21,7 +21,7 @@ drop materialized view if exists mview_ww_definition_source_link;
 drop type if exists type_meaning_word;
 drop type if exists type_freeform;
 drop type if exists type_lang_complexity;
-drop type if exists type_definition;
+drop type if exists type_definition; -- TODO remove later
 drop type if exists type_domain;
 drop type if exists type_media_file;
 drop type if exists type_usage;
@@ -43,15 +43,6 @@ create type type_lang_complexity as (
 				dataset_code varchar(10),
 				lex_complexity varchar(100),
 				data_complexity varchar(100));
-create type type_definition as (
-				lexeme_id bigint,
-				meaning_id bigint,
-				definition_id bigint,
-				value text,
-				value_prese text,
-				lang char(3),
-				complexity varchar(100),
-				notes text array);
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_media_file as (freeform_id bigint, source_url text, title text, complexity varchar(100));
 create type type_source_link as (
@@ -196,7 +187,7 @@ dblink(
 	last_activity_event_on timestamp,
 	lang_complexities type_lang_complexity array,
 	meaning_words type_meaning_word array,
-	definitions type_definition array,
+	definitions json,
 	od_word_recommendations type_freeform array,
 	freq_value numeric(12,7),
 	freq_rank bigint,
@@ -255,7 +246,7 @@ dblink(
 	semantic_types text array,
 	learner_comments text array,
 	notes type_freeform array,
-	definitions type_definition array
+	definitions json
 );
 
 create materialized view mview_ww_lexeme as
@@ -396,15 +387,6 @@ dblink(
 	source_links type_source_link array
 );
 
-create materialized view mview_ww_definition_source_link as
-select * from
-dblink(
-	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from view_ww_definition_source_link') as definition_source_link(
-	meaning_id bigint,
-	source_links type_source_link array
-);
-
 create materialized view mview_ww_dataset as
 select * from
 dblink(
@@ -501,7 +483,6 @@ create index mview_ww_word_etym_source_link_word_id_idx on mview_ww_word_etym_so
 create index mview_ww_lexeme_source_link_word_id_idx on mview_ww_lexeme_source_link (lexeme_id);
 create index mview_ww_lexeme_freeform_source_link_word_id_idx on mview_ww_lexeme_freeform_source_link (lexeme_id);
 create index mview_ww_meaning_freeform_source_link_word_id_idx on mview_ww_meaning_freeform_source_link (meaning_id);
-create index mview_ww_definition_source_link_meaning_id_idx on mview_ww_definition_source_link (meaning_id);
 create index mview_ww_classifier_name_code_lang_type_idx on mview_ww_classifier (name, code, lang, type);
 create index mview_ww_classifier_name_origin_code_lang_type_idx on mview_ww_classifier (name, origin, code, lang, type);
 create index mview_ww_counts_dataset_code_idx on mview_ww_counts (dataset_code);
