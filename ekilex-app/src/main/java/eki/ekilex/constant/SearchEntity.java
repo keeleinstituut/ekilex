@@ -19,7 +19,8 @@ public enum SearchEntity {
 			SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON}),
 	TERM(new SearchKey[] {
 			SearchKey.VALUE, SearchKey.ID, SearchKey.LANGUAGE, SearchKey.WORD_TYPE, SearchKey.LEXEME_REGISTER, SearchKey.LEXEME_VALUE_STATE, SearchKey.WORD_FORUM,
-			SearchKey.LEXEME_NOTE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY, SearchKey.WORD_RELATION, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON}),
+			SearchKey.LEXEME_NOTE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.PUBLICITY, SearchKey.WORD_RELATION, SearchKey.CREATED_OR_UPDATED_BY,
+			SearchKey.LAST_UPDATE_ON, SearchKey.UPDATED_ON}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.FREQUENCY, SearchKey.RANK}),
 	DEFINITION(new SearchKey[] {
 			SearchKey.VALUE_AND_EXISTS, SearchKey.LANGUAGE, SearchKey.PUBLICITY, SearchKey.COMPLEXITY, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME, SearchKey.DEFINITION_NOTE}),

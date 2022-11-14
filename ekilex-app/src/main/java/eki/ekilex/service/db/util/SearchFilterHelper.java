@@ -19,11 +19,13 @@ import static eki.ekilex.data.db.Tables.MEANING_FORUM;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_SEMANTIC_TYPE;
+import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_FORUM;
 import static eki.ekilex.data.db.Tables.WORD_FREEFORM;
 import static eki.ekilex.data.db.Tables.WORD_FREQ;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
+import static eki.ekilex.data.db.Tables.WORD_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static java.util.stream.Collectors.toList;
@@ -56,6 +58,8 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ActivityEntity;
+import eki.common.constant.ActivityFunct;
+import eki.common.constant.ActivityOwner;
 import eki.common.constant.FreeformType;
 import eki.common.constant.GlobalConstant;
 import eki.ekilex.constant.SearchKey;
@@ -86,16 +90,18 @@ import eki.ekilex.data.db.tables.MeaningSemanticType;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordActivityLog;
 import eki.ekilex.data.db.tables.WordForum;
 import eki.ekilex.data.db.tables.WordFreeform;
 import eki.ekilex.data.db.tables.WordFreq;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
+import eki.ekilex.data.db.tables.WordLastActivityLog;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordWordType;
 
 @Component
-public class SearchFilterHelper implements GlobalConstant {
+public class SearchFilterHelper implements GlobalConstant, ActivityFunct {
 
 	private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
 
@@ -639,6 +645,73 @@ public class SearchFilterHelper implements GlobalConstant {
 			where = where.and(critWhere);
 		}
 		return where;
+	}
+
+	public Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition wherew) throws Exception {
+
+		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
+		WordLastActivityLog wlal = WORD_LAST_ACTIVITY_LOG.as("wlal");
+		ActivityLog al = ACTIVITY_LOG.as("al");
+
+		List<SearchCriterion> filteredCriteriaByCreatedOrUpdatedByOnly = filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY);
+		boolean isFilterByCreatedOrUpdatedByOnly = CollectionUtils.isNotEmpty(filteredCriteriaByCreatedOrUpdatedByOnly);
+
+		// by all logs
+		boolean isFilterByAllLogs = containsSearchKeys(searchCriteria, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
+
+		if (isFilterByAllLogs || isFilterByCreatedOrUpdatedByOnly) {
+
+			List<SearchCriterion> filteredCriteriaByAllLogs = filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON, SearchKey.CREATED_ON);
+
+			if (CollectionUtils.isNotEmpty(filteredCriteriaByAllLogs)) {
+
+				Condition where1 = wal.WORD_ID.eq(wordIdField).and(wal.ACTIVITY_LOG_ID.eq(al.ID));
+
+				for (SearchCriterion criterion : filteredCriteriaByAllLogs) {
+					String critValue = criterion.getSearchValue().toString();
+					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
+						where1 = applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+					} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
+						where1 = where1
+								.andNot(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()).and(al.FUNCT_NAME.like(LIKE_CREATE)));
+						where1 = applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+					} else if (SearchKey.CREATED_ON.equals(criterion.getSearchKey())) {
+						where1 = where1
+								.and(al.OWNER_NAME.eq(ActivityOwner.WORD.name()))
+								.and(al.OWNER_ID.eq(wordIdField))
+								.and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name()))
+								.and(al.FUNCT_NAME.like(LIKE_CREATE));
+						where1 = applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+					}
+				}
+				wherew = wherew.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
+			}
+		}
+
+		// by last logs
+		boolean isFilterByLastLogs = containsSearchKeys(searchCriteria, SearchKey.LAST_UPDATE_ON);
+
+		if (isFilterByLastLogs) {
+
+			List<SearchCriterion> filteredCriteriaByLastLogs = filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.LAST_UPDATE_ON);
+
+			if (CollectionUtils.isNotEmpty(filteredCriteriaByLastLogs)) {
+
+				Condition where1 = wlal.WORD_ID.eq(wordIdField).and(wlal.ACTIVITY_LOG_ID.eq(al.ID));
+
+				for (SearchCriterion criterion : filteredCriteriaByLastLogs) {
+					String critValue = criterion.getSearchValue().toString();
+					if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
+						where1 = applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
+					} else if (SearchKey.LAST_UPDATE_ON.equals(criterion.getSearchKey())) {
+						where1 = applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
+					}
+				}
+				wherew = wherew.andExists(DSL.select(wlal.ID).from(wlal, al).where(where1));
+			}
+		}
+
+		return wherew;
 	}
 
 	public Condition applyFormFrequencyFilters(List<SearchCriterion> searchCriteria, Field<Long> formIdField, Condition where) {

@@ -14,7 +14,6 @@ import static eki.ekilex.data.db.Tables.MEANING_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_LAST_ACTIVITY_LOG;
 import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_ACTIVITY_LOG;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -61,7 +60,6 @@ import eki.ekilex.data.db.tables.MeaningActivityLog;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLastActivityLog;
 import eki.ekilex.data.db.tables.Word;
-import eki.ekilex.data.db.tables.WordActivityLog;
 
 @Component
 public class TermSearchConditionComposer implements GlobalConstant, ActivityFunct {
@@ -125,7 +123,7 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 				}
 
 				wherew = searchFilterHelper.applyIdFilters(SearchKey.ID, searchCriteria, w1.ID, wherew);
-				wherew = applyWordActivityLogFilters(searchCriteria, w1.ID, wherew);
+				wherew = searchFilterHelper.applyWordActivityLogFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeValueFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordTypeExistsFilters(searchCriteria, w1.ID, wherew);
 				wherew = searchFilterHelper.applyWordRelationValueFilters(searchCriteria, w1.ID, wherew);
@@ -556,35 +554,6 @@ public class TermSearchConditionComposer implements GlobalConstant, ActivityFunc
 
 		wherem = wherem.andExists(DSL.select(a1.field("meaning_id")).from(a1).where(a1.field("meaning_id", Long.class).eq(m1.ID)));
 		return wherem;
-	}
-
-	private Condition applyWordActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> wordIdField, Condition wherew) throws Exception {
-
-		List<SearchCriterion> filteredCriteria = searchFilterHelper.filterCriteriaBySearchKeys(searchCriteria, SearchKey.CREATED_OR_UPDATED_BY, SearchKey.UPDATED_ON);
-
-		if (CollectionUtils.isEmpty(filteredCriteria)) {
-			return wherew;
-		}
-
-		WordActivityLog wal = WORD_ACTIVITY_LOG.as("wal");
-		ActivityLog al = ACTIVITY_LOG.as("al");
-		Condition where1 = wal.WORD_ID.eq(wordIdField).and(wal.ACTIVITY_LOG_ID.eq(al.ID));
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			String critValue = criterion.getSearchValue().toString();
-			if (SearchKey.CREATED_OR_UPDATED_BY.equals(criterion.getSearchKey())) {
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_BY, where1, true);
-			} else if (SearchKey.UPDATED_ON.equals(criterion.getSearchKey())) {
-				where1 = where1
-						.and(al.OWNER_NAME.in(ActivityOwner.WORD.name(), ActivityOwner.LEXEME.name()))
-						.andNot(al.ENTITY_NAME.eq(ActivityEntity.GRAMMAR.name()))
-						.andNot(al.FUNCT_NAME.eq(JOIN).and(al.ENTITY_NAME.eq(ActivityEntity.WORD.name())))
-						.andNot(al.FUNCT_NAME.eq(JOIN_WORDS));
-				where1 = searchFilterHelper.applyValueFilter(critValue, criterion.isNot(), criterion.getSearchOperand(), al.EVENT_ON, where1, false);
-			}
-		}
-		wherew = wherew.andExists(DSL.select(wal.ID).from(wal, al).where(where1));
-		return wherew;
 	}
 
 	private Condition applyMeaningActivityLogFilters(List<SearchCriterion> searchCriteria, Field<Long> meaningIdField, Condition wherem) throws Exception {
