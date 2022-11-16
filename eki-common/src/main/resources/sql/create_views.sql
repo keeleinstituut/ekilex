@@ -216,7 +216,7 @@ from (
          group by w.value,
                   f.value)) ws,
   (select lc.word,
-          array_agg(distinct row (
+          json_agg(distinct row (
                     case
                       when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
                       else 'other'

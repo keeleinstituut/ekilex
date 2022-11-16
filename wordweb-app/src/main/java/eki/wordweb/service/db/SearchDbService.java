@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.JSON;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
@@ -125,7 +126,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 		Field<String> wgf = DSL.field(DSL.val(WORD_SEARCH_GROUP_WORD));
 
-		Table<Record5<String, String, String, Long, TypeLangComplexityRecord[]>> ws = DSL
+		Table<Record5<String, String, String, Long, JSON>> ws = DSL
 				.select(
 						wgf.as("sgroup"),
 						w.WORD,

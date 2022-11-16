@@ -163,7 +163,7 @@ dblink(
 	word text,
 	crit text,
 	lang_order_by bigint,
-	lang_complexities type_lang_complexity array
+	lang_complexities json
 );
 
 create materialized view mview_ww_word as

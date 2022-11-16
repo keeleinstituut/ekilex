@@ -6,10 +6,10 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordSearchRecord;
-import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -66,7 +66,7 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     /**
      * The column <code>public.mview_ww_word_search.lang_complexities</code>.
      */
-    public final TableField<MviewWwWordSearchRecord, TypeLangComplexityRecord[]> LANG_COMPLEXITIES = createField(DSL.name("lang_complexities"), eki.wordweb.data.db.udt.TypeLangComplexity.TYPE_LANG_COMPLEXITY.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordSearchRecord, JSON> LANG_COMPLEXITIES = createField(DSL.name("lang_complexities"), SQLDataType.JSON, this, "");
 
     private MviewWwWordSearch(Name alias, Table<MviewWwWordSearchRecord> aliased) {
         this(alias, aliased, null);
@@ -137,7 +137,7 @@ public class MviewWwWordSearch extends TableImpl<MviewWwWordSearchRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<String, String, String, Long, TypeLangComplexityRecord[]> fieldsRow() {
+    public Row5<String, String, String, Long, JSON> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 }
