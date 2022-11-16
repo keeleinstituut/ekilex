@@ -586,8 +586,8 @@ from (select w.id as word_id,
                                 wd.value_prese,
                                 wd.lang,
                                 wd.complexity,
-                                source_links,
-                                notes
+                                null,
+                                null
                                 )::type_definition
                                 order by
                                 wd.ds_order_by,
@@ -608,84 +608,15 @@ from (select w.id as word_id,
                                 d.lang,
                                 d.complexity,
                                 d.order_by def_order_by,
-                                ds.order_by ds_order_by,
-                                source_links,
-                                (select json_agg(notes) as notes
-                                 from (select ff.value_prese as value,
-                                              json_agg(row (
-                                                         'FREEFORM',
-                                                         ffsl.freeform_id,
-                                                         ffsl.source_link_id,
-                                                         ffsl.type,
-                                                         ffsl.name,
-                                                         ffsl.value,
-                                                         ffsl.order_by,
-                                                         ffsl.source_id,
-                                                         ffsl.source_props
-                                                         )::type_source_link
-                                                       order by
-                                                         ffsl.freeform_id,
-                                                         ffsl.order_by) source_links
-                                       from definition_freeform dff,
-                                            freeform ff
-                                              left outer join (select ffsl.freeform_id,
-                                                                      ffsl.id source_link_id,
-                                                                      ffsl.type,
-                                                                      ffsl.name,
-                                                                      ffsl.value,
-                                                                      ffsl.order_by,
-                                                                      s.source_id,
-                                                                      s.source_props
-                                                               from freeform_source_link ffsl,
-                                                                    (select s.id source_id,
-                                                                            array_agg(ff.value_prese order by ff.order_by) source_props
-                                                                     from source s,
-                                                                          source_freeform sff,
-                                                                          freeform ff
-                                                                     where sff.source_id = s.id
-                                                                       and sff.freeform_id = ff.id
-                                                                     group by s.id) s
-                                                               where ffsl.source_id = s.source_id) ffsl on ffsl.freeform_id = ff.id
-                                       where dff.definition_id = d.id
-                                         and ff.id = dff.freeform_id
-                                         and ff.type = 'NOTE'
-                                         and ff.is_public = true
-                                       group by ff.id, ff.value_prese) notes) notes
-                         from lexeme l,
-                              dataset ds,
-                              definition d
-                                left outer join (select dsl.definition_id,
-                                                        json_agg(row (
-                                                                   'DEFINITION',
-                                                                   dsl.definition_id,
-                                                                   dsl.id,
-                                                                   dsl.type,
-                                                                   dsl.name,
-                                                                   dsl.value,
-                                                                   dsl.order_by,
-                                                                   s.source_id,
-                                                                   s.source_props
-                                                                   )::type_source_link
-                                                                 order by
-                                                                   dsl.definition_id,
-                                                                   dsl.order_by) source_links
-                                                 from definition_source_link dsl
-                                                        left outer join
-                                                      (select s.id source_id,
-                                                              array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
-                                                       from source s,
-                                                            source_freeform sff,
-                                                            freeform ff
-                                                       where sff.source_id = s.id
-                                                         and sff.freeform_id = ff.id
-                                                         and ff.type not in ('SOURCE_FILE', 'EXTERNAL_SOURCE_ID')
-                                                       group by s.id) s on s.source_id = dsl.source_id
-                                                 group by dsl.definition_id) source_links on source_links.definition_id = d.id
+                                ds.order_by ds_order_by
+                         from lexeme l
+                           inner join dataset ds
+                                   on ds.code = l.dataset_code
+                           inner join definition d
+                                   on d.meaning_id = l.meaning_id
+                                  and d.is_public = true
                          where l.is_public = true
-                           and l.dataset_code = ds.code
-                           and l.meaning_id = d.meaning_id
-                           and ds.is_public = true
-                           and d.is_public = true) wd
+                         and   ds.is_public = true) wd
                    group by wd.word_id) wd
                on wd.word_id = w.word_id
   left outer join (select wf.word_id,
