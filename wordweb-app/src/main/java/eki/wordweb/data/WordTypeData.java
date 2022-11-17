@@ -2,9 +2,13 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public abstract class WordTypeData extends AbstractDataObject implements LangType, DecoratedWordType {
 
 	private static final long serialVersionUID = 1L;

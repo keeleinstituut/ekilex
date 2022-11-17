@@ -5,14 +5,12 @@ package eki.ekilex.data.db.tables.records;
 
 
 import eki.ekilex.data.db.tables.ViewWwWord;
-import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
-import eki.ekilex.data.db.udt.records.TypeFreeformRecord;
 import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
-import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import org.jooq.JSON;
 import org.jooq.impl.TableRecordImpl;
 
 
@@ -237,43 +235,43 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     /**
      * Setter for <code>public.view_ww_word.meaning_words</code>.
      */
-    public void setMeaningWords(TypeMeaningWordRecord[] value) {
+    public void setMeaningWords(JSON value) {
         set(15, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.meaning_words</code>.
      */
-    public TypeMeaningWordRecord[] getMeaningWords() {
-        return (TypeMeaningWordRecord[]) get(15);
+    public JSON getMeaningWords() {
+        return (JSON) get(15);
     }
 
     /**
      * Setter for <code>public.view_ww_word.definitions</code>.
      */
-    public void setDefinitions(TypeDefinitionRecord[] value) {
+    public void setDefinitions(JSON value) {
         set(16, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.definitions</code>.
      */
-    public TypeDefinitionRecord[] getDefinitions() {
-        return (TypeDefinitionRecord[]) get(16);
+    public JSON getDefinitions() {
+        return (JSON) get(16);
     }
 
     /**
      * Setter for <code>public.view_ww_word.od_word_recommendations</code>.
      */
-    public void setOdWordRecommendations(TypeFreeformRecord[] value) {
+    public void setOdWordRecommendations(JSON value) {
         set(17, value);
     }
 
     /**
      * Getter for <code>public.view_ww_word.od_word_recommendations</code>.
      */
-    public TypeFreeformRecord[] getOdWordRecommendations() {
-        return (TypeFreeformRecord[]) get(17);
+    public JSON getOdWordRecommendations() {
+        return (JSON) get(17);
     }
 
     /**
@@ -360,7 +358,7 @@ public class ViewWwWordRecord extends TableRecordImpl<ViewWwWordRecord> {
     /**
      * Create a detached, initialised ViewWwWordRecord
      */
-    public ViewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, TypeMeaningWordRecord[] meaningWords, TypeDefinitionRecord[] definitions, TypeFreeformRecord[] odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy) {
+    public ViewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, JSON meaningWords, JSON definitions, JSON odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Long wordTypeOrderBy) {
         super(ViewWwWord.VIEW_WW_WORD);
 
         setWordId(wordId);

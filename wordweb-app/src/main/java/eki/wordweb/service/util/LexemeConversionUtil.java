@@ -277,7 +277,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			for (TypeMeaningWord meaningWord : meaningWords) {
 				meaningWord.setType(SynonymType.MEANING_WORD);
 
-				cleanEscapeSym(meaningWord.getMwLexGovernments());
 				classifierUtil.applyClassifiers(meaningWord, displayLang);
 				setWordTypeFlags(meaningWord);
 				boolean additionalDataExists = (meaningWord.getAspect() != null)
@@ -349,7 +348,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 					});
 				}
 
-				cleanEscapeSym(meaningRelSyn.getMwLexGovernments());
 				classifierUtil.applyClassifiers(meaningRelSyn, displayLang);
 				boolean additionalDataExists = (meaningRelSyn.getAspect() != null)
 						|| (meaningRelSyn.getMwLexValueState() != null)
@@ -372,17 +370,6 @@ public class LexemeConversionUtil extends AbstractConversionUtil {
 			destinLangSynonymsByLangOrdered = composeOrderedMap(destinLangSynonymsByLangUnordered, langOrderByMap);
 		}
 		lexemeWord.setDestinLangSynonymsByLang(destinLangSynonymsByLangOrdered);
-	}
-
-	//masking syms added at aggregation because nested complex type array masking fail by postgres
-	private void cleanEscapeSym(List<TypeFreeform> governments) {
-		if (CollectionUtils.isEmpty(governments)) {
-			return;
-		}
-		for (TypeFreeform government : governments) {
-			String cleanValue = StringUtils.replaceChars(government.getValue(), TEMP_CONVERSION_PLACEHOLDER, ' ');
-			government.setValue(cleanValue);
-		}
 	}
 
 	private void populateMeaning(

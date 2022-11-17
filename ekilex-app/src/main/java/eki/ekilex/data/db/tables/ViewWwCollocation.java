@@ -6,10 +6,10 @@ package eki.ekilex.data.db.tables;
 
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwCollocationRecord;
-import eki.ekilex.data.db.udt.records.TypeCollocMemberRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row15;
@@ -111,7 +111,7 @@ public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
     /**
      * The column <code>public.view_ww_collocation.colloc_members</code>.
      */
-    public final TableField<ViewWwCollocationRecord, TypeCollocMemberRecord[]> COLLOC_MEMBERS = createField(DSL.name("colloc_members"), eki.ekilex.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER.getDataType().getArrayDataType(), this, "");
+    public final TableField<ViewWwCollocationRecord, JSON> COLLOC_MEMBERS = createField(DSL.name("colloc_members"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.view_ww_collocation.complexity</code>.
@@ -123,7 +123,7 @@ public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
     }
 
     private ViewWwCollocation(Name alias, Table<ViewWwCollocationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_collocation\" as  SELECT l1.id AS lexeme_id,\n    l1.word_id,\n    pgr1.id AS pos_group_id,\n    pgr1.pos_group_code,\n    pgr1.order_by AS pos_group_order_by,\n    rgr1.id AS rel_group_id,\n    rgr1.name AS rel_group_name,\n    rgr1.order_by AS rel_group_order_by,\n    lc1.group_order AS colloc_group_order,\n    c.id AS colloc_id,\n    c.value AS colloc_value,\n    c.definition AS colloc_definition,\n    c.usages AS colloc_usages,\n    array_agg(ROW(lw2.lexeme_id, lw2.word_id, (' '::text || lw2.word), (' '::text || lc2.member_form), lw2.homonym_nr, lc2.conjunct, lc2.weight)::type_colloc_member ORDER BY lc2.member_order) AS colloc_members,\n    c.complexity\n   FROM (((((((collocation c\n     JOIN lex_colloc lc1 ON ((lc1.collocation_id = c.id)))\n     JOIN lex_colloc lc2 ON ((lc2.collocation_id = c.id)))\n     JOIN lexeme l1 ON (((l1.id = lc1.lexeme_id) AND (l1.is_public = true))))\n     JOIN dataset l1ds ON ((((l1ds.code)::text = (l1.dataset_code)::text) AND (l1ds.is_public = true))))\n     JOIN ( SELECT DISTINCT l2.id AS lexeme_id,\n            l2.word_id,\n            w2.value AS word,\n            w2.homonym_nr\n           FROM lexeme l2,\n            word w2,\n            dataset l2ds\n          WHERE ((l2.is_public = true) AND ((l2ds.code)::text = (l2.dataset_code)::text) AND (l2ds.is_public = true) AND (l2.word_id = w2.id) AND (w2.is_public = true))) lw2 ON ((lw2.lexeme_id = lc2.lexeme_id)))\n     JOIN lex_colloc_rel_group rgr1 ON ((lc1.rel_group_id = rgr1.id)))\n     JOIN lex_colloc_pos_group pgr1 ON ((pgr1.id = rgr1.pos_group_id)))\n  GROUP BY l1.id, c.id, pgr1.id, rgr1.id, lc1.id\n  ORDER BY l1.level1, l1.level2, pgr1.order_by, rgr1.order_by, lc1.group_order, c.id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_collocation\" as  SELECT l1.id AS lexeme_id,\n    l1.word_id,\n    pgr1.id AS pos_group_id,\n    pgr1.pos_group_code,\n    pgr1.order_by AS pos_group_order_by,\n    rgr1.id AS rel_group_id,\n    rgr1.name AS rel_group_name,\n    rgr1.order_by AS rel_group_order_by,\n    lc1.group_order AS colloc_group_order,\n    c.id AS colloc_id,\n    c.value AS colloc_value,\n    c.definition AS colloc_definition,\n    c.usages AS colloc_usages,\n    json_agg(ROW(lw2.lexeme_id, lw2.word_id, lw2.word, lc2.member_form, lw2.homonym_nr, lc2.conjunct, lc2.weight)::type_colloc_member ORDER BY lc2.member_order) AS colloc_members,\n    c.complexity\n   FROM (((((((collocation c\n     JOIN lex_colloc lc1 ON ((lc1.collocation_id = c.id)))\n     JOIN lex_colloc lc2 ON ((lc2.collocation_id = c.id)))\n     JOIN lexeme l1 ON (((l1.id = lc1.lexeme_id) AND (l1.is_public = true))))\n     JOIN dataset l1ds ON ((((l1ds.code)::text = (l1.dataset_code)::text) AND (l1ds.is_public = true))))\n     JOIN ( SELECT DISTINCT l2.id AS lexeme_id,\n            l2.word_id,\n            w2.value AS word,\n            w2.homonym_nr\n           FROM lexeme l2,\n            word w2,\n            dataset l2ds\n          WHERE ((l2.is_public = true) AND ((l2ds.code)::text = (l2.dataset_code)::text) AND (l2ds.is_public = true) AND (l2.word_id = w2.id) AND (w2.is_public = true))) lw2 ON ((lw2.lexeme_id = lc2.lexeme_id)))\n     JOIN lex_colloc_rel_group rgr1 ON ((lc1.rel_group_id = rgr1.id)))\n     JOIN lex_colloc_pos_group pgr1 ON ((pgr1.id = rgr1.pos_group_id)))\n  GROUP BY l1.id, c.id, pgr1.id, rgr1.id, lc1.id\n  ORDER BY l1.level1, l1.level2, pgr1.order_by, rgr1.order_by, lc1.group_order, c.id;"));
     }
 
     /**
@@ -187,7 +187,7 @@ public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, Long, Long, String, Long, Long, String, Long, Integer, Long, String, String, String[], TypeCollocMemberRecord[], String> fieldsRow() {
+    public Row15<Long, Long, Long, String, Long, Long, String, Long, Integer, Long, String, String, String[], JSON, String> fieldsRow() {
         return (Row15) super.fieldsRow();
     }
 }

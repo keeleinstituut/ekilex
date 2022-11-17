@@ -6,10 +6,10 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwCollocationRecord;
-import eki.wordweb.data.db.udt.records.TypeCollocMemberRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row15;
@@ -111,7 +111,7 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
     /**
      * The column <code>public.mview_ww_collocation.colloc_members</code>.
      */
-    public final TableField<MviewWwCollocationRecord, TypeCollocMemberRecord[]> COLLOC_MEMBERS = createField(DSL.name("colloc_members"), eki.wordweb.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwCollocationRecord, JSON> COLLOC_MEMBERS = createField(DSL.name("colloc_members"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.complexity</code>.
@@ -187,7 +187,7 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row15<Long, Long, Long, String, Long, Long, String, Long, Integer, Long, String, String, String[], TypeCollocMemberRecord[], String> fieldsRow() {
+    public Row15<Long, Long, Long, String, Long, Long, String, Long, Integer, Long, String, String, String[], JSON, String> fieldsRow() {
         return (Row15) super.fieldsRow();
     }
 }

@@ -5,13 +5,11 @@ package eki.ekilex.data.db.tables.records;
 
 
 import eki.ekilex.data.db.tables.ViewWwLexeme;
-import eki.ekilex.data.db.udt.records.TypeFreeformRecord;
 import eki.ekilex.data.db.udt.records.TypeLangComplexityRecord;
-import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
-import eki.ekilex.data.db.udt.records.TypeUsageRecord;
 
 import java.math.BigDecimal;
 
+import org.jooq.JSON;
 import org.jooq.impl.TableRecordImpl;
 
 
@@ -306,15 +304,15 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     /**
      * Setter for <code>public.view_ww_lexeme.meaning_words</code>.
      */
-    public void setMeaningWords(TypeMeaningWordRecord[] value) {
+    public void setMeaningWords(JSON value) {
         set(20, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.meaning_words</code>.
      */
-    public TypeMeaningWordRecord[] getMeaningWords() {
-        return (TypeMeaningWordRecord[]) get(20);
+    public JSON getMeaningWords() {
+        return (JSON) get(20);
     }
 
     /**
@@ -334,57 +332,57 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     /**
      * Setter for <code>public.view_ww_lexeme.notes</code>.
      */
-    public void setNotes(TypeFreeformRecord[] value) {
+    public void setNotes(JSON value) {
         set(22, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.notes</code>.
      */
-    public TypeFreeformRecord[] getNotes() {
-        return (TypeFreeformRecord[]) get(22);
+    public JSON getNotes() {
+        return (JSON) get(22);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.grammars</code>.
      */
-    public void setGrammars(TypeFreeformRecord[] value) {
+    public void setGrammars(JSON value) {
         set(23, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.grammars</code>.
      */
-    public TypeFreeformRecord[] getGrammars() {
-        return (TypeFreeformRecord[]) get(23);
+    public JSON getGrammars() {
+        return (JSON) get(23);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.governments</code>.
      */
-    public void setGovernments(TypeFreeformRecord[] value) {
+    public void setGovernments(JSON value) {
         set(24, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.governments</code>.
      */
-    public TypeFreeformRecord[] getGovernments() {
-        return (TypeFreeformRecord[]) get(24);
+    public JSON getGovernments() {
+        return (JSON) get(24);
     }
 
     /**
      * Setter for <code>public.view_ww_lexeme.usages</code>.
      */
-    public void setUsages(TypeUsageRecord[] value) {
+    public void setUsages(JSON value) {
         set(25, value);
     }
 
     /**
      * Getter for <code>public.view_ww_lexeme.usages</code>.
      */
-    public TypeUsageRecord[] getUsages() {
-        return (TypeUsageRecord[]) get(25);
+    public JSON getUsages() {
+        return (JSON) get(25);
     }
 
     // -------------------------------------------------------------------------
@@ -401,7 +399,7 @@ public class ViewWwLexemeRecord extends TableRecordImpl<ViewWwLexemeRecord> {
     /**
      * Create a detached, initialised ViewWwLexemeRecord
      */
-    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, TypeMeaningWordRecord[] meaningWords, String[] adviceNotes, TypeFreeformRecord[] notes, TypeFreeformRecord[] grammars, TypeFreeformRecord[] governments, TypeUsageRecord[] usages) {
+    public ViewWwLexemeRecord(Long lexemeId, Long wordId, Long meaningId, String datasetCode, String datasetType, String datasetName, String valueStateCode, String proficiencyLevelCode, Integer reliability, Integer level1, Integer level2, BigDecimal weight, String complexity, Long datasetOrderBy, Long lexemeOrderBy, TypeLangComplexityRecord[] langComplexities, String[] registerCodes, String[] posCodes, String[] regionCodes, String[] derivCodes, JSON meaningWords, String[] adviceNotes, JSON notes, JSON grammars, JSON governments, JSON usages) {
         super(ViewWwLexeme.VIEW_WW_LEXEME);
 
         setLexemeId(lexemeId);

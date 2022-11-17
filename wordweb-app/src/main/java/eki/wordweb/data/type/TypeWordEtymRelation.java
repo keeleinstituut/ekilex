@@ -1,7 +1,12 @@
 package eki.wordweb.data.type;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.data.AbstractDataObject;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TypeWordEtymRelation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -10,8 +15,10 @@ public class TypeWordEtymRelation extends AbstractDataObject {
 
 	private String comment;
 
+	@JsonProperty("is_questionable")
 	private boolean isQuestionable;
 
+	@JsonProperty("is_compound")
 	private boolean isCompound;
 
 	private Long relatedWordId;

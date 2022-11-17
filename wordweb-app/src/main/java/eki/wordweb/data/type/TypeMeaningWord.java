@@ -2,12 +2,16 @@ package eki.wordweb.data.type;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.constant.Complexity;
 import eki.common.constant.SynonymType;
 import eki.common.data.Classifier;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.WordTypeData;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TypeMeaningWord extends WordTypeData implements ComplexityType {
 
 	private static final long serialVersionUID = 1L;

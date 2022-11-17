@@ -1,7 +1,11 @@
 package eki.wordweb.data.type;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.data.AbstractDataObject;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TypeCollocMember extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

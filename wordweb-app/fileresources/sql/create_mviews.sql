@@ -18,10 +18,12 @@ drop materialized view if exists mview_ww_lexeme_freeform_source_link;
 drop materialized view if exists mview_ww_meaning_freeform_source_link;
 drop materialized view if exists mview_ww_definition_source_link;
 
+drop type if exists type_lang_complexity;
+
+-- TODO following types are no longer in use. delete drop scripts later:
 drop type if exists type_meaning_word;
 drop type if exists type_freeform;
-drop type if exists type_lang_complexity;
-drop type if exists type_definition; -- TODO remove later
+drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_media_file;
 drop type if exists type_usage;
@@ -43,106 +45,6 @@ create type type_lang_complexity as (
 				dataset_code varchar(10),
 				lex_complexity varchar(100),
 				data_complexity varchar(100));
-create type type_domain as (origin varchar(100), code varchar(100));
-create type type_media_file as (freeform_id bigint, source_url text, title text, complexity varchar(100));
-create type type_source_link as (
-				ref_owner varchar(100),
-				owner_id bigint,
-				source_link_id bigint,
-				source_link_type varchar(100),
-				name text,
-				value text,
-				order_by bigint,
-				source_id bigint,
-				source_props text array);
-create type type_usage as (
-				usage_id bigint,
-				usage text,
-				usage_prese text,
-				usage_lang char(3),
-				complexity varchar(100),
-				usage_type_code varchar(100),
-				usage_translations text array,
-				usage_definitions text array);
-create type type_freeform as (
-				freeform_id bigint,
-				type varchar(100),
-				value text,
-				lang char(3),
-				complexity varchar(100),
-				created_by text,
-				created_on timestamp,
-        modified_by text,
-        modified_on timestamp);
-create type type_colloc_member as (
-				lexeme_id bigint,
-				word_id bigint,
-				word text,
-				form text,
-				homonym_nr integer,
-				conjunct varchar(100),
-				weight numeric(14,4));
-create type type_meaning_word as (
-				lexeme_id bigint,
-				meaning_id bigint,
-				mw_lexeme_id bigint,
-				mw_lex_complexity varchar(100),
-				mw_lex_weight numeric(5,4),
-				mw_lex_governments type_freeform array,
-				mw_lex_register_codes varchar(100) array,
-				mw_lex_value_state_code varchar(100),
-				word_id bigint,
-				word text,
-				word_prese text,
-				homonym_nr integer,
-				lang char(3),
-				aspect_code varchar(100),
-				word_type_codes varchar(100) array);
-create type type_word_etym_relation as (
-				word_etym_rel_id bigint,
-				comment text,
-				is_questionable boolean,
-				is_compound boolean,
-				related_word_id bigint);
-create type type_word_relation as (
-				word_group_id bigint,
-				word_rel_type_code varchar(100),
-				relation_status varchar(100),
-				order_by bigint,
-				word_id bigint,
-				word text,
-				word_prese text,
-				homonym_nr integer,
-				homonyms_exist boolean,
-				lang char(3),
-				aspect_code varchar(100),
-				word_type_codes varchar(100) array,
-				lex_complexities varchar(100) array);
-create type type_lexeme_relation as (
-				lexeme_id bigint,
-				word_id bigint,
-				word text,
-				word_prese text,
-				homonym_nr integer,
-				lang char(3),
-				word_type_codes varchar(100) array,
-				complexity varchar(100),
-				lex_rel_type_code varchar(100));
-create type type_meaning_relation as (
-				meaning_id bigint,
-				word_id bigint,
-				word text,
-				word_prese text,
-				homonym_nr integer,
-				lang char(3),
-				aspect_code varchar(100),
-				word_type_codes varchar(100) array,
-				complexity varchar(100),
-				weight numeric(5,4),
-				lex_value_state_codes varchar(100) array,
-				lex_register_codes varchar(100) array,
-				lex_government_values text array,
-				meaning_rel_type_code varchar(100));
 
 create materialized view mview_ww_dataset_word_menu as
 select * from
@@ -163,7 +65,7 @@ dblink(
 	word text,
 	crit text,
 	lang_order_by bigint,
-	lang_complexities json
+  lang_complexities type_lang_complexity array
 );
 
 create materialized view mview_ww_word as
@@ -186,9 +88,9 @@ dblink(
   manual_event_on timestamp,
 	last_activity_event_on timestamp,
 	lang_complexities type_lang_complexity array,
-	meaning_words type_meaning_word array,
+	meaning_words json,
 	definitions json,
-	od_word_recommendations type_freeform array,
+	od_word_recommendations json,
 	freq_value numeric(12,7),
 	freq_rank bigint,
 	forms_exist boolean,
@@ -239,13 +141,13 @@ dblink(
 	meaning_id bigint,
   manual_event_on timestamp,
 	last_approve_or_edit_event_on timestamp,
-	domain_codes type_domain array,
-	image_files type_media_file array,
-	media_files type_media_file array,
+	domain_codes json,
+	image_files json,
+	media_files json,
 	systematic_polysemy_patterns text array,
 	semantic_types text array,
 	learner_comments text array,
-	notes type_freeform array,
+	notes json,
 	definitions json
 );
 
@@ -274,12 +176,12 @@ dblink(
 	pos_codes varchar(100) array,
 	region_codes varchar(100) array,
 	deriv_codes varchar(100) array,
-	meaning_words type_meaning_word array,
+	meaning_words json,
 	advice_notes text array,
-	notes type_freeform array,
-	grammars type_freeform array,
-	governments type_freeform array,
-	usages type_usage array
+	notes json,
+	grammars json,
+	governments json,
+	usages json
 );
 
 create materialized view mview_ww_collocation as
@@ -300,7 +202,7 @@ dblink(
 	colloc_value text,
 	colloc_definition text,
 	colloc_usages text array,
-	colloc_members type_colloc_member array,
+	colloc_members json,
 	complexity varchar(100)
 );
 
@@ -320,7 +222,7 @@ dblink(
 	word_etym_comment text,
 	word_etym_is_questionable boolean,
 	word_etym_order_by bigint,
-	word_etym_relations type_word_etym_relation array
+	word_etym_relations json
 );
 
 create materialized view mview_ww_word_relation as
@@ -329,8 +231,8 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_relation') as word_relation(
 	word_id bigint,
-	related_words type_word_relation array,
-	word_group_members type_word_relation array
+	related_words json,
+	word_group_members json
 );
 
 create materialized view mview_ww_lexeme_relation as
@@ -339,7 +241,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_lexeme_relation') as lexeme_relation(
 	lexeme_id bigint,
-	related_lexemes type_lexeme_relation array
+	related_lexemes json
 );
 
 create materialized view mview_ww_meaning_relation as
@@ -348,7 +250,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning_relation') as meaning_relation(
 	meaning_id bigint,
-	related_meanings type_meaning_relation array
+	related_meanings json
 );
 
 create materialized view mview_ww_word_etym_source_link as
@@ -357,7 +259,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_etym_source_link') as word_etym_source_link(
 	word_id bigint,
-	source_links type_source_link array
+	source_links json
 );
 
 create materialized view mview_ww_lexeme_source_link as
@@ -366,7 +268,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_lexeme_source_link') as lexeme_source_link(
 	lexeme_id bigint,
-	source_links type_source_link array
+	source_links json
 );
 
 create materialized view mview_ww_lexeme_freeform_source_link as
@@ -375,7 +277,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_lexeme_freeform_source_link') as lexeme_freeform_source_link(
 	lexeme_id bigint,
-	source_links type_source_link array
+	source_links json
 );
 
 create materialized view mview_ww_meaning_freeform_source_link as
@@ -384,7 +286,7 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning_freeform_source_link') as meaning_freeform_source_link(
 	meaning_id bigint,
-	source_links type_source_link array
+	source_links json
 );
 
 create materialized view mview_ww_dataset as

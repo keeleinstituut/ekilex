@@ -6,10 +6,10 @@ package eki.ekilex.data.db.tables;
 
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwMeaningFreeformSourceLinkRecord;
-import eki.ekilex.data.db.udt.records.TypeSourceLinkRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -51,14 +51,14 @@ public class ViewWwMeaningFreeformSourceLink extends TableImpl<ViewWwMeaningFree
     /**
      * The column <code>public.view_ww_meaning_freeform_source_link.source_links</code>.
      */
-    public final TableField<ViewWwMeaningFreeformSourceLinkRecord, TypeSourceLinkRecord[]> SOURCE_LINKS = createField(DSL.name("source_links"), eki.ekilex.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK.getDataType().getArrayDataType(), this, "");
+    public final TableField<ViewWwMeaningFreeformSourceLinkRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, this, "");
 
     private ViewWwMeaningFreeformSourceLink(Name alias, Table<ViewWwMeaningFreeformSourceLinkRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewWwMeaningFreeformSourceLink(Name alias, Table<ViewWwMeaningFreeformSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_meaning_freeform_source_link\" as  SELECT ffsl.meaning_id,\n    array_agg(ROW('FREEFORM'::character varying(100), ffsl.freeform_id, ffsl.source_link_id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by, ffsl.source_id, ffsl.source_props)::type_source_link ORDER BY ffsl.freeform_id, ffsl.order_by) AS source_links\n   FROM ( SELECT mff.meaning_id,\n            mff.freeform_id,\n            ffsl_1.id AS source_link_id,\n            ffsl_1.type,\n            ffsl_1.name,\n            ffsl_1.value,\n            ffsl_1.order_by,\n            s.source_id,\n            s.source_props\n           FROM lexeme l,\n            dataset ds,\n            meaning_freeform mff,\n            freeform_source_link ffsl_1,\n            ( SELECT s_1.id AS source_id,\n                    array_agg(encode_text(ff.value_prese) ORDER BY ff.order_by) AS source_props\n                   FROM source s_1,\n                    source_freeform sff,\n                    freeform ff\n                  WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n                  GROUP BY s_1.id) s\n          WHERE ((l.is_public = true) AND (l.meaning_id = mff.meaning_id) AND (ffsl_1.freeform_id = mff.freeform_id) AND (ffsl_1.source_id = s.source_id) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))\n          GROUP BY mff.meaning_id, mff.freeform_id, ffsl_1.id, s.source_id, s.source_props) ffsl\n  GROUP BY ffsl.meaning_id\n  ORDER BY ffsl.meaning_id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_meaning_freeform_source_link\" as  SELECT ffsl.meaning_id,\n    json_agg(ROW('FREEFORM'::character varying(100), ffsl.freeform_id, ffsl.source_link_id, ffsl.type, ffsl.name, ffsl.value, ffsl.order_by, ffsl.source_id, ffsl.source_props)::type_source_link ORDER BY ffsl.freeform_id, ffsl.order_by) AS source_links\n   FROM ( SELECT mff.meaning_id,\n            mff.freeform_id,\n            ffsl_1.id AS source_link_id,\n            ffsl_1.type,\n            ffsl_1.name,\n            ffsl_1.value,\n            ffsl_1.order_by,\n            s.source_id,\n            s.source_props\n           FROM lexeme l,\n            dataset ds,\n            meaning_freeform mff,\n            freeform_source_link ffsl_1,\n            ( SELECT s_1.id AS source_id,\n                    array_agg(ff.value_prese ORDER BY ff.order_by) AS source_props\n                   FROM source s_1,\n                    source_freeform sff,\n                    freeform ff\n                  WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n                  GROUP BY s_1.id) s\n          WHERE ((l.is_public = true) AND (l.meaning_id = mff.meaning_id) AND (ffsl_1.freeform_id = mff.freeform_id) AND (ffsl_1.source_id = s.source_id) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true))\n          GROUP BY mff.meaning_id, mff.freeform_id, ffsl_1.id, s.source_id, s.source_props) ffsl\n  GROUP BY ffsl.meaning_id\n  ORDER BY ffsl.meaning_id;"));
     }
 
     /**
@@ -122,7 +122,7 @@ public class ViewWwMeaningFreeformSourceLink extends TableImpl<ViewWwMeaningFree
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, TypeSourceLinkRecord[]> fieldsRow() {
+    public Row2<Long, JSON> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

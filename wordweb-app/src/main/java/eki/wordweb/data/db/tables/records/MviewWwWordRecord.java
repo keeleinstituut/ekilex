@@ -5,9 +5,7 @@ package eki.wordweb.data.db.tables.records;
 
 
 import eki.wordweb.data.db.tables.MviewWwWord;
-import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
-import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -237,15 +235,15 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     /**
      * Setter for <code>public.mview_ww_word.meaning_words</code>.
      */
-    public void setMeaningWords(TypeMeaningWordRecord[] value) {
+    public void setMeaningWords(JSON value) {
         set(15, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.meaning_words</code>.
      */
-    public TypeMeaningWordRecord[] getMeaningWords() {
-        return (TypeMeaningWordRecord[]) get(15);
+    public JSON getMeaningWords() {
+        return (JSON) get(15);
     }
 
     /**
@@ -265,15 +263,15 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     /**
      * Setter for <code>public.mview_ww_word.od_word_recommendations</code>.
      */
-    public void setOdWordRecommendations(TypeFreeformRecord[] value) {
+    public void setOdWordRecommendations(JSON value) {
         set(17, value);
     }
 
     /**
      * Getter for <code>public.mview_ww_word.od_word_recommendations</code>.
      */
-    public TypeFreeformRecord[] getOdWordRecommendations() {
-        return (TypeFreeformRecord[]) get(17);
+    public JSON getOdWordRecommendations() {
+        return (JSON) get(17);
     }
 
     /**
@@ -360,7 +358,7 @@ public class MviewWwWordRecord extends TableRecordImpl<MviewWwWordRecord> {
     /**
      * Create a detached, initialised MviewWwWordRecord
      */
-    public MviewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, TypeMeaningWordRecord[] meaningWords, JSON definitions, TypeFreeformRecord[] odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy) {
+    public MviewWwWordRecord(Long wordId, String word, String wordPrese, String asWord, String lang, Long langOrderBy, Integer homonymNr, String[] wordTypeCodes, String displayMorphCode, String genderCode, String aspectCode, String vocalForm, Timestamp manualEventOn, Timestamp lastActivityEventOn, TypeLangComplexityRecord[] langComplexities, JSON meaningWords, JSON definitions, JSON odWordRecommendations, BigDecimal freqValue, Long freqRank, Boolean formsExist, Long minDsOrderBy, Integer wordTypeOrderBy) {
         super(MviewWwWord.MVIEW_WW_WORD);
 
         setWordId(wordId);

@@ -102,7 +102,6 @@ import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwDatasetWordMenu;
-import eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink;
 import eki.ekilex.data.db.tables.ViewWwForm;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
 import eki.ekilex.data.db.tables.ViewWwLexemeFreeformSourceLink;
@@ -677,11 +676,6 @@ public class Public extends SchemaImpl {
     public final ViewWwDatasetWordMenu VIEW_WW_DATASET_WORD_MENU = ViewWwDatasetWordMenu.VIEW_WW_DATASET_WORD_MENU;
 
     /**
-     * The table <code>public.view_ww_definition_source_link</code>.
-     */
-    public final ViewWwDefinitionSourceLink VIEW_WW_DEFINITION_SOURCE_LINK = ViewWwDefinitionSourceLink.VIEW_WW_DEFINITION_SOURCE_LINK;
-
-    /**
      * The table <code>public.view_ww_form</code>.
      */
     public final ViewWwForm VIEW_WW_FORM = ViewWwForm.VIEW_WW_FORM;
@@ -1091,7 +1085,6 @@ public class Public extends SchemaImpl {
             ViewWwCollocation.VIEW_WW_COLLOCATION,
             ViewWwDataset.VIEW_WW_DATASET,
             ViewWwDatasetWordMenu.VIEW_WW_DATASET_WORD_MENU,
-            ViewWwDefinitionSourceLink.VIEW_WW_DEFINITION_SOURCE_LINK,
             ViewWwForm.VIEW_WW_FORM,
             ViewWwLexeme.VIEW_WW_LEXEME,
             ViewWwLexemeFreeformSourceLink.VIEW_WW_LEXEME_FREEFORM_SOURCE_LINK,

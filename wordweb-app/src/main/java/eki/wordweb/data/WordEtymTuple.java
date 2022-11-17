@@ -2,10 +2,14 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 import eki.wordweb.data.type.TypeWordEtymRelation;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class WordEtymTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;

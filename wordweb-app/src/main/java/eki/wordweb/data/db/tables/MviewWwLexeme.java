@@ -6,15 +6,13 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRecord;
-import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
-import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
-import eki.wordweb.data.db.udt.records.TypeUsageRecord;
 
 import java.math.BigDecimal;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Schema;
@@ -150,7 +148,7 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.meaning_words</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeMeaningWordRecord[]> MEANING_WORDS = createField(DSL.name("meaning_words"), eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.advice_notes</code>.
@@ -160,22 +158,22 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
     /**
      * The column <code>public.mview_ww_lexeme.notes</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeFreeformRecord[]> NOTES = createField(DSL.name("notes"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, JSON> NOTES = createField(DSL.name("notes"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.grammars</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeFreeformRecord[]> GRAMMARS = createField(DSL.name("grammars"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, JSON> GRAMMARS = createField(DSL.name("grammars"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.governments</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeFreeformRecord[]> GOVERNMENTS = createField(DSL.name("governments"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, JSON> GOVERNMENTS = createField(DSL.name("governments"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.usages</code>.
      */
-    public final TableField<MviewWwLexemeRecord, TypeUsageRecord[]> USAGES = createField(DSL.name("usages"), eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRecord, JSON> USAGES = createField(DSL.name("usages"), SQLDataType.JSON, this, "");
 
     private MviewWwLexeme(Name alias, Table<MviewWwLexemeRecord> aliased) {
         this(alias, aliased, null);

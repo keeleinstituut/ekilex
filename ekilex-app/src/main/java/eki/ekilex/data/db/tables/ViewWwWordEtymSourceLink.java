@@ -6,10 +6,10 @@ package eki.ekilex.data.db.tables;
 
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwWordEtymSourceLinkRecord;
-import eki.ekilex.data.db.udt.records.TypeSourceLinkRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -51,14 +51,14 @@ public class ViewWwWordEtymSourceLink extends TableImpl<ViewWwWordEtymSourceLink
     /**
      * The column <code>public.view_ww_word_etym_source_link.source_links</code>.
      */
-    public final TableField<ViewWwWordEtymSourceLinkRecord, TypeSourceLinkRecord[]> SOURCE_LINKS = createField(DSL.name("source_links"), eki.ekilex.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK.getDataType().getArrayDataType(), this, "");
+    public final TableField<ViewWwWordEtymSourceLinkRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, this, "");
 
     private ViewWwWordEtymSourceLink(Name alias, Table<ViewWwWordEtymSourceLinkRecord> aliased) {
         this(alias, aliased, null);
     }
 
     private ViewWwWordEtymSourceLink(Name alias, Table<ViewWwWordEtymSourceLinkRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_word_etym_source_link\" as  SELECT we.word_id,\n    array_agg(ROW('WORD_ETYM'::character varying(100), wesl.word_etym_id, wesl.id, wesl.type, wesl.name, wesl.value, wesl.order_by, s.source_id, s.source_props)::type_source_link ORDER BY we.id, wesl.order_by) AS source_links\n   FROM word_etymology we,\n    word_etymology_source_link wesl,\n    ( SELECT s_1.id AS source_id,\n            array_agg(encode_text(ff.value_prese) ORDER BY ff.order_by) AS source_props\n           FROM source s_1,\n            source_freeform sff,\n            freeform ff\n          WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n          GROUP BY s_1.id) s\n  WHERE ((wesl.word_etym_id = we.id) AND (wesl.source_id = s.source_id) AND (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = we.word_id) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))))\n  GROUP BY we.word_id\n  ORDER BY we.word_id;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"view_ww_word_etym_source_link\" as  SELECT we.word_id,\n    json_agg(ROW('WORD_ETYM'::character varying(100), wesl.word_etym_id, wesl.id, wesl.type, wesl.name, wesl.value, wesl.order_by, s.source_id, s.source_props)::type_source_link ORDER BY we.id, wesl.order_by) AS source_links\n   FROM word_etymology we,\n    word_etymology_source_link wesl,\n    ( SELECT s_1.id AS source_id,\n            array_agg(ff.value_prese ORDER BY ff.order_by) AS source_props\n           FROM source s_1,\n            source_freeform sff,\n            freeform ff\n          WHERE ((sff.source_id = s_1.id) AND (sff.freeform_id = ff.id) AND ((ff.type)::text <> ALL ((ARRAY['SOURCE_FILE'::character varying, 'EXTERNAL_SOURCE_ID'::character varying])::text[])))\n          GROUP BY s_1.id) s\n  WHERE ((wesl.word_etym_id = we.id) AND (wesl.source_id = s.source_id) AND (EXISTS ( SELECT l.id\n           FROM lexeme l,\n            dataset ds\n          WHERE ((l.word_id = we.word_id) AND (l.is_public = true) AND ((ds.code)::text = (l.dataset_code)::text) AND (ds.is_public = true)))))\n  GROUP BY we.word_id\n  ORDER BY we.word_id;"));
     }
 
     /**
@@ -122,7 +122,7 @@ public class ViewWwWordEtymSourceLink extends TableImpl<ViewWwWordEtymSourceLink
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, TypeSourceLinkRecord[]> fieldsRow() {
+    public Row2<Long, JSON> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

@@ -27,7 +27,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.JSON;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record2;
@@ -72,19 +71,12 @@ import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.tables.MviewWwWordSearch;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
-import eki.wordweb.data.type.TypeDefinition;
-import eki.wordweb.data.type.TypeMeaningWord;
-import eki.wordweb.service.util.JooqBugCompensator;
 
 @Component
 public class SearchDbService implements GlobalConstant, SystemConstant {
 
 	@Autowired
 	private DSLContext create;
-
-	@Autowired
-	private JooqBugCompensator jooqBugCompensator;
-
 	public String getRandomWord(String lang) {
 
 		MviewWwWord w = MVIEW_WW_WORD.as("w");
@@ -126,7 +118,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 		MviewWwWordSearch f = MVIEW_WW_WORD_SEARCH.as("f");
 		Field<String> wgf = DSL.field(DSL.val(WORD_SEARCH_GROUP_WORD));
 
-		Table<Record5<String, String, String, Long, JSON>> ws = DSL
+		Table<Record5<String, String, String, Long, TypeLangComplexityRecord[]>> ws = DSL
 				.select(
 						wgf.as("sgroup"),
 						w.WORD,
@@ -237,15 +229,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						wvobf,
 						ww.field("word_type_order_by"),
 						ww.field("homonym_nr"))
-				.fetch(record -> {
-					Word pojo = record.into(Word.class);
-					List<TypeMeaningWord> meaningWords = pojo.getMeaningWords();
-					List<TypeDefinition> definitions = pojo.getDefinitions();
-					jooqBugCompensator.trimWordTypeData(meaningWords);
-					jooqBugCompensator.decodeDefinitions(definitions);
-					jooqBugCompensator.decodeSourceLinks(pojo.getWordEtymSourceLinks());
-					return pojo;
-				});
+				.fetchInto(Word.class);
 	}
 
 	public List<LexemeWord> getWordLexemes(Long wordId, SearchContext searchContext) {
@@ -291,20 +275,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l.LEXEME_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l.LEXEME_ID)))
 				.where(where)
-				.fetch(record -> {
-					LexemeWord pojo = record.into(LexemeWord.class);
-					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
-					jooqBugCompensator.trimFreeforms(pojo.getLexemeNotes());
-					jooqBugCompensator.trimFreeforms(pojo.getGrammars());
-					jooqBugCompensator.trimFreeforms(pojo.getGovernments());
-					jooqBugCompensator.trimUsages(pojo.getUsages());
-					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
-					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
-					jooqBugCompensator.decodeUsages(pojo.getUsages());
-					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeSourceLinks());
-					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeFreeformSourceLinks());
-					return pojo;
-				});
+				.fetchInto(LexemeWord.class);
 	}
 
 	public List<LexemeWord> getMeaningsLexemes(Long wordId, SearchContext searchContext) {
@@ -363,20 +334,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						.leftOuterJoin(ffsl).on(ffsl.LEXEME_ID.eq(l2.LEXEME_ID))
 						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l2.LEXEME_ID)))
 				.where(whereL1)
-				.fetch(record -> {
-					LexemeWord pojo = record.into(LexemeWord.class);
-					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
-					jooqBugCompensator.trimFreeforms(pojo.getLexemeNotes());
-					jooqBugCompensator.trimFreeforms(pojo.getGrammars());
-					jooqBugCompensator.trimFreeforms(pojo.getGovernments());
-					jooqBugCompensator.trimUsages(pojo.getUsages());
-					jooqBugCompensator.trimWordTypeData(pojo.getRelatedLexemes());
-					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
-					jooqBugCompensator.decodeUsages(pojo.getUsages());
-					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeSourceLinks());
-					jooqBugCompensator.decodeSourceLinks(pojo.getLexemeFreeformSourceLinks());
-					return pojo;
-				});
+				.fetchInto(LexemeWord.class);
 	}
 
 	public LinkedWordSearchElement getFirstMeaningWord(Long meaningId, SearchContext searchContext) {
@@ -499,13 +457,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						w.FORMS_EXIST)
 				.from(w.leftOuterJoin(wesl).on(wesl.WORD_ID.eq(wordId)))
 				.where(w.WORD_ID.eq(wordId))
-				.fetchOne(record -> {
-					Word pojo = record.into(Word.class);
-					jooqBugCompensator.trimWordTypeData(pojo.getMeaningWords());
-					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
-					jooqBugCompensator.decodeSourceLinks(pojo.getWordEtymSourceLinks());
-					return pojo;
-				});
+				.fetchOneInto(Word.class);
 	}
 
 	public LinkedWordSearchElement getWordValue(Long wordId) {
@@ -607,13 +559,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 								.leftOuterJoin(ffsl).on(ffsl.MEANING_ID.eq(m.MEANING_ID)))
 				.where(where)
 				.orderBy(m.MEANING_ID, l.LEXEME_ID)
-				.fetch(record -> {
-					Meaning pojo = record.into(Meaning.class);
-					jooqBugCompensator.trimWordTypeData(pojo.getRelatedMeanings());
-					jooqBugCompensator.decodeDefinitions(pojo.getDefinitions());
-					jooqBugCompensator.decodeSourceLinks(pojo.getFreeformSourceLinks());
-					return pojo;
-				});
+				.fetchInto(Meaning.class);
 	}
 
 	public WordRelationsTuple getWordRelationsTuple(Long wordId) {
@@ -627,12 +573,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						wr.WORD_GROUP_MEMBERS)
 				.from(wr)
 				.where(wr.WORD_ID.eq(wordId))
-				.fetchOptional(record -> {
-					WordRelationsTuple pojo = record.into(WordRelationsTuple.class);
-					jooqBugCompensator.trimWordTypeData(pojo.getRelatedWords());
-					jooqBugCompensator.trimWordTypeData(pojo.getWordGroupMembers());
-					return pojo;
-				})
+				.fetchOptionalInto(WordRelationsTuple.class)
 				.orElse(null);
 	}
 
@@ -686,11 +627,7 @@ public class SearchDbService implements GlobalConstant, SystemConstant {
 						c.REL_GROUP_ORDER_BY,
 						c.COLLOC_GROUP_ORDER,
 						c.COLLOC_ID)
-				.fetch(record -> {
-					CollocationTuple pojo = record.into(CollocationTuple.class);
-					jooqBugCompensator.trimCollocMembers(pojo.getCollocMembers());
-					return pojo;
-				});
+				.fetchInto(CollocationTuple.class);
 	}
 
 }

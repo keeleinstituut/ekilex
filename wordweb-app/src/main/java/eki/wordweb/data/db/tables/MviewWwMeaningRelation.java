@@ -6,10 +6,10 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRelationRecord;
-import eki.wordweb.data.db.udt.records.TypeMeaningRelationRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -51,7 +51,7 @@ public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationReco
     /**
      * The column <code>public.mview_ww_meaning_relation.related_meanings</code>.
      */
-    public final TableField<MviewWwMeaningRelationRecord, TypeMeaningRelationRecord[]> RELATED_MEANINGS = createField(DSL.name("related_meanings"), eki.wordweb.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRelationRecord, JSON> RELATED_MEANINGS = createField(DSL.name("related_meanings"), SQLDataType.JSON, this, "");
 
     private MviewWwMeaningRelation(Name alias, Table<MviewWwMeaningRelationRecord> aliased) {
         this(alias, aliased, null);
@@ -122,7 +122,7 @@ public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationReco
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, TypeMeaningRelationRecord[]> fieldsRow() {
+    public Row2<Long, JSON> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

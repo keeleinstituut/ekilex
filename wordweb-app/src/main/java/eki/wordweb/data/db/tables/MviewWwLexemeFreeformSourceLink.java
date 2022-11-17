@@ -6,10 +6,10 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeFreeformSourceLinkRecord;
-import eki.wordweb.data.db.udt.records.TypeSourceLinkRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -51,7 +51,7 @@ public class MviewWwLexemeFreeformSourceLink extends TableImpl<MviewWwLexemeFree
     /**
      * The column <code>public.mview_ww_lexeme_freeform_source_link.source_links</code>.
      */
-    public final TableField<MviewWwLexemeFreeformSourceLinkRecord, TypeSourceLinkRecord[]> SOURCE_LINKS = createField(DSL.name("source_links"), eki.wordweb.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeFreeformSourceLinkRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, this, "");
 
     private MviewWwLexemeFreeformSourceLink(Name alias, Table<MviewWwLexemeFreeformSourceLinkRecord> aliased) {
         this(alias, aliased, null);
@@ -122,7 +122,7 @@ public class MviewWwLexemeFreeformSourceLink extends TableImpl<MviewWwLexemeFree
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, TypeSourceLinkRecord[]> fieldsRow() {
+    public Row2<Long, JSON> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

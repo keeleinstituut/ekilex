@@ -6,10 +6,10 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordEtymologyRecord;
-import eki.wordweb.data.db.udt.records.TypeWordEtymRelationRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row12;
@@ -101,7 +101,7 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     /**
      * The column <code>public.mview_ww_word_etymology.word_etym_relations</code>.
      */
-    public final TableField<MviewWwWordEtymologyRecord, TypeWordEtymRelationRecord[]> WORD_ETYM_RELATIONS = createField(DSL.name("word_etym_relations"), eki.wordweb.data.db.udt.TypeWordEtymRelation.TYPE_WORD_ETYM_RELATION.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordEtymologyRecord, JSON> WORD_ETYM_RELATIONS = createField(DSL.name("word_etym_relations"), SQLDataType.JSON, this, "");
 
     private MviewWwWordEtymology(Name alias, Table<MviewWwWordEtymologyRecord> aliased) {
         this(alias, aliased, null);
@@ -172,7 +172,7 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
     // -------------------------------------------------------------------------
 
     @Override
-    public Row12<Long, Long, Long, String, String, String[], String, String, String, Boolean, Long, TypeWordEtymRelationRecord[]> fieldsRow() {
+    public Row12<Long, Long, Long, String, String, String[], String, String, String, Boolean, Long, JSON> fieldsRow() {
         return (Row12) super.fieldsRow();
     }
 }

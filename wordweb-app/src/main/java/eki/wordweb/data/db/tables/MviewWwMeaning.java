@@ -6,9 +6,6 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
-import eki.wordweb.data.db.udt.records.TypeDomainRecord;
-import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
-import eki.wordweb.data.db.udt.records.TypeMediaFileRecord;
 
 import java.sql.Timestamp;
 
@@ -66,17 +63,17 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.domain_codes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, TypeDomainRecord[]> DOMAIN_CODES = createField(DSL.name("domain_codes"), eki.wordweb.data.db.udt.TypeDomain.TYPE_DOMAIN.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> DOMAIN_CODES = createField(DSL.name("domain_codes"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.image_files</code>.
      */
-    public final TableField<MviewWwMeaningRecord, TypeMediaFileRecord[]> IMAGE_FILES = createField(DSL.name("image_files"), eki.wordweb.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> IMAGE_FILES = createField(DSL.name("image_files"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.media_files</code>.
      */
-    public final TableField<MviewWwMeaningRecord, TypeMediaFileRecord[]> MEDIA_FILES = createField(DSL.name("media_files"), eki.wordweb.data.db.udt.TypeMediaFile.TYPE_MEDIA_FILE.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> MEDIA_FILES = createField(DSL.name("media_files"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.systematic_polysemy_patterns</code>.
@@ -96,7 +93,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     /**
      * The column <code>public.mview_ww_meaning.notes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, TypeFreeformRecord[]> NOTES = createField(DSL.name("notes"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwMeaningRecord, JSON> NOTES = createField(DSL.name("notes"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.definitions</code>.
@@ -172,7 +169,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row11<Long, Timestamp, Timestamp, TypeDomainRecord[], TypeMediaFileRecord[], TypeMediaFileRecord[], String[], String[], String[], TypeFreeformRecord[], JSON> fieldsRow() {
+    public Row11<Long, Timestamp, Timestamp, JSON, JSON, JSON, String[], String[], String[], JSON, JSON> fieldsRow() {
         return (Row11) super.fieldsRow();
     }
 }

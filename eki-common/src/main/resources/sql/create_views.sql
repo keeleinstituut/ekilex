@@ -1,5 +1,3 @@
---NB! temp placeholder inserted on all text fields that are wrapped into some custom type since in such cases string values starting with value "null*" are interpreted by jooq as empty/null
-
 -- run this once:
 -- create extension unaccent;
 
@@ -63,7 +61,7 @@ create type type_meaning_word as (
 				mw_lexeme_id bigint,
 				mw_lex_complexity varchar(100),
 				mw_lex_weight numeric(5,4),
-				mw_lex_governments type_freeform array,
+				mw_lex_governments json, -- type_freeform
 				mw_lex_register_codes varchar(100) array,
 				mw_lex_value_state_code varchar(100),
 				word_id bigint,
@@ -216,7 +214,7 @@ from (
          group by w.value,
                   f.value)) ws,
   (select lc.word,
-          json_agg(distinct row (
+          array_agg(distinct row (
                     case
                       when (lc.lang in ('est', 'rus', 'eng', 'ukr', 'fra')) then lc.lang
                       else 'other'
@@ -393,7 +391,7 @@ from (select w.id as word_id,
                    group by wt.word_id) wt
                on wt.word_id = w.word_id
   left outer join (select mw.word_id,
-                          array_agg(row (
+                          json_agg(row (
                                 mw.lexeme_id,
                                 mw.meaning_id,
                                 mw.mw_lex_id,
@@ -403,8 +401,8 @@ from (select w.id as word_id,
                                 null,
                                 null,
                                 mw.mw_word_id,
-                                ' ' || mw.mw_word,
-                                ' ' || mw.mw_word_prese,
+                                mw.mw_word,
+                                mw.mw_word_prese,
                                 mw.mw_homonym_nr,
                                 mw.mw_lang,
                                 mw.mw_aspect_code,
@@ -426,8 +424,8 @@ from (select w.id as word_id,
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
                                 w2.id mw_word_id,
-                                ' ' || w2.value mw_word,
-                                ' ' || w2.value_prese mw_word_prese,
+                                w2.value mw_word,
+                                w2.value_prese mw_word_prese,
                                 w2.homonym_nr mw_homonym_nr,
                                 w2.lang mw_lang,
                                 (select array_agg(wt.word_type_code order by wt.order_by)
@@ -620,7 +618,7 @@ from (select w.id as word_id,
                    group by wd.word_id) wd
                on wd.word_id = w.word_id
   left outer join (select wf.word_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, null, null, null, null, ff.modified_by, ff.modified_on)::type_freeform order by ff.order_by) od_word_recommendations
+                          json_agg(row (ff.id, ff.type, ff.value_prese, null, null, null, null, ff.modified_by, ff.modified_on)::type_freeform order by ff.order_by) od_word_recommendations
                    from word_freeform wf,
                         freeform ff
                    where wf.freeform_id = ff.id
@@ -748,7 +746,7 @@ from (select m.id,
                     and   ds.code = l.dataset_code
                     and   ds.is_public = true)) m
   left outer join (select m_dom.meaning_id,
-                          array_agg(row (m_dom.domain_origin, m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
+                          json_agg(row (m_dom.domain_origin, m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
                    from meaning_domain m_dom
                    group by m_dom.meaning_id) m_dom
                on m_dom.meaning_id = m.id
@@ -835,7 +833,7 @@ from (select m.id,
                                                  from definition_source_link dsl
                                                         left outer join
                                                       (select s.id source_id,
-                                                              array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
+                                                              array_agg(ff.value_prese order by ff.order_by) source_props
                                                        from source s,
                                                             source_freeform sff,
                                                             freeform ff
@@ -848,7 +846,7 @@ from (select m.id,
                    group by d.meaning_id) d
                on d.meaning_id = m.id
   left outer join (select mff.meaning_id,
-                          array_agg(row (
+                          json_agg(row (
                             ff_if.id,
                             ff_if.value_text,
                             ff_it.value_text,
@@ -867,7 +865,7 @@ from (select m.id,
                                  and ff_it.type = 'IMAGE_TITLE'
                    group by mff.meaning_id) m_img on m_img.meaning_id = m.id
   left outer join (select mff.meaning_id,
-                          array_agg(row (
+                          json_agg(row (
                                       ff_mf.id,
                                       ff_mf.value_text,
                                       null,
@@ -902,10 +900,10 @@ from (select m.id,
                    and   ff.type = 'LEARNER_COMMENT'
                    group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
   left outer join (select mf.meaning_id,
-                          array_agg(row (
+                          json_agg(row (
                             ff.id,
                             ff.type,
-                            ' ' || ff.value_prese,
+                            ff.value_prese,
                             ff.lang,
                             ff.complexity,
                             ff.created_by,
@@ -962,7 +960,7 @@ from lexeme l
                    and   ff.type = 'ADVICE_NOTE'
                    group by lf.lexeme_id) anote on anote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) notes
+                          json_agg(row (ff.id, ff.type, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) notes
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
@@ -970,21 +968,21 @@ from lexeme l
                    and   ff.is_public = true
                    group by lf.lexeme_id) pnote on pnote.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) grammars
+                          json_agg(row (ff.id, ff.type, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) grammars
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GRAMMAR'
                    group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
   left outer join (select lf.lexeme_id,
-                          array_agg(row (ff.id, ff.type, ' ' || ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) governments
+                          json_agg(row (ff.id, ff.type, ff.value_prese, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by) governments
                    from lexeme_freeform lf,
                         freeform ff
                    where lf.freeform_id = ff.id
                    and   ff.type = 'GOVERNMENT'
                    group by lf.lexeme_id) gov on gov.lexeme_id = l.id
   left outer join (select mw.lexeme_id,
-                          array_agg(row (
+                          json_agg(row (
                                 mw.lexeme_id,
                                 mw.meaning_id,
                                 mw.mw_lex_id,
@@ -994,8 +992,8 @@ from lexeme l
                                 mw.mw_lex_register_codes,
                                 mw.mw_lex_value_state_code,
                                 mw.mw_word_id,
-                                ' ' || mw.mw_word,
-                                ' ' || mw.mw_word_prese,
+                                mw.mw_word,
+                                mw.mw_word_prese,
                                 mw.mw_homonym_nr,
                                 mw.mw_lang,
                                 mw.mw_aspect_code,
@@ -1018,8 +1016,7 @@ from lexeme l
                                 l2.id mw_lex_id,
                                 l2.complexity mw_lex_complexity,
                                 l2.weight mw_lex_weight,
-                                --NB! space sym replaced by temp placeholder because nested complex type array masking failure by postgres
-                                (select array_agg(row (ff.id, ff.type, replace(ff.value_text, ' ', '`'), ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by)
+                                (select jsonb_agg(row (ff.id, ff.type, ff.value_text, ff.lang, ff.complexity, null, null, null, null)::type_freeform order by ff.order_by)
                                  from lexeme_freeform lf,
                                       freeform ff
                                  where lf.lexeme_id = l2.id
@@ -1054,10 +1051,10 @@ from lexeme l
                          and   coalesce(l2.value_state_code, 'anything') != 'vigane') mw
                    group by mw.lexeme_id) mw on mw.lexeme_id = l.id
   left outer join (select u.lexeme_id,
-                          array_agg(row (
+                          json_agg(row (
                                 u.usage_id,
-                                ' ' || u.usage,
-                                ' ' || u.usage_prese,
+                                u.usage,
+                                u.usage_prese,
                                 u.usage_lang,
                                 u.complexity,
                                 u.usage_type_code,
@@ -1083,14 +1080,14 @@ from lexeme l
                                         on utp.parent_id = u.id
                                        and utp.type = 'USAGE_TYPE'
                            left outer join (select ut.parent_id usage_id,
-                                                   array_agg(encode_text(ut.value_prese) order by ut.order_by) usage_translations
+                                                   array_agg(ut.value_prese order by ut.order_by) usage_translations
                                             from freeform ut
                                             where ut.type = 'USAGE_TRANSLATION'
-                                            -- TODO this hack is based on ralistic data and fulfils necessary prerequisite for data filtering at ww
+                                            -- TODO this hack is based on realistic data and fulfils necessary prerequisite for data filtering at ww
                                             and   ut.lang = 'rus'
                                             group by ut.parent_id) ut on ut.usage_id = u.id
                            left outer join (select ud.parent_id usage_id,
-                                                   array_agg(encode_text(ud.value_prese) order by ud.order_by) usage_definitions
+                                                   array_agg(ud.value_prese order by ud.order_by) usage_definitions
                                             from freeform ud
                                             where ud.type = 'USAGE_DEFINITION'
                                             group by ud.parent_id) ud on ud.usage_id = u.id) u
@@ -1232,7 +1229,7 @@ where l.is_public = true
 and   ds.is_public = true
 order by l.id;
 
-create view view_ww_collocation 
+create view view_ww_collocation
 as
 select l1.id as lexeme_id,
        l1.word_id,
@@ -1247,11 +1244,11 @@ select l1.id as lexeme_id,
        c.value as colloc_value,
        c.definition as colloc_definition,
        c.usages as colloc_usages,
-       array_agg(row (
+       json_agg(row (
              lw2.lexeme_id,
              lw2.word_id,
-             ' ' || lw2.word,
-             ' ' || lc2.member_form,
+             lw2.word,
+             lc2.member_form,
              lw2.homonym_nr,
              lc2.conjunct,
              lc2.weight
@@ -1388,7 +1385,7 @@ from
     select
       wer.word_etym_id,
       wer.related_word_id,
-      array_agg(
+      jsonb_agg(
         row(
             wer.id,
             wer.comment_prese,
@@ -1444,14 +1441,14 @@ select w.id word_id,
        wg.word_group_members
 from word w
   left outer join (select w1.id word_id,
-                          array_agg(row (
+                          json_agg(row (
                             null,
                             wr.word_rel_type_code,
                             wr.relation_status,
                             wr.word_rel_order_by,
                             wr.related_word_id,
-                            ' ' || wr.related_word,
-                            ' ' || wr.related_word_prese,
+                            wr.related_word,
+                            wr.related_word_prese,
                             wr.related_word_homonym_nr,
                             wr.related_word_homonyms_exist,
                             wr.related_word_lang,
@@ -1511,14 +1508,14 @@ from word w
                                  where r.word2_id = w2.id) wr on wr.word1_id = w1.id
                    group by w1.id) wr on wr.word_id = w.id
   left outer join (select wg.word_id,
-                          array_agg(row (
+                          json_agg(row (
                             wg.word_group_id,
                             wg.word_rel_type_code,
                             null,
                             wg.group_member_order_by,
                             wg.group_member_word_id,
-                            ' ' || wg.group_member_word,
-                            ' ' || wg.group_member_word_prese,
+                            wg.group_member_word,
+                            wg.group_member_word_prese,
                             wg.group_member_homonym_nr,
                             wg.group_member_homonyms_exist,
                             wg.group_member_word_lang,
@@ -1596,11 +1593,11 @@ and   exists (select l.id
 create view view_ww_lexeme_relation 
 as
 select r.lexeme1_id lexeme_id,
-       array_agg(row (
+       json_agg(row (
          l2.lexeme_id,
          w2.word_id,
-         ' ' || w2.word,
-         ' ' || w2.word_prese,
+         w2.word,
+         w2.word_prese,
          w2.homonym_nr,
          w2.lang,
          w2.word_type_codes,
@@ -1639,11 +1636,11 @@ group by r.lexeme1_id;
 create view view_ww_meaning_relation
 as
 select r.m1_id meaning_id,
-       array_agg(row (
+       json_agg(row (
          r.m2_id,
          r.word_id,
-         ' ' || r.word,
-         ' ' || r.word_prese,
+         r.word,
+         r.word_prese,
          r.homonym_nr,
          r.word_lang,
          r.aspect_code,
@@ -1732,7 +1729,7 @@ group by r.m1_id;
 create view view_ww_word_etym_source_link 
 as
 select we.word_id,
-       array_agg(row (
+       json_agg(row (
          'WORD_ETYM',
          wesl.word_etym_id,
          wesl.id,
@@ -1750,7 +1747,7 @@ select we.word_id,
 from word_etymology we,
      word_etymology_source_link wesl,
      (select s.id source_id,
-             array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
+             array_agg(ff.value_prese order by ff.order_by) source_props
       from source s,
            source_freeform sff,
            freeform ff
@@ -1773,7 +1770,7 @@ order by we.word_id;
 create view view_ww_lexeme_source_link 
 as
 select l.id lexeme_id,
-       array_agg(row (
+       json_agg(row (
          'LEXEME',
          l.id,
          lsl.id,
@@ -1792,7 +1789,7 @@ from lexeme l,
      dataset ds,
      lexeme_source_link lsl,
      (select s.id source_id,
-             array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
+             array_agg(ff.value_prese order by ff.order_by) source_props
       from source s,
            source_freeform sff,
            freeform ff
@@ -1811,7 +1808,7 @@ order by l.id;
 create view view_ww_lexeme_freeform_source_link 
 as
 select l.id lexeme_id,
-       array_agg(row (
+       json_agg(row (
          'FREEFORM',
          ffsl.freeform_id,
          ffsl.id,
@@ -1831,7 +1828,7 @@ from lexeme l,
      lexeme_freeform lff,
      freeform_source_link ffsl,
      (select s.id source_id,
-             array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
+             array_agg(ff.value_prese order by ff.order_by) source_props
       from source s,
            source_freeform sff,
            freeform ff
@@ -1851,7 +1848,7 @@ order by l.id;
 create view view_ww_meaning_freeform_source_link 
 as
 select ffsl.meaning_id,
-       array_agg(row (
+       json_agg(row (
          'FREEFORM',
          ffsl.freeform_id,
          ffsl.source_link_id,
@@ -1880,7 +1877,7 @@ from (select mff.meaning_id,
            meaning_freeform mff,
            freeform_source_link ffsl,
            (select s.id source_id,
-                   array_agg(encode_text(ff.value_prese) order by ff.order_by) source_props
+                   array_agg(ff.value_prese order by ff.order_by) source_props
             from source s,
                  source_freeform sff,
                  freeform ff

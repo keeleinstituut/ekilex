@@ -6,10 +6,10 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRelationRecord;
-import eki.wordweb.data.db.udt.records.TypeLexemeRelationRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row2;
@@ -51,7 +51,7 @@ public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord
     /**
      * The column <code>public.mview_ww_lexeme_relation.related_lexemes</code>.
      */
-    public final TableField<MviewWwLexemeRelationRecord, TypeLexemeRelationRecord[]> RELATED_LEXEMES = createField(DSL.name("related_lexemes"), eki.wordweb.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwLexemeRelationRecord, JSON> RELATED_LEXEMES = createField(DSL.name("related_lexemes"), SQLDataType.JSON, this, "");
 
     private MviewWwLexemeRelation(Name alias, Table<MviewWwLexemeRelationRecord> aliased) {
         this(alias, aliased, null);
@@ -122,7 +122,7 @@ public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord
     // -------------------------------------------------------------------------
 
     @Override
-    public Row2<Long, TypeLexemeRelationRecord[]> fieldsRow() {
+    public Row2<Long, JSON> fieldsRow() {
         return (Row2) super.fieldsRow();
     }
 }

@@ -7,6 +7,7 @@ package eki.ekilex.data.db.udt;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
 
+import org.jooq.JSON;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
@@ -72,9 +73,14 @@ public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
     public static final UDTField<TypeDefinitionRecord, String> COMPLEXITY = createField(DSL.name("complexity"), SQLDataType.VARCHAR(100), TYPE_DEFINITION, "");
 
     /**
+     * The attribute <code>public.type_definition.source_links</code>.
+     */
+    public static final UDTField<TypeDefinitionRecord, JSON> SOURCE_LINKS = createField(DSL.name("source_links"), SQLDataType.JSON, TYPE_DEFINITION, "");
+
+    /**
      * The attribute <code>public.type_definition.notes</code>.
      */
-    public static final UDTField<TypeDefinitionRecord, String[]> NOTES = createField(DSL.name("notes"), SQLDataType.CLOB.getArrayDataType(), TYPE_DEFINITION, "");
+    public static final UDTField<TypeDefinitionRecord, JSON> NOTES = createField(DSL.name("notes"), SQLDataType.JSON, TYPE_DEFINITION, "");
 
     /**
      * No further instances allowed

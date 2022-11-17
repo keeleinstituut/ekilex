@@ -102,7 +102,6 @@ import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwDatasetWordMenu;
-import eki.ekilex.data.db.tables.ViewWwDefinitionSourceLink;
 import eki.ekilex.data.db.tables.ViewWwForm;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
 import eki.ekilex.data.db.tables.ViewWwLexemeFreeformSourceLink;
@@ -635,11 +634,6 @@ public class Tables {
      * The table <code>public.view_ww_dataset_word_menu</code>.
      */
     public static final ViewWwDatasetWordMenu VIEW_WW_DATASET_WORD_MENU = ViewWwDatasetWordMenu.VIEW_WW_DATASET_WORD_MENU;
-
-    /**
-     * The table <code>public.view_ww_definition_source_link</code>.
-     */
-    public static final ViewWwDefinitionSourceLink VIEW_WW_DEFINITION_SOURCE_LINK = ViewWwDefinitionSourceLink.VIEW_WW_DEFINITION_SOURCE_LINK;
 
     /**
      * The table <code>public.view_ww_form</code>.

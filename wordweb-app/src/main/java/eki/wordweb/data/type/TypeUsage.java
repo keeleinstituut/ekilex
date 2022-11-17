@@ -2,12 +2,16 @@ package eki.wordweb.data.type;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import eki.common.constant.Complexity;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 import eki.wordweb.data.ComplexityType;
 import eki.wordweb.data.LangType;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TypeUsage extends AbstractDataObject implements ComplexityType, LangType {
 
 	private static final long serialVersionUID = 1L;

@@ -6,10 +6,10 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRelationRecord;
-import eki.wordweb.data.db.udt.records.TypeWordRelationRecord;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.JSON;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row3;
@@ -51,12 +51,12 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
     /**
      * The column <code>public.mview_ww_word_relation.related_words</code>.
      */
-    public final TableField<MviewWwWordRelationRecord, TypeWordRelationRecord[]> RELATED_WORDS = createField(DSL.name("related_words"), eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRelationRecord, JSON> RELATED_WORDS = createField(DSL.name("related_words"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_word_relation.word_group_members</code>.
      */
-    public final TableField<MviewWwWordRelationRecord, TypeWordRelationRecord[]> WORD_GROUP_MEMBERS = createField(DSL.name("word_group_members"), eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRelationRecord, JSON> WORD_GROUP_MEMBERS = createField(DSL.name("word_group_members"), SQLDataType.JSON, this, "");
 
     private MviewWwWordRelation(Name alias, Table<MviewWwWordRelationRecord> aliased) {
         this(alias, aliased, null);
@@ -127,7 +127,7 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
     // -------------------------------------------------------------------------
 
     @Override
-    public Row3<Long, TypeWordRelationRecord[], TypeWordRelationRecord[]> fieldsRow() {
+    public Row3<Long, JSON, JSON> fieldsRow() {
         return (Row3) super.fieldsRow();
     }
 }

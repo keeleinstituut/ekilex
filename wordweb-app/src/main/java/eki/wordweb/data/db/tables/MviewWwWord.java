@@ -6,9 +6,7 @@ package eki.wordweb.data.db.tables;
 
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
-import eki.wordweb.data.db.udt.records.TypeFreeformRecord;
 import eki.wordweb.data.db.udt.records.TypeLangComplexityRecord;
-import eki.wordweb.data.db.udt.records.TypeMeaningWordRecord;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -126,7 +124,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     /**
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
-    public final TableField<MviewWwWordRecord, TypeMeaningWordRecord[]> MEANING_WORDS = createField(DSL.name("meaning_words"), eki.wordweb.data.db.udt.TypeMeaningWord.TYPE_MEANING_WORD.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, JSON> MEANING_WORDS = createField(DSL.name("meaning_words"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_word.definitions</code>.
@@ -136,7 +134,7 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
     /**
      * The column <code>public.mview_ww_word.od_word_recommendations</code>.
      */
-    public final TableField<MviewWwWordRecord, TypeFreeformRecord[]> OD_WORD_RECOMMENDATIONS = createField(DSL.name("od_word_recommendations"), eki.wordweb.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), this, "");
+    public final TableField<MviewWwWordRecord, JSON> OD_WORD_RECOMMENDATIONS = createField(DSL.name("od_word_recommendations"), SQLDataType.JSON, this, "");
 
     /**
      * The column <code>public.mview_ww_word.freq_value</code>.

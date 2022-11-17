@@ -5,11 +5,11 @@ package eki.ekilex.data.db.udt;
 
 
 import eki.ekilex.data.db.Public;
-import eki.ekilex.data.db.udt.records.TypeFreeformRecord;
 import eki.ekilex.data.db.udt.records.TypeMeaningWordRecord;
 
 import java.math.BigDecimal;
 
+import org.jooq.JSON;
 import org.jooq.Schema;
 import org.jooq.UDTField;
 import org.jooq.impl.DSL;
@@ -67,7 +67,7 @@ public class TypeMeaningWord extends UDTImpl<TypeMeaningWordRecord> {
     /**
      * The attribute <code>public.type_meaning_word.mw_lex_governments</code>.
      */
-    public static final UDTField<TypeMeaningWordRecord, TypeFreeformRecord[]> MW_LEX_GOVERNMENTS = createField(DSL.name("mw_lex_governments"), eki.ekilex.data.db.udt.TypeFreeform.TYPE_FREEFORM.getDataType().getArrayDataType(), TYPE_MEANING_WORD, "");
+    public static final UDTField<TypeMeaningWordRecord, JSON> MW_LEX_GOVERNMENTS = createField(DSL.name("mw_lex_governments"), SQLDataType.JSON, TYPE_MEANING_WORD, "");
 
     /**
      * The attribute <code>public.type_meaning_word.mw_lex_register_codes</code>.
