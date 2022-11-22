@@ -7,7 +7,7 @@
 
 /*
 * Custom changes to make keyboard work
-* added -> Functions fully customMerge and kill 
+* added -> Functions fully customMerge and kill
 * removed -> if: has cached keys => create the keyboard by using cached keys
 */
 
