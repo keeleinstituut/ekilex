@@ -179,7 +179,7 @@
                               <span class="type-two text-uppercase" th:each="register,regIter : ${syn.mwLexRegisters}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                             </th:block>
                           </span>
-                          <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse' : ''}">,</span>
+                          <span th:unless="${synIter.last}" class="ml-n1" th:classappend="${isLimit ? 'collapse-target collapse' : ''}">,</span>
                         </span>
                       </th:block>
                       <button

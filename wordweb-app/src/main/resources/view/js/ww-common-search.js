@@ -83,7 +83,7 @@ $(document).ready(function() {
 });
 
 $(document).on("click", "#clear-search-btn", function(e) {
-  window.location = currentPage;
+  $("input[name='searchWord']").val('').trigger('change');
 });
 
 $(document).on("click", "eki-link", function(e) {
@@ -120,7 +120,7 @@ $(document).on('click', 'ext-link', function() {
 	}
 });
 
-$(document).on("keyup", "input[name='searchWord']", function(e) {
+$(document).on("keyup change", "input[name='searchWord']", function(e) {
   if ($(this).val()) {
     $("#clear-search-btn").show();
   } else {
