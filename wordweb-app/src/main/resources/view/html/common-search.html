@@ -7,10 +7,11 @@
       <form th:action="@{${searchUri}}" th:method="post" name="searchForm">
         <div>
           <input id="search" type="text" name="searchWord" th:value="${searchWord}"
-                 class="main-search-input form-control search-phrase" 
+                 class="main-search-input form-control search-phrase js-kioskboard-input" 
                  th:classappend="${pageContext == 'search' ? 'compact' : ''}"
                  th:placeholder="#{search.placeholder}" role="search"
-                 autocapitalize="off" autocorrect="off"/>
+                 autocapitalize="off" autocorrect="off"
+                 data-kioskboard-type="keyboard" data-kioskboard-placement="bottom" data-kioskboard-specialcharacters="true" />
           <input type="hidden" name="destinLangsStr" th:value="${destinLangsStr}" />
           <input type="hidden" name="datasetCodesStr" th:value="${datasetCodesStr}" />
           <input type="hidden" name="selectedWordHomonymNr" />
@@ -19,6 +20,24 @@
           <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="btn btn-icon clear-btn" style="display: none;">
             <span class="fas fa-times"></span>
           </button>
+          <div class="keyboard-search">
+            <button id="keyboard-search-btn" type="button" class="btn btn-icon keyboard-btn m-0" data-toggle="button" aria-pressed="false" autocomplete="off">
+              <span class="fas fa-keyboard"></span>
+            </button>
+            <div id="keyboard-lang-search" class="dropdown dropdown-keyboard-lang" style="display: none;">
+              <a aria-expanded="false" aria-haspopup="true" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#">
+                <span value="estonia" id="selected">ET</span>
+                <span class="costom-keyboard-lang-angle-down">
+                  <i class="fa fa-angle-down" aria-hidden="true"></i>
+                </span>
+              </a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="#" value="estonia">ET</a>
+                <a class="dropdown-item" href="#" value="russian">RU</a>
+                <a class="dropdown-item" href="#" value="english">EN</a>
+              </div>
+            </div>
+          </div>
           <button type="button" id="start-rec-btn" class="btn btn-icon speak-btn" th:title="#{button.label.start.rec}">
             <span class="fas fa-microphone"></span>
           </button>

@@ -37,6 +37,7 @@
 }
 
 .main-search-btns {
+  display: inline-flex;
   position: absolute;
   top: 50%;
   right: 4px;
@@ -53,6 +54,10 @@
   }
 }
 
+.keyboard-search, 
+.main-search-btns button:not(:last-child) {
+  margin-right: 4.5px;
+}
 .speak-btn,
 .clear-btn {
   font-size: 17px;
@@ -77,6 +82,7 @@
 
 .clear-btn,
 .speak-btn,
+.keyboard-btn,
 .search-btn {
   width: 40px;
   height: 40px;
@@ -84,3 +90,72 @@
   @include border-radius(50%);
 }
 
+.keyboard-search {
+  display: inline-flex;
+  align-items: center;
+  padding: 0px;
+  align-items: center;
+  padding: 0px;
+  border-radius: 100px;
+
+  &.lang-open {
+    background: $gray-300;
+  }
+
+}
+
+#keyboard-search-btn {
+  border: none;
+
+  &:focus {
+    box-shadow: none;
+  }
+
+  .fas.fa-keyboard {
+    width: 27px;
+    height: 28px;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 24px;
+    line-height: 28px;
+  }
+}
+
+#keyboard-lang-search {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px;
+  height: 40px;
+
+  .dropdown-toggle {
+    display: inline-flex;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: $white;
+  }
+
+  .dropdown-toggle::after {
+    display: none;
+  }
+
+  .costom-keyboard-lang-angle-down {
+    margin-left: 4px;
+
+    .fa.fa-angle-down {
+      width: 13px;
+      height: 16px;
+      font-family: 'Font Awesome 5 Free';
+      font-style: normal;
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 16px;
+    }
+  }
+
+  .dropdown-menu {
+    min-width: auto;
+  }
+
+}
