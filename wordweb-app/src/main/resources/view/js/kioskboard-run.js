@@ -1,5 +1,5 @@
 let keys = 'kioskboard-keys-english.json'; /* default keys */
-let urlForKeys = '/view/js/kioskboard/dist/';  /* location folder for keyboard keys */
+let urlForKeys = '/view/js/kiosk-board/dist/';  /* location folder for keyboard keys */
 let langChange = false; /*language keyboard switch box  on/off, if off disable keyboard*/
 
 let keyboardBtn = '#keyboard-search-btn'; /*keyboard switch btn*/
