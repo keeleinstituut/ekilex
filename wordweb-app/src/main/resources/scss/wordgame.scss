@@ -782,11 +782,13 @@
     }
   }
 
-  .wordgame-multicard {
+  .wordgame-multicard,
+  .wordgame-static-picture {
     width: 100vw !important;
     max-height: 90vh !important;
 
-    svg {
+    svg,
+    img {
       height: unset !important;
       max-height: 100% !important;
     }

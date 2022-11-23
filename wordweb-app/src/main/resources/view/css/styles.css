@@ -19525,11 +19525,15 @@ body {
   .card--type-2 .card__face {
     z-index: 3;
   }
-  .wordgame-multicard {
+  .wordgame-multicard,
+  .wordgame-static-picture {
     width: 100vw !important;
     max-height: 90vh !important;
   }
-  .wordgame-multicard svg {
+  .wordgame-multicard svg,
+  .wordgame-multicard img,
+  .wordgame-static-picture svg,
+  .wordgame-static-picture img {
     height: unset !important;
     max-height: 100% !important;
   }
