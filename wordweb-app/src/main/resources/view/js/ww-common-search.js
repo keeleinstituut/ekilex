@@ -4,7 +4,10 @@ $(document).ready(function() {
   selectedHomonymItem.delay(500).queue(function() { }).trigger('click');
   selectedHomonymItem.addClass("animation-target");
   setSelectedHomonymValueForMobile(getSelectedHomonym().html());
+  searchWordAutocomplete();
+});
 
+function searchWordAutocomplete() {
   var searchWordAutocompleteMenuRenderer = function(ul, items) {
     var self = this;
     var groups = [];
@@ -80,7 +83,7 @@ $(document).ready(function() {
   };
 
   $("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
-});
+};
 
 $(document).on("click", "#clear-search-btn", function(e) {
   $("input[name='searchWord']").val('').trigger('change');
