@@ -19183,12 +19183,6 @@ body {
   background-color: white;
 }
 
-@media print {
-  .card--type-2 .card__face {
-    z-index: 3;
-  }
-}
-
 .card--type-2 .card__back {
   position: absolute;
   top: 0;
@@ -19489,6 +19483,63 @@ body {
     color: black;
     font-size: 1.25rem;
     font-weight: 700 !important;
+  }
+}
+
+@media print {
+  body {
+    background: none;
+  }
+  @page {
+    size: A3;
+  }
+  .wordgame__content > .wordgame__subcategory--header {
+    -moz-column-break-before: auto;
+    break-before: auto;
+  }
+  .wordgame__content > .wordgame__subcategory--header ~ .wordgame__subcategory--header {
+    -moz-column-break-before: page;
+    break-before: page;
+  }
+  .wordgame__col {
+    display: inline-block;
+    width: 49.5%;
+  }
+  .wordgame__card {
+    -moz-column-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .wordgame__card__thumb {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .wordgame__card__name {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .card--type-2 .card__button {
+    display: none;
+  }
+  .card--type-2 .card__face {
+    z-index: 3;
+  }
+  .wordgame-multicard {
+    width: 100vw !important;
+    max-height: 90vh !important;
+  }
+  .wordgame-multicard svg {
+    height: unset !important;
+    max-height: 100% !important;
+  }
+  .wordgame__row {
+    display: block;
+  }
+  .container-fluid.header-container .row.header-wrap, .header-container.container-sm .row.header-wrap, .header-container.container-md .row.header-wrap, .header-container.container-lg .row.header-wrap, .header-container.container-xl .row.header-wrap,
+  footer.footer,
+  .top-button#topUp {
+    display: none;
   }
 }
 

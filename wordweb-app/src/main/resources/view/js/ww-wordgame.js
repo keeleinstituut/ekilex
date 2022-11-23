@@ -9,8 +9,132 @@ class WordGame {
     }
   
     this.images = []
+    this.multiLevelMulticards = ['keha','nägu','jalg','käsi'];
+    this.multiCaseMulticards = ['laps', 'vanem', 'vanavanem'];
+    this.multiCards = [
+      {
+        category: "Kehaosad",
+        sub_category: "keha",
+        word: "keha",
+        wordId: 123456,
+        word_link: "",
+        example_1: "",
+        example_2: "",
+        example_3: "",
+        image_link: "",
+        audio_link: "",
+        level: "A1",
+        A1_A2: "yes",
+        A1_B1: "yes",
+        order: 1,
+        type: 1
+      },
+      {
+        category: "Kehaosad",
+        sub_category: "nägu",
+        word: "nägu",
+        wordId: 123456,
+        word_link: "",
+        example_1: "",
+        example_2: "",
+        example_3: "",
+        image_link: "",
+        audio_link: "",
+        level: "A1",
+        A1_A2: "yes",
+        A1_B1: "yes",
+        order: 1,
+        type: 1
+      },
+      {
+        category: "Kehaosad",
+        sub_category: "jalg",
+        word: "jalg",
+        wordId: 123456,
+        word_link: "",
+        example_1: "",
+        example_2: "",
+        example_3: "",
+        image_link: "",
+        audio_link: "",
+        level: "A1",
+        A1_A2: "yes",
+        A1_B1: "yes",
+        order: 1,
+        type: 1
+      },
+      {
+        category: "Kehaosad",
+        sub_category: "käsi",
+        word: "käsi",
+        wordId: 123456,
+        word_link: "",
+        example_1: "",
+        example_2: "",
+        example_3: "",
+        image_link: "",
+        audio_link: "",
+        level: "A1",
+        A1_A2: "yes",
+        A1_B1: "yes",
+        order: 1,
+        type: 1
+      },
+      {
+        category: "Pereliikmed",
+        sub_category: "laps",
+        word: "laps",
+        wordId: 123456,
+        word_link: "",
+        example_1: "",
+        example_2: "",
+        example_3: "",
+        image_link: "",
+        audio_link: "",
+        level: "A1",
+        A1_A2: "yes",
+        A1_B1: "yes",
+        order: 1,
+        type: 1
+      },
+      {
+        category: "Pereliikmed",
+        sub_category: "vanem",
+        word: "vanem",
+        wordId: 123456,
+        word_link: "",
+        example_1: "",
+        example_2: "",
+        example_3: "",
+        image_link: "",
+        audio_link: "",
+        level: "A1",
+        A1_A2: "yes",
+        A1_B1: "yes",
+        order: 1,
+        type: 1
+      },
+      {
+        category: "Pereliikmed",
+        sub_category: "vanavanem",
+        word: "vanavanem",
+        wordId: 123456,
+        word_link: "",
+        example_1: "",
+        example_2: "",
+        example_3: "",
+        image_link: "",
+        audio_link: "",
+        level: "A1",
+        A1_A2: "yes",
+        A1_B1: "yes",
+        order: 1,
+        type: 1
+      }
+    ];
   
     this.options = {
+      lang: undefined,
       active_category: undefined,
       level: undefined,
       text_transform: undefined,
@@ -102,7 +226,7 @@ class WordGame {
     var addedMulticards = [];
     var multicardsToAdd = [];
     
-    this.origData = this.origData.concat(multiCards);
+    this.origData = this.origData.concat(this.multiCards);
     
     this.origData.forEach((item) => {
       if (item.type == 1) {
@@ -133,7 +257,7 @@ class WordGame {
             type: 1
           };
 
-          if (multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+          if (this.multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
             var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
             card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_L.svg`;
             card1.level = "lower";
@@ -145,7 +269,7 @@ class WordGame {
             multicardsToAdd.push(card2);
           }
 
-          if (multiLevelMulticards.includes(item.sub_category.toLowerCase())) {
+          if (this.multiLevelMulticards.includes(item.sub_category.toLowerCase())) {
             var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
             card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-A.svg`;
             card1.level = "A1";
@@ -158,7 +282,7 @@ class WordGame {
             card2.A1_A2 = "no"
             multicardsToAdd.push(card2);
           }
-          if (!multiLevelMulticards.includes(item.sub_category.toLowerCase()) && !multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+          if (!this.multiLevelMulticards.includes(item.sub_category.toLowerCase()) && !this.multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
             var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
             card1.level = "A1";
             multicardsToAdd.push(card1);
@@ -653,16 +777,20 @@ class WordGame {
     });
   }
 
-  loadImages() {
+  loadImages(loadAll = false) {
     const windowTop = window.scrollY;
     const windowHeight = window.innerHeight;
     this.images.forEach((item, index) => {
-      if (item.top < windowTop + windowHeight) {
-        const src = item.elem.getAttribute('data-src');
-        item.elem.setAttribute('src', src);
-        item.elem.parentNode.setAttribute('style', `background-image:url(${src})`);
-        item.elem.removeAttribute('data-src');
-        delete this.images[index];
+      if (item.top < windowTop + windowHeight || loadAll) {
+        const realSrc = item.elem.getAttribute('src');
+
+        if (!realSrc) {
+          const src = item.elem.getAttribute('data-src');
+          item.elem.setAttribute('src', src);
+          item.elem.parentNode.setAttribute('style', `background-image:url(${src})`);
+          item.elem.removeAttribute('data-src');
+          delete this.images[index];
+        }
       }
     });
   }
@@ -685,16 +813,48 @@ class WordGame {
     });
   }
 
+  printListener() {
+    var thisRef = this;
+
+    var beforePrint = function() {
+      thisRef.lazyLoad();
+      thisRef.loadImages(true);
+    };
+
+    if (window.matchMedia) {
+        var isPrinting = window.matchMedia('print');
+        try {
+          isPrinting.addEventListener('change', function(mql) {
+            if (mql.matches) {
+              beforePrint();
+            } 
+          });
+        } catch {
+          try {
+            isPrinting.addListener(function(mql) {
+              if (mql.matches) {
+                beforePrint();
+              } 
+            });
+          } catch {}
+        }
+    }
+
+    window.onbeforeprint = beforePrint;
+  }
+
   async initialize() {
     this.main = document.querySelector('#wordgame');
     this.origData = await this.loadData(this.paths.data, 'application/json');
     this.htmlTemplate = await this.loadData(this.paths.template, 'text/html; charset=UTF-8');
     this.categorizeData();
     this.options.active_category = Object.keys(this.parsedData)[0];
+    this.options.lang = "et";
     this.options.level = "kesktase";
     this.options.text_transform = "lower";
     this.options.autoplay = "off";
     this.retrieveFromUrl();
+    this.printListener();
 
     if (this.options.json) {
       this.origData = await this.loadData(this.options.json, 'application/json');
@@ -714,231 +874,102 @@ class WordGame {
     console.log('wordgamejs initialized');
   }
 
+  decodeHTMLEntities(text) {
+    var entities = [
+      ['&otilde;', 'õ'],
+      ['&Otilde;', 'Õ'],
+      ['&auml;', 'ä'],
+      ['&Auml;', 'Ä'],
+      ['&ouml;', 'ö'],
+      ['&Ouml;', 'Ö'],
+      ['&uuml;', 'ü'],
+      ['&Uuml;', 'Ü'],
+      ['&scaron;', 'š'],
+      ['&Scaron;', 'Š'],
+      ['&ocirc;', 'ô'],
+      ['&Ocirc;', 'Ô'],
+      ['&oacute;', 'ó'],
+      ['&Oacute;', 'Ó'],
+      ['&ograve;', 'ò'],
+      ['&Ograve;', 'Ò'],
+      ['&ocirc;', 'ô'],
+      ['&Ocirc;', 'Ô'],
+      ['&ntilde;', 'ñ'],
+      ['&Ntilde;', 'Ñ'],
+      ['&quot;', '"'],
+      ['&bdquo;', '„'],
+      ['&ldquo;', '“'],
+      ['&rdquo;', '”'],
+      ['&lsquo;', '‘'],
+      ['&rsquo;', '’'],
+      ['&laquo;', '«'],
+      ['raquo', '»'],
+      ['&ndash;', '–'],
+      ['&gt;', '>'],
+      ['&lt;', '<'],
+      [' ', ' '],
+      ['&alpha;', 'α'],
+      ['&Alpha;', 'Α'],
+      ['&beta;', 'β'],
+      ['&Beta;', 'Β'],
+      ['&gamma;', 'γ'],
+      ['&Gamma;', 'Γ'],
+      ['&delta;', 'δ'],
+      ['&Delta;', 'Δ'],
+      ['&epsilon;', 'ε'],
+      ['&Epsilon;', 'Ε'],
+      ['&zeta;', 'ζ'],
+      ['&Zeta;', 'Ζ'],
+      ['&eta;', 'η'],
+      ['&Eta;', 'Η'],
+      ['&theta;', 'θ'],
+      ['&Theta;', 'Θ'],
+      ['&iota;', 'ι'],
+      ['&Iota;', 'Ι'],
+      ['&kappa;', 'κ'],
+      ['&Kappa;', 'Κ'],
+      ['&lambda;', 'λ'],
+      ['&Lambda;', 'Λ'],
+      ['&mu;', 'μ'],
+      ['&Mu;', 'Μ'],
+      ['&nu;', 'ν'],
+      ['&Nu;', 'Ν'],
+      ['&xi;', 'ξ'],
+      ['&Xi;', 'Ξ'],
+      ['&omicron;', 'ο'],
+      ['&Omicron;', 'Ο'],
+      ['&pi;', 'π'],
+      ['&Pi;', 'Π'],
+      ['&Rho;', 'ρ'],
+      ['&Zeta;', 'Ρ'],
+      ['&sigmaf;', 'ς'],
+      ['&sigma;', 'σ'],
+      ['&Sigma;', 'Σ'],
+      ['&tau;', 'τ'],
+      ['&Tau;', 'Τ'],
+      ['&upsilon;', 'υ'],
+      ['&Upsilon;', 'Υ'],
+      ['&phi;', 'φ'],
+      ['&Phi;', 'Φ'],
+      ['&chi;', 'χ'],
+      ['&Chi;', 'Χ'],
+      ['&psi;', 'ψ'],
+      ['&Psi;', 'Ψ'],
+      ['&omega;', 'ω'],
+      ['&Omega;', 'Ω'],
+      ['&hellip;', '…'],
+      ['&micro;', 'µ'],
+      ['&minus;', '−']
+    ];;
+  
+    for (var i = 0, max = entities.length; i < max; ++i)
+      text = text.replace(new RegExp(entities[i][1], 'g'), entities[i][0]);
+  
+    return text;
+  }
 }
 
 window.onload = function () {
   const game = new WordGame();
   game.initialize();
 }
-
-function decodeHTMLEntities(text) {
-  var entities = decodeData;
-
-  for (var i = 0, max = entities.length; i < max; ++i)
-    text = text.replace(new RegExp(entities[i][1], 'g'), entities[i][0]);
-
-  return text;
-}
-
-const multiLevelMulticards = ['keha','nägu','jalg','käsi'];
-const multiCaseMulticards = ['laps', 'vanem', 'vanavanem'];
-
-var multiCards = [
-  {
-    category: "Kehaosad",
-    sub_category: "keha",
-    word: "keha",
-    wordId: 123456,
-    word_link: "",
-    example_1: "",
-    example_2: "",
-    example_3: "",
-    image_link: "",
-    audio_link: "",
-    level: "A1",
-    A1_A2: "yes",
-    A1_B1: "yes",
-    order: 1,
-    type: 1
-  },
-  {
-    category: "Kehaosad",
-    sub_category: "nägu",
-    word: "nägu",
-    wordId: 123456,
-    word_link: "",
-    example_1: "",
-    example_2: "",
-    example_3: "",
-    image_link: "",
-    audio_link: "",
-    level: "A1",
-    A1_A2: "yes",
-    A1_B1: "yes",
-    order: 1,
-    type: 1
-  },
-  {
-    category: "Kehaosad",
-    sub_category: "jalg",
-    word: "jalg",
-    wordId: 123456,
-    word_link: "",
-    example_1: "",
-    example_2: "",
-    example_3: "",
-    image_link: "",
-    audio_link: "",
-    level: "A1",
-    A1_A2: "yes",
-    A1_B1: "yes",
-    order: 1,
-    type: 1
-  },
-  {
-    category: "Kehaosad",
-    sub_category: "käsi",
-    word: "käsi",
-    wordId: 123456,
-    word_link: "",
-    example_1: "",
-    example_2: "",
-    example_3: "",
-    image_link: "",
-    audio_link: "",
-    level: "A1",
-    A1_A2: "yes",
-    A1_B1: "yes",
-    order: 1,
-    type: 1
-  },
-  {
-    category: "Pereliikmed",
-    sub_category: "laps",
-    word: "laps",
-    wordId: 123456,
-    word_link: "",
-    example_1: "",
-    example_2: "",
-    example_3: "",
-    image_link: "",
-    audio_link: "",
-    level: "A1",
-    A1_A2: "yes",
-    A1_B1: "yes",
-    order: 1,
-    type: 1
-  },
-  {
-    category: "Pereliikmed",
-    sub_category: "vanem",
-    word: "vanem",
-    wordId: 123456,
-    word_link: "",
-    example_1: "",
-    example_2: "",
-    example_3: "",
-    image_link: "",
-    audio_link: "",
-    level: "A1",
-    A1_A2: "yes",
-    A1_B1: "yes",
-    order: 1,
-    type: 1
-  }
-  ,
-  {
-    category: "Pereliikmed",
-    sub_category: "vanavanem",
-    word: "vanavanem",
-    wordId: 123456,
-    word_link: "",
-    example_1: "",
-    example_2: "",
-    example_3: "",
-    image_link: "",
-    audio_link: "",
-    level: "A1",
-    A1_A2: "yes",
-    A1_B1: "yes",
-    order: 1,
-    type: 1
-  }
-];
-
-const decodeData = [
-  ['&otilde;', 'õ'],
-  ['&Otilde;', 'Õ'],
-  ['&auml;', 'ä'],
-  ['&Auml;', 'Ä'],
-  ['&ouml;', 'ö'],
-  ['&Ouml;', 'Ö'],
-  ['&uuml;', 'ü'],
-  ['&Uuml;', 'Ü'],
-  ['&scaron;', 'š'],
-  ['&Scaron;', 'Š'],
-  ['&ocirc;', 'ô'],
-  ['&Ocirc;', 'Ô'],
-  ['&oacute;', 'ó'],
-  ['&Oacute;', 'Ó'],
-  ['&ograve;', 'ò'],
-  ['&Ograve;', 'Ò'],
-  ['&ocirc;', 'ô'],
-  ['&Ocirc;', 'Ô'],
-  ['&ntilde;', 'ñ'],
-  ['&Ntilde;', 'Ñ'],
-  ['&quot;', '"'],
-  ['&bdquo;', '„'],
-  ['&ldquo;', '“'],
-  ['&rdquo;', '”'],
-  ['&lsquo;', '‘'],
-  ['&rsquo;', '’'],
-  ['&laquo;', '«'],
-  ['raquo', '»'],
-  ['&ndash;', '–'],
-  ['&gt;', '>'],
-  ['&lt;', '<'],
-  [' ', ' '],
-  ['&alpha;', 'α'],
-  ['&Alpha;', 'Α'],
-  ['&beta;', 'β'],
-  ['&Beta;', 'Β'],
-  ['&gamma;', 'γ'],
-  ['&Gamma;', 'Γ'],
-  ['&delta;', 'δ'],
-  ['&Delta;', 'Δ'],
-  ['&epsilon;', 'ε'],
-  ['&Epsilon;', 'Ε'],
-  ['&zeta;', 'ζ'],
-  ['&Zeta;', 'Ζ'],
-  ['&eta;', 'η'],
-  ['&Eta;', 'Η'],
-  ['&theta;', 'θ'],
-  ['&Theta;', 'Θ'],
-  ['&iota;', 'ι'],
-  ['&Iota;', 'Ι'],
-  ['&kappa;', 'κ'],
-  ['&Kappa;', 'Κ'],
-  ['&lambda;', 'λ'],
-  ['&Lambda;', 'Λ'],
-  ['&mu;', 'μ'],
-  ['&Mu;', 'Μ'],
-  ['&nu;', 'ν'],
-  ['&Nu;', 'Ν'],
-  ['&xi;', 'ξ'],
-  ['&Xi;', 'Ξ'],
-  ['&omicron;', 'ο'],
-  ['&Omicron;', 'Ο'],
-  ['&pi;', 'π'],
-  ['&Pi;', 'Π'],
-  ['&Rho;', 'ρ'],
-  ['&Zeta;', 'Ρ'],
-  ['&sigmaf;', 'ς'],
-  ['&sigma;', 'σ'],
-  ['&Sigma;', 'Σ'],
-  ['&tau;', 'τ'],
-  ['&Tau;', 'Τ'],
-  ['&upsilon;', 'υ'],
-  ['&Upsilon;', 'Υ'],
-  ['&phi;', 'φ'],
-  ['&Phi;', 'Φ'],
-  ['&chi;', 'χ'],
-  ['&Chi;', 'Χ'],
-  ['&psi;', 'ψ'],
-  ['&Psi;', 'Ψ'],
-  ['&omega;', 'ω'],
-  ['&Omega;', 'Ω'],
-  ['&hellip;', '…'],
-  ['&micro;', 'µ'],
-  ['&minus;', '−']
-];

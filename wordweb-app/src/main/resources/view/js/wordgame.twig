@@ -1,4 +1,4 @@
-<div class="wordgame-top-category">
+<div class="wordgame-top-category d-print-none">
   <h1>{{ labels.wordgame }}</h1>
 </div>
 
@@ -105,15 +105,15 @@
         {% for key, item in data %}
         <li>
           <a class="nav-link {% if key == options.active_category %}active wordgame-active{% endif %}"
-             data-toggle="pill"
-             href="#v-pills-{{ key|slug }}"
-             role="tab"
-             aria-controls="v-pills-{{ key|slug }}"
-             aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
-             data-category="{{key}}">
-             <img src="{{ viewPath }}/images/wordgame-icons/{{ key|slug }}.svg" />
-             {{key}}
-             </a>
+            data-toggle="pill"
+            href="#v-pills-{{ key|slug }}"
+            role="tab"
+            aria-controls="v-pills-{{ key|slug }}"
+            aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
+            data-category="{{key}}">
+            <img src="{{ viewPath }}/images/wordgame-icons/{{ key|slug }}.svg" />
+            {{key}}
+            </a>
         </li>
         {% endfor %}
       </ul>
@@ -138,7 +138,7 @@
           aria-selected="{% if key == options.active_category %}true{% else %}false{% endif %}"
           data-category="{{key}}">
             <img src="{{ viewPath }}/images/wordgame-icons/{{ key|slug }}.svg" aria-hidden="true" alt="{{ key }} menu icon" />
-             {{ key }}
+            {{ key }}
           </button>
       </li>
     {% endfor %}
@@ -207,7 +207,7 @@
                     </button>
                   </div>
                 </div>
-                <div class="card__back">
+                <div class="card__back d-print-none">
                   <button tabindex="-1" toggle="flip" class="card__button card__button--right" aria-label="{{labels.tocardfront}}" title="{{labels.tocardfront}}">
                     <img src="{{ viewPath }}/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.tocardfront}} icon">
                   </button>
