@@ -871,6 +871,10 @@ class WordGame {
       this.loadImages();
     });
 
+    if ($('body').find('#wordgame').length !== 0) {
+      $('body').addClass('has-wordgame');
+    }
+
     console.log('wordgamejs initialized');
   }
 

@@ -732,75 +732,75 @@
 }
 
 @media print {
-  body {
+  body.has-wordgame {
     background: none;
-  }
 
-  @page {
-    size: A3;
-  }
+    @page {
+      size: A3;
+    }
 
-  .wordgame__content {      
-      > .wordgame__subcategory--header {
-        break-before: auto;
-  
-        ~ .wordgame__subcategory--header {
-          break-before: page;
+    .wordgame__content {      
+        > .wordgame__subcategory--header {
+          break-before: auto;
+    
+          ~ .wordgame__subcategory--header {
+            break-before: page;
+          }
         }
+    }
+
+    .wordgame__col {
+      display: inline-block;
+      width: 49.5%;
+    }
+
+    .wordgame__card {
+      break-inside: avoid;
+
+      &__thumb {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
-  }
 
-  .wordgame__col {
-    display: inline-block;
-    width: 49.5%;
-  }
-
-  .wordgame__card {
-    break-inside: avoid;
-
-    &__thumb {
-      -webkit-print-color-adjust: exact !important;
-      color-adjust: exact !important;
-      print-color-adjust: exact !important;
+      &__name {
+        // background: none;
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
     }
 
-    &__name {
-      // background: none;
-      -webkit-print-color-adjust: exact !important;
-      color-adjust: exact !important;
-      print-color-adjust: exact !important;
-    }
-  }
+    .card--type-2 {
+      .card__button {
+        display: none;
+      }
 
-  .card--type-2 {
-    .card__button {
+      .card__face {
+        z-index: 3;
+      }
+    }
+
+    .wordgame-multicard,
+    .wordgame-static-picture {
+      width: 100vw !important;
+      max-height: 90vh !important;
+
+      svg,
+      img {
+        height: unset !important;
+        max-height: 100% !important;
+      }
+    }
+
+    .wordgame__row {
+      display: block;
+    }
+
+    .container-fluid.header-container .row.header-wrap,
+    footer.footer,
+    .top-button#topUp {
       display: none;
     }
-
-    .card__face {
-      z-index: 3;
-    }
-  }
-
-  .wordgame-multicard,
-  .wordgame-static-picture {
-    width: 100vw !important;
-    max-height: 90vh !important;
-
-    svg,
-    img {
-      height: unset !important;
-      max-height: 100% !important;
-    }
-  }
-
-  .wordgame__row {
-    display: block;
-  }
-
-  .container-fluid.header-container .row.header-wrap,
-  footer.footer,
-  .top-button#topUp {
-    display: none;
   }
 }
