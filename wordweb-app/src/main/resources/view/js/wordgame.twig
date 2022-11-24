@@ -157,6 +157,7 @@
       </div>
     {% endif %}
     {% for sub_key, subcategory in data[options.active_category] %}
+    <div class="subcategory-container">
     {% if ((emptySubCategories[options.active_category][sub_key].A1_A2 == "yes" and options.level == "algtase") or (emptySubCategories[options.active_category][sub_key].A1_B1 == "yes" and options.level == "kesktase")) %}
     {% if subcategory %}
     <div class="wordgame__subcategory--header">
@@ -171,7 +172,7 @@
     <div class="row justify-content-center wordgame__row {% if options.text_transform == "upper" %}wordgame-text-upper{% endif %}" >
       {% for item in subcategory %}
         {% if ((item.A1_A2 == "yes" and options.level == "algtase") or (item.A1_B1 == "yes" and options.level == "kesktase")) and ((item.type != 1 or (item.level == "A1" or item.level == "A2" or item.level == "B1") or ((item.level == "upper" and options.text_transform == "upper") or (item.level == "lower" and options.text_transform == "lower")))) %}
-        <div class="{{item.cols}} wordgame__col" level="{{ item.level }}">
+        <div class="{{item.cols}} wordgame__col {% if item.type == 0 %}empty-card_for_print_fix{% endif %}" level="{{ item.level }}">
             {# <div>order: {{ item.order }}</div> #}
             {# <div>id: {{ item.wordid }}</div> #}
             {% if (item.type == 1 and item.image_link is not null and item.image_link is not empty) and (item.level == "A1" or item.level == "B1" or item.level is null or item.level is empty or (item.level == "upper" and options.text_transform == "upper") or (item.level == "lower" and options.text_transform == "lower")) %}
@@ -239,11 +240,54 @@
                 </div>
               </div>
             {% endif %}
+            {# this is only to fix printing layout, the card itself is invisible #}
+            {% if item.type == 0 %}
+              <div class="wordgame__card card--type-2" tabindex="-1">
+                <div class="card__face">
+                  <a href="#" class="card__button card__button--left">
+                    <img src="{{ viewPath }}/images/sonaveeb-logo-light-sm2.svg" class="wordgame__card__icon">
+                  </a>
+                  <button toggle="flip" class="card__button card__button--right">
+                    <img src="{{ viewPath }}/images/repeat-solid.svg" class="wordgame__card__icon" alt="{{labels.example}} icon">
+                  </button>
+                  <div class="wordgame__card--top">
+                    <div class="wordgame-no-image-text">
+                      <p>Pilt <br> puudub</p>
+                    </div>
+                    <div class="wordgame__card__thumb wordgame-no-image">
+                      <img>
+                    </div>
+                  </div>
+                  <div class="wordgame__card--bottom">
+                    <button class="wordgame__card__name {% if item.audio_link is empty or item.audio_link is null %} wordgame-no-sound {% endif %}" audio-value="{{item.audio_link}}" audio-type="play" {% if item.audio_link is empty or item.audio_link is null %} title="{{labels.nosound}}" {% endif %} aria-label="Audio">
+                      {{ item.word }}
+                    </button>
+                  </div>
+                </div>
+                <div class="card__back d-print-none">
+                  <button tabindex="-1" toggle="flip" class="card__button card__button--right" aria-label="{{labels.tocardfront}}" title="{{labels.tocardfront}}">
+                    <img src="{{ viewPath }}/images/repeat-solid.svg" aria-hidden="true" class="wordgame__card__icon" alt="{{labels.tocardfront}} icon">
+                  </button>
+                  <div class="wordgame__card--top">
+                    <h3>Näited</h3>
+                    <p>
+                      Näitelause puudub.
+                    </p>
+                  </div>
+                  <div class="wordgame__card--bottom">
+                    <button tabindex="-1" class="wordgame__card__name">
+                      {{ item.word }}
+                    </button>
+                  </div>
+                </div>
+            </div>
+            {% endif %}
         </div>
         {% endif %}
       {% endfor %}
     </div>
     {% endif %}
+    </div>
     {% endfor %}
   </div>
 </main>

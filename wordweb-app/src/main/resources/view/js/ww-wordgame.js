@@ -388,6 +388,40 @@ class WordGame {
         A1_A2: catHasA,
         A1_B1: catHasB
       };
+
+      // Add empty cards to fix print layout, prevent empty rows between cards.
+      // The bug is related to css "break-inside: avoid;", which is required
+      // for cards not to be split in print layout
+      Object.keys(this.parsedData[key]).forEach((subkey) => {
+        const type2CardsCount = this.parsedData[key][subkey].reduce((acc, curr) => curr.type === 2 ? ++acc : acc, 0);
+        const remainderCards = type2CardsCount % 9
+
+        if (type2CardsCount > 9 && remainderCards > 0 && remainderCards < 4) {
+          const emptycardsToAdd = 4 - remainderCards;
+
+          for (let i = 0; i < emptycardsToAdd; i++) {
+            this.parsedData[key][subkey].push(
+            {
+                category: key,
+                sub_category: subkey,
+                word: "empty",
+                wordId: 0,
+                word_link: "",
+                example_1: "",
+                example_2: "",
+                example_3: "",
+                image_link: "",
+                audio_link: "",
+                level: "A1",
+                A1_A2: "yes",
+                A1_B1: "yes",
+                order: 99999,
+                type: 0,
+                cols: 'col-lg-3 col-md-6 col-sm-6 col-xs-10 col-10',
+            });
+          }
+        }
+      });
     });
   }
 

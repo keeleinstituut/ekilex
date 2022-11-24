@@ -19486,28 +19486,47 @@ body {
   }
 }
 
+.empty-card_for_print_fix {
+  display: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 @media print {
-  body.has-wordgame {
-    background: none;
+  :root {
+    --wordgame-card-bottom-padding: 4px;
   }
   @page {
     body.has-wordgame {
       size: A3;
     }
   }
-  body.has-wordgame .wordgame__content > .wordgame__subcategory--header {
-    -moz-column-break-before: auto;
-    break-before: auto;
+  body.has-wordgame .empty-card_for_print_fix {
+    display: block;
+    opacity: 0 !important;
+    visibility: hidden !important;
   }
-  body.has-wordgame .wordgame__content > .wordgame__subcategory--header ~ .wordgame__subcategory--header {
-    -moz-column-break-before: page;
-    break-before: page;
+  body.has-wordgame .wordgame__content .wordgame__category--header h2 {
+    font-size: 2.5em;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  body.has-wordgame .wordgame__content .wordgame__subcategory--header h3 {
+    font-size: 2.25em;
+    margin-top: 4px;
+    margin-bottom: 0;
+  }
+  body.has-wordgame .wordgame__content > .subcategory-container {
+    -moz-column-break-inside: auto;
+    break-inside: auto;
+  }
+  body.has-wordgame .wordgame__content > .subcategory-container ~ .subcategory-container {
+    -moz-column-break-inside: avoid;
+    break-inside: avoid;
   }
   body.has-wordgame .wordgame__col {
     display: inline-block;
-    width: 49.5%;
-  }
-  body.has-wordgame .wordgame__card {
+    width: 33%;
     -moz-column-break-inside: avoid;
     break-inside: avoid;
   }
@@ -19515,11 +19534,13 @@ body {
     -webkit-print-color-adjust: exact !important;
     color-adjust: exact !important;
     print-color-adjust: exact !important;
+    padding-bottom: 115%;
   }
   body.has-wordgame .wordgame__card__name {
-    -webkit-print-color-adjust: exact !important;
-    color-adjust: exact !important;
-    print-color-adjust: exact !important;
+    font-size: 2em;
+    padding: 0;
+    min-height: auto;
+    background: none;
   }
   body.has-wordgame .card--type-2 .card__button {
     display: none;

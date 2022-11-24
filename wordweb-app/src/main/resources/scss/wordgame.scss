@@ -731,43 +731,75 @@
   }
 }
 
+.empty-card_for_print_fix {
+  display: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 @media print {
+  :root {
+    --wordgame-card-bottom-padding: 4px;
+  }
+
   body.has-wordgame {
-    background: none;
 
     @page {
       size: A3;
     }
 
-    .wordgame__content {      
-        > .wordgame__subcategory--header {
-          break-before: auto;
+    .empty-card_for_print_fix {
+      display: block;
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
     
-          ~ .wordgame__subcategory--header {
-            break-before: page;
-          }
+    .wordgame__content {
+      .wordgame__category--header {
+        h2 {
+          font-size: 2.5em;
+          margin-top: 0;
+          margin-bottom: 0;
         }
+      }
+  
+      .wordgame__subcategory--header {
+        h3 {
+          font-size: 2.25em;
+          margin-top: 4px;
+          margin-bottom: 0;
+        }
+      }
+
+      > .subcategory-container {
+        break-inside: auto;
+
+        ~ .subcategory-container {
+          break-inside: avoid;
+        }
+      }
     }
 
     .wordgame__col {
       display: inline-block;
-      width: 49.5%;
+      width: 33%;
+      break-inside: avoid;
     }
 
     .wordgame__card {
-      break-inside: avoid;
-
       &__thumb {
         -webkit-print-color-adjust: exact !important;
         color-adjust: exact !important;
         print-color-adjust: exact !important;
+
+        padding-bottom: 115%;
       }
 
       &__name {
-        // background: none;
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
-        print-color-adjust: exact !important;
+        font-size: 2em;
+        padding: 0;
+        min-height: auto;
+        background: none;
       }
     }
 
