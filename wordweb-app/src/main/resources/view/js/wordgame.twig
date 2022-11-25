@@ -177,9 +177,15 @@
             {# <div>id: {{ item.wordid }}</div> #}
             {% if (item.type == 1 and item.image_link is not null and item.image_link is not empty) and (item.level == "A1" or item.level == "B1" or item.level is null or item.level is empty or (item.level == "upper" and options.text_transform == "upper") or (item.level == "lower" and options.text_transform == "lower")) %}
               <div>
+              {% if item.not_interactive == 1 %}
                 <div class="wordgame-multicard">
+                  {{ source(item.multicard_link) }}
+                </div>
+              {% else %}
+                <div class="wordgame-multicard wordgame-multicard-interactive">
                   {{ source(item.image_link) }}
                 </div>
+              {% endif %}
               </div>
             {% endif %}
             {% if item.type == 2 %}

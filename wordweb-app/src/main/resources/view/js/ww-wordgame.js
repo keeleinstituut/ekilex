@@ -231,7 +231,7 @@ class WordGame {
     this.origData.forEach((item) => {
       if (item.type == 1) {
 
-        item.image_link = "";
+        item.image_link = item.not_interactive === 1 ? item.image_link : '';
         item.category = item.category.trim();
         item.sub_category = item.sub_category.trim();
         item.A1_A2 = "no";
@@ -257,37 +257,43 @@ class WordGame {
             type: 1
           };
 
-          if (this.multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
-            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
-            card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_L.svg`;
-            card1.level = "lower";
-            multicardsToAdd.push(card1);
-  
-            var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
-            card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_U.svg`;
-            card2.level = "upper";
-            multicardsToAdd.push(card2);
-          }
+          if (item.not_interactive === 1) {
+            var card = JSON.parse(JSON.stringify(multiCardTemplate));
+            card.image_link = item.image_link;
+            multicardsToAdd.push(card);
+          } else 
+          {
+            if (this.multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+              var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+              card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_L.svg`;
+              card1.level = "lower";
+              multicardsToAdd.push(card1);
+    
+              var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
+              card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}_U.svg`;
+              card2.level = "upper";
+              multicardsToAdd.push(card2);
+            }
 
-          if (this.multiLevelMulticards.includes(item.sub_category.toLowerCase())) {
-            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
-            card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-A.svg`;
-            card1.level = "A1";
-            card1.A1_B1 = "no"
-            multicardsToAdd.push(card1);
+            if (this.multiLevelMulticards.includes(item.sub_category.toLowerCase())) {
+              var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+              card1.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-A.svg`;
+              card1.level = "A1";
+              card1.A1_B1 = "no"
+              multicardsToAdd.push(card1);
 
-            var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
-            card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-B.svg`;
-            card2.level = "B1";
-            card2.A1_A2 = "no"
-            multicardsToAdd.push(card2);
+              var card2 = JSON.parse(JSON.stringify(multiCardTemplate));
+              card2.image_link = `${this.paths.images}/wordgame-multicards/${this.wordgameSlugify(item.sub_category)}-B.svg`;
+              card2.level = "B1";
+              card2.A1_A2 = "no"
+              multicardsToAdd.push(card2);
+            }
+            if (!this.multiLevelMulticards.includes(item.sub_category.toLowerCase()) && !this.multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
+              var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
+              card1.level = "A1";
+              multicardsToAdd.push(card1);
+            }
           }
-          if (!this.multiLevelMulticards.includes(item.sub_category.toLowerCase()) && !this.multiCaseMulticards.includes(item.sub_category.toLowerCase())) {
-            var card1 = JSON.parse(JSON.stringify(multiCardTemplate));
-            card1.level = "A1";
-            multicardsToAdd.push(card1);
-          }
-
 
           addedMulticards.push(item.sub_category);
         }
@@ -482,7 +488,7 @@ class WordGame {
   // - 'name' peab matchima json'is antud sõnaga
   // svg's peavad olema labelid hierarhiliselt data-circle'de peal, kuna muidu click/hover event lihtsalt ei tööta
   bindMulticard() {
-    document.querySelectorAll('.wordgame-multicard').forEach((multicardElem) => {
+    document.querySelectorAll('.wordgame-multicard-interactive').forEach((multicardElem) => {
       const multicard = multicardElem.children[0];
 
       if (multicard != null && !multicard.classList.contains('wordgame-multicard-initialized')) {
