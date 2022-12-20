@@ -19496,6 +19496,9 @@ body {
   :root {
     --wordgame-card-bottom-padding: 4px;
   }
+  body.has-wordgame {
+    background-color: white !important;
+  }
   @page {
     body.has-wordgame {
       size: A3;

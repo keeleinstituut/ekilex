@@ -709,7 +709,7 @@
     position: sticky;
     top: 30px;
     z-index: 1;
-    background: #f0f0f0;
+    background: $gray-010;
   
     aside:nth-child(2) {
       width: 100%;
@@ -743,6 +743,8 @@
   }
 
   body.has-wordgame {
+
+    background-color: white !important;
 
     @page {
       size: A3;
