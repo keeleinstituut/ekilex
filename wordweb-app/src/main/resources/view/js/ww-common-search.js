@@ -7,6 +7,31 @@ $(document).ready(function() {
   searchWordAutocomplete();
 });
 
+// virtual keyboard autocomplete height fix
+function searchWordAutocompleteHeight() {
+  if ($(".keyboard-search").hasClass("lang-open")) {
+    let documentHeight = $(document).height();
+    let search = $('#search');
+    let virtualKeyboard = $('#KioskBoard-VirtualKeyboard');
+
+    if (search.length && virtualKeyboard.length) {
+      let heightFromTopToSearchInput = search.offset().top;
+      let searchInputHeight = search.outerHeight();
+      let heightKeyboard = virtualKeyboard.outerHeight();
+
+      let calculateNewHeight = (documentHeight - heightFromTopToSearchInput - searchInputHeight - heightKeyboard);
+      let maxAutocompleHeight = calculateNewHeight ? calculateNewHeight + 'px' : '';
+
+      $('.ui-autocomplete.list-group').css({
+        'overflow-y': 'scroll',
+        'overflow-x': 'hidden',
+        'max-height': maxAutocompleHeight
+      });
+
+    }
+  }
+}
+
 function searchWordAutocomplete() {
   var searchWordAutocompleteMenuRenderer = function(ul, items) {
     var self = this;
@@ -75,14 +100,25 @@ function searchWordAutocomplete() {
       return false;
     },
     open: function() {
+      searchWordAutocompleteHeight();
       return false;
     },
     close: function() {
       return false;
     }
   };
+  
+  // if you remove "change" then virtual keyboard autocomplete does not work
+  $(document).on("change input", "input[name='searchWord']", function () {
 
-  $("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
+    if ($(".keyboard-search").hasClass("lang-open")) { // virtual keyboard enabled
+      if ($('#KioskBoard-VirtualKeyboard').length) { // only run when virtual keyboard exist
+        $(this).autocomplete(searchWordAutocompleteConfig).autocomplete("search");
+      }
+    } else {
+      $(this).autocomplete(searchWordAutocompleteConfig).autocomplete("search");
+    }
+  });
 };
 
 $(document).on("click", "#clear-search-btn", function(e) {

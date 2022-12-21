@@ -147,6 +147,10 @@ $(document).ready(function () {
     }, 500);
   }
 
+  $(document).on('click','.kioskboard-key-enter', function () {
+    clickSearchIfInputExists();
+  });
+
   function keyboardRun() {   
     keyboardLang();
     KioskBoard.customMerge(elementWhere, keyboardOptionsCustom(keys)); /* call out for KioskBoard with input element and options */
@@ -163,7 +167,6 @@ $(document).ready(function () {
       $(keyboardBtn).removeClass("active").attr('aria-pressed', false).hide();
       $(allKeyboardBtns).removeClass('lang-open');
       KioskBoard.kill(elementWhere);
-      searchWordAutocomplete(); /* put back word suggestion */
     } else {
       $(keyboardBtn).show();
     }
@@ -183,7 +186,6 @@ $(document).ready(function () {
     } else {
       langChange = false;
       KioskBoard.kill(elementWhere); /* remove keyboard */
-      searchWordAutocomplete(); /* put back word suggestion */
       
       $(langBox).fadeOut( "slow" );
       $(allKeyboardBtns).removeClass('lang-open');
