@@ -59,10 +59,13 @@
                           <th:block th:if="${!definition.subDataExists}">
                             <span th:id="${'definition-entry-' + definition.definitionId}">
                               <th:block th:if="${isCollapsable}">
-                                <div class="definition-value mb-2 text-weight-medium text-dark collapse-text"
-                                     th:utext="${definition.valuePreseCut}">
+                                <div class="definition-value mb-2 text-weight-medium text-dark collapse-text">
+                                  <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
                                 </div>
-                                <div class="large-text-container">
+                                <div class="small-text-container get-height d-none">
+                                  <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
+                                </div>
+                                <div class="large-text-container get-height d-none">
                                   <span class="large-text-addition" th:utext="${definition.valuePrese}"></span>
                                 </div>
                                 <button
@@ -90,10 +93,13 @@
                           <th:block th:if="${definition.subDataExists}">
                             <div th:id="${'definition-entry-' + definition.definitionId}">
                               <th:block th:if="${isCollapsable}">
-                                <div class="definition-value mb-2 text-weight-medium text-dark collapse-text"
-                                     th:utext="${definition.valuePreseCut}">
+                                <div class="definition-value mb-2 text-weight-medium text-dark collapse-text">
+                                  <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
                                 </div>
-                                <div class="large-text-container">
+                                <div class="small-text-container get-height d-none">
+                                  <span class="small-text-addition" th:utext="${definition.valuePreseCut}"></span>
+                                </div>
+                                <div class="large-text-container get-height d-none">
                                   <span class="large-text-addition" th:utext="${definition.valuePrese}">
                                   </span>
                                 </div>
