@@ -128,6 +128,7 @@ public class MaintenanceDbService extends AbstractDataDbService {
 								.and(wHom.field("is_sf", Boolean.class).eq(wEki.field("is_sf", Boolean.class)))
 								.and(wHom.field("is_th", Boolean.class).eq(wEki.field("is_th", Boolean.class)))
 								.and(wHom.field("is_l", Boolean.class).eq(wEki.field("is_l", Boolean.class))))
+				.groupBy(wHom.field("word_id", Long.class), (wEki.field("word_id", Long.class)))
 				.orderBy(wHom.field("word_id", Long.class), (wEki.field("word_id", Long.class)))
 				.fetchInto(SourceTargetIdTuple.class);
 	}
