@@ -247,3 +247,56 @@ $(document).on('click', '[data-toggle="collapse-text"]', function () {
 		}
 	}
 });
+
+$(document).ready(function () {
+	const allBtns = $(".main-search-btns");
+	const widthOfAllBtn = allBtns.outerWidth();
+	const widthVirtualKeyboard = allBtns.find('#keyboard-search-btn').outerWidth();
+	const widthOfAllBtnWithoutVirtualKeyboard = widthOfAllBtn - widthVirtualKeyboard;
+	let keyBoardpView = window.matchMedia('(min-width: 1025px)');
+	let noKeyBoardView = window.matchMedia('(min-width: 768px)');
+
+	$(document).on('click', '#keyboard-search-btn , #start-rec-btn, #stop-rec-btn', function () {
+		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView,  noKeyBoardView);
+	});
+
+	$(window).resize(function () {
+		calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn, keyBoardpView,  noKeyBoardView);
+	});
+
+	function calview(widthOfAllBtnWithoutVirtualKeyboard, widthOfAllBtn,  keyBoardpView,  noKeyBoardView) {
+
+		if (keyBoardpView.matches) {
+			calPading(widthOfAllBtn, 192);
+		} else if (noKeyBoardView.matches) {
+			calPading(widthOfAllBtnWithoutVirtualKeyboard, 152);
+		} else {
+			$('.main-search-input').css({ 'padding-right': '' });
+		}
+	}
+
+
+	function calPading(allClosedMainSearchBtnsWidth, mainSearchInputPadding) {
+		setTimeout(() => {
+			$("#keyboard-lang-search").promise().done(function () {
+
+				if ($('.keyboard-search').hasClass('lang-open') || $("#stop-rec-btn").is(":visible")) {
+
+					let mainSearchBtnsWidth = $(".main-search-btns").outerWidth(); // current 
+					let clearSearchBtn = $('#clear-search-btn').outerWidth();
+
+					let newWidth = $(document).find('#clear-search-btn').is(":visible") ?
+						(mainSearchBtnsWidth - allClosedMainSearchBtnsWidth - clearSearchBtn) :
+						(mainSearchBtnsWidth - allClosedMainSearchBtnsWidth);
+
+					let final = newWidth + mainSearchInputPadding;
+
+					$('.main-search-input').css({ 'padding-right': final });
+
+				} else {
+					$('.main-search-input').css({ 'padding-right': '' });
+				}
+			});
+		}, "500")
+	}
+});

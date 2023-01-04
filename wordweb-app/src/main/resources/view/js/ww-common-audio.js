@@ -96,7 +96,13 @@ function startRecording() {
 function stopRecording(callback) {
 	// Stop the recorder instance
 	recorder && recorder.stop();
+
+	try {
 	audio_stream.getAudioTracks()[0].stop();
+	} catch (e) {
+		console.log('There is nothing to stop?');
+	}
+
 	console.log('Stopped recording.');
 
 	// Use the Recorder Library to export the recorder Audio as a .mp3 file
