@@ -1,15 +1,1 @@
-Märkused ver 1.28.0 tarne kohta:
-
-* Andmebaasi vaated ning andmetüübid muutusid
-* Toimus Spring Boot ja Thymeleaf versiooni uuendus
-
-* Seekordsel tarnel andmebaasi migratsiooni skripti ei ole:
-  /eki-common/src/main/resources/sql/delivery.sql
-
-* Teha värske sõnaveebi laadimine:
-Kustutada ekilexis kõik sõnaveebiga seotud vaated ja andmetüübid:
-  /eki-common/src/main/resources/sql/drop_all.sql sektsioon "wordweb associated views and types"
-
-Luua ekilexi ja sõnaveebi vaated:
-  /eki-common/src/main/resources/sql/create_views.sql
-  /wordweb-app/fileresources/sql/create_mviews.sql
+Märkused ver 1.29.0 tarne kohta:
