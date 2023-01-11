@@ -99,6 +99,7 @@
                    th:classappend="${lexemeIter.first} ? 'pb-2' : 'py-2'"
                    th:data-meaning-id="${lexeme.meaningId}"
                    th:data-lexeme-id="${lexeme.lexemeId}"
+                   th:data-word-lang="${details.word.lang}"
                    th:data-navigate-index="${lexemeIter.index}">
                 <th:block th:replace="syndialog :: add_lexeme_tag_dlg"></th:block>
                 <div data-lexeme-title class="lexeme-inner" th:classappend="${lexeme.levels != null && lexeme.levels.length() > 2} ? 'pl-4': ''">
@@ -166,6 +167,7 @@
     </div>
     <div th:replace="syndialog :: add_word_forum_dlg"></div>
     <div id="relationWordSelectDlg" class="modal" role="dialog"></div>
+    <div id="inexactSynDlg" class="modal" role="dialog" data-keyboard="false" data-backdrop="static"></div>
     <script>
         $('[data-toggle=delete-confirm]').confirmation({
           btnOkLabel : /*[[#{common.yes}]]*/'Jah',

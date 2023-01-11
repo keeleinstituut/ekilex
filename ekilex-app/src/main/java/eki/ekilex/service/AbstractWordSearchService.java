@@ -2,7 +2,9 @@ package eki.ekilex.service;
 
 import static java.util.stream.Collectors.groupingBy;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,14 +19,18 @@ import org.springframework.stereotype.Component;
 import eki.common.exception.OperationDeniedException;
 import eki.common.service.util.LexemeLevelPreseUtil;
 import eki.ekilex.data.DatasetPermission;
+import eki.ekilex.data.Definition;
+import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningRelation;
 import eki.ekilex.data.SearchDatasetsRestriction;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDescript;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.LookupDbService;
+import eki.ekilex.service.util.PermCalculator;
 
 @Component
 public abstract class AbstractWordSearchService extends AbstractSearchService {
@@ -37,6 +43,9 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 
 	@Autowired
 	protected LexemeLevelPreseUtil lexemeLevelPreseUtil;
+
+	@Autowired
+	protected PermCalculator permCalculator;
 
 	@Transactional
 	public WordsResult getWords(
@@ -133,5 +142,52 @@ public abstract class AbstractWordSearchService extends AbstractSearchService {
 				relation.setLexemeLevels(relLexemeLevels);
 			}
 		});
+	}
+
+	public List<WordDescript> getWordCandidates(DatasetPermission userRole, String wordValue, String language, String datasetCode) {
+
+		List<WordDescript> wordCandidates = new ArrayList<>();
+		SearchDatasetsRestriction searchDatasetsRestriction = composeDatasetsRestriction(Collections.emptyList());
+		List<Word> words = lookupDbService.getWords(wordValue, language);
+
+		for (Word word : words) {
+			Long wordId = word.getWordId();
+			List<WordLexeme> wordLexemes = lexSearchDbService.getWordLexemes(wordId, searchDatasetsRestriction, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+
+			wordLexemes.forEach(lexeme -> {
+				Long meaningId = lexeme.getMeaningId();
+				String lexemeDatasetCode = lexeme.getDatasetCode();
+				List<Definition> definitions = commonDataDbService.getMeaningDefinitions(meaningId, lexemeDatasetCode, CLASSIF_LABEL_LANG_EST, CLASSIF_LABEL_TYPE_DESCRIP);
+				permCalculator.filterVisibility(userRole, definitions);
+				Meaning meaning = new Meaning();
+				meaning.setMeaningId(meaningId);
+				meaning.setDefinitions(definitions);
+				lexeme.setMeaning(meaning);
+			});
+
+			List<WordLexeme> mainDatasetLexemes = wordLexemes.stream()
+					.filter(lexeme -> StringUtils.equalsAny(lexeme.getDatasetCode(), datasetCode, DATASET_EKI))
+					.sorted(Comparator.comparing(lexeme -> !StringUtils.equals(lexeme.getDatasetCode(), datasetCode)))
+					.collect(Collectors.toList());
+
+			List<WordLexeme> secondaryDatasetLexemes = wordLexemes.stream()
+					.filter(lexeme -> !StringUtils.equalsAny(lexeme.getDatasetCode(), datasetCode, DATASET_EKI))
+					.collect(Collectors.toList());
+
+			WordDescript wordCandidate = new WordDescript();
+			wordCandidate.setWord(word);
+			if (mainDatasetLexemes.isEmpty()) {
+				wordCandidate.setMainDatasetLexemes(secondaryDatasetLexemes);
+				wordCandidate.setSecondaryDatasetLexemes(new ArrayList<>());
+			} else {
+				boolean primaryDatasetLexemeExists = mainDatasetLexemes.get(0).getDatasetCode().equals(datasetCode);
+				wordCandidate.setMainDatasetLexemes(mainDatasetLexemes);
+				wordCandidate.setSecondaryDatasetLexemes(secondaryDatasetLexemes);
+				wordCandidate.setPrimaryDatasetLexemeExists(primaryDatasetLexemeExists);
+			}
+			wordCandidates.add(wordCandidate);
+		}
+
+		return wordCandidates;
 	}
 }

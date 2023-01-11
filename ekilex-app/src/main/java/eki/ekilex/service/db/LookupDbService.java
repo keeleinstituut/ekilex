@@ -505,6 +505,42 @@ public class LookupDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.Meaning.class);
 	}
 
+	public List<Long> getMeaningIds(String wordValue, String wordLang, String datasetCode) {
+
+		Lexeme l = LEXEME.as("l");
+		Word w = WORD.as("w");
+
+		return create
+				.select(l.MEANING_ID)
+				.from(l, w)
+				.where(
+						w.VALUE.eq(wordValue)
+								.and(w.LANG.eq(wordLang))
+								.and(l.WORD_ID.eq(w.ID))
+								.and(l.DATASET_CODE.eq(datasetCode)))
+				.fetchInto(Long.class);
+	}
+
+	public List<WordLexeme> getMeaningWords(Long meaningId, String datasetCode, String wordLang) {
+
+		return create
+				.select(
+						LEXEME.WORD_ID,
+						LEXEME.MEANING_ID,
+						LEXEME.ID.as("lexeme_id"),
+						WORD.VALUE.as("word_value"),
+						WORD.VALUE_PRESE.as("word_value_prese"),
+						WORD.LANG.as("word_lang"),
+						WORD.HOMONYM_NR.as("word_homonym_nr"))
+				.from(LEXEME, WORD)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(LEXEME.DATASET_CODE.eq(datasetCode))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(WORD.LANG.eq(wordLang)))
+				.fetchInto(WordLexeme.class);
+	}
+
 	public List<Classifier> getLexemeOppositeRelations(String relationTypeCode, String classifLabelLang, String classifLabelType) {
 
 		return create

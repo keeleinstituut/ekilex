@@ -102,7 +102,7 @@ public class SynCandidateService extends AbstractCudService implements GlobalCon
 				List<SourceLink> definitionSourceLinks = definition.getSourceLinks();
 				Long definitionId = createDefinition(
 						synCandidateMeaningId, definitionValue, synCandidateWordLang, synCandidateDatasetCode, Complexity.DETAIL,
-						DEFINITION_TYPE_UNDEFINED, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
+						DEFINITION_TYPE_CODE_UNDEFINED, PUBLICITY_PRIVATE, MANUAL_EVENT_ON_UPDATE_DISABLED);
 				if (CollectionUtils.isNotEmpty(definitionSourceLinks)) {
 					for (SourceLink definitionSourceLink : definitionSourceLinks) {
 						Long sourceId = definitionSourceLink.getSourceId();

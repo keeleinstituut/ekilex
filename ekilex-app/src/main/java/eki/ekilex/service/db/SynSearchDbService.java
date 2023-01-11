@@ -388,13 +388,19 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.fetchInto(eki.ekilex.data.WordRelation.class);
 	}
 
-	public Long getSynCandidateWordId(Long wordRelationId) {
+	public eki.ekilex.data.Word getSynCandidateWord(Long wordRelationId) {
 
 		return create
-				.select(WORD_RELATION.WORD2_ID)
-				.from(WORD_RELATION)
-				.where(WORD_RELATION.ID.eq(wordRelationId))
-				.fetchOneInto(Long.class);
+				.select(
+						WORD.ID.as("word_id"),
+						WORD.VALUE.as("word_value"),
+						WORD.VALUE_PRESE.as("word_value_prese"),
+						WORD.LANG)
+				.from(WORD_RELATION, WORD)
+				.where(
+						WORD_RELATION.ID.eq(wordRelationId)
+								.and(WORD.ID.eq(WORD_RELATION.WORD2_ID)))
+				.fetchOneInto(eki.ekilex.data.Word.class);
 	}
 
 	public Long getMeaningFirstWordLexemeId(Long meaningId, String datasetCode, String wordValue, String language) {
@@ -432,6 +438,44 @@ public class SynSearchDbService extends AbstractDataDbService {
 				.from(WORD_RELATION_PARAM)
 				.where(WORD_RELATION_PARAM.WORD_RELATION_ID.eq(wordRelationId))
 				.fetchInto(TypeWordRelParam.class);
+	}
+
+	public List<eki.ekilex.data.Definition> getInexactSynMeaningDefinitions(Long meaningId, String... langs) {
+
+		Condition wherePublic =
+				DEFINITION.LANG.in(langs)
+						.and(DEFINITION.IS_PUBLIC.eq(PUBLICITY_PUBLIC))
+						.and(DEFINITION.DEFINITION_TYPE_CODE.ne(DEFINITION_TYPE_CODE_INEXACT_SYN));
+
+		Condition whereInexact = DEFINITION.DEFINITION_TYPE_CODE.eq(DEFINITION_TYPE_CODE_INEXACT_SYN);
+
+		return create
+				.select(
+						DEFINITION.VALUE_PRESE.as("value"),
+						DEFINITION.LANG,
+						DEFINITION.DEFINITION_TYPE_CODE.as("type_code"))
+				.from(DEFINITION)
+				.where(
+						DEFINITION.MEANING_ID.eq(meaningId)
+								.and(DSL.or(wherePublic, whereInexact)))
+				.orderBy(DEFINITION.ORDER_BY)
+				.fetchInto(eki.ekilex.data.Definition.class);
+	}
+
+	public eki.ekilex.data.Definition getMeaningDefinition(Long meaningId, String definitionTypeCode) {
+
+		return create
+				.select(
+						DEFINITION.ID,
+						DEFINITION.VALUE_PRESE.as("value"),
+						DEFINITION.LANG,
+						DEFINITION.DEFINITION_TYPE_CODE.as("type_code"))
+				.from(DEFINITION)
+				.where(
+						DEFINITION.MEANING_ID.eq(meaningId)
+								.and(DEFINITION.DEFINITION_TYPE_CODE.eq(definitionTypeCode)))
+				.fetchOptionalInto(eki.ekilex.data.Definition.class)
+				.orElse(null);
 	}
 
 	private Field<TypeWordRelParamRecord[]> getWordRelationParamField(Field<Long> wordRelationIdField) {

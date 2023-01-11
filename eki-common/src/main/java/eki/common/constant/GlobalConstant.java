@@ -36,7 +36,9 @@ public interface GlobalConstant {
 
 	String VALUE_STATE_INCORRECT = "vigane";
 
-	String DEFINITION_TYPE_UNDEFINED = "määramata";
+	String DEFINITION_TYPE_CODE_UNDEFINED = "määramata";
+
+	String DEFINITION_TYPE_CODE_INEXACT_SYN = "kitsam/laiem tähendus teises keeles";
 
 	String COMPLEXITY_DETAIL = Complexity.DETAIL.name();
 
@@ -69,6 +71,10 @@ public interface GlobalConstant {
 	String LEX_REL_TYPE_CODE_DIRECT_MATCH = "otse";
 
 	String MEANING_REL_TYPE_CODE_SIMILAR = "sarnane";
+
+	String MEANING_REL_TYPE_CODE_NARROW = "kitsam";
+
+	String MEANING_REL_TYPE_CODE_WIDE = "laiem";
 
 	String WORD_RELATION_PARAM_NAME_SYN_CANDIDATE = "syn candidate";
 

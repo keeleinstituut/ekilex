@@ -24,9 +24,9 @@ import eki.common.constant.RelationStatus;
 import eki.common.exception.OperationDeniedException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.ActivityLogData;
-import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.TypeWordRelParam;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.WordLexemeMeaningIdTuple;
 import eki.ekilex.data.WordRelation;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
@@ -114,8 +114,8 @@ public class SynCudService extends AbstractCudService implements GlobalConstant,
 	public void createSynMeaningWordWithCandidateData(Long targetMeaningId, Long synWordId, Long wordRelationId, String datasetCode, boolean isManualEventOnUpdateEnabled) throws Exception {
 
 		ActivityLogData activityLog = activityLogService.prepareActivityLog("createSynMeaningWordWithCandidateData", targetMeaningId, ActivityOwner.MEANING, isManualEventOnUpdateEnabled);
-		Long sourceWordId = synSearchDbService.getSynCandidateWordId(wordRelationId);
-		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
+		Word sourceWord = synSearchDbService.getSynCandidateWord(wordRelationId);
+		Long sourceWordId = sourceWord.getWordId();
 		String sourceWordValue = sourceWord.getWordValue();
 		String sourceWordLang = sourceWord.getLang();
 

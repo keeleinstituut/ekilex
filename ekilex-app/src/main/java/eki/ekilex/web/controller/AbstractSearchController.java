@@ -101,7 +101,7 @@ public abstract class AbstractSearchController extends AbstractAuthActionControl
 
 	@ModelAttribute("defaultDefinitionTypeCode")
 	public String getDefaultDefinitionTypeCode() {
-		return DEFINITION_TYPE_UNDEFINED;
+		return DEFINITION_TYPE_CODE_UNDEFINED;
 	}
 
 	@ModelAttribute("meaningAttributes")

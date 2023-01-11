@@ -18,7 +18,6 @@ import eki.ekilex.data.EkiUser;
 import eki.ekilex.data.EkiUserProfile;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.SearchDatasetsRestriction;
-import eki.ekilex.data.SimpleWord;
 import eki.ekilex.data.SynRelation;
 import eki.ekilex.data.SynonymLangGroup;
 import eki.ekilex.data.Tag;
@@ -120,8 +119,7 @@ public class FullSynSearchService extends AbstractSynSearchService {
 	@Transactional
 	public List<WordDescript> getRelationWordCandidates(Long wordRelationId, DatasetPermission userRole) {
 
-		Long sourceWordId = synSearchDbService.getSynCandidateWordId(wordRelationId);
-		SimpleWord sourceWord = synSearchDbService.getSimpleWord(sourceWordId);
+		Word sourceWord = synSearchDbService.getSynCandidateWord(wordRelationId);
 		String sourceWordValue = sourceWord.getWordValue();
 		String sourceWordLang = sourceWord.getLang();
 

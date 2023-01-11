@@ -139,6 +139,15 @@ public class CudDbService extends AbstractDataDbService {
 				.execute();
 	}
 
+	public void updateDefinitionValue(Long id, String value, String valuePrese) {
+		create
+				.update(DEFINITION)
+				.set(DEFINITION.VALUE, value)
+				.set(DEFINITION.VALUE_PRESE, valuePrese)
+				.where(DEFINITION.ID.eq(id))
+				.execute();
+	}
+
 	public void updateDefinitionOrderby(ListData item) {
 		create
 				.update(DEFINITION)

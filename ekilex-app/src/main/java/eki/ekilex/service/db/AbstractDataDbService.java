@@ -87,6 +87,14 @@ public abstract class AbstractDataDbService implements SystemConstant, GlobalCon
 				.fetchInto(String.class);
 	}
 
+	public List<String> getMeaningWordValues(Long meaningId, String... langs) {
+		return create
+				.select(WORD.VALUE)
+				.from(LEXEME, WORD)
+				.where(LEXEME.MEANING_ID.eq(meaningId).and(LEXEME.WORD_ID.eq(WORD.ID)).and(WORD.LANG.in(langs)))
+				.fetchInto(String.class);
+	}
+
 	public int getWordNextHomonymNr(String wordValue, String wordLang) {
 
 		Integer currentHomonymNr = create

@@ -322,6 +322,8 @@ public interface WebConstant {
 
 	String FULL_SYN_COMPONENTS_PAGE = "fullsyncomp";
 
+	String INEXACT_SYN_COMPONENTS_PAGE = "inexactsyncomp";
+
 	String PART_SYN_WORD_DETAILS_URI = "/partsyn_worddetails";
 
 	String FULL_SYN_WORD_DETAILS_URI = "/fullsyn_worddetails";
@@ -337,6 +339,16 @@ public interface WebConstant {
 	String PART_SYN_SEARCH_WORDS_URI = "/part_syn_search_words";
 
 	String FULL_SYN_SEARCH_WORDS_URI = "/full_syn_search_words";
+
+	String INEXACT_SYN_INIT_URI = "/inexact_syn_init";
+
+	String INEXACT_SYN_SEARCH_MEANINGS_URI = "/inexact_syn_search_meanings";
+
+	String INEXACT_SYN_MEANING_URI = "/inexact_syn_meaning";
+
+	String INEXACT_SYN_WORD_URI = "/inexact_syn_word";
+
+	String INEXACT_SYN_MEANING_RELATION_URI = "/inexact_syn_meaning_relation";
 
 	String USER_PROFILE_PAGE = "userprofile";
 

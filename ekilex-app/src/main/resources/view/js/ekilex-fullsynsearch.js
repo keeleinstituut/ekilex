@@ -88,9 +88,16 @@ function initializeFullSynSearch() {
 				drop: function(event, ui) {
 
 					const targetMeaningId = $(this).data('meaning-id');
+					const targetLang = $(this).data('word-lang');
 					const draggableCandidate = ui.draggable;
 					const wordRelationId = draggableCandidate.data('syn-relation-id');
 					const wordCount = draggableCandidate.data('word-count');
+					const isInexactSyn = draggableCandidate.find("input[name='inexactSynSwitch']").is(':checked');
+
+					if (isInexactSyn) {
+						initInexactSynSearchDlg(targetMeaningId, targetLang, wordRelationId);
+						return;
+					}
 
 					if (wordCount === 0) {
 						createMeaningWordWithCandidateData(targetMeaningId, wordRelationId);

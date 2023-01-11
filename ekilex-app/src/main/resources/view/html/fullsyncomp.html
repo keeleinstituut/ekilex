@@ -25,25 +25,31 @@
             </p>
           </div>
           <div class="hover-actions">
-            <button type="button" class="btn  btn-xs btn-secondary rel-status-btn" th:data-id="${synRelation.id}"
-                  data-status="UNDEFINED"
-                  th:title="#{syn.update.undefined}"
-                  data-plugin="changeSynRelationPlugin">
-              <i class="fa fa-question" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn btn-xs btn-success rel-status-btn" th:data-id="${synRelation.id}"
-                  data-status="PROCESSED"
-                  th:title="#{syn.update.processed}"
-                  data-plugin="changeSynRelationPlugin">
-              <i class="fa fa-check" aria-hidden="true"></i>
-            </button>
-            <button type="button" class="btn btn-xs btn-danger rel-status-btn" th:data-id="${synRelation.id}"
-                  data-status="DELETED"
-                  data-placement="right"
-                  th:title="#{syn.update.deleted}"
-                  data-plugin="changeSynRelationPlugin">
-              <i class="fa fa-remove" aria-hidden="true"></i>
-            </button>
+            <div class="d-flex">
+              <button type="button" class="btn btn-xs btn-secondary rel-status-btn" th:data-id="${synRelation.id}"
+                      data-status="UNDEFINED"
+                      th:title="#{syn.update.undefined}"
+                      data-plugin="changeSynRelationPlugin">
+                <i class="fa fa-question" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-xs btn-success rel-status-btn" th:data-id="${synRelation.id}"
+                      data-status="PROCESSED"
+                      th:title="#{syn.update.processed}"
+                      data-plugin="changeSynRelationPlugin">
+                <i class="fa fa-check" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn btn-xs btn-danger rel-status-btn" th:data-id="${synRelation.id}"
+                      data-status="DELETED"
+                      data-placement="right"
+                      th:title="#{syn.update.deleted}"
+                      data-plugin="changeSynRelationPlugin">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+              <div class="custom-control custom-switch" data-toggle="tooltip" th:title="#{inexactsyn.narrow.wide.rel.switch}">
+                <input type="checkbox" class="custom-control-input" name="inexactSynSwitch" th:id="${'inexactSynSwitch_' + synRelation.id}">
+                <label class="custom-control-label" th:for="${'inexactSynSwitch_' + synRelation.id}"></label>
+              </div>
+            </div>
           </div>
           <button type="button" class="btn btn-sm px-0 syn-stats-popover" data-trigger="hover" data-toggle="popover" th:data-title="${synRelation.wordValue}" data-html="true">
             <i class="fa fa-bar-chart action-icon px-2 d-block" aria-hidden="true"></i>
